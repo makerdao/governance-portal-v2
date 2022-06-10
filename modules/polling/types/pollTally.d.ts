@@ -37,7 +37,7 @@ export type PollTallyRankedChoiceOption = {
 export type PollTallyVote = {
   voter: string;
   optionId: number;
-  optionIdRaw: string,
+  optionIdRaw: string;
   mkrSupport: number;
   rankedChoiceOption?: number[];
 };

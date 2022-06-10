@@ -17,7 +17,6 @@ export default function PollWinningOptionBox({
 }): React.ReactElement {
   const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
 
-
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
@@ -36,7 +35,8 @@ export default function PollWinningOptionBox({
                 )
               ) +
               ' MKR supporting.'}
-          {(poll.parameters.inputFormat === PollInputFormat.rankFree || poll.parameters.inputFormat === PollInputFormat.chooseFree)&&
+          {(poll.parameters.inputFormat === PollInputFormat.rankFree ||
+            poll.parameters.inputFormat === PollInputFormat.chooseFree) &&
             'with ' +
               formatValue(
                 parseUnits(

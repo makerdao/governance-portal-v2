@@ -24,8 +24,8 @@ export async function fetchAddressPollVoteHistory(
       if (poll.parameters.inputFormat === PollInputFormat.rankFree) {
         if (pollVote.rankedChoiceOption && pollVote.rankedChoiceOption.length > 0) {
           pollVote.rankedChoiceOption.forEach(option => {
-            optionValue.push(poll.options[option])
-          })
+            optionValue.push(poll.options[option]);
+          });
         }
       } else {
         if (typeof pollVote.optionId !== 'undefined') {

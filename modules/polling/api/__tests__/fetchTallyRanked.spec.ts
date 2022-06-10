@@ -3,6 +3,7 @@ import { fetchSpockPollById } from '../fetchPollBy';
 import { fetchTallyRankedChoice } from '../fetchTallyRankedChoice';
 import { paddedArray } from '../../../../lib/utils';
 import BigNumber from 'bignumber.js';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 jest.mock('modules/gql/gqlRequest');
 jest.mock('../fetchPollBy');
 
@@ -64,10 +65,9 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchTallyRankedChoice(1, 'mainnet');
+    const result = await fetchTallyRankedChoice(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
-      pollVoteType: 'Ranked Choice IRV',
       rounds: 1,
       winner: '3',
       totalMkrParticipation: '324.692625397295750537',
@@ -116,10 +116,9 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchTallyRankedChoice(1, 'mainnet');
+    const result = await fetchTallyRankedChoice(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
-      pollVoteType: 'Ranked Choice IRV',
       rounds: 2,
       winner: '3',
       totalMkrParticipation: '226.692625397295750537',
@@ -173,10 +172,9 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchTallyRankedChoice(1, 'mainnet');
+    const result = await fetchTallyRankedChoice(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
-      pollVoteType: 'Ranked Choice IRV',
       rounds: 3,
       winner: '3',
       totalMkrParticipation: '230.692625397295750537',
@@ -237,10 +235,9 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchTallyRankedChoice(1, 'mainnet');
+    const result = await fetchTallyRankedChoice(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
-      pollVoteType: 'Ranked Choice IRV',
       rounds: 4,
       winner: '3',
       totalMkrParticipation: '220.692625397295750537',
@@ -309,10 +306,9 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchTallyRankedChoice(1, 'mainnet');
+    const result = await fetchTallyRankedChoice(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
-      pollVoteType: 'Ranked Choice IRV',
       rounds: 4,
       winner: '1',
       totalMkrParticipation: '300',

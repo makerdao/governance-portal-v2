@@ -5,12 +5,19 @@ import { PluralityResult, Poll } from '../../types';
 import BigNumber from 'bignumber.js';
 import * as PRT from '../parseRawTally';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 
 jest.mock('../../api/fetchRawPollTally');
 jest.mock('../../api/fetchVotesByAddress');
 
 const mockPoll: Poll = {
-  tags: ['a'],
+  tags: [
+    {
+      id: 'a',
+      longname: 'a',
+      shortname: 'a'
+    }
+  ],
   content: '',
   discussionLink: '',
   endDate: new Date(2011, 10, 30),
@@ -21,13 +28,16 @@ const mockPoll: Poll = {
   slug: '',
   summary: '',
   title: '2011,10,30',
-  voteType: 'Plurality Voting',
+  parameters: {
+    inputFormat: PollInputFormat.singleChoice,
+    resultDisplay: PollResultDisplay.singleVoteBreakdown,
+    victoryConditions: [{ type: PollVictoryConditions.plurality }]
+  },
   ctx: {} as any
 };
 
 const expectedPRTArg = {
   numVoters: 0,
-  pollVoteType: 'Plurality Voting',
   totalMkrParticipation: new BigNumber(0),
   votesByAddress: [],
   winner: '0',

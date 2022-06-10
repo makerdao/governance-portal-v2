@@ -53,7 +53,7 @@ export async function fetchTallyRankedChoice(
     winner: null,
     totalMkrParticipation: totalMkrParticipation,
     options: {},
-    numVoters: votes.length,
+    numVoters: votes.length
   };
 
   // if there are no votes, don't do anything

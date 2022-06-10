@@ -83,7 +83,9 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.parameters.inputFormat === PollInputFormat.rankFree ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
+            {vote.poll.parameters.inputFormat === PollInputFormat.rankFree
+              ? 'VOTED 1ST CHOICE'
+              : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
@@ -93,7 +95,9 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               fontWeight: 'semiBold'
             }}
           >
-            {vote.optionValue.map(value => <Box key={`voted-${vote.poll.pollId}-${value}`}>{value}</Box>)}
+            {vote.optionValue.map(value => (
+              <Box key={`voted-${vote.poll.pollId}-${value}`}>{value}</Box>
+            ))}
           </Text>
         </Box>
       </Box>

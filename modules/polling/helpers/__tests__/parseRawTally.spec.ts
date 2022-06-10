@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js';
-import { POLL_VOTE_TYPE } from '../../polling.constants';
+import {
+  PollInputFormat,
+  PollResultDisplay,
+  PollVictoryConditions,
+  POLL_VOTE_TYPE
+} from '../../polling.constants';
 import { Poll, RawPollTally } from '../../types';
 import { parseRawPollTally } from '../parseRawTally';
 
@@ -9,7 +14,6 @@ describe('Parse raw tally', () => {
       winner: '2',
       totalMkrParticipation: new BigNumber('39291.015916857528910257'),
       numVoters: 5,
-      pollVoteType: 'Plurality Voting',
       options: {
         '1': {
           mkrSupport: new BigNumber('59.445594300396631157'),
@@ -27,7 +31,11 @@ describe('Parse raw tally', () => {
         '1': 'Yes (Greenlight)',
         '2': 'No (Defer)'
       },
-      voteType: POLL_VOTE_TYPE.PLURALITY_VOTE
+      parameters: {
+        inputFormat: PollInputFormat.singleChoice,
+        resultDisplay: PollResultDisplay.singleVoteBreakdown,
+        victoryConditions: [{ type: PollVictoryConditions.plurality }]
+      }
     } as any as Poll;
 
     const result = parseRawPollTally(parsedTally, poll);
@@ -65,7 +73,11 @@ describe('Parse raw tally', () => {
         '4': 'Increase to 130 million by 1 million per week',
         '5': 'No change'
       },
-      voteType: POLL_VOTE_TYPE.RANKED_VOTE
+      parameters: {
+        inputFormat: PollInputFormat.rankFree,
+        resultDisplay: PollResultDisplay.instantRunoffBreakdown,
+        victoryConditions: [{ type: PollVictoryConditions.instantRunoff }]
+      }
     } as any as Poll;
 
     const tally: RawPollTally = {
@@ -104,8 +116,7 @@ describe('Parse raw tally', () => {
           eliminated: true
         }
       },
-      numVoters: 12,
-      pollVoteType: 'Ranked Choice IRV'
+      numVoters: 12
     };
 
     const result = parseRawPollTally(tally, poll);
