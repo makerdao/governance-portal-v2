@@ -5,7 +5,8 @@ import { SupportedConnectors } from './networks';
 export const SUPPORTED_WALLETS: { [connector in SupportedConnectors]: WalletInfo } = {
   [SupportedConnectors.METAMASK]: {
     connector: injectedConnector,
-    name: 'MetaMask'
+    name: 'MetaMask',
+    deeplinkUri: 'https://metamask.app.link/dapp/vote.makerdao.com/'
   },
   [SupportedConnectors.WALLET_CONNECT]: {
     connector: walletConnectConnector,
