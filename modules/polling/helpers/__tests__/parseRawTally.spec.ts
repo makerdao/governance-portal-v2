@@ -1,10 +1,5 @@
 import BigNumber from 'bignumber.js';
-import {
-  PollInputFormat,
-  PollResultDisplay,
-  PollVictoryConditions,
-  POLL_VOTE_TYPE
-} from '../../polling.constants';
+import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../../polling.constants';
 import { Poll, RawPollTally } from '../../types';
 import { parseRawPollTally } from '../parseRawTally';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Poll, PollTallyVote } from 'modules/polling/types';
-import { PollInputFormat, POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollInputFormat } from 'modules/polling/polling.constants';
 import { Text, Box } from 'theme-ui';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 

@@ -5,16 +5,16 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
-import { PollInputFormat, POLL_VOTE_TYPE } from '../polling.constants';
+import { PollInputFormat } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
+import { isPluralityVictoryConditionPoll } from '../helpers/utils';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const voteDate = formatDateWithTime(vote.blockTimestamp);
-  const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const { tally } = usePollTally(vote.pollId);
-
+  const isPluralityVote = isPluralityVictoryConditionPoll(vote.poll.parameters);
   return (
     <Box
       sx={{
@@ -83,9 +83,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.parameters.inputFormat === PollInputFormat.rankFree
-              ? 'VOTED 1ST CHOICE'
-              : 'VOTED OPTION'}
+            {vote.poll.parameters.inputFormat === PollInputFormat.rankFree ? 'VOTED CHOICES' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"

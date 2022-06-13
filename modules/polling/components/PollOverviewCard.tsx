@@ -11,7 +11,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
-import { POLL_VOTE_TYPE } from '../polling.constants';
+import { PollInputFormat, PollResultDisplay } from '../polling.constants';
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -87,7 +87,7 @@ export default function PollOverviewCard({
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}
                       />
-                      {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                      {!showQuickVote && poll.parameters.inputFormat === PollInputFormat.rankFree && (
                         <Flex sx={{ alignItems: 'center', mb: 3 }}>
                           <Text variant="caps">Ranked-choice poll</Text>
                           <Icon name="stackedVotes" size={3} ml={2} />
@@ -201,7 +201,7 @@ export default function PollOverviewCard({
                   </Box>
                 )}
 
-                {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+                {poll.parameters.resultDisplay === PollResultDisplay.singleVoteBreakdown && (
                   <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                     {tally && tally.totalMkrParticipation > 0 && (
                       <InternalLink

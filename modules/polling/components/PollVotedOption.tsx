@@ -4,7 +4,7 @@ import { getNumberWithOrdinal } from 'lib/utils';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Box, Button, Flex, Text, Link as ThemeUILink } from 'theme-ui';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { POLL_VOTE_TYPE } from '../polling.constants';
+import { PollInputFormat } from '../polling.constants';
 import { Poll } from '../types';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -36,11 +36,11 @@ export default function PollVotedOption({
         >
           Your voted option
         </Text>
-        {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? (
+        {poll.parameters.inputFormat === PollInputFormat.singleChoice ? (
           <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
             <Text
               sx={{
-                color: getVoteColor(votedOption as number, poll.voteType),
+                color: getVoteColor(votedOption as number, poll.parameters.inputFormat),
                 fontWeight: 'semiBold',
                 fontSize: 2
               }}

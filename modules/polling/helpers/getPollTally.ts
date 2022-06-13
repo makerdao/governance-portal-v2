@@ -5,8 +5,7 @@ import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
-import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
+import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 
@@ -57,7 +56,6 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   } as RawPollTally;
 
   if ('rounds' in tally) (tallyObject as RawPollTallyRankedChoice).rounds = tally.rounds;
-
   const parsedTally = parseRawPollTally(tallyObject, poll);
 
   if (config.USE_FS_CACHE && !isActivePoll(poll)) {

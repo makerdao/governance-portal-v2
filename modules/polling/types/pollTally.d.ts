@@ -60,6 +60,7 @@ export type RawPollTallyPlurality = {
 };
 
 export type PollTallyRankedChoice = {
+  parameters: PollParameters;
   winner: string | null;
   numVoters: number;
   results: RankedChoiceResult[];
@@ -70,6 +71,7 @@ export type PollTallyRankedChoice = {
 };
 
 export type PollTallyPlurality = {
+  parameters: PollParameters;
   winner: string | null;
   numVoters: number;
   results: PluralityResult[];

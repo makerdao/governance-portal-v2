@@ -4,7 +4,7 @@ import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollResultDisplay } from 'modules/polling/polling.constants';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { formatValue } from 'lib/string';
@@ -19,7 +19,7 @@ export default function VoteBreakdown({
   shownOptions: number;
   tally: PollTally | undefined;
 }): JSX.Element {
-  if (poll.voteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN)) {
+  if (poll.parameters.resultDisplay === PollResultDisplay.instantRunoffBreakdown) {
     return (
       <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
         <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
