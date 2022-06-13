@@ -6,7 +6,7 @@ import isEqual from 'lodash/isEqual';
 import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
+import { extractCurrentPollVote } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';

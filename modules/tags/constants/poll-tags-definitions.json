@@ -135,7 +135,6 @@
     "longname": "Delegates",
     "recommend_ui": true,
     "description": "Polls relating to MakerDAO's Recognized Delegates",
-    "related_link": "https://manual.makerdao.com/governance/what-is-delegation",
     "precedence": 16
   },
   {
@@ -247,5 +246,13 @@
     "recommend_ui": false,
     "description": "Polls relating to the launch of Multi-Collateral DAI",
     "precedence": 29
+  },
+  {
+    "id": "prioritization-sentiment",
+    "shortname": "Priority Sentiment",
+    "longname": "Prioritization Sentiment",
+    "recommend_ui": true,
+    "description": "Polls that seek input on prioritization sentiment from MKR holders",
+    "precedence": 30
   }
 ]

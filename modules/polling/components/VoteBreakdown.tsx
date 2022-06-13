@@ -166,7 +166,7 @@ export default function VoteBreakdown({
                       backgroundColor: 'muted',
                       mb: '3',
                       height: 2,
-                      color: getVoteColor(parseInt(tallyResult.optionId), poll.voteType)
+                      color: getVoteColor(parseInt(tallyResult.optionId), poll.parameters.inputFormat)
                     }}
                     max={tally.totalMkrParticipation}
                     value={mkrSupport}
