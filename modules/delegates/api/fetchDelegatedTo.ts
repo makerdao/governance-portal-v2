@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers';
+import { utils } from 'ethers';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { mkrDelegatedTo } from 'modules/gql/queries/mkrDelegatedTo';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
