@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { Box } from 'theme-ui';

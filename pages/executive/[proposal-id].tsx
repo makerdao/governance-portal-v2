@@ -386,11 +386,11 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
 
 // HOC to fetch the proposal depending on the network
 export default function ProposalPage({
-  proposal: prefetchedProposal,
-  spellDiffs: prefetchedSpellDiffs
-}: {
+  proposal: prefetchedProposal
+}: // spellDiffs: prefetchedSpellDiffs
+{
   proposal?: Proposal;
-  spellDiffs: SpellDiff[];
+  // spellDiffs: SpellDiff[];
 }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();

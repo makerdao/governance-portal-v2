@@ -163,7 +163,8 @@ export const fromBuffer = (buf, opts) => {
 
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
-
+  //never use scientific notation when converting BigNumber toString
+  BigNumber.config({ EXPONENTIAL_AT: 1e9 });
   return new BigNumber(hex.join(''), 16);
 };
 

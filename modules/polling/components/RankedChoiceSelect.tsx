@@ -28,6 +28,7 @@ export default function RankedChoiceSelect({
   const [numConfirmed, setNumConfirmed] = useState(choice.length);
   const [showListboxInput, setShowListboxInput] = useState(true);
   const [showAddButton, setShowAddButton] = useState(false);
+
   const totalNumOptions = Object.keys(poll.options).length;
   const abstainOption = Object.values(poll.options).indexOf('Abstain');
   const optionsToShow = abstainOption > -1 ? totalNumOptions - 1 : totalNumOptions;
@@ -49,6 +50,30 @@ export default function RankedChoiceSelect({
     [numConfirmed]
   );
 
+  useEffect(() => {
+    if (Object.keys(availableChoices).length === 0) {
+      setShowListboxInput(false);
+    }
+  }, []);
+
+  const handeListboxInputChange = value => {
+    const newChoice = [...choice];
+    newChoice[numConfirmed] = parseInt(value);
+    setChoice(newChoice);
+    if (canAddOption || Object.keys(availableChoices).length === 1) setNumConfirmed(numConfirmed + 1);
+    setShowListboxInput(false);
+    const abstaining = newChoice[0] === abstainOption;
+    if (canAddOption && !abstaining) setShowAddButton(true);
+  };
+
+  const handleRemove = (e, index) => {
+    const newChoice = [...choice];
+    newChoice.splice(index, 1);
+    setNumConfirmed(numConfirmed - 1);
+    setChoice(newChoice);
+    if (optionsToShow === numConfirmed && !showAddButton) setShowAddButton(true);
+  };
+
   if (showListboxInput && numConfirmed === totalNumOptions) setShowListboxInput(false);
   if (numConfirmed === 0 && !showListboxInput) setShowListboxInput(true);
   if (showListboxInput && showAddButton) setShowAddButton(false);
@@ -66,13 +91,7 @@ export default function RankedChoiceSelect({
               ml="auto"
               my="auto"
               sx={{ '> svg': { size: [3] } }}
-              onClick={() => {
-                const newChoice = [...choice];
-                newChoice.splice(index, 1);
-                setNumConfirmed(numConfirmed - 1);
-                setChoice(newChoice);
-                if (totalNumOptions === numConfirmed && !showAddButton) setShowAddButton(true);
-              }}
+              onClick={e => handleRemove(e, index)}
             />
           </Flex>
         ))}
@@ -81,16 +100,7 @@ export default function RankedChoiceSelect({
             defaultValue={choice[numConfirmed] ? choice[numConfirmed].toString() : 'default'}
             key={numConfirmed}
             data-testid="ranked choice"
-            onChange={value => {
-              const newChoice = [...choice];
-              newChoice[numConfirmed] = parseInt(value);
-              setChoice(newChoice);
-              if (canAddOption || Object.keys(availableChoices).length === 1)
-                setNumConfirmed(numConfirmed + 1);
-              setShowListboxInput(false);
-              const abstaining = newChoice[0] === abstainOption;
-              if (canAddOption && !abstaining) setShowAddButton(true);
-            }}
+            onChange={handeListboxInputChange}
           >
             <ListboxButton
               sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: 2 }}

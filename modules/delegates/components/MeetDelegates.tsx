@@ -59,8 +59,13 @@ const MeetDelegateCard = ({
             View Profile Details
           </Button>
         </InternalLink>
+
         <Flex>
-          <PlayButton label="Meet the Delegate" onClick={() => setDelegateToPlay(delegate.id)} />
+          <PlayButton
+            label="Meet the Delegate"
+            onClick={() => setDelegateToPlay(delegate.id)}
+            disabled={!MEET_DELEGATE_URLS[delegate.id]}
+          />
         </Flex>
       </Flex>
     </Card>
