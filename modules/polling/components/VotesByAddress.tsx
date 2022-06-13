@@ -154,7 +154,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   </Text>
                   <Text
                     as="td"
-                    sx={{ color: getVoteColor(v.optionId, poll.parameters.inputFormat), pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                    sx={{
+                      color: getVoteColor(v.optionId, poll.parameters.inputFormat),
+                      pb: 2,
+                      fontSize: bpi < 1 ? 1 : 3
+                    }}
                   >
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
                       ? poll.options[v.rankedChoiceOption[0]]

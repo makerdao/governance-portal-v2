@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally, PluralityResult, RankedChoiceResult } from '../types';
-import { PollVictoryConditions } from '../polling.constants';
 import BigNumber from 'bignumber.js';
 import { isPluralityVictoryConditionPoll, isRankedChoiceVictoryConditionPoll } from './utils';
 
@@ -99,7 +98,6 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       winningOptionName
     } as PollTally;
   } else if (isPlurality) {
-    console.log('weee d');
     return {
       ...remainder,
       results: getPluralityResults(rawTally, poll),

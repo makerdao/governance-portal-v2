@@ -21,7 +21,11 @@
       "2": "No"
     },
     "discussionLink": "https://forum.makerdao.com/t/signal-request-activate-dc-iam-for-psm-pax-a-and-adjust-dc-iam-gap-parameter-for-psm-usdc-a/10199",
-    "voteType": "Plurality Voting",
+    "parameters": {
+      "inputFormat": "single-choice",
+      "victoryConditions": [{ "type": "plurality" }],
+      "resultDisplay": "single-vote-breakdown"
+    },
     "categories": ["Risk Variable"],
     "ctx": {
       "prev": null,
