@@ -99,7 +99,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
                     key={`voter-${vote.pollId}-option-${choice}`}
                     sx={{ fontSize: index === 0 ? 2 : 1, color: index === 0 ? 'text' : '#708390' }}
                   >
-                    {vote.poll.options[choice]} - {index + 1}
+                    {index + 1}. {vote.poll.options[choice]}
                   </Box>
                 ))
               : vote.optionValue}
