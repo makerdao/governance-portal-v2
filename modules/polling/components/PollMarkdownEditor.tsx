@@ -23,7 +23,8 @@ export function PollMarkdownEditor(): React.ReactElement {
         rows={20}
       />
 
-      <h2>Errors</h2>
+      {errors.length > 0 && <h2>Errors</h2>}
+      {errors.length === 0 && <h2>No errors</h2>}
       {errors.map((error, index) => {
         return (
           <Box key={`error-${index}`}>
