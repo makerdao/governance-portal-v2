@@ -36,14 +36,14 @@ import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
+import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
+import { shuffleArray } from 'lib/common/shuffleArray';
 
 const LandingPage = ({
   proposals,
   polls,
   delegates,
   totalMKRDelegated,
-  recognizedDelegates,
-  meetYourDelegates,
   mkrOnHat,
   hat,
   mkrInChief
@@ -52,6 +52,12 @@ const LandingPage = ({
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
+
+  const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
+    const recognized = filterDelegates(delegates, false, true, null);
+    const meet = shuffleArray(recognized);
+    return [recognized, meet];
+  }, [delegates]);
 
   // change background on color mode switch
   useEffect(() => {
@@ -285,8 +291,6 @@ export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
   delegates: prefetchedDelegates,
-  recognizedDelegates: prefetchedRecognizedDelegates,
-  meetYourDelegates: prefetchedMeetYourDelegates,
   totalMKRDelegated: prefetchedTotalMKRDelegated,
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
@@ -299,8 +303,6 @@ export default function Index({
         proposals: prefetchedProposals,
         polls: prefetchedPolls,
         delegates: prefetchedDelegates,
-        recognizedDelegates: prefetchedRecognizedDelegates,
-        meetYourDelegates: prefetchedMeetYourDelegates,
         totalMKRDelegated: prefetchedTotalMKRDelegated,
         mkrOnHat: prefetchedMkrOnHat,
         hat: prefetchedHat,
@@ -327,16 +329,12 @@ export default function Index({
     return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
 
+  const delegates = isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [];
+
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [],
-    recognizedDelegates: isDefaultNetwork(network)
-      ? prefetchedRecognizedDelegates
-      : data?.recognizedDelegates ?? [],
-    meetYourDelegates: isDefaultNetwork(network)
-      ? prefetchedMeetYourDelegates
-      : data?.meetYourDelegates ?? [],
+    delegates,
     totalMKRDelegated: isDefaultNetwork(network)
       ? prefetchedTotalMKRDelegated
       : data?.totalMKRDelegated ?? '0',
@@ -349,17 +347,8 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const {
-    proposals,
-    polls,
-    delegates,
-    totalMKRDelegated,
-    recognizedDelegates,
-    meetYourDelegates,
-    mkrOnHat,
-    hat,
-    mkrInChief
-  } = await fetchLandingPageData(SupportedNetworks.MAINNET);
+  const { proposals, polls, delegates, totalMKRDelegated, mkrOnHat, hat, mkrInChief } =
+    await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 5 * 60, // allow revalidation every 30 minutes
@@ -368,8 +357,6 @@ export const getStaticProps: GetStaticProps = async () => {
       polls,
       delegates,
       totalMKRDelegated,
-      recognizedDelegates,
-      meetYourDelegates,
       mkrOnHat,
       hat,
       mkrInChief

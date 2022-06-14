@@ -297,7 +297,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
         </thead>
         <tbody>
           {sortedDelegators ? (
-            sortedDelegators.map((delegator, i) => (
+            sortedDelegators.map(delegator => (
               <CollapsableRow
                 key={delegator.address}
                 delegator={delegator}
