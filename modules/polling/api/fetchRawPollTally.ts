@@ -10,7 +10,7 @@ export async function fetchRawPollTally(
   network: SupportedNetworks
 ): Promise<RawPollTally> {
   let tally;
-  // TODO: Calculate correct tally based on poll victory conditions
+  // TODO: Include majority victory conditions calculations
   // const isRanked = parameters.victoryConditions.find(v => v.type === PollVictoryConditions.instantRunoff);
   const isPlurality = isPluralityVictoryConditionPoll(parameters);
   if (isPlurality) {
