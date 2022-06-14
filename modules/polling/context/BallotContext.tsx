@@ -15,7 +15,8 @@ import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 
-type BallotSteps = 'initial' | 'method-select' | 'submitting';
+type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting';
+type BallotSubmissionMethod = 'standard' | 'gasless';
 
 interface ContextProps {
   ballot: Ballot;
@@ -35,6 +36,8 @@ interface ContextProps {
   commentsCount: number;
   setStep: (step: string) => void;
   ballotStep: BallotSteps;
+  submissionMethod: BallotSubmissionMethod | null;
+  handleCommentsStep: (method: BallotSubmissionMethod) => void;
 }
 
 export const BallotContext = React.createContext<ContextProps>({
@@ -53,7 +56,9 @@ export const BallotContext = React.createContext<ContextProps>({
   commentsSignature: '',
   commentsCount: 0,
   setStep: (step: BallotSteps) => null,
-  ballotStep: 'initial'
+  ballotStep: 'initial',
+  submissionMethod: null,
+  handleCommentsStep: () => null
 });
 
 type PropTypes = {
@@ -70,6 +75,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const [commentsSignature, setCommentSignature] = useState('');
 
   const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
+
+  const [submissionMethod, setSubmissionMethod] = useState<BallotSubmissionMethod | null>(null);
 
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
@@ -169,6 +176,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       })
       .filter(c => !!c.comment);
   };
+
+  const commentsCount = getComments().length;
 
   const signComments = async () => {
     if (!account) {
@@ -320,6 +329,14 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setBallotStep(step);
   };
 
+  const handleCommentsStep = (method: BallotSubmissionMethod) => {
+    setSubmissionMethod(method);
+    if (commentsCount > 0) {
+      setStep('sign-comments');
+    } else {
+      setStep('confirm');
+    }
+  };
   const clearTransaction = () => {
     setTxId(null);
     setBallotStep('initial');
@@ -346,9 +363,11 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballotCount: Object.keys(ballot).length,
         signComments,
         commentsSignature,
-        commentsCount: getComments().length,
+        commentsCount,
         setStep,
-        ballotStep
+        ballotStep,
+        submissionMethod,
+        handleCommentsStep
       }}
     >
       {children}

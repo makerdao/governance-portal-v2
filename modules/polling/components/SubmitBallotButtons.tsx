@@ -13,62 +13,26 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
     commentsCount,
     commentsSignature,
     setStep,
-    ballotStep
+    ballotStep,
+    handleCommentsStep,
+    submissionMethod
   } = useContext(BallotContext);
 
   switch (ballotStep) {
     case 'initial':
       return (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
-          {commentsCount > 0 ? (
-            <Box>
-              <Button
-                onClick={() => {
-                  signComments();
-                }}
-                variant="primaryOutline"
-                data-testid="sign-comments-button"
-                disabled={
-                  !ballotCount || !!(transaction && transaction?.status !== 'error') || !!commentsSignature
-                }
-                sx={{ width: '100%' }}
-              >
-                <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                  {!!commentsSignature && (
-                    <Icon name="checkmark" color="primary" sx={{ mr: 3 }} data-testid="checkmark" />
-                  )}
-                  <Text>1 - Sign your comments</Text>
-                </Flex>
-              </Button>
-              <Button
-                mt={2}
-                data-testid="submit-ballot-button"
-                onClick={() => {
-                  submitBallot();
-                  onSubmit();
-                }}
-                variant="primaryLarge"
-                disabled={
-                  !ballotCount || !!(transaction && transaction?.status !== 'error') || !commentsSignature
-                }
-                sx={{ width: '100%' }}
-              >
-                2 - Submit Your Ballot
-              </Button>
-            </Box>
-          ) : (
-            <Button
-              onClick={() => {
-                setStep('method-select');
-              }}
-              data-testid="submit-ballot-button"
-              variant="primaryLarge"
-              disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
-              sx={{ width: '100%' }}
-            >
-              Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              setStep('method-select');
+            }}
+            data-testid="submit-ballot-button"
+            variant="primaryLarge"
+            disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+            sx={{ width: '100%' }}
+          >
+            Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
+          </Button>
         </Flex>
       );
     case 'method-select':
@@ -86,10 +50,10 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
           </Text>
           <Button
             onClick={() => {
-              submitBallot();
-              onSubmit();
+              handleCommentsStep('standard');
+              // submitBallot();
+              // onSubmit();
             }}
-            data-testid="submit-ballot-button"
             variant="primaryLarge"
             disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
             sx={{ mt: 3 }}
@@ -104,7 +68,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             relayed. The gas fee is covered by Maker.
           </Text>
           <Button
-            onClick={submitBallotGasless}
+            onClick={() => handleCommentsStep('gasless')}
             data-testid="submit-ballot-button"
             variant="primaryLarge"
             disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
@@ -116,13 +80,72 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             onClick={() => {
               setStep('initial');
             }}
-            data-testid="submit-ballot-button"
             variant="outline"
             disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
             sx={{ mt: 3 }}
           >
             Back
           </Button>
+        </Flex>
+      );
+    case 'sign-comments':
+      return (
+        <Flex sx={{ flexDirection: 'column', p: 3 }}>
+          <Heading variant="microHeading" sx={{ mt: 3, textAlign: 'center' }}>
+            Poll Comments
+          </Heading>
+          <Text sx={{ mt: 3, color: 'onSecondary' }}>
+            Sign your comments with your wallet in order to validate them. They will be stored off-chain but
+            displayed along with your vote.
+          </Text>
+          <Button
+            onClick={() => {
+              // signComments();
+              setStep('confirm');
+            }}
+            variant="primaryOutline"
+            data-testid="sign-comments-button"
+            disabled={
+              !ballotCount || !!(transaction && transaction?.status !== 'error') || !!commentsSignature
+            }
+            sx={{ width: '100%', mt: 3 }}
+          >
+            <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
+              <Text>Sign comments</Text>
+            </Flex>
+          </Button>
+        </Flex>
+      );
+    case 'confirm':
+      return (
+        <Flex sx={{ flexDirection: 'column', p: 3 }}>
+          <Heading variant="microHeading" sx={{ mt: 3, textAlign: 'center' }}>
+            Confirmation
+          </Heading>
+          <Text variant="smallCaps" sx={{ mt: 3 }}>
+            Method
+          </Text>
+          <Text sx={{ mt: 3, color: 'onSecondary' }}>{submissionMethod}</Text>
+          {submissionMethod === 'gasless' ? (
+            <Button
+              onClick={() => null}
+              variant="primaryLarge"
+              disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+              sx={{ mt: 3 }}
+            >
+              Sign &amp; submit ballot
+            </Button>
+          ) : (
+            <Button
+              onClick={() => null}
+              variant="primaryLarge"
+              disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+              sx={{ mt: 3 }}
+            >
+              Submit ballot
+            </Button>
+          )}
         </Flex>
       );
     default:
