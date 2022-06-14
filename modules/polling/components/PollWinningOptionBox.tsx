@@ -1,10 +1,14 @@
 import React from 'react';
 import { PluralityResult, Poll, PollTally, RankedChoiceResult } from '../types';
 import { Text, Flex } from 'theme-ui';
-import { isActivePoll } from '../helpers/utils';
+import {
+  isActivePoll,
+  isInputFormatChooseFree,
+  isInputFormatRankFree,
+  isInputFormatSingleChoice
+} from '../helpers/utils';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { PollInputFormat } from 'modules/polling/polling.constants';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 
@@ -25,7 +29,7 @@ export default function PollWinningOptionBox({
           <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.parameters.inputFormat) }}>
             {tally?.winningOptionName}
           </span>{' '}
-          {poll.parameters.inputFormat === PollInputFormat.singleChoice &&
+          {isInputFormatSingleChoice(poll.parameters) &&
             'with ' +
               formatValue(
                 parseUnits(
@@ -35,8 +39,7 @@ export default function PollWinningOptionBox({
                 )
               ) +
               ' MKR supporting.'}
-          {(poll.parameters.inputFormat === PollInputFormat.rankFree ||
-            poll.parameters.inputFormat === PollInputFormat.chooseFree) &&
+          {(isInputFormatRankFree(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
             'with ' +
               formatValue(
                 parseUnits(

@@ -4,11 +4,11 @@ import { getNumberWithOrdinal } from 'lib/utils';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Box, Button, Flex, Text, Link as ThemeUILink } from 'theme-ui';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { PollInputFormat } from '../polling.constants';
 import { Poll } from '../types';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import InternalIcon from 'modules/app/components/Icon';
+import { isInputFormatSingleChoice } from '../helpers/utils';
 
 export default function PollVotedOption({
   poll,
@@ -36,7 +36,7 @@ export default function PollVotedOption({
         >
           Your voted option
         </Text>
-        {poll.parameters.inputFormat === PollInputFormat.singleChoice ? (
+        {isInputFormatSingleChoice(poll.parameters) ? (
           <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
             <Text
               sx={{

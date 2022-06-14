@@ -2,7 +2,11 @@ import React from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+import {
+  isActivePoll,
+  isInputFormatRankFree,
+  isResultDisplaySingleVoteBreakdown
+} from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import VotingStatus from './PollVotingStatus';
@@ -11,7 +15,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
-import { PollInputFormat, PollResultDisplay } from '../polling.constants';
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -87,7 +90,7 @@ export default function PollOverviewCard({
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}
                       />
-                      {!showQuickVote && poll.parameters.inputFormat === PollInputFormat.rankFree && (
+                      {!showQuickVote && isInputFormatRankFree(poll.parameters) && (
                         <Flex sx={{ alignItems: 'center', mb: 3 }}>
                           <Text variant="caps">Ranked-choice poll</Text>
                           <Icon name="stackedVotes" size={3} ml={2} />
@@ -201,7 +204,7 @@ export default function PollOverviewCard({
                   </Box>
                 )}
 
-                {poll.parameters.resultDisplay === PollResultDisplay.singleVoteBreakdown && (
+                {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
                   <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                     {tally && tally.totalMkrParticipation > 0 && (
                       <InternalLink

@@ -5,11 +5,10 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
-import { PollInputFormat } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { isPluralityVictoryConditionPoll } from '../helpers/utils';
+import { isInputFormatRankFree, isPluralityVictoryConditionPoll } from '../helpers/utils';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const voteDate = formatDateWithTime(vote.blockTimestamp);
@@ -83,7 +82,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.parameters.inputFormat === PollInputFormat.rankFree ? 'VOTED CHOICES' : 'VOTED OPTION'}
+            {isInputFormatRankFree(vote.poll.parameters) ? 'VOTED CHOICES' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"

@@ -9,7 +9,7 @@ import isEqual from 'lodash/isEqual';
 import lottie from 'lottie-web';
 
 import { Poll } from 'modules/polling/types';
-import { extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
+import { extractCurrentPollVote, isActivePoll, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 
@@ -26,7 +26,6 @@ import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { BallotContext } from '../context/BallotContext';
-import { PollInputFormat } from '../polling.constants';
 
 enum ViewState {
   START,
@@ -218,7 +217,7 @@ export default function MobileVoteSheet({
               <Text sx={{ fontSize: [2, 3] }}>{poll.summary}</Text>
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
-              ) : poll.parameters.inputFormat === PollInputFormat.rankFree ? (
+              ) : isInputFormatRankFree(poll.parameters) ? (
                 <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
               ) : (
                 <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />

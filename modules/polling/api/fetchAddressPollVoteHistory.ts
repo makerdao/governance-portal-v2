@@ -3,7 +3,7 @@ import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
 import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
-import { PollInputFormat } from '../polling.constants';
+import { isInputFormatRankFree } from '../helpers/utils';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -21,7 +21,7 @@ export async function fetchAddressPollVoteHistory(
       }
 
       const optionValue: string[] = [];
-      if (poll.parameters.inputFormat === PollInputFormat.rankFree) {
+      if (isInputFormatRankFree(poll.parameters)) {
         if (pollVote.rankedChoiceOption && pollVote.rankedChoiceOption.length > 0) {
           pollVote.rankedChoiceOption.forEach(option => {
             optionValue.push(poll.options[option]);

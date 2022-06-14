@@ -1,6 +1,5 @@
 import React from 'react';
 import { Poll, PollTallyVote } from 'modules/polling/types';
-import { PollInputFormat } from 'modules/polling/polling.constants';
 import { Text, Box } from 'theme-ui';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
@@ -8,6 +7,7 @@ import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+import { isInputFormatRankFree, isInputFormatSingleChoice } from 'modules/polling/helpers/utils';
 
 export default function PollCommentItem({
   comment,
@@ -24,12 +24,11 @@ export default function PollCommentItem({
       return `I voted on "${poll.title}". View proposal: `;
     }
 
-    const voteOptionText =
-      poll.parameters.inputFormat === PollInputFormat.rankFree
-        ? poll.options[commentVote.optionId]
-        : (commentVote.rankedChoiceOption || [])
-            .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
-            .join(', ');
+    const voteOptionText = isInputFormatRankFree(poll.parameters)
+      ? poll.options[commentVote.optionId]
+      : (commentVote.rankedChoiceOption || [])
+          .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
+          .join(', ');
 
     return `I voted "${voteOptionText}" for "${poll.title}". View proposal: `;
   };
@@ -40,16 +39,15 @@ export default function PollCommentItem({
       return 'Voted';
     }
 
-    const voteOptionText =
-      poll.parameters.inputFormat === PollInputFormat.singleChoice ? (
-        <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
-          {poll.options[commentVote.optionId]}
-        </Text>
-      ) : (
-        (commentVote.rankedChoiceOption || [])
-          .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
-          .join(', ')
-      );
+    const voteOptionText = isInputFormatSingleChoice(poll.parameters) ? (
+      <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
+        {poll.options[commentVote.optionId]}
+      </Text>
+    ) : (
+      (commentVote.rankedChoiceOption || [])
+        .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
+        .join(', ')
+    );
 
     return (
       <Text>

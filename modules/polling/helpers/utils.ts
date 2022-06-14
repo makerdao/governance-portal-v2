@@ -1,4 +1,4 @@
-import { PollInputFormat, PollVictoryConditions } from '../polling.constants';
+import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
 import { Poll, PollParameters, PollVote } from '../types';
 
 export function isActivePoll(poll: Poll): boolean {
@@ -15,15 +15,35 @@ export function isPluralityVictoryConditionPoll(parameters: PollParameters): boo
   return !!parameters.victoryConditions.find(v => v.type === PollVictoryConditions.plurality);
 }
 
+export function isResultDisplaySingleVoteBreakdown(parameters: PollParameters): boolean {
+  return parameters.resultDisplay === PollResultDisplay.singleVoteBreakdown;
+}
+
+export function isResultDisplayInstantRunoffBreakdown(parameters: PollParameters): boolean {
+  return parameters.resultDisplay === PollResultDisplay.instantRunoffBreakdown;
+}
+
+export function isInputFormatRankFree(parameters: PollParameters): boolean {
+  return parameters.inputFormat === PollInputFormat.rankFree;
+}
+
+export function isInputFormatChooseFree(parameters: PollParameters): boolean {
+  return parameters.inputFormat === PollInputFormat.chooseFree;
+}
+
+export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
+  return parameters.inputFormat === PollInputFormat.singleChoice;
+}
+
 export function extractCurrentPollVote(
   poll: Poll,
   allUserVotes: PollVote[] | undefined
 ): number[] | number | null {
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
 
-  if (poll.parameters.inputFormat === PollInputFormat.rankFree) {
+  if (isInputFormatRankFree(poll.parameters)) {
     return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
-  } else if (poll.parameters.inputFormat === PollInputFormat.singleChoice) {
+  } else if (isInputFormatSingleChoice(poll.parameters)) {
     return currentVote?.optionId !== undefined ? currentVote.optionId : null;
   }
 
