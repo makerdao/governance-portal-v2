@@ -160,7 +160,10 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       v.rankedChoiceOption.map((choice, index) => (
                         <Box
                           key={`voter-${v.voter}-option-${choice}`}
-                          sx={{ opacity: index === 0 ? 1 : 0.8, fontSize: bpi < 1 ? 1 : index === 0 ? 3 : 2 }}
+                          sx={{
+                            color: index === 0 ? 'inherit' : '#708390',
+                            fontSize: bpi < 1 ? 1 : index === 0 ? 3 : 2
+                          }}
                         >
                           {index + 1} - {poll.options[choice]}
                         </Box>
