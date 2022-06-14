@@ -95,7 +95,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE
               ? vote.rankedChoiceOption?.map((choice, index) => (
-                  <Box key={`voter-${vote.pollId}-option-${choice}`}>
+                  <Box key={`voter-${vote.pollId}-option-${choice}`} sx={{ fontSize: index === 0 ? 2 : 1 }}>
                     {index + 1} - {vote.poll.options[choice]}
                   </Box>
                 ))
