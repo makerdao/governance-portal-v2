@@ -1,4 +1,4 @@
-import { render, cleanup, screen, act } from '@testing-library/react';
+import { render, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseUnits } from 'ethers/lib/utils';
 import { MKRInput, MKRInputProps } from '../MKRInput';

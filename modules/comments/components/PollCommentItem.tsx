@@ -7,7 +7,7 @@ import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { isInputFormatRankFree, isInputFormatSingleChoice } from 'modules/polling/helpers/utils';
+import { isInputFormatSingleChoice } from 'modules/polling/helpers/utils';
 
 export default function PollCommentItem({
   comment,
@@ -18,21 +18,6 @@ export default function PollCommentItem({
   commentVote: PollTallyVote | undefined;
   poll: Poll;
 }): React.ReactElement {
-  const getTwitterMessage = () => {
-    if (!commentVote) {
-      // This should not happen but in case the tally is missing
-      return `I voted on "${poll.title}". View proposal: `;
-    }
-
-    const voteOptionText = isInputFormatRankFree(poll.parameters)
-      ? poll.options[commentVote.optionId]
-      : (commentVote.rankedChoiceOption || [])
-          .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
-          .join(', ');
-
-    return `I voted "${voteOptionText}" for "${poll.title}". View proposal: `;
-  };
-
   const getVotedOption = () => {
     if (!commentVote) {
       // This should not happen but in case the tally is missing

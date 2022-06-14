@@ -4,8 +4,6 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { fetchMkrOnHat } from 'modules/executive/api/fetchMkrOnHat';
 import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { formatValue } from 'lib/string';
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
@@ -19,8 +17,6 @@ export type LandingPageData = {
   proposals: Proposal[];
   polls: Poll[];
   delegates: Delegate[];
-  recognizedDelegates: Delegate[];
-  meetYourDelegates: Delegate[];
   totalMKRDelegated: string;
   mkrOnHat?: string;
   hat?: string;
@@ -57,12 +53,6 @@ export async function fetchLandingPageData(
     promise.status === 'fulfilled' ? promise.value : null
   );
 
-  // filter delegates
-  const recognizedDelegates = delegatesResponse
-    ? filterDelegates((delegatesResponse as DelegatesAPIResponse).delegates, false, true, null)
-    : [];
-  const meetYourDelegates = shuffleArray(recognizedDelegates);
-
   return {
     proposals: proposals ? (proposals as Proposal[]).filter(i => i.active) : [],
     polls: pollsData ? (pollsData as PollsResponse).polls : [],
@@ -70,8 +60,7 @@ export async function fetchLandingPageData(
     totalMKRDelegated: delegatesResponse
       ? (delegatesResponse as DelegatesAPIResponse).stats.totalMKRDelegated
       : '0',
-    recognizedDelegates,
-    meetYourDelegates,
+
     mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat) : undefined,
     hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
     mkrInChief: mkrInChief ? formatValue(mkrInChief as BigNumber) : undefined

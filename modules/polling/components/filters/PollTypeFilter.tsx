@@ -52,7 +52,7 @@ export function PollTypeFilter({
     <FilterButton
       name={() => `Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : ''}`}
       listVariant="cards.noPadding"
-      data-testid="poll-filters-dropdown"
+      data-testid="poll-filters-type"
       active={itemsSelected.length > 0}
       {...props}
     >

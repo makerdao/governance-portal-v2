@@ -30,7 +30,7 @@ _Requires node version >= v11.15.0_
 5. Set `MONGODB_URI` to a full mongodb uri (ex: `mongodb+srv://...`)
 6. Set `MONGODB_COMMENTS_DB` the mongodb db name to be used for vote comments
 7. Set `USE_FS_CACHE` to true if you want to use file system cache
-8. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
+8. Set `GITHUB_TOKEN` to fetch delegates information and executive proposals from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
 9. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
 10. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
 11. Set `GOERLI_FORK_API_KEY` for the API key
@@ -75,7 +75,7 @@ npm run hardhat
 
 Note: Make sure to fill in the GOERLI_FORK_API_KEY environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
 
-You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`. 
+You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`.
 
 For more information about the fund process, take a look at `/scripts/setup.js`
 

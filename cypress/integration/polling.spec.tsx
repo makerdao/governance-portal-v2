@@ -56,7 +56,7 @@ describe('/polling page', async () => {
   it('Filters by ended polls', () => {
     visitPage('/polling');
     setAccount(TEST_ACCOUNTS.normal, () => {
-      cy.get('[data-testid="poll-filters-dropdown"]').click();
+      cy.get('[data-testid="poll-filters-status"]').click();
       cy.get('[data-testid="checkbox-show-polls-ended"]').click();
 
       cy.get('[data-testid="poll-overview-card"]').should('have.length', 3);

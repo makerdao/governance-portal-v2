@@ -1,16 +1,10 @@
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchSpockPollById } from '../fetchPollBy';
 import { fetchTallyRankedChoice } from '../fetchTallyRankedChoice';
-import { paddedArray } from '../../../../lib/utils';
 import BigNumber from 'bignumber.js';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 jest.mock('modules/gql/gqlRequest');
 jest.mock('../fetchPollBy');
-
-const ballotToOptionIdRaw = preferenceList => {
-  const reversedPreferenceList = preferenceList.reverse();
-  return paddedArray(32 - reversedPreferenceList.length, reversedPreferenceList);
-};
 
 const fromBuffer = (buf, opts?) => {
   if (!opts) {

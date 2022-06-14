@@ -3,11 +3,25 @@ import { config } from 'lib/config';
 
 // Handle errors of configuration by disabling oktokit
 
-let octokit;
+export enum GithubTokens {
+  Delegate = 1,
+  DelegatesFolder = 2,
+  Executives = 3
+}
+
+const token1 = config.GITHUB_TOKEN;
+const token2 = config.GITHUB_TOKEN_2 ? config.GITHUB_TOKEN_2 : config.GITHUB_TOKEN;
+const token3 = config.GITHUB_TOKEN_3 ? config.GITHUB_TOKEN_3 : config.GITHUB_TOKEN;
+
+const octokits = new Array(Object.keys(GithubTokens).length / 2);
 try {
-  octokit = new Octokit({ auth: config.GITHUB_TOKEN });
+  octokits[0] = new Octokit({ auth: token1 });
+  octokits[1] = new Octokit({ auth: token2 });
+  octokits[2] = new Octokit({ auth: token3 });
 } catch (e) {
-  console.warn('WARNING: GitHub token not configured correctly. Vote delegates will not be fetcheed');
+  console.warn(
+    'WARNING: GitHub token not configured correctly. Vote delegates and/or executives will not be fetched'
+  );
 }
 
 export type GithubPage = {
@@ -18,12 +32,17 @@ export type GithubPage = {
   type: string;
 };
 
-export async function fetchGitHubPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
-  if (!octokit) {
+export async function fetchGitHubPage(
+  owner: string,
+  repo: string,
+  path: string,
+  tokenNum: GithubTokens
+): Promise<GithubPage[]> {
+  if (!octokits[tokenNum - 1]) {
     return Promise.resolve([]);
   }
 
-  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+  const { data } = await octokits[tokenNum - 1].request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner,
     repo,
     path

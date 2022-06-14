@@ -141,7 +141,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
         <tbody>
           {sortedVotes ? (
             <>
-              {sortedVotes.map((v, i) => (
+              {sortedVotes.map(v => (
                 <tr key={v.voter} data-testid="vote-by-address">
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <InternalLink href={`/address/${v.voter}`} title="View address detail">
