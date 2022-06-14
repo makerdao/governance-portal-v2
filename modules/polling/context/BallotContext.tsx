@@ -16,6 +16,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
+import { parsePollOptions } from 'modules/polling/helpers/parsePollOptions';
 
 type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting';
 type BallotSubmissionMethod = 'standard' | 'gasless';
