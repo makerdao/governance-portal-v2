@@ -2,7 +2,9 @@ import { fetchJson } from 'lib/fetchJson';
 import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { sign } from 'modules/web3/helpers/sign';
+import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import useTransactionsStore, {
@@ -278,11 +280,15 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setTxId(txId);
   };
 
-  const submitBallotGasless = () => {
+  const submitBallotGasless = async () => {
+    if (!account) {
+      return;
+    }
+
     const pollIds: string[] = [];
     const pollOptions: string[] = [];
 
-    setStep('submitting');
+    // setStep('submitting');
 
     Object.keys(ballot).forEach((key: string) => {
       if (isPollOnBallot(parseInt(key, 10))) {
@@ -291,38 +297,51 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
-    fetchJson(`/api/polling/vote?network=${network}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ pollIds, pollOptions, signature: '' })
-    }).then(res => {
-      if (getComments().length > 0) {
-        const commentsRequest: PollsCommentsRequestBody = {
-          voterAddress: accountToUse || '',
-          hotAddress: account || '',
-          comments: getComments(),
-          signedMessage: commentsSignature,
-          txHash: res.txHash
-        };
+    const signatureValues = {
+      voter: account.toLowerCase(),
+      pollIds,
+      options: pollOptions
+    };
 
-        fetchJson(`/api/comments/polling/add?network=${network}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(commentsRequest)
-        })
-          .then(() => {
-            // console.log('comment successfully added');
-          })
-          .catch(() => {
-            console.error('failed to add comment');
-            toast.error('Unable to store comments');
-          });
-      }
-    });
+    const signature = await signTypedBallotData(
+      account.toLowerCase(),
+      signatureValues,
+      library,
+      networkNameToChainId(network)
+    );
+
+    // fetchJson(`/api/polling/vote?network=${network}`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({ pollIds, pollOptions, signature: '' })
+    // }).then(res => {
+    //   if (getComments().length > 0) {
+    //     const commentsRequest: PollsCommentsRequestBody = {
+    //       voterAddress: accountToUse || '',
+    //       hotAddress: account || '',
+    //       comments: getComments(),
+    //       signedMessage: commentsSignature,
+    //       txHash: res.txHash
+    //     };
+
+    //     fetchJson(`/api/comments/polling/add?network=${network}`, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify(commentsRequest)
+    //     })
+    //       .then(() => {
+    //         // console.log('comment successfully added');
+    //       })
+    //       .catch(() => {
+    //         console.error('failed to add comment');
+    //         toast.error('Unable to store comments');
+    //       });
+    //   }
+    // });
   };
 
   const setStep = (step: BallotSteps) => {

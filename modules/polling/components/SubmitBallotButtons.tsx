@@ -129,7 +129,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
           <Text sx={{ mt: 3, color: 'onSecondary' }}>{submissionMethod}</Text>
           {submissionMethod === 'gasless' ? (
             <Button
-              onClick={() => null}
+              onClick={submitBallotGasless}
               variant="primaryLarge"
               disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
               sx={{ mt: 3 }}
