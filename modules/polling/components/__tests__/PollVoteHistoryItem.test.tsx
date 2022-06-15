@@ -70,7 +70,7 @@ describe('Poll vote history item', () => {
     render(<PollVoteHistoryItem vote={vote as PollVoteHistory} />);
 
     // search page for query text
-    await screen.findByText(/VOTED 1ST CHOICE/);
+    await screen.findByText(/VOTED CHOICES/);
 
     // check plurality graphic doesn't exist
     const abstain = screen.queryByText(/Abstain/);

@@ -85,11 +85,10 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Voting Power/);
     await screen.findByText(/MKR Amount/);
 
-    // check first choice is displayed with asterisk
-    await screen.findByText(/test1*/);
-
-    // check explainer text exists
-    await screen.findByText('*First choice in ranked choice vote shown');
+    // check first choice is displayed with number
+    await screen.findByText(/1 - test1/);
+    await screen.findByText(/2 - test2/);
+    await screen.findByText(/3 - test3/);
   });
 
   test('renders unknown vote type correctly', async () => {
