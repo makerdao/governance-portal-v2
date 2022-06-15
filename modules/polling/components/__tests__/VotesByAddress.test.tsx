@@ -89,7 +89,6 @@ describe('Polling votes by address', () => {
     await screen.findByText(/1 - test1/);
     await screen.findByText(/2 - test2/);
     await screen.findByText(/3 - test3/);
-
   });
 
   test('renders unknown vote type correctly', async () => {

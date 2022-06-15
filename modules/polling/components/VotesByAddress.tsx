@@ -17,7 +17,6 @@ type Props = {
 const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
-  const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
   const [sortBy, setSortBy] = useState({
     type: 'mkr',
     order: 1
