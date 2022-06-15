@@ -165,7 +165,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                             fontSize: bpi < 1 ? 1 : index === 0 ? 3 : 2
                           }}
                         >
-                          {index + 1}. {poll.options[choice]}
+                          {index + 1} - {poll.options[choice]}
                         </Box>
                       ))
                     ) : (
