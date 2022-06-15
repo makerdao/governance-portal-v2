@@ -9,6 +9,7 @@ import { POLL_VOTE_TYPE } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
+import { limitString } from 'lib/string';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const voteDate = formatDateWithTime(vote.blockTimestamp);
@@ -83,7 +84,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
+            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED CHOICES' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
@@ -93,7 +94,16 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               fontWeight: 'semiBold'
             }}
           >
-            {vote.optionValue}
+            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE
+              ? vote.rankedChoiceOption?.map((choice, index) => (
+                  <Box
+                    key={`voter-${vote.pollId}-option-${choice}`}
+                    sx={{ fontSize: index === 0 ? 2 : 1, color: index === 0 ? 'text' : '#708390' }}
+                  >
+                    {limitString(vote.poll.options[choice], 30, '...')} - {index + 1}
+                  </Box>
+                ))
+              : vote.optionValue}
           </Text>
         </Box>
       </Box>

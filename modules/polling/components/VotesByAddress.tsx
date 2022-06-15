@@ -17,7 +17,6 @@ type Props = {
 const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
-  const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
   const [sortBy, setSortBy] = useState({
     type: 'mkr',
     order: 1
@@ -142,8 +141,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           {sortedVotes ? (
             <>
               {sortedVotes.map((v, i) => (
-                <tr key={v.voter} data-testid="vote-by-address">
-                  <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
+                <tr key={`voter-${v.voter}-${i}`} data-testid="vote-by-address">
+                  <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3, verticalAlign: 'top' }}>
                     <InternalLink href={`/address/${v.voter}`} title="View address detail">
                       <AddressIconBox
                         address={v.voter}
@@ -152,22 +151,33 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       />
                     </InternalLink>
                   </Text>
-                  <Text
+                  <Box
                     as="td"
-                    sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                    sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2, verticalAlign: 'top' }}
                   >
-                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
-                      ? poll.options[v.rankedChoiceOption[0]]
-                      : poll.options[v.optionId]}
-                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 && '*'}
-                  </Text>
-                  <Text as="td" sx={{ pb: 2 }}>
+                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 ? (
+                      v.rankedChoiceOption.map((choice, index) => (
+                        <Box
+                          key={`voter-${v.voter}-option-${choice}`}
+                          sx={{
+                            color: index === 0 ? 'inherit' : '#708390',
+                            fontSize: bpi < 1 ? 1 : index === 0 ? 3 : 2
+                          }}
+                        >
+                          {index + 1} - {poll.options[choice]}
+                        </Box>
+                      ))
+                    ) : (
+                      <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>{poll.options[v.optionId]}</Text>
+                    )}
+                  </Box>
+                  <Text as="td" sx={{ pb: 2, verticalAlign: 'top' }}>
                     {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                    sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3, verticalAlign: 'top' }}
                   >
                     {`${
                       new BigNumber(v.mkrSupport).lte(0.01)
@@ -189,11 +199,6 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           )}
         </tbody>
       </table>
-      {showRankedChoiceInfo && (
-        <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
-          *First choice in ranked choice vote shown
-        </Text>
-      )}
     </Box>
   );
 };
