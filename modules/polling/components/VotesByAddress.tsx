@@ -69,7 +69,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           <tr>
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '30%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '32%' }}
               variant="caps"
               onClick={() => changeSort('address')}
             >
@@ -86,7 +86,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '40%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '38%' }}
               variant="caps"
               onClick={() => changeSort('option')}
             >
@@ -178,7 +178,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>{poll.options[v.optionId]}</Text>
                     )}
                   </Box>
-                  <Text as="td" sx={{ textAlign: 'right', pb: 2 }}>
+                  <Text as="td" sx={{ textAlign: 'left', pb: 2 }}>
                     {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
