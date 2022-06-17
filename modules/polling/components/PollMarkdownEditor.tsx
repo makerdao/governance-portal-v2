@@ -7,10 +7,10 @@ export function PollMarkdownEditor(): React.ReactElement {
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    // Verify
     const result = validatePollMarkdown(markdown);
     setErrors(result.errors || []);
   }, [markdown]);
+
   return (
     <Box>
       <textarea

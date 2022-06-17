@@ -20,7 +20,6 @@ export default function PollWinningOptionBox({
   tally?: PollTally;
 }): React.ReactElement {
   const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
-  console.log('tallyyy', tally, poll.parameters.inputFormat);
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
