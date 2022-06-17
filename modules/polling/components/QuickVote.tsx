@@ -50,7 +50,8 @@ const QuickVote = ({
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
 
-  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction } = useContext(BallotContext);
+  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction, updateVoteFromBallot } =
+    useContext(BallotContext);
 
   const addedChoice = ballot[poll.pollId];
 
@@ -79,7 +80,9 @@ const QuickVote = ({
     if (currentVote && isEqual(currentVote, choice)) {
       removeVoteFromBallot(poll.pollId);
     } else {
-      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
+      editing
+        ? updateVoteFromBallot(poll.pollId, { option: choice as number | number[] })
+        : addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     }
     setEditing(false);
   };

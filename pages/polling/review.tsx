@@ -171,7 +171,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
         )}
         <SidebarLayout>
           <Box>
-            <Stack gap={2}>
+            <Stack gap={3}>
               <InternalLink href={'/polling'} title="View polling page">
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
@@ -258,21 +258,23 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                     {votedPolls.map(poll => {
                       return (
-                        <PollOverviewCard key={poll.slug} poll={poll} reviewPage={true} showVoting={true}>
-                          <Box sx={{ pt: 2 }}>
-                            <CommentTextBox
-                              onChange={(val: string) => {
-                                updateVoteFromBallot(poll.pollId, {
-                                  comment: val
-                                });
-                              }}
-                              value={ballot[poll.pollId].comment || ''}
-                              disabled={
-                                transactionStatus === 'pending' || transactionStatus === 'initialized'
-                              }
-                            />
-                          </Box>
-                        </PollOverviewCard>
+                        <Box key={poll.slug} sx={{ mb: 3 }}>
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
+                            <Box sx={{ pt: 2 }}>
+                              <CommentTextBox
+                                onChange={(val: string) => {
+                                  updateVoteFromBallot(poll.pollId, {
+                                    comment: val
+                                  });
+                                }}
+                                value={ballot[poll.pollId].comment || ''}
+                                disabled={
+                                  transactionStatus === 'pending' || transactionStatus === 'initialized'
+                                }
+                              />
+                            </Box>
+                          </PollOverviewCard>
+                        </Box>
                       );
                     })}
                   </Stack>

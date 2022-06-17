@@ -8,6 +8,7 @@ import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+import { RankedChoiceVoteSummary } from 'modules/polling/components/RankedChoiceVoteSummary';
 
 export default function PollCommentItem({
   comment,
@@ -30,9 +31,9 @@ export default function PollCommentItem({
           {poll.options[commentVote.optionId]}
         </Text>
       ) : (
-        (commentVote.rankedChoiceOption || [])
-          .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
-          .join(', ')
+        <Box>
+          <RankedChoiceVoteSummary choices={commentVote.rankedChoiceOption || []} poll={poll} />
+        </Box>
       );
 
     return (
