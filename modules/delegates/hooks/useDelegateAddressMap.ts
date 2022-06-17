@@ -14,6 +14,8 @@ export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
   const dataKey = `/api/delegates/names?network=${network}`;
 
   const { data: delegates, error } = useSWR<Delegate[]>(dataKey, null, {
+    // refresh every 30 mins
+    refreshInterval: 1800000,
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnMount: !cache.get(dataKey),

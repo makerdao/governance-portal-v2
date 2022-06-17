@@ -1,7 +1,11 @@
 import { PollInputFormat } from 'modules/polling/polling.constants';
 
-export const getVoteColor = (optionId: number, inputFormat: PollInputFormat): string => {
+export const getVoteColor = (optionId: number, inputFormat: PollInputFormat, text = true): string => {
   if (inputFormat === PollInputFormat.rankFree) {
+    if (optionId === 0) {
+      return '#708390';
+    }
+    if (text) return 'text';
     return '#708390';
   }
 

@@ -5,6 +5,8 @@ import { Contract } from '@ethersproject/contracts';
 import { VoteProxy } from '../../../types/ethers-contracts/VoteProxy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { config } from 'lib/config';
+import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 
 export type VoteProxyAddresses = {
   hotAddress?: string;
@@ -22,6 +24,15 @@ export const getVoteProxyAddresses = async (
     coldAddress,
     voteProxyAddress,
     hasProxy = false;
+
+  const cacheKey = `proxy-info-${account}`;
+
+  if (config.USE_FS_CACHE) {
+    const cachedProxyInfo = fsCacheGet(cacheKey, network);
+    if (cachedProxyInfo) {
+      return JSON.parse(cachedProxyInfo);
+    }
+  }
 
   // first check if account is a proxy contract
   try {
@@ -80,6 +91,13 @@ export const getVoteProxyAddresses = async (
     }
   }
 
+  const proxyInfo = { hotAddress, coldAddress, voteProxyAddress, hasProxy };
+
+  if (config.USE_FS_CACHE) {
+    // cache for 60 mins
+    fsCacheSet(cacheKey, JSON.stringify(proxyInfo), network, 3600000);
+  }
+
   // it's been a long journey through the proxy jungles, let's go home
-  return { hotAddress, coldAddress, voteProxyAddress, hasProxy };
+  return proxyInfo;
 };

@@ -8,7 +8,8 @@ import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { isInputFormatRankFree, isPluralityVictoryConditionPoll } from '../helpers/utils';
+import { isInputFormatRankFree, isPluralityVictoryConditionPoll, isResultDisplayInstantRunoffBreakdown } from '../helpers/utils';
+import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const voteDate = formatDateWithTime(vote.blockTimestamp);
@@ -92,9 +93,11 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               fontWeight: 'semiBold'
             }}
           >
-            {vote.optionValue.map(value => (
-              <Box key={`voted-${vote.poll.pollId}-${value}`}>{value}</Box>
-            ))}
+            {isResultDisplayInstantRunoffBreakdown(vote.poll.parameters) ? (
+              <RankedChoiceVoteSummary choices={vote.rankedChoiceOption || []} poll={vote.poll} />
+            ) : (
+              vote.optionValue[0]
+            )}
           </Text>
         </Box>
       </Box>

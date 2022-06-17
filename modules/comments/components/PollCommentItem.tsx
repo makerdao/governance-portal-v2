@@ -7,7 +7,8 @@ import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { isInputFormatSingleChoice } from 'modules/polling/helpers/utils';
+import { isResultDisplaySingleVoteBreakdown } from 'modules/polling/helpers/utils';
+import { RankedChoiceVoteSummary } from 'modules/polling/components/RankedChoiceVoteSummary';
 
 export default function PollCommentItem({
   comment,
@@ -24,15 +25,16 @@ export default function PollCommentItem({
       return 'Voted';
     }
 
-    const voteOptionText = isInputFormatSingleChoice(poll.parameters) ? (
-      <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
-        {poll.options[commentVote.optionId]}
-      </Text>
-    ) : (
-      (commentVote.rankedChoiceOption || [])
-        .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
-        .join(', ')
-    );
+    const voteOptionText =
+      isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
+        <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
+          {poll.options[commentVote.optionId]}
+        </Text>
+      ) : (
+        <Box>
+          <RankedChoiceVoteSummary choices={commentVote.rankedChoiceOption || []} poll={poll} />
+        </Box>
+      );
 
     return (
       <Text>

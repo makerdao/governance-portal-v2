@@ -5,6 +5,7 @@ import shallow from 'zustand/shallow';
 import {
   isActivePoll,
   isInputFormatRankFree,
+  isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
@@ -27,6 +28,7 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
 
 type Props = {
   poll: Poll;
@@ -204,41 +206,48 @@ export default function PollOverviewCard({
                   </Box>
                 )}
 
-                {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
-                  <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
-                    {tally && tally.totalMkrParticipation > 0 && (
-                      <InternalLink
-                        href={`/polling/${poll.slug}`}
-                        hash="vote-breakdown"
-                        title="View poll vote breakdown"
-                      >
-                        <Box sx={{ mt: 3 }}>
-                          <ErrorBoundary componentName="Poll Results">
+                <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                  {tally && tally.totalMkrParticipation > 0 && (
+                    <InternalLink
+                      href={`/polling/${poll.slug}`}
+                      hash="vote-breakdown"
+                      title="View poll vote breakdown"
+                    >
+                      <Box sx={{ mt: 3 }}>
+                        <ErrorBoundary componentName="Poll Results">
+                          {isResultDisplaySingleVoteBreakdown(poll.parameters)  && (
                             <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
-                          </ErrorBoundary>
-                        </Box>
-                      </InternalLink>
-                    )}
-                    {!tally && isValidating && !errorTally && (
-                      <SkeletonThemed width={'265px'} height={'30px'} />
-                    )}
-                    {errorTally && !isValidating && (
-                      <Badge
-                        variant="warning"
-                        sx={{
-                          color: 'warning',
-                          borderColor: 'warning',
-                          textTransform: 'uppercase',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          m: 1
-                        }}
-                      >
-                        Error loading votes
-                      </Badge>
-                    )}
-                  </Box>
-                )}
+                          )}
+                          {isResultDisplayInstantRunoffBreakdown(poll.parameters)  && (
+                            <RankedChoiceVoteSummary
+                              choices={tally.results.map(i => parseInt(i.optionId))}
+                              poll={poll}
+                              limit={3}
+                            />
+                          )}
+                        </ErrorBoundary>
+                      </Box>
+                    </InternalLink>
+                  )}
+                  {!tally && isValidating && !errorTally && (
+                    <SkeletonThemed width={'265px'} height={'30px'} />
+                  )}
+                  {errorTally && !isValidating && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 1
+                      }}
+                    >
+                      Error loading votes
+                    </Badge>
+                  )}
+                </Box>
               </Flex>
             </Box>
 
