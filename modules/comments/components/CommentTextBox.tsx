@@ -7,7 +7,7 @@ export default function CommentTextBox({
   disabled
 }: {
   value: string;
-  onChange: (val: string) => void;
+  onChange: (e: any) => void;
   disabled?: boolean;
 }): React.ReactElement {
   return (
@@ -33,9 +33,7 @@ export default function CommentTextBox({
           resize: 'none'
         }}
         maxLength={1500}
-        onChange={event => {
-          onChange(event.target.value.substring(0, 1500));
-        }}
+        onChange={onChange}
         value={value}
         disabled={disabled}
       />

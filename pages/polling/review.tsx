@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { SyntheticEvent, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -39,7 +39,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
 
-  const toggleShareModal = (pollId?: number) => {
+  const toggleShareModal = (_?: SyntheticEvent, pollId?: number) => {
     setModalPollId(pollId);
     setShowMarkdownModal(!showMarkdownModal);
   };
@@ -151,6 +151,15 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
+  const onCommentChange = useCallback(
+    (e: any, pollId: number) => {
+      updateVoteFromBallot(pollId, {
+        comment: e.target.value.substring(0, 1500)
+      });
+    },
+    [updateVoteFromBallot]
+  );
+
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <Stack gap={3}>
@@ -200,7 +209,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                         </Heading>
                         <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                           <Box p={3}>
-                            <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                            <Button sx={{ width: '100%' }} onClick={toggleShareModal}>
                               <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
                                 <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
                               </Flex>
@@ -221,23 +230,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard
-                            poll={poll}
-                            reviewPage={true}
-                            showVoting={false}
-                            // yourVote={
-                            //   <Box ml={[0, 3]} mt={[3, 0]}>
-                            //     <PollVotedOption
-                            //       poll={poll}
-                            //       votedOption={previousBallot[poll.pollId].option}
-                            //       votingWeight={votingWeight?.total}
-                            //       transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                            //       toggleShareModal={toggleShareModal}
-                            //     />
-                            //   </Box>
-                            // }
-                            hideTally
-                          >
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} hideTally>
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
                                 <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mb: [0, 2] }}>
@@ -257,16 +250,13 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 {votedPolls.length > 0 && (
                   <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                     {votedPolls.map(poll => {
+                      console.log('votedPoll map');
                       return (
                         <Box key={poll.slug} sx={{ mb: 3 }}>
                           <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
                             <Box sx={{ pt: 2 }}>
                               <CommentTextBox
-                                onChange={(val: string) => {
-                                  updateVoteFromBallot(poll.pollId, {
-                                    comment: val
-                                  });
-                                }}
+                                onChange={e => onCommentChange(e, poll.pollId)}
                                 value={ballot[poll.pollId].comment || ''}
                                 disabled={
                                   transactionStatus === 'pending' || transactionStatus === 'initialized'
@@ -283,7 +273,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   <Box>
                     {!hasVoted && <SubmitButton />}
                     {hasVoted && (
-                      <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                      <Button sx={{ width: '100%' }} onClick={toggleShareModal}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
                           <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
                         </Flex>
@@ -317,7 +307,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   </Heading>
                   <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                     <Box p={3}>
-                      <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                      <Button sx={{ width: '100%' }} onClick={toggleShareModal}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
                           <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
                         </Flex>
