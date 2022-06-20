@@ -227,13 +227,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                       <ExecutiveComments comments={comments} />
                     ) : (
                       <Flex sx={{ alignItems: 'center' }}>
-                        {commentsError ? (
-                          'Unable to fetch comments'
-                        ) : (
-                          <>
-                            Loading <Spinner size={20} ml={2} />
-                          </>
-                        )}
+                        {commentsError ? 'Unable to fetch comments' : <Spinner size={20} ml={2} />}
                       </Flex>
                     )}
                   </div>
