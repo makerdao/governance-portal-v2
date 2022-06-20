@@ -278,7 +278,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
                 variant="caps"
                 onClick={() => changeSort('mkr')}
               >
-                {bpi < 1 ? 'Weight' : 'Voting Weight'}
+                {bpi < 1 ? '%' : 'Voting Weight'}
                 {sortBy.type === 'mkr' ? (
                   sortBy.order === 1 ? (
                     <Icon name="chevron_down" size={2} ml={1} />
