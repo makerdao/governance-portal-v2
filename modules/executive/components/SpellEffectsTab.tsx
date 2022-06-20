@@ -111,7 +111,7 @@ export function SpellEffectsTab({
         <Box
           sx={theme => ({
             background: theme.colors?.background,
-            p: 3,
+            mt: 3,
             transition: 'all 300ms linear',
             overflow: 'hidden',
             borderRadius: '3px'
@@ -119,15 +119,19 @@ export function SpellEffectsTab({
         >
           <Flex
             sx={{
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              flexDirection: ['column', 'row']
             }}
           >
             {spellData?.executiveHash && (
-              <Text sx={{ mr: 2, fontWeight: 'semiBold', wordBreak: 'break-all' }}>
+              <Text sx={{ mr: [0, 2], fontWeight: 'semiBold', wordBreak: 'break-all', fontSize: [2, 3] }}>
                 {spellData?.executiveHash}
               </Text>
             )}
-            <Box sx={{ cursor: 'pointer', ml: 2, minWidth: '99px' }} onClick={() => setExpanded(!expanded)}>
+            <Box
+              sx={{ cursor: 'pointer', mt: [2, 0], ml: [0, 2], minWidth: '99px', fontSize: [2, 3] }}
+              onClick={() => setExpanded(!expanded)}
+            >
               <Text color={'textMuted'}>
                 What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
               </Text>
@@ -135,7 +139,7 @@ export function SpellEffectsTab({
           </Flex>
 
           {expanded && (
-            <Box sx={{ mt: 3 }}>
+            <Box sx={{ mt: 3, fontSize: [2, 3] }}>
               <Text as="p" color="textMuted">
                 This hash allows for manually verifying that the spell belongs to the correct Executive
                 Proposal. It can be reproduced by hashing the raw markdown text of this Executive Proposal.
@@ -170,7 +174,7 @@ export function SpellEffectsTab({
             </Text>
             <Box>
               <ExternalLink href={proposal.proposalLink} title="View in GitHub">
-                <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                <Text sx={{ fontSize: [2, 3], color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                   View in GitHub
                   <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                 </Text>
@@ -186,12 +190,13 @@ export function SpellEffectsTab({
                 <Text
                   as="p"
                   sx={{
+                    fontSize: [2, 3],
                     fontWeight: 'semiBold'
                   }}
                 >
                   Expiration
                 </Text>
-                <Text as="p" color="textMuted">
+                <Text as="p" color="textMuted" sx={{ fontSize: [2, 3] }}>
                   {formatDateWithoutTime(spellData?.expiration)}
                 </Text>
               </Box>
@@ -204,12 +209,13 @@ export function SpellEffectsTab({
                 <Text
                   as="p"
                   sx={{
+                    fontSize: [2, 3],
                     fontWeight: 'semiBold'
                   }}
                 >
                   Office Hours Only
                 </Text>
-                <Text as="p" color="textMuted">
+                <Text as="p" color="textMuted" sx={{ fontSize: [2, 3] }}>
                   Spell will only be executed Monday through Friday between 14:00 and 21:00 UTC
                 </Text>
               </Box>

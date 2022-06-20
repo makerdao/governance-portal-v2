@@ -25,16 +25,15 @@ export default function PollCommentItem({
       return 'Voted';
     }
 
-    const voteOptionText =
-      isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
-        <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
-          {poll.options[commentVote.optionId]}
-        </Text>
-      ) : (
-        <Box>
-          <RankedChoiceVoteSummary choices={commentVote.rankedChoiceOption || []} poll={poll} />
-        </Box>
-      );
+    const voteOptionText = isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
+      <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
+        {poll.options[commentVote.optionId]}
+      </Text>
+    ) : (
+      <Box>
+        <RankedChoiceVoteSummary choices={commentVote.rankedChoiceOption || []} poll={poll} />
+      </Box>
+    );
 
     return (
       <Text>

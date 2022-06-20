@@ -215,10 +215,10 @@ export default function PollOverviewCard({
                     >
                       <Box sx={{ mt: 3 }}>
                         <ErrorBoundary componentName="Poll Results">
-                          {isResultDisplaySingleVoteBreakdown(poll.parameters)  && (
+                          {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
                             <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
                           )}
-                          {isResultDisplayInstantRunoffBreakdown(poll.parameters)  && (
+                          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
                             <RankedChoiceVoteSummary
                               choices={tally.results.map(i => parseInt(i.optionId))}
                               poll={poll}

@@ -8,10 +8,16 @@ import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { isInputFormatRankFree, isPluralityVictoryConditionPoll, isResultDisplayInstantRunoffBreakdown } from '../helpers/utils';
+import {
+  isInputFormatRankFree,
+  isPluralityVictoryConditionPoll,
+  isResultDisplayInstantRunoffBreakdown
+} from '../helpers/utils';
 import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
+  const bpi = useBreakpointIndex();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const { tally } = usePollTally(vote.pollId);
   const isPluralityVote = isPluralityVictoryConditionPoll(vote.poll.parameters);
@@ -46,8 +52,8 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
 
         <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
           {vote.poll.discussionLink && (
-            <ExternalLink title="Discussion" href={vote.poll.discussionLink} styles={{ mr: 2 }}>
-              <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+            <ExternalLink title="Discussion" href={vote.poll.discussionLink} styles={{ mr: 2, mb: [2, 0] }}>
+              <Text sx={{ fontSize: [2, 3], fontWeight: 'semiBold' }}>
                 Discussion
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>
@@ -94,7 +100,11 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
           >
             {isResultDisplayInstantRunoffBreakdown(vote.poll.parameters) ? (
-              <RankedChoiceVoteSummary choices={vote.rankedChoiceOption || []} poll={vote.poll} />
+              <RankedChoiceVoteSummary
+                choices={vote.rankedChoiceOption || []}
+                poll={vote.poll}
+                align={bpi < 1 ? 'left' : 'right'}
+              />
             ) : (
               vote.optionValue[0]
             )}

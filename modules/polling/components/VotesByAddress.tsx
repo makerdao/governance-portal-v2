@@ -144,7 +144,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                 <tr key={`voter-${v.voter}-${i}`} data-testid="vote-by-address">
                   <Text
                     as="td"
-                    sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3, verticalAlign: 'top', wordBreak: 'break-word' }}
+                    sx={{ pb: 2, fontSize: [1, 3], verticalAlign: 'top', wordBreak: 'break-word' }}
                   >
                     <InternalLink href={`/address/${v.voter}`} title="View address detail">
                       <AddressIconBox
@@ -175,16 +175,16 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                         </Box>
                       ))
                     ) : (
-                      <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>{poll.options[v.optionId]}</Text>
+                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.optionId]}</Text>
                     )}
                   </Box>
-                  <Text as="td" sx={{ textAlign: 'left', pb: 2 }}>
+                  <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
                     {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                   >
                     {`${
                       new BigNumber(v.mkrSupport).lte(0.01)

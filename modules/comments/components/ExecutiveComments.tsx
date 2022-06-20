@@ -88,15 +88,16 @@ export default function ExecutiveComments({
         <Box>
           {sortedComments && sortedComments.length > 0 ? (
             <Box>
-              {sortedComments.map(comment => (
+              {sortedComments.map((comment, i) => (
                 <Box
-                  sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
+                  sx={{
+                    borderBottom: sortedComments.length - 1 !== i ? '1px solid' : 'none',
+                    borderColor: 'secondaryMuted',
+                    py: 4
+                  }}
                   key={comment.address.address}
                 >
-                  <CommentItem
-                    comment={comment}
-                    //  twitterUrl=""
-                  />
+                  <CommentItem comment={comment} />
                 </Box>
               ))}
             </Box>
