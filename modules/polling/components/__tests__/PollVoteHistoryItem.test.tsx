@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import mockVote from 'modules/polling/api/mocks/vote.json';
 import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryItem';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { usePollTally } from '../../hooks/usePollTally';
 jest.mock('../../hooks/usePollTally');
 
@@ -40,7 +40,11 @@ describe('Poll vote history item', () => {
         ...mockVote.poll,
         endDate: new Date(mockVote.poll.endDate),
         startDate: new Date(mockVote.poll.startDate),
-        voteType: POLL_VOTE_TYPE.PLURALITY_VOTE
+        parameters: {
+          inputFormat: PollInputFormat.singleChoice,
+          resultDisplay: PollResultDisplay.singleVoteBreakdown,
+          victoryConditions: [{ type: PollVictoryConditions.plurality }]
+        }
       }
     };
 
@@ -63,7 +67,15 @@ describe('Poll vote history item', () => {
       ...mockVote,
       poll: {
         ...mockVote.poll,
-        voteType: POLL_VOTE_TYPE.RANKED_VOTE
+        parameters: {
+          inputFormat: PollInputFormat.rankFree,
+          resultDisplay: PollResultDisplay.instantRunoffBreakdown,
+          victoryConditions: [
+            {
+              type: PollVictoryConditions.instantRunoff
+            }
+          ]
+        }
       }
     };
 
@@ -73,25 +85,6 @@ describe('Poll vote history item', () => {
     await screen.findByText(/VOTED CHOICES/);
 
     // check plurality graphic doesn't exist
-    const abstain = screen.queryByText(/Abstain/);
-    expect(abstain).not.toBeInTheDocument();
-  });
-
-  test('renders unknown vote type correctly', async () => {
-    const vote = {
-      ...mockVote,
-      poll: {
-        ...mockVote.poll,
-        voteType: POLL_VOTE_TYPE.UNKNOWN
-      }
-    };
-
-    render(<PollVoteHistoryItem vote={vote as PollVoteHistory} />);
-
-    // unknown vote type defaults to voted option text
-    await screen.findByText(/VOTED OPTION/);
-
-    // unknown vote type doesn't show plurality graphic
     const abstain = screen.queryByText(/Abstain/);
     expect(abstain).not.toBeInTheDocument();
   });

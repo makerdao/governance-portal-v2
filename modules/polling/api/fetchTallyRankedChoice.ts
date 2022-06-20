@@ -4,7 +4,6 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import { RawPollTallyRankedChoice } from '../types';
 import { fetchSpockPollById } from './fetchPollBy';
 
@@ -54,8 +53,7 @@ export async function fetchTallyRankedChoice(
     winner: null,
     totalMkrParticipation: totalMkrParticipation,
     options: {},
-    numVoters: votes.length,
-    pollVoteType: POLL_VOTE_TYPE.RANKED_VOTE
+    numVoters: votes.length
   };
 
   // if there are no votes, don't do anything

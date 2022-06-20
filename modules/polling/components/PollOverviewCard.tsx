@@ -2,7 +2,12 @@ import React from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+import {
+  isActivePoll,
+  isInputFormatRankFree,
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import VotingStatus from './PollVotingStatus';
@@ -11,7 +16,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -88,7 +92,7 @@ export default function PollOverviewCard({
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}
                       />
-                      {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                      {!showQuickVote && isInputFormatRankFree(poll.parameters) && (
                         <Flex sx={{ alignItems: 'center', mb: 3 }}>
                           <Text variant="caps">Ranked-choice poll</Text>
                           <Icon name="stackedVotes" size={3} ml={2} />
@@ -211,10 +215,10 @@ export default function PollOverviewCard({
                     >
                       <Box sx={{ mt: 3 }}>
                         <ErrorBoundary componentName="Poll Results">
-                          {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+                          {isResultDisplaySingleVoteBreakdown(poll.parameters)  && (
                             <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
                           )}
-                          {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                          {isResultDisplayInstantRunoffBreakdown(poll.parameters)  && (
                             <RankedChoiceVoteSummary
                               choices={tally.results.map(i => parseInt(i.optionId))}
                               poll={poll}

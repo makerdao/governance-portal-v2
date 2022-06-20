@@ -20,7 +20,11 @@
       "6": "4"
     },
     "discussionLink": "https://forum.makerdao.com/t/2462",
-    "voteType": "Ranked Choice IRV",
+    "parameters": {
+      "inputFormat": "rank-free",
+      "victoryConditions": [{ "type": "instant-runoff" }],
+      "resultDisplay": "instant-runoff-breakdown"
+    },
     "tags": [
       {
         "id": "test1",
@@ -50,7 +54,11 @@
       "2": "No"
     },
     "discussionLink": "https://forum.makerdao.com/t/2664",
-    "voteType": "Plurality Voting",
+    "parameters": {
+      "inputFormat": "single-choice",
+      "victoryConditions": [{ "type": "plurality" }],
+      "resultDisplay": "single-vote-breakdown"
+    },
     "tags": [
       {
         "id": "test2",

@@ -3,7 +3,7 @@ import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
 import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
-import { POLL_VOTE_TYPE } from '../polling.constants';
+import { isInputFormatRankFree } from '../helpers/utils';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -20,21 +20,23 @@ export async function fetchAddressPollVoteHistory(
         return null;
       }
 
-      let optionValue = '';
-      if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
+      const optionValue: string[] = [];
+      if (isInputFormatRankFree(poll.parameters)) {
         if (pollVote.rankedChoiceOption && pollVote.rankedChoiceOption.length > 0) {
-          optionValue = poll.options[pollVote.rankedChoiceOption[0]];
+          pollVote.rankedChoiceOption.forEach(option => {
+            optionValue.push(poll.options[option]);
+          });
         }
       } else {
         if (typeof pollVote.optionId !== 'undefined') {
-          optionValue = poll.options[pollVote.optionId as number];
+          optionValue.push(poll.options[pollVote.optionId as number]);
         }
       }
 
       return {
         ...pollVote,
         poll,
-        optionValue: optionValue as string
+        optionValue
       };
     })
   );

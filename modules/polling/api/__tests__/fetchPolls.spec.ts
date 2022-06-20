@@ -4,6 +4,8 @@ import { config } from '../../../../lib/config';
 import os from 'os';
 import { Poll } from '../../types';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 
 jest.mock('modules/gql/gqlRequest');
 
@@ -14,7 +16,8 @@ describe('Fetch poll', () => {
     config.USE_FS_CACHE = '1';
     (gqlRequest as jest.Mock).mockResolvedValue({
       activePolls: {
-        nodes: []
+        nodes: [],
+        edges: []
       }
     });
   });
@@ -26,7 +29,7 @@ describe('Fetch poll', () => {
 
   test('getPolls with filesystem caching', async () => {
     jest.setTimeout(25000);
-    await getPolls({}, 'mainnet');
+    await getPolls({}, SupportedNetworks.MAINNET);
     expect(fs.existsSync(cacheFile)).toBeTruthy();
   });
 });
@@ -34,7 +37,13 @@ describe('Fetch poll', () => {
 describe('Sort Polls', () => {
   const polls: Poll[] = [
     {
-      tags: ['a'],
+      tags: [
+        {
+          id: 'a',
+          longname: 'a',
+          shortname: 'a'
+        }
+      ],
       content: '',
       discussionLink: '',
       endDate: new Date(2011, 10, 30),
@@ -45,11 +54,21 @@ describe('Sort Polls', () => {
       slug: '',
       summary: '',
       title: '2011,10,30',
-      voteType: 'Plurality Voting',
+      parameters: {
+        inputFormat: PollInputFormat.singleChoice,
+        resultDisplay: PollResultDisplay.singleVoteBreakdown,
+        victoryConditions: [{ type: PollVictoryConditions.plurality }]
+      },
       ctx: {} as any
     },
     {
-      tags: ['a'],
+      tags: [
+        {
+          id: 'a',
+          longname: 'a',
+          shortname: 'a'
+        }
+      ],
       content: '',
       discussionLink: '',
       endDate: new Date(2011, 10, 30),
@@ -60,11 +79,21 @@ describe('Sort Polls', () => {
       slug: '',
       summary: '',
       title: '2011,10,31',
-      voteType: 'Plurality Voting',
+      parameters: {
+        inputFormat: PollInputFormat.singleChoice,
+        resultDisplay: PollResultDisplay.singleVoteBreakdown,
+        victoryConditions: [{ type: PollVictoryConditions.plurality }]
+      },
       ctx: {} as any
     },
     {
-      tags: ['a'],
+      tags: [
+        {
+          id: 'a',
+          longname: 'a',
+          shortname: 'a'
+        }
+      ],
       content: '',
       discussionLink: '',
       endDate: new Date(2021, 11, 31),
@@ -75,11 +104,21 @@ describe('Sort Polls', () => {
       slug: '',
       summary: '',
       title: '2021,10,31',
-      voteType: 'Plurality Voting',
+      parameters: {
+        inputFormat: PollInputFormat.singleChoice,
+        resultDisplay: PollResultDisplay.singleVoteBreakdown,
+        victoryConditions: [{ type: PollVictoryConditions.plurality }]
+      },
       ctx: {} as any
     },
     {
-      tags: ['a'],
+      tags: [
+        {
+          id: 'a',
+          longname: 'a',
+          shortname: 'a'
+        }
+      ],
       content: '',
       discussionLink: '',
       endDate: new Date(2021, 11, 31),
@@ -90,7 +129,11 @@ describe('Sort Polls', () => {
       slug: '',
       summary: '',
       title: '2021,11,31',
-      voteType: 'Plurality Voting',
+      parameters: {
+        inputFormat: PollInputFormat.singleChoice,
+        resultDisplay: PollResultDisplay.singleVoteBreakdown,
+        victoryConditions: [{ type: PollVictoryConditions.plurality }]
+      },
       ctx: {} as any
     }
   ];

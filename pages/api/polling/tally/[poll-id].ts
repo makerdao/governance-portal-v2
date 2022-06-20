@@ -59,9 +59,6 @@ import { fetchPollById } from 'modules/polling/api/fetchPollBy';
  *   Tally:
  *     type: object
  *     properties:
- *       pollVoteType:
- *         type: string
- *         enum: ['Plurality Voting', 'Ranked Choice IRV']
  *       totalMkrParticipation:
  *         type: number
  *       winner:
@@ -79,8 +76,7 @@ import { fetchPollById } from 'modules/polling/api/fetchPollBy';
  *         items:
  *           $ref: '#/definitions/ResultTally'
  *     example:
- *       - pollVoteType: "Ranked Choice IRV"
- *         winner: '2'
+ *       - winner: '2'
  *         totalMkrParticipation: 12312.213213
  *         numVoters: 8
  *         rounds: 1
