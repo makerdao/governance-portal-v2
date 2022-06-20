@@ -98,7 +98,7 @@ parameters:
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInvalidCombination);
   });
 
-  it('should error if input_format rank-free does not have instant-runoff victory conditions', () => {
+  it('should error if victory_condition plurality does not have input_format single-choice conditions', () => {
     const parameters = `---
 parameters:
     input_format: rank-free
@@ -115,10 +115,10 @@ parameters:
     expect(parsed).toBe(null);
     expect(errors.length).toBeGreaterThan(0);
 
-    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeRequiresInstantRunoff);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.pluralityRequiresSingleChoice);
   });
 
-  it('should error if input_format single-choice does not have plurality victory conditions', () => {
+  it('should error if victory_conditions instant-runoff does not have a rank-free input format', () => {
     const parameters = `---
 parameters:
     input_format: single-choice
@@ -135,7 +135,7 @@ parameters:
     expect(parsed).toBe(null);
     expect(errors.length).toBeGreaterThan(0);
 
-    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.singleChoiceRequiresPlurality);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.instantRunoffRequiresRankFree);
   });
 
   it('should error if result_display is missing', () => {

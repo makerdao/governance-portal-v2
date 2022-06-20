@@ -42,6 +42,7 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
+import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;
@@ -198,7 +199,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                 <PollsSort />
                 <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
                 <StatusFilter polls={polls} sx={{ m: 2 }} />
-                {/* <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} /> */}
+                <PollTypeFilter polls={polls} sx={{ m: 2 }} />
                 <DateFilter sx={{ m: 2 }} />
               </Flex>
               <Button
