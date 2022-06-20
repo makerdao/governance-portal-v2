@@ -6,7 +6,7 @@ import isEqual from 'lodash/isEqual';
 import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
+import { extractCurrentPollVote, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
@@ -110,7 +110,7 @@ const QuickVote = ({
             </Text>
           </Flex>
 
-          {isRankedChoicePoll(poll) && (
+          {isInputFormatRankFree(poll.parameters) && (
             <Tooltip label={rankedChoiceBlurb}>
               <Box sx={{ position: 'relative' }}>
                 {/* Box is used because tooltip needs a child that can be passed a ref */}
@@ -133,7 +133,7 @@ const QuickVote = ({
         />
       ) : (
         <div>
-          {isRankedChoicePoll(poll) ? (
+          {isInputFormatRankFree(poll.parameters) ? (
             <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
           ) : (
             <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />

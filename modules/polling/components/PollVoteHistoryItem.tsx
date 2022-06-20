@@ -5,19 +5,22 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
+import {
+  isInputFormatRankFree,
+  isPluralityVictoryConditionPoll,
+  isResultDisplayInstantRunoffBreakdown
+} from '../helpers/utils';
 import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
-  const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const { tally } = usePollTally(vote.pollId);
-
+  const isPluralityVote = isPluralityVictoryConditionPoll(vote.poll.parameters);
   return (
     <Box
       sx={{
@@ -86,24 +89,24 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED CHOICES' : 'VOTED OPTION'}
+            {isInputFormatRankFree(vote.poll.parameters) ? 'VOTED CHOICES' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: getVoteColor(vote.optionId as number, vote.poll.voteType),
+              color: getVoteColor(vote.optionId as number, vote.poll.parameters.inputFormat),
               fontWeight: 'semiBold'
             }}
           >
-            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? (
+            {isResultDisplayInstantRunoffBreakdown(vote.poll.parameters) ? (
               <RankedChoiceVoteSummary
                 choices={vote.rankedChoiceOption || []}
                 poll={vote.poll}
                 align={bpi < 1 ? 'left' : 'right'}
               />
             ) : (
-              vote.optionValue
+              vote.optionValue[0]
             )}
           </Text>
         </Box>

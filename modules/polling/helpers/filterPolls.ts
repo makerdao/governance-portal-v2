@@ -9,7 +9,7 @@ type PollFilterInputs = {
     startDate;
     endDate;
     categoryFilter: Record<string, boolean> | null;
-    pollVoteType: Record<string, boolean> | null;
+    pollVictoryCondition: Record<string, boolean> | null;
     showPollActive: boolean;
     showPollEnded: boolean;
   };
@@ -23,14 +23,15 @@ export function filterPolls({ polls, pollFilters }: PollFilterInputs): Poll[] {
     startDate: start,
     endDate: end,
     categoryFilter,
-    pollVoteType,
+    pollVictoryCondition,
     showPollActive,
     showPollEnded
   } = pollFilters;
   const startDate = start && new Date(start);
   const endDate = end && new Date(end);
 
-  const noPollVoteTypesSelected = pollVoteType === null || Object.values(pollVoteType).every(t => !t);
+  const noPollVictoryConditionsSelected =
+    pollVictoryCondition === null || Object.values(pollVictoryCondition).every(t => !t);
 
   return (
     polls
@@ -69,9 +70,14 @@ export function filterPolls({ polls, pollFilters }: PollFilterInputs): Poll[] {
       })
       // vote type filter
       .filter(poll => {
-        if (!pollVoteType) return true;
+        if (!pollVictoryCondition) return true;
 
-        return noPollVoteTypesSelected || pollVoteType[poll.voteType] === true;
+        const victoryConditions = Object.keys(pollVictoryCondition).filter(k => !!pollVictoryCondition[k]);
+
+        return (
+          noPollVictoryConditionsSelected ||
+          poll.parameters.victoryConditions.find(v => victoryConditions.indexOf(v.type) !== -1)
+        );
       })
   );
 }

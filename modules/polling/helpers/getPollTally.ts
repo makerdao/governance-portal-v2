@@ -5,8 +5,7 @@ import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
-import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
+import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 
@@ -19,11 +18,10 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
     }
   }
 
-  // if poll vote type is unknown, treat as ranked choice
-  const voteType: PollVoteType = poll.voteType || POLL_VOTE_TYPE.RANKED_VOTE;
-
   // Builds raw poll tally
-  const tally: RawPollTally = await backoffRetry(3, () => fetchRawPollTally(poll.pollId, voteType, network));
+  const tally: RawPollTally = await backoffRetry(3, () =>
+    fetchRawPollTally(poll.pollId, poll.parameters, network)
+  );
 
   const endUnix = new Date(poll.endDate).getTime() / 1000;
   const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
@@ -33,7 +31,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   const numVoters = tally.numVoters;
 
   const tallyObject = {
-    pollVoteType: voteType,
+    parameters: poll.parameters,
     options:
       Object.keys(tally.options).length > 0
         ? tally.options
@@ -58,7 +56,6 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   } as RawPollTally;
 
   if ('rounds' in tally) (tallyObject as RawPollTallyRankedChoice).rounds = tally.rounds;
-
   const parsedTally = parseRawPollTally(tallyObject, poll);
 
   if (config.USE_FS_CACHE && !isActivePoll(poll)) {

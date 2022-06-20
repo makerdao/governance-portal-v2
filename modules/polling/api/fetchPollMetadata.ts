@@ -24,11 +24,14 @@ export async function fetchPollMetadata(p: PartialPoll): Promise<Poll | null> {
 
   // If incorrect data, return null
   if (!poll || !poll.summary || !poll.options) {
+    console.error(`Poll ${p.pollId} incorrect data `);
     return null;
   }
 
   // If the poll hasn't started yet return null
   if (new Date(poll.startDate).getTime() > Date.now()) {
+    console.error(`Poll ${p.pollId} hasn't started yet.`);
+
     return null;
   }
 

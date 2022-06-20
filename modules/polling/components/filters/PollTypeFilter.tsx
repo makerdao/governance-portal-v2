@@ -5,8 +5,23 @@ import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollVictoryConditions } from 'modules/polling/polling.constants';
 import { TagCount } from 'modules/app/types/tag';
+
+const VICTORY_CONDITIONS = [
+  {
+    name: 'Plurality',
+    key: PollVictoryConditions.plurality
+  },
+  {
+    name: 'Ranked Choice',
+    key: PollVictoryConditions.instantRunoff
+  },
+  {
+    name: 'Majority',
+    key: PollVictoryConditions.majority
+  }
+];
 
 export function PollTypeFilter({
   polls,
@@ -16,19 +31,19 @@ export function PollTypeFilter({
   polls: Poll[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
-  const [pollFilters, pollVoteType, setPollVoteType] = useUiFiltersStore(
-    state => [state.pollFilters, state.pollFilters.pollVoteType, state.setPollVoteType],
+  const [pollFilters, pollVictoryCondition, setPollVictoryCondition] = useUiFiltersStore(
+    state => [state.pollFilters, state.pollFilters.pollVictoryCondition, state.setPollVictoryCondition],
     shallow
   );
 
-  const itemsSelected = Object.values(pollVoteType || {}).filter(i => !!i);
+  const itemsSelected = Object.values(pollVictoryCondition || {}).filter(i => !!i);
 
   const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
       pollFilters: {
         ...pollFilters,
-        pollVoteType: null
+        pollVictoryCondition: null
       }
     });
   }, [polls, pollFilters]);
@@ -43,20 +58,24 @@ export function PollTypeFilter({
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
-          {Object.values(POLL_VOTE_TYPE).map(type => (
-            <Flex key={type}>
+          {VICTORY_CONDITIONS.map(type => (
+            <Flex key={type.key}>
               <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(pollVoteType && pollVoteType[type]) || false}
+                  checked={(pollVictoryCondition && pollVictoryCondition[type.key]) || false}
                   onChange={event => {
-                    setPollVoteType({ ...pollVoteType, [type]: event.target.checked });
+                    setPollVictoryCondition({ ...pollVictoryCondition, [type.key]: event.target.checked });
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{type}</Text>
+                  <Text>{type.name}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPolls.filter(i => i.voteType.includes(type)).length}
+                    {
+                      filteredPolls.filter(i =>
+                        i.parameters.victoryConditions.filter(v => v.type === type.key)
+                      ).length
+                    }
                   </Text>
                 </Flex>
               </Label>

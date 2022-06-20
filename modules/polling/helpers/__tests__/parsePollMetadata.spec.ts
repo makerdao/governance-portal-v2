@@ -5,6 +5,7 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import { PollSpock } from '../../types/pollSpock';
 import { getPollTags, getPollTagsMapping } from 'modules/polling/api/getPollTags';
+import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 
 jest.mock('modules/polling/api/getPollTags');
 
@@ -41,7 +42,11 @@ describe('Parse poll metadata', () => {
         title: 'Increase the Dust Parameter - January 18, 2021',
         options: { '0': 'Abstain', '1': 'Yes', '2': 'No' },
         discussionLink: 'https://forum.makerdao.com/t/signal-request-increasing-dust-parameter/5963',
-        voteType: 'Plurality Voting',
+        parameters: {
+          inputFormat: PollInputFormat.singleChoice,
+          resultDisplay: PollResultDisplay.singleVoteBreakdown,
+          victoryConditions: [{ type: PollVictoryConditions.plurality }]
+        },
         content: expect.any(String),
         tags: [
           {
@@ -71,7 +76,11 @@ describe('Parse poll metadata', () => {
         options: { '0': 'Abstain', '1': 'Yes', '2': 'No' },
         content: expect.any(String),
         discussionLink: 'https://forum.makerdao.com/t/4435',
-        voteType: 'Plurality Voting',
+        parameters: {
+          inputFormat: PollInputFormat.singleChoice,
+          resultDisplay: PollResultDisplay.singleVoteBreakdown,
+          victoryConditions: [{ type: PollVictoryConditions.plurality }]
+        },
         tags: []
       })
     );

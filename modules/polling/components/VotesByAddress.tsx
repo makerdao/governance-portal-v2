@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { PollTally, Poll } from 'modules/polling/types';
@@ -157,7 +157,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Box
                     as="td"
                     sx={{
-                      color: getVoteColor(v.optionId, poll.voteType),
+                      color: getVoteColor(v.optionId, poll.parameters.inputFormat),
                       pb: 2
                     }}
                   >
