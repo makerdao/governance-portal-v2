@@ -115,6 +115,7 @@ describe('getPollTally', () => {
     const tally = await getPollTally(
       {
         ...mockPoll,
+        pollId: 2,
         parameters: {
           inputFormat: PollInputFormat.rankFree,
           resultDisplay: PollResultDisplay.instantRunoffBreakdown,
