@@ -30,7 +30,7 @@ address: invalid-address
 
 describe('Parse executive', () => {
   beforeAll(() => {
-    config.USE_CACHE = '1';
+    config.USE_CACHE = 'true';
   });
 
   afterAll(() => {
