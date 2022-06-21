@@ -3,6 +3,7 @@ import os from 'os';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { config } from 'lib/config';
 import Redis from 'ioredis';
+import packageJSON from '../package.json';
 
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
@@ -18,7 +19,7 @@ const memoryCache = {};
 function getFilePath(name: string, network: string): string {
   const date = new Date().toISOString().substring(0, 10);
 
-  return `${os.tmpdir()}/gov-portal-${network}-${name}-${date}`;
+  return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}-${date}`;
 }
 
 export const cacheDel = (path: string): void => {
