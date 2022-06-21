@@ -30,11 +30,11 @@ address: invalid-address
 
 describe('Parse executive', () => {
   beforeAll(() => {
-    config.USE_FS_CACHE = '1';
+    config.USE_CACHE = '1';
   });
 
   afterAll(() => {
-    config.USE_FS_CACHE = '';
+    config.USE_CACHE = '';
   });
 
   test('parseExecutive', async () => {

@@ -47,13 +47,16 @@ const moduleExports = {
 
   webpack: (config, { isServer }) => {
     if (isServer) {
-      process.env.USE_FS_CACHE = 1;
+      process.env.USE_CACHE = 1;
     } else {
       // Fixes npm packages that depend on `fs` module
       // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        fs: false
+        fs: false,
+        dns: false,
+        net: false,
+        tls: false
       };
     }
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');

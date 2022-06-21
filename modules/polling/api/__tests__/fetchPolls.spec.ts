@@ -13,7 +13,8 @@ const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-all-${new Date().toI
 
 describe('Fetch poll', () => {
   beforeAll(() => {
-    config.USE_FS_CACHE = '1';
+    config.USE_CACHE = '1';
+    config.REDIS_URL = '';
     (gqlRequest as jest.Mock).mockResolvedValue({
       activePolls: {
         nodes: [],
@@ -23,7 +24,7 @@ describe('Fetch poll', () => {
   });
 
   afterAll(() => {
-    config.USE_FS_CACHE = '';
+    config.USE_CACHE = '';
     if (fs.existsSync(cacheFile)) fs.unlinkSync(cacheFile);
   });
 

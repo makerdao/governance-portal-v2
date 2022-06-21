@@ -1,4 +1,4 @@
-import { fsCacheGet, fsCacheSet } from 'lib/fscache';
+import { cacheGet, cacheSet } from 'lib/cache';
 import { Tag } from 'modules/app/types/tag';
 
 import pollTags from 'modules/tags/constants/poll-tags-definitions.json';
@@ -9,7 +9,7 @@ export function getPollTags(): Tag[] {
 
 export async function getPollTagsMapping(): Promise<{ [key: number]: string[] }> {
   try {
-    const existingTags = fsCacheGet('poll-tags-mapping');
+    const existingTags = await cacheGet('poll-tags-mapping');
 
     if (existingTags) {
       return JSON.parse(existingTags);
@@ -20,7 +20,7 @@ export async function getPollTagsMapping(): Promise<{ [key: number]: string[] }>
     const pollTags = await fetch(urlPollTags);
     const dataPollTags = await pollTags.json();
 
-    fsCacheSet('poll-tags-mapping', JSON.stringify(dataPollTags));
+    cacheSet('poll-tags-mapping', JSON.stringify(dataPollTags));
 
     return dataPollTags;
   } catch (e) {
