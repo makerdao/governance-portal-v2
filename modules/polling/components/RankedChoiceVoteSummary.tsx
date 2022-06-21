@@ -32,6 +32,7 @@ export function RankedChoiceVoteSummary({
               color: index === 0 ? 'text' : '#708390',
               textAlign: align
             }}
+            title={poll.options[choice]}
           >
             {align === 'right'
               ? `${limitString(poll.options[choice], 30, '...')} - ${index + 1}`
