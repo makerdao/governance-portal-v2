@@ -4,6 +4,12 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { config } from 'lib/config';
 import Redis from 'ioredis';
 
+const redis = config.REDIS_URL
+  ? new Redis(config.REDIS_URL, {
+      connectTimeout: 10000
+    })
+  : null;
+
 const oneHourInMS = 60 * 60 * 1000;
 
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
@@ -32,11 +38,7 @@ export const cacheGet = async (
     const currentNetwork = network || DEFAULT_NETWORK.network;
     const path = getFilePath(name, currentNetwork);
 
-    if (isRedisCache) {
-      const redis = new Redis(config.REDIS_URL, {
-        connectTimeout: 10000
-      });
-
+    if (isRedisCache && redis) {
       // Get redis data if it exists
       const cachedData = await redis.get(path);
       return cachedData;
@@ -89,11 +91,8 @@ export const cacheSet = (
   const path = getFilePath(name, currentNetwork);
 
   try {
-    if (isRedisCache) {
+    if (isRedisCache && redis) {
       // If redis cache is enabled, store in redis, with a TTL in seconds
-      const redis = new Redis(config.REDIS_URL, {
-        connectTimeout: 10000
-      });
 
       redis.set(path, data, 'EX', expiryMs / 1000);
     } else {
