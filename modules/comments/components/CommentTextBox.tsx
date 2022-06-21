@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, Box, Label, Textarea } from 'theme-ui';
 
-export default function CommentTextBox({
+export default React.memo(function CommentTextBox({
   value,
   onChange,
   disabled
@@ -48,4 +48,4 @@ export default function CommentTextBox({
       </Text>
     </Box>
   );
-}
+});

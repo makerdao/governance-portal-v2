@@ -30,22 +30,24 @@ interface ContextProps {
   signComments: () => void;
   commentsSignature: string;
   commentsCount: number;
+  getComment: (pollId: number) => void;
 }
 
 export const BallotContext = React.createContext<ContextProps>({
   ballot: {},
   previousBallot: {},
-  updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => null,
+  updateVoteFromBallot: () => null,
+  addVoteToBallot: () => null,
   clearBallot: () => null,
   clearTransaction: () => null,
-  removeVoteFromBallot: (pollId: number) => null,
+  removeVoteFromBallot: () => null,
   submitBallot: () => null,
-  isPollOnBallot: (pollId: number) => false,
+  isPollOnBallot: () => false,
   ballotCount: 0,
   signComments: () => null,
   commentsSignature: '',
-  commentsCount: 0
+  commentsCount: 0,
+  getComment: () => null
 });
 
 type PropTypes = {
@@ -141,13 +143,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot));
   };
 
+  const getComment = (pollId: number) => {
+    return ballot[pollId]?.comment;
+  };
+
   // Helpers
   const isPollOnBallot = (pollId: number): boolean => {
     // Checks that the option voted is not null or undefined
     return ballot[pollId] && typeof ballot[pollId].option !== 'undefined' && ballot[pollId].option !== null;
   };
 
-  // Comments signing
+  // fetches comments
   const getComments = (): Partial<PollComment>[] => {
     return Object.keys(ballot)
       .filter(key => isPollOnBallot(parseInt(key)))
@@ -277,7 +283,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballotCount: Object.keys(ballot).length,
         signComments,
         commentsSignature,
-        commentsCount: getComments().length
+        commentsCount: getComments().length,
+        getComment
       }}
     >
       {children}
