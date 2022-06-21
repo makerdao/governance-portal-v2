@@ -41,6 +41,7 @@ export const cacheGet = async (
     if (isRedisCache && redis) {
       // Get redis data if it exists
       const cachedData = await redis.get(path);
+      console.log(`Redis cache get for ${path}`);
       return cachedData;
     } else {
       // If fs does not exist as a module, return null (TODO: This shouldn't happen, consider removing this check)
@@ -93,6 +94,7 @@ export const cacheSet = (
   try {
     if (isRedisCache && redis) {
       // If redis cache is enabled, store in redis, with a TTL in seconds
+      console.log(`Redis cache set for ${path}`);
 
       redis.set(path, data, 'EX', expiryMs / 1000);
     } else {
