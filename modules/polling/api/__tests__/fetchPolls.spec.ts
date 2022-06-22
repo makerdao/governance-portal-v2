@@ -6,10 +6,13 @@ import { Poll } from '../../types';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
+import packageJSON from '../../../../package.json';
 
 jest.mock('modules/gql/gqlRequest');
 
-const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-all-${new Date().toISOString().substring(0, 10)}`;
+const cacheFile = `/${os.tmpdir()}/gov-portal-version-${packageJSON.version}-mainnet-polls-all-${new Date()
+  .toISOString()
+  .substring(0, 10)}`;
 
 describe('Fetch poll', () => {
   beforeAll(() => {
