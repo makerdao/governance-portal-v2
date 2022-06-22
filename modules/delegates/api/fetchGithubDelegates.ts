@@ -1,6 +1,6 @@
 import matter from 'gray-matter';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { fsCacheGet, fsCacheSet } from 'lib/fscache';
+import { cacheGet, cacheSet } from 'lib/cache';
 import { fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
@@ -74,7 +74,7 @@ export async function fetchGithubDelegates(
 
   const delegatesCacheKey = 'delegates';
   const cacheTime = 1000 * 60 * 60;
-  const existingDelegates = fsCacheGet(delegatesCacheKey, network, cacheTime);
+  const existingDelegates = await cacheGet(delegatesCacheKey, network, cacheTime);
 
   if (existingDelegates) {
     return Promise.resolve({
@@ -107,7 +107,7 @@ export async function fetchGithubDelegates(
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
 
     // Store in cache
-    fsCacheSet(delegatesCacheKey, JSON.stringify(data), network, cacheTime);
+    cacheSet(delegatesCacheKey, JSON.stringify(data), network, cacheTime);
 
     return {
       error: false,
@@ -127,7 +127,7 @@ export async function fetchGithubDelegate(
 
   const delegatesCacheKey = `delegate-${address}`;
   const cacheTime = 1000 * 60 * 60;
-  const existingDelegate = fsCacheGet(delegatesCacheKey, network, cacheTime);
+  const existingDelegate = await cacheGet(delegatesCacheKey, network, cacheTime);
   if (existingDelegate) {
     return Promise.resolve({
       error: false,
@@ -151,7 +151,7 @@ export async function fetchGithubDelegate(
 
     // Store in cache
     if (userInfo) {
-      fsCacheSet(delegatesCacheKey, JSON.stringify(userInfo), network, cacheTime);
+      cacheSet(delegatesCacheKey, JSON.stringify(userInfo), network, cacheTime);
     }
 
     return {
