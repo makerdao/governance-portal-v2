@@ -131,14 +131,18 @@ async function extractGithubInformationGraphQL(data): Promise<DelegateRepoInform
       if (cuMemberMd) {
         cuMember = true;
       }
-
       // const picture = folderContents.map(c => console.log(c.name, '<--content'));
       const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
       const html = await markdownToHtml(content);
       const vd = {
         voteDelegateAddress,
         name,
-        picture: picture ? picture.download_url : undefined,
+
+        // The graphql api unfortunately does not return the download_url or raw url for blobs/images. In this case we have to manually construct the delegate avatar picture url
+        // In case the delegate repository gets migrated, reconsider this approach
+        picture: picture
+          ? `https://github.com/makerdao/community/raw/master/governance/delegates/${delegateEntry.name}/${picture.name}`
+          : undefined,
         externalUrl: external_profile_url,
         description: html,
         tags,
