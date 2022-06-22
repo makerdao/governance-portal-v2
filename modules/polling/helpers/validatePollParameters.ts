@@ -16,8 +16,8 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
     'victory_conditions must include a valid condition. Valid conditions are "plurality" or "instant_runoff"',
   victoryConditionsInvalidCombination:
     'victory_conditions combination not valid. instant-runoff and plurality can not be combined together.',
-  rankFreeRequiresInstantRunoff: 'input_format rank-free requires victory_condition instant-runoff',
-  singleChoiceRequiresPlurality: 'input_format single-choice requires victory_condition plurality',
+  instantRunoffRequiresRankFree: 'victory_condition instant-runoff requires input_format rank-free',
+  pluralityRequiresSingleChoice: 'victory_condition plurality requires input_format single-choice',
 
   // TODO: Include more result_displays when allowed
   requiredResultDisplay:
@@ -108,13 +108,13 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     // Can not combine instant runoff and comparison , can not combine instant runoff and majority, etc
 
     // Rank free requires instant runoff condition
-    if (params.input_format === PollInputFormat.rankFree && !hasVictoryConditionInstantRunOff) {
-      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeRequiresInstantRunoff);
+    if (params.input_format !== PollInputFormat.rankFree && hasVictoryConditionInstantRunOff) {
+      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.instantRunoffRequiresRankFree);
     }
 
     // Single choice requires plurality
-    if (params.input_format === PollInputFormat.singleChoice && !hasVictoryConditionPlurality) {
-      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.singleChoiceRequiresPlurality);
+    if (params.input_format !== PollInputFormat.singleChoice && hasVictoryConditionPlurality) {
+      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.pluralityRequiresSingleChoice);
     }
   }
 
