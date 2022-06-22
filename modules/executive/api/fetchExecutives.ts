@@ -1,4 +1,3 @@
-import { config } from 'lib/config';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'lib/cache';
 import { fetchGitHubPage, GithubTokens } from 'lib/github';
@@ -13,11 +12,9 @@ import { BigNumber } from 'ethers';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cacheKey = 'github-proposals';
-  if (config.USE_CACHE) {
-    const cachedProposals = await cacheGet(cacheKey, network);
-    if (cachedProposals) {
-      return JSON.parse(cachedProposals);
-    }
+  const cachedProposals = await cacheGet(cacheKey, network);
+  if (cachedProposals) {
+    return JSON.parse(cachedProposals);
   }
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
@@ -55,9 +52,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     .sort(a => (a.active ? -1 : 1)) // Sort by active first
     .slice(0, 100);
 
-  if (config.USE_CACHE) {
-    cacheSet(cacheKey, JSON.stringify(sortedProposals), network);
-  }
+  cacheSet(cacheKey, JSON.stringify(sortedProposals), network);
 
   return sortedProposals;
 }
@@ -95,13 +90,10 @@ export async function getExecutiveProposals(
 
   const cacheKey = `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
 
-  if (config.USE_CACHE) {
-    const cachedProposals = await cacheGet(cacheKey, currentNetwork);
-    if (cachedProposals) {
-      return JSON.parse(cachedProposals);
-    }
+  const cachedProposals = await cacheGet(cacheKey, currentNetwork);
+  if (cachedProposals) {
+    return JSON.parse(cachedProposals);
   }
-
   const proposals =
     sortBy === 'mkr'
       ? await getGithubExecutivesWithMKR(currentNetwork)
@@ -137,9 +129,7 @@ export async function getExecutiveProposals(
     })
   );
 
-  if (config.USE_CACHE) {
-    cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
-  }
+  cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
 
   return analyzedProposals;
 }
