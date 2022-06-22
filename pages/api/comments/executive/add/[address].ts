@@ -35,7 +35,7 @@ export default withApiHandler(
       network
     );
 
-    // Get votter weight
+    // Get voter weight
     const chief = getContracts({
       chainId: networkNameToChainId(network),
       library: undefined,

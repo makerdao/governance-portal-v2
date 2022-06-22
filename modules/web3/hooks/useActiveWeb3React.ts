@@ -12,7 +12,6 @@ interface ActiveWeb3React extends Web3ReactContextInterface {
 export function useActiveWeb3React(): ActiveWeb3React {
   const context = useWeb3React<Web3Provider>() as ActiveWeb3React;
   const interfaceNetworkContext = useWeb3React<Web3Provider>(NetworkContextName) as ActiveWeb3React;
-  console.log({ context, interfaceNetworkContext });
 
   const network = chainIdToNetworkName(context.active ? context.chainId : interfaceNetworkContext.chainId);
 
