@@ -33,7 +33,7 @@ export const cacheGet = async (
   network?: SupportedNetworks,
   expiryMs?: number
 ): Promise<any> => {
-  if (!config.USE_CACHE) {
+  if (!config.USE_CACHE || config.USE_CACHE === 'false') {
     return Promise.resolve(null);
   }
 
@@ -91,7 +91,7 @@ export const cacheSet = (
   network?: SupportedNetworks,
   expiryMs = oneHourInMS
 ): void => {
-  if (!config.USE_CACHE) {
+  if (!config.USE_CACHE || config.USE_CACHE === 'false') {
     return;
   }
 

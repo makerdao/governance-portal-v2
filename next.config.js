@@ -45,9 +45,7 @@ const moduleExports = {
   outputFileTracing: false,
 
   webpack: (config, { isServer }) => {
-    if (isServer) {
-      process.env.USE_CACHE = 'true';
-    } else {
+    if (!isServer) {
       // Fixes npm packages that depend on `fs` module
       // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
       config.resolve.fallback = {
