@@ -33,6 +33,10 @@ export const cacheGet = async (
   network?: SupportedNetworks,
   expiryMs?: number
 ): Promise<any> => {
+  if (!config.USE_CACHE || config.USE_CACHE === 'false') {
+    return Promise.resolve(null);
+  }
+
   const isRedisCache = !!config.REDIS_URL;
 
   try {
@@ -87,6 +91,10 @@ export const cacheSet = (
   network?: SupportedNetworks,
   expiryMs = oneHourInMS
 ): void => {
+  if (!config.USE_CACHE || config.USE_CACHE === 'false') {
+    return;
+  }
+
   const isRedisCache = !!config.REDIS_URL;
   const currentNetwork = network || DEFAULT_NETWORK.network;
 

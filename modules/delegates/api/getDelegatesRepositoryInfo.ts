@@ -1,6 +1,6 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
-type RepositoryInfo = {
+export type RepositoryInfo = {
   owner: string;
   repo: string;
   page: string;

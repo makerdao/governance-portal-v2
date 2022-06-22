@@ -1,4 +1,3 @@
-import { config } from 'lib/config';
 import { cacheGet, cacheSet } from 'lib/cache';
 import { Poll } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
@@ -93,20 +92,17 @@ export async function _getAllPolls(
 ): Promise<Poll[]> {
   const cacheKey = `polls-${queryVariables ? JSON.stringify(queryVariables) : 'all'}`;
 
-  if (config.USE_CACHE) {
-    const cachedPolls = await cacheGet(cacheKey, network);
-    if (cachedPolls) {
-      return JSON.parse(cachedPolls);
-    }
+  const cachedPolls = await cacheGet(cacheKey, network);
+  if (cachedPolls) {
+    return JSON.parse(cachedPolls);
   }
 
   const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryVariables);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
-  if (config.USE_CACHE) {
-    cacheSet(cacheKey, JSON.stringify(polls), network);
-  }
+  cacheSet(cacheKey, JSON.stringify(polls), network);
+
   return polls;
 }
 

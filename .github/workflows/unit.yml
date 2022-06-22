@@ -11,7 +11,7 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      USE_CACHE: true
+      USE_CACHE: false
       REDIS_URL: ${{ secrets.REDIS_URL }}
     steps:
       - name: Checkout
