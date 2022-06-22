@@ -4,7 +4,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Address } from 'modules/address/components/Address';
 import { InternalLink } from 'modules/app/components/InternalLink';
 
@@ -15,8 +14,6 @@ export function DelegatePicture({
   delegate: Delegate;
   width?: number;
 }): React.ReactElement {
-  const { library } = useActiveWeb3React();
-
   const tooltipAvatarWidth = 68;
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
@@ -42,7 +39,7 @@ export function DelegatePicture({
             />
           ) : (
             <Box>
-              <Davatar size={tooltipAvatarWidth} address={delegate.address} provider={library} />
+              <Davatar size={tooltipAvatarWidth} address={delegate.address} />
             </Box>
           )}
           {delegate.status === DelegateStatusEnum.recognized && (
@@ -149,7 +146,7 @@ export function DelegatePicture({
                 />
               ) : (
                 <Box>
-                  <Davatar size={width} address={delegate.address} provider={library} />
+                  <Davatar size={width} address={delegate.address} />
                 </Box>
               )}
             </InternalLink>
