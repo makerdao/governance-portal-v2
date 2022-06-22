@@ -11,7 +11,12 @@ export type MkrOnHatResponse = {
 
 export async function fetchMkrOnHat(network?: SupportedNetworks): Promise<MkrOnHatResponse> {
   const chainId = network ? networkNameToChainId(network) : networkNameToChainId(SupportedNetworks.MAINNET);
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const contracts = getContracts({
+    chainId,
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
   const hat = await contracts.chief.hat();
   const mkrOnHat = await getChiefApprovals(hat, network);
 

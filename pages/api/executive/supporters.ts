@@ -12,7 +12,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const chief = getContracts(networkNameToChainId(network), undefined, undefined, true).chief;
+  const chief = getContracts({
+    chainId: networkNameToChainId(network),
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  }).chief;
 
   const allSupporters = await fetchExecutiveVoteTally(chief);
 

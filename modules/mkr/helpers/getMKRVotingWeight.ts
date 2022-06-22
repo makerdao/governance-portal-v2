@@ -19,7 +19,12 @@ export async function getMKRVotingWeight(
   address: string,
   network: SupportedNetworks
 ): Promise<MKRVotingWeightResponse> {
-  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+  const contracts = getContracts({
+    chainId: networkNameToChainId(network),
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
 
   // first check if contract is a delegate and if so return that balance
   const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);

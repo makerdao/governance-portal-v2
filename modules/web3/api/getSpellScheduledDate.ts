@@ -11,7 +11,12 @@ export const getSpellScheduledDate = async (
   network?: SupportedNetworks
 ): Promise<Date | undefined> => {
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const contracts = getContracts({
+    chainId,
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
 
   const provider = getDefaultProvider(network);
 

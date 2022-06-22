@@ -9,7 +9,12 @@ export async function getAddressInfo(
   address: string,
   network: SupportedNetworks
 ): Promise<AddressApiResponse> {
-  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+  const contracts = getContracts({
+    chainId: networkNameToChainId(network),
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
 
   const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 

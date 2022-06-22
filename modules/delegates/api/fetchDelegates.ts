@@ -120,7 +120,12 @@ export async function fetchDelegates(
   // This contains all the delegates including info merged with recognized delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
+  const contracts = getContracts({
+    chainId: networkNameToChainId(currentNetwork),
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());

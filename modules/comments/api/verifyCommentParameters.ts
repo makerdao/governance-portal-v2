@@ -32,7 +32,12 @@ export async function verifyCommentParameters(
   );
 
   // Verify that the voter address is either the hotAddress, the vote delegate address or the vote proxy address
-  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+  const contracts = getContracts({
+    chainId: networkNameToChainId(network),
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
 
   const [proxyAddressCold, proxyAddressHot] = await Promise.all([
     contracts.voteProxyFactory.coldMap(hotAddress),

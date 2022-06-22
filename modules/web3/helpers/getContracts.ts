@@ -21,12 +21,17 @@ const sdks: Sdks = {
 };
 
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
-export const getContracts = (
-  chainId?: SupportedChainId,
-  library?: Web3Provider,
-  account?: string | null,
-  readOnly?: boolean
-): EthSdk => {
+export const getContracts = ({
+  chainId,
+  library,
+  account,
+  readOnly
+}: {
+  chainId?: SupportedChainId;
+  library?: Web3Provider;
+  account?: string | null;
+  readOnly?: boolean;
+}): EthSdk => {
   const { network, rpcUrl } = chainId
     ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
     : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };

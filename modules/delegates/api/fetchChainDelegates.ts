@@ -15,7 +15,12 @@ export async function fetchChainDelegates(
 
   const delegates = data.allDelegates.nodes;
 
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const contracts = getContracts({
+    chainId: networkNameToChainId(network),
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
 
   const delegatesWithMkrStaked: DelegateContractInformation[] = await Promise.all(
     delegates.map(async (delegate): Promise<DelegateContractInformation> => {

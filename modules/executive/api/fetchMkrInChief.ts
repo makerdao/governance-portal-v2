@@ -6,7 +6,12 @@ import { BigNumber } from 'ethers';
 
 export async function fetchMkrInChief(network?: SupportedNetworks): Promise<BigNumber> {
   const chainId = network ? networkNameToChainId(network) : networkNameToChainId(SupportedNetworks.MAINNET);
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const contracts = getContracts({
+    chainId,
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
   const chiefAddress = await contracts.chief.address;
   const tokenContract = contracts[Tokens.MKR];
   const mkrInChief = await tokenContract.balanceOf(chiefAddress);
