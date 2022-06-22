@@ -1,12 +1,13 @@
 import matter from 'gray-matter';
-import { gql } from 'graphql-request';
+import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'lib/cache';
-import { fetchGitHubPage, GithubPage, GithubTokens, octokits } from 'lib/github';
+import { fetchGithubGraphQL, fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
-import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegatesRepositoryInfo';
+import { getDelegatesRepositoryInformation } from './getDelegatesRepositoryInfo';
 import { ethers } from 'ethers';
+import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
 
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
@@ -69,41 +70,16 @@ async function extractGithubInformation(
   }
 }
 
-const allDelegatesInfo = gql`
-  query RepoFiles($owner: String!, $name: String!, $expression: String!) {
-    repository(owner: $owner, name: $name) {
-      object(expression: $expression) {
-        ... on Tree {
-          entries {
-            ... on TreeEntry {
-              name
-              object {
-                ... on Tree {
-                  entries {
-                    name
-                    object {
-                      ... on Blob {
-                        text
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-async function extractGithubInformationGraphQL(data): Promise<DelegateRepoInformation[]> {
+async function extractGithubInformationGraphQL(
+  data: GraphQlQueryResponseData
+): Promise<DelegateRepoInformation[]> {
   const entries = data.repository.object.entries;
-  const promises = entries.map(async delegateEntry => {
-    const voteDelegateAddress = delegateEntry.name;
-
+  const promises = entries
     // Our query returns extraneous files in the delegates folder, but we only want addresses
-    if (ethers.utils.isAddress(voteDelegateAddress)) {
+    .filter(({ name }) => ethers.utils.isAddress(name))
+    .map(async delegateEntry => {
+      const voteDelegateAddress = delegateEntry.name;
+
       const folderContents = delegateEntry.object.entries;
       const profileMd = folderContents.find(item => item.name === 'profile.md');
 
@@ -131,7 +107,7 @@ async function extractGithubInformationGraphQL(data): Promise<DelegateRepoInform
       if (cuMemberMd) {
         cuMember = true;
       }
-      // const picture = folderContents.map(c => console.log(c.name, '<--content'));
+
       const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
       const html = await markdownToHtml(content);
       const vd = {
@@ -140,9 +116,7 @@ async function extractGithubInformationGraphQL(data): Promise<DelegateRepoInform
 
         // The graphql api unfortunately does not return the download_url or raw url for blobs/images. In this case we have to manually construct the delegate avatar picture url
         // In case the delegate repository gets migrated, reconsider this approach
-        picture: picture
-          ? `https://github.com/makerdao/community/raw/master/governance/delegates/${delegateEntry.name}/${picture.name}`
-          : undefined,
+        picture: picture ? `https://github.com/makerdao/community/raw/master/${picture.path}` : undefined,
         externalUrl: external_profile_url,
         description: html,
         tags,
@@ -153,24 +127,14 @@ async function extractGithubInformationGraphQL(data): Promise<DelegateRepoInform
         cuMember
       };
       return vd;
-    }
-  });
-  const dels = await Promise.all(promises);
-  return dels;
+    });
+  const delegatesInfo = await Promise.all(promises);
+  return delegatesInfo;
 }
-
-async function fetchDelegatesAtOnce({ owner, repo, page }: RepositoryInfo) {
-  const octokit = octokits[GithubTokens.DelegatesFolder];
-  const data = await octokit.graphql(allDelegatesInfo, { owner, name: repo, expression: `master:${page}` });
-  return data;
-}
-
 export async function fetchGithubDelegates(
   network: SupportedNetworks
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
-
-  const allDelegates = await fetchDelegatesAtOnce(delegatesRepositoryInfo);
 
   const delegatesCacheKey = 'delegates';
   const cacheTime = 1000 * 60 * 60;
@@ -184,7 +148,11 @@ export async function fetchGithubDelegates(
   }
 
   try {
-    // const results2 = await Promise.all(promises);
+    const allDelegates = await fetchGithubGraphQL(
+      delegatesRepositoryInfo,
+      allGithubDelegates,
+      GithubTokens.DelegatesFolder
+    );
     const results = await extractGithubInformationGraphQL(allDelegates);
 
     // Filter out negatives
