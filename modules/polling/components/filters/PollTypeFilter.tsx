@@ -6,7 +6,6 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { PollVictoryConditions } from 'modules/polling/polling.constants';
-import { TagCount } from 'modules/app/types/tag';
 
 const VICTORY_CONDITIONS = [
   {
@@ -16,21 +15,14 @@ const VICTORY_CONDITIONS = [
   {
     name: 'Ranked Choice',
     key: PollVictoryConditions.instantRunoff
-  },
-  {
-    name: 'Majority',
-    key: PollVictoryConditions.majority
   }
+  // {
+  //   name: 'Majority',
+  //   key: PollVictoryConditions.majority
+  // }
 ];
 
-export function PollTypeFilter({
-  polls,
-  ...props
-}: {
-  tags: TagCount[];
-  polls: Poll[];
-  sx?: ThemeUIStyleObject;
-}): JSX.Element {
+export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
   const [pollFilters, pollVictoryCondition, setPollVictoryCondition] = useUiFiltersStore(
     state => [state.pollFilters, state.pollFilters.pollVictoryCondition, state.setPollVictoryCondition],
     shallow
@@ -72,8 +64,8 @@ export function PollTypeFilter({
                   <Text>{type.name}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
                     {
-                      filteredPolls.filter(i =>
-                        i.parameters.victoryConditions.filter(v => v.type === type.key)
+                      filteredPolls.filter(
+                        i => i.parameters.victoryConditions.filter(v => v.type === type.key).length > 0
                       ).length
                     }
                   </Text>
