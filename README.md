@@ -29,7 +29,7 @@ _Requires node version >= v11.15.0_
 4. Set `TRACING_RPC_NODE` to an ethereum RPC parity node with tracing enabled
 5. Set `MONGODB_URI` to a full mongodb uri (ex: `mongodb+srv://...`)
 6. Set `MONGODB_COMMENTS_DB` the mongodb db name to be used for vote comments
-7. Set `USE_FS_CACHE` to true if you want to use file system cache
+7. Set `USE_CACHE` to true if you want to use cache, if `REDIS_URL` is set it will use REDIS otherwhise filesystem cache
 8. Set `GITHUB_TOKEN` to fetch delegates information and executive proposals from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
 9. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
 10. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key

@@ -1,5 +1,5 @@
 import { config } from 'lib/config';
-import { fsCacheGet, fsCacheSet } from 'lib/fscache';
+import { cacheGet, cacheSet } from 'lib/cache';
 import { markdownToHtml } from 'lib/markdown';
 import { QueryFilterNames } from 'modules/gql/gql.constants';
 import { getQueryFilter } from 'modules/gql/gqlFilters';
@@ -28,8 +28,8 @@ export async function fetchSpockPollBySlug(slug: string, network: SupportedNetwo
 export async function fetchPollById(pollId: number, network: SupportedNetworks): Promise<Poll | null> {
   const cacheKey = `poll_${pollId}`;
 
-  if (config.USE_FS_CACHE) {
-    const cachedPoll = fsCacheGet(cacheKey, network);
+  if (config.USE_CACHE) {
+    const cachedPoll = await cacheGet(cacheKey, network);
     if (cachedPoll) {
       return JSON.parse(cachedPoll);
     }
@@ -56,8 +56,8 @@ export async function fetchPollById(pollId: number, network: SupportedNetworks):
       }
     };
 
-    if (config.USE_FS_CACHE) {
-      fsCacheSet(cacheKey, JSON.stringify(poll), network);
+    if (config.USE_CACHE) {
+      cacheSet(cacheKey, JSON.stringify(poll), network);
     }
 
     return poll;
@@ -69,8 +69,8 @@ export async function fetchPollById(pollId: number, network: SupportedNetworks):
 export async function fetchPollBySlug(slug: string, network: SupportedNetworks): Promise<Poll | null> {
   const cacheKey = `poll_${slug}`;
 
-  if (config.USE_FS_CACHE) {
-    const cachedPoll = fsCacheGet(cacheKey, network);
+  if (config.USE_CACHE) {
+    const cachedPoll = await cacheGet(cacheKey, network);
     if (cachedPoll) {
       return JSON.parse(cachedPoll);
     }
@@ -98,8 +98,8 @@ export async function fetchPollBySlug(slug: string, network: SupportedNetworks):
       }
     };
 
-    if (config.USE_FS_CACHE) {
-      fsCacheSet(cacheKey, JSON.stringify(poll), network);
+    if (config.USE_CACHE) {
+      cacheSet(cacheKey, JSON.stringify(poll), network);
     }
 
     return poll;
