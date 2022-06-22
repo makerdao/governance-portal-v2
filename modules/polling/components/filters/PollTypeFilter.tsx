@@ -15,11 +15,11 @@ const VICTORY_CONDITIONS = [
   {
     name: 'Ranked Choice',
     key: PollVictoryConditions.instantRunoff
-  },
-  {
-    name: 'Majority',
-    key: PollVictoryConditions.majority
   }
+  // {
+  //   name: 'Majority',
+  //   key: PollVictoryConditions.majority
+  // }
 ];
 
 export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
