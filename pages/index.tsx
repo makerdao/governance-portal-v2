@@ -73,7 +73,10 @@ const LandingPage = ({
   const pollCategories = getCategories(polls);
 
   // delegates
-  const topDelegates = delegates.slice(0, 5);
+  const topDelegates = recognizedDelegates
+    .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
+    .slice(0, 5);
+
   const activeDelegates = recognizedDelegates
     .sort((a, b) => {
       const [first] = a.combinedParticipation?.split('%') || '0';
