@@ -13,7 +13,8 @@ const token1 = config.GITHUB_TOKEN;
 const token2 = config.GITHUB_TOKEN_2 ? config.GITHUB_TOKEN_2 : config.GITHUB_TOKEN;
 const token3 = config.GITHUB_TOKEN_3 ? config.GITHUB_TOKEN_3 : config.GITHUB_TOKEN;
 
-const octokits = new Array(Object.keys(GithubTokens).length / 2);
+export const octokits = new Array(Object.keys(GithubTokens).length / 2);
+
 try {
   octokits[0] = new Octokit({ auth: token1 });
   octokits[1] = new Octokit({ auth: token2 });
