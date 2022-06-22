@@ -14,8 +14,8 @@ export const Address = React.memo(function Address({
   const { library } = useActiveWeb3React();
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
-  async function fetchENSName(address: string) {
-    if (!address) {
+  async function fetchENSName() {
+    if (!address || !library) {
       return;
     }
 
@@ -25,7 +25,7 @@ export const Address = React.memo(function Address({
   }
   useEffect(() => {
     if (address) {
-      fetchENSName(address);
+      fetchENSName();
     }
   }, [address]);
 
