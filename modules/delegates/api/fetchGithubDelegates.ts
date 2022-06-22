@@ -180,23 +180,6 @@ export async function fetchGithubDelegates(
   }
 
   try {
-    // Fetch all folders inside the delegates folder
-    // const folders = await fetchGitHubPage(
-    //   delegatesRepositoryInfo.owner,
-    //   delegatesRepositoryInfo.repo,
-    //   delegatesRepositoryInfo.page,
-    //   GithubTokens.DelegatesFolder
-    // );
-
-    // Get the information of all the delegates, filter errored ones
-    // const promises = folders.map(async (folder): Promise<DelegateRepoInformation | undefined> => {
-    //   return await extractGithubInformation(
-    //     delegatesRepositoryInfo.owner,
-    //     delegatesRepositoryInfo.repo,
-    //     folder
-    //   );
-    // });
-
     // const results2 = await Promise.all(promises);
     const results = await extractGithubInformationGraphQL(allDelegates);
 
