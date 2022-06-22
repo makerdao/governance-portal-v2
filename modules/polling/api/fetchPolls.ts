@@ -1,5 +1,5 @@
 import { config } from 'lib/config';
-import { fsCacheGet, fsCacheSet } from 'lib/fscache';
+import { cacheGet, cacheSet } from 'lib/cache';
 import { Poll } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
@@ -93,8 +93,8 @@ export async function _getAllPolls(
 ): Promise<Poll[]> {
   const cacheKey = `polls-${queryVariables ? JSON.stringify(queryVariables) : 'all'}`;
 
-  if (config.USE_FS_CACHE) {
-    const cachedPolls = fsCacheGet(cacheKey, network);
+  if (config.USE_CACHE) {
+    const cachedPolls = await cacheGet(cacheKey, network);
     if (cachedPolls) {
       return JSON.parse(cachedPolls);
     }
@@ -104,8 +104,8 @@ export async function _getAllPolls(
 
   const polls = await fetchAllPollsMetadata(pollList);
 
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(polls), network);
+  if (config.USE_CACHE) {
+    cacheSet(cacheKey, JSON.stringify(polls), network);
   }
   return polls;
 }

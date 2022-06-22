@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { fsCacheGet, fsCacheSet } from 'lib/fscache';
+import { cacheGet, cacheSet } from 'lib/cache';
 import { fetchGitHubPage, GithubTokens } from 'lib/github';
 import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
@@ -13,8 +13,8 @@ import { BigNumber } from 'ethers';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cacheKey = 'github-proposals';
-  if (config.USE_FS_CACHE) {
-    const cachedProposals = fsCacheGet(cacheKey, network);
+  if (config.USE_CACHE) {
+    const cachedProposals = await cacheGet(cacheKey, network);
     if (cachedProposals) {
       return JSON.parse(cachedProposals);
     }
@@ -55,8 +55,8 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     .sort(a => (a.active ? -1 : 1)) // Sort by active first
     .slice(0, 100);
 
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(sortedProposals), network);
+  if (config.USE_CACHE) {
+    cacheSet(cacheKey, JSON.stringify(sortedProposals), network);
   }
 
   return sortedProposals;
@@ -95,8 +95,8 @@ export async function getExecutiveProposals(
 
   const cacheKey = `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
 
-  if (config.USE_FS_CACHE) {
-    const cachedProposals = fsCacheGet(cacheKey, currentNetwork);
+  if (config.USE_CACHE) {
+    const cachedProposals = await cacheGet(cacheKey, currentNetwork);
     if (cachedProposals) {
       return JSON.parse(cachedProposals);
     }
@@ -137,8 +137,8 @@ export async function getExecutiveProposals(
     })
   );
 
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
+  if (config.USE_CACHE) {
+    cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
   }
 
   return analyzedProposals;
