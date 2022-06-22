@@ -1,23 +1,18 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { backoffRetry } from 'lib/utils';
 import BigNumber from 'bignumber.js';
-import { config } from 'lib/config';
 import { cacheGet, cacheSet } from 'lib/cache';
 import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
 import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
-import { isActivePoll } from 'modules/polling/helpers/utils';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   const cacheKey = `${network}-parsed-tally-${poll.pollId}`;
-  if (config.USE_CACHE) {
-    const cachedTally = await cacheGet(cacheKey, network);
-    if (cachedTally) {
-      return JSON.parse(cachedTally);
-    }
+  const cachedTally = await cacheGet(cacheKey, network);
+  if (cachedTally) {
+    return JSON.parse(cachedTally);
   }
-
   // Builds raw poll tally
   const tally: RawPollTally = await backoffRetry(3, () =>
     fetchRawPollTally(poll.pollId, poll.parameters, network)
@@ -58,9 +53,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   if ('rounds' in tally) (tallyObject as RawPollTallyRankedChoice).rounds = tally.rounds;
   const parsedTally = parseRawPollTally(tallyObject, poll);
 
-  if (config.USE_CACHE && !isActivePoll(poll)) {
-    cacheSet(cacheKey, JSON.stringify(parsedTally), network);
-  }
+  cacheSet(cacheKey, JSON.stringify(parsedTally), network);
 
   return parsedTally;
 }
