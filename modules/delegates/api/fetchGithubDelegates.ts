@@ -1,8 +1,8 @@
 import matter from 'gray-matter';
 import { gql } from 'graphql-request';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { fetchGitHubPage, GithubPage, GithubTokens, octokits } from 'lib/github';
 import { cacheGet, cacheSet } from 'lib/cache';
+import { fetchGitHubPage, GithubPage, GithubTokens, octokits } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegatesRepositoryInfo';
