@@ -1,6 +1,5 @@
 import { ethers, providers, Signer } from 'ethers';
 import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
-
 import { Web3Provider } from '@ethersproject/providers';
 import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';

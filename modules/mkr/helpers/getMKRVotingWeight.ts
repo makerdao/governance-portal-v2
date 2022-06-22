@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -15,13 +16,18 @@ export type MKRVotingWeightResponse = {
   total: BigNumber;
 };
 // returns the voting weight for an address
-export async function getMKRVotingWeight(
-  address: string,
-  network: SupportedNetworks
-): Promise<MKRVotingWeightResponse> {
+export async function getMKRVotingWeight({
+  address,
+  network,
+  library
+}: {
+  address: string;
+  network: SupportedNetworks;
+  library: Web3Provider;
+}): Promise<MKRVotingWeightResponse> {
   const contracts = getContracts({
     chainId: networkNameToChainId(network),
-    library: undefined,
+    library,
     account: undefined,
     readOnly: true
   });

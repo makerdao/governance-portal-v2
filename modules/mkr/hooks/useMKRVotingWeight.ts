@@ -10,7 +10,7 @@ type VotingWeightResponse = {
 };
 
 export const useMKRVotingWeight = (address?: string): VotingWeightResponse => {
-  const { network } = useActiveWeb3React();
+  const { network, library } = useActiveWeb3React();
   const { cache } = useSWRConfig();
 
   const dataKey = `/user/polling-voting-weight/${address}/${network}`;
@@ -18,7 +18,7 @@ export const useMKRVotingWeight = (address?: string): VotingWeightResponse => {
   // Only revalidate every 60 seconds, do not revalidate on mount if it's already fetched
   const { data, error, mutate } = useSWR(
     address ? dataKey : null,
-    () => getMKRVotingWeight(address as string, network),
+    () => getMKRVotingWeight({ address: address as string, network, library }),
     {
       revalidateOnFocus: false,
       revalidateOnMount: !cache.get(dataKey),
