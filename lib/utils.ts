@@ -239,3 +239,9 @@ export function openWindowWithUrl(url: string): void {
 
   windowOpen(url, windowConfig);
 }
+
+export function formatMkrAmount(mkrAmount: number | string): string {
+  return new BigNumber(mkrAmount).lte(0.01)
+    ? '≈0.00'
+    : new BigNumber(mkrAmount).toFormat(new BigNumber(mkrAmount).gt(999) ? 0 : 2);
+}

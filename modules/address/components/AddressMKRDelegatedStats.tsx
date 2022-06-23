@@ -5,6 +5,7 @@ import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 import Tooltip from 'modules/app/components/Tooltip';
 import { getDescription } from 'modules/polling/components/VotingWeight';
+import { formatMkrAmount } from 'lib/utils';
 
 export function AddressMKRDelegatedStats({
   totalMKRDelegated,
@@ -26,7 +27,9 @@ export function AddressMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={votingWeight ? formatValue(votingWeight.total) : '0.000'}
+        value={
+          votingWeight ? formatMkrAmount(formatValue(votingWeight.total, undefined, undefined, false)) : '0'
+        }
         label={'Total MKR Balance'}
         tooltip={
           <Tooltip label={getDescription({ votingWeight, isDelegate: false })}>
@@ -41,7 +44,7 @@ export function AddressMKRDelegatedStats({
         styles={{
           textAlign: 'right'
         }}
-        value={totalMKRDelegated ? totalMKRDelegated.toFixed(2) : '0.00'}
+        value={totalMKRDelegated ? formatMkrAmount(totalMKRDelegated) : '0'}
         label={'Total MKR Delegated'}
       />
     </Flex>

@@ -8,6 +8,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { formatMkrAmount } from 'lib/utils';
 
 type Props = {
   tally: PollTally;
@@ -184,13 +185,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
+                    sx={{ textAlign: 'right', pbnu: 2, fontSize: [1, 3] }}
                   >
-                    {`${
-                      new BigNumber(v.mkrSupport).lte(0.01)
-                        ? '≈0.00'
-                        : new BigNumber(v.mkrSupport).toFormat(new BigNumber(v.mkrSupport).gt(999) ? 0 : 2)
-                    }${bpi > 0 ? ' MKR' : ''}`}{' '}
+                    {`${formatMkrAmount(v.mkrSupport)}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </tr>
               ))}

@@ -50,7 +50,14 @@ export default function VoteBreakdown({
                     </Delay>
                   )}
                   {tallyResult ? (
-                    <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+                    <Text
+                      as="p"
+                      sx={{
+                        color: 'textSecondary',
+                        width: tally ? 'unset' : '30%',
+                        textAlign: ['left', 'right']
+                      }}
+                    >
                       {`${formatValue(
                         parseUnits(firstChoice.plus(transfer).toString())
                       )} MKR Voting (${formatValue(
