@@ -38,7 +38,7 @@ const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
     const weight = numB.div(denomB).times(100);
     return formatValue(parseUnits(weight.toString()));
   } catch (e) {
-    return '0.0';
+    return '0';
   }
 };
 
