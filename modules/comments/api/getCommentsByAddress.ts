@@ -7,6 +7,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
+import logger from 'lib/logger';
 export async function getCommentsByAddress(
   address: string,
   network: SupportedNetworks
@@ -39,7 +40,9 @@ export async function getCommentsByAddress(
         transaction = await provider
           .getTransaction(comment.txHash as string)
           .catch(e =>
-            console.error(`There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`)
+            logger.error(
+              `GetCommentsByAddress: ${address}, There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`
+            )
           );
       }
 

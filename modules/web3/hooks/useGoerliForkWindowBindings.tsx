@@ -5,6 +5,7 @@ import { SupportedChainId } from '../constants/chainID';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { CustomizedBridge } from '../connectors/CustomizedBridge';
+import logger from 'lib/logger';
 
 export function useGoerliForkWindowBindings(): void {
   const context = useWeb3React();
@@ -26,7 +27,7 @@ export function useGoerliForkWindowBindings(): void {
               supportedChainIds: [SupportedChainId.GOERLIFORK]
             }),
             err => {
-              console.log('error', err);
+              logger.error('useGoerliForkWindowBindings: error activating web3 connector', err);
             }
           );
         }

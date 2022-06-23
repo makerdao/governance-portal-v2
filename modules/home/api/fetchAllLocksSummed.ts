@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { format } from 'date-fns';
+import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allLocksSummed } from 'modules/gql/queries/allLocksSummed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -30,7 +31,11 @@ export default async function fetchAllLocksSummed(
 
     return locks;
   } catch (e) {
-    console.error('Error fetching all lock events', e);
+    logger.error(
+      'fetchAllLocksSummed: Error fetching all lock events',
+      `Start: ${unixtimeStart}, End: ${unixtimeEnd}, Network: ${network}`,
+      e
+    );
   }
   return [];
 }

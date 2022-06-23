@@ -1,3 +1,4 @@
+import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { mkrLockedDelegateArrayTotals } from 'modules/gql/queries/mkrLockedDelegateArray';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -23,7 +24,7 @@ export async function fetchDelegationEventsByAddresses(
 
     return addressData;
   } catch (e) {
-    console.error('Error fetching delegation events', e.message);
+    logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);
     return [];
   }
 }

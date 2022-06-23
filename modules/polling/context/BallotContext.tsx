@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
+import logger from 'lib/logger';
 interface ContextProps {
   ballot: Ballot;
   transaction?: Transaction;
@@ -87,7 +88,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         const parsed = JSON.parse(prevBallot);
         setBallot(parsed);
       } catch (e) {
-        console.log(e);
+        logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
         setBallot({});
       }
@@ -225,14 +226,10 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(commentsRequest)
-          })
-            .then(() => {
-              // console.log('comment successfully added');
-            })
-            .catch(() => {
-              console.error('failed to add comment');
-              toast.error('Unable to store comments');
-            });
+          }).catch(() => {
+            logger.error('POST Polling Comments: failed to add comment');
+            toast.error('Unable to store comments');
+          });
         }
       },
       mined: (txId, txHash) => {

@@ -5,6 +5,7 @@ import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { BigNumber as BigNumberJs } from 'bignumber.js';
 import { parseUnits } from 'ethers/lib/utils';
+import logger from 'lib/logger';
 
 export type MKRInputProps = {
   placeholder?: string;
@@ -50,7 +51,7 @@ export function MKRInput({
 
       onChange(parseUnits(newValueStr));
     } catch (e) {
-      console.log(e);
+      logger.error(`MKRInput, invalid value: ${newValueStr}`, e);
       setErrorInvalidFormat(true);
       return;
     }

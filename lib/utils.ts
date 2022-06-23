@@ -7,6 +7,7 @@ import { CurrencyObject } from 'modules/app/types/currency';
 import { hexZeroPad, stripZeros } from 'ethers/lib/utils';
 
 import round from 'lodash/round';
+import logger from './logger';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -215,9 +216,7 @@ const windowOpen = (
           onClose(shareDialog);
         }
       } catch (e) {
-        /* eslint-disable no-console */
-        console.error(e);
-        /* eslint-enable no-console */
+        logger.error('Window open', e);
       }
     }, 1000);
   }
