@@ -216,7 +216,7 @@ const windowOpen = (
           onClose(shareDialog);
         }
       } catch (e) {
-        logger.error('Window open', e);
+        logger.error('windowOpen:', e);
       }
     }, 1000);
   }
