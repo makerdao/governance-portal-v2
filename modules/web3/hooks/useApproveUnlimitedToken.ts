@@ -27,7 +27,7 @@ export const useApproveUnlimitedToken = (name: ContractName): ApproveResponse =>
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
-  const token = useContracts()[name];
+  const token = useContracts({ readOnly: false })[name];
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

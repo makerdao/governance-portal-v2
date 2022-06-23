@@ -8,7 +8,7 @@ type HatResponse = {
 };
 
 export const useHat = (): HatResponse => {
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR<string>('/executive/hat', () => chief.hat());
 

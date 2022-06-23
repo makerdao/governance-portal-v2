@@ -11,7 +11,7 @@ type VoteDelegateAddressResponse = {
 
 // Returns the vote delegate contract address for a account
 export const useVoteDelegateAddress = (account?: string): VoteDelegateAddressResponse => {
-  const { voteDelegateFactory } = useContracts();
+  const { voteDelegateFactory } = useContracts({ readOnly: true });
 
   const { data, error, mutate } = useSWR(account ? `${account}/vote-delegate-address` : null, async () => {
     const vdAddress = await voteDelegateFactory.delegates(account as string);

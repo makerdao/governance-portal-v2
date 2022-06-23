@@ -8,7 +8,7 @@ type EsmIsActiveResponse = {
 };
 
 export const useEsmIsActive = (): EsmIsActiveResponse => {
-  const { end } = useContracts();
+  const { end } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${end.address}/esm-is-active`, async () => {
     const isLive = await end.live();

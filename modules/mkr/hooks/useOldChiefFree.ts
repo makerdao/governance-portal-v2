@@ -21,7 +21,7 @@ export const useOldChiefFree = (): FreeResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account, voteProxyOldContract } = useAccount();
-  const { chiefOld } = useContracts() as MainnetSdk;
+  const { chiefOld } = useContracts({ readOnly: false }) as MainnetSdk;
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

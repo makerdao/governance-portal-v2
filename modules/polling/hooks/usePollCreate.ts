@@ -27,7 +27,7 @@ export const usePollCreate = (): CreateResponse => {
 
   const { account } = useAccount();
   // We want to use the original polling contract deployment for creating polls to avoid pollId collisions
-  const { pollingOld } = useContracts() as MainnetSdk;
+  const { pollingOld } = useContracts({ readOnly: false }) as MainnetSdk;
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

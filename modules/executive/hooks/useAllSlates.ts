@@ -9,7 +9,7 @@ type AllSlatesResponse = {
 };
 
 export const useAllSlates = (): AllSlatesResponse => {
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`/${chief.address}/executive/all-slates`, async () => {
     const eventFragment = chief.interface.events['Etch(bytes32)'];

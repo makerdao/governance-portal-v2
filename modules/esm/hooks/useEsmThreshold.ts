@@ -9,7 +9,7 @@ type EsmThresholdResponse = {
 };
 
 export const useEsmThreshold = (): EsmThresholdResponse => {
-  const { esm } = useContracts();
+  const { esm } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${esm.address}/esm-threshold`, async () => {
     return await esm.min();

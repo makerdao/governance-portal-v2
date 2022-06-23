@@ -13,7 +13,7 @@ type DaiSavingsRateResponse = {
 };
 
 export const useDaiSavingsRate = (): DaiSavingsRateResponse => {
-  const { pot } = useContracts();
+  const { pot } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${pot.address}/dai-savings-rate`, async () => {
     const dsr = await pot.dsr();

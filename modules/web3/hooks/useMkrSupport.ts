@@ -10,7 +10,7 @@ type MkrSupportResponse = {
 };
 
 export const useMkrSupport = (proposalAddress: string): MkrSupportResponse => {
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   const { data, error, mutate } = useSWR<BigNumber>(`${proposalAddress}/executive/mkr-support`, async () => {
     return await chief.approvals(proposalAddress);

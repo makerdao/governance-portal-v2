@@ -10,7 +10,7 @@ type VoteProxyAddressResponse = {
 };
 
 export const useVoteProxyAddress = (account?: string): VoteProxyAddressResponse => {
-  const { voteProxyFactory } = useContracts();
+  const { voteProxyFactory } = useContracts({ readOnly: true });
   const { network } = useActiveWeb3React();
 
   const { data, error } = useSWR(account ? `${account}/vote-proxy-address` : null, async () => {

@@ -10,7 +10,7 @@ type EsmTotalStakedResponse = {
 };
 
 export const useEsmTotalStaked = (): EsmTotalStakedResponse => {
-  const { esm } = useContracts();
+  const { esm } = useContracts({ readOnly: true });
 
   const { data, error, mutate } = useSWR(`${esm.address}/esm-total-staked`, async () => {
     return await esm.Sum();

@@ -28,7 +28,7 @@ const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
-  const { chiefOld } = useContracts() as MainnetSdk;
+  const { chiefOld } = useContracts({ readOnly: true }) as MainnetSdk;
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU_OLD,

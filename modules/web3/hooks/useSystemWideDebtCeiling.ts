@@ -9,7 +9,7 @@ type SystemWideDebtCeilingResponse = {
 };
 
 export const useSystemWideDebtCeiling = (): SystemWideDebtCeilingResponse => {
-  const { vat } = useContracts();
+  const { vat } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${vat.address}/system-wide-debt-ceiling`, async () => {
     return await vat.Line();

@@ -9,7 +9,7 @@ type SystemSurplusResponse = {
 };
 
 export const useSystemSurplus = (): SystemSurplusResponse => {
-  const { vat, vow } = useContracts();
+  const { vat, vow } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${vat.address}/system-surplus`, async () => {
     const [dai, sin] = await Promise.all([await vat.dai(vow.address), await vat.sin(vow.address)]);

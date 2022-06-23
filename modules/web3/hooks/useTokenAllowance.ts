@@ -17,7 +17,7 @@ export const useTokenAllowance = (
   userAddress?: string,
   contractAddress?: string
 ): TokenAllowanceResponse => {
-  const token: ethers.Contract = useContracts()[name];
+  const token: ethers.Contract = useContracts({ readOnly: true })[name];
 
   const { data, error, mutate } = useSWR(
     userAddress && contractAddress ? ['token-balance', token.address, userAddress, contractAddress] : null,

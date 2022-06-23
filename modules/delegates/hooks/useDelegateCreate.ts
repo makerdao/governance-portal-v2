@@ -19,7 +19,7 @@ export const useDelegateCreate = (): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
-  const { voteDelegateFactory } = useContracts();
+  const { voteDelegateFactory } = useContracts({ readOnly: false });
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

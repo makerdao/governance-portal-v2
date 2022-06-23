@@ -11,7 +11,7 @@ type UseTotalSupplyResponse = {
 };
 
 export const useTotalSupply = (token: TokenName): UseTotalSupplyResponse => {
-  const contracts = useContracts();
+  const contracts = useContracts({ readOnly: true });
   const tokenContract = contracts[token];
 
   const { data, error, mutate } = useSWR(`${tokenContract.address}/${token}-total-supply`, async () => {

@@ -19,7 +19,7 @@ export const useChiefVote = (): VoteResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: false });
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

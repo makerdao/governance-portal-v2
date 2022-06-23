@@ -10,11 +10,11 @@ type Props = {
   account?: string | null;
 };
 
-export const useContracts = (): EthSdk => {
+export const useContracts = ({ readOnly }: { readOnly: boolean }): EthSdk => {
   const { chainId, library, account }: Props = useActiveWeb3React();
 
   const sdk = useMemo(
-    () => getContracts({ chainId: chainId ?? SupportedChainId.MAINNET, library, account, readOnly: false }),
+    () => getContracts({ chainId: chainId ?? SupportedChainId.MAINNET, library, account, readOnly }),
     [chainId, library, account]
   );
 

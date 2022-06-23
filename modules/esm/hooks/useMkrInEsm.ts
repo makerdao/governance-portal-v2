@@ -10,7 +10,7 @@ type MkrInEsmByAddressResponse = {
 };
 
 export const useMkrInEsmByAddress = (address?: string): MkrInEsmByAddressResponse => {
-  const { esm } = useContracts();
+  const { esm } = useContracts({ readOnly: true });
 
   const { data, error, mutate } = useSWR(`${esm.address}/mkr-in-esm/${address}`, async () => {
     if (!address) {

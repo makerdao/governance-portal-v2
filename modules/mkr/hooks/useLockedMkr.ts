@@ -15,7 +15,7 @@ export const useLockedMkr = (
   voteProxyAddress?: string | null,
   voteDelegateAddress?: string | null
 ): LockedMkrData => {
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   const addressToCache = voteProxyAddress && !voteDelegateAddress ? voteProxyAddress : address;
 

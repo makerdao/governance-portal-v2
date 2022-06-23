@@ -20,7 +20,7 @@ export const useLock = (): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account, voteProxyContract } = useAccount();
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: false });
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

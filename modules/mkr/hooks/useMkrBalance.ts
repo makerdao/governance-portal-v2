@@ -10,7 +10,7 @@ type MkrBalanceResponse = {
 };
 
 export const useMkrBalance = (address?: string): MkrBalanceResponse => {
-  const { mkr } = useContracts();
+  const { mkr } = useContracts({ readOnly: true });
   const { data, error, mutate } = useSWR(
     address ? ['/user/mkr-balance', address] : null,
     (_, address) => mkr.balanceOf(address),

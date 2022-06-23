@@ -24,7 +24,7 @@ export const useTokenBalance = (token: TokenName, address?: string): UseTokenBal
     account = activeWeb3.account;
   }
 
-  const contracts = useContracts();
+  const contracts = useContracts({ readOnly: true });
   const tokenContract = contracts[token];
 
   const { data, error, mutate } = useSWR(`${tokenContract.address}/${token}-balance/${account}`, async () => {

@@ -9,7 +9,7 @@ type CageTimeResponse = {
 };
 
 export const useCageTime = (): CageTimeResponse => {
-  const { end } = useContracts();
+  const { end } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${end.address}/cage-time`, async () => {
     return await end.when();

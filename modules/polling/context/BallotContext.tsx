@@ -187,7 +187,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     shallow
   );
 
-  const { polling } = useContracts();
+  const { polling } = useContracts({ readOnly: false });
 
   const submitBallot = () => {
     const pollIds: string[] = [];

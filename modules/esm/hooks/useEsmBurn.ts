@@ -20,7 +20,7 @@ export const useEsmBurn = (): BurnResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
-  const { esm } = useContracts();
+  const { esm } = useContracts({ readOnly: false });
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

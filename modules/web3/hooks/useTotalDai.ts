@@ -9,7 +9,7 @@ type TotalDaiResponse = {
 };
 
 export const useTotalDai = (): TotalDaiResponse => {
-  const { vat } = useContracts();
+  const { vat } = useContracts({ readOnly: true });
 
   const { data, error } = useSWR(`${vat.address}/total-dai`, async () => {
     return await vat.debt();

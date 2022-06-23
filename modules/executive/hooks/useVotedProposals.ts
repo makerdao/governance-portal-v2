@@ -13,7 +13,7 @@ type VotedProposalsResponse = {
 
 export const useVotedProposals = (passedAddress?: string): VotedProposalsResponse => {
   let addressToUse;
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   // if address is passed, fetch for that
   if (passedAddress) {

@@ -13,7 +13,7 @@ type MkrOnHatResponse = {
 
 export const useMkrOnHat = (): MkrOnHatResponse => {
   const { network } = useActiveWeb3React();
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   const { data, error, mutate } = useSWR(`${chief.address}/mkr-on-hat`, async () => {
     const hatAddress = await chief.hat();

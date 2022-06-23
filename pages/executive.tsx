@@ -76,7 +76,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-  const { chiefOld } = useContracts() as MainnetSdk;
+  const { chiefOld } = useContracts({ readOnly: true }) as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
   const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [

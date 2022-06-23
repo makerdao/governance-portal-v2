@@ -25,7 +25,7 @@ const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
-  const { chief } = useContracts();
+  const { chief } = useContracts({ readOnly: true });
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
