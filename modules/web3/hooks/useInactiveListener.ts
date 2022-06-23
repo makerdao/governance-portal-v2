@@ -13,7 +13,7 @@ export function useInactiveListener(suppress = false) {
       const handleChainChanged = () => {
         // eat errors
         activate(injectedConnector, undefined, true).catch(error => {
-          logger.error('Activate Web3 Connector: Failed to activate after chain changed', error);
+          logger.error('handleChainChanged: Failed to activate after chain changed', error);
         });
       };
 
@@ -21,7 +21,7 @@ export function useInactiveListener(suppress = false) {
         if (accounts.length > 0) {
           // eat errors
           activate(injectedConnector, undefined, true).catch(error => {
-            logger.error('Activate Web3 Connector: Failed to activate after accounts changed', error);
+            logger.error('handleAccountsChanged: Failed to activate after accounts changed', error);
           });
         }
       };
