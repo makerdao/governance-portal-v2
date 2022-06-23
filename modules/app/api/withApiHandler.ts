@@ -25,7 +25,7 @@ export default function withApiHandler(handler: NextApiHandler, { allowPost = fa
       const result = await handler(req, res);
       return result;
     } catch (error) {
-      logger.error(`API: ${req.method} ${req.url}`, error);
+      logger.error(`API: ${req.method} ${req.url}`, error.message);
       return res.status(500).json({
         error: {
           code: 'unexpected_error',
