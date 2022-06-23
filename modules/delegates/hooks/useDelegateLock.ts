@@ -30,7 +30,14 @@ export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {
     shallow
   );
 
-  const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, library, account);
+  const vdContract = getEthersContracts<VoteDelegate>({
+    contractAddress: voteDelegateAddress,
+    abi,
+    chainId,
+    library,
+    account,
+    readOnly: true
+  });
 
   const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
     const lockTxCreator = () => vdContract.lock(mkrToDeposit);

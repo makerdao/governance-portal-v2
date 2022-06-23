@@ -20,7 +20,14 @@ export const useCurrentUserVoteDelegateContract = (): VoteDelegateResponse => {
     const contract = useMemo(
       () =>
         contractAddress
-          ? getEthersContracts<VoteDelegate>(contractAddress, abi, chainId, library, account)
+          ? getEthersContracts<VoteDelegate>({
+              contractAddress,
+              abi,
+              chainId,
+              library,
+              account,
+              readOnly: true
+            })
           : undefined,
       [contractAddress]
     );

@@ -34,14 +34,14 @@ export const getVoteProxyAddresses = async (
   // first check if account is a proxy contract
   try {
     // assume account is a proxy contract
-    const vpContract = getEthersContracts<VoteProxy>(
-      account,
+    const vpContract = getEthersContracts<VoteProxy>({
+      contractAddress: account,
       abi,
-      networkNameToChainId(network),
-      undefined,
-      undefined,
-      true
-    );
+      chainId: networkNameToChainId(network),
+      library: undefined,
+      account: undefined,
+      readOnly: true
+    });
 
     // this will fail if vpContract is not an instance of vote proxy
     const [proxyAddressCold, proxyAddressHot] = await Promise.all([vpContract.hot(), vpContract.cold()]);
@@ -74,14 +74,14 @@ export const getVoteProxyAddresses = async (
 
     // found proxy contract, now determine hot and cold addresses
     if (voteProxyAddress) {
-      const vpContract = getEthersContracts(
-        voteProxyAddress,
+      const vpContract = getEthersContracts({
+        contractAddress: voteProxyAddress,
         abi,
-        networkNameToChainId(network),
-        undefined,
-        undefined,
-        true
-      );
+        chainId: networkNameToChainId(network),
+        library: undefined,
+        account: undefined,
+        readOnly: true
+      });
       hotAddress = hotAddress ?? (await vpContract.hot());
       coldAddress = coldAddress ?? (await vpContract.cold());
       hasProxy = true;

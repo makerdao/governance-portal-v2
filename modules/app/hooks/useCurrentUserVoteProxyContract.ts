@@ -20,7 +20,14 @@ export const useCurrentUserVoteProxyContract = (): VoteDelegateResponse => {
     const contract = useMemo(
       () =>
         data?.voteProxyAddress
-          ? getEthersContracts<VoteProxy>(data?.voteProxyAddress, abi, chainId, library, account)
+          ? getEthersContracts<VoteProxy>({
+              contractAddress: data?.voteProxyAddress,
+              abi,
+              chainId,
+              library,
+              account,
+              readOnly: true
+            })
           : undefined,
       [data?.voteProxyAddress]
     );

@@ -30,7 +30,14 @@ export const useDelegateFree = (voteDelegateAddress: string): LockResponse => {
     shallow
   );
 
-  const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, library, account);
+  const vdContract = getEthersContracts<VoteDelegate>({
+    contractAddress: voteDelegateAddress,
+    abi,
+    chainId,
+    library,
+    account,
+    readOnly: true
+  });
 
   const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
     const freeTxCreator = () => vdContract.free(mkrToWithdraw);

@@ -23,14 +23,14 @@ export const useMkrDelegated = (
   const { data, error, mutate } = useSWR(
     userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
     async () => {
-      const contract = getEthersContracts<VoteDelegate>(
-        voteDelegateAddress as string,
+      const contract = getEthersContracts<VoteDelegate>({
+        contractAddress: voteDelegateAddress as string,
         abi,
         chainId,
         library,
         account,
-        true
-      );
+        readOnly: true
+      });
 
       return await contract.stake(userAddress as string);
     },

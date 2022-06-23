@@ -6,7 +6,14 @@ import { networkNameToChainId } from './chain';
 
 export const getSpellContract = (address: string, network: SupportedNetworks): DsSpell => {
   const chainId = networkNameToChainId(network);
-  const spellContract = getEthersContracts<DsSpell>(address, spellAbi, chainId, undefined, undefined, true);
+  const spellContract = getEthersContracts<DsSpell>({
+    contractAddress: address,
+    abi: spellAbi,
+    chainId,
+    library: undefined,
+    account: undefined,
+    readOnly: true
+  });
 
   return spellContract;
 };
