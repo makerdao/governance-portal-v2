@@ -1,5 +1,7 @@
 import { Octokit } from '@octokit/core';
+import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { config } from 'lib/config';
+import { RepositoryInfo } from 'modules/delegates/api/getDelegatesRepositoryInfo';
 
 // Handle errors of configuration by disabling oktokit
 
@@ -49,5 +51,18 @@ export async function fetchGitHubPage(
     path
   });
 
+  return data;
+}
+
+export async function fetchGithubGraphQL(
+  { owner, repo, page }: RepositoryInfo,
+  query: string,
+  tokenNum: GithubTokens
+): Promise<GraphQlQueryResponseData> {
+  if (!octokits[tokenNum - 1]) {
+    return Promise.resolve([]);
+  }
+  const octokit = octokits[tokenNum - 1];
+  const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
   return data;
 }
