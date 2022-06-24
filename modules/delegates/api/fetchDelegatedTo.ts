@@ -14,7 +14,6 @@ export async function fetchDelegatedTo(
   network: SupportedNetworks
 ): Promise<DelegationHistory[]> {
   try {
-
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
@@ -27,8 +26,6 @@ export async function fetchDelegatedTo(
     const chainId = networkNameToChainId(network);
     const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
     const delegates = delegatesData.allDelegates.nodes;
-
-
 
     const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedTo.nodes;
 
@@ -44,7 +41,9 @@ export async function fetchDelegatedTo(
         );
         existing.events.push({ lockAmount, blockTimestamp, hash });
       } else {
-        const delegatingTo =  delegates.find(i => i?.voteDelegate?.toLowerCase() === immediateCaller.toLowerCase());
+        const delegatingTo = delegates.find(
+          i => i?.voteDelegate?.toLowerCase() === immediateCaller.toLowerCase()
+        );
         // Get the expiration date of the delegate
         const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
 
@@ -58,8 +57,6 @@ export async function fetchDelegatedTo(
 
       return acc;
     }, [] as DelegationHistory[]);
-
-
 
     // Sort by lockAmount, lockAmount is the total amount delegated currently
     return delegatedTo.sort((prev, next) =>

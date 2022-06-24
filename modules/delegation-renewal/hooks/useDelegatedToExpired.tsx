@@ -7,12 +7,17 @@ export default function useDelegatedToExpired(): boolean {
 
   const { data: delegatedToData } = useDelegatedTo(address, network);
 
-  const isADelegateAboutToExpire = delegatedToData.delegatedTo.reduce((prev, next) => {
-    // check if it has less than one week to expire or is expired
-    const isExpiredOrAboutToExpire = isBefore(new Date(next.expirationDate), sub(new Date(), { days: 7 }));
+  const isADelegateAboutToExpire = delegatedToData
+    ? delegatedToData.delegatedTo.reduce((prev, next) => {
+        // check if it has less than one week to expire or is expired
+        const isExpiredOrAboutToExpire = isBefore(
+          new Date(next.expirationDate),
+          sub(new Date(), { days: 7 })
+        );
 
-    return prev || isExpiredOrAboutToExpire;
-  }, false);
+        return prev || isExpiredOrAboutToExpire;
+      }, false)
+    : false;
 
   return isADelegateAboutToExpire;
 }

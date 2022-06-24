@@ -32,7 +32,7 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
     }
   );
 
-  const { data : delegatedToData } = useDelegatedTo(address, network);
+  const { data: delegatedToData } = useDelegatedTo(address, network);
 
   const tabTitles = ['Account Details', 'Comments'];
 
