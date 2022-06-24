@@ -25,8 +25,8 @@ export default function LastVoted({
       stroke: 'voterYellow'
     },
     orangeCalendar: {
-      fill: '#F77249',
-      stroke: '#F77249'
+      fill: '#F75524',
+      stroke: '#F75524'
     },
     redCalendar: {
       fill: '#FF0000',

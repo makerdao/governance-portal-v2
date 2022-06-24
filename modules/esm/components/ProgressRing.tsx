@@ -32,7 +32,7 @@ const ProgressRing = ({
           cy={radius}
         />
         <circle
-          stroke="#F77249"
+          stroke="#F75524"
           fill="transparent"
           strokeWidth={stroke}
           strokeDasharray={circumference + ' ' + circumference}
