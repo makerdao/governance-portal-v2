@@ -7,6 +7,7 @@ import { getSpellScheduledDate } from 'modules/web3/api/getSpellScheduledDate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SpellData } from '../types';
 import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
+import logger from 'lib/logger';
 
 export const getExecutiveMKRSupport = async (
   address: string,
@@ -16,7 +17,7 @@ export const getExecutiveMKRSupport = async (
     const approvals = await getChiefApprovals(address, network);
     return approvals.toString();
   } catch (e) {
-    console.error(`Error fetching approvals for ${address} on ${network}`, e);
+    logger.error(`getExecutiveMKRSupport: Error fetching approvals for ${address} on ${network}`, e);
     return new Promise<string>(res => res('0'));
   }
 };

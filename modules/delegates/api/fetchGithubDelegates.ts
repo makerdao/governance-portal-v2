@@ -8,6 +8,7 @@ import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation } from './getDelegatesRepositoryInfo';
 import { ethers } from 'ethers';
 import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
+import logger from 'lib/logger';
 
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
@@ -65,7 +66,7 @@ async function extractGithubInformation(
       cuMember
     };
   } catch (e) {
-    console.error('Error parsing folder from github delegate', e.message);
+    logger.error('extractGithubInformation: Error parsing folder from github delegate', e.message);
     return undefined;
   }
 }
@@ -166,7 +167,7 @@ export async function fetchGithubDelegates(
       data
     };
   } catch (e) {
-    console.error('Error fetching Github delegates ', e.message, 'Network', network);
+    logger.error('fetchGithubDelegates: Error fetching Github delegates ', e.message, 'Network', network);
     return { error: true };
   }
 }
@@ -211,7 +212,13 @@ export async function fetchGithubDelegate(
       data: userInfo
     };
   } catch (e) {
-    console.error('Error fetching Github delegate ', address, e.message, 'Network: ', network);
+    logger.error(
+      'fetchGithubDelegate: Error fetching Github delegate ',
+      address,
+      e.message,
+      'Network: ',
+      network
+    );
     return { error: true };
   }
 }

@@ -1,3 +1,4 @@
+import logger from 'lib/logger';
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import invariant from 'tiny-invariant';
 import { PollComment } from '../types/comments';
@@ -22,9 +23,10 @@ export async function insertPollComments(comments: PollComment[]): Promise<PollC
           };
         })
     );
+    logger.debug(`insertPollComments Inserted ${comments.length} comments.`);
   } catch (e) {
-    console.error(
-      `A MongoBulkWriteException occurred, but there are ${e.result.result.nInserted} successfully processed documents.`
+    logger.error(
+      `insertPollComments: A MongoBulkWriteException occurred, but there are ${e.result.result.nInserted} successfully processed documents.`
     );
   }
 

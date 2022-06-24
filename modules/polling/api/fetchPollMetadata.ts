@@ -3,6 +3,7 @@ import { Poll, PartialPoll } from '../types/poll';
 import { backoffRetry, timeoutPromise } from 'lib/utils';
 import matter from 'gray-matter';
 import { parsePollMetadata } from '../helpers/parsePollMetadata';
+import logger from 'lib/logger';
 
 async function fetchPollGithubDocument(url: string): Promise<string> {
   const document = await timeoutPromise(
@@ -24,13 +25,13 @@ export async function fetchPollMetadata(p: PartialPoll): Promise<Poll | null> {
 
   // If incorrect data, return null
   if (!poll || !poll.summary || !poll.options) {
-    console.error(`Poll ${p.pollId} incorrect data `);
+    logger.error(`fetchPollMetadata: Poll ${p.pollId} incorrect data `);
     return null;
   }
 
   // If the poll hasn't started yet return null
   if (new Date(poll.startDate).getTime() > Date.now()) {
-    console.error(`Poll ${p.pollId} hasn't started yet.`);
+    logger.error(`fetchPollMetadata: Poll ${p.pollId} hasn't started yet.`);
 
     return null;
   }

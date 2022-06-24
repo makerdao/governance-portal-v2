@@ -1,5 +1,6 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { withSentry } from '@sentry/nextjs';
+import logger from 'lib/logger';
 
 export default function withApiHandler(handler: NextApiHandler, { allowPost = false } = {}): NextApiHandler {
   return withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
@@ -24,7 +25,7 @@ export default function withApiHandler(handler: NextApiHandler, { allowPost = fa
       const result = await handler(req, res);
       return result;
     } catch (error) {
-      console.log('server error', error);
+      logger.error(`API: ${req.method} ${req.url}`, error.message);
       return res.status(500).json({
         error: {
           code: 'unexpected_error',
