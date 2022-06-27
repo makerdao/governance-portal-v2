@@ -1,11 +1,18 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { backoffRetry } from 'lib/utils';
 import BigNumber from 'bignumber.js';
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheDel, cacheGet, cacheSet } from 'lib/cache';
 import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
 import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
+import logger from 'lib/logger';
+
+export function deleteCachedPollTally(pollId: number, network: SupportedNetworks): void {
+  const cacheKey = `${network}-parsed-tally-${pollId}`;
+  logger.debug(`deleteCachedPollTally: ${pollId} - ${network}`);
+  cacheDel(cacheKey);
+}
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   const cacheKey = `${network}-parsed-tally-${poll.pollId}`;
@@ -53,7 +60,11 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   if ('rounds' in tally) (tallyObject as RawPollTallyRankedChoice).rounds = tally.rounds;
   const parsedTally = parseRawPollTally(tallyObject, poll);
 
-  cacheSet(cacheKey, JSON.stringify(parsedTally), network);
+  const fiveMinutesInMs = 5 * 60 * 1000;
+  const oneDayInMs = 24 * 60 * 60 * 1000;
+  const pollHasEnded = new Date(poll.endDate).getTime() < Date.now();
+
+  cacheSet(cacheKey, JSON.stringify(parsedTally), network, pollHasEnded ? oneDayInMs : fiveMinutesInMs);
 
   return parsedTally;
 }

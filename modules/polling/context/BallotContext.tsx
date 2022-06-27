@@ -210,12 +210,13 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
+        const comments = getComments();
         // if comment included, add to comments db
-        if (getComments().length > 0) {
+        if (comments.length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
             voterAddress: accountToUse || '',
             hotAddress: account || '',
-            comments: getComments(),
+            comments: comments,
             signedMessage: commentsSignature,
             txHash
           };
@@ -229,6 +230,11 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
           }).catch(() => {
             logger.error('POST Polling Comments: failed to add comment');
             toast.error('Unable to store comments');
+          });
+
+          // Invalidate tally cache for each voted poll
+          Object.keys(ballot).forEach(pollId => {
+            fetchJson(`/api/polling/tally/${pollId}/invalidate-cache`);
           });
         }
       },
