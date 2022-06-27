@@ -62,7 +62,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(parseUnits(lockAmount), undefined, undefined, true)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -97,7 +97,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           {typeof totalDelegated !== 'undefined' ? (
             <Text>{`${
               totalDelegated === 0
-                ? '0.0'
+                ? '0'
                 : new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)
             }%`}</Text>
           ) : (
