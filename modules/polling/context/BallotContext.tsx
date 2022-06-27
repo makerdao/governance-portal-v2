@@ -234,7 +234,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
           // Invalidate tally cache for each voted poll
           Object.keys(ballot).forEach(pollId => {
-            fetchJson(`/api/polling/tally/${pollId}/invalidate-cache`);
+            fetchJson(`/api/polling/tally/${pollId}/invalidate-cache?network=${network}`);
           });
         }
       },
