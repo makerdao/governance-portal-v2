@@ -24,9 +24,19 @@ function getFilePath(name: string, network: string): string {
 }
 
 export const cacheDel = (path: string): void => {
-  logger.debug('Delete cache', path);
-  fs.unlinkSync(path);
-  memoryCache[path] = null;
+  const isRedisCache = !!config.REDIS_URL;
+
+  if (isRedisCache && redis) {
+    redis?.del(path);
+  } else {
+    try {
+      logger.debug('cacheDel: ', path);
+      memoryCache[path] = null;
+      fs.unlinkSync(path);
+    } catch (e) {
+      logger.error(`cacheDel: ${e.message}`);
+    }
+  }
 };
 
 export const cacheGet = async (
@@ -104,9 +114,10 @@ export const cacheSet = (
   try {
     if (isRedisCache && redis) {
       // If redis cache is enabled, store in redis, with a TTL in seconds
-      logger.debug(`Redis cache set for ${path}`);
+      const expirySeconds = Math.round(expiryMs / 1000);
+      logger.debug(`Redis cache set for ${path}, with TTL ${expirySeconds} seconds`);
 
-      redis.set(path, data, 'EX', expiryMs / 1000);
+      redis.set(path, data, 'EX', expirySeconds);
     } else {
       // File cache
       if (Object.keys(fs).length === 0) return;
