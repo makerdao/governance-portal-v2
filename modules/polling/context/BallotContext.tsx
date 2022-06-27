@@ -301,16 +301,18 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const signatureValues = {
       voter: account.toLowerCase(),
       pollIds,
-      options: pollOptions
+      optionIds: pollOptions,
+      nonce: 1, //TODO: get this programatically by reading the contract
+      expiry: Math.trunc((Date.now() + 86400 * 1000) / 1000)
     };
 
     const signature = await signTypedBallotData(
-      account.toLowerCase(),
       signatureValues,
       library,
       networkNameToChainId(network)
     );
-
+    console.log('signature', signature);
+    //const msg = '0x' + msg;
     // fetchJson(`/api/polling/vote?network=${network}`, {
     //   method: 'POST',
     //   headers: {
