@@ -14,6 +14,7 @@ import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { PollsQueryVariables } from 'modules/gql/types';
+import logger from 'lib/logger';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -56,7 +57,8 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
     polls.push(...pollGroupWithData);
   }
 
-  console.log(
+  logger.warn(
+    'fetchAllPollsMetadata',
     `---
     Failed to fetch docs for ${numFailedFetches}/${pollList.length} polls.
     IDs: ${failedPollIds}`

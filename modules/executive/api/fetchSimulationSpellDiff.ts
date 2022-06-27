@@ -1,4 +1,5 @@
 import { fetchJson } from 'lib/fetchJson';
+import logger from 'lib/logger';
 import {
   SIGNATURE_CAST,
   SIMULATE_TX_ENDPOINT,
@@ -48,7 +49,7 @@ export async function fetchSimulationSpellDiffs(
 
     return validated;
   } catch (e) {
-    console.error('Error fetching simulated spell diffs:', e.message);
+    logger.error('fetchSimulationSpellDiffs: Error fetching simulated spell diffs:', e.message);
     return [];
   }
 }

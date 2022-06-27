@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { config } from 'lib/config';
+import logger from 'lib/logger';
 import { SupportedNetworks } from '../constants/networks';
 
 export async function getTrace(
@@ -15,7 +16,7 @@ export async function getTrace(
     return trace;
   } catch (err) {
     if (config.TRACING_RPC_NODE) {
-      console.log("Alchemy trace failed. Falling back to Maker's tracing node.");
+      logger.error("getTrace: Alchemy trace failed. Falling back to Maker's tracing node.", err.message);
       const trace = await new ethers.providers.JsonRpcProvider(config.TRACING_RPC_NODE).send(method, [
         parameters,
         ['vmTrace', 'stateDiff']

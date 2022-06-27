@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { hexStripZeros } from '@ethersproject/bytes';
 import { Web3Provider } from '@ethersproject/providers';
+import logger from 'lib/logger';
 import { SupportedChainId } from '../constants/chainID';
 import { CHAIN_INFO } from '../constants/networks';
 import { Chain } from '../types/chain';
@@ -36,7 +37,7 @@ export async function switchToNetwork({ library, chainId }: SwitchNetworkArgumen
       params: [{ chainId: formattedChainId }]
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`switchToNetwork: ${chainId}`, error);
     connectToNetwork(CHAIN_INFO[chainId], (window as any).ethereum as any);
     // metamask comes with goerli configuration so this is unecessary
     // but will leave it for future chains we may add

@@ -26,6 +26,7 @@ import { sign } from 'modules/web3/helpers/sign';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import logger from 'lib/logger';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -146,10 +147,9 @@ export default function DefaultVoteModalView({
             body: JSON.stringify(requestBody)
           })
             .then(() => {
-              // console.log('comment successfully added');
               mutateComments();
             })
-            .catch(() => console.error('failed to add comment'));
+            .catch(() => logger.error('POST executive comments: failed to add comment'));
         }
         onTransactionPending();
       },

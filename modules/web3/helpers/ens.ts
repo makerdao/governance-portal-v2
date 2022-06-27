@@ -1,6 +1,7 @@
 import { SupportedNetworks } from '../constants/networks';
 import { getDefaultProvider } from './getDefaultProvider';
 import { Web3Provider } from '@ethersproject/providers';
+import logger from 'lib/logger';
 
 export async function getENS({
   address,
@@ -13,7 +14,7 @@ export async function getENS({
     const name = await library.lookupAddress(address);
     return name;
   } catch (err) {
-    console.log(err);
+    logger.error(`getENS: ${address}. Unable to get ENS.`, err);
     return null;
   }
 }
@@ -25,7 +26,7 @@ export async function resolveENS(ensName: string): Promise<string | null> {
     const address = await provider.resolveName(ensName);
     return address;
   } catch (err) {
-    console.log(err);
+    logger.error(`resolveENS: ${ensName}. Unable to resolve.`, err);
     return null;
   }
 }
