@@ -9,7 +9,7 @@ import Tabs from 'modules/app/components/Tabs';
 import PollCreateModal from 'modules/polling/components/PollCreateModal';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
-import { validateUrl } from 'modules/polling/helpers/validator';
+import { validatePollFromRawURL } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
 import { formatDateWithTime } from 'lib/datetime';
@@ -18,6 +18,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { PollMarkdownEditor } from 'modules/polling/components/PollMarkdownEditor';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -34,7 +35,7 @@ const editMarkdown = (content, title) => {
 
 const CreateText = ({ children }) => {
   return (
-    <Text
+    <Box
       mb={3}
       sx={{
         width: '100%',
@@ -45,7 +46,7 @@ const CreateText = ({ children }) => {
       }}
     >
       {children}
-    </Text>
+    </Box>
   );
 };
 const PollingCreate = (): React.ReactElement => {
@@ -67,7 +68,7 @@ const PollingCreate = (): React.ReactElement => {
     resetForm();
 
     try {
-      const result = await validateUrl(url, {
+      const result = await validatePollFromRawURL(url, {
         pollId: 0,
         multiHash: '',
         slug: '',
@@ -114,9 +115,9 @@ const PollingCreate = (): React.ReactElement => {
               <Stack gap={3}>
                 <Tabs
                   tabListStyles={{ pl: [3, 4] }}
-                  tabTitles={['Poll Creator', 'Poll Explorer']}
+                  tabTitles={['Poll Creator', 'Poll Markdown Checker']}
                   tabPanels={[
-                    <div key={1} sx={{ p: [3, 4] }}>
+                    <div key={0} sx={{ p: [3, 4] }}>
                       <Box>
                         <Label htmlFor="url">URL</Label>
                         <Flex sx={{ flexDirection: 'row' }}>
@@ -148,8 +149,16 @@ const PollingCreate = (): React.ReactElement => {
                             <Text key={i}>{`${option}: ${poll.options[option]}`}</Text>
                           ))}
                       </CreateText>
-                      <Label>Vote Type</Label>
-                      <CreateText>{poll?.voteType}</CreateText>
+                      <Label>Input Format</Label>
+                      <CreateText>{poll?.parameters.inputFormat}</CreateText>
+                      <Label>Victory Conditions</Label>
+                      <CreateText>
+                        {poll?.parameters.victoryConditions.map(v => (
+                          <Box key={`victory-condition-${v.type}`}>{JSON.stringify(v)}</Box>
+                        ))}
+                      </CreateText>
+                      <Label>Result Display</Label>
+                      <CreateText>{poll?.parameters.resultDisplay}</CreateText>
                       <Label>Category</Label>
                       <CreateText>{poll?.tags.map(t => t.longname).join(', ')}</CreateText>
                       <Label>Poll Start Time</Label>
@@ -188,6 +197,9 @@ const PollingCreate = (): React.ReactElement => {
                           Reset Form
                         </Button>
                       </Flex>
+                    </div>,
+                    <div key={1} sx={{ p: [3, 4] }}>
+                      <PollMarkdownEditor />
                     </div>
                   ]}
                 />

@@ -8,7 +8,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 
-const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, ...otherProps }) => {
+const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'textMuted';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
@@ -38,7 +38,7 @@ const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject 
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
-  const { ballot, transaction, isPollOnBallot } = useContext(BallotContext);
+  const { transaction, isPollOnBallot } = useContext(BallotContext);
 
   const onBallot = isPollOnBallot(poll.pollId);
 
@@ -59,7 +59,6 @@ const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject 
       hasVoted={hasVoted}
       onBallot={onBallot}
       poll={poll}
-      option={ballot[poll.pollId]?.option}
       isMined={isMined}
       isPending={isPending}
     />

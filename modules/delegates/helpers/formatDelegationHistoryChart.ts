@@ -1,7 +1,5 @@
 import { MKRLockedDelegateAPIResponse } from '../types/delegate';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatIsoDateConversion } from 'lib/datetime';
-import { MKRWeightTimeRanges } from '../delegates.constants';
 import { MKRWeightHisory } from '../types/mkrWeight';
 import { format } from 'date-fns';
 import BigNumber from 'bignumber.js';
@@ -9,10 +7,7 @@ import { differenceInCalendarYears, subDays } from 'date-fns';
 
 export const formatDelegationHistoryChart = (
   lockEvents: MKRLockedDelegateAPIResponse[],
-  address: string,
-  from: number,
-  range: MKRWeightTimeRanges,
-  network: SupportedNetworks
+  from: number
 ): MKRWeightHisory[] => {
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days

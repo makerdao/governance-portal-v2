@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { SupportedChainId } from '../constants/chainID';
 import { Eip1193Bridge } from '@ethersproject/experimental';
+import logger from 'lib/logger';
 
 export class CustomizedBridge extends Eip1193Bridge {
   chainId = SupportedChainId.GOERLIFORK;
@@ -14,11 +15,11 @@ export class CustomizedBridge extends Eip1193Bridge {
   }
 
   async sendAsync(...args) {
-    console.debug('sendAsync called', ...args);
+    logger.debug('CustomizedBridge: sendAsync called', ...args);
     return this.send(...args);
   }
   async send(...args) {
-    console.debug('send called', ...args);
+    logger.debug('CustomizedBridge: send called', ...args);
     const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function';
     let callback;
     let method;
@@ -78,14 +79,14 @@ export class CustomizedBridge extends Eip1193Bridge {
         // All other transactions the base class works for
         result = await super.send(method, params);
       }
-      console.debug('result received', method, params, result);
+      logger.debug('CustomizedBridge: result received', method, params, result);
       if (isCallbackForm) {
         callback(null, { result });
       } else {
         return result;
       }
     } catch (error) {
-      console.log('error resolving result', method, params, error);
+      logger.error('CustomizedBridge: error resolving result', method, params, error);
       if (isCallbackForm) {
         callback(error, null);
       } else {

@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import Header from '../layout/Header';
 import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import { useWeb3React } from '@web3-react/core';
@@ -30,7 +30,7 @@ describe('Header component', () => {
 
   test('finds icons and an empty connect button', async () => {
     render(<Header />);
-    const [makerIcon, menuIcon] = await screen.findAllByRole('presentation');
+    const [makerIcon] = await screen.findAllByRole('presentation');
 
     expect(makerIcon).toBeInTheDocument();
 

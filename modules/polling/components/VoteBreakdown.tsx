@@ -4,11 +4,11 @@ import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+import { isResultDisplayInstantRunoffBreakdown } from '../helpers/utils';
 
 export default function VoteBreakdown({
   poll,
@@ -22,7 +22,7 @@ export default function VoteBreakdown({
   //never use scientific notation when converting BigNumber toString
   BigNumberJS.config({ EXPONENTIAL_AT: 1e9 });
 
-  if (poll.voteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN)) {
+  if (isResultDisplayInstantRunoffBreakdown(poll.parameters)) {
     return (
       <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
         <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
@@ -53,7 +53,14 @@ export default function VoteBreakdown({
                     </Delay>
                   )}
                   {tallyResult ? (
-                    <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+                    <Text
+                      as="p"
+                      sx={{
+                        color: 'textSecondary',
+                        width: tally ? 'unset' : '30%',
+                        textAlign: ['left', 'right']
+                      }}
+                    >
                       {`${formatValue(
                         parseUnits(firstChoice.plus(transfer).toString())
                       )} MKR Voting (${formatValue(
@@ -169,7 +176,7 @@ export default function VoteBreakdown({
                       backgroundColor: 'muted',
                       mb: '3',
                       height: 2,
-                      color: getVoteColor(parseInt(tallyResult.optionId), poll.voteType)
+                      color: getVoteColor(parseInt(tallyResult.optionId), poll.parameters.inputFormat)
                     }}
                     max={tally.totalMkrParticipation}
                     value={mkrSupport}

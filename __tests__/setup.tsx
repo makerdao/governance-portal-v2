@@ -4,6 +4,7 @@ import { mockIntersectionObserver } from '../__tests__/helpers';
 import { getENS } from 'modules/web3/helpers/ens';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import { config } from 'lib/config';
 
 // Node/Jest don't have 'fetch' bc it's injected by next.js into global
 // requiring next here applies the polyfills for fetch needed for some tests
@@ -57,4 +58,7 @@ beforeAll(async () => {
 
   // Mock ens calls
   (getENS as jest.Mock).mockReturnValue('');
+  
+  config.REDIS_URL = '';
+  config.USE_CACHE = 'false';
 });

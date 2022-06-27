@@ -38,7 +38,7 @@ const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
     const weight = numB.div(denomB).times(100);
     return formatValue(parseUnits(weight.toString()));
   } catch (e) {
-    return '0.0';
+    return '0';
   }
 };
 
@@ -278,7 +278,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
                 variant="caps"
                 onClick={() => changeSort('mkr')}
               >
-                {bpi < 1 ? 'Weight' : 'Voting Weight'}
+                {bpi < 1 ? '%' : 'Voting Weight'}
                 {sortBy.type === 'mkr' ? (
                   sortBy.order === 1 ? (
                     <Icon name="chevron_down" size={2} ml={1} />
@@ -297,7 +297,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
         </thead>
         <tbody>
           {sortedDelegators ? (
-            sortedDelegators.map((delegator, i) => (
+            sortedDelegators.map(delegator => (
               <CollapsableRow
                 key={delegator.address}
                 delegator={delegator}

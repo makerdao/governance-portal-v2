@@ -132,8 +132,8 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
-  const { data: gas } = useGasPrice();
   const { network } = useActiveWeb3React();
+  const { data: gas } = useGasPrice({ network });
   const { cache } = useSWRConfig();
   const [mode, setMode] = useColorMode();
 

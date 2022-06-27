@@ -17,12 +17,10 @@ import FilterButton from 'modules/app/components/FilterButton';
 import { useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { format } from 'date-fns';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { formatDelegationHistoryChart } from '../helpers/formatDelegationHistoryChart';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
-  const { network } = useActiveWeb3React();
 
   // Time ranges
   const oneDay = 24 * 60 * 60 * 1000;
@@ -55,13 +53,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
 
-  const data = formatDelegationHistoryChart(
-    delegate.mkrLockedDelegate,
-    delegate.voteDelegateAddress,
-    selectedTimeFrame.from,
-    selectedTimeFrame.range,
-    network
-  );
+  const data = formatDelegationHistoryChart(delegate.mkrLockedDelegate, selectedTimeFrame.from);
 
   function renderTooltip(item) {
     const monthMKR = data ? data.find(i => i.date === item.label) : null;
@@ -84,6 +76,10 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
       return 'auto';
     }
     return format(new Date(tickItem.toISOString()), dateFormat);
+  };
+
+  const formatYAxis = tickItem => {
+    return tickItem.toLocaleString();
   };
 
   return (
@@ -159,27 +155,13 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
               viewBox: { height: 10, width: 10, x: 20, y: 300 }
             }}
             tickMargin={5}
+            tickFormatter={formatYAxis}
           />
 
           <CartesianGrid stroke="#D5D9E0" strokeDasharray="5 5" />
           <Tooltip content={renderTooltip} />
 
-          {/* <Area
-            activeDot={false}
-            dataKey="averageMKRDelegated"
-            dot={false}
-            stroke={'#D4D9E1'}
-            fill="transparent"
-            type="monotone"
-          /> */}
-
-          <Area
-            dataKey="MKR"
-            stroke={'#1AAB9B'}
-            type="monotone"
-            // dot={{ stroke: '#1AAB9B', strokeWidth: 2 }}
-            fill="url(#gradientFront)"
-          />
+          <Area dataKey="MKR" stroke={'#1AAB9B'} type="monotone" fill="url(#gradientFront)" />
 
           <ReferenceLine stroke={'#D4D9E1'} x={0} y={0} />
         </AreaChart>
@@ -204,20 +186,6 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             MKR delegated to this delegate
           </Text>
         </Box>
-
-        {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
-            style={{
-              width: '23px',
-              height: '2px',
-              background: theme.colors?.secondary as string,
-              marginRight: '8px'
-            }}
-          />
-          <Text variant="secondary" color="onSurface">
-            Average voting weight of all delegates
-          </Text>
-        </Box> */}
       </Box>
     </Box>
   );

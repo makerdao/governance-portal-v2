@@ -1,14 +1,9 @@
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally, PluralityResult, RankedChoiceResult } from '../types';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import BigNumber from 'bignumber.js';
+import { isPluralityVictoryConditionPoll, isRankedChoiceVictoryConditionPoll } from './utils';
 
-// Compliments the on-chain tally with a results object that is used on the front-end for data representation
-export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally {
-  invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
-
-  const winningOptionName = rawTally?.winner === null ? 'None found' : poll.options[rawTally.winner];
-
+export function getRankedChoiceResults(rawTally: RawPollTally, poll: Poll): RankedChoiceResult[] {
   const rankedChoiceResult: RankedChoiceResult[] = Object.keys(poll.options)
     .map(key => {
       return {
@@ -41,6 +36,10 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       return valueA.gt(valueB) ? -1 : 1;
     });
 
+  return rankedChoiceResult;
+}
+
+export function getPluralityResults(rawTally: RawPollTally, poll: Poll): PluralityResult[] {
   const pluralityResult: PluralityResult[] = Object.keys(poll.options)
     .map(key => {
       const result: PluralityResult = {
@@ -66,16 +65,46 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       return valueA.gt(valueB) ? -1 : 1;
     });
 
+  return pluralityResult;
+}
+
+// Compliments the on-chain tally with a results object that is used on the front-end for data representation
+export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally {
+  invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
+
+  const winningOptionName = rawTally?.winner === null ? 'None found' : poll.options[rawTally.winner];
+
   // Now we have created the results object, we intentionally omit 'options' to avoid confusion
   const {
     options: _, // eslint-disable-line @typescript-eslint/no-unused-vars
     ...remainder
   } = rawTally;
 
-  return {
-    ...remainder,
-    results: poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? pluralityResult : rankedChoiceResult,
-    totalMkrParticipation: rawTally.totalMkrParticipation.toNumber(),
-    winningOptionName
-  } as PollTally;
+  const totalMkrParticipation = rawTally.totalMkrParticipation.toNumber();
+
+  const isRanked = isRankedChoiceVictoryConditionPoll(poll.parameters);
+
+  const isPlurality = isPluralityVictoryConditionPoll(poll.parameters);
+
+  // TODO: Not supported yet, but introduced in the codebase as an example of logic extension.
+  // const isMajority = poll.parameters.victoryConditions.find(v => v.type === PollVictoryConditions.majority);
+
+  // Select the logic to format the results based on the victory condition
+  if (isRanked) {
+    return {
+      ...remainder,
+      results: getRankedChoiceResults(rawTally, poll),
+      totalMkrParticipation,
+      winningOptionName
+    } as PollTally;
+  } else if (isPlurality) {
+    return {
+      ...remainder,
+      results: getPluralityResults(rawTally, poll),
+      totalMkrParticipation,
+      winningOptionName
+    } as PollTally;
+  } else {
+    throw new Error('Victory condition not supported');
+  }
 }

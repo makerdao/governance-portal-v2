@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { Poll, PartialPoll } from 'modules/polling/types';
 import { parsePollMetadata } from './parsePollMetadata';
 import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
+import { validatePollParameters } from './validatePollParameters';
 
 type ValidationResult = {
   valid: boolean;
@@ -11,10 +12,10 @@ type ValidationResult = {
   wholeDoc?: string;
 };
 
-export async function validateUrl(url: string, poll?: PartialPoll): Promise<ValidationResult> {
+export async function validatePollFromRawURL(url: string, poll?: PartialPoll): Promise<ValidationResult> {
   const resp = await fetch(url);
   const text = await resp.text();
-  const result = validateText(text);
+  const result = validatePollMarkdown(text);
   if (result.valid && poll) {
     result.wholeDoc = text;
     result.parsedData = await parsePollMetadata(poll, text);
@@ -22,16 +23,22 @@ export async function validateUrl(url: string, poll?: PartialPoll): Promise<Vali
   return result;
 }
 
-export function validateText(text: string): ValidationResult {
+export function validatePollMarkdown(text: string): ValidationResult {
   try {
     const { data, content } = matter(text);
     if (!content) return { valid: false, errors: ['Document is blank'] };
     if (isEmpty(data)) return { valid: false, errors: ['Front matter is blank'] };
     const errors: string[] = [];
 
-    // vote type
-    if (!POLL_VOTE_TYPES_ARRAY.includes(data.vote_type)) {
+    // poll parameters | vote type. Vote type is for old polls, parameters for new polls
+    if (data.vote_type && !POLL_VOTE_TYPES_ARRAY.includes(data.vote_type)) {
       errors.push(`Invalid vote type: "${data.vote_type}"`);
+    }
+    if (!data.vote_type) {
+      const [parameters, errorParameters] = validatePollParameters(data.parameters);
+      if (!parameters) {
+        errorParameters.forEach(e => errors.push(e));
+      }
     }
 
     // vote options

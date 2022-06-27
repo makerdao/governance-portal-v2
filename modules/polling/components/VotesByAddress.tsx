@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { PollTally, Poll } from 'modules/polling/types';
@@ -8,6 +8,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { formatValue } from 'lib/string';
 
 type Props = {
   tally: PollTally;
@@ -144,7 +145,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                 <tr key={`voter-${v.voter}-${i}`} data-testid="vote-by-address">
                   <Text
                     as="td"
-                    sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3, verticalAlign: 'top', wordBreak: 'break-word' }}
+                    sx={{ pb: 2, fontSize: [1, 3], verticalAlign: 'top', wordBreak: 'break-word' }}
                   >
                     <InternalLink href={`/address/${v.voter}`} title="View address detail">
                       <AddressIconBox
@@ -157,7 +158,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Box
                     as="td"
                     sx={{
-                      color: getVoteColor(v.optionId, poll.voteType),
+                      color: getVoteColor(v.optionId, poll.parameters.inputFormat),
                       pb: 2
                     }}
                   >
@@ -175,22 +176,20 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                         </Box>
                       ))
                     ) : (
-                      <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>{poll.options[v.optionId]}</Text>
+                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.optionId]}</Text>
                     )}
                   </Box>
-                  <Text as="td" sx={{ textAlign: 'left', pb: 2 }}>
+                  <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
                     {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                   >
-                    {`${
-                      new BigNumber(v.mkrSupport).lte(0.01)
-                        ? '≈0.00'
-                        : new BigNumber(v.mkrSupport).toFormat(new BigNumber(v.mkrSupport).gt(999) ? 0 : 2)
-                    }${bpi > 0 ? ' MKR' : ''}`}{' '}
+                    {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
+                      bpi > 0 ? ' MKR' : ''
+                    }`}
                   </Text>
                 </tr>
               ))}

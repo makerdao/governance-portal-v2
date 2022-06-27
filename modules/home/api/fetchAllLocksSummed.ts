@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { format } from 'date-fns';
+import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allLocksSummed } from 'modules/gql/queries/allLocksSummed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -21,7 +22,7 @@ export default async function fetchAllLocksSummed(
       }
     });
 
-    const locks: AllLocksResponse[] = data?.allLocksSummed?.nodes.map((x, i) => {
+    const locks: AllLocksResponse[] = data?.allLocksSummed?.nodes.map(x => {
       x.unixDate = Math.floor(new Date(x.blockTimestamp).getTime() / 1000);
       x.total = new BigNumber(x.lockTotal).div(1000).toFixed(0);
       x.month = format(new Date(x.blockTimestamp), 'M');
@@ -30,7 +31,11 @@ export default async function fetchAllLocksSummed(
 
     return locks;
   } catch (e) {
-    console.error('Error fetching all lock events', e);
+    logger.error(
+      'fetchAllLocksSummed: Error fetching all lock events',
+      `Start: ${unixtimeStart}, End: ${unixtimeEnd}, Network: ${network}`,
+      e
+    );
   }
   return [];
 }

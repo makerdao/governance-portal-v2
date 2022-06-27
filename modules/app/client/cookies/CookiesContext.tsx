@@ -15,12 +15,12 @@ export const CookiesContext = createContext<{
 }>({
   accepted: false,
   loaded: false,
-  accept: (val: CookiesType) => null,
+  accept: () => null,
   cookies: {
     statistics: true,
     functional: true
   },
-  setCookies: (val: CookiesType) => null
+  setCookies: () => null
 });
 
 export const CookiesProvider = ({

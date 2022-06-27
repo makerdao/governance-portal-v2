@@ -4,6 +4,7 @@ import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { isAndroid, isIOS } from 'react-device-detect';
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -237,7 +238,11 @@ const AccountSelect = (): React.ReactElement => {
       <Flex
         sx={walletButtonStyle}
         key={connectorName}
-        onClick={() => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)}
+        onClick={
+          (isAndroid || isIOS) && SUPPORTED_WALLETS[connectorName].deeplinkUri
+            ? () => window.location.replace(SUPPORTED_WALLETS[connectorName].deeplinkUri)
+            : () => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)
+        }
       >
         <Icon name={SUPPORTED_WALLETS[connectorName].name} />
         <Text sx={{ ml: 3 }}>

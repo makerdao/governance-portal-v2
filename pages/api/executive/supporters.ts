@@ -19,7 +19,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   // handle percent and check address
   Object.keys(allSupporters).forEach(spell => {
     allSupporters[spell].forEach(supporter => {
-      if (supporter.percent === 'NaN') supporter.percent = '0.00';
+      if (supporter.percent === 'NaN') supporter.percent = '0';
     });
   });
 

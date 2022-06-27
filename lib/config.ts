@@ -1,5 +1,5 @@
 type SystemConfig = {
-  USE_FS_CACHE: string;
+  USE_CACHE: string;
   ALCHEMY_KEY: string;
   INFURA_KEY: string;
   ETHERSCAN_KEY: string;
@@ -13,10 +13,11 @@ type SystemConfig = {
   GITHUB_TOKEN_3: string;
   MIXPANEL_PROD: string;
   MIXPANEL_DEV: string;
+  REDIS_URL: string;
 };
 
 export const config: SystemConfig = {
-  USE_FS_CACHE: process.env.USE_FS_CACHE || '',
+  USE_CACHE: process.env.USE_CACHE || '',
   ALCHEMY_KEY: process.env.ALCHEMY_KEY || '',
   INFURA_KEY: process.env.INFURA_KEY || '',
   ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
@@ -29,5 +30,6 @@ export const config: SystemConfig = {
   GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',
   GITHUB_TOKEN_3: process.env.GITHUB_TOKEN_3 || '',
   MIXPANEL_PROD: process.env.NEXT_PUBLIC_MIXPANEL_PROD || '',
-  MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || ''
+  MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
+  REDIS_URL: process.env.REDIS_URL || ''
 };

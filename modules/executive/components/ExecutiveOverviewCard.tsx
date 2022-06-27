@@ -18,6 +18,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
+import { StatusText } from 'modules/app/components/StatusText';
 
 type Props = {
   proposal: Proposal;
@@ -192,18 +193,9 @@ export default function ExecutiveOverviewCard({
       <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
         <Divider my={0} />
         <Flex sx={{ py: 2, justifyContent: 'center' }}>
-          <Text
-            data-testid="proposal-status"
-            as="p"
-            variant="caps"
-            sx={{
-              textAlign: 'center',
-              px: [3, 4],
-              wordBreak: 'break-word'
-            }}
-          >
+          <StatusText testId="proposal-status">
             {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, mkrOnHat })}
-          </Text>
+          </StatusText>
         </Flex>
       </Flex>
     </Card>

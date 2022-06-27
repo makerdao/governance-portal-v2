@@ -1,3 +1,4 @@
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchSpockPollById } from '../fetchPollBy';
 import { fetchTallyPlurality } from '../fetchTallyPlurality';
@@ -39,11 +40,10 @@ describe('Fetch tally plurality', () => {
       }
     });
 
-    const result = await fetchTallyPlurality(1, 'mainnet');
+    const result = await fetchTallyPlurality(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       winner: '1',
-      pollVoteType: 'Plurality Voting',
       totalMkrParticipation: '809',
       numVoters: 5,
       options: {
@@ -97,11 +97,10 @@ describe('Fetch tally plurality', () => {
       }
     });
 
-    const result = await fetchTallyPlurality(1, 'mainnet');
+    const result = await fetchTallyPlurality(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       winner: '2',
-      pollVoteType: 'Plurality Voting',
 
       totalMkrParticipation: '2041',
       numVoters: 7,
@@ -131,11 +130,10 @@ describe('Fetch tally plurality', () => {
       }
     });
 
-    const result = await fetchTallyPlurality(1, 'mainnet');
+    const result = await fetchTallyPlurality(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       winner: null,
-      pollVoteType: 'Plurality Voting',
 
       totalMkrParticipation: '0',
       numVoters: 0,
@@ -181,11 +179,10 @@ describe('Fetch tally plurality', () => {
       }
     });
 
-    const result = await fetchTallyPlurality(1, 'mainnet');
+    const result = await fetchTallyPlurality(1, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       winner: '1',
-      pollVoteType: 'Plurality Voting',
 
       totalMkrParticipation: '2041',
       numVoters: 7,
