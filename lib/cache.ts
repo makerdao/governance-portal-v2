@@ -114,9 +114,10 @@ export const cacheSet = (
   try {
     if (isRedisCache && redis) {
       // If redis cache is enabled, store in redis, with a TTL in seconds
-      logger.debug(`Redis cache set for ${path}`);
+      const expirySeconds = Math.round(expiryMs / 1000);
+      logger.debug(`Redis cache set for ${path}, with TTL ${expirySeconds} seconds`);
 
-      redis.set(path, data, 'EX', expiryMs / 1000);
+      redis.set(path, data, 'EX', expirySeconds);
     } else {
       // File cache
       if (Object.keys(fs).length === 0) return;
