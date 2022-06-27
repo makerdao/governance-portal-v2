@@ -15,7 +15,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import AddressIconBox from './AddressIconBox';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
-import { formatMkrAmount } from 'lib/utils';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
@@ -63,9 +62,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${formatMkrAmount(formatValue(parseUnits(lockAmount), undefined, undefined, false))}${
-            bpi > 0 ? ' MKR' : ''
-          }`}
+          {`${formatValue(parseUnits(lockAmount), undefined, undefined, true)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>

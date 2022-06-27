@@ -1,6 +1,7 @@
 import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'bignumber.js';
+import BigNumberJS from 'bignumber.js';
+import { BigNumber } from 'ethers';
 import { PollTally, Poll } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
@@ -8,7 +9,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { formatMkrAmount } from 'lib/utils';
+import { formatValue } from 'lib/string';
 
 type Props = {
   tally: PollTally;
@@ -180,14 +181,16 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     )}
                   </Box>
                   <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
-                    {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
+                    {`${new BigNumberJS(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
                     sx={{ textAlign: 'right', pbnu: 2, fontSize: [1, 3] }}
                   >
-                    {`${formatMkrAmount(v.mkrSupport)}${bpi > 0 ? ' MKR' : ''}`}
+                    {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
+                      bpi > 0 ? ' MKR' : ''
+                    }`}
                   </Text>
                 </tr>
               ))}
