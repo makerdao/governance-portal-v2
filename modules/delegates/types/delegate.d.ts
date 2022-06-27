@@ -52,9 +52,12 @@ export type Delegate = {
 
 export type DelegationHistory = {
   address: string;
-  expirationDate: Date;
   lockAmount: string;
   events: DelegationHistoryEvent[];
+};
+
+export type DelegationHistoryWithExpirationDate = DelegationHistory & {
+  expirationDate: Date;
 };
 
 export type DelegationHistoryEvent = {

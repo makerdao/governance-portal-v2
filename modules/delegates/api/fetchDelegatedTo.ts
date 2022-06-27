@@ -7,12 +7,12 @@ import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { mkrDelegatedTo } from 'modules/gql/queries/mkrDelegatedTo';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { DelegationHistory, MKRDelegatedToDAIResponse } from '../types';
+import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
 
 export async function fetchDelegatedTo(
   address: string,
   network: SupportedNetworks
-): Promise<DelegationHistory[]> {
+): Promise<DelegationHistoryWithExpirationDate[]> {
   try {
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
@@ -31,7 +31,7 @@ export async function fetchDelegatedTo(
 
     const delegatedTo = res.reduce((acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === immediateCaller) as
-        | DelegationHistory
+        | DelegationHistoryWithExpirationDate
         | undefined;
 
       // We sum the total of lockAmounts in different events to calculate the current delegated amount
@@ -52,11 +52,11 @@ export async function fetchDelegatedTo(
           expirationDate,
           lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
           events: [{ lockAmount, blockTimestamp, hash }]
-        } as DelegationHistory);
+        } as DelegationHistoryWithExpirationDate);
       }
 
       return acc;
-    }, [] as DelegationHistory[]);
+    }, [] as DelegationHistoryWithExpirationDate[]);
 
     // Sort by lockAmount, lockAmount is the total amount delegated currently
     return delegatedTo.sort((prev, next) =>

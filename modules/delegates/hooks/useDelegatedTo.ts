@@ -7,7 +7,7 @@ export default function useDelegatedTo(
   address: string | undefined,
   network: SupportedNetworks
 ): {
-  data: MKRDelegatedToAPIResponse;
+  data: MKRDelegatedToAPIResponse | undefined;
 } {
   const { data } = useSWR<MKRDelegatedToAPIResponse>(
     address ? `/api/address/${address}/delegated-to?network=${network}` : null,
