@@ -1,14 +1,9 @@
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
 import { Poll, PollParameters, PollVote } from '../types';
 
-export function pollHasEnded(poll: Poll): boolean {
-  const now = Date.now();
-  return new Date(poll.endDate).getTime() < now;
-}
-
 export function isActivePoll(poll: Poll): boolean {
   const now = Date.now();
-  if (pollHasEnded(poll)) return false;
+  if (new Date(poll.endDate).getTime() < now) return false;
   if (new Date(poll.startDate).getTime() > now) return false;
   return true;
 }

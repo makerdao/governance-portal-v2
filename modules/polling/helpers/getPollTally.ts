@@ -6,8 +6,8 @@ import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
 import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import logger from 'lib/logger';
-import { pollHasEnded } from './utils';
 
 const getPollTallyCacheKey = (pollId: number) => `parsed-tally-${pollId}`;
 
@@ -65,9 +65,8 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
 
   const fiveMinutesInMs = 5 * 60 * 1000;
   const oneDayInMs = 24 * 60 * 60 * 1000;
-  const pollEnded = pollHasEnded(poll);
 
-  cacheSet(cacheKey, JSON.stringify(parsedTally), network, pollEnded ? oneDayInMs : fiveMinutesInMs);
+  cacheSet(cacheKey, JSON.stringify(parsedTally), network, isActivePoll(poll) ? fiveMinutesInMs : oneDayInMs);
 
   return parsedTally;
 }
