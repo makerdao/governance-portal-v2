@@ -1,7 +1,6 @@
 import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumberJS from 'bignumber.js';
-import { BigNumber } from 'ethers';
+import BigNumber from 'bignumber.js';
 import { PollTally, Poll } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
@@ -181,12 +180,12 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     )}
                   </Box>
                   <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
-                    {`${new BigNumberJS(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
+                    {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'right', pbnu: 2, fontSize: [1, 3] }}
+                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                   >
                     {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
                       bpi > 0 ? ' MKR' : ''
