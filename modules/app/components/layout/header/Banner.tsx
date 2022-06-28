@@ -6,10 +6,16 @@ const scroll = keyframes({
   to: { transform: 'translate(-60vw, 0)' }
 });
 
-const Banner = ({ content }: { content: string | React.ReactElement }): React.ReactElement => {
+const Banner = ({
+  content,
+  variant = 'banner'
+}: {
+  content: string | React.ReactElement;
+  variant?: string;
+}): React.ReactElement => {
   return (
     <Alert
-      variant="banner"
+      variant={variant}
       sx={{
         px: 0
       }}
@@ -19,7 +25,6 @@ const Banner = ({ content }: { content: string | React.ReactElement }): React.Re
           sx={{
             m: 'auto',
             fontSize: 2,
-            fontWeight: 'body',
             animation: `${scroll} 30s linear infinite`
           }}
         >

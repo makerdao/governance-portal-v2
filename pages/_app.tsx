@@ -27,6 +27,8 @@ import debug from 'debug';
 import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
+import useDelegatedToExpired from 'modules/delegation-renewal/hooks/useDelegatedToExpired';
+import DelegatingExpiryWarningBanner from 'modules/delegation-renewal/components/DelegatingExpiryWarningBanner';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
@@ -34,76 +36,83 @@ const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/component
 });
 export const reportWebVitals = vitalslog;
 
-const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
+const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
+  const delegateExpiration = useDelegatedToExpired();
 
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ReactProviderDefault getLibrary={getLibrary}>
-        {/* @ts-ignore */}
-        <ThemeProvider theme={theme}>
-          <NextNprogress
-            color="#1aab9b"
-            startPosition={0.3}
-            stopDelayMs={200}
-            height={3}
-            showOnShallow={true}
-            options={{ showSpinner: false }}
-          />
-          <AccountProvider>
-            <BallotProvider>
-              <HeadComponent />
-              {process.env.NODE_ENV === 'production' && (
-                <Script
-                  data-goatcounter="https://dux-makerdao.goatcounter.com/count"
-                  async
-                  src="//gc.zgo.at/count.js"
-                  strategy="afterInteractive"
+    <ThemeProvider theme={theme as any}>
+      <NextNprogress
+        color="#1aab9b"
+        startPosition={0.3}
+        stopDelayMs={200}
+        height={3}
+        showOnShallow={true}
+        options={{ showSpinner: false }}
+      />
+      <AccountProvider>
+        <BallotProvider>
+          <HeadComponent />
+          {process.env.NODE_ENV === 'production' && (
+            <Script
+              data-goatcounter="https://dux-makerdao.goatcounter.com/count"
+              async
+              src="//gc.zgo.at/count.js"
+              strategy="afterInteractive"
+            />
+          )}
+          <CookiesProvider disabled={false}>
+            <AnalyticsProvider>
+              <SWRConfig
+                value={{
+                  // default to 60 second refresh intervals
+                  refreshInterval: 60000,
+                  revalidateOnMount: true,
+                  fetcher: url => fetchJson(url)
+                }}
+              >
+                <Global
+                  styles={{
+                    '*': {
+                      WebkitFontSmoothing: 'antialiased',
+                      MozOsxFontSmoothing: 'grayscale'
+                    }
+                  }}
                 />
-              )}
-              <CookiesProvider disabled={false}>
-                <AnalyticsProvider>
-                  <SWRConfig
-                    value={{
-                      // default to 60 second refresh intervals
-                      refreshInterval: 60000,
-                      revalidateOnMount: true,
-                      fetcher: url => fetchJson(url)
-                    }}
-                  >
-                    <Global
-                      styles={{
-                        '*': {
-                          WebkitFontSmoothing: 'antialiased',
-                          MozOsxFontSmoothing: 'grayscale'
-                        }
-                      }}
-                    />
-                    {activeBannerContent && <Banner content={activeBannerContent.content} />}
-                    <Flex
-                      sx={{
-                        flexDirection: 'column',
-                        variant: 'layout.root',
-                        px: [3, 4],
-                        overflowX: 'hidden'
-                      }}
-                    >
-                      <Header />
-                      <Component {...pageProps} />
-                      <Cookies />
-                    </Flex>
-                  </SWRConfig>
-                </AnalyticsProvider>
-              </CookiesProvider>
-            </BallotProvider>
-          </AccountProvider>
-          <ToastContainer position="top-right" theme="light" />
-        </ThemeProvider>
-      </Web3ReactProviderDefault>
-    </Web3ReactProvider>
+                {activeBannerContent && <Banner content={activeBannerContent.content} />}
+                {(delegateExpiration.isAboutToExpire || delegateExpiration.isExpired) && (
+                  <DelegatingExpiryWarningBanner />
+                )}
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    variant: 'layout.root',
+                    px: [3, 4],
+                    overflowX: 'hidden'
+                  }}
+                >
+                  <Header />
+                  <Component {...pageProps} />
+                  <Cookies />
+                </Flex>
+              </SWRConfig>
+            </AnalyticsProvider>
+          </CookiesProvider>
+        </BallotProvider>
+      </AccountProvider>
+      <ToastContainer position="top-right" theme="light" />
+    </ThemeProvider>
   );
 };
 
-export default MyApp;
+export default function AppWrapper(props) {
+  return (
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ReactProviderDefault getLibrary={getLibrary}>
+        <App {...props} />
+      </Web3ReactProviderDefault>
+    </Web3ReactProvider>
+  );
+}

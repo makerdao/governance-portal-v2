@@ -56,6 +56,12 @@ export type DelegationHistory = {
   events: DelegationHistoryEvent[];
 };
 
+export type DelegationHistoryWithExpirationDate = DelegationHistory & {
+  expirationDate: Date;
+  isAboutToExpire: boolean;
+  isExpired: boolean;
+};
+
 export type DelegationHistoryEvent = {
   lockAmount: string;
   blockTimestamp: string;

@@ -7,7 +7,6 @@ import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import LastVoted from 'modules/polling/components/LastVoted';
 import AddressDelegatedTo from './AddressDelegatedTo';
-import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated-to';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
@@ -15,6 +14,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountComments from 'modules/comments/components/AccountComments';
 import Tabs from 'modules/app/components/Tabs';
+import useDelegatedTo from 'modules/delegates/hooks/useDelegatedTo';
 
 type PropTypes = {
   address: string;
@@ -32,15 +32,7 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
     }
   );
 
-  const { data: delegatedToData } = useSWR<MKRDelegatedToAPIResponse>(
-    address ? `/api/address/${address}/delegated-to?network=${network}` : null,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 0,
-      revalidateOnMount: true
-    }
-  );
+  const { data: delegatedToData } = useDelegatedTo(address, network);
 
   const tabTitles = ['Account Details', 'Comments'];
 
