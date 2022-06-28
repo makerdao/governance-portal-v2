@@ -1,11 +1,18 @@
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
 import { Poll, PollParameters, PollVote } from '../types';
 
-export function isActivePoll(poll: Poll): boolean {
+export function pollHasEnded(poll: Poll): boolean {
   const now = Date.now();
-  if (new Date(poll.endDate).getTime() < now) return false;
-  if (new Date(poll.startDate).getTime() > now) return false;
-  return true;
+  return new Date(poll.endDate).getTime() < now;
+}
+
+export function pollHasStarted(poll: Poll): boolean {
+  const now = Date.now();
+  return new Date(poll.startDate).getTime() < now;
+}
+
+export function isActivePoll(poll: Poll): boolean {
+  return !pollHasEnded(poll) && pollHasStarted(poll);
 }
 
 export function isRankedChoiceVictoryConditionPoll(parameters: PollParameters): boolean {

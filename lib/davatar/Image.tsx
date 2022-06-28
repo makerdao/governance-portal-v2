@@ -223,7 +223,7 @@ export default function Avatar({
             const tokenURI = await erc721Contract.tokenURI(tokenId);
             const gatewayUrl = getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16));
             try {
-              const data = await fetchJson(`api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
+              const data = await fetchJson(`/api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
               setUrl(getGatewayUrl(data.image));
             } catch (e) {
               console.error(`Error fetching image from ${gatewayUrl}`, e);

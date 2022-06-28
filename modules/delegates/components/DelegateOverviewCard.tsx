@@ -195,7 +195,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                     sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                     data-testid="mkr-delegated-by-you"
                   >
-                    {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
+                    {mkrDelegated ? formatValue(mkrDelegated) : '0'}
                   </Text>
                   <Text
                     as="p"
@@ -213,7 +213,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                     sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                     data-testid="total-mkr-delegated"
                   >
-                    {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0.00'}
+                    {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0'}
                   </Text>
                   <Text
                     as="p"

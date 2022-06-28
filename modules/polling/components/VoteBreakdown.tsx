@@ -19,6 +19,9 @@ export default function VoteBreakdown({
   shownOptions: number;
   tally: PollTally | undefined;
 }): JSX.Element {
+  //never use scientific notation when converting BigNumber toString
+  BigNumberJS.config({ EXPONENTIAL_AT: 1e9 });
+
   if (isResultDisplayInstantRunoffBreakdown(poll.parameters)) {
     return (
       <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
@@ -50,7 +53,14 @@ export default function VoteBreakdown({
                     </Delay>
                   )}
                   {tallyResult ? (
-                    <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+                    <Text
+                      as="p"
+                      sx={{
+                        color: 'textSecondary',
+                        width: tally ? 'unset' : '30%',
+                        textAlign: ['left', 'right']
+                      }}
+                    >
                       {`${formatValue(
                         parseUnits(firstChoice.plus(transfer).toString())
                       )} MKR Voting (${formatValue(
