@@ -3,30 +3,24 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { isAndroid, isIOS } from 'react-device-detect';
-import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
-import Tooltip from 'modules/app/components/Tooltip';
 import { ConnectorName } from 'modules/web3/types/connectors';
-import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
-import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
+import { useWeb3React } from '@web3-react/core';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
+import MetaMaskCard from 'modules/web3/components/connectorCards/MetaMaskCard';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -44,12 +38,6 @@ const walletButtonStyle: ThemeUICSSObject = {
   }
 };
 
-const disabledWalletButtonStyle: ThemeUICSSObject = {
-  ...walletButtonStyle,
-  cursor: 'not-allowed',
-  '&:hover': null
-};
-
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
   width: 4,
@@ -59,22 +47,11 @@ const closeButtonStyle: ThemeUICSSObject = {
   left: '8px'
 };
 
-const disabledHardwareBlurb = (
-  <>
-    Hardware wallets currently only work through <br />
-    their metamask integrations
-  </>
-);
-
-const ADDRESSES_PER_PAGE = 5;
-const MAX_PAGES = 5;
-
 const AccountSelect = (): React.ReactElement => {
-  const { setUserData } = useContext(AnalyticsContext);
   const router = useRouter();
 
   // important that these are destructed from the account-specific web3-react context
-  const { account: address, chainId, activate, connector, deactivate, error, setError } = useWeb3React();
+  const { account: address } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -84,14 +61,9 @@ const AccountSelect = (): React.ReactElement => {
   const [showDialog, setShowDialog] = useState(false);
   const [accountName, setAccountName] = useState<ConnectorName>();
   const [changeWallet, setChangeWallet] = useState(false);
-  const [addresses, setAddresses] = useState<string[]>([]);
-  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
-
-  const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
-
+  // const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(account);
-  const [hwPageNum, setHwPageNum] = useState(0);
 
   const close = () => setShowDialog(false);
 
@@ -101,156 +73,11 @@ const AccountSelect = (): React.ReactElement => {
 
   const bpi = useBreakpointIndex();
 
-  const addHwAccount = async address => {
-    console.log('add hw account');
-    //   const accounts = maker.listAccounts();
-    //   if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
-    //     maker.useAccountWithAddress(address);
-    //     hwSelectCallback && hwSelectCallback(new Error('already added'));
-    //   } else {
-    //     hwSelectCallback && hwSelectCallback(null, address);
-    //     const notFirst = maker.service('accounts').hasAccount();
-    //     if (notFirst) {
-    //       // if we're adding an account but it's not the first one, we have to explicitly use it;
-    //       // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
-    //       // you can test this by connecting with metamask, and then switching the account in the
-    //       // metamask extension UI.
-    //       //
-    //       // setTimeout is necessary because we need to wait for addAccount to resolve
-    //       setTimeout(() => maker.useAccountWithAddress(address));
-    //     }
-    //   }
-  };
-
-  const LedgerButton = () => {
-    const { setUserData } = useContext(AnalyticsContext);
-    const [loading, setLoading] = useState(false);
-    return (
-      <Tooltip label={disabledHardwareBlurb}>
-        <Flex
-          sx={disabledWalletButtonStyle as any}
-          // onClick={async () => {
-          //   setLoading(true);
-
-          //   try {
-          //     await maker.addAccount({
-          //       type: 'ledger',
-          //       accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
-          //       choose: (addresses, callback) => {
-          //         setLoading(false);
-          //         setAddresses(addresses);
-          //         setShowHwAddressSelector(true);
-          //         setHwSelectCallback(() => callback);
-          //       }
-          //     });
-          //   } catch (err) {
-          //     if (err.message !== 'already added') throw err;
-          //   }
-          //   if (chainId) {
-          //     setUserData({ wallet: 'Ledger' });
-          //   }
-          //   setAccountName('Ledger');
-          //   setChangeWallet(false);
-          //   setShowHwAddressSelector(false);
-          //   close();
-          // }}
-        >
-          <Icon name="Ledger" />
-          <Text sx={{ ml: 3 }}>{loading ? 'Loading...' : 'Ledger'}</Text>
-        </Flex>
-      </Tooltip>
-    );
-  };
-
-  const TrezorButton = () => (
-    <Tooltip label={disabledHardwareBlurb}>
-      <Flex
-        sx={disabledWalletButtonStyle as any}
-        // onClick={async () => {
-
-        //   try {
-        //     await maker.addAccount({
-        //       type: 'trezor',
-        //       accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
-        //       accountsOffset: 0,
-        //       path: "44'/60'/0'/0/0",
-        //       choose: (addresses, callback) => {
-        //         setAddresses(addresses);
-        //         setShowHwAddressSelector(true);
-        //         setHwSelectCallback(() => callback);
-        //       }
-        //     });
-        //   } catch (err) {
-        //     if (err.message.match(/Popup closed/)) return;
-        //     if (err.message !== 'already added') throw err;
-        //   }
-
-        //   if (chainId) {
-        //     setUserData({ wallet: 'Trezor' });
-        //   }
-        //   setAccountName('Trezor');
-        //   setChangeWallet(false);
-        //   close();
-        // }}
-      >
-        <Icon name="Trezor" />
-        <Text sx={{ ml: 3 }}>Trezor</Text>
-      </Flex>
-    </Tooltip>
+  const walletOptions = (
+    <Flex>
+      <MetaMaskCard />
+    </Flex>
   );
-
-  // Handles UI state for loading
-  const [loadingConnectors, setLoadingConnectors] = useState({});
-
-  // Handles the logic when clicking on a connector
-  const onClickConnector = async (connector: AbstractConnector, name: ConnectorName) => {
-    try {
-      setLoadingConnectors({
-        [name]: true
-      });
-
-      await activate(connector, undefined, true);
-      if (chainId) {
-        setUserData({ wallet: name });
-      }
-      setAccountName(name);
-      setChangeWallet(false);
-
-      setLoadingConnectors({
-        [name]: false
-      });
-    } catch (e) {
-      // Manually set the error in the web-react account context
-      setError(e);
-      setLoadingConnectors({
-        [name]: false
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
-    if (!error) setChainIdError(null);
-  }, [chainId, error]);
-
-  const walletOptions = Object.keys(SUPPORTED_WALLETS)
-    .map((connectorName: ConnectorName) => (
-      <Flex
-        sx={walletButtonStyle}
-        key={connectorName}
-        onClick={
-          (isAndroid || isIOS) && SUPPORTED_WALLETS[connectorName].deeplinkUri
-            ? () => window.location.replace(SUPPORTED_WALLETS[connectorName].deeplinkUri)
-            : () => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)
-        }
-      >
-        <Icon name={SUPPORTED_WALLETS[connectorName].name} />
-        <Text sx={{ ml: 3 }}>
-          {loadingConnectors[connectorName] ? 'Loading...' : SUPPORTED_WALLETS[connectorName].name}
-        </Text>
-      </Flex>
-    ))
-    .concat([<TrezorButton key="trezor" />, <LedgerButton key="ledger" />]);
 
   const BackButton = ({ onClick }) => (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -263,7 +90,6 @@ const AccountSelect = (): React.ReactElement => {
   );
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
-      <NetworkAlertModal chainIdError={chainIdError} deactivate={deactivate} />
       <ConnectWalletButton
         onClickConnect={() => {
           setShowDialog(true);
@@ -281,47 +107,13 @@ const AccountSelect = (): React.ReactElement => {
               : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
           }
         >
-          {showHwAddressSelector ? (
-            <>
-              <BackButton onClick={() => setShowHwAddressSelector(false)} />
-              <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: 3 }}>
-                <Button
-                  variant="mutedOutline"
-                  disabled={hwPageNum === 0}
-                  onClick={() => setHwPageNum(hwPageNum - 1)}
-                >
-                  <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                    <Icon name="chevron_left" size={2} mr={2} />
-                    Previous Page
-                  </Flex>
-                </Button>
-                <Button
-                  variant="mutedOutline"
-                  disabled={hwPageNum === MAX_PAGES - 1}
-                  onClick={() => setHwPageNum(hwPageNum + 1)}
-                >
-                  <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                    Next Page
-                    <Icon name="chevron_right" size={2} ml={2} />
-                  </Flex>
-                </Button>
-              </Flex>
-              {addresses
-                .slice(hwPageNum * ADDRESSES_PER_PAGE, (hwPageNum + 1) * ADDRESSES_PER_PAGE)
-                .map(address => (
-                  <Flex sx={walletButtonStyle} key={address} onClick={() => addHwAccount(address)}>
-                    <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
-                  </Flex>
-                ))}
-            </>
-          ) : changeWallet ? (
+          {changeWallet ? (
             <>
               <BackButton onClick={() => setChangeWallet(false)} />
               {walletOptions}
               {accountName === 'WalletConnect' && (
                 <Flex
                   onClick={() => {
-                    (connector as WalletConnectConnector).walletConnectProvider?.disconnect();
                     deactivate();
                     setAccountName(undefined);
                     close();

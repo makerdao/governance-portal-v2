@@ -2,13 +2,12 @@ import React, { ReactNode } from 'react';
 import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
 import { useGoerliForkWindowBindings } from 'modules/web3/hooks/useGoerliForkWindowBindings';
 import { useCurrentUserVoteProxyContract } from '../hooks/useCurrentUserVoteProxyContract';
 import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
+import { useWeb3React } from '@web3-react/core';
 
 interface ContextProps {
   account?: string;
@@ -36,7 +35,7 @@ type PropTypes = {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  const { account } = useActiveWeb3React();
+  const { account } = useWeb3React();
 
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
   const { data: voteDelegateContractAddress, mutate: mutateVoteDelegate } = useVoteDelegateAddress(account);
@@ -47,11 +46,8 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
   const { data: voteProxyContract } = useCurrentUserVoteProxyContract();
   const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
 
-  // try to eagerly connect to an injected provider, if it exists and has granted access already
-  useEagerConnect();
-
   // Use for tesing purposes, allow to log-in an account on the localhost network with a fork of goerli
-  useGoerliForkWindowBindings();
+  // useGoerliForkWindowBindings();
 
   return (
     <AccountContext.Provider
