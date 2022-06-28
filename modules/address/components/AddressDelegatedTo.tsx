@@ -16,7 +16,6 @@ import AddressIconBox from './AddressIconBox';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { DateWitHover } from 'modules/app/components/DateWithHover';
-import { add, isAfter, isBefore, sub } from 'date-fns';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -31,12 +30,12 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
-  const isExpired = isAfter(new Date(), new Date(delegate.expirationDate));
-
-  const isAboutToExpire = isBefore(new Date(delegate.expirationDate), add(new Date(), { days: 30 }));
-
   return (
-    <tr sx={{ color: isExpired ? 'warningAlt' : isAboutToExpire ? 'voterYellow' : 'onSecondary' }}>
+    <tr
+      sx={{
+        color: delegate.isExpired ? 'warningAlt' : delegate.isAboutToExpire ? 'voterYellow' : 'onSecondary'
+      }}
+    >
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
           <InternalLink

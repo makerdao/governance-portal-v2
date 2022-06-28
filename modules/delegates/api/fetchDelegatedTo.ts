@@ -1,4 +1,4 @@
-import { add } from 'date-fns';
+import { add, isAfter, isBefore } from 'date-fns';
 import { utils } from 'ethers';
 import logger from 'lib/logger';
 import { Query } from 'modules/gql/generated/graphql';
@@ -46,10 +46,14 @@ export async function fetchDelegatedTo(
         );
         // Get the expiration date of the delegate
         const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
+        const isAboutToExpire = isBefore(new Date(expirationDate), add(new Date(), { days: 30 }));
+        const isExpired = isAfter(new Date(), new Date(expirationDate));
 
         acc.push({
           address: immediateCaller,
           expirationDate,
+          isExpired,
+          isAboutToExpire: !isExpired && isAboutToExpire,
           lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
           events: [{ lockAmount, blockTimestamp, hash }]
         } as DelegationHistoryWithExpirationDate);
