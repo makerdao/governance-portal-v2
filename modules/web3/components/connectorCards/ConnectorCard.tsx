@@ -38,7 +38,7 @@ export function ConnectorCard({
   ENSNames,
   accounts,
   provider
-}: Props) {
+}: Props): JSX.Element {
   return (
     <div
       style={{

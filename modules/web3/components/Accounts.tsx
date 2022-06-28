@@ -36,7 +36,7 @@ export function Accounts({
   accounts: ReturnType<Web3ReactHooks['useAccounts']>;
   provider: ReturnType<Web3ReactHooks['useProvider']>;
   ENSNames: ReturnType<Web3ReactHooks['useENSNames']>;
-}) {
+}): JSX.Element | null {
   const balances = useBalances(provider, accounts);
 
   if (accounts === undefined) return null;

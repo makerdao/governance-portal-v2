@@ -14,7 +14,7 @@ export default function MetaMaskCard(): JSX.Element {
   const provider = useProvider();
   const ENSNames = useENSNames(provider);
 
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState<any>(undefined);
 
   // attempt to connect eagerly on mount
   useEffect(() => {
