@@ -83,7 +83,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                 />
                 {activeBannerContent && <Banner content={activeBannerContent.content} />}
                 {(delegateExpiration.isAboutToExpire || delegateExpiration.isExpired) && (
-                  <DelegatingExpiryWarningBanner />
+                  <DelegatingExpiryWarningBanner isExpired={delegateExpiration.isExpired} />
                 )}
                 <Flex
                   sx={{
