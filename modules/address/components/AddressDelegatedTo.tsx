@@ -15,7 +15,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import AddressIconBox from './AddressIconBox';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
-import { DateWitHover } from 'modules/app/components/DateWithHover';
+import { DateWithHover } from 'modules/app/components/DateWithHover';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -114,7 +114,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Box>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2, display: bpi > 1 ? 'table-cell' : 'none' }}>
         <Text variant="caps" sx={{ color: 'inherit' }}>
-          <DateWitHover date={delegate.expirationDate} />
+          <DateWithHover date={delegate.expirationDate} />
         </Text>
       </Box>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>

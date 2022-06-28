@@ -3,7 +3,7 @@ import Tooltip from 'modules/app/components/Tooltip';
 import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import { Text } from 'theme-ui';
 
-export function DateWitHover({
+export function DateWithHover({
   date,
   timeago
 }: {

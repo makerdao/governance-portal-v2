@@ -2,7 +2,7 @@ import { Box, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import React from 'react';
 import Icon from 'modules/app/components/Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { DateWitHover } from 'modules/app/components/DateWithHover';
+import { DateWithHover } from 'modules/app/components/DateWithHover';
 
 export default function LastVoted({
   expired,
@@ -54,7 +54,7 @@ export default function LastVoted({
 
   const lastVoteDate = date ? (
     <Flex>
-      <Text sx={{ mr: 1 }}>LAST VOTED</Text> <DateWitHover timeago={!!isLongerThan14Days} date={date} />
+      <Text sx={{ mr: 1 }}>LAST VOTED</Text> <DateWithHover timeago={!!isLongerThan14Days} date={date} />
     </Flex>
   ) : (
     'NO VOTE HISTORY'
