@@ -5,14 +5,16 @@ import { Text } from 'theme-ui';
 
 export function DateWithHover({
   date,
-  timeago
+  timeago,
+  label
 }: {
   date: Date | string;
   timeago?: boolean;
+  label?: string;
 }): React.ReactElement {
   return (
-    <Tooltip label={formatDateWithTime(date ?? '')}>
-      <Text>{timeago ? formatTimeAgo(date ?? '') : formatDateWithTime(date ?? '')}</Text>
+    <Tooltip label={label ? label : formatDateWithTime(date ?? '')}>
+      <Text>{timeago ? `${formatTimeAgo(date ?? '')}` : `${formatDateWithTime(date ?? '')}`}</Text>
     </Tooltip>
   );
 }

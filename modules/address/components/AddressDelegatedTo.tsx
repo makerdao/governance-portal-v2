@@ -30,6 +30,11 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
+  const formattedDate = formatDateWithTime(delegate.expirationDate);
+  const dateText = delegate.isExpired
+    ? `This contract expired ${formattedDate}`
+    : `This contract will expire ${formattedDate}`;
+
   return (
     <tr
       sx={{
@@ -114,7 +119,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Box>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2, display: bpi > 1 ? 'table-cell' : 'none' }}>
         <Text variant="caps" sx={{ color: 'inherit' }}>
-          <DateWithHover date={delegate.expirationDate} />
+          <DateWithHover label={dateText} date={delegate.expirationDate} />
         </Text>
       </Box>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
