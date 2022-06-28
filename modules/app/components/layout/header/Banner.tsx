@@ -25,7 +25,6 @@ const Banner = ({
           sx={{
             m: 'auto',
             fontSize: 2,
-            fontWeight: 'body',
             animation: `${scroll} 30s linear infinite`
           }}
         >

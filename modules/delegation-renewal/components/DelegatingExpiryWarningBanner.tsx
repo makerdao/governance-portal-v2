@@ -6,7 +6,7 @@ export default function DelegatingExpiryWarningBanner(): React.ReactElement {
     <Banner
       variant="warning"
       content={
-        <Text sx={{ fontWeight: '400' }}>
+        <Text>
           You delegated MKR to a contract that is going to expire or has expired. Please migrate your MKR to a
           renewed Delegate Contract
         </Text>
