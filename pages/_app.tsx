@@ -1,7 +1,7 @@
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { SWRConfig } from 'swr';
-import { ThemeProvider, Flex, Box, Text } from 'theme-ui';
+import { ThemeProvider, Flex } from 'theme-ui';
 import { Global } from '@emotion/core';
 import { ethers } from 'ethers';
 import '@reach/dialog/styles.css';
@@ -28,6 +28,7 @@ import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
 import useDelegatedToExpired from 'modules/delegation-renewal/hooks/useDelegatedToExpired';
+import DelegatingExpiryWarningBanner from 'modules/delegation-renewal/components/DelegatingExpiryWarningBanner';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
@@ -81,17 +82,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 />
                 {activeBannerContent && <Banner content={activeBannerContent.content} />}
-                {hasDelegateExpiring && (
-                  <Banner
-                    variant="warning"
-                    content={
-                      <Text sx={{ fontWeight: '400' }}>
-                        You delegated MKR to a contract that is going to expire or has expired. Please migrate
-                        your MKR to a renewed Delegate Contract
-                      </Text>
-                    }
-                  />
-                )}
+                {hasDelegateExpiring && <DelegatingExpiryWarningBanner />}
                 <Flex
                   sx={{
                     flexDirection: 'column',
