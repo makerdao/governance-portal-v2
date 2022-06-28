@@ -40,7 +40,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
-  const hasDelegateExpiring = useDelegatedToExpired();
+  const delegateExpiration = useDelegatedToExpired();
 
   return (
     <ThemeProvider theme={theme as any}>
@@ -82,7 +82,9 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 />
                 {activeBannerContent && <Banner content={activeBannerContent.content} />}
-                {hasDelegateExpiring && <DelegatingExpiryWarningBanner />}
+                {(delegateExpiration.isAboutToExpire || delegateExpiration.isExpired) && (
+                  <DelegatingExpiryWarningBanner />
+                )}
                 <Flex
                   sx={{
                     flexDirection: 'column',
