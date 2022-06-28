@@ -3,7 +3,7 @@ import { Input, Text, Button, Box, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { BigNumber as BigNumberJs } from 'bignumber.js';
+import { BigNumber as BigNumberJs } from 'lib/bigNumberJs';
 import { parseUnits } from 'ethers/lib/utils';
 import logger from 'lib/logger';
 

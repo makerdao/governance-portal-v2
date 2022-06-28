@@ -31,7 +31,7 @@ import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';

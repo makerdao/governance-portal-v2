@@ -1,7 +1,7 @@
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';

@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber as BigNumberJs } from 'bignumber.js';
+import { BigNumber as BigNumberJs } from 'lib/bigNumberJs';
 import { SECONDS_PER_YEAR } from 'lib/datetime';
 import { BigNumberRAY } from '../constants/numbers';
 

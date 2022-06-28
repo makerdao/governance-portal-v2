@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatAddress } from 'lib/utils';

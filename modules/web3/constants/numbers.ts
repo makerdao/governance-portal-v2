@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { BigNumber as BigNumberJs } from 'bignumber.js';
+import { BigNumber as BigNumberJs } from 'lib/bigNumberJs';
 
 export const WAD = BigNumber.from('1000000000000000000');
 export const RAY = BigNumber.from('1000000000000000000000000000');

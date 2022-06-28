@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { Card, Text, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';

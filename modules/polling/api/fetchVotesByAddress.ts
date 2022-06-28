@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';

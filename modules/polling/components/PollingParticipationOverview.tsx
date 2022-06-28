@@ -1,5 +1,5 @@
 import { Box, Text } from 'theme-ui';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 import { isPluralityVictoryConditionPoll } from '../helpers/utils';
