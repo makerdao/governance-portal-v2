@@ -123,7 +123,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
           delegate={delegate}
           isOpen={showDelegateModal}
           onDismiss={() => setShowDelegateModal(false)}
-          mutateTotalStaked={mutateTotalStaked}
+          mutateTotalStaked={() => null}
           mutateMKRDelegated={mutateMKRDelegated}
         />
       )}
@@ -132,7 +132,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
           delegate={delegate}
           isOpen={showUndelegateModal}
           onDismiss={() => setShowUndelegateModal(false)}
-          mutateTotalStaked={mutateTotalStaked}
+          mutateTotalStaked={() => null}
           mutateMKRDelegated={mutateMKRDelegated}
         />
       )}
