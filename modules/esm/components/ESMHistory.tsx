@@ -75,12 +75,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                           overflow: hidden;
                         `}
                       >
-                        <Text
-                          as="p"
-                          color="text"
-                          variant="caption"
-                          sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
-                        >
+                        <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
                           {bpi > 0
                             ? formatDateWithTime(action.blockTimestamp)
                             : formatDateWithoutTime(action.blockTimestamp)}
@@ -91,12 +86,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                           white-space: nowrap;
                         `}
                       >
-                        <Text
-                          as="p"
-                          color="text"
-                          variant="caption"
-                          sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
-                        >
+                        <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
                           {amount.gte(0.1)
                             ? formatRound(amount.toNumber())
                             : formatRound(amount.toNumber(), 3)}{' '}
@@ -109,12 +99,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                           styles={{ color: 'accentBlue' }}
                           title="View on etherscan"
                         >
-                          <Text
-                            as="p"
-                            color="accentBlue"
-                            variant="caption"
-                            sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
-                          >
+                          <Text as="p" color="accentBlue" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
                             {cutMiddle(action.txFrom, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
                           </Text>
                         </ExternalLink>

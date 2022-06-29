@@ -226,7 +226,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting Stats
                       </Text>
-                      <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
+                      <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
                         <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
                         {tally ? (
                           <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(3)} MKR</Text>
@@ -237,7 +237,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         )}
                       </Flex>
 
-                      <Flex sx={{ justifyContent: 'space-between', fontSize: [2, 3] }}>
+                      <Flex sx={{ justifyContent: 'space-between' }}>
                         <Text sx={{ color: 'textSecondary' }}>Unique Voters</Text>
                         {tally ? (
                           <Text>{tally.numVoters}</Text>

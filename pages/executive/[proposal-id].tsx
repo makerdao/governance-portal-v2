@@ -325,7 +325,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                       <Flex
                         sx={{
                           justifyContent: 'space-between',
-                          fontSize: [2, 3],
                           ':not(:last-child)': {
                             mb: 2
                           }

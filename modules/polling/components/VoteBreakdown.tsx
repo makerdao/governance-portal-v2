@@ -125,7 +125,7 @@ export default function VoteBreakdown({
   }
 
   return (
-    <div key={2} sx={{ p: [3, 4], fontSize: [2, 3] }}>
+    <div key={2} sx={{ p: [3, 4] }}>
       <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
         Vote Breakdown
       </Text>

@@ -9,7 +9,6 @@ export const CardSummary = ({ text, styles }: Props): JSX.Element => (
   <Text
     as="p"
     sx={{
-      fontSize: [2, 3],
       color: 'onSecondary',
       ...styles
     }}

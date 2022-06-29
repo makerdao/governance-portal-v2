@@ -198,12 +198,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                     >
                       {mkrDelegated ? formatValue(mkrDelegated) : '0'}
                     </Text>
-                    <Text
-                      as="p"
-                      variant="secondary"
-                      color="onSecondary"
-                      sx={{ fontSize: [2, 3], textAlign: 'right' }}
-                    >
+                    <Text as="p" variant="secondary" color="onSecondary" sx={{ textAlign: 'right' }}>
                       MKR delegated by you
                     </Text>
                   </Box>
@@ -217,12 +212,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   >
                     {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0'}
                   </Text>
-                  <Text
-                    as="p"
-                    variant="secondary"
-                    color="onSecondary"
-                    sx={{ fontSize: [2, 3], textAlign: 'right' }}
-                  >
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ textAlign: 'right' }}>
                     Total MKR delegated
                   </Text>
                 </Box>
