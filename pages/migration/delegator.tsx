@@ -2,12 +2,12 @@ import { Box, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import useDelegatedToExpired from 'modules/delegation-renewal/hooks/useDelegatedToExpired';
+import { useDelegationMigrationStatus } from 'modules/delegation-migration/hooks/useDelegationMigrationStatus';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { isAboutToExpire, isExpired } = useDelegatedToExpired();
+  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useDelegationMigrationStatus();
   const { account } = useActiveWeb3React();
 
   return (
@@ -23,12 +23,15 @@ export default function DelegateMigrationPage(): React.ReactElement {
       {account && (
         <Stack gap={3}>
           <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
-            {(isExpired || isAboutToExpire) && 'ACTION REQUIRED: Migrate your delegated MKR.'}
+            {(isDelegatedToExpiredContract || isDelegatedToExpiringContract) &&
+              'ACTION REQUIRED: Migrate your delegated MKR.'}
 
-            {!isExpired && !isAboutToExpire && "You don't need to migrate your MKR to a new delegate."}
+            {!isDelegatedToExpiredContract &&
+              !isDelegatedToExpiringContract &&
+              "You don't need to migrate your MKR to a new delegate."}
           </Heading>
 
-          {(isExpired || isAboutToExpire) && (
+          {(isDelegatedToExpiredContract || isDelegatedToExpiringContract) && (
             <Text
               as="h3"
               sx={{ textAlign: 'center', fontWeight: 'semiBold', maxWidth: '550px', margin: '0 auto' }}

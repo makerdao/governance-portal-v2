@@ -4,10 +4,10 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
+import { useDelegationMigrationStatus } from 'modules/delegation-migration/hooks/useDelegationMigrationStatus';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const hasExpired = true;
-  const isAboutToExpire = false;
+  const { isDelegateContractExpiring, isDelegateContractExpired } = useDelegationMigrationStatus();
   const { account } = useActiveWeb3React();
 
   return (
@@ -21,11 +21,14 @@ export default function DelegateMigrationPage(): React.ReactElement {
       {account && (
         <Stack gap={3}>
           <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
-            {hasExpired && 'Your delegate contract has expired! Please migrate as soon as possible.'}
-            {isAboutToExpire &&
-              !hasExpired &&
+            {isDelegateContractExpired &&
+              'Your delegate contract has expired! Please migrate as soon as possible.'}
+            {isDelegateContractExpiring &&
+              !isDelegateContractExpired &&
               'Your delegate contract is about to expire. Please migrate as soon as possible.'}
-            {!hasExpired && !isAboutToExpire && "You don't need to migrate your delegate contract yet."}
+            {!isDelegateContractExpired &&
+              !isDelegateContractExpiring &&
+              "You don't need to migrate your delegate contract yet."}
           </Heading>
 
           <Text
