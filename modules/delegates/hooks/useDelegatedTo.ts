@@ -3,7 +3,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated-to';
 import useSWR from 'swr';
 
-export default function useDelegatedTo(
+export function useDelegatedTo(
   address: string | undefined,
   network: SupportedNetworks
 ): {

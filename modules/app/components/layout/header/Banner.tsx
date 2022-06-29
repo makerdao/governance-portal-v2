@@ -17,14 +17,18 @@ const Banner = ({
     <Alert
       variant={variant}
       sx={{
-        px: 0
+        fontSize: 2,
+        borderRadius: 0,
+        fontWeight: 'normal',
+        textAlign: 'center',
+        px: 3,
+        py: 2
       }}
     >
       {typeof content === 'string' ? (
         <Text
+          as="p"
           sx={{
-            m: 'auto',
-            fontSize: 2,
             animation: `${scroll} 30s linear infinite`
           }}
         >
