@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import { BigNumber as BigNumberJS } from 'lib/bigNumberJs';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';

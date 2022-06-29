@@ -3,7 +3,7 @@ import { Input, Text, Button, Box, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { BigNumber as BigNumberJs } from 'lib/bigNumberJs';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { parseUnits } from 'ethers/lib/utils';
 import logger from 'lib/logger';
 
@@ -38,7 +38,7 @@ export function MKRInput({
 
     try {
       // Use bignumberjs to validate the number
-      const newValue = new BigNumberJs(newValueStr || '0');
+      const newValue = new BigNumberJS(newValueStr || '0');
 
       const invalidValue =
         newValue.isLessThan(min.toNumber()) || (max && newValue.isGreaterThan(max.toNumber()));

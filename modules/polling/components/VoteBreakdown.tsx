@@ -5,7 +5,7 @@ import Delay from 'modules/app/components/Delay';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { BigNumber as BigNumberJS } from 'lib/bigNumberJs';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { isResultDisplayInstantRunoffBreakdown } from '../helpers/utils';

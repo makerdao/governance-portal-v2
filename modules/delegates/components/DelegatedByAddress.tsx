@@ -14,7 +14,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { BigNumber as BigNumberJS } from 'lib/bigNumberJs';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type DelegatedByAddressProps = {

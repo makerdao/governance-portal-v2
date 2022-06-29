@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import { Badge, Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
-import { BigNumber as BigNumberJS } from 'lib/bigNumberJs';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BigNumber as BigNumberJS } from 'lib/bigNumberJs';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
 import { Poll } from 'modules/polling/types';
