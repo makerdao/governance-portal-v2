@@ -30,6 +30,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 
 const PollingReview = ({ polls }: PollingReviewPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -293,7 +294,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 )}
                 {!account && (
                   <Box pt="3">
-                    <Text>Connect your wallet to review your ballot</Text>
+                    <AccountNotConnected message="Connect your wallet to review your ballot" />
                   </Box>
                 )}
               </Stack>
