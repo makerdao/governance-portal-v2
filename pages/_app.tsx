@@ -3,9 +3,6 @@ import { SWRConfig } from 'swr';
 import { ThemeProvider, Flex } from 'theme-ui';
 import { Global } from '@emotion/core';
 import { ethers } from 'ethers';
-import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core';
-import { MetaMask } from '@web3-react/metamask';
-import { Network } from '@web3-react/network';
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
@@ -27,22 +24,10 @@ import debug from 'debug';
 import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
-
-// import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coinbaseWallet'
-import { hooks as metaMaskHooks, metaMask } from 'modules/web3/connectors/metaMask';
-import { hooks as networkHooks, network } from 'modules/web3/connectors/network';
-// import { hooks as walletConnectHooks, walletConnect } from '../connectors/walletConnect'
+import { Web3Provider } from 'modules/web3/components/Web3Provider';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
-
-// const connectors: [MetaMask | WalletConnect | CoinbaseWallet | Network, Web3ReactHooks][] = [
-const connectors: [MetaMask | Network, Web3ReactHooks][] = [
-  [metaMask, metaMaskHooks],
-  // [walletConnect, walletConnectHooks],
-  // [coinbaseWallet, coinbaseWalletHooks],
-  [network, networkHooks]
-];
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
@@ -50,7 +35,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
 
   return (
-    <Web3ReactProvider connectors={connectors}>
+    <Web3Provider>
       {/* @ts-ignore */}
       <ThemeProvider theme={theme}>
         <NextNprogress
@@ -110,7 +95,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
         </AccountProvider>
         <ToastContainer position="top-right" theme="light" />
       </ThemeProvider>
-    </Web3ReactProvider>
+    </Web3Provider>
   );
 };
 
