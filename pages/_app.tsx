@@ -27,8 +27,8 @@ import debug from 'debug';
 import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
-import useDelegatedToExpired from 'modules/delegation-renewal/hooks/useDelegatedToExpired';
-import DelegatingExpiryWarningBanner from 'modules/delegation-renewal/components/DelegatingExpiryWarningBanner';
+import { useDelegationMigrationStatus } from 'modules/delegation-migration/hooks/useDelegationMigrationStatus';
+import { DelegatationMigrationStatusBanner } from 'modules/delegation-migration/components/DelegatationMigrationStatusBanner';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
@@ -40,7 +40,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
-  const delegateExpiration = useDelegatedToExpired();
+  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useDelegationMigrationStatus();
 
   return (
     <ThemeProvider theme={theme as any}>
@@ -82,8 +82,11 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 />
                 {activeBannerContent && <Banner content={activeBannerContent.content} />}
-                {(delegateExpiration.isAboutToExpire || delegateExpiration.isExpired) && (
-                  <DelegatingExpiryWarningBanner isExpired={delegateExpiration.isExpired} />
+                {(true /* isDelegatedToExpiringContract */ || isDelegatedToExpiredContract) && (
+                  <DelegatationMigrationStatusBanner
+                    isDelegatedToExpiringContract={isDelegatedToExpiringContract}
+                    isDelegatedToExpiredContract={isDelegatedToExpiredContract}
+                  />
                 )}
                 <Flex
                   sx={{
