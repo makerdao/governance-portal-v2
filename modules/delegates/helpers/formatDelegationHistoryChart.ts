@@ -2,7 +2,7 @@ import { MKRLockedDelegateAPIResponse } from '../types/delegate';
 import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightHisory } from '../types/mkrWeight';
 import { format } from 'date-fns';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { differenceInCalendarYears, subDays } from 'date-fns';
 
 export const formatDelegationHistoryChart = (

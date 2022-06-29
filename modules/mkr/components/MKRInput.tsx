@@ -3,8 +3,9 @@ import { Input, Text, Button, Box, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { BigNumber as BigNumberJs } from 'bignumber.js';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { parseUnits } from 'ethers/lib/utils';
+import logger from 'lib/logger';
 
 export type MKRInputProps = {
   placeholder?: string;
@@ -37,7 +38,7 @@ export function MKRInput({
 
     try {
       // Use bignumberjs to validate the number
-      const newValue = new BigNumberJs(newValueStr || '0');
+      const newValue = new BigNumberJS(newValueStr || '0');
 
       const invalidValue =
         newValue.isLessThan(min.toNumber()) || (max && newValue.isGreaterThan(max.toNumber()));
@@ -50,7 +51,7 @@ export function MKRInput({
 
       onChange(parseUnits(newValueStr));
     } catch (e) {
-      console.log(e);
+      logger.error(`MKRInput, invalid value: ${newValueStr}`, e);
       setErrorInvalidFormat(true);
       return;
     }

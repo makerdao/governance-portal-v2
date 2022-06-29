@@ -406,15 +406,11 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 Custom Spell Voting
               </Heading>
               <Card variant="compact">
-                <Text as="p" sx={{ mb: 3, color: 'textSecondary', fontSize: [2, 3] }}>
+                <Text as="p" sx={{ mb: 3, color: 'textSecondary' }}>
                   It is also possible to vote on a custom spell address—only use this in case of emergencies!
                 </Text>
                 <Box>
-                  <InternalLink
-                    href={'/custom-spell'}
-                    title="View custom spell voting page"
-                    styles={{ fontSize: [2, 3] }}
-                  >
+                  <InternalLink href={'/custom-spell'} title="View custom spell voting page">
                     <Text color="accentBlue">View Custom Spell Voting Page</Text>
                   </InternalLink>
                 </Box>

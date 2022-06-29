@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
+import logger from 'lib/logger';
 interface ContextProps {
   ballot: Ballot;
   transaction?: Transaction;
@@ -87,7 +88,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         const parsed = JSON.parse(prevBallot);
         setBallot(parsed);
       } catch (e) {
-        console.log(e);
+        logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
         setBallot({});
       }
@@ -209,12 +210,13 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
+        const comments = getComments();
         // if comment included, add to comments db
-        if (getComments().length > 0) {
+        if (comments.length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
             voterAddress: accountToUse || '',
             hotAddress: account || '',
-            comments: getComments(),
+            comments: comments,
             signedMessage: commentsSignature,
             txHash
           };
@@ -225,14 +227,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(commentsRequest)
-          })
-            .then(() => {
-              // console.log('comment successfully added');
-            })
-            .catch(() => {
-              console.error('failed to add comment');
-              toast.error('Unable to store comments');
-            });
+          }).catch(() => {
+            logger.error('POST Polling Comments: failed to add comment');
+            toast.error('Unable to store comments');
+          });
+
+          // Invalidate tally cache for each voted poll
+          Object.keys(ballot).forEach(pollId => {
+            setTimeout(() => {
+              fetchJson(`/api/polling/tally/${pollId}/invalidate-cache?network=${network}`);
+            }, 60000);
+          });
         }
       },
       mined: (txId, txHash) => {

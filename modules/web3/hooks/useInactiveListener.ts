@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { injectedConnector } from 'modules/web3/connectors';
+import logger from 'lib/logger';
 
 export function useInactiveListener(suppress = false) {
   const { active, error, activate } = useWeb3React();
@@ -12,7 +13,7 @@ export function useInactiveListener(suppress = false) {
       const handleChainChanged = () => {
         // eat errors
         activate(injectedConnector, undefined, true).catch(error => {
-          console.error('Failed to activate after chain changed', error);
+          logger.error('handleChainChanged: Failed to activate after chain changed', error);
         });
       };
 
@@ -20,7 +21,7 @@ export function useInactiveListener(suppress = false) {
         if (accounts.length > 0) {
           // eat errors
           activate(injectedConnector, undefined, true).catch(error => {
-            console.error('Failed to activate after accounts changed', error);
+            logger.error('handleAccountsChanged: Failed to activate after accounts changed', error);
           });
         }
       };

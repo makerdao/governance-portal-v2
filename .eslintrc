@@ -44,12 +44,13 @@
     "react/react-in-jsx-scope": 0,
     "testing-library/await-async-query": "error",
     "testing-library/no-await-sync-query": "error",
-    "testing-library/no-debug": "warn",
+    "testing-library/no-debug": "off",
     "testing-library/no-dom-import": "off",
     "jest-dom/prefer-checked": "error",
     "jest-dom/prefer-enabled-disabled": "error",
     "jest-dom/prefer-required": "error",
-    "jest-dom/prefer-to-have-attribute": "error"
+    "jest-dom/prefer-to-have-attribute": "error",
+    "no-debugger":"off"
   },
   "settings": {
     "react": {

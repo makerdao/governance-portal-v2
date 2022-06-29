@@ -9,6 +9,8 @@ import VoteModal from 'modules/executive/components/VoteModal';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { SpellData } from 'modules/executive/types';
 import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
+import logger from 'lib/logger';
+import { toast } from 'react-toastify';
 
 export default function CustomSpell(): JSX.Element {
   const [spellAddress, setSpellAddress] = useState<string | null>(null);
@@ -58,7 +60,8 @@ export default function CustomSpell(): JSX.Element {
       }
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      toast.error('Erorr fetching spell data');
+      logger.error('fetchSpellData', err);
       setLoading(false);
     }
   };

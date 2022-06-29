@@ -1,6 +1,6 @@
 import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { PollTally, Poll } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
@@ -8,6 +8,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { formatValue } from 'lib/string';
 
 type Props = {
   tally: PollTally;
@@ -186,11 +187,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     data-testid={`vote-mkr-${v.voter}`}
                     sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                   >
-                    {`${
-                      new BigNumber(v.mkrSupport).lte(0.01)
-                        ? '≈0.00'
-                        : new BigNumber(v.mkrSupport).toFormat(new BigNumber(v.mkrSupport).gt(999) ? 0 : 2)
-                    }${bpi > 0 ? ' MKR' : ''}`}{' '}
+                    {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
+                      bpi > 0 ? ' MKR' : ''
+                    }`}
                   </Text>
                 </tr>
               ))}

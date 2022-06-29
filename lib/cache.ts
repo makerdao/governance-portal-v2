@@ -4,6 +4,7 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { config } from 'lib/config';
 import Redis from 'ioredis';
 import packageJSON from '../package.json';
+import logger from './logger';
 
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
@@ -23,9 +24,19 @@ function getFilePath(name: string, network: string): string {
 }
 
 export const cacheDel = (path: string): void => {
-  console.log('Delete cache', path);
-  fs.unlinkSync(path);
-  memoryCache[path] = null;
+  const isRedisCache = !!config.REDIS_URL;
+
+  if (isRedisCache && redis) {
+    redis?.del(path);
+  } else {
+    try {
+      logger.debug('cacheDel: ', path);
+      memoryCache[path] = null;
+      fs.unlinkSync(path);
+    } catch (e) {
+      logger.error(`cacheDel: ${e.message}`);
+    }
+  }
 };
 
 export const cacheGet = async (
@@ -46,7 +57,7 @@ export const cacheGet = async (
     if (isRedisCache && redis) {
       // Get redis data if it exists
       const cachedData = await redis.get(path);
-      console.log(`Redis cache get for ${path}`);
+      logger.debug(`Redis cache get for ${path}`);
       return cachedData;
     } else {
       // If fs does not exist as a module, return null (TODO: This shouldn't happen, consider removing this check)
@@ -54,10 +65,10 @@ export const cacheGet = async (
       const memCached = memoryCache[path];
 
       if (memCached) {
-        console.log(`mem cache hit: ${path}`);
+        logger.debug(`mem cache hit: ${path}`);
 
         if (memCached.expiry && memCached.expiry < Date.now()) {
-          console.log('mem cache expired');
+          logger.debug('mem cache expired');
           cacheDel(path);
           return null;
         }
@@ -75,12 +86,12 @@ export const cacheGet = async (
           return null;
         }
 
-        console.log(`fs cache hit: ${path}`);
+        logger.debug(`fs cache hit: ${path}`);
         return fs.readFileSync(path).toString();
       }
     }
   } catch (e) {
-    console.error(`Error getting cached data, ${name} - ${network}`, e.message);
+    logger.error(`CacheGet: Error getting cached data, ${name} - ${network}`, e.message);
     return null;
   }
 };
@@ -103,9 +114,10 @@ export const cacheSet = (
   try {
     if (isRedisCache && redis) {
       // If redis cache is enabled, store in redis, with a TTL in seconds
-      console.log(`Redis cache set for ${path}`);
+      const expirySeconds = Math.round(expiryMs / 1000);
+      logger.debug(`Redis cache set for ${path}, with TTL ${expirySeconds} seconds`);
 
-      redis.set(path, data, 'EX', expiryMs / 1000);
+      redis.set(path, data, 'EX', expirySeconds);
     } else {
       // File cache
       if (Object.keys(fs).length === 0) return;
@@ -118,6 +130,6 @@ export const cacheSet = (
       };
     }
   } catch (e) {
-    console.error(`Error storing data in cache, ${name} - ${network}`, e.message);
+    logger.error(`CacheSet: Error storing data in cache, ${name} - ${network}`, e.message);
   }
 };

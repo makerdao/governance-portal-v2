@@ -13,9 +13,10 @@ type Props = {
   address: string;
   accountName: ConnectorName | undefined;
   change: () => void;
+  disconnect: () => void;
 };
 
-const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
+const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [copied, setCopied] = useState(false);
   const { network } = useActiveWeb3React();
@@ -29,7 +30,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
         borderRadius: 'medium'
       }}
     >
-      <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
         <Flex sx={{ flexDirection: 'column', ml: 3, py: 3 }}>
           <Text color="textSecondary" variant="smallText">
             {accountName}
@@ -43,12 +44,20 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
             </Text>
           </Flex>
         </Flex>
-        <Button variant="smallOutline" sx={{ mr: 3, borderRadius: 'small' }} onClick={change}>
-          <Text variant="text.caps" sx={{ color: 'textSecondary', fontSize: 1, px: 1, pt: '1px' }}>
-            change
-            {bpi > 0 && ' wallet'}
-          </Text>
-        </Button>
+        <Flex sx={{ mb: 3 }}>
+          <Button variant="smallOutline" sx={{ borderRadius: 'small' }} onClick={change}>
+            <Text variant="text.caps" sx={{ color: 'textSecondary', fontSize: 1, px: 1, pt: '1px' }}>
+              change
+              {bpi > 0 && ' wallet'}
+            </Text>
+          </Button>
+          <Button variant="smallOutline" sx={{ ml: 3, borderRadius: 'small' }} onClick={disconnect}>
+            <Text variant="text.caps" sx={{ color: 'textSecondary', fontSize: 1, px: 1, pt: '1px' }}>
+              disconnect
+              {bpi > 0 && ' wallet'}
+            </Text>
+          </Button>
+        </Flex>
       </Flex>
       <Flex
         sx={{

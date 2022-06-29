@@ -38,10 +38,7 @@ export default function PollCommentItem({
     return (
       <Text>
         Voted {voteOptionText} with{' '}
-        {comment.comment.voterWeight.gte(parseUnits('0.01'))
-          ? formatValue(comment.comment.voterWeight)
-          : '≈0.00'}{' '}
-        MKR
+        {formatValue(comment.comment.voterWeight, undefined, undefined, true, true)} MKR
       </Text>
     );
   };

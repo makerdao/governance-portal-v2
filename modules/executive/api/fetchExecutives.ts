@@ -9,6 +9,7 @@ import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
 import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
+import logger from 'lib/logger';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cacheKey = 'github-proposals';
@@ -36,7 +37,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
 
         return parseExecutive(proposalDoc, proposalIndex, proposalLink, network);
       } catch (e) {
-        console.log(e);
+        logger.error(`getGithubExecutives: network ${network}`, e);
         // Catch error and return null if failed fetching one proposal
         return null;
       }
