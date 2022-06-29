@@ -1,7 +1,7 @@
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchSpockPollById } from '../fetchPollBy';
 import { fetchTallyRankedChoice } from '../fetchTallyRankedChoice';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 jest.mock('modules/gql/gqlRequest');
 jest.mock('../fetchPollBy');

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';

@@ -5,7 +5,7 @@ import Delay from 'modules/app/components/Delay';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { isResultDisplayInstantRunoffBreakdown } from '../helpers/utils';
@@ -19,9 +19,6 @@ export default function VoteBreakdown({
   shownOptions: number;
   tally: PollTally | undefined;
 }): JSX.Element {
-  //never use scientific notation when converting BigNumber toString
-  BigNumberJS.config({ EXPONENTIAL_AT: 1e9 });
-
   if (isResultDisplayInstantRunoffBreakdown(poll.parameters)) {
     return (
       <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">

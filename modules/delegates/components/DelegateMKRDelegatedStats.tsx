@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
