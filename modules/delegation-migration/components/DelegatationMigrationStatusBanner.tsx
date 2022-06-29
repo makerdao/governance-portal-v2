@@ -2,32 +2,38 @@ import { Text, Flex } from 'theme-ui';
 import Banner from 'modules/app/components/layout/header/Banner';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { getMigrationBannerContent } from 'modules/delegation-migration/helpers/getMigrationBannerContent';
 
 export function DelegatationMigrationStatusBanner({
   isDelegatedToExpiredContract,
-  isDelegatedToExpiringContract
+  isDelegateContractExpired,
+  isDelegatedToExpiringContract,
+  isDelegateContractExpiring
 }: {
   isDelegatedToExpiredContract: boolean;
   isDelegatedToExpiringContract: boolean;
+  isDelegateContractExpired: boolean;
+  isDelegateContractExpiring: boolean;
 }): React.ReactElement {
   const link = <Icon name="chevron_right" size={2} ml={2} />;
+
+  const { variant, href, copy } = getMigrationBannerContent({
+    isDelegatedToExpiredContract,
+    isDelegateContractExpired,
+    isDelegatedToExpiringContract,
+    isDelegateContractExpiring
+  });
+
   return (
     <Banner
-      variant={isDelegatedToExpiredContract ? 'bannerWarning' : 'bannerNotice'}
+      variant={variant}
       content={
-        <InternalLink href={'/migration/delegator'} title="View delegator migration page">
+        <InternalLink href={href} title="View migration page">
           <Flex>
-            {isDelegatedToExpiredContract ? (
-              <Text>
-                You have MKR delegated to a contract that has expired. Please migrate your MKR to a new
-                delegate contract. {link}
-              </Text>
-            ) : (
-              <Text>
-                You have MKR delegated to a contract that will expire soon. Please migrate your MKR to a new
-                delegate contract. {link}
-              </Text>
-            )}
+            <Text>
+              {copy} {link}
+            </Text>
+            )
           </Flex>
         </InternalLink>
       }
