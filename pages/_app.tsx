@@ -40,7 +40,17 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
-  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useDelegationMigrationStatus();
+  const {
+    isDelegatedToExpiringContract,
+    isDelegatedToExpiredContract,
+    isDelegateContractExpired,
+    isDelegateContractExpiring
+  } = useDelegationMigrationStatus();
+  const showDelegationMigrationBanner =
+    isDelegateContractExpired ||
+    isDelegateContractExpiring ||
+    isDelegatedToExpiringContract ||
+    isDelegatedToExpiredContract;
 
   return (
     <ThemeProvider theme={theme as any}>
@@ -82,8 +92,10 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 />
                 {activeBannerContent && <Banner content={activeBannerContent.content} />}
-                {(true /* isDelegatedToExpiringContract */ || isDelegatedToExpiredContract) && (
+                {showDelegationMigrationBanner && (
                   <DelegatationMigrationStatusBanner
+                    isDelegateContractExpired={isDelegateContractExpired}
+                    isDelegateContractExpiring={isDelegateContractExpiring}
                     isDelegatedToExpiringContract={isDelegatedToExpiringContract}
                     isDelegatedToExpiredContract={isDelegatedToExpiredContract}
                   />
