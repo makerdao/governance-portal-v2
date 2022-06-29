@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchGithubGraphQL, fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';

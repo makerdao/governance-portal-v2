@@ -1,4 +1,4 @@
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { Tag } from 'modules/app/types/tag';
 
 import pollTags from 'modules/tags/constants/poll-tags-definitions.json';

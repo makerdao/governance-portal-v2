@@ -5,7 +5,7 @@ import { Contract } from '@ethersproject/contracts';
 import { VoteProxy } from '../../../types/ethers-contracts/VoteProxy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 
 export type VoteProxyAddresses = {
   hotAddress?: string;

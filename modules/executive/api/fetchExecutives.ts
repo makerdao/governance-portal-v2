@@ -1,5 +1,5 @@
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchGitHubPage, GithubTokens } from 'lib/github';
 import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
