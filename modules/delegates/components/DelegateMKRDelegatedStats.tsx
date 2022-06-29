@@ -49,10 +49,12 @@ export function DelegateMKRDelegatedStats({
         value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(0) : '--'}
         label={'Total Active Delegators'}
       />
-      <StatBox
-        value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0'}
-        label={'MKR Delegated by you'}
-      />
+      {account && (
+        <StatBox
+          value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0'}
+          label={'MKR delegated by you'}
+        />
+      )}
     </Flex>
   );
 }

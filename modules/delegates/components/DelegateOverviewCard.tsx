@@ -188,25 +188,27 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 </InternalLink>
               </Flex>
               <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
-                <Box>
-                  <Text
-                    as="p"
-                    variant="microHeading"
-                    sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                    data-testid="mkr-delegated-by-you"
-                  >
-                    {mkrDelegated ? formatValue(mkrDelegated) : '0'}
-                  </Text>
-                  <Text
-                    as="p"
-                    variant="secondary"
-                    color="onSecondary"
-                    sx={{ fontSize: [2, 3], textAlign: 'right' }}
-                  >
-                    MKR delegated by you
-                  </Text>
-                </Box>
-                <Box sx={{ ml: '4' }}>
+                {account && (
+                  <Box>
+                    <Text
+                      as="p"
+                      variant="microHeading"
+                      sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                      data-testid="mkr-delegated-by-you"
+                    >
+                      {mkrDelegated ? formatValue(mkrDelegated) : '0'}
+                    </Text>
+                    <Text
+                      as="p"
+                      variant="secondary"
+                      color="onSecondary"
+                      sx={{ fontSize: [2, 3], textAlign: 'right' }}
+                    >
+                      MKR delegated by you
+                    </Text>
+                  </Box>
+                )}
+                <Box sx={{ ml: account ? 4 : 0 }}>
                   <Text
                     as="p"
                     variant="microHeading"
