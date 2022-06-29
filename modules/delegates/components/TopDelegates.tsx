@@ -206,7 +206,7 @@ export default function TopDelegates({
                         }
                       }}
                     >
-                      Delegate your MKR to this Delegate
+                      Delegate MKR to this delegate
                     </Button>
                   </Flex>
                   <Divider />
