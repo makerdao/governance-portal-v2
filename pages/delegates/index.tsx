@@ -29,6 +29,7 @@ import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
+import { Delegate } from 'modules/delegates/types';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const [showRecognized, showShadow, sort, name, delegateTags, setName, resetFilters] =
@@ -53,7 +54,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
   }, [delegates, showRecognized, showShadow, name, delegateTags]);
 
-  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
+  const isOwner = (d: Delegate) =>
+    d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const [sortedDelegates, recognizedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
     const sorted = filteredDelegates.sort((prev, next) => {
@@ -80,7 +82,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     return [sorted, recognized, shadow, expired];
   }, [filteredDelegates, sort]);
 
-  const { voteDelegateContractAddress } = useAccount();
+  const { voteDelegateContractAddress, account } = useAccount();
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -168,7 +170,11 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                   {recognizedDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard delegate={delegate} />
+                        <DelegateOverviewCard
+                          delegate={delegate}
+                          isOwner={isOwner(delegate)}
+                          account={account}
+                        />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -182,7 +188,11 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                   {shadowDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard delegate={delegate} />
+                        <DelegateOverviewCard
+                          delegate={delegate}
+                          isOwner={isOwner(delegate)}
+                          account={account}
+                        />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -196,7 +206,11 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                   {expiredDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard delegate={delegate} />
+                        <DelegateOverviewCard
+                          delegate={delegate}
+                          isOwner={isOwner(delegate)}
+                          account={account}
+                        />
                       </ErrorBoundary>
                     </Box>
                   ))}

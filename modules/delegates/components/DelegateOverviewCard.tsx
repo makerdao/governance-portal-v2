@@ -16,19 +16,18 @@ import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
-import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import DelegateTags from './DelegateTags';
 import Icon from 'modules/app/components/Icon';
 
-type PropTypes = {
+type Props = {
   delegate: Delegate;
+  isOwner: boolean;
+  account?: string;
 };
 
-export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElement {
-  const { account, voteDelegateContractAddress } = useAccount();
-
+export function DelegateOverviewCard({ delegate, isOwner, account }: Props): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
@@ -44,8 +43,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
   );
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-
-  const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   return (
     <Card
