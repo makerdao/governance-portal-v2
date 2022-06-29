@@ -21,6 +21,7 @@ import { CMSProposal } from 'modules/executive/types';
 import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
+import { isAboutToExpireCheck } from 'modules/delegation-migration/helpers/expirationChecks';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -37,6 +38,7 @@ function mergeDelegateInfo(
     status: githubDelegate ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
+    isAboutToExpire: isAboutToExpireCheck(expirationDate),
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
     picture: githubDelegate?.picture || '',
