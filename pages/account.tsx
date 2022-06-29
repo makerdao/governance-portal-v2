@@ -30,14 +30,12 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import useSWR from 'swr';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
-import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -54,10 +52,8 @@ const AccountPage = (): React.ReactElement => {
     ? voteProxyContractAddress
     : account;
 
-  const { data: addressInfo, error: errorLoadingAddressInfo } = useSWR<AddressApiResponse>(
-    addressToCheck ? `/api/address/${addressToCheck}?network=${network}` : null,
-    fetchJson
-  );
+  const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(addressToCheck, network);
+
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
   const [modalOpen, setModalOpen] = useState(false);

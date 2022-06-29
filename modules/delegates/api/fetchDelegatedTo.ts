@@ -1,4 +1,4 @@
-import { add, isAfter, isBefore } from 'date-fns';
+import { add } from 'date-fns';
 import { utils } from 'ethers';
 import logger from 'lib/logger';
 import { Query } from 'modules/gql/generated/graphql';
@@ -7,6 +7,7 @@ import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { mkrDelegatedTo } from 'modules/gql/queries/mkrDelegatedTo';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { isAboutToExpireCheck, isExpiredCheck } from 'modules/delegation-migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
 
 export async function fetchDelegatedTo(
@@ -46,8 +47,8 @@ export async function fetchDelegatedTo(
         );
         // Get the expiration date of the delegate
         const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
-        const isAboutToExpire = isBefore(new Date(expirationDate), add(new Date(), { days: 30 }));
-        const isExpired = isAfter(new Date(), new Date(expirationDate));
+        const isAboutToExpire = isAboutToExpireCheck(expirationDate);
+        const isExpired = isExpiredCheck(expirationDate);
 
         acc.push({
           address: immediateCaller,

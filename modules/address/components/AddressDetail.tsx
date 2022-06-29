@@ -14,7 +14,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountComments from 'modules/comments/components/AccountComments';
 import Tabs from 'modules/app/components/Tabs';
-import useDelegatedTo from 'modules/delegates/hooks/useDelegatedTo';
+import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
 
 type PropTypes = {
   address: string;
