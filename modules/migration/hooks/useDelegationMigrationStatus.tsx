@@ -54,7 +54,7 @@ export function useDelegationMigrationStatus(): {
     isDelegatedToExpiredContract,
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
-    isDelegateContractExpiring,
+    isDelegateContractExpiring: true,
     accountIsPreviousOwner,
     accountIsNewOwner,
     newOwnerHasDelegateContract

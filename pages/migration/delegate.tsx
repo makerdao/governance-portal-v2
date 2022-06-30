@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Box, Card, Heading, Text } from 'theme-ui';
+import { Box, Card, Flex, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegationMigrationStatus';
-
 import { STEPS } from 'modules/migration/steps';
 import { MigrationSteps } from 'modules/migration/components/MigrationSteps';
+import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account } = useActiveWeb3React();
@@ -91,9 +91,17 @@ export default function DelegateMigrationPage(): React.ReactElement {
           </Text>
 
           {actionNeeded && (
-            <Card sx={{ p: 3 }}>
+            <Flex sx={{ flexDirection: 'column', width: '880px', alignSelf: 'center' }}>
               <MigrationSteps activeStep={getCurrentStep()} />
-            </Card>
+              <Card sx={{ p: 4 }}>
+                {getCurrentStep() === STEPS.MIGRATION_INFO && (
+                  <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
+                )}
+                {/* {getCurrentStep() === STEPS.NEW_ADDRESS && (
+                  <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
+                )} */}
+              </Card>
+            </Flex>
           )}
         </Stack>
       )}

@@ -33,7 +33,6 @@ export function DelegatationMigrationStatusBanner({
             <Text>
               {copy} {link}
             </Text>
-            )
           </Flex>
         </InternalLink>
       }

@@ -4,7 +4,7 @@ import { STEPS } from 'modules/migration/steps';
 // TODO type the prop with steps enum
 export function MigrationSteps({ activeStep }: { activeStep: string }): JSX.Element {
   return (
-    <Flex sx={{ justifyContent: 'space-evenly' }}>
+    <Flex sx={{ justifyContent: 'space-evenly', my: 3 }}>
       {Object.values(STEPS).map(step => {
         const isActiveStep = activeStep === step;
         return (
