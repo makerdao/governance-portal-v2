@@ -70,7 +70,7 @@ export async function signTypedBallotData(
       version: 'Arbitrum.1',
       chainId,
       //TODO: get verifying contract address from constant variable
-      verifyingContract: '0x067Fc8812aEBa3f813D4DA49C7e2898E731d67d9',
+      verifyingContract: '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3',
     },
     message
   });
