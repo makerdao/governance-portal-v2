@@ -1,56 +1,65 @@
-import { Box, Heading, Text } from 'theme-ui';
+import { useState } from 'react';
+import { Box, Card, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegationMigrationStatus';
-import { addressConnections } from 'modules/migration/connections';
+
+import { STEPS } from 'modules/migration/steps';
+import { MigrationSteps } from 'modules/migration/components/MigrationSteps';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account } = useActiveWeb3React();
+  const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
-  // TODO: probably move this somewhere else
-  const oldToNewMap = addressConnections;
-  const newToOldMap = Object.keys(addressConnections).reduce((acc, cur) => {
-    return {
-      ...acc,
-      [addressConnections[cur]]: cur
-    };
-  }, {});
+  const {
+    isDelegateContractExpiring,
+    isDelegateContractExpired,
+    accountIsPreviousOwner,
+    accountIsNewOwner,
+    newOwnerHasDelegateContract
+  } = useDelegationMigrationStatus();
 
-  const { isDelegateContractExpiring, isDelegateContractExpired } = useDelegationMigrationStatus();
-  const accountIsPreviousOwner = !!oldToNewMap[account];
-  const accountIsNewOwner = !!newToOldMap[account];
   const connectedAddressFound = accountIsPreviousOwner || accountIsNewOwner;
 
-  const STEPS = {
-    NO_ACTION: 'NO_ACTION',
-    READY_TO_MIGRATE: 'READY_TO_MIGRATE',
-    CONNECT_NEW_WALLET: 'CONNECT_NEW_WALLET',
-    CREATE_NEW_CONTRACT: 'CREATE_NEW_CONTRACT'
-  };
+  // the user should be shown the steps to take action if:
+  // a - the connected account has an expired/expiring contract
+  //      or
+  // b - the connected count is the new account of a previous delegate
+  //     and has not created the delegate contract yet
+  const actionNeeded =
+    // a
+    isDelegateContractExpiring ||
+    isDelegateContractExpired ||
+    // b
+    (accountIsNewOwner && !newOwnerHasDelegateContract);
 
-  const getCurrentStep = () => {
+  const getCurrentStep = (): string => {
     if (!isDelegateContractExpired && !isDelegateContractExpiring) {
-      return STEPS.NO_ACTION;
+      return STEPS.MIGRATION_INFO;
     }
-    if ((isDelegateContractExpiring || isDelegateContractExpired) && !connectedAddressFound) {
-      return STEPS.READY_TO_MIGRATE;
+    if (
+      (isDelegateContractExpiring || isDelegateContractExpired) &&
+      !connectedAddressFound &&
+      migrationInfoAcknowledged
+    ) {
+      return STEPS.NEW_ADDRESS;
     }
     if (
       (isDelegateContractExpiring || isDelegateContractExpired) &&
       connectedAddressFound &&
       accountIsPreviousOwner
     ) {
-      return STEPS.CONNECT_NEW_WALLET;
+      return STEPS.CONNECT_WALLET;
     }
-    if (connectedAddressFound && accountIsNewOwner) {
-      return STEPS.CREATE_NEW_CONTRACT;
+    if (connectedAddressFound && accountIsNewOwner && !newOwnerHasDelegateContract) {
+      return STEPS.NEW_DELEGATE_CONTRACT;
     }
-  };
 
-  console.log(getCurrentStep());
+    return STEPS.MIGRATION_INFO;
+  };
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -80,6 +89,12 @@ export default function DelegateMigrationPage(): React.ReactElement {
             Finish migration in order to remain active as a delegate and preserve your voting history &amp;
             metrics.
           </Text>
+
+          {actionNeeded && (
+            <Card sx={{ p: 3 }}>
+              <MigrationSteps activeStep={getCurrentStep()} />
+            </Card>
+          )}
         </Stack>
       )}
     </PrimaryLayout>
