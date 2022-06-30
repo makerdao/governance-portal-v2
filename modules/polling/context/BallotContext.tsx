@@ -302,7 +302,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       voter: account.toLowerCase(),
       pollIds,
       optionIds: pollOptions,
-      nonce: 1, //TODO: get this programatically by reading the contract
+      nonce: 0, //TODO: get this programatically by reading the contract
       expiry: Math.trunc((Date.now() + 86400 * 1000) / 1000)
     };
 
