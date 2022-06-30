@@ -9,6 +9,7 @@ import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegat
 import { STEPS } from 'modules/migration/steps';
 import { MigrationSteps } from 'modules/migration/components/MigrationSteps';
 import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
+import { NewAddress } from 'modules/migration/components/NewAddress';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account } = useActiveWeb3React();
@@ -37,9 +38,14 @@ export default function DelegateMigrationPage(): React.ReactElement {
     (accountIsNewOwner && !newOwnerHasDelegateContract);
 
   const getCurrentStep = (): string => {
-    if (!isDelegateContractExpired && !isDelegateContractExpiring) {
+    // delegate contract is either expired or expiring and we don't have
+    // a request to migrate the address yet, show migration info
+    if ((isDelegateContractExpired || isDelegateContractExpiring) && !migrationInfoAcknowledged) {
       return STEPS.MIGRATION_INFO;
     }
+
+    // same status as above, but user has acknowledged migration info,
+    // show new address step
     if (
       (isDelegateContractExpiring || isDelegateContractExpired) &&
       !connectedAddressFound &&
@@ -47,6 +53,10 @@ export default function DelegateMigrationPage(): React.ReactElement {
     ) {
       return STEPS.NEW_ADDRESS;
     }
+
+    // delegate contract is either expired or expiring
+    // and we have processed the request to migrate
+    // but user is connected with old address
     if (
       (isDelegateContractExpiring || isDelegateContractExpired) &&
       connectedAddressFound &&
@@ -54,10 +64,13 @@ export default function DelegateMigrationPage(): React.ReactElement {
     ) {
       return STEPS.CONNECT_WALLET;
     }
+
+    // user has connected with the address they requested to migrate to
     if (connectedAddressFound && accountIsNewOwner && !newOwnerHasDelegateContract) {
       return STEPS.NEW_DELEGATE_CONTRACT;
     }
 
+    // no other conditions were met, show first step by default
     return STEPS.MIGRATION_INFO;
   };
 
@@ -97,9 +110,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 {getCurrentStep() === STEPS.MIGRATION_INFO && (
                   <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
                 )}
-                {/* {getCurrentStep() === STEPS.NEW_ADDRESS && (
-                  <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
-                )} */}
+                {getCurrentStep() === STEPS.NEW_ADDRESS && <NewAddress />}
               </Card>
             </Flex>
           )}
