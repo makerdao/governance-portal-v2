@@ -7,7 +7,7 @@ import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { mkrDelegatedTo } from 'modules/gql/queries/mkrDelegatedTo';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { isAboutToExpireCheck, isExpiredCheck } from 'modules/delegation-migration/helpers/expirationChecks';
+import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
 
 export async function fetchDelegatedTo(

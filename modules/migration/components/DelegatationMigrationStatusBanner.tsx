@@ -2,7 +2,7 @@ import { Text, Flex } from 'theme-ui';
 import Banner from 'modules/app/components/layout/header/Banner';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { getMigrationBannerContent } from 'modules/delegation-migration/helpers/getMigrationBannerContent';
+import { getMigrationBannerContent } from 'modules/migration/helpers/getMigrationBannerContent';
 
 export function DelegatationMigrationStatusBanner({
   isDelegatedToExpiredContract,

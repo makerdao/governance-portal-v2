@@ -27,8 +27,8 @@ import debug from 'debug';
 import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
-import { useDelegationMigrationStatus } from 'modules/delegation-migration/hooks/useDelegationMigrationStatus';
-import { DelegatationMigrationStatusBanner } from 'modules/delegation-migration/components/DelegatationMigrationStatusBanner';
+import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegationMigrationStatus';
+import { DelegatationMigrationStatusBanner } from 'modules/migration/components/DelegatationMigrationStatusBanner';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
