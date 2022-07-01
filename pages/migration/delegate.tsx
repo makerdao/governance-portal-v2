@@ -10,6 +10,7 @@ import { STEPS } from 'modules/migration/steps';
 import { MigrationSteps } from 'modules/migration/components/MigrationSteps';
 import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
 import { NewAddress } from 'modules/migration/components/NewAddress';
+import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account } = useActiveWeb3React();
@@ -18,12 +19,14 @@ export default function DelegateMigrationPage(): React.ReactElement {
   const {
     isDelegateContractExpiring,
     isDelegateContractExpired,
-    accountIsPreviousOwner,
-    accountIsNewOwner,
+    newOwnerAddress,
+    newOwnerConnected,
+    previousOwnerAddress,
+    previousOwnerConnected,
     newOwnerHasDelegateContract
   } = useDelegationMigrationStatus();
 
-  const connectedAddressFound = accountIsPreviousOwner || accountIsNewOwner;
+  const connectedAddressFound = !!previousOwnerAddress || !!newOwnerAddress;
 
   // the user should be shown the steps to take action if:
   // a - the connected account has an expired/expiring contract
@@ -35,12 +38,16 @@ export default function DelegateMigrationPage(): React.ReactElement {
     isDelegateContractExpiring ||
     isDelegateContractExpired ||
     // b
-    (accountIsNewOwner && !newOwnerHasDelegateContract);
+    (!!newOwnerAddress && !newOwnerHasDelegateContract);
 
   const getCurrentStep = (): string => {
     // delegate contract is either expired or expiring and we don't have
     // a request to migrate the address yet, show migration info
-    if ((isDelegateContractExpired || isDelegateContractExpiring) && !migrationInfoAcknowledged) {
+    if (
+      (isDelegateContractExpired || isDelegateContractExpiring) &&
+      !connectedAddressFound &&
+      !migrationInfoAcknowledged
+    ) {
       return STEPS.MIGRATION_INFO;
     }
 
@@ -60,13 +67,13 @@ export default function DelegateMigrationPage(): React.ReactElement {
     if (
       (isDelegateContractExpiring || isDelegateContractExpired) &&
       connectedAddressFound &&
-      accountIsPreviousOwner
+      previousOwnerConnected
     ) {
       return STEPS.CONNECT_WALLET;
     }
 
     // user has connected with the address they requested to migrate to
-    if (connectedAddressFound && accountIsNewOwner && !newOwnerHasDelegateContract) {
+    if (connectedAddressFound && newOwnerConnected && !newOwnerHasDelegateContract) {
       return STEPS.NEW_DELEGATE_CONTRACT;
     }
 
@@ -85,6 +92,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
       {account && (
         <Stack gap={3}>
           <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
+            {/* TODO update this copy based on step */}
             {isDelegateContractExpired &&
               'Your delegate contract has expired! Please migrate as soon as possible.'}
             {isDelegateContractExpiring &&
@@ -111,6 +119,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
                 )}
                 {getCurrentStep() === STEPS.NEW_ADDRESS && <NewAddress />}
+                {getCurrentStep() === STEPS.CONNECT_WALLET && <ConnectWallet />}
               </Card>
             </Flex>
           )}

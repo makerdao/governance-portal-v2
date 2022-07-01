@@ -9,8 +9,10 @@ export function useDelegationMigrationStatus(): {
   isDelegatedToExpiringContract: boolean;
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
-  accountIsPreviousOwner: boolean;
-  accountIsNewOwner: boolean;
+  newOwnerAddress?: string;
+  newOwnerConnected: boolean;
+  previousOwnerAddress?: string;
+  previousOwnerConnected: boolean;
   newOwnerHasDelegateContract: boolean;
 } {
   const { account: address, network } = useActiveWeb3React();
@@ -46,8 +48,12 @@ export function useDelegationMigrationStatus(): {
     };
   }, {});
 
-  const accountIsPreviousOwner = !!oldToNewMap[address];
-  const accountIsNewOwner = !!newToOldMap[address];
+  const previousOwnerConnected = !!oldToNewMap[address];
+  const newOwnerConnected = !!newToOldMap[address];
+
+  const previousOwnerAddress = previousOwnerConnected ? address : newToOldMap[address];
+  const newOwnerAddress = newOwnerConnected ? address : oldToNewMap[address];
+
   const newOwnerHasDelegateContract = !!delegateContractExpirationDate;
 
   return {
@@ -55,8 +61,10 @@ export function useDelegationMigrationStatus(): {
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
     isDelegateContractExpiring: true,
-    accountIsPreviousOwner,
-    accountIsNewOwner,
+    newOwnerAddress,
+    newOwnerConnected,
+    previousOwnerAddress,
+    previousOwnerConnected,
     newOwnerHasDelegateContract
   };
 }

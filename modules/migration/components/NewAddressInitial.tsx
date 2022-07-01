@@ -46,9 +46,7 @@ export function NewAddressInitial({
         address is different from the currently connected address, and make sure you are the sole operator of
         the address.{' '}
       </Alert>
-      <Label variant="microHeading" sx={{ fontSize: 2, mb: 1, fontWeight: 'bold' }}>
-        Enter new address
-      </Label>
+      <Label sx={{ mb: 1 }}>Enter new address</Label>
       <Flex>
         <Input
           name="search"
