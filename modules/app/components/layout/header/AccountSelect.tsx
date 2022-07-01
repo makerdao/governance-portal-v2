@@ -127,7 +127,7 @@ const AccountSelect = (): React.ReactElement => {
                       {...{ address, accountName }}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
-                      disconnect={connector.deactivate}
+                      disconnect={connector?.deactivate}
                     />
                   </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>

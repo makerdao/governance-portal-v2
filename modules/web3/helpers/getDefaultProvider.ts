@@ -8,7 +8,7 @@ ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 export const getDefaultProvider = (
   network: SupportedNetworks | string | undefined,
   optionsOverrides?: Record<string, string>
-): BaseProvider => {
+): any => {
   const options = {
     infura: config.INFURA_KEY,
     alchemy: config.ALCHEMY_KEY,
