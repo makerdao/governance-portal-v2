@@ -5,7 +5,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
-import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegationMigrationStatus';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 import { STEPS } from 'modules/migration/steps';
 import { MigrationSteps } from 'modules/migration/components/MigrationSteps';
 import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
@@ -24,7 +24,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     previousOwnerAddress,
     previousOwnerConnected,
     newOwnerHasDelegateContract
-  } = useDelegationMigrationStatus();
+  } = useMigrationStatus();
 
   const connectedAddressFound = !!previousOwnerAddress || !!newOwnerAddress;
 

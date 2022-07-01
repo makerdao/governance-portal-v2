@@ -27,7 +27,7 @@ import debug from 'debug';
 import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
-import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegationMigrationStatus';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 import { DelegatationMigrationStatusBanner } from 'modules/migration/components/DelegatationMigrationStatusBanner';
 const vitalslog = debug('govpo:vitals');
 
@@ -45,7 +45,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     isDelegatedToExpiredContract,
     isDelegateContractExpired,
     isDelegateContractExpiring
-  } = useDelegationMigrationStatus();
+  } = useMigrationStatus();
   const showDelegationMigrationBanner =
     isDelegateContractExpired ||
     isDelegateContractExpiring ||

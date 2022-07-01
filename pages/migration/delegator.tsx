@@ -2,12 +2,12 @@ import { Box, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useDelegationMigrationStatus } from 'modules/migration/hooks/useDelegationMigrationStatus';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useDelegationMigrationStatus();
+  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useMigrationStatus();
   const { account } = useActiveWeb3React();
 
   return (

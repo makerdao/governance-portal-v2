@@ -4,7 +4,7 @@ import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDe
 import { isAboutToExpireCheck, isExpiredCheck } from '../helpers/expirationChecks';
 import { addressConnections } from 'modules/migration/connections';
 
-export function useDelegationMigrationStatus(): {
+export function useMigrationStatus(): {
   isDelegatedToExpiredContract: boolean;
   isDelegatedToExpiringContract: boolean;
   isDelegateContractExpired: boolean;
