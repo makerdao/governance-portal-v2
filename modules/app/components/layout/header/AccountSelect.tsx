@@ -50,7 +50,7 @@ const closeButtonStyle: ThemeUICSSObject = {
 const AccountSelect = (): React.ReactElement => {
   const router = useRouter();
 
-  const { account: address, deactivate } = useWeb3React();
+  const { account: address, connector } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -127,7 +127,7 @@ const AccountSelect = (): React.ReactElement => {
                       {...{ address, accountName }}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
-                      disconnect={deactivate}
+                      disconnect={connector.deactivate}
                     />
                   </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
