@@ -53,6 +53,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
   }, [delegates, showRecognized, showShadow, name, delegateTags]);
 
+  const { voteDelegateContractAddress } = useAccount();
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const [sortedDelegates, recognizedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
@@ -80,7 +81,6 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     return [sorted, recognized, shadow, expired];
   }, [filteredDelegates, sort]);
 
-  const { voteDelegateContractAddress } = useAccount();
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
