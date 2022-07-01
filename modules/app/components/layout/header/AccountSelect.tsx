@@ -50,8 +50,7 @@ const closeButtonStyle: ThemeUICSSObject = {
 const AccountSelect = (): React.ReactElement => {
   const router = useRouter();
 
-  // important that these are destructed from the account-specific web3-react context
-  const { account: address } = useWeb3React();
+  const { account: address, deactivate } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -88,6 +87,7 @@ const AccountSelect = (): React.ReactElement => {
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
+
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
       <ConnectWalletButton
@@ -111,18 +111,6 @@ const AccountSelect = (): React.ReactElement => {
             <>
               <BackButton onClick={() => setChangeWallet(false)} />
               {walletOptions}
-              {accountName === 'WalletConnect' && (
-                <Flex
-                  onClick={() => {
-                    deactivate();
-                    setAccountName(undefined);
-                    close();
-                  }}
-                  sx={walletButtonStyle}
-                >
-                  Disconnect
-                </Flex>
-              )}
             </>
           ) : (
             <>
@@ -139,6 +127,7 @@ const AccountSelect = (): React.ReactElement => {
                       {...{ address, accountName }}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
+                      disconnect={deactivate}
                     />
                   </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>

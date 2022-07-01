@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally, PluralityResult, RankedChoiceResult } from '../types';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { isPluralityVictoryConditionPoll, isRankedChoiceVictoryConditionPoll } from './utils';
 
 export function getRankedChoiceResults(rawTally: RawPollTally, poll: Poll): RankedChoiceResult[] {

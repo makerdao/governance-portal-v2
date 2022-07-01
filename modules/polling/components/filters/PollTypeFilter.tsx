@@ -62,7 +62,7 @@ export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeU
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{type.name}</Text>
-                  <Text sx={{ color: 'muted', ml: 3 }}>
+                  <Text sx={{ color: 'mutedAlt', ml: 3 }}>
                     {
                       filteredPolls.filter(
                         i => i.parameters.victoryConditions.filter(v => v.type === type.key).length > 0
