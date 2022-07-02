@@ -303,7 +303,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       pollIds,
       optionIds: pollOptions,
       nonce: 0, //TODO: get this programatically by reading the contract
-      expiry: Math.trunc((Date.now() + 86400 * 1000) / 1000)
+      expiry: Math.trunc((Date.now() + 43200 * 1000) / 1000) //12 hour expiry
     };
 
     const signature = await signTypedBallotData(

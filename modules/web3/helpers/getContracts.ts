@@ -1,5 +1,5 @@
 import { ethers, providers, Signer } from 'ethers';
-import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk, ArbitrumTestnetSdk, getArbitrumTestnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { Web3Provider } from '@ethersproject/providers';
 import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
@@ -8,16 +8,18 @@ import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
 
-export type EthSdk = MainnetSdk | GoerliSdk;
+export type EthSdk = MainnetSdk | GoerliSdk | ArbitrumTestnetSdk;
 
 type Sdks = {
   mainnet: (signer: Signer) => MainnetSdk;
   goerli: (signer: Signer) => GoerliSdk;
+  arbitrumTestnet: (signer: Signer) => ArbitrumTestnetSdk;
 };
 
 const sdks: Sdks = {
   mainnet: getMainnetSdk,
-  goerli: getGoerliSdk
+  goerli: getGoerliSdk,
+  arbitrumTestnet: getArbitrumTestnetSdk
 };
 
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
