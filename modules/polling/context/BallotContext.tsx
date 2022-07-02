@@ -311,11 +311,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       expiry: Math.trunc((Date.now() + 43200 * 1000) / 1000) //12 hour expiry
     };
 
-    const signature = await signTypedBallotData(
-      signatureValues,
-      library,
-      networkNameToChainId(network)
-    );
+    const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
     console.log('signature', signature);
     //const msg = '0x' + msg;
     // fetchJson(`/api/polling/vote?network=${network}`, {

@@ -43,7 +43,7 @@ const config: EthSdkConfig = {
       vow: '0x23f78612769b9013b3145E43896Fa1578cAa2c2a'
     },
     arbitrumTestnet: {
-      polling: '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3',
+      polling: '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3'
     }
   },
   etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY }
