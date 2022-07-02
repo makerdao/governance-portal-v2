@@ -14,7 +14,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type DelegatedByAddressProps = {
@@ -38,7 +38,7 @@ const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
     const weight = numB.div(denomB).times(100);
     return formatValue(parseUnits(weight.toString()));
   } catch (e) {
-    return '0.0';
+    return '0';
   }
 };
 
@@ -278,7 +278,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
                 variant="caps"
                 onClick={() => changeSort('mkr')}
               >
-                {bpi < 1 ? 'Weight' : 'Voting Weight'}
+                {bpi < 1 ? '%' : 'Voting Weight'}
                 {sortBy.type === 'mkr' ? (
                   sortBy.order === 1 ? (
                     <Icon name="chevron_down" size={2} ml={1} />

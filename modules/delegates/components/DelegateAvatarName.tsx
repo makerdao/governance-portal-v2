@@ -38,7 +38,7 @@ export default function DelegateAvatarName({ delegate }: { delegate: Delegate })
             </Flex>
           )}
         </Flex>
-        <Address address={delegate.voteDelegateAddress} />
+        {delegate.voteDelegateAddress && <Address address={delegate.voteDelegateAddress} />}
       </Box>
     </Flex>
   );

@@ -2938,5 +2938,15 @@
     "ratification",
     "mips",
     "budget"
+  ],
+  "831": [
+    "high-impact",
+    "misc-funding",
+    "ratification",
+    "mips"
+  ],
+  "832": [
+    "medium-impact",
+    "real-world-assets"
   ]
 }

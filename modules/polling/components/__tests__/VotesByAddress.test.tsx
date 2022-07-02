@@ -2,17 +2,26 @@ import { render, screen } from '@testing-library/react';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import mockTally from 'modules/polling/api/mocks/tally.json';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import {
+  PollInputFormat,
+  PollResultDisplay,
+  PollVictoryConditions,
+  POLL_VOTE_TYPE
+} from 'modules/polling/polling.constants';
 import { Poll, PollTally } from 'modules/polling/types';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 
-const mockPoll = {
+const mockPoll: Poll = {
   ...mockPolls[0],
   endDate: new Date(mockPolls[0].endDate),
   startDate: new Date(mockPolls[0].startDate),
-  voteType: POLL_VOTE_TYPE.PLURALITY_VOTE,
+  parameters: {
+    inputFormat: PollInputFormat.singleChoice,
+    resultDisplay: PollResultDisplay.singleVoteBreakdown,
+    victoryConditions: [{ type: PollVictoryConditions.plurality }]
+  },
   options: {
     0: 'Abstain',
     1: 'Yes',
@@ -21,8 +30,7 @@ const mockPoll = {
 };
 
 const mockedTally: PollTally = {
-  ...mockTally,
-  pollVoteType: POLL_VOTE_TYPE.PLURALITY_VOTE
+  ...mockTally
 };
 
 const props: { tally: PollTally; poll: Poll } = {
@@ -50,7 +58,7 @@ describe('Polling votes by address', () => {
   });
 
   test('renders ranked choice vote type correctly', async () => {
-    const updatedTally = {
+    const updatedTally: PollTally = {
       ...mockedTally,
       votesByAddress: [
         {
@@ -67,7 +75,11 @@ describe('Polling votes by address', () => {
       ...props,
       poll: {
         ...props.poll,
-        voteType: POLL_VOTE_TYPE.RANKED_VOTE,
+        parameters: {
+          inputFormat: PollInputFormat.rankFree,
+          resultDisplay: PollResultDisplay.instantRunoffBreakdown,
+          victoryConditions: [{ type: PollVictoryConditions.instantRunoff }]
+        },
         options: {
           0: 'test1',
           1: 'test2',
@@ -85,11 +97,10 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Voting Power/);
     await screen.findByText(/MKR Amount/);
 
-    // check first choice is displayed with asterisk
-    await screen.findByText(/test1*/);
-
-    // check explainer text exists
-    await screen.findByText('*First choice in ranked choice vote shown');
+    // check first choice is displayed with number
+    await screen.findByText(/1 - test1/);
+    await screen.findByText(/2 - test2/);
+    await screen.findByText(/3 - test3/);
   });
 
   test('renders unknown vote type correctly', async () => {

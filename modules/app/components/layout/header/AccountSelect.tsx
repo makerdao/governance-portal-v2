@@ -252,6 +252,18 @@ const AccountSelect = (): React.ReactElement => {
     ))
     .concat([<TrezorButton key="trezor" />, <LedgerButton key="ledger" />]);
 
+  const onDisconnectWallet = () => {
+    deactivate();
+    close();
+  };
+
+  const onChangeWallet = () => {
+    (connector as WalletConnectConnector).walletConnectProvider?.disconnect();
+    deactivate();
+    setAccountName(undefined);
+    close();
+  };
+
   const BackButton = ({ onClick }) => (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Button variant="textual" color="primary" sx={{ fontSize: 3, px: 0 }} onClick={onClick}>
@@ -261,6 +273,7 @@ const AccountSelect = (): React.ReactElement => {
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
+
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
       <NetworkAlertModal chainIdError={chainIdError} deactivate={deactivate} />
@@ -319,15 +332,7 @@ const AccountSelect = (): React.ReactElement => {
               <BackButton onClick={() => setChangeWallet(false)} />
               {walletOptions}
               {accountName === 'WalletConnect' && (
-                <Flex
-                  onClick={() => {
-                    (connector as WalletConnectConnector).walletConnectProvider?.disconnect();
-                    deactivate();
-                    setAccountName(undefined);
-                    close();
-                  }}
-                  sx={walletButtonStyle}
-                >
+                <Flex onClick={onChangeWallet} sx={walletButtonStyle}>
                   Disconnect
                 </Flex>
               )}
@@ -347,6 +352,7 @@ const AccountSelect = (): React.ReactElement => {
                       {...{ address, accountName }}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
+                      disconnect={onDisconnectWallet}
                     />
                   </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>

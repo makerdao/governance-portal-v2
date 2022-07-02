@@ -2,7 +2,12 @@ import React from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+import {
+  isActivePoll,
+  isInputFormatRankFree,
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import VotingStatus from './PollVotingStatus';
@@ -11,7 +16,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -24,6 +28,7 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
 
 type Props = {
   poll: Poll;
@@ -87,7 +92,7 @@ export default function PollOverviewCard({
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}
                       />
-                      {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                      {!showQuickVote && isInputFormatRankFree(poll.parameters) && (
                         <Flex sx={{ alignItems: 'center', mb: 3 }}>
                           <Text variant="caps">Ranked-choice poll</Text>
                           <Icon name="stackedVotes" size={3} ml={2} />
@@ -201,41 +206,48 @@ export default function PollOverviewCard({
                   </Box>
                 )}
 
-                {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
-                  <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
-                    {tally && tally.totalMkrParticipation > 0 && (
-                      <InternalLink
-                        href={`/polling/${poll.slug}`}
-                        hash="vote-breakdown"
-                        title="View poll vote breakdown"
-                      >
-                        <Box sx={{ mt: 3 }}>
-                          <ErrorBoundary componentName="Poll Results">
+                <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                  {tally && tally.totalMkrParticipation > 0 && (
+                    <InternalLink
+                      href={`/polling/${poll.slug}`}
+                      hash="vote-breakdown"
+                      title="View poll vote breakdown"
+                    >
+                      <Box sx={{ mt: 3 }}>
+                        <ErrorBoundary componentName="Poll Results">
+                          {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
                             <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
-                          </ErrorBoundary>
-                        </Box>
-                      </InternalLink>
-                    )}
-                    {!tally && isValidating && !errorTally && (
-                      <SkeletonThemed width={'265px'} height={'30px'} />
-                    )}
-                    {errorTally && !isValidating && (
-                      <Badge
-                        variant="warning"
-                        sx={{
-                          color: 'warning',
-                          borderColor: 'warning',
-                          textTransform: 'uppercase',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          m: 1
-                        }}
-                      >
-                        Error loading votes
-                      </Badge>
-                    )}
-                  </Box>
-                )}
+                          )}
+                          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
+                            <RankedChoiceVoteSummary
+                              choices={tally.results.map(i => parseInt(i.optionId))}
+                              poll={poll}
+                              limit={3}
+                            />
+                          )}
+                        </ErrorBoundary>
+                      </Box>
+                    </InternalLink>
+                  )}
+                  {!tally && isValidating && !errorTally && (
+                    <SkeletonThemed width={'265px'} height={'30px'} />
+                  )}
+                  {errorTally && !isValidating && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 1
+                      }}
+                    >
+                      Error loading votes
+                    </Badge>
+                  )}
+                </Box>
               </Flex>
             </Box>
 

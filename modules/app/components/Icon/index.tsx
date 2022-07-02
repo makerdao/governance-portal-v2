@@ -1,3 +1,4 @@
+import logger from 'lib/logger';
 import React from 'react';
 
 const icons = {
@@ -144,7 +145,7 @@ export default function Icon({
   sx?: any;
 }): React.ReactElement | null {
   if (!icons[name]) {
-    console.error(`No icon found with name ${name}`);
+    logger.error(`Icon: No icon found with name ${name}`);
     return null;
   }
 

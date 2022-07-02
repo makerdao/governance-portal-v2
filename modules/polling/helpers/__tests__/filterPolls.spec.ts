@@ -1,22 +1,23 @@
 import mockPolls from 'modules/polling/api/mocks/polls.json';
-import { PollVoteType } from 'modules/polling/types';
+import { PollVictoryConditions } from 'modules/polling/polling.constants';
+import { Poll } from 'modules/polling/types';
 import { filterPolls } from '../filterPolls';
 
 describe('filterPolls', () => {
-  const formattedPolls = mockPolls.map(p => {
+  const formattedPolls: Poll[] = mockPolls.map(p => {
     return {
       ...p,
       endDate: new Date(p.endDate),
-      startDate: new Date(p.startDate),
-      voteType: p.voteType as PollVoteType
+      startDate: new Date(p.startDate)
     };
-  });
+  }) as Poll[];
+
   const filters = {
     title: null,
     startDate: null,
     endDate: null,
     categoryFilter: null,
-    pollVoteType: null,
+    pollVictoryCondition: null,
     showPollActive: true,
     showPollEnded: true
   };
@@ -62,7 +63,7 @@ describe('filterPolls', () => {
       polls: formattedPolls,
       pollFilters: {
         ...filters,
-        pollVoteType: { 'Ranked Choice IRV': true }
+        pollVictoryCondition: { [PollVictoryConditions.instantRunoff]: true }
       }
     });
 

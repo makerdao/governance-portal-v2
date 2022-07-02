@@ -27,7 +27,9 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
  *       option:
  *         type: number
  *       optionValue:
- *         type: string
+ *         type: array
+ *         items:
+ *           type: string
  *       rankedChoiceOption:
  *         type: array
  *         items:
@@ -38,7 +40,7 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
  *       - pollId: 1
  *         blockTimestamp: "2021-11-20T19:25:47+00:00"
  *         option: 1
- *         optionValue: "Yes"
+ *         optionValue: ["Yes"]
  *         rankedChoiceOption: [1]
  *         poll:
  *           pollId: 1

@@ -1,7 +1,7 @@
 import { Box, Text, Flex, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 
 import {
   CartesianGrid,
@@ -78,6 +78,10 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     return format(new Date(tickItem.toISOString()), dateFormat);
   };
 
+  const formatYAxis = tickItem => {
+    return tickItem.toLocaleString();
+  };
+
   return (
     <Box>
       <Flex
@@ -151,6 +155,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
               viewBox: { height: 10, width: 10, x: 20, y: 300 }
             }}
             tickMargin={5}
+            tickFormatter={formatYAxis}
           />
 
           <CartesianGrid stroke="#D5D9E0" strokeDasharray="5 5" />

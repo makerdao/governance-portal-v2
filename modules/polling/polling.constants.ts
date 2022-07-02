@@ -12,3 +12,23 @@ export const POLL_VOTE_TYPES_ARRAY: PollVoteType[] = [
   POLL_VOTE_TYPE.PLURALITY_VOTE,
   POLL_VOTE_TYPE.RANKED_VOTE
 ];
+
+// Poll parameters
+export enum PollInputFormat {
+  singleChoice = 'single-choice',
+  rankFree = 'rank-free',
+  chooseFree = 'choose-free'
+}
+
+export enum PollVictoryConditions {
+  majority = 'majority',
+  plurality = 'plurality',
+  instantRunoff = 'instant-runoff',
+  default = 'default',
+  comparison = 'comparison'
+}
+
+export enum PollResultDisplay {
+  singleVoteBreakdown = 'single-vote-breakdown',
+  instantRunoffBreakdown = 'instant-runoff-breakdown'
+}

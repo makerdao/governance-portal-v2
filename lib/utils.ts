@@ -2,11 +2,12 @@ import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { hexZeroPad, stripZeros } from 'ethers/lib/utils';
 
 import round from 'lodash/round';
+import logger from './logger';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -163,8 +164,6 @@ export const fromBuffer = (buf, opts) => {
 
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
-  //never use scientific notation when converting BigNumber toString
-  BigNumber.config({ EXPONENTIAL_AT: 1e9 });
   return new BigNumber(hex.join(''), 16);
 };
 
@@ -215,9 +214,7 @@ const windowOpen = (
           onClose(shareDialog);
         }
       } catch (e) {
-        /* eslint-disable no-console */
-        console.error(e);
-        /* eslint-enable no-console */
+        logger.error('windowOpen:', e);
       }
     }, 1000);
   }

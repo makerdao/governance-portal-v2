@@ -1,15 +1,15 @@
 import { Box, Text } from 'theme-ui';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { PollVoteHistory } from '../types/pollVoteHistory';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
+import { isPluralityVictoryConditionPoll } from '../helpers/utils';
 
 export function PollingParticipationOverview({
   votes
 }: {
   votes: PollVoteHistory[];
 }): React.ReactElement | null {
-  const filteredVotes = votes.filter(i => i.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE);
+  const filteredVotes = votes.filter(i => isPluralityVictoryConditionPoll(i.poll.parameters));
   const total = filteredVotes.length;
   const showHistory = total > 0;
 

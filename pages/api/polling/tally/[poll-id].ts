@@ -3,6 +3,8 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getPollTally } from 'modules/polling/helpers/getPollTally';
 import { fetchPollById } from 'modules/polling/api/fetchPollBy';
+import { pollHasStarted } from 'modules/polling/helpers/utils';
+import { PollTally } from 'modules/polling/types';
 
 // Returns a PollTally given a pollID
 
@@ -59,9 +61,6 @@ import { fetchPollById } from 'modules/polling/api/fetchPollBy';
  *   Tally:
  *     type: object
  *     properties:
- *       pollVoteType:
- *         type: string
- *         enum: ['Plurality Voting', 'Ranked Choice IRV']
  *       totalMkrParticipation:
  *         type: number
  *       winner:
@@ -79,8 +78,7 @@ import { fetchPollById } from 'modules/polling/api/fetchPollBy';
  *         items:
  *           $ref: '#/definitions/ResultTally'
  *     example:
- *       - pollVoteType: "Ranked Choice IRV"
- *         winner: '2'
+ *       - winner: '2'
  *         totalMkrParticipation: 12312.213213
  *         numVoters: 8
  *         rounds: 1
@@ -134,6 +132,20 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     });
 
     return;
+  }
+
+  if (!pollHasStarted(poll)) {
+    const emptyTally: PollTally = {
+      parameters: poll.parameters,
+      numVoters: 0,
+      results: [],
+      totalMkrParticipation: 0,
+      winner: null,
+      winningOptionName: '',
+      votesByAddress: []
+    };
+
+    return res.status(200).json(emptyTally);
   }
 
   const tally = await getPollTally(poll, network);

@@ -111,7 +111,7 @@ export function SpellEffectsTab({
         <Box
           sx={theme => ({
             background: theme.colors?.background,
-            p: 3,
+            mt: 3,
             transition: 'all 300ms linear',
             overflow: 'hidden',
             borderRadius: '3px'
@@ -119,15 +119,19 @@ export function SpellEffectsTab({
         >
           <Flex
             sx={{
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              flexDirection: ['column', 'row']
             }}
           >
             {spellData?.executiveHash && (
-              <Text sx={{ mr: 2, fontWeight: 'semiBold', wordBreak: 'break-all' }}>
+              <Text sx={{ mr: [0, 2], fontWeight: 'semiBold', wordBreak: 'break-all' }}>
                 {spellData?.executiveHash}
               </Text>
             )}
-            <Box sx={{ cursor: 'pointer', ml: 2, minWidth: '99px' }} onClick={() => setExpanded(!expanded)}>
+            <Box
+              sx={{ cursor: 'pointer', mt: [2, 0], ml: [0, 2], minWidth: '99px' }}
+              onClick={() => setExpanded(!expanded)}
+            >
               <Text color={'textMuted'}>
                 What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
               </Text>

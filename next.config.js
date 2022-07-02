@@ -27,7 +27,6 @@ const securityHeaders = [
   }
 ];
 
-
 //// Main Next.js config
 const moduleExports = {
   // everything in here gets exposed to the frontend.
@@ -36,7 +35,7 @@ const moduleExports = {
     INFURA_KEY: process.env.INFURA_KEY || '84842078b09946638c03157f83405213', // ethers default infura key
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
     POCKET_KEY: process.env.POCKET_KEY,
-    ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
+    ETHERSCAN_KEY: process.env.ETHERSCAN_KEY
   },
 
   // Opt-in SWC minification (next 12.0.2)
@@ -46,14 +45,15 @@ const moduleExports = {
   outputFileTracing: false,
 
   webpack: (config, { isServer }) => {
-    if (isServer) {
-      process.env.USE_FS_CACHE = 1;
-    } else {
+    if (!isServer) {
       // Fixes npm packages that depend on `fs` module
       // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        fs: false
+        fs: false,
+        dns: false,
+        net: false,
+        tls: false
       };
     }
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');
@@ -76,9 +76,9 @@ const moduleExports = {
       {
         // Apply these headers to all routes in your application.
         source: '/:path*',
-        headers: securityHeaders,
-      },
-    ]
+        headers: securityHeaders
+      }
+    ];
   },
 
   staticPageGenerationTimeout: 120

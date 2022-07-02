@@ -1,4 +1,5 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
+import { PollParameters } from './poll';
 import { PollVoteType } from './pollVoteType';
 
 export type RankedChoiceResult = {
@@ -36,12 +37,12 @@ export type PollTallyRankedChoiceOption = {
 export type PollTallyVote = {
   voter: string;
   optionId: number;
+  optionIdRaw: string;
   mkrSupport: number;
   rankedChoiceOption?: number[];
 };
 
 export type RawPollTallyRankedChoice = {
-  pollVoteType: PollVoteType;
   winner: string | null;
   rounds: number;
   numVoters: number;
@@ -51,7 +52,6 @@ export type RawPollTallyRankedChoice = {
 };
 
 export type RawPollTallyPlurality = {
-  pollVoteType: PollVoteType;
   winner: string | null;
   numVoters: number;
   options: Record<number, PollTallyPluralityOption>;
@@ -60,7 +60,7 @@ export type RawPollTallyPlurality = {
 };
 
 export type PollTallyRankedChoice = {
-  pollVoteType: PollVoteType;
+  parameters: PollParameters;
   winner: string | null;
   numVoters: number;
   results: RankedChoiceResult[];
@@ -71,7 +71,7 @@ export type PollTallyRankedChoice = {
 };
 
 export type PollTallyPlurality = {
-  pollVoteType: PollVoteType;
+  parameters: PollParameters;
   winner: string | null;
   numVoters: number;
   results: PluralityResult[];

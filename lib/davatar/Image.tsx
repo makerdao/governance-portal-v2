@@ -24,13 +24,11 @@ export interface Props {
   address?: string | null;
   style?: CSSProperties;
   className?: string;
-  // deprecated
-  graphApiKey?: string;
   provider?: BaseProvider | null;
   defaultComponent?: ReactChild | ReactChild[];
 }
 
-export const getCachedUrl = (key: string) => {
+export const getCachedUrl = (key: string): string | null => {
   const normalizedKey = key.toLowerCase();
   const cachedItem = window.localStorage.getItem(`davatar/${normalizedKey}`);
 
@@ -82,7 +80,15 @@ export const getGatewayUrl = (uri: string, tokenId?: string): string => {
   return tokenId ? url.replaceAll('{id}', tokenId) : url;
 };
 
-export default function Avatar({ uri, style, className, size, address, provider, defaultComponent }: Props) {
+export default function Avatar({
+  uri,
+  style,
+  className,
+  size,
+  address,
+  provider,
+  defaultComponent
+}: Props): JSX.Element {
   const [url, setUrl] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -217,7 +223,7 @@ export default function Avatar({ uri, style, className, size, address, provider,
             const tokenURI = await erc721Contract.tokenURI(tokenId);
             const gatewayUrl = getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16));
             try {
-              const data = await fetchJson(`api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
+              const data = await fetchJson(`/api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
               setUrl(getGatewayUrl(data.image));
             } catch (e) {
               console.error(`Error fetching image from ${gatewayUrl}`, e);

@@ -9,7 +9,7 @@ import isEqual from 'lodash/isEqual';
 import lottie from 'lottie-web';
 
 import { Poll } from 'modules/polling/types';
-import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
+import { extractCurrentPollVote, isActivePoll, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 
@@ -214,10 +214,10 @@ export default function MobileVoteSheet({
           ) : (
             <Stack gap={2}>
               <Text variant="microHeading">{poll.title}</Text>
-              <Text sx={{ fontSize: [2, 3] }}>{poll.summary}</Text>
+              <Text>{poll.summary}</Text>
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
-              ) : isRankedChoicePoll(poll) ? (
+              ) : isInputFormatRankFree(poll.parameters) ? (
                 <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
               ) : (
                 <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />

@@ -68,11 +68,13 @@ export default function CommentItem({
           <Text variant="smallCaps">
             {votedOption
               ? votedOption
-              : `Voted with ${
-                  comment.comment.voterWeight.gte(parseUnits('0.01'))
-                    ? formatValue(comment.comment.voterWeight)
-                    : '≈0.00'
-                } MKR`}
+              : `Voted with ${formatValue(
+                  comment.comment.voterWeight,
+                  undefined,
+                  undefined,
+                  true,
+                  true
+                )} MKR`}
           </Text>
 
           {comment.comment.txHash && (

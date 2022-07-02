@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { Grid, Text, Box, Link as ExternalLink } from 'theme-ui';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { SpellStateDiff } from '../types/spellStateDiff';

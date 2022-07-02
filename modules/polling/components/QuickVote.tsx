@@ -6,7 +6,7 @@ import isEqual from 'lodash/isEqual';
 import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
+import { extractCurrentPollVote, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
@@ -50,7 +50,8 @@ const QuickVote = ({
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
 
-  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction } = useContext(BallotContext);
+  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction, updateVoteFromBallot } =
+    useContext(BallotContext);
 
   const addedChoice = ballot[poll.pollId];
 
@@ -79,7 +80,9 @@ const QuickVote = ({
     if (currentVote && isEqual(currentVote, choice)) {
       removeVoteFromBallot(poll.pollId);
     } else {
-      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
+      editing
+        ? updateVoteFromBallot(poll.pollId, { option: choice as number | number[] })
+        : addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     }
     setEditing(false);
   };
@@ -107,7 +110,7 @@ const QuickVote = ({
             </Text>
           </Flex>
 
-          {isRankedChoicePoll(poll) && (
+          {isInputFormatRankFree(poll.parameters) && (
             <Tooltip label={rankedChoiceBlurb}>
               <Box sx={{ position: 'relative' }}>
                 {/* Box is used because tooltip needs a child that can be passed a ref */}
@@ -130,7 +133,7 @@ const QuickVote = ({
         />
       ) : (
         <div>
-          {isRankedChoicePoll(poll) ? (
+          {isInputFormatRankFree(poll.parameters) ? (
             <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
           ) : (
             <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />

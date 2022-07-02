@@ -21,7 +21,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
@@ -73,7 +73,10 @@ const LandingPage = ({
   const pollCategories = getCategories(polls);
 
   // delegates
-  const topDelegates = delegates.slice(0, 5);
+  const topDelegates = recognizedDelegates
+    .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
+    .slice(0, 5);
+
   const activeDelegates = recognizedDelegates
     .sort((a, b) => {
       const [first] = a.combinedParticipation?.split('%') || '0';

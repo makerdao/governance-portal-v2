@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import { Badge, Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
-import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -18,8 +18,6 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-
-//components
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
@@ -30,8 +28,6 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-
-//types
 import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
@@ -44,6 +40,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
+import { StatusText } from 'modules/app/components/StatusText';
 
 type Props = {
   proposal: Proposal;
@@ -69,9 +66,7 @@ const ProposalTimingBanner = ({
       <>
         <Divider my={1} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          <Text sx={{ textAlign: 'center', px: [3, 4] }}>
-            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
-          </Text>
+          <StatusText>{getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}</StatusText>
         </Flex>
         <Divider sx={{ mt: 1 }} />
       </>
@@ -232,13 +227,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                       <ExecutiveComments comments={comments} />
                     ) : (
                       <Flex sx={{ alignItems: 'center' }}>
-                        {commentsError ? (
-                          'Unable to fetch comments'
-                        ) : (
-                          <>
-                            Loading <Spinner size={20} ml={2} />
-                          </>
-                        )}
+                        {commentsError ? 'Unable to fetch comments' : <Spinner size={20} ml={2} />}
                       </Flex>
                     )}
                   </div>
@@ -336,7 +325,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                       <Flex
                         sx={{
                           justifyContent: 'space-between',
-                          fontSize: [2, 3],
                           ':not(:last-child)': {
                             mb: 2
                           }

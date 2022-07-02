@@ -1,5 +1,4 @@
-import { config } from 'lib/config';
-import { fsCacheGet, fsCacheSet } from 'lib/fscache';
+import { cacheGet, cacheSet } from 'lib/cache';
 import { Poll } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
@@ -15,6 +14,7 @@ import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { PollsQueryVariables } from 'modules/gql/types';
+import logger from 'lib/logger';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -57,7 +57,8 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
     polls.push(...pollGroupWithData);
   }
 
-  console.log(
+  logger.warn(
+    'fetchAllPollsMetadata',
     `---
     Failed to fetch docs for ${numFailedFetches}/${pollList.length} polls.
     IDs: ${failedPollIds}`
@@ -93,20 +94,17 @@ export async function _getAllPolls(
 ): Promise<Poll[]> {
   const cacheKey = `polls-${queryVariables ? JSON.stringify(queryVariables) : 'all'}`;
 
-  if (config.USE_FS_CACHE) {
-    const cachedPolls = fsCacheGet(cacheKey, network);
-    if (cachedPolls) {
-      return JSON.parse(cachedPolls);
-    }
+  const cachedPolls = await cacheGet(cacheKey, network);
+  if (cachedPolls) {
+    return JSON.parse(cachedPolls);
   }
 
   const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryVariables);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(polls), network);
-  }
+  cacheSet(cacheKey, JSON.stringify(polls), network);
+
   return polls;
 }
 

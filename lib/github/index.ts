@@ -1,5 +1,7 @@
 import { Octokit } from '@octokit/core';
+import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { config } from 'lib/config';
+import { RepositoryInfo } from 'modules/delegates/api/getDelegatesRepositoryInfo';
 
 // Handle errors of configuration by disabling oktokit
 
@@ -13,7 +15,8 @@ const token1 = config.GITHUB_TOKEN;
 const token2 = config.GITHUB_TOKEN_2 ? config.GITHUB_TOKEN_2 : config.GITHUB_TOKEN;
 const token3 = config.GITHUB_TOKEN_3 ? config.GITHUB_TOKEN_3 : config.GITHUB_TOKEN;
 
-const octokits = new Array(Object.keys(GithubTokens).length / 2);
+export const octokits = new Array(Object.keys(GithubTokens).length / 2);
+
 try {
   octokits[0] = new Octokit({ auth: token1 });
   octokits[1] = new Octokit({ auth: token2 });
@@ -48,5 +51,18 @@ export async function fetchGitHubPage(
     path
   });
 
+  return data;
+}
+
+export async function fetchGithubGraphQL(
+  { owner, repo, page }: RepositoryInfo,
+  query: string,
+  tokenNum: GithubTokens
+): Promise<GraphQlQueryResponseData> {
+  if (!octokits[tokenNum - 1]) {
+    return Promise.resolve([]);
+  }
+  const octokit = octokits[tokenNum - 1];
+  const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
   return data;
 }

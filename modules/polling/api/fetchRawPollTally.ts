@@ -1,16 +1,19 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { PollVoteType, RawPollTally } from 'modules/polling/types';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollParameters, RawPollTally } from 'modules/polling/types';
 import { fetchTallyPlurality } from './fetchTallyPlurality';
 import { fetchTallyRankedChoice } from './fetchTallyRankedChoice';
+import { isPluralityVictoryConditionPoll } from '../helpers/utils';
 
 export async function fetchRawPollTally(
   pollId: number,
-  voteType: PollVoteType,
+  parameters: PollParameters,
   network: SupportedNetworks
 ): Promise<RawPollTally> {
   let tally;
-  if (voteType === POLL_VOTE_TYPE.PLURALITY_VOTE) {
+  // TODO: Include majority victory conditions calculations
+  // const isRanked = parameters.victoryConditions.find(v => v.type === PollVictoryConditions.instantRunoff);
+  const isPlurality = isPluralityVictoryConditionPoll(parameters);
+  if (isPlurality) {
     tally = await fetchTallyPlurality(pollId, network);
   } else {
     tally = await fetchTallyRankedChoice(pollId, network);
