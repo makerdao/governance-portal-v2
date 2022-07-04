@@ -60,12 +60,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
       {account && (
         <Stack gap={3}>
           <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
-            {(isDelegatedToExpiredContract || isDelegatedToExpiringContract) &&
-              'ACTION REQUIRED: Migrate your delegated MKR.'}
-
-            {!isDelegatedToExpiredContract &&
-              !isDelegatedToExpiringContract &&
-              "You don't need to migrate your MKR to a new delegate."}
+          ACTION REQUIRED: Migrate your delegated MKR.
           </Heading>
 
           {(isDelegatedToExpiredContract || isDelegatedToExpiringContract) && (
@@ -77,17 +72,17 @@ export default function DelegateMigrationPage(): React.ReactElement {
             </Text>
           )}
 
-          <Box>
-            <Text as="p" variant="body">
+          <Box sx={{ textAlign: 'center'}}>
+            <Text as="p" sx={{color: 'onSecondary'}}>
               Maker delegate contracts expire after 1 year.
             </Text>
-            <Text>
+            <Text  sx={{color: 'onSecondary'}}>
               Please migrate your MKR by undelegating from the expiring/expired contracts and redelegating to
               the new contracts.
             </Text>
           </Box>
 
-          <Box>
+          <Box sx={{ textAlign: 'center'}}>
             <Text>
               Please find below any expiring/expired delegate contracts you delegated MKR to, and requires
               migration.
@@ -96,9 +91,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
 
           <Box>
             <Box>
-              <Text as="h1">Expired/about to expire contracts you delegated MKR to</Text>
-              <Text as="p" variant="body">
-                Please undelegate your MKR from old contracts, one by one. Might require aproval transactions.
+              <Text as="h2">Expired/about to expire contracts you delegated MKR to</Text>
+              <Text as="p" variant="body" sx={{ color: 'onSecondary'}}>
+                Please undelegate your MKR from old contracts, one by one.
               </Text>
             </Box>
 
@@ -114,17 +109,26 @@ export default function DelegateMigrationPage(): React.ReactElement {
               </Box>
             )}
             {delegatesThatAreAboutToExpiry.length === 0 && (
-              <Box>
-                <Text>There are no delegates that are about to expiry.</Text>
+              <Box sx={{
+                background: '#FBFBFB',
+                textAlign: 'center',
+                padding: '50px',
+                marginTop: 2,
+                marginBottom: 2,
+                border: '1px dashed #E3E9F0',
+                borderRadius: 1
+              }}>
+                <Text as="p" sx={{ color: 'onSecondary'}}>None of your delegates contracts are expired or about to expire</Text>
+                <Text>No further action needed!</Text>
               </Box>
             )}
           </Box>
 
           <Box>
             <Box>
-              <Text as="h1">Renewed contracts by your previous delegates</Text>
-              <Text as="p" variant="body">
-                Please delegate your MKR to the new contracts, one by one. Might require aproval transactions.
+              <Text as="h2">Renewed contracts by your previous delegates</Text>
+              <Text as="p" variant="body" sx={{ color: 'onSecondary'}}>
+                Please delegate your MKR to the new contracts, one by one.
               </Text>
             </Box>
 
