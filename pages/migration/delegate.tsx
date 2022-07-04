@@ -11,6 +11,7 @@ import { MigrationSteps } from 'modules/migration/components/MigrationSteps';
 import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
 import { NewAddress } from 'modules/migration/components/NewAddress';
 import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
+import { NewDelegateContract } from 'modules/migration/components/NewDelegateContract';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account } = useActiveWeb3React();
@@ -120,6 +121,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 )}
                 {getCurrentStep() === STEPS.NEW_ADDRESS && <NewAddress />}
                 {getCurrentStep() === STEPS.CONNECT_WALLET && <ConnectWallet />}
+                {getCurrentStep() === STEPS.NEW_DELEGATE_CONTRACT && <NewDelegateContract />}
               </Card>
             </Flex>
           )}
