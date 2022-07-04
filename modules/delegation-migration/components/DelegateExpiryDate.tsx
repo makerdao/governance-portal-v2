@@ -7,8 +7,8 @@ import { Delegate } from 'modules/delegates/types';
 export default function DelegateExpiryDate({ delegate }: { delegate: Delegate }): React.ReactElement {
   const iconStyles = {
     orangeCalendar: {
-      fill: '#F75524',
-      stroke: '#F75524'
+      fill: 'warning',
+      stroke: '#050505'
     },
     redCalendar: {
       fill: '#FF0000',
