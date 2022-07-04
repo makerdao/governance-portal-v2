@@ -57,7 +57,7 @@ const AccountPage = (): React.ReactElement => {
 
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
-  const { newOwnerConnected, newOwnerHasDelegateContract } = useMigrationStatus();
+  const { newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress } = useMigrationStatus();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);

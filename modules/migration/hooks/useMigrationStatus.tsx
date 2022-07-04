@@ -48,11 +48,11 @@ export function useMigrationStatus(): {
     };
   }, {});
 
-  const previousOwnerConnected = !!oldToNewMap[address];
-  const newOwnerConnected = !!newToOldMap[address];
+  const previousOwnerConnected = address ? !!oldToNewMap[address] : false;
+  const newOwnerConnected = address ? !!newToOldMap[address] : false;
 
-  const previousOwnerAddress = previousOwnerConnected ? address : newToOldMap[address];
-  const newOwnerAddress = newOwnerConnected ? address : oldToNewMap[address];
+  const previousOwnerAddress = previousOwnerConnected ? address : address ? newToOldMap[address] : undefined;
+  const newOwnerAddress = newOwnerConnected ? address : address ? oldToNewMap[address] : undefined;
 
   const newOwnerHasDelegateContract = !!delegateContractExpirationDate;
 

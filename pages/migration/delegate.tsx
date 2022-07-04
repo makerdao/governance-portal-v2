@@ -93,24 +93,26 @@ export default function DelegateMigrationPage(): React.ReactElement {
       {account && (
         <Stack gap={3}>
           <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
-            {/* TODO update this copy based on step */}
             {isDelegateContractExpired &&
               'Your delegate contract has expired! Please migrate as soon as possible.'}
             {isDelegateContractExpiring &&
               !isDelegateContractExpired &&
-              'Your delegate contract is about to expire. Please migrate as soon as possible.'}
+              'Your delegate contract is expiring soon. Please migrate as soon as possible.'}
             {!isDelegateContractExpired &&
               !isDelegateContractExpiring &&
               "You don't need to migrate your delegate contract yet."}
           </Heading>
 
-          <Text
-            as="h3"
-            sx={{ textAlign: 'center', fontWeight: 'semiBold', maxWidth: '550px', margin: '0 auto' }}
-          >
-            Finish migration in order to remain active as a delegate and preserve your voting history &amp;
-            metrics.
-          </Text>
+          {isDelegateContractExpired ||
+            (isDelegateContractExpiring && (
+              <Text
+                as="h3"
+                sx={{ textAlign: 'center', fontWeight: 'semiBold', maxWidth: '550px', margin: '0 auto' }}
+              >
+                Finish migration in order to remain active as a delegate and preserve your voting history
+                &amp; metrics.
+              </Text>
+            ))}
 
           {actionNeeded && (
             <Flex sx={{ flexDirection: 'column', width: '880px', alignSelf: 'center' }}>
