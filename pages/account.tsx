@@ -36,6 +36,7 @@ import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
+import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -55,6 +56,8 @@ const AccountPage = (): React.ReactElement => {
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(addressToCheck, network);
 
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
+
+  const { newOwnerConnected, newOwnerHasDelegateContract } = useLinkedDelegateInfo();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
@@ -128,7 +131,11 @@ const AccountPage = (): React.ReactElement => {
                   </Box>
                 ) : (
                   <Box>
-                    <Text as="p">No vote delegate contract detected</Text>
+                    <Text as="p">
+                      {newOwnerConnected && !newOwnerHasDelegateContract
+                        ? 'Create a new delegate contract'
+                        : 'No vote delegate contract detected'}
+                    </Text>
                     {tx && (
                       <DialogOverlay
                         style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
@@ -179,7 +186,7 @@ const AccountPage = (): React.ReactElement => {
                           setWarningRead(!warningRead);
                           trackButtonClick('setWarningRead');
                         }}
-                      />{' '}
+                      />
                       I understand
                     </Label>
                     <Button
@@ -194,7 +201,7 @@ const AccountPage = (): React.ReactElement => {
                       sx={{ mt: 3, mb: 1 }}
                       data-testid="create-button"
                     >
-                      Create a delegate contract
+                      Create delegate contract
                     </Button>
                   </Box>
                 )}
@@ -215,6 +222,11 @@ const AccountPage = (): React.ReactElement => {
               </Card>
             </Box>
           )}
+          {/* <Flex>
+            <Heading as="h3" variant="microHeading">
+              Previous Delegate Contract
+            </Heading>
+          </Flex> */}
         </Box>
         <Stack gap={3}>
           {addressInfo && addressInfo.delegateInfo && (

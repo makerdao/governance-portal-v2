@@ -2,18 +2,17 @@ import { Box, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useDelegationMigrationStatus } from 'modules/delegation-migration/hooks/useDelegationMigrationStatus';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useDelegates } from 'modules/delegates/hooks/useDelegates';
 import { useMemo } from 'react';
 import { Delegate } from 'modules/delegates/types';
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
-import { DelegateOverviewCard } from 'modules/delegates/components';
-import { DelegateExpirationOverviewCard } from 'modules/delegation-migration/components/DelegateExpirationOverviewCard';
+import { DelegateExpirationOverviewCard } from 'modules/migration/components/DelegateExpirationOverviewCard';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useDelegationMigrationStatus();
+  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useMigrationStatus();
   const { account, network } = useActiveWeb3React();
 
   const { data: delegatesData } = useDelegates();
