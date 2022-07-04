@@ -3,7 +3,6 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { config } from 'lib/config';
 
 async function postRequestToDiscord(content: string) {
-  console.log({ content });
   const resp = await fetch(config.MIGRATION_WEBHOOK_URL, {
     method: 'POST',
     headers: {
@@ -17,6 +16,10 @@ async function postRequestToDiscord(content: string) {
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
+    if (!config.MIGRATION_WEBHOOK_URL) {
+      return res.status(500).json({ error: 'Discord webhook not properly configured' });
+    }
+
     const body = JSON.parse(req.body);
 
     if (!body.sig || !body.msg) {
