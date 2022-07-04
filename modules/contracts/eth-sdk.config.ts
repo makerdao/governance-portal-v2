@@ -41,9 +41,6 @@ const config: EthSdkConfig = {
       voteDelegateFactory: '0xE2d249AE3c156b132C40D07bd4d34e73c1712947',
       voteProxyFactory: '0x1a7c1ee5eE2A3B67778ff1eA8c719A3fA1b02b6f',
       vow: '0x23f78612769b9013b3145E43896Fa1578cAa2c2a'
-    },
-    arbitrumTestnet: {
-      polling: '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3'
     }
   },
   etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY }

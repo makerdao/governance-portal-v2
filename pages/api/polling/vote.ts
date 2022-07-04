@@ -4,7 +4,7 @@ import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-clien
 import { ethers } from 'ethers';
 
 // maybe we should use eth-sdk for this if it supports arb testnet
-import PollingContractAbi from 'modules/contracts/abis/arbitrum-testnet/polling.json';
+import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 
 import { config } from 'lib/config';
 
