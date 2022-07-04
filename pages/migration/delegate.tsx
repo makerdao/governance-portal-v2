@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Card, Flex, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -41,7 +41,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // b
     (!!newOwnerAddress && !newOwnerHasDelegateContract);
 
-  const getCurrentStep = (): string => {
+  const getCurrentStep = useMemo((): string => {
     // delegate contract is either expired or expiring and we don't have
     // a request to migrate the address yet, show migration info
     if (
@@ -80,7 +80,16 @@ export default function DelegateMigrationPage(): React.ReactElement {
 
     // no other conditions were met, show first step by default
     return STEPS.MIGRATION_INFO;
-  };
+  }, [
+    isDelegateContractExpired,
+    isDelegateContractExpiring,
+    previousOwnerAddress,
+    newOwnerAddress,
+    newOwnerHasDelegateContract,
+    migrationInfoAcknowledged,
+    previousOwnerConnected,
+    newOwnerConnected
+  ]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -116,14 +125,14 @@ export default function DelegateMigrationPage(): React.ReactElement {
 
           {actionNeeded && (
             <Flex sx={{ flexDirection: 'column', width: '880px', alignSelf: 'center' }}>
-              <MigrationSteps activeStep={getCurrentStep()} />
+              <MigrationSteps activeStep={getCurrentStep} />
               <Card sx={{ p: 4 }}>
-                {getCurrentStep() === STEPS.MIGRATION_INFO && (
+                {getCurrentStep === STEPS.MIGRATION_INFO && (
                   <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
                 )}
-                {getCurrentStep() === STEPS.NEW_ADDRESS && <NewAddress />}
-                {getCurrentStep() === STEPS.CONNECT_WALLET && <ConnectWallet />}
-                {getCurrentStep() === STEPS.NEW_DELEGATE_CONTRACT && <NewDelegateContract />}
+                {getCurrentStep === STEPS.NEW_ADDRESS && <NewAddress />}
+                {getCurrentStep === STEPS.CONNECT_WALLET && <ConnectWallet />}
+                {getCurrentStep === STEPS.NEW_DELEGATE_CONTRACT && <NewDelegateContract />}
               </Card>
             </Flex>
           )}
