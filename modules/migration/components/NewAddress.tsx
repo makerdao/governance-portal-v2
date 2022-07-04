@@ -13,7 +13,6 @@ export function NewAddress({
   const [submissionStatus, setSubmissionStatus] = useState<NewAddressStatus>('initial');
 
   const handleSubmit = async (newAddress: string) => {
-    // TODO: here we will request a signature
     try {
       const req = await handleSubmitNewAddress(newAddress);
       if (req.status === 200) {
@@ -26,10 +25,12 @@ export function NewAddress({
     }
   };
 
+  const resetStatus = () => setSubmissionStatus('initial');
+
   return (
     <>
       {submissionStatus === 'initial' && <NewAddressInitial handleSubmit={handleSubmit} />}
-      {submissionStatus === 'error' && <NewAddressError />}
+      {submissionStatus === 'error' && <NewAddressError resetStatus={resetStatus} />}
       {submissionStatus === 'success' && <NewAddressSuccess />}
     </>
   );

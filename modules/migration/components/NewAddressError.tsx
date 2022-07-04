@@ -1,9 +1,8 @@
 import { Flex, Text, Button } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
-export function NewAddressError(): JSX.Element {
+export function NewAddressError({ resetStatus }: { resetStatus: () => void }): JSX.Element {
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <Text as="h3" variant="smallHeading">
@@ -19,9 +18,9 @@ export function NewAddressError(): JSX.Element {
         </ExternalLink>{' '}
         to resolve the issue.
       </Text>
-      <InternalLink href="/" title="View homepage">
-        <Button sx={{ mt: 4, minWidth: '300px' }}>Back to home</Button>
-      </InternalLink>
+      <Button sx={{ mt: 4, minWidth: '300px' }} onClick={resetStatus}>
+        Try again
+      </Button>
     </Flex>
   );
 }

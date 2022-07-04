@@ -12,9 +12,10 @@ import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
 import { NewAddress } from 'modules/migration/components/NewAddress';
 import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
 import { NewDelegateContract } from 'modules/migration/components/NewDelegateContract';
+import { sign } from 'modules/web3/helpers/sign';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { account } = useActiveWeb3React();
+  const { account, library } = useActiveWeb3React();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
   const {
@@ -83,12 +84,15 @@ export default function DelegateMigrationPage(): React.ReactElement {
   };
 
   const handleSubmitNewAddress = async (newAddress: string) => {
+    const msg = `This is a request to link ${account} to ${newAddress} for the purposes of delegation history.`;
+
+    const sig = await sign(account, msg, library);
+
+    const payload = { address: account, msg, sig };
+
     const req = await fetch('/api/migration/link', {
       method: 'POST',
-      body: JSON.stringify({
-        oldAddress: account,
-        newAddress
-      })
+      body: JSON.stringify(payload)
     });
     return req;
   };

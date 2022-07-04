@@ -2,36 +2,28 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { config } from 'lib/config';
 
-async function postRequestToDiscord({ oldAddress, newAddress }: MigrationRequestBody) {
+async function postRequestToDiscord(content: string) {
+  console.log({ content });
   const resp = await fetch(config.MIGRATION_WEBHOOK_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      content: `
-      New migration request received. Previous addresss: ${oldAddress}. New address: ${newAddress}
-      `
-    })
+    body: JSON.stringify({ content })
   });
 
-  return resp.json();
+  return resp;
 }
-
-type MigrationRequestBody = {
-  oldAddress: string;
-  newAddress: string;
-};
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    const body = JSON.parse(req.body) as MigrationRequestBody;
+    const body = JSON.parse(req.body);
 
-    if (!body.newAddress || !body.oldAddress) {
-      return res.status(400).json({ error: 'request missing parameters' });
+    if (!body.sig || !body.msg) {
+      return res.status(400).json({ error: 'Request missing parameters' });
     }
 
-    const data = postRequestToDiscord({ oldAddress: body.oldAddress, newAddress: body.newAddress });
+    const data = postRequestToDiscord(JSON.stringify(body));
     res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
     res.status(200).json({ data });
   },
