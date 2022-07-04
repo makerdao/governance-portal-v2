@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Flex, Text, Label, Checkbox, Button } from 'theme-ui';
+import { Flex, Text, Label, Checkbox, Button, Box } from 'theme-ui';
+import { CircleIcon } from 'modules/app/components/CircleIcon';
 
 export function MigrationInfo({
   setMigrationInfoAcknowledged
@@ -33,7 +34,9 @@ export function MigrationInfo({
         </Text>
         <Flex sx={{ flexDirection: 'column', maxWidth: '620px', alignSelf: 'center' }}>
           <Flex>
-            <Flex>icon</Flex>
+            <Box sx={{ width: '30%' }}>
+              <CircleIcon name="hourglass" iconColor="onSurface" borderColor="muted" />
+            </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text as="h3" variant="microHeading">
                 Finalize your migration asap to keep the Protocol secure
@@ -45,7 +48,9 @@ export function MigrationInfo({
             </Flex>
           </Flex>
           <Flex sx={{ mt: 3 }}>
-            <Flex>icon</Flex>
+            <Box sx={{ width: '30%' }}>
+              <CircleIcon name="wallet" iconColor="onSurface" borderColor="muted" iconSize={15} />
+            </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text as="h3" variant="microHeading">
                 You need to use a different wallet for generating your new delegate contract address
