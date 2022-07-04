@@ -36,7 +36,7 @@ import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
-import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
+import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -57,7 +57,7 @@ const AccountPage = (): React.ReactElement => {
 
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
-  const { newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress } = useMigrationStatus();
+  const { newOwnerConnected, newOwnerHasDelegateContract } = useLinkedDelegateInfo();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);

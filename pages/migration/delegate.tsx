@@ -12,20 +12,21 @@ import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
 import { NewAddress } from 'modules/migration/components/NewAddress';
 import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
 import { NewDelegateContract } from 'modules/migration/components/NewDelegateContract';
+import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account } = useActiveWeb3React();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
+  const { isDelegateContractExpiring, isDelegateContractExpired } = useMigrationStatus();
+
   const {
-    isDelegateContractExpiring,
-    isDelegateContractExpired,
     newOwnerAddress,
     newOwnerConnected,
     previousOwnerAddress,
     previousOwnerConnected,
     newOwnerHasDelegateContract
-  } = useMigrationStatus();
+  } = useLinkedDelegateInfo();
 
   const connectedAddressFound = !!previousOwnerAddress || !!newOwnerAddress;
 

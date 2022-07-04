@@ -1,8 +1,8 @@
 import { Flex, Text, Label } from 'theme-ui';
-import { useMigrationStatus } from '../hooks/useMigrationStatus';
+import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 export function ConnectWallet(): JSX.Element {
-  const { newOwnerAddress } = useMigrationStatus();
+  const { newOwnerAddress } = useLinkedDelegateInfo();
   return (
     <Flex>
       <Flex sx={{ flexDirection: 'column', width: '50%' }}>
