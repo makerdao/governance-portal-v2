@@ -95,7 +95,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
   const handleSubmitNewAddress = async (newAddress: string) => {
     const msg = `This is a request to link ${account} to ${newAddress} for the purposes of delegation history.`;
 
-    const sig = await sign(account, msg, library);
+    const sig = await sign(account as string, msg, library);
 
     const payload = { address: account, msg, sig };
 
