@@ -3,9 +3,9 @@ import { Alert, Button, Flex, Text, Input, Label } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 export function NewAddressInitial({
-  handleSubmitNewAddress
+  handleSubmit
 }: {
-  handleSubmitNewAddress: () => void;
+  handleSubmit: (newAddress: string) => void;
 }): JSX.Element {
   const [newAddress, setNewAddress] = useState('');
 
@@ -59,7 +59,7 @@ export function NewAddressInitial({
             maxWidth: 460
           }}
         />
-        <Button onClick={handleSubmitNewAddress} sx={{ minWidth: 300 }}>
+        <Button onClick={() => handleSubmit(newAddress)} sx={{ minWidth: 300 }}>
           Submit address
         </Button>
       </Flex>

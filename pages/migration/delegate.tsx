@@ -82,6 +82,17 @@ export default function DelegateMigrationPage(): React.ReactElement {
     return STEPS.MIGRATION_INFO;
   };
 
+  const handleSubmitNewAddress = async (newAddress: string) => {
+    const req = await fetch('/api/migration/link', {
+      method: 'POST',
+      body: JSON.stringify({
+        oldAddress: account,
+        newAddress
+      })
+    });
+    return req;
+  };
+
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Migrate your delegate contract" />
@@ -121,7 +132,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 {getCurrentStep() === STEPS.MIGRATION_INFO && (
                   <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
                 )}
-                {getCurrentStep() === STEPS.NEW_ADDRESS && <NewAddress />}
+                {getCurrentStep() === STEPS.NEW_ADDRESS && (
+                  <NewAddress handleSubmitNewAddress={handleSubmitNewAddress} />
+                )}
                 {getCurrentStep() === STEPS.CONNECT_WALLET && <ConnectWallet />}
                 {getCurrentStep() === STEPS.NEW_DELEGATE_CONTRACT && <NewDelegateContract />}
               </Card>
