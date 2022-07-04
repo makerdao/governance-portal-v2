@@ -15,7 +15,7 @@ export function NewDelegateContract(): JSX.Element {
         Your new wallet has been linked to your previous wallet. You are now ready to create your new delegate
         contract. Please proceed to the Account page to create the new contract.
       </Text>
-      <InternalLink href="/account" title="View homepage">
+      <InternalLink href="/account" title="View account page">
         <Button sx={{ mt: 4, minWidth: '300px' }}>Account page</Button>
       </InternalLink>
     </Flex>
