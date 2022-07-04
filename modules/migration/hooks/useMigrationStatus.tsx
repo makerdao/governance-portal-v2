@@ -3,7 +3,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
 import { isAboutToExpireCheck, isExpiredCheck } from '../helpers/expirationChecks';
 
-export function useDelegationMigrationStatus(): {
+export function useMigrationStatus(): {
   isDelegatedToExpiredContract: boolean;
   isDelegatedToExpiringContract: boolean;
   isDelegateContractExpired: boolean;
@@ -38,6 +38,6 @@ export function useDelegationMigrationStatus(): {
     isDelegatedToExpiredContract,
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
-    isDelegateContractExpiring
+    isDelegateContractExpiring: true
   };
 }

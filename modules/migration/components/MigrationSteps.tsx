@@ -1,0 +1,30 @@
+import { Flex, Box, Text } from 'theme-ui';
+import { STEPS } from 'modules/migration/steps';
+
+// TODO type the prop with steps enum
+export function MigrationSteps({ activeStep }: { activeStep: string }): JSX.Element {
+  return (
+    <Flex sx={{ justifyContent: 'space-evenly', my: 3 }}>
+      {Object.values(STEPS).map(step => {
+        const isActiveStep = activeStep === step;
+        return (
+          <Flex key={step} sx={{ flexDirection: 'column' }}>
+            <Box sx={{ height: '3px', width: '185px', bg: isActiveStep ? 'primary' : 'muted' }} />
+            <Text
+              as="p"
+              variant="text.caps"
+              sx={{
+                textAlign: 'center',
+                mt: 2,
+                fontWeight: 'bold',
+                color: isActiveStep ? 'primary' : 'muted'
+              }}
+            >
+              {step}
+            </Text>
+          </Flex>
+        );
+      })}
+    </Flex>
+  );
+}
