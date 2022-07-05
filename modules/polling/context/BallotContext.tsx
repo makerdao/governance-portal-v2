@@ -18,6 +18,8 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from 'modules/polling/helpers/parsePollOptions';
 import logger from 'lib/logger';
+import { ethers } from 'ethers';
+import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 
 type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting';
 type BallotSubmissionMethod = 'standard' | 'gasless';
@@ -303,17 +305,27 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
+    //TODO: make the url based on connected network
+    const provider = new ethers.providers.JsonRpcProvider('https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic');
+    const pollingContract = new ethers.Contract(
+      // arbitrum testnet polling address,
+      // maybe we should use eth-sdk for this if it's supported
+      '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3',
+      PollingContractAbi,
+      provider
+    );
+    const nonce = await pollingContract.nonces('0x14341f81dF14cA86E1420eC9e6Abd343Fb1c5bfC');
+    console.log('nonce', nonce);
     const signatureValues = {
       voter: account.toLowerCase(),
       pollIds,
       optionIds: pollOptions,
-      nonce: 0, //TODO: get this programatically by reading the contract
+      nonce: nonce.toString(), //TODO: get this programatically by reading the contract
       expiry: Math.trunc((Date.now() + 43200 * 1000) / 1000) //12 hour expiry
     };
 
     const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
     console.log('signature', signature);
-    //const msg = '0x' + msg;
     // fetchJson(`/api/polling/vote?network=${network}`, {
     //   method: 'POST',
     //   headers: {

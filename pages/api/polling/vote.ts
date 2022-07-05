@@ -24,16 +24,15 @@ export default withApiHandler(
       const pollingContract = new ethers.Contract(
         // arbitrum testnet polling address,
         // maybe we should use eth-sdk for this if it's supported
-        '0xc9e7Cf814df8eD7688FAC215D50529242c35A046',
+        '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3',
         PollingContractAbi,
         signer
       );
-
       // TODO replace this with signature from user
       const signature = await signer.signMessage(JSON.stringify({ pollIds, pollOptions }));
-
-      const tx = await pollingContract.vote(pollIds, pollOptions, signature, '');
       res.status(200).json(tx);
+      //const tx = await pollingContract.vote(pollIds, pollOptions, signature, '');
+      //res.status(200).json(tx);
     } catch (err) {
       console.error(err);
     }
