@@ -49,6 +49,14 @@ export type Delegate = {
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
   tags: Tag[];
+  previous?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
 };
 
 export type DelegationHistory = {
