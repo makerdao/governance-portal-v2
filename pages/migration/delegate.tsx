@@ -12,10 +12,11 @@ import { MigrationInfo } from 'modules/migration/components/MigrationInfo';
 import { NewAddress } from 'modules/migration/components/NewAddress';
 import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
 import { NewDelegateContract } from 'modules/migration/components/NewDelegateContract';
+import { sign } from 'modules/web3/helpers/sign';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { account } = useActiveWeb3React();
+  const { account, library } = useActiveWeb3React();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
   const { isDelegateContractExpiring, isDelegateContractExpired } = useMigrationStatus();
@@ -92,6 +93,20 @@ export default function DelegateMigrationPage(): React.ReactElement {
     newOwnerConnected
   ]);
 
+  const handleSubmitNewAddress = async (newAddress: string) => {
+    const msg = `This is a request to link ${account} to ${newAddress} for the purposes of delegation history.`;
+
+    const sig = await sign(account as string, msg, library);
+
+    const payload = { address: account, msg, sig };
+
+    const req = await fetch('/api/migration/link', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    return req;
+  };
+
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Migrate your delegate contract" />
@@ -131,7 +146,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 {getCurrentStep === STEPS.MIGRATION_INFO && (
                   <MigrationInfo setMigrationInfoAcknowledged={setMigrationInfoAcknowledged} />
                 )}
-                {getCurrentStep === STEPS.NEW_ADDRESS && <NewAddress />}
+                {getCurrentStep === STEPS.NEW_ADDRESS && (
+                  <NewAddress handleSubmitNewAddress={handleSubmitNewAddress} />
+                )}
                 {getCurrentStep === STEPS.CONNECT_WALLET && <ConnectWallet />}
                 {getCurrentStep === STEPS.NEW_DELEGATE_CONTRACT && <NewDelegateContract />}
               </Card>

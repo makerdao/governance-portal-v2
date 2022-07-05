@@ -1,23 +1,36 @@
 import { useState } from 'react';
 import { NewAddressInitial } from 'modules/migration/components/NewAddressInitial';
 import { NewAddressSuccess } from 'modules/migration/components/NewAddressSuccess';
+import { NewAddressError } from 'modules/migration/components/NewAddressError';
 
 export type NewAddressStatus = 'initial' | 'pending' | 'success' | 'error';
 
-export function NewAddress(): JSX.Element {
+export function NewAddress({
+  handleSubmitNewAddress
+}: {
+  handleSubmitNewAddress: (newAddress: string) => Promise<Response>;
+}): JSX.Element {
   const [submissionStatus, setSubmissionStatus] = useState<NewAddressStatus>('initial');
 
-  const handleSubmitNewAddress = () => {
-    // TODO: here we will request a signature
-    // then submit the request to our discord
-    setSubmissionStatus('success');
+  const handleSubmit = async (newAddress: string) => {
+    try {
+      const req = await handleSubmitNewAddress(newAddress);
+      if (req.status === 200) {
+        setSubmissionStatus('success');
+      } else {
+        setSubmissionStatus('error');
+      }
+    } catch (err) {
+      setSubmissionStatus('error');
+    }
   };
+
+  const resetStatus = () => setSubmissionStatus('initial');
 
   return (
     <>
-      {submissionStatus === 'initial' && (
-        <NewAddressInitial handleSubmitNewAddress={handleSubmitNewAddress} />
-      )}
+      {submissionStatus === 'initial' && <NewAddressInitial handleSubmit={handleSubmit} />}
+      {submissionStatus === 'error' && <NewAddressError resetStatus={resetStatus} />}
       {submissionStatus === 'success' && <NewAddressSuccess />}
     </>
   );

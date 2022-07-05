@@ -2,7 +2,7 @@ import { Flex, Box, Button, Text, Card } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { formatDateWithTime } from 'lib/datetime';

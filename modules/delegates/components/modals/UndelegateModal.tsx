@@ -89,7 +89,7 @@ export const UndelegateModal = ({
                   tx={tx}
                   setTxId={resetTx}
                   onDismiss={onClose}
-                  title={'Undelegating your MKR'}
+                  title={'Undelegating MKR'}
                   description={`You undelegated ${formatValue(mkrToWithdraw)} from ${delegate.name}`}
                 >
                   <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
@@ -127,7 +127,7 @@ export const UndelegateModal = ({
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={
-                        'Approve the transfer of IOU tokens to the delegate contract to wtihdraw your MKR.'
+                        'Approve the transfer of IOU tokens to the delegate contract to withdraw your MKR.'
                       }
                     />
                   )}

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';

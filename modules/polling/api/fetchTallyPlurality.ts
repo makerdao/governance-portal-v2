@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
 import { SupportedNetworks } from 'modules/web3/constants/networks';

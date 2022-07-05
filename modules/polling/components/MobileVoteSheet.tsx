@@ -214,7 +214,7 @@ export default function MobileVoteSheet({
           ) : (
             <Stack gap={2}>
               <Text variant="microHeading">{poll.title}</Text>
-              <Text sx={{ fontSize: [2, 3] }}>{poll.summary}</Text>
+              <Text>{poll.summary}</Text>
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
               ) : isInputFormatRankFree(poll.parameters) ? (

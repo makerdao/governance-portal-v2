@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
@@ -49,10 +49,12 @@ export function DelegateMKRDelegatedStats({
         value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(0) : '--'}
         label={'Total Active Delegators'}
       />
-      <StatBox
-        value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0'}
-        label={'MKR Delegated by you'}
-      />
+      {account && (
+        <StatBox
+          value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0'}
+          label={'MKR delegated by you'}
+        />
+      )}
     </Flex>
   );
 }
