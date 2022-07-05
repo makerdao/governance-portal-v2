@@ -47,10 +47,7 @@ const AccountPage = (): React.ReactElement => {
   const { newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress } = useLinkedDelegateInfo();
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(addressToCheck, network);
   const { data: previousOwnerContractAddress } = useVoteDelegateAddress(previousOwnerAddress);
-
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
-
-  console.log({ newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);

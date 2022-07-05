@@ -22,6 +22,7 @@ import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
+import { getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -82,8 +83,12 @@ export async function fetchDelegate(
 
   onChainDelegate.mkrLockedDelegate = delegationEvents;
 
+  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address);
+  const previousContract = previousOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === previousOwnerAddress.toLowerCase())
+    : undefined;
   const { data: githubDelegate } = await fetchGithubDelegate(
-    onChainDelegate.voteDelegateAddress,
+    previousContract ? previousContract.voteDelegateAddress : onChainDelegate.voteDelegateAddress,
     currentNetwork
   );
 
