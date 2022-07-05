@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Flex, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tabs from 'modules/app/components/Tabs';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import {
   DelegatePicture,
   DelegateContractExpiration,

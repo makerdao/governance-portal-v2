@@ -48,7 +48,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Recognized Delegates</Text>
-              <Text sx={{ color: 'muted', ml: 3 }}>
+              <Text sx={{ color: 'mutedAlt', ml: 3 }}>
                 {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
               </Text>
             </Flex>
@@ -66,7 +66,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Shadow Delegates</Text>
-              <Text sx={{ color: 'muted', ml: 3 }}>
+              <Text sx={{ color: 'mutedAlt', ml: 3 }}>
                 {filteredDelegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
               </Text>
             </Flex>

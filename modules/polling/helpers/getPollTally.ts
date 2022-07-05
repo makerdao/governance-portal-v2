@@ -1,6 +1,6 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { backoffRetry } from 'lib/utils';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { cacheDel, cacheGet, cacheSet } from 'lib/cache';
 import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
