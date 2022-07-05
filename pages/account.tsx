@@ -28,6 +28,7 @@ import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -85,7 +86,9 @@ const AccountPage = (): React.ReactElement => {
             {errorLoadingAddressInfo && <Text>Error loading address information</Text>}
           </Box>
           {!account ? (
-            <Text sx={{ color: 'textSecondary' }}>Connect a wallet to view account information</Text>
+            <Box>
+              <AccountSelect />
+            </Box>
           ) : (
             <Box sx={{ mt: 4 }}>
               <Box sx={{ my: 3 }}>

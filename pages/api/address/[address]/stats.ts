@@ -9,6 +9,7 @@ import { resolveENS } from 'modules/web3/helpers/ens';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 
 /**
  * @swagger
@@ -78,28 +79,42 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressAPIStats>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   const tempAddress = req.query.address as string;
+  const delegate = req.query.delegate as string;
+  const prevDelegateAddress = req.query.prev as string;
+
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
+  try {
+    const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
 
-  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+    // check vote proxy info if not fetching delegate history
+    let contracts;
+    let voteProxyAddress;
+    if (!delegate) {
+      contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+      voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, address as string, network);
+    }
 
-  const voteProxyAddress = await getVoteProxyAddresses(
-    contracts.voteProxyFactory,
-    address as string,
-    network
-  );
+    const pollVoteHistory = await fetchAddressPollVoteHistory(
+      voteProxyAddress?.hotAddress ?? (address as string),
+      network
+    );
 
-  const pollVoteHistory = await fetchAddressPollVoteHistory(
-    voteProxyAddress.hotAddress ? voteProxyAddress.hotAddress : (address as string),
-    network
-  );
+    // TODO: update for multiple previous contracts
+    let prevContractVoteHistory: PollVoteHistory[] = [];
+    if (prevDelegateAddress) {
+      const prevHistory = await fetchAddressPollVoteHistory(prevDelegateAddress, network);
+      prevContractVoteHistory = prevContractVoteHistory.concat(prevHistory);
+    }
 
-  const response: AddressAPIStats = {
-    pollVoteHistory,
-    lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
-  };
+    const response: AddressAPIStats = {
+      pollVoteHistory: pollVoteHistory.concat(prevContractVoteHistory),
+      lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
+    };
 
-  res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-  res.status(200).json(response);
+    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+    res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+  }
 });
