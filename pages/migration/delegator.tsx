@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text } from 'theme-ui';
+import { Box, Button, Card, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -10,7 +10,9 @@ import { useMemo } from 'react';
 import { Delegate } from 'modules/delegates/types';
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
 import { DelegateExpirationOverviewCard } from 'modules/migration/components/DelegateExpirationOverviewCard';
-import Icon from 'modules/app/components/Icon';
+import LocalIcon from 'modules/app/components/Icon';
+import { Icon } from '@makerdao/dai-ui-icons';
+
 import Link from 'next/link';
 
 export default function DelegateMigrationPage(): React.ReactElement {
@@ -39,15 +41,17 @@ export default function DelegateMigrationPage(): React.ReactElement {
   }, [delegatesData, delegatedTo.data]);
 
   const delegatesThatAreNotExpired: Delegate[] = useMemo(() => {
-    if (!delegatesData || true) {
+    if (!delegatesData) {
       return [];
     }
 
     return delegatesData.delegates.filter(delegate => {
-      // TODO: Here also filter to check if those are delegates renewed and linked to the previous delegate
-      return !delegate.expired && !delegate.isAboutToExpire;
+      const isPreviousDelegate = delegatesThatAreAboutToExpiry.find(
+        i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
+      );
+      return !delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate;
     });
-  }, [delegatesData, delegatedTo.data]);
+  }, [delegatesData, delegatesThatAreAboutToExpiry, delegatedTo.data]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -60,36 +64,34 @@ export default function DelegateMigrationPage(): React.ReactElement {
       )}
 
       {account && (
-        <Stack gap={4} sx={{ maxWidth: '872px', margin: '0 auto' }}>
-          <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
-            ACTION REQUIRED: Migrate your delegated MKR.
-          </Heading>
-
-          {(isDelegatedToExpiredContract || isDelegatedToExpiringContract) && (
-            <Text
-              as="h3"
-              sx={{ textAlign: 'center', fontWeight: 'semiBold', maxWidth: '550px', margin: '0 auto' }}
-            >
+        <Stack gap={4} sx={{ maxWidth: '950px', margin: '0 auto' }}>
+          <Box>
+            <Heading mb={2} as="h4" sx={{ textAlign: 'left' }}>
+              Action required: Migrate your delegated MKR.
+            </Heading>
+            <Text as="p" sx={{ color: 'onSecondary' }}>
               One or more of your MakerDAO delegate&lsquo;s contracts are expiring.
             </Text>
-          )}
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Text as="p" sx={{ color: 'onSecondary' }}>
-              Maker delegate contracts expire after 1 year.
-            </Text>
-            <Text sx={{ color: 'onSecondary' }}>
-              Please migrate your MKR by undelegating from the expiring/expired contracts and redelegating to
-              the new contracts.
-            </Text>
           </Box>
 
-          <Box sx={{ textAlign: 'center' }}>
-            <Text>
-              Please find below any expiring/expired delegate contracts you delegated MKR to, and requires
-              migration.
-            </Text>
-          </Box>
+          <Card sx={{ display: 'flex', alignItems: 'flex-start' }}>
+            <Box sx={{ mr: 2, mt: 1 }}>
+              <Icon name="info" />
+            </Box>
+            <Box>
+              <Text as="p" sx={{ fontWeight: 'semiBold' }}>
+                Maker delegate contracts expire after 1 year.
+              </Text>
+              <Text as="p" sx={{ color: 'onSecondary' }}>
+                Please migrate your MKR by undelegating from the expiring/expired contracts and redelegating
+                to the new contracts.
+              </Text>
+              <Text as="p" sx={{ color: 'onSecondary' }}>
+                Find in this page any expiring/expired delegate contracts you delegated MKR to, and requires
+                migration.
+              </Text>
+            </Box>
+          </Card>
 
           <Box>
             <Box>
@@ -135,7 +137,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                     justifyContent: 'center'
                   }}
                 >
-                  <Icon name="calendar" />
+                  <LocalIcon name="calendarcross" />
                 </Box>
                 <Text as="p" sx={{ color: 'onSecondary' }}>
                   None of your delegates contracts are expired or about to expire.
