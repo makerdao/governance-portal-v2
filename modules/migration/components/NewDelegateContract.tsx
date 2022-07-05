@@ -6,7 +6,7 @@ export function NewDelegateContract(): JSX.Element {
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <Text as="h3" variant="smallHeading">
-        Success!
+        You&apos;re almost done
       </Text>
       <Flex sx={{ my: 4 }}>
         <TxIndicators.Success sx={{ width: 6 }} />
@@ -16,7 +16,7 @@ export function NewDelegateContract(): JSX.Element {
         contract. Please proceed to the Account page to create the new contract.
       </Text>
       <InternalLink href="/account" title="View account page">
-        <Button sx={{ mt: 4, minWidth: '300px' }}>Account page</Button>
+        <Button sx={{ mt: 4, minWidth: '300px' }}>Create new contract on Account page</Button>
       </InternalLink>
     </Flex>
   );
