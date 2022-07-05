@@ -154,6 +154,7 @@ export async function fetchGithubDelegates(
       allGithubDelegates,
       GithubTokens.DelegatesFolder
     );
+    console.log({ allDelegates });
     const results = await extractGithubInformationGraphQL(allDelegates);
 
     // Filter out negatives

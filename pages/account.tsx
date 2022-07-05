@@ -108,7 +108,7 @@ const AccountPage = (): React.ReactElement => {
                     </ExternalLink>
                   </Box>
                 )}
-                {previousOwnerContractAddress && (
+                {newOwnerConnected && previousOwnerContractAddress && (
                   <Box sx={{ mb: 2 }}>
                     <Label>Previous delegate contract address:</Label>
                     <ExternalLink
