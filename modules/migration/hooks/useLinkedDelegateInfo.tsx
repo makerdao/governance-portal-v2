@@ -1,6 +1,6 @@
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
-import { addressConnections } from 'modules/migration/connections';
+import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 
 export function useLinkedDelegateInfo(): {
   newOwnerAddress?: string;
@@ -13,19 +13,19 @@ export function useLinkedDelegateInfo(): {
 
   const { data: delegateContractExpirationDate } = useDelegateContractExpirationDate();
 
-  const oldToNewMap = addressConnections;
-  const newToOldMap = Object.keys(addressConnections).reduce((acc, cur) => {
-    return {
-      ...acc,
-      [addressConnections[cur]]: cur
-    };
-  }, {});
+  const previousOwnerConnected = address ? !!getNewOwnerFromPrevious(address) : false;
+  const newOwnerConnected = address ? !!getPreviousOwnerFromNew(address) : false;
 
-  const previousOwnerConnected = address ? !!oldToNewMap[address] : false;
-  const newOwnerConnected = address ? !!newToOldMap[address] : false;
-
-  const previousOwnerAddress = previousOwnerConnected ? address : address ? newToOldMap[address] : undefined;
-  const newOwnerAddress = newOwnerConnected ? address : address ? oldToNewMap[address] : undefined;
+  const previousOwnerAddress = previousOwnerConnected
+    ? address
+    : address
+    ? getPreviousOwnerFromNew(address)
+    : undefined;
+  const newOwnerAddress = newOwnerConnected
+    ? address
+    : address
+    ? getNewOwnerFromPrevious(address)
+    : undefined;
 
   const newOwnerHasDelegateContract = !!delegateContractExpirationDate;
 

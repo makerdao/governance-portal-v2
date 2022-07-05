@@ -8,7 +8,7 @@ export function useAddressInfo(
   network: SupportedNetworks
 ): {
   data: AddressApiResponse | undefined;
-  error: any;
+  error: Error;
 } {
   const { data, error } = useSWR<AddressApiResponse>(
     address ? `/api/address/${address}?network=${network}` : null,
