@@ -42,15 +42,9 @@ export default function DelegateExpiryDate({ delegate }: { delegate: Delegate })
       >
         <Flex>
           <Text sx={{ mr: 1 }}>
-            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'ABOUT TO EXPIRE' : 'RENEWED'}
+            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'ABOUT TO EXPIRE' : 'EXPIRES'}
           </Text>{' '}
-          <DateWithHover
-            date={
-              delegate.expired || delegate.isAboutToExpire
-                ? delegate.expirationDate
-                : new Date(delegate.blockTimestamp)
-            }
-          />
+          <DateWithHover date={delegate.expirationDate} />
         </Flex>
       </Text>
       <Flex
@@ -60,7 +54,7 @@ export default function DelegateExpiryDate({ delegate }: { delegate: Delegate })
         }}
       >
         <Icon
-          name="calendar"
+          name="calendarcross"
           sx={
             delegate.expired
               ? iconStyles.redCalendar
