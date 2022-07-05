@@ -53,6 +53,10 @@ export type Delegate = {
     address: string;
     voteDelegateAddress: string;
   };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
 };
 
 export type DelegationHistory = {
