@@ -224,12 +224,8 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 <Text as="h3" mb={2}>
                   No action required
                 </Text>
-                <Text as="p" mb={2} sx={{ fontWeight: 'semiBold', fontSize: 3 }}>
-                  None of your delegates contracts are expired or about to expire. <br />
-                  None of your delegates have renewed their contract yet.
-                </Text>
-                <Text as="p" mb={3} sx={{ color: 'onSecondary', fontSize: 2 }}>
-                  Check back here later, or visit the delegates page and pick a delegate manually.
+                <Text as="p" mb={2} variant="secondary">
+                  You don&apos;t have any MKR delegated to expiring/expired delegate contracts
                 </Text>
                 <Link href="/delegates">
                   <Button sx={{ mt: 2, mb: 2 }}>Go to delegates page</Button>
