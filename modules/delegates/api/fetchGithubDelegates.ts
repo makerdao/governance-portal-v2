@@ -5,7 +5,7 @@ import { cacheGet, cacheSet } from 'lib/cache';
 import { fetchGithubGraphQL, fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
-import { getDelegatesRepositoryInformation } from './getDelegatesRepositoryInfo';
+import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegatesRepositoryInfo';
 import { ethers } from 'ethers';
 import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
 import logger from 'lib/logger';
@@ -72,7 +72,8 @@ async function extractGithubInformation(
 }
 
 async function extractGithubInformationGraphQL(
-  data: GraphQlQueryResponseData
+  data: GraphQlQueryResponseData,
+  delegatesRepositoryInfo: RepositoryInfo
 ): Promise<DelegateRepoInformation[]> {
   const entries = data.repository.object.entries;
   const promises = entries
@@ -111,13 +112,18 @@ async function extractGithubInformationGraphQL(
 
       const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
       const html = await markdownToHtml(content);
+      console.log(
+        `https://github.com/${delegatesRepositoryInfo.owner}/${delegatesRepositoryInfo.repo}/raw/master/${picture.path}`
+      );
       const vd = {
         voteDelegateAddress,
         name,
 
         // The graphql api unfortunately does not return the download_url or raw url for blobs/images. In this case we have to manually construct the delegate avatar picture url
         // In case the delegate repository gets migrated, reconsider this approach
-        picture: picture ? `https://github.com/makerdao/community/raw/master/${picture.path}` : undefined,
+        picture: picture
+          ? `https://github.com/${delegatesRepositoryInfo.owner}/${delegatesRepositoryInfo.repo}/raw/master/${picture.path}`
+          : undefined,
         externalUrl: external_profile_url,
         description: html,
         tags,
@@ -154,7 +160,7 @@ export async function fetchGithubDelegates(
       allGithubDelegates,
       GithubTokens.DelegatesFolder
     );
-    const results = await extractGithubInformationGraphQL(allDelegates);
+    const results = await extractGithubInformationGraphQL(allDelegates, delegatesRepositoryInfo);
 
     // Filter out negatives
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
