@@ -15,8 +15,6 @@ export default withApiHandler(
     const address = req.query.address as string;
     const prevDelegateAddress = req.query.prev as string;
 
-    console.log({ prevDelegateAddress });
-
     const addresses = [address];
     // TODO: update for multiple previous contracts
     if (prevDelegateAddress) {
