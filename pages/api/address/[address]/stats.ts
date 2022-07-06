@@ -107,9 +107,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
       prevContractVoteHistory = prevContractVoteHistory.concat(prevHistory);
     }
 
+    const combinedPollVoteHistory = pollVoteHistory.concat(prevContractVoteHistory);
     const response: AddressAPIStats = {
-      pollVoteHistory: pollVoteHistory.concat(prevContractVoteHistory),
-      lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
+      pollVoteHistory: combinedPollVoteHistory,
+      lastVote: combinedPollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
     };
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

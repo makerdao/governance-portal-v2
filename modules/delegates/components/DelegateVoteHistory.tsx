@@ -4,20 +4,18 @@ import { Box, Divider, Text } from 'theme-ui';
 import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { Delegate } from 'modules/delegates/types';
 
-export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React.ReactElement {
-  const { network } = useActiveWeb3React();
-
+export function DelegateVoteHistory({
+  delegate,
+  dataKeyDelegateStats
+}: {
+  delegate: Delegate;
+  dataKeyDelegateStats: string;
+}): React.ReactElement {
   const { cache } = useSWRConfig();
 
-  const dataKeyDelegateStats = `/api/address/${
-    delegate.voteDelegateAddress
-  }/stats?delegate=true&network=${network}${
-    delegate.previous ? `&prev=${delegate.previous.voteDelegateAddress}` : ''
-  }`;
   const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,

@@ -47,7 +47,11 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     setShowCoreUnitModal(!showCoreUnitModal);
   };
 
-  const dataKeyDelegateStats = `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`;
+  const dataKeyDelegateStats = `/api/address/${
+    delegate.voteDelegateAddress
+  }/stats?delegate=true&network=${network}${
+    delegate.previous ? `&prev=${delegate.previous.voteDelegateAddress}` : ''
+  }`;
   const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -101,7 +105,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
     </Box>,
     <Box key="delegate-vote-history">
-      <DelegateVoteHistory delegate={delegate} />
+      <DelegateVoteHistory delegate={delegate} dataKeyDelegateStats={dataKeyDelegateStats} />
     </Box>,
     <Box key="account-comments" sx={{ p: [3, 4] }}>
       <AccountComments address={delegate.voteDelegateAddress} />
