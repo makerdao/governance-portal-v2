@@ -370,6 +370,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const clearTransaction = () => {
     setTxId(null);
     setBallotStep('initial');
+    setSubmissionMethod(null);
   };
 
   useEffect(() => {

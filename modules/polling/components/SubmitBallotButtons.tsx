@@ -138,7 +138,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             </Button>
           ) : (
             <Button
-              onClick={() => null}
+              onClick={() => submitBallot}
               variant="primaryLarge"
               disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
               sx={{ mt: 3 }}
