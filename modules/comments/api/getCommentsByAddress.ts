@@ -8,8 +8,9 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
 import logger from 'lib/logger';
+
 export async function getCommentsByAddress(
-  address: string,
+  addresses: string[],
   network: SupportedNetworks
 ): Promise<{
   comments: CommentsAPIResponseItem[];
@@ -21,13 +22,14 @@ export async function getCommentsByAddress(
   // decending sort
   const commentsFromDB: CommentFromDB[] = await db
     .collection('comments')
-    .find({ voterAddress: address.toLowerCase(), network })
+    .find({ voterAddress: { $in: addresses }, network })
     .sort({ date: -1 })
     .toArray();
 
-  const addressInfo = await getAddressInfo(address, network);
+  const addressInfo = await getAddressInfo(addresses[0], network);
 
   const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
+
   const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
 
   const comments: CommentsAPIResponseItem[] = await Promise.all(
@@ -41,7 +43,7 @@ export async function getCommentsByAddress(
           .getTransaction(comment.txHash as string)
           .catch(e =>
             logger.error(
-              `GetCommentsByAddress: ${address}, There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`
+              `GetCommentsByAddress: ${addresses[0]}, There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`
             )
           );
       }
