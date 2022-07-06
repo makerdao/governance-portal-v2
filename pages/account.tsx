@@ -75,7 +75,7 @@ const AccountPage = (): React.ReactElement => {
                     <DelegateDetail delegate={addressInfo.delegateInfo} />
                   </Box>
                 )}
-                {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
+                {!addressInfo.delegateInfo && <AddressDetail addressInfo={addressInfo} />}
               </Box>
             )}
             {account && !addressInfo && !errorLoadingAddressInfo && (

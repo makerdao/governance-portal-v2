@@ -47,11 +47,9 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     setShowCoreUnitModal(!showCoreUnitModal);
   };
 
-  const dataKeyDelegateStats = `/api/address/${
+  const dataKeyDelegateStats = `/api/address/stats?address=${
     delegate.voteDelegateAddress
-  }/stats?delegate=true&network=${network}${
-    delegate.previous ? `&prev=${delegate.previous.voteDelegateAddress}` : ''
-  }`;
+  }&network=${network}${delegate.previous ? `&address=${delegate.previous.voteDelegateAddress}` : ''}`;
   const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
