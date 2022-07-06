@@ -31,36 +31,45 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
       data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={3} pt={3}>
-        <Flex sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+        <Flex sx={{ mb: 2, justifyContent: 'flex-end' }}>
           <DelegateExpiryDate delegate={delegate} />
         </Flex>
 
         <Flex
           sx={{
-            flexDirection: 'column'
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: ['wrap', 'nowrap']
           }}
         >
+          <Box sx={{ mr: 2, my: 2, width: '50%' }}>
+            <DelegateAvatarName delegate={delegate} />
+          </Box>
+
           <Flex
             sx={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: ['wrap', 'nowrap']
+              ml: 2,
+              my: 2,
+              justifyContent: 'right'
             }}
           >
-            <Box sx={{ mr: 2, my: 2 }}>
-              <DelegateAvatarName delegate={delegate} />
+            <Box sx={{ mr: 4 }}>
+              <Text
+                as="p"
+                variant="microHeading"
+                sx={{ fontSize: [3, 5] }}
+                data-testid="mkr-delegated-by-you"
+              >
+                {mkrDelegated ? formatValue(mkrDelegated) : '0'}
+              </Text>
+              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                MKR delegated by you
+              </Text>
             </Box>
-
-            <Flex
-              sx={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                ml: 2,
-                my: 2,
-                justifyContent: 'right'
-              }}
-            >
+            <Box>
               {(delegate.isAboutToExpire || delegate.expired) && (
                 <Button
                   variant="primaryOutline"
@@ -87,32 +96,6 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
                   Delegate
                 </Button>
               )}
-            </Flex>
-          </Flex>
-
-          <Flex
-            sx={{
-              mt: delegate.tags && delegate.tags.length > 0 ? 0 : 3,
-              flexDirection: 'column'
-            }}
-          >
-            <Box>
-              <Text
-                as="p"
-                variant="microHeading"
-                sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                data-testid="mkr-delegated-by-you"
-              >
-                {mkrDelegated ? formatValue(mkrDelegated) : '0'}
-              </Text>
-              <Text
-                as="p"
-                variant="secondary"
-                color="onSecondary"
-                sx={{ fontSize: [2, 3], textAlign: 'right' }}
-              >
-                MKR delegated by you
-              </Text>
             </Box>
           </Flex>
         </Flex>

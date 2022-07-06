@@ -5,7 +5,6 @@ import Tabs from 'modules/app/components/Tabs';
 import BigNumber from 'lib/bigNumberJs';
 import {
   DelegatePicture,
-  DelegateContractExpiration,
   DelegateCredentials,
   DelegateVoteHistory,
   DelegateParticipationMetrics
@@ -32,6 +31,7 @@ import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import DelegateTags from './DelegateTags';
+import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 
 type PropTypes = {
   delegate: Delegate;
@@ -167,7 +167,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
               date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
               styles={{ my: 1 }}
             />
-            <DelegateContractExpiration delegate={delegate} />
+            <DelegateExpiryDate delegate={delegate} />
           </Flex>
         </Flex>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
