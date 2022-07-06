@@ -1,9 +1,9 @@
 import { SupportedChainId } from '../constants/chainID';
-import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
+import { CHAIN_INFO, GaslessNetworks, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from './chain';
 
 export function getEtherscanLink(
-  network: SupportedNetworks,
+  network: SupportedNetworks | GaslessNetworks,
   data: string,
   type: 'transaction' | 'address'
 ): string {

@@ -20,6 +20,8 @@ import { parsePollOptions } from 'modules/polling/helpers/parsePollOptions';
 import logger from 'lib/logger';
 import { ethers } from 'ethers';
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
+import { ContractTransaction } from 'ethers';
+import { GaslessNetworks } from 'modules/web3/constants/networks';
 
 type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting';
 type BallotSubmissionMethod = 'standard' | 'gasless';
@@ -214,26 +216,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const { polling } = useContracts();
 
-  const submitBallot = () => {
-    const pollIds: string[] = [];
-    const pollOptions: string[] = [];
-
-    setStep('submitting');
-
-    Object.keys(ballot).forEach((key: string) => {
-      if (isPollOnBallot(parseInt(key, 10))) {
-        pollIds.push(key);
-        pollOptions.push(ballot[key].option);
-      }
-    });
-
-    const optionIds = parsePollOptions(pollOptions);
-
-    const voteTxCreator = voteDelegateContract
-      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
-      : // vote with array arguments can be used for single vote and multiple vote
-        () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
-
+  const trackPollVote = (voteTxCreator: () => Promise<ContractTransaction>, network?: GaslessNetworks) => {
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
         const comments = getComments();
@@ -284,8 +267,31 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       error: () => {
         toast.error('Error submitting ballot');
       }
-    });
+    }, network);
     setTxId(txId);
+  };
+
+  const submitBallot = () => {
+    const pollIds: string[] = [];
+    const pollOptions: string[] = [];
+
+    setStep('submitting');
+
+    Object.keys(ballot).forEach((key: string) => {
+      if (isPollOnBallot(parseInt(key, 10))) {
+        pollIds.push(key);
+        pollOptions.push(ballot[key].option);
+      }
+    });
+
+    const optionIds = parsePollOptions(pollOptions);
+
+    const voteTxCreator = voteDelegateContract
+      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
+      : // vote with array arguments can be used for single vote and multiple vote
+        () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
+
+    trackPollVote(voteTxCreator);
   };
 
   const submitBallotGasless = async () => {
@@ -296,7 +302,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const pollIds: string[] = [];
     const pollOptions: string[] = [];
 
-    // setStep('submitting');
+    setStep('submitting');
 
     Object.keys(ballot).forEach((key: string) => {
       if (isPollOnBallot(parseInt(key, 10))) {
@@ -305,7 +311,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
-    //TODO: make the url based on connected network
+    //TODO: make the url based on connected network (mainnet vs goerli)
+    //also move alchemy key to env variable
     const provider = new ethers.providers.JsonRpcProvider('https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic');
     const pollingContract = new ethers.Contract(
       // arbitrum testnet polling address,
@@ -315,49 +322,27 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       provider
     );
     const nonce = await pollingContract.nonces('0x14341f81dF14cA86E1420eC9e6Abd343Fb1c5bfC');
-    console.log('nonce', nonce);
     const signatureValues = {
       voter: account.toLowerCase(),
       pollIds,
       optionIds: pollOptions,
-      nonce: nonce.toString(), //TODO: get this programatically by reading the contract
-      expiry: Math.trunc((Date.now() + 43200 * 1000) / 1000) //12 hour expiry
+      nonce: nonce.toNumber(),
+      expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
 
     const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
     console.log('signature', signature);
-    // fetchJson(`/api/polling/vote?network=${network}`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({ pollIds, pollOptions, signature: '' })
-    // }).then(res => {
-    //   if (getComments().length > 0) {
-    //     const commentsRequest: PollsCommentsRequestBody = {
-    //       voterAddress: accountToUse || '',
-    //       hotAddress: account || '',
-    //       comments: getComments(),
-    //       signedMessage: commentsSignature,
-    //       txHash: res.txHash
-    //     };
-
-    //     fetchJson(`/api/comments/polling/add?network=${network}`, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify(commentsRequest)
-    //     })
-    //       .then(() => {
-    //         // console.log('comment successfully added');
-    //       })
-    //       .catch(() => {
-    //         console.error('failed to add comment');
-    //         toast.error('Unable to store comments');
-    //       });
-    //   }
-    // });
+    fetchJson(`/api/polling/vote?network=${network}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ...signatureValues, ...signature})
+    }).then(res => {
+      const voteTxCreator = () => provider.getTransaction(res.hash);
+      //todo: get network name from a helper function that takes in current network
+      trackPollVote(voteTxCreator, GaslessNetworks.ARBITRUMTESTNET);
+    });
   };
 
   const setStep = (step: BallotSteps) => {

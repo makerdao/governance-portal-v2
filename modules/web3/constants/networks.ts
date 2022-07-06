@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { Chain } from '../types/chain';
-import { SupportedChainId } from './chainID';
+import { GaslessChainId, SupportedChainId } from './chainID';
 
 export const NetworkContextName = 'NETWORK';
 
@@ -23,6 +23,10 @@ export enum SupportedNetworks {
   GOERLI = 'goerli',
   GOERLIFORK = 'goerlifork'
 }
+export enum GaslessNetworks {
+  ARBITRUMTESTNET = 'arbitrumTestnet',
+  ARBITRUM = 'arbitrum',
+}
 
 export enum NodeProviders {
   INFURA = 'infura',
@@ -31,7 +35,7 @@ export enum NodeProviders {
 }
 
 type ChainInfo = {
-  [key in SupportedChainId]: Chain;
+  [key in SupportedChainId | GaslessChainId]: Chain;
 };
 
 export const CHAIN_INFO: ChainInfo = {
@@ -68,6 +72,17 @@ export const CHAIN_INFO: ChainInfo = {
     spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://localhost:8545'
+    }
+  },
+  [GaslessChainId.ARBITRUMTESTNET]: {
+    etherscanPrefix: 'goerli.',
+    chainId: GaslessChainId.ARBITRUMTESTNET,
+    label: 'ArbitrumTestnet',
+    network: GaslessNetworks.ARBITRUMTESTNET,
+    defaultRpc: NodeProviders.ALCHEMY,
+    spockUrl: GOERLI_SPOCK_URL,
+    rpcs: {
+      [NodeProviders.ALCHEMY]: 'https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic'
     }
   }
 };

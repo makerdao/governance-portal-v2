@@ -1,11 +1,11 @@
-import { SupportedChainId } from '../constants/chainID';
-import { SupportedNetworks } from '../constants/networks';
+import { GaslessChainId, SupportedChainId } from '../constants/chainID';
+import { GaslessNetworks, SupportedNetworks } from '../constants/networks';
 
 export type Chain = {
   etherscanPrefix: string;
-  chainId: SupportedChainId;
+  chainId: SupportedChainId | GaslessChainId;
   label: string;
-  network: SupportedNetworks;
+  network: SupportedNetworks | GaslessNetworks;
   defaultRpc: string;
   spockUrl: string;
   rpcs: {

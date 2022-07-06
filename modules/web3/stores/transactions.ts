@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
+import { GaslessNetworks } from '../constants/networks';
 
 type Callbacks = {
   initialized?: (txId: string) => void;
@@ -14,7 +15,7 @@ type Callbacks = {
 
 type Store = {
   transactions: Transaction[];
-  initTx: (txId: string, from: string, message: string | null) => void;
+  initTx: (txId: string, from: string, message: string | null, network?: GaslessNetworks) => void;
   setMessage: (txId: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
@@ -23,7 +24,8 @@ type Store = {
     txCreator: () => Promise<ContractTransaction>,
     account?: string,
     message?: string,
-    callbacks?: Callbacks
+    callbacks?: Callbacks,
+    network?: string
   ) => string | null;
   listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
 };
@@ -31,7 +33,7 @@ type Store = {
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   transactions: [],
 
-  initTx: (txId, from, message) => {
+  initTx: (txId, from, message, network) => {
     const status = 'initialized';
     set({
       transactions: get().transactions.concat([
@@ -43,7 +45,8 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
           submittedAt: new Date(),
           hash: null,
           error: null,
-          errorType: null
+          errorType: null,
+          network
         }
       ])
     });
@@ -114,13 +117,13 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: (txCreator, account, message = '', callbacks) => {
+  track: (txCreator, account, message = '', callbacks, network) => {
     if (!account) {
       return null;
     }
 
     const txId: string = uuidv4();
-    get().initTx(txId, account, message);
+    get().initTx(txId, account, message, network);
     if (typeof callbacks?.initialized === 'function') callbacks.initialized(txId);
 
     const txPromise = txCreator();

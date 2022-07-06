@@ -11,7 +11,7 @@ import { config } from 'lib/config';
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      const { pollIds, pollOptions } = req.body;
+      const { voter, pollIds, optionIds, nonce, expiry, v, r, s } = req.body;
 
       // TODO add all validation here
 
@@ -28,11 +28,9 @@ export default withApiHandler(
         PollingContractAbi,
         signer
       );
-      // TODO replace this with signature from user
-      const signature = await signer.signMessage(JSON.stringify({ pollIds, pollOptions }));
+      console.log({ voter, pollIds, optionIds, nonce, expiry, v, r, s });
+      const tx = await pollingContract['vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'](voter, nonce, expiry, pollIds, optionIds, v, r, s);
       res.status(200).json(tx);
-      //const tx = await pollingContract.vote(pollIds, pollOptions, signature, '');
-      //res.status(200).json(tx);
     } catch (err) {
       console.error(err);
     }

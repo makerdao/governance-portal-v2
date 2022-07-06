@@ -9,7 +9,7 @@ import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
-import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { SupportedChainId, GaslessChainId } from 'modules/web3/constants/chainID';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -50,7 +50,7 @@ const NetworkSelect = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
 
   const networkOptions = Object.keys(CHAIN_INFO)
-    .filter(k => ![SupportedChainId.GOERLIFORK].includes(CHAIN_INFO[k].chainId))
+    .filter(k => ![SupportedChainId.GOERLIFORK, ...Object.values(GaslessChainId)].includes(CHAIN_INFO[k].chainId))
     .map(chainKey => (
       <Flex
         sx={walletButtonStyle}
