@@ -39,7 +39,10 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink href={getEtherscanLink(tx.network ? tx.network : network, (tx as TXPending).hash, 'transaction')} target="_blank">
+      <ExternalLink
+        href={getEtherscanLink(tx.network ? tx.network : network, (tx as TXPending).hash, 'transaction')}
+        target="_blank"
+      >
         <Button
           variant="smallOutline"
           sx={{

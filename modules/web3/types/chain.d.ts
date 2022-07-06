@@ -17,5 +17,5 @@ export type GaslessChain = {
   blockExplorerUrl: string;
   chainId: GaslessChainId;
   label: string;
-  network:GaslessNetworks;
+  network: GaslessNetworks;
 };

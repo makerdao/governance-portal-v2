@@ -9,7 +9,10 @@ export const chainIdToNetworkName = (chainId?: number): SupportedNetworks | Gasl
 };
 
 export const networkNameToChainId = (networkName: string): number => {
-  const [key] = [...Object.entries(SupportedNetworks), ...Object.entries(GaslessNetworks)].find(([, v]) => v === networkName) || [];
+  const [key] =
+    [...Object.entries(SupportedNetworks), ...Object.entries(GaslessNetworks)].find(
+      ([, v]) => v === networkName
+    ) || [];
   if (key && SupportedChainId[key]) return parseInt(SupportedChainId[key]);
   if (key && GaslessChainId[key]) return parseInt(GaslessChainId[key]);
   throw new Error(`Unsupported network name ${networkName}`);

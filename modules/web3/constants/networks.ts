@@ -25,7 +25,7 @@ export enum SupportedNetworks {
 }
 export enum GaslessNetworks {
   ARBITRUMTESTNET = 'arbitrumTestnet',
-  ARBITRUM = 'arbitrum',
+  ARBITRUM = 'arbitrum'
 }
 
 export enum NodeProviders {
@@ -86,7 +86,7 @@ export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
     blockExplorerUrl: 'testnet.arbiscan.io',
     chainId: GaslessChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
-    network: GaslessNetworks.ARBITRUMTESTNET,
+    network: GaslessNetworks.ARBITRUMTESTNET
   },
   [GaslessChainId.ARBITRUM]: {
     blockExplorerUrl: 'arbiscan.io',

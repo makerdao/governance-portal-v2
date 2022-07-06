@@ -29,7 +29,9 @@ export default withApiHandler(
         signer
       );
       console.log({ voter, pollIds, optionIds, nonce, expiry, v, r, s });
-      const tx = await pollingContract['vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'](voter, nonce, expiry, pollIds, optionIds, v, r, s);
+      const tx = await pollingContract[
+        'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'
+      ](voter, nonce, expiry, pollIds, optionIds, v, r, s);
       res.status(200).json(tx);
     } catch (err) {
       console.error(err);

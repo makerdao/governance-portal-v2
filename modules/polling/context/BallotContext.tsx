@@ -216,59 +216,67 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const { polling } = useContracts();
 
-  const trackPollVote = (voteTxCreator: () => Promise<ContractTransaction>, gaslessNetwork?: GaslessNetworks) => {
-    console.log('gaslessNetwork', gaslessNetwork);
-    const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
-      pending: txHash => {
-        const comments = getComments();
-        // if comment included, add to comments db
-        if (comments.length > 0) {
-          const commentsRequest: PollsCommentsRequestBody = {
-            voterAddress: accountToUse || '',
-            hotAddress: account || '',
-            comments: comments,
-            signedMessage: commentsSignature,
-            txHash
-          };
+  const trackPollVote = (
+    voteTxCreator: () => Promise<ContractTransaction>,
+    gaslessNetwork?: GaslessNetworks
+  ) => {
+    const txId = track(
+      voteTxCreator,
+      account,
+      `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's': ''}`,
+      {
+        pending: txHash => {
+          const comments = getComments();
+          // if comment included, add to comments db
+          if (comments.length > 0) {
+            const commentsRequest: PollsCommentsRequestBody = {
+              voterAddress: accountToUse || '',
+              hotAddress: account || '',
+              comments: comments,
+              signedMessage: commentsSignature,
+              txHash
+            };
 
-          fetchJson(`/api/comments/polling/add?network=${network}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(commentsRequest)
-          }).catch(() => {
-            logger.error('POST Polling Comments: failed to add comment');
-            toast.error('Unable to store comments');
-          });
+            fetchJson(`/api/comments/polling/add?network=${network}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(commentsRequest)
+            }).catch(() => {
+              logger.error('POST Polling Comments: failed to add comment');
+              toast.error('Unable to store comments');
+            });
 
-          // Invalidate tally cache for each voted poll
+            // Invalidate tally cache for each voted poll
+            Object.keys(ballot).forEach(pollId => {
+              setTimeout(() => {
+                fetchJson(`/api/polling/tally/${pollId}/invalidate-cache?network=${network}`);
+              }, 60000);
+            });
+          }
+        },
+        mined: (txId, txHash) => {
+          // Set votes
+          const votes = {};
           Object.keys(ballot).forEach(pollId => {
-            setTimeout(() => {
-              fetchJson(`/api/polling/tally/${pollId}/invalidate-cache?network=${network}`);
-            }, 60000);
+            votes[pollId] = ballot[pollId];
+            votes[pollId].transactionHash = txHash;
           });
+
+          setPreviousBallot({
+            ...previousBallot,
+            ...votes
+          });
+          clearBallot();
+          transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's': ''}`);
+        },
+        error: () => {
+          toast.error('Error submitting ballot');
         }
       },
-      mined: (txId, txHash) => {
-        // Set votes
-        const votes = {};
-        Object.keys(ballot).forEach(pollId => {
-          votes[pollId] = ballot[pollId];
-          votes[pollId].transactionHash = txHash;
-        });
-
-        setPreviousBallot({
-          ...previousBallot,
-          ...votes
-        });
-        clearBallot();
-        transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
-      },
-      error: () => {
-        toast.error('Error submitting ballot');
-      }
-    }, gaslessNetwork);
+      gaslessNetwork
+    );
     setTxId(txId);
   };
 
@@ -314,7 +322,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     //TODO: make the url based on connected network (mainnet vs goerli)
     //also move alchemy key to env variable
-    const provider = new ethers.providers.JsonRpcProvider('https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic');
+    const provider = new ethers.providers.JsonRpcProvider(
+      'https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic'
+    );
     const pollingContract = new ethers.Contract(
       // arbitrum testnet polling address,
       // maybe we should use eth-sdk for this if it's supported
@@ -337,7 +347,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ...signatureValues, ...signature})
+      body: JSON.stringify({ ...signatureValues, ...signature })
     }).then(res => {
       const voteTxCreator = () => provider.getTransaction(res.hash);
       //todo: get network name from a helper function that takes in current network
