@@ -216,7 +216,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const { polling } = useContracts();
 
-  const trackPollVote = (voteTxCreator: () => Promise<ContractTransaction>, network?: GaslessNetworks) => {
+  const trackPollVote = (voteTxCreator: () => Promise<ContractTransaction>, gaslessNetwork?: GaslessNetworks) => {
+    console.log('gaslessNetwork', gaslessNetwork);
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
         const comments = getComments();
@@ -267,7 +268,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       error: () => {
         toast.error('Error submitting ballot');
       }
-    }, network);
+    }, gaslessNetwork);
     setTxId(txId);
   };
 
@@ -331,7 +332,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     };
 
     const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
-    console.log('signature', signature);
     fetchJson(`/api/polling/vote?network=${network}`, {
       method: 'POST',
       headers: {

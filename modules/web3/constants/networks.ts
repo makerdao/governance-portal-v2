@@ -1,5 +1,5 @@
 import { config } from 'lib/config';
-import { Chain } from '../types/chain';
+import { Chain, GaslessChain } from '../types/chain';
 import { GaslessChainId, SupportedChainId } from './chainID';
 
 export const NetworkContextName = 'NETWORK';
@@ -35,12 +35,17 @@ export enum NodeProviders {
 }
 
 type ChainInfo = {
-  [key in SupportedChainId | GaslessChainId]: Chain;
+  [key in SupportedChainId]: Chain;
 };
 
+type GaslessChainInfo = {
+  [key in GaslessChainId]: GaslessChain;
+};
+
+//change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
   [SupportedChainId.MAINNET]: {
-    etherscanPrefix: '',
+    blockExplorerUrl: 'etherscan.io',
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
     network: SupportedNetworks.MAINNET,
@@ -52,7 +57,7 @@ export const CHAIN_INFO: ChainInfo = {
     }
   },
   [SupportedChainId.GOERLI]: {
-    etherscanPrefix: 'goerli.',
+    blockExplorerUrl: 'goerli.etherscan.io',
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
     network: SupportedNetworks.GOERLI,
@@ -64,7 +69,7 @@ export const CHAIN_INFO: ChainInfo = {
     }
   },
   [SupportedChainId.GOERLIFORK]: {
-    etherscanPrefix: 'goerli.',
+    blockExplorerUrl: 'goerli.etherscan.io',
     chainId: SupportedChainId.GOERLIFORK,
     label: 'GoerliFork',
     network: SupportedNetworks.GOERLIFORK,
@@ -73,17 +78,21 @@ export const CHAIN_INFO: ChainInfo = {
     rpcs: {
       [NodeProviders.LOCAL]: 'http://localhost:8545'
     }
-  },
+  }
+};
+
+export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
   [GaslessChainId.ARBITRUMTESTNET]: {
-    etherscanPrefix: 'goerli.',
+    blockExplorerUrl: 'testnet.arbiscan.io',
     chainId: GaslessChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
     network: GaslessNetworks.ARBITRUMTESTNET,
-    defaultRpc: NodeProviders.ALCHEMY,
-    spockUrl: GOERLI_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.ALCHEMY]: 'https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic'
-    }
+  },
+  [GaslessChainId.ARBITRUM]: {
+    blockExplorerUrl: 'arbiscan.io',
+    chainId: GaslessChainId.ARBITRUM,
+    label: 'Arbitrum',
+    network: GaslessNetworks.ARBITRUM
   }
 };
 

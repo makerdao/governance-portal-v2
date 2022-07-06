@@ -25,7 +25,7 @@ type Store = {
     account?: string,
     message?: string,
     callbacks?: Callbacks,
-    network?: string
+    network?: GaslessNetworks
   ) => string | null;
   listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
 };

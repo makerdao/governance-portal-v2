@@ -1,16 +1,18 @@
-import { SupportedChainId } from '../constants/chainID';
-import { CHAIN_INFO, GaslessNetworks, SupportedNetworks } from '../constants/networks';
+import { CHAIN_INFO, GASLESS_CHAIN_INFO, GaslessNetworks, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from './chain';
 
+//todo: change name to getBlockExplorerLink
 export function getEtherscanLink(
   network: SupportedNetworks | GaslessNetworks,
   data: string,
   type: 'transaction' | 'address'
 ): string {
+  console.log('network', network);
   const chainId = networkNameToChainId(network);
-  const prefix = `https://${
-    CHAIN_INFO[chainId].etherscanPrefix || CHAIN_INFO[SupportedChainId.MAINNET].etherscanPrefix
-  }etherscan.io`;
+  const ALL_CHAINS = {...CHAIN_INFO, ...GASLESS_CHAIN_INFO};
+  console.log('ALL_CHAINS', ALL_CHAINS);
+  console.log('chainId', chainId);
+  const prefix = `https://${ALL_CHAINS[chainId].blockExplorerUrl}`;
 
   switch (type) {
     case 'transaction':
