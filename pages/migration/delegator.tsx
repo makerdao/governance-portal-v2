@@ -2,7 +2,6 @@ import { Box, Button, Card, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useDelegates } from 'modules/delegates/hooks/useDelegates';
@@ -17,7 +16,6 @@ import Link from 'next/link';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { isDelegatedToExpiringContract, isDelegatedToExpiredContract } = useMigrationStatus();
   const { account, network } = useActiveWeb3React();
 
   const { data: delegatesData } = useDelegates();
@@ -136,7 +134,6 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 {delegatesThatAreAboutToExpiry.length === 0 && (
                   <Box
                     sx={{
-                      background: '#FBFBFB',
                       textAlign: 'center',
                       padding: '50px',
                       marginTop: 2,
@@ -148,7 +145,6 @@ export default function DelegateMigrationPage(): React.ReactElement {
                     <Box
                       sx={{
                         borderRadius: '100%',
-                        background: 'background',
                         border: '1px dashed #E3E9F0',
                         display: 'flex',
                         margin: '0 auto',
@@ -158,7 +154,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                         justifyContent: 'center'
                       }}
                     >
-                      <LocalIcon name="calendarcross" />
+                      <LocalIcon name="calendarcross" size={3} color="text" />
                     </Box>
                     <Text as="p" sx={{ color: 'onSecondary' }}>
                       None of your delegates contracts are expired or about to expire.
@@ -188,7 +184,6 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   {delegatesThatAreNotExpired.length === 0 && (
                     <Box
                       sx={{
-                        background: '#FBFBFB',
                         textAlign: 'center',
                         padding: '50px',
                         marginTop: 2,
@@ -204,7 +199,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                         Check back here later, or visit the delegates page and pick a delegate manually.
                       </Text>
                       <Link href="/delegates">
-                        <Button sx={{ mt: 2 }}>Go to delegates page</Button>
+                        <Button sx={{ mt: 3 }}>Go to delegates page</Button>
                       </Link>
                     </Box>
                   )}
