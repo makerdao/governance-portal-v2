@@ -108,7 +108,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       <DelegateVoteHistory delegate={delegate} dataKeyDelegateStats={dataKeyDelegateStats} />
     </Box>,
     <Box key="account-comments" sx={{ p: [3, 4] }}>
-      <AccountComments address={delegate.voteDelegateAddress} delegate={delegate} />
+      <AccountComments address={delegate.voteDelegateAddress} />
     </Box>
   ].filter(i => !!i);
 

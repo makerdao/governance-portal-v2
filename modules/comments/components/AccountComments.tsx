@@ -5,24 +5,13 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { CommentsAPIResponseItem } from '../types/comments';
 import { formatDateWithTime } from 'lib/datetime';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { Delegate } from 'modules/delegates/types';
 
-export default function AccountComments({
-  address,
-  delegate
-}: {
-  address: string;
-  delegate?: Delegate;
-}): React.ReactElement {
+export default function AccountComments({ address }: { address: string }): React.ReactElement {
   const { network } = useActiveWeb3React();
 
   const { data, error, isValidating } = useSWR<{
     comments: CommentsAPIResponseItem[];
-  }>(
-    `/api/comments/${address}?network=${network}${
-      delegate?.previous ? `&prev=${delegate.previous.voteDelegateAddress}` : ''
-    }`
-  );
+  }>(`/api/comments/${address}?network=${network}`);
 
   return (
     <Box>

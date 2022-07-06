@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 import logger from 'lib/logger';
 
 export async function getCommentsByAddress(
-  addresses: string[],
+  address: string,
   network: SupportedNetworks
 ): Promise<{
   comments: CommentsAPIResponseItem[];
@@ -19,14 +19,19 @@ export async function getCommentsByAddress(
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
+  const addressInfo = await getAddressInfo(address, network);
+  const addresses = [address.toLowerCase()];
+
+  if (addressInfo.delegateInfo?.previous?.address) {
+    addresses.push(addressInfo.delegateInfo?.previous?.address.toLowerCase());
+  }
+
   // decending sort
   const commentsFromDB: CommentFromDB[] = await db
     .collection('comments')
     .find({ voterAddress: { $in: addresses }, network })
     .sort({ date: -1 })
     .toArray();
-
-  const addressInfo = await getAddressInfo(addresses[0], network);
 
   const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
 
@@ -43,7 +48,7 @@ export async function getCommentsByAddress(
           .getTransaction(comment.txHash as string)
           .catch(e =>
             logger.error(
-              `GetCommentsByAddress: ${addresses[0]}, There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`
+              `GetCommentsByAddress: ${address}, There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`
             )
           );
       }
