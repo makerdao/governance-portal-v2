@@ -23,7 +23,7 @@ export async function getCommentsByAddress(
   const addresses = [address.toLowerCase()];
 
   if (addressInfo.delegateInfo?.previous?.address) {
-    addresses.push(addressInfo.delegateInfo?.previous?.address.toLowerCase());
+    addresses.push(addressInfo.delegateInfo?.previous?.voteDelegateAddress.toLowerCase());
   }
 
   // decending sort
