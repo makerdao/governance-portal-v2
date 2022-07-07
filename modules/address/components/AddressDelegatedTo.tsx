@@ -38,7 +38,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   return (
     <tr
       sx={{
-        color: delegate.isExpired ? 'warningAlt' : delegate.isAboutToExpire ? 'voterYellow' : 'onSecondary'
+        color: delegate.isExpired ? 'warning' : delegate.isAboutToExpire ? 'voterYellow' : 'onSecondary'
       }}
     >
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
