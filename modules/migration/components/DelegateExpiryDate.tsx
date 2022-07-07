@@ -88,7 +88,7 @@ export default function DelegateExpiryDate({ delegate }: { delegate: Delegate })
               <Heading sx={{ textAlign: 'center', mb: 3 }}>
                 This delegate contract {delegate.isAboutToExpire ? 'is about to expire' : 'has expired'}.
               </Heading>
-              <Text sx={{ mb: 3, color: 'onSecondary' }}>
+              <Text sx={{ mb: 3, color: 'onSecondary', textAlign: 'center' }}>
                 Maker delegate contracts expire after 1 year. Please migrate your MKR by undelegating from the
                 expiring/expired contracts and redelegating to the new contracts.
               </Text>
