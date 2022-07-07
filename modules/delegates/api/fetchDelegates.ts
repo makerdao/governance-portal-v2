@@ -103,7 +103,7 @@ export async function fetchDelegate(
   onChainDelegate.mkrLockedDelegate = delegationEvents;
 
   // check if delegate owner has link to a previous contract
-  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address);
+  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
 
   // fetch the previous contract if so
   const previousOnChainDelegate = previousOwnerAddress
@@ -111,7 +111,7 @@ export async function fetchDelegate(
     : undefined;
 
   // check if delegate owner has a link to a newer contract
-  const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address);
+  const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
 
   // fetch the newer contract if so
   const newOnChainDelegate = newOwnerAddress
@@ -142,7 +142,7 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
   // Map all the raw delegates info and map it to Delegate structure with the github info
   const mergedDelegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
     // check if delegate owner has link to a previous contract
-    const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address);
+    const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
 
     // fetch the previous contract if so
     const previousOnChainDelegate = previousOwnerAddress
@@ -150,7 +150,7 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
       : undefined;
 
     // check if delegate owner has a link to a newer contract
-    const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address);
+    const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
 
     // fetch the newer contract if so
     const newOnChainDelegate = newOwnerAddress
