@@ -6,9 +6,6 @@ import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPol
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';
-import { getContracts } from 'modules/web3/helpers/getContracts';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 /**
  * @swagger
@@ -52,7 +49,7 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
  *       lastVote:
  *         $ref: '#/definitions/VoteHistory'
  *
- * /api/address/{address}/stats:
+ * /api/address/stats:
  *   get:
  *     tags:
  *     - "address"
@@ -60,7 +57,7 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
  *     produces:
  *     - "application/json"
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: address
  *         schema:
  *           type: string
@@ -75,31 +72,47 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
  *               $ref: '#/definitions/AddressStats'
  *
  */
-export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressAPIStats>) => {
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-  const tempAddress = req.query.address as string;
+  const tempAddresses =
+    typeof req.query.address === 'string'
+      ? [req.query.address.toLowerCase()]
+      : (req.query.address as string[]);
+
+  if (!req.query.address) {
+    return res.status(400).json({
+      error: 'Missing address'
+    });
+  }
+
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
+  try {
+    const addresses = await Promise.all(
+      tempAddresses.map(async tempAddress => {
+        return tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
+      })
+    );
 
-  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+    const pollVoteHistories = await Promise.all(
+      addresses
+        .filter(a => !!a)
+        .map(async (address: string) => {
+          const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
 
-  const voteProxyAddress = await getVoteProxyAddresses(
-    contracts.voteProxyFactory,
-    address as string,
-    network
-  );
+          return pollVoteHistory;
+        })
+    );
 
-  const pollVoteHistory = await fetchAddressPollVoteHistory(
-    voteProxyAddress.hotAddress ? voteProxyAddress.hotAddress : (address as string),
-    network
-  );
+    const combinedPollVoteHistory = pollVoteHistories.flat();
+    const response: AddressAPIStats = {
+      pollVoteHistory: combinedPollVoteHistory,
+      lastVote: combinedPollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
+    };
 
-  const response: AddressAPIStats = {
-    pollVoteHistory,
-    lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
-  };
-
-  res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-  res.status(200).json(response);
+    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+    res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+  }
 });
