@@ -3,32 +3,18 @@ import { BigNumber as BigNumberJS } from 'bignumber.js';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
 import { Poll } from 'modules/polling/types';
-import { Delegate } from 'modules/delegates/types';
+import { DelegatesAPIStats } from 'modules/delegates/types';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
 type Props = {
   polls: Poll[];
-  delegates: Delegate[];
-  totalMKRDelegated: string;
+  stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   mkrInChief?: string;
 };
 
-export function GovernanceStats({
-  polls,
-  delegates,
-  totalMKRDelegated,
-  mkrOnHat,
-  mkrInChief
-}: Props): JSX.Element {
+export function GovernanceStats({ polls, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
   const activePollCount = useMemo(() => polls.filter(poll => isActivePoll(poll)).length, [polls]);
-  const recognizedDelegateCount = delegates.filter(
-    delegate => delegate.status === DelegateStatusEnum.recognized
-  ).length;
-  const shadowDelegateCount = delegates.filter(
-    delegate => delegate.status === DelegateStatusEnum.shadow
-  ).length;
 
   const infoUnits = [
     {
@@ -41,15 +27,15 @@ export function GovernanceStats({
     },
     {
       title: 'Recognized Delegates',
-      value: delegates ? recognizedDelegateCount.toString() : <Skeleton />
+      value: stats ? stats.recognized.toString() : <Skeleton />
     },
     {
       title: 'Shadow Delegates',
-      value: delegates ? shadowDelegateCount.toString() : <Skeleton />
+      value: stats ? stats.shadow.toString() : <Skeleton />
     },
     {
       title: 'MKR Delegated',
-      value: totalMKRDelegated ? `${new BigNumberJS(totalMKRDelegated).toFormat(0)} MKR` : <Skeleton />
+      value: stats ? `${new BigNumberJS(stats.totalMKRDelegated).toFormat(0)} MKR` : <Skeleton />
     },
     {
       title: 'MKR in Chief',

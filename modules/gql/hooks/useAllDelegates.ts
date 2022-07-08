@@ -1,19 +1,19 @@
-import { allDelegates } from 'modules/gql/queries/allDelegates';
-import { AllDelegatesRecord } from 'modules/gql/generated/graphql';
-import { useGqlQuery } from 'modules/gql/hooks/useGqlQuery';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import useSWR, { SWRResponse, useSWRConfig } from 'swr';
+import { DelegatesAPIResponse } from 'modules/delegates/types';
 
-type AllDelegatesResponse = {
-  data: AllDelegatesRecord[];
-  loading: boolean;
-  error?: any;
-};
+export const useAllDelegates = (): SWRResponse<DelegatesAPIResponse> => {
+  const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
+  const dataKey = `/api/delegates?network=${network}`;
 
-export const useAllDelegates = (): AllDelegatesResponse => {
-  const { data, error } = useGqlQuery({ cacheKey: 'allDelegates', query: allDelegates });
-
-  return {
-    data: data && data.allDelegates.nodes,
-    loading: !data && !error,
-    error
-  };
+  const response = useSWR<DelegatesAPIResponse>(dataKey, null, {
+    // refresh every 30 mins
+    refreshInterval: 1800000,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKey),
+    revalidateOnReconnect: false
+  });
+  return response;
 };
