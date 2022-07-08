@@ -23,6 +23,24 @@ export default function DelegateMigrationPage(): React.ReactElement {
   const delegatedTo = useDelegatedTo(account, network);
 
   // List of delegates that are about to expiry, the user has to undelegate from them
+  const delegatesThatAreAboutToExpiryWithMKRDelegated: Delegate[] = useMemo(() => {
+    if (!delegatesData || !delegatedTo.data) {
+      return [];
+    }
+
+    return delegatesData.delegates.filter(delegate => {
+      const delegatedToDelegate = delegatedTo.data?.delegatedTo.find(
+        i => i.address === delegate.voteDelegateAddress
+      );
+
+      if (!delegatedToDelegate || parseFloat(delegatedToDelegate.lockAmount) === 0) {
+        return false;
+      }
+      return delegate.expired || delegate.isAboutToExpire;
+    });
+  }, [delegatesData, delegatedTo.data]);
+
+  // Historical list of delegates that the user interacted with that are about to expiry (no need to have current MKR delegated to them)
   const delegatesThatAreAboutToExpiry: Delegate[] = useMemo(() => {
     if (!delegatesData || !delegatedTo.data) {
       return [];
@@ -57,13 +75,19 @@ export default function DelegateMigrationPage(): React.ReactElement {
   // UI loading states
   const { isLoading, isEmpty } = useMemo(() => {
     const isLoading = !delegatesData || !delegatedTo.data;
-    const isEmpty = delegatesThatAreAboutToExpiry.length === 0 && delegatesThatAreNotExpired.length === 0;
+    const isEmpty =
+      delegatesThatAreAboutToExpiryWithMKRDelegated.length === 0 && delegatesThatAreNotExpired.length === 0;
 
     return {
       isLoading,
       isEmpty
     };
-  }, [delegatesData, delegatedTo.data, delegatesThatAreAboutToExpiry, delegatesThatAreNotExpired]);
+  }, [
+    delegatesData,
+    delegatedTo.data,
+    delegatesThatAreAboutToExpiryWithMKRDelegated,
+    delegatesThatAreNotExpired
+  ]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -120,9 +144,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   </Text>
                 </Box>
 
-                {delegatesThatAreAboutToExpiry.length > 0 && (
+                {delegatesThatAreAboutToExpiryWithMKRDelegated.length > 0 && (
                   <Box>
-                    {delegatesThatAreAboutToExpiry.map(delegate => {
+                    {delegatesThatAreAboutToExpiryWithMKRDelegated.map(delegate => {
                       return (
                         <Box key={`delegated-about-to-expiry-${delegate.address}`} sx={{ mb: 3 }}>
                           <DelegateExpirationOverviewCard delegate={delegate} />
@@ -131,7 +155,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                     })}
                   </Box>
                 )}
-                {delegatesThatAreAboutToExpiry.length === 0 && (
+                {delegatesThatAreAboutToExpiryWithMKRDelegated.length === 0 && (
                   <Box
                     sx={{
                       textAlign: 'center',

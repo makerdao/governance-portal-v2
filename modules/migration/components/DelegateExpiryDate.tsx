@@ -9,7 +9,13 @@ import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-export default function DelegateExpiryDate({ delegate }: { delegate: Delegate }): React.ReactElement {
+export default function DelegateExpiryDate({
+  delegate,
+  reverse
+}: {
+  delegate: Delegate;
+  reverse?: boolean;
+}): React.ReactElement {
   const [modalOpen, setModalOpen] = useState(false);
   const bpi = useBreakpointIndex();
 
@@ -22,7 +28,7 @@ export default function DelegateExpiryDate({ delegate }: { delegate: Delegate })
   return (
     <Flex
       sx={{
-        flexDirection: ['row-reverse', 'row'],
+        flexDirection: reverse ? 'row-reverse' : ['row-reverse', 'row'],
         justifyContent: 'flex-start',
         alignItems: 'center',
         height: '18px',
@@ -41,7 +47,7 @@ export default function DelegateExpiryDate({ delegate }: { delegate: Delegate })
       <Flex
         sx={{
           alignContent: 'center',
-          mr: [1, 0]
+          mr: reverse ? 1 : [1, 0]
         }}
       >
         {!delegate.expired && !delegate.isAboutToExpire && (

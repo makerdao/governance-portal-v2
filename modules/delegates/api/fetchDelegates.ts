@@ -22,7 +22,11 @@ import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
-import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import {
+  getNewOwnerFromPrevious,
+  getPreviousOwnerFromNew,
+  hardcodedExpired
+} from 'modules/migration/delegateAddressLinks';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -36,7 +40,11 @@ function mergeDelegateInfo({
   newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
   // check if contract is expired to assing the status
-  const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
+  // TODO: Remove hardcoded delegates
+  const isHardcoded = hardcodedExpired.find(c => c.toLowerCase() === onChainDelegate.address.toLowerCase());
+  const expirationDate = isHardcoded
+    ? add(new Date(), { weeks: 1 })
+    : add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
   const isExpired = isBefore(new Date(expirationDate), new Date());
   const tags = getDelegateTags();
 

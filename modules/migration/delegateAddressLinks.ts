@@ -9,6 +9,13 @@ export const delegateAddressLinks = {
   [SupportedNetworks.MAINNET]: {}
 };
 
+// TODO: Remove after testing phase
+export const hardcodedExpired = [
+  '0x44ad5FA4D36Dc37b7B83bAD6Ac6F373C47C3C837',
+  '0xAdb3bDe018dB0a237215b632A170491982d936D1',
+  '0x2506ead42c8c712bfa82481877d12748489612c8'
+];
+
 export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network];
 

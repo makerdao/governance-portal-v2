@@ -38,6 +38,6 @@ export function useMigrationStatus(): {
     isDelegatedToExpiredContract,
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
-    isDelegateContractExpiring: true
+    isDelegateContractExpiring
   };
 }
