@@ -288,6 +288,7 @@ export default function Index({
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
+  const delegatesData = useAllDelegates();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
@@ -317,8 +318,6 @@ export default function Index({
   if (error) {
     return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
-
-  const delegatesData = useAllDelegates();
 
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
