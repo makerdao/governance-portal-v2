@@ -10,10 +10,13 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
+import { Delegate, DelegatesAPIStats } from 'modules/delegates/types';
 
 export type LandingPageData = {
   proposals: Proposal[];
   polls: Poll[];
+  delegates: Delegate[];
+  stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   hat?: string;
   mkrInChief?: string;
@@ -22,7 +25,7 @@ export type LandingPageData = {
 export async function fetchLandingPageData(
   network: SupportedNetworks,
   useApi = false
-): Promise<LandingPageData> {
+): Promise<Partial<LandingPageData>> {
   const EXEC_FETCH_SIZE = 3;
   const EXEC_SORT_BY = 'active';
 

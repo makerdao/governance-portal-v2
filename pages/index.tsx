@@ -40,22 +40,17 @@ import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAllDelegates } from 'modules/gql/hooks/useAllDelegates';
 
-const LandingPage = ({ proposals, polls, mkrOnHat, hat, mkrInChief }: LandingPageData) => {
+const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInChief }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
-  const delegatesData = useAllDelegates();
-
   const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
-    if (!delegatesData.data) {
-      return [[], []];
-    }
-    const recognized = filterDelegates(delegatesData.data?.delegates, false, true, null);
+    const recognized = filterDelegates(delegates, false, true, null);
     const meet = shuffleArray(recognized);
     return [recognized, meet];
-  }, [delegatesData]);
+  }, [delegates]);
 
   // change background on color mode switch
   useEffect(() => {
@@ -210,12 +205,7 @@ const LandingPage = ({ proposals, polls, mkrOnHat, hat, mkrInChief }: LandingPag
 
             <section>
               <ErrorBoundary componentName="Governance Stats">
-                <GovernanceStats
-                  polls={polls}
-                  stats={delegatesData.data?.stats}
-                  mkrOnHat={mkrOnHat}
-                  mkrInChief={mkrInChief}
-                />
+                <GovernanceStats polls={polls} stats={stats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
               </ErrorBoundary>
             </section>
 
@@ -251,7 +241,7 @@ const LandingPage = ({ proposals, polls, mkrOnHat, hat, mkrInChief }: LandingPag
             <section>
               <TopDelegates
                 delegates={topDelegates}
-                totalMKRDelegated={new BigNumber(delegatesData.data?.stats.totalMKRDelegated || 0)}
+                totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
 
@@ -311,7 +301,7 @@ export default function Index({
 
   const { cache } = useSWRConfig();
   const cacheKey = `page/landing/${network}`;
-  const { data, error } = useSWR<LandingPageData>(
+  const { data, error } = useSWR<Partial<LandingPageData>>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
     () => fetchLandingPageData(network, true),
     {
@@ -328,9 +318,13 @@ export default function Index({
     return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
 
+  const delegatesData = useAllDelegates();
+
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    delegates: delegatesData.data?.delegates ?? [],
+    stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
