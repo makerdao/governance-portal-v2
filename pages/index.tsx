@@ -38,16 +38,9 @@ import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { shuffleArray } from 'lib/common/shuffleArray';
+import { useAllDelegates } from 'modules/gql/hooks/useAllDelegates';
 
-const LandingPage = ({
-  proposals,
-  polls,
-  delegates,
-  totalMKRDelegated,
-  mkrOnHat,
-  hat,
-  mkrInChief
-}: LandingPageData) => {
+const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInChief }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
@@ -212,13 +205,7 @@ const LandingPage = ({
 
             <section>
               <ErrorBoundary componentName="Governance Stats">
-                <GovernanceStats
-                  polls={polls}
-                  delegates={delegates}
-                  totalMKRDelegated={totalMKRDelegated}
-                  mkrOnHat={mkrOnHat}
-                  mkrInChief={mkrInChief}
-                />
+                <GovernanceStats polls={polls} stats={stats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
               </ErrorBoundary>
             </section>
 
@@ -252,7 +239,10 @@ const LandingPage = ({
             </section>
 
             <section>
-              <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
+              <TopDelegates
+                delegates={topDelegates}
+                totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
+              />
             </section>
 
             <section sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
@@ -293,8 +283,6 @@ const LandingPage = ({
 export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
-  delegates: prefetchedDelegates,
-  totalMKRDelegated: prefetchedTotalMKRDelegated,
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
@@ -305,8 +293,6 @@ export default function Index({
     ? {
         proposals: prefetchedProposals,
         polls: prefetchedPolls,
-        delegates: prefetchedDelegates,
-        totalMKRDelegated: prefetchedTotalMKRDelegated,
         mkrOnHat: prefetchedMkrOnHat,
         hat: prefetchedHat,
         mkrInChief: prefetchedMkrInChief
@@ -315,7 +301,7 @@ export default function Index({
 
   const { cache } = useSWRConfig();
   const cacheKey = `page/landing/${network}`;
-  const { data, error } = useSWR<LandingPageData>(
+  const { data, error } = useSWR<Partial<LandingPageData>>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
     () => fetchLandingPageData(network, true),
     {
@@ -332,15 +318,13 @@ export default function Index({
     return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
 
-  const delegates = isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [];
+  const delegatesData = useAllDelegates();
 
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    delegates,
-    totalMKRDelegated: isDefaultNetwork(network)
-      ? prefetchedTotalMKRDelegated
-      : data?.totalMKRDelegated ?? '0',
+    delegates: delegatesData.data?.delegates ?? [],
+    stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
@@ -350,16 +334,15 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, delegates, totalMKRDelegated, mkrOnHat, hat, mkrInChief } =
-    await fetchLandingPageData(SupportedNetworks.MAINNET);
+  const { proposals, polls, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
+    SupportedNetworks.MAINNET
+  );
 
   return {
     revalidate: 5 * 60, // allow revalidation every 30 minutes
     props: {
       proposals,
       polls,
-      delegates,
-      totalMKRDelegated,
       mkrOnHat,
       hat,
       mkrInChief
