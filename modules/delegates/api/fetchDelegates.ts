@@ -22,7 +22,11 @@ import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
-import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import {
+  getNewOwnerFromPrevious,
+  getPreviousOwnerFromNew,
+  hardcodedExpired
+} from 'modules/migration/delegateAddressLinks';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -36,7 +40,11 @@ function mergeDelegateInfo({
   newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
   // check if contract is expired to assing the status
-  const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
+  // TODO: Remove hardcoded delegates
+  const isHardcoded = hardcodedExpired.find(c => c.toLowerCase() === onChainDelegate.address.toLowerCase());
+  const expirationDate = isHardcoded
+    ? add(new Date(), { weeks: 1 })
+    : add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
   const isExpired = isBefore(new Date(expirationDate), new Date());
   const tags = getDelegateTags();
 
@@ -103,7 +111,7 @@ export async function fetchDelegate(
   onChainDelegate.mkrLockedDelegate = delegationEvents;
 
   // check if delegate owner has link to a previous contract
-  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address);
+  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
 
   // fetch the previous contract if so
   const previousOnChainDelegate = previousOwnerAddress
@@ -111,7 +119,7 @@ export async function fetchDelegate(
     : undefined;
 
   // check if delegate owner has a link to a newer contract
-  const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address);
+  const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
 
   // fetch the newer contract if so
   const newOnChainDelegate = newOwnerAddress
@@ -142,7 +150,7 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
   // Map all the raw delegates info and map it to Delegate structure with the github info
   const mergedDelegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
     // check if delegate owner has link to a previous contract
-    const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address);
+    const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
 
     // fetch the previous contract if so
     const previousOnChainDelegate = previousOwnerAddress
@@ -150,7 +158,7 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
       : undefined;
 
     // check if delegate owner has a link to a newer contract
-    const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address);
+    const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
 
     // fetch the newer contract if so
     const newOnChainDelegate = newOwnerAddress

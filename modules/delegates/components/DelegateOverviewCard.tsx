@@ -21,6 +21,7 @@ import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import DelegateTags from './DelegateTags';
 import Icon from 'modules/app/components/Icon';
+import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 
 type PropTypes = {
   delegate: Delegate;
@@ -56,11 +57,14 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
     >
       <Box px={[3, 4]} pb={3} pt={3}>
         <Flex sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-          <LastVoted
-            expired={delegate.expired}
-            date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
-            left
-          />
+          <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'flex-start' }}>
+            <LastVoted
+              expired={delegate.expired}
+              date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
+              left
+            />
+            <DelegateExpiryDate delegate={delegate} reverse />
+          </Flex>
           {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
         </Flex>
 
