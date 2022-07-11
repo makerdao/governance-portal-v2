@@ -49,11 +49,12 @@ export function NewDelegateContract(): JSX.Element {
         </Box>
       </Flex>
       <Text as="p" sx={{ texstAlign: 'center', fontSize: 4, fontWeight: 'semiBold', mb: 3 }}>
-        Your new wallet has been linked to your previous wallet.
+        Your new address has been linked to your previous address.
       </Text>
       <Text as="p" variant="secondary" sx={{ textAlign: 'center', maxWidth: '450px' }}>
         You are now ready to create your new delegate contract.
-        <br />
+      </Text>
+      <Text as="p" variant="secondary" sx={{ textAlign: 'center', maxWidth: '450px', mt: 2 }}>
         Please proceed to the Account page to create the new contract.
       </Text>
       <InternalLink href="/account" title="View account page">
