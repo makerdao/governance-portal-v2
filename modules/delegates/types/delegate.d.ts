@@ -69,6 +69,7 @@ export type DelegationHistoryWithExpirationDate = DelegationHistory & {
   expirationDate: Date;
   isAboutToExpire: boolean;
   isExpired: boolean;
+  isRenewed: boolean;
 };
 
 export type DelegationHistoryEvent = {

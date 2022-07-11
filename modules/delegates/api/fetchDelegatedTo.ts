@@ -9,7 +9,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
-import { hardcodedExpired } from 'modules/migration/delegateAddressLinks';
+import { getNewOwnerFromPrevious, hardcodedExpired } from 'modules/migration/delegateAddressLinks';
 
 export async function fetchDelegatedTo(
   address: string,
@@ -58,12 +58,20 @@ export async function fetchDelegatedTo(
         const isAboutToExpire = isAboutToExpireCheck(expirationDate);
         const isExpired = isExpiredCheck(expirationDate);
 
+        // If it has a new owner address, check if it has renewed the contract
+        const newOwnerAddress = getNewOwnerFromPrevious(immediateCaller, network);
+
+        const newRenewedContract = newOwnerAddress
+          ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress.toLowerCase())
+          : null;
+
         acc.push({
           address: immediateCaller,
           expirationDate,
           isExpired,
           isAboutToExpire: !isExpired && isAboutToExpire,
           lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
+          isRenewed: !!newRenewedContract,
           events: [{ lockAmount, blockTimestamp, hash }]
         } as DelegationHistoryWithExpirationDate);
       }

@@ -18,13 +18,15 @@ export function useMigrationStatus(): {
     ? isAboutToExpireCheck(delegateContractExpirationDate)
     : false;
 
+  // check if is delegating to an expired contract, independently of its renewal status
   const isDelegateContractExpired = delegateContractExpirationDate
     ? isExpiredCheck(delegateContractExpirationDate)
     : false;
 
+  // Checks if its delegating to an expiring contract that is already renewed.
   const isDelegatedToExpiringContract = delegatedToData
     ? delegatedToData.delegatedTo.reduce((prev, next) => {
-        return prev || next.isAboutToExpire;
+        return prev || (next.isAboutToExpire && next.isRenewed);
       }, false)
     : false;
 
