@@ -96,9 +96,7 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Expired Delegates</Text>
               <Text sx={{ color: 'mutedAlt', ml: 3 }}>
-                {/* TODO removed hardcoded */}
-                {filteredDelegates.filter(p => hardcodedExpired.includes(p.address)).length}
-                {/* {filteredDelegates.filter(p => p.status === DelegateStatusEnum.expired).length} */}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.expired).length}
               </Text>
             </Flex>
           </Label>
