@@ -1,6 +1,8 @@
 import { Flex, Text, Button } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export function NewAddressSuccess(): JSX.Element {
   return (
@@ -18,6 +20,16 @@ export function NewAddressSuccess(): JSX.Element {
       <InternalLink href="/" title="View homepage">
         <Button sx={{ mt: 4, minWidth: '300px' }}>Back to home</Button>
       </InternalLink>
+      <Flex sx={{ alignItems: 'center', mt: 4 }}>
+        <Text variant="secondary">
+          Please reach out to us on{' '}
+          <ExternalLink href="https://discord.gg/GHcFMdKden" title="Discord" styles={{ color: 'accentBlue' }}>
+            <Text>Discord</Text>
+          </ExternalLink>{' '}
+          if you have additional questions.
+        </Text>
+        <Icon name={'discord'} sx={{ ml: 2 }} />
+      </Flex>
     </Flex>
   );
 }
