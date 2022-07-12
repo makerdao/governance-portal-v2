@@ -11,8 +11,13 @@ export function NewAddress({
   handleSubmitNewAddress: (newAddress: string) => Promise<Response>;
 }): JSX.Element {
   const [submissionStatus, setSubmissionStatus] = useState<NewAddressStatus>('initial');
+  const [error, setError] = useState<boolean>(false);
 
   const handleSubmit = async (newAddress: string) => {
+    if (!newAddress || newAddress.length !== 42) {
+      setError(true);
+      return;
+    }
     try {
       const req = await handleSubmitNewAddress(newAddress);
       if (req.status === 200) {
@@ -25,11 +30,16 @@ export function NewAddress({
     }
   };
 
-  const resetStatus = () => setSubmissionStatus('initial');
+  const resetStatus = () => {
+    setError(false);
+    setSubmissionStatus('initial');
+  };
 
   return (
     <>
-      {submissionStatus === 'initial' && <NewAddressInitial handleSubmit={handleSubmit} />}
+      {submissionStatus === 'initial' && (
+        <NewAddressInitial handleSubmit={handleSubmit} setError={setError} error={error} />
+      )}
       {submissionStatus === 'error' && <NewAddressError resetStatus={resetStatus} />}
       {submissionStatus === 'success' && <NewAddressSuccess />}
     </>

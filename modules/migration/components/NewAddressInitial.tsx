@@ -4,13 +4,18 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export function NewAddressInitial({
-  handleSubmit
+  handleSubmit,
+  setError,
+  error
 }: {
   handleSubmit: (newAddress: string) => void;
+  setError: (bool: boolean) => void;
+  error: boolean;
 }): JSX.Element {
   const [newAddress, setNewAddress] = useState('');
 
   const handleInput = e => {
+    setError(false);
     setNewAddress(e.target.value);
   };
 
@@ -48,22 +53,35 @@ export function NewAddressInitial({
         the address.{' '}
       </Alert>
       <Label sx={{ mb: 1 }}>Enter new address</Label>
-      <Flex>
-        <Input
-          name="search"
-          onChange={handleInput}
-          type="search"
-          value={newAddress}
-          sx={{
-            px: 3,
-            mr: 3,
-            maxWidth: 460
-          }}
-        />
-        <Button onClick={() => handleSubmit(newAddress)} sx={{ minWidth: 300 }}>
-          Submit address
-        </Button>
+      <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Input
+            name="search"
+            onChange={handleInput}
+            type="search"
+            value={newAddress}
+            sx={{
+              px: 3,
+              mr: 3,
+              width: 460
+            }}
+          />
+        </Flex>
+        <Flex>
+          <Button
+            onClick={() => handleSubmit(newAddress)}
+            sx={{ minWidth: 300 }}
+            disabled={!newAddress || newAddress.length === 0}
+          >
+            Submit address
+          </Button>
+        </Flex>
       </Flex>
+      {error && (
+        <Text variant="error" sx={{ mt: 1 }}>
+          Please enter a valid address
+        </Text>
+      )}
       <Text as="p" sx={{ fontWeight: 'semiBold', mt: 4 }}>
         You only need to submit once
       </Text>
