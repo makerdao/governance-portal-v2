@@ -3,7 +3,7 @@ import { Box, Flex, Button, Text, Heading } from 'theme-ui';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 
-export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement | null {
+export function SubmitBallotsButtons({ onOpen, onSubmit }: { onOpen: () => void, onSubmit: () => void }): React.ReactElement | null {
   const {
     signComments,
     transaction,
@@ -24,6 +24,8 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
           <Button
             onClick={() => {
+              console.log('onOpen', onOpen);
+              onOpen();
               setStep('method-select');
             }}
             data-testid="submit-ballot-button"
