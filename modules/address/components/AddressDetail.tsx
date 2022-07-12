@@ -15,6 +15,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountComments from 'modules/comments/components/AccountComments';
 import Tabs from 'modules/app/components/Tabs';
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse }): React.ReactElement {
   const { network } = useActiveWeb3React();
@@ -38,6 +39,32 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
 
   const tabPanels = [
     <Box key="account-detail">
+      {addressInfo.voteDelegateAdress && (
+        <Box>
+          <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+            <Text
+              as="p"
+              sx={{
+                fontSize: 4,
+                mb: 3,
+                fontWeight: 'semiBold'
+              }}
+            >
+              Vote Delegate Contract
+            </Text>
+            <Text as="p">
+              <InternalLink href={`/address/${addressInfo.voteDelegateAdress}`} title="View address detail">
+                <AddressIconBox
+                  address={addressInfo.voteDelegateAdress.toLowerCase()}
+                  width={41}
+                  limitTextLength={0}
+                />
+              </InternalLink>
+            </Text>
+          </Box>
+        </Box>
+      )}
+
       <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
         <Text
           as="p"

@@ -56,16 +56,34 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
       data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={3} pt={3}>
-        <Flex sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}>
-          <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'flex-start' }}>
+        <Flex
+          sx={{
+            flexDirection: ['column', 'row'],
+            mb: 2,
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}
+        >
+          <Flex
+            sx={{
+              flexDirection: ['column', 'row'],
+              justifyContent: 'flex-start'
+            }}
+          >
             <LastVoted
               expired={delegate.expired}
               date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
               left
             />
-            <DelegateExpiryDate delegate={delegate} reverse />
           </Flex>
-          {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
+          <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
+            <DelegateExpiryDate delegate={delegate} />
+            {delegate.cuMember && (
+              <Flex sx={{ mt: 1 }}>
+                <CoreUnitButton handleInfoClick={handleInfoClick} />
+              </Flex>
+            )}
+          </Flex>
         </Flex>
 
         <Flex
