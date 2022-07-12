@@ -30,7 +30,6 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-import PollVoteModal from 'modules/polling/components/PollVoteModal';
 
 const PollingReview = ({ polls }: PollingReviewPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -79,12 +78,9 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
     })
     .filter(p => !!p) as Poll[];
 
-  const onOpen = () => setShowVoteModal(true);
-
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
       <SubmitBallotsButtons
-        onOpen={onOpen}
         onSubmit={() => {
           trackButtonClick('submitBallot');
         }}
@@ -198,7 +194,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
                 {bpi <= 2 && !!account && (
                   <Box>
-                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} onOpen={onOpen}/>}
+                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls}/>}
                     {hasVoted && (
                       <Box>
                         <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
@@ -287,7 +283,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 )}
                 {bpi <= 2 && (
                   <Box>
-                    {!hasVoted && <SubmitButton />}
+                     {!hasVoted && <SubmitButton/>}
                     {hasVoted && (
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -334,7 +330,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
               )}
             </Box>
           )}
-          {showVoteModal && <PollVoteModal close={() => setShowVoteModal(false)} />}
           {showMarkdownModal && (
             <ShareVotesModal
               isOpen={showMarkdownModal}

@@ -24,12 +24,10 @@ const ReviewBoxCard = ({ children, ...props }) => (
 export default function ReviewBox({
   activePolls,
   polls,
-  onOpen,
   ...props
 }: {
   activePolls: Poll[];
   polls: Poll[];
-  onOpen: () => void;
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
@@ -42,7 +40,6 @@ export default function ReviewBox({
   const Default = props => (
     <ActivePollsBox polls={polls} activePolls={activePolls} {...props}>
       <SubmitBallotsButtons
-        onOpen={onOpen}
         onSubmit={() => {
           trackButtonClick('submitBallot');
         }}

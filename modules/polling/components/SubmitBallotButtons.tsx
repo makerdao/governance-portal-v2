@@ -1,9 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Box, Flex, Button, Text, Heading } from 'theme-ui';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { BallotContext } from '../context/BallotContext';
+import { DialogOverlay, DialogContent } from '@reach/dialog';
+import { fadeIn, slideUp } from 'lib/keyframes';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
-export function SubmitBallotsButtons({ onOpen, onSubmit }: { onOpen: () => void, onSubmit: () => void }): React.ReactElement | null {
+export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement | null {
   const {
     signComments,
     transaction,
@@ -17,26 +20,25 @@ export function SubmitBallotsButtons({ onOpen, onSubmit }: { onOpen: () => void,
     handleCommentsStep,
     submissionMethod
   } = useContext(BallotContext);
+  const bpi = useBreakpointIndex();
 
-  switch (ballotStep) {
-    case 'initial':
-      return (
-        <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
-          <Button
-            onClick={() => {
-              console.log('onOpen', onOpen);
-              onOpen();
-              setStep('method-select');
-            }}
-            data-testid="submit-ballot-button"
-            variant="primaryLarge"
-            disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
-            sx={{ width: '100%' }}
-          >
-            Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
-          </Button>
-        </Flex>
-      );
+  const modalOpenButton = (
+    <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
+      <Button
+        onClick={() => {
+          setStep('method-select');
+        }}
+        data-testid="submit-ballot-button"
+        variant="primaryLarge"
+        disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+        sx={{ width: '100%' }}
+      >
+        Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
+      </Button>
+    </Flex>
+  );
+
+  const modalContent = () => { switch (ballotStep) {
     case 'method-select':
       return (
         <Flex sx={{ flexDirection: 'column', p: 3 }}>
@@ -152,5 +154,26 @@ export function SubmitBallotsButtons({ onOpen, onSubmit }: { onOpen: () => void,
       );
     default:
       return null;
-  }
+    }
+  };
+
+  if (ballotStep === 'initial') return modalOpenButton;
+
+  return (
+  <div>
+    {modalOpenButton}
+    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
+      <DialogContent
+        aria-label="Executive Vote"
+        sx={
+          bpi === 0
+            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+            : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
+        }
+      >
+        {modalContent()}
+      </DialogContent>
+    </DialogOverlay>
+  </div>
+  );
 }
