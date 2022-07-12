@@ -9,7 +9,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { SubmitBallotsButtons } from '../SubmitBallotButtons';
+import { SubmitBallotButtonAndModals } from '../SubmitBallotButtons';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from './ActivePollsBox';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -39,7 +39,7 @@ export default function ReviewBox({
 
   const Default = props => (
     <ActivePollsBox polls={polls} activePolls={activePolls} {...props}>
-      <SubmitBallotsButtons
+      <SubmitBallotButtonAndModals
         onSubmit={() => {
           trackButtonClick('submitBallot');
         }}
@@ -146,7 +146,7 @@ export default function ReviewBox({
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <SubmitBallotsButtons
+        <SubmitBallotButtonAndModals
           onSubmit={() => {
             trackButtonClick('submitBallot');
           }}

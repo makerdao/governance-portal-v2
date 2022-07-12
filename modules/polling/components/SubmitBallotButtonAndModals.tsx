@@ -6,7 +6,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement | null {
+export function SubmitBallotButtonAndModals({ onSubmit }: { onSubmit: () => void }): React.ReactElement | null {
   const {
     signComments,
     transaction,

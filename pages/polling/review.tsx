@@ -16,7 +16,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
-import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
+import { SubmitBallotButtonAndModals } from 'modules/polling/components/SubmitBallotButtonAndModals';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -80,7 +80,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <SubmitBallotsButtons
+      <SubmitBallotButtonAndModals
         onSubmit={() => {
           trackButtonClick('submitBallot');
         }}
