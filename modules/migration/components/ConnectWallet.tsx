@@ -17,9 +17,12 @@ export function ConnectWallet(): JSX.Element {
       <Flex sx={{ width: '100%', my: 4 }}>
         <img src="/assets/switch-account-metamask.gif" />
       </Flex>
-      <ExternalLink href={'#'} title="Read more">
+      <ExternalLink
+        href={'https://metamask.zendesk.com/hc/en-us/articles/360061346311-Switching-accounts-in-MetaMask'}
+        title="Read more"
+      >
         <Flex sx={{ alignItems: 'center' }}>
-          <Text>Read more how to switch accounts in MetaMask</Text>
+          <Text>Read instructions on how to switch accounts in MetaMask</Text>
           <Icon ml={2} name="arrowTopRight" size={2} />
         </Flex>
       </ExternalLink>
