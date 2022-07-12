@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert, Button, Flex, Text, Input, Label } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export function NewAddressInitial({
   handleSubmit
@@ -62,6 +63,23 @@ export function NewAddressInitial({
         <Button onClick={() => handleSubmit(newAddress)} sx={{ minWidth: 300 }}>
           Submit address
         </Button>
+      </Flex>
+      <Text as="p" sx={{ fontWeight: 'semiBold', mt: 4 }}>
+        You only need to submit once
+      </Text>
+      <Text as="p" variant="secondary" sx={{ mt: 2 }}>
+        After submitting an address, you will be asked to sign a message to prove ownership of the current
+        delegate contract.
+      </Text>
+      <Flex sx={{ alignItems: 'center', mt: 2 }}>
+        <Text variant="secondary">
+          Please reach out to us on{' '}
+          <ExternalLink href="https://discord.gg/GHcFMdKden" title="Discord" styles={{ color: 'accentBlue' }}>
+            <Text>Discord</Text>
+          </ExternalLink>{' '}
+          if you have additional questions.
+        </Text>
+        <Icon name={'discord'} sx={{ ml: 2 }} />
       </Flex>
     </Flex>
   );
