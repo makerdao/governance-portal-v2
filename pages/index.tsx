@@ -54,7 +54,7 @@ const LandingPage = ({
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
   const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
-    const recognized = filterDelegates(delegates, false, true, null);
+    const recognized = filterDelegates(delegates, false, true, false, null);
     const meet = shuffleArray(recognized);
     return [recognized, meet];
   }, [delegates]);

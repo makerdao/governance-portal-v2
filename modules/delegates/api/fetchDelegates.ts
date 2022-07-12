@@ -51,7 +51,11 @@ function mergeDelegateInfo({
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
-    status: githubDelegate ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
+    status: githubDelegate
+      ? DelegateStatusEnum.recognized
+      : isExpired || isHardcoded
+      ? DelegateStatusEnum.expired
+      : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
     isAboutToExpire: isAboutToExpireCheck(expirationDate),

@@ -1,3 +1,4 @@
+import { hardcodedExpired } from 'modules/migration/delegateAddressLinks';
 import { DelegateStatusEnum } from '../delegates.constants';
 import { Delegate } from '../types';
 
@@ -5,6 +6,7 @@ export function filterDelegates(
   delegates: Delegate[],
   showShadow: boolean,
   showRecognized: boolean,
+  showExpired: boolean,
   name: string | null,
   tags?: { [key: string]: boolean }
 ): Delegate[] {
@@ -18,7 +20,7 @@ export function filterDelegates(
       })
       .filter(delegate => {
         // Return all if unchecked
-        if (!showShadow && !showRecognized) {
+        if (!showShadow && !showRecognized && !showExpired) {
           return true;
         }
 
@@ -27,6 +29,14 @@ export function filterDelegates(
         }
 
         if (!showRecognized && delegate.status === DelegateStatusEnum.recognized) {
+          return false;
+        }
+
+        // TODO remove hardcoded
+        if (
+          (!showExpired && hardcodedExpired.includes(delegate.address)) ||
+          (!showExpired && delegate.expired === true)
+        ) {
           return false;
         }
 

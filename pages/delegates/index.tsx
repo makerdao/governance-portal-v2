@@ -18,8 +18,9 @@ import { DelegateOverviewCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
-import DelegatesFilter from 'modules/delegates/components/filters/DelegatesFilter';
-import DelegatesSort from 'modules/delegates/components/filters/DelegatesSort';
+import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
+import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
+import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -28,14 +29,16 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
-import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
+import { hardcodedExpired } from 'modules/migration/delegateAddressLinks';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
-  const [showRecognized, showShadow, sort, name, delegateTags, setName, resetFilters] =
+  const { voteDelegateContractAddress } = useAccount();
+  const [showRecognized, showShadow, showExpired, sort, name, delegateTags, setName, resetFilters] =
     useDelegatesFiltersStore(
       state => [
         state.filters.showRecognized,
         state.filters.showShadow,
+        state.filters.showExpired,
         state.sort,
         state.filters.name,
         state.filters.tags,
@@ -50,8 +53,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const bpi = useBreakpointIndex();
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
-  }, [delegates, showRecognized, showShadow, name, delegateTags]);
+    return filterDelegates(delegates, showShadow, showRecognized, showExpired, name, delegateTags);
+  }, [delegates, showRecognized, showShadow, showExpired, name, delegateTags]);
 
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
@@ -76,11 +79,13 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
 
-    const expired = sorted.filter(delegate => delegate.expired === true);
+    // TODO remove hardcoded
+    const expired = sorted.filter(
+      delegate => delegate.expired === true || hardcodedExpired.includes(delegate.address.toLowerCase())
+    );
     return [sorted, recognized, shadow, expired];
   }, [filteredDelegates, sort]);
 
-  const { voteDelegateContractAddress } = useAccount();
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -110,9 +115,9 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                 }}
               >
                 <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
-                <DelegatesSort />
+                <DelegatesSortFilter />
                 <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
-                <DelegatesFilter delegates={delegates} />
+                <DelegatesStatusFilter delegates={delegates} />
               </Flex>
               <Button
                 variant={'outline'}
