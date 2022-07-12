@@ -57,7 +57,6 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               </Heading>
             </Flex>
           )}
-
           <Box>
             {addressInfo.delegateInfo && (
               <ErrorBoundary componentName="Delegate Information">

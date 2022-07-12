@@ -15,12 +15,15 @@ export async function getAddressInfo(
 
   const delegate = await fetchDelegate(address, network);
 
+  const voteDelegateAdress = await contracts.voteDelegateFactory.delegates(address);
+
   const response: AddressApiResponse = {
     isDelegate: !!delegate,
     isProxyContract: !!voteProxyAddress.hotAddress,
     voteProxyInfo: voteProxyAddress,
     delegateInfo: delegate,
-    address
+    address,
+    voteDelegateAdress
   };
 
   return response;
