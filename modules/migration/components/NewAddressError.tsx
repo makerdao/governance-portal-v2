@@ -13,7 +13,7 @@ export function NewAddressError({ resetStatus }: { resetStatus: () => void }): J
       </Flex>
       <Text as="p" variant="secondary" sx={{ textAlign: 'center' }}>
         Please contact us on{' '}
-        <ExternalLink href="https://discord.gg/tQ5wnN6Ms4" title="Discord" styles={{ color: 'accentBlue' }}>
+        <ExternalLink href="https://discord.gg/GHcFMdKden" title="Discord" styles={{ color: 'accentBlue' }}>
           <Text>Discord</Text>
         </ExternalLink>{' '}
         to resolve the issue.
