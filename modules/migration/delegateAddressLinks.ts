@@ -17,7 +17,8 @@ export const hardcodedExpired = [
   '0x2506ead42c8c712bfa82481877d12748489612c8',
   '0x2dd49b0aacbab93d7c8327e62dd145def2b84c6f',
   '0x2c204c7f54F6FB1014fc5F87526aB469d3Bc098c',
-  '0x9460b67B7365F8eC3769679F36EdaB4E9599c4eD'
+  '0x9460b67B7365F8eC3769679F36EdaB4E9599c4eD',
+  '0xA5740f052B12d8135D1cDD013Bb7f75639DA7F65'
 ];
 
 export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
