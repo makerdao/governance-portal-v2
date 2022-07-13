@@ -15,7 +15,7 @@ type Callbacks = {
 
 type Store = {
   transactions: Transaction[];
-  initTx: (txId: string, from: string, message: string | null, network?: GaslessNetworks) => void;
+  initTx: (txId: string, from: string, message: string | null, gaslessNetwork?: GaslessNetworks) => void;
   setMessage: (txId: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
@@ -25,7 +25,7 @@ type Store = {
     account?: string,
     message?: string,
     callbacks?: Callbacks,
-    network?: GaslessNetworks
+    gaslessNetwork?: GaslessNetworks
   ) => string | null;
   listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
 };
@@ -33,7 +33,7 @@ type Store = {
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   transactions: [],
 
-  initTx: (txId, from, message, network) => {
+  initTx: (txId, from, message, gaslessNetwork) => {
     const status = 'initialized';
     set({
       transactions: get().transactions.concat([
@@ -46,7 +46,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
           hash: null,
           error: null,
           errorType: null,
-          network
+          gaslessNetwork
         }
       ])
     });
@@ -117,13 +117,13 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: (txCreator, account, message = '', callbacks, network) => {
+  track: (txCreator, account, message = '', callbacks, gaslessNetwork) => {
     if (!account) {
       return null;
     }
 
     const txId: string = uuidv4();
-    get().initTx(txId, account, message, network);
+    get().initTx(txId, account, message, gaslessNetwork);
     if (typeof callbacks?.initialized === 'function') callbacks.initialized(txId);
 
     const txPromise = txCreator();

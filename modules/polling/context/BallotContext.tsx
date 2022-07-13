@@ -21,7 +21,8 @@ import logger from 'lib/logger';
 import { ethers } from 'ethers';
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { ContractTransaction } from 'ethers';
-import { GaslessNetworks } from 'modules/web3/constants/networks';
+import { GaslessNetworks, SupportedNetworks } from 'modules/web3/constants/networks';
+import { config } from 'lib/config';
 
 type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting';
 type BallotSubmissionMethod = 'standard' | 'gasless';
@@ -223,7 +224,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const txId = track(
       voteTxCreator,
       account,
-      `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's': ''}`,
+      `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`,
       {
         pending: txHash => {
           const comments = getComments();
@@ -269,7 +270,12 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             ...votes
           });
           clearBallot();
-          transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's': ''}`);
+          transactionsApi
+            .getState()
+            .setMessage(
+              txId,
+              `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`
+            );
         },
         error: () => {
           toast.error('Error submitting ballot');
@@ -320,11 +326,22 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
-    //TODO: make the url based on connected network (mainnet vs goerli)
-    //also move alchemy key to env variable
-    const provider = new ethers.providers.JsonRpcProvider(
-      'https://arb-rinkeby.g.alchemy.com/v2/QKgfwJW4WeaxoD2b3iImXkHcT0vyCsic'
-    );
+    //todo: move this to helper file
+    const getGaslessProvider = network => {
+      if (network === SupportedNetworks.GOERLI || network === SupportedNetworks.GOERLIFORK) {
+        if (!config.ALCHEMY_ARBITRUM_TESTNET_KEY) console.error('Missing alchemy arbitrum testnet key');
+        return new ethers.providers.JsonRpcProvider(
+          `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+        );
+      } else if (network === SupportedNetworks.MAINNET) {
+        if (!config.ALCHEMY_ARBITRUM_KEY) console.error('Missing alchemy arbitrum key');
+        return new ethers.providers.JsonRpcProvider(
+          `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
+        );
+      }
+    };
+
+    const provider = getGaslessProvider(network);
     const pollingContract = new ethers.Contract(
       // arbitrum testnet polling address,
       // maybe we should use eth-sdk for this if it's supported

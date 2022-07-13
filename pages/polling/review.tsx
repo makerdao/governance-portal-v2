@@ -44,7 +44,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
     setModalPollId(pollId);
     setShowMarkdownModal(!showMarkdownModal);
   };
-  
 
   const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
@@ -194,7 +193,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
                 {bpi <= 2 && !!account && (
                   <Box>
-                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls}/>}
+                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} />}
                     {hasVoted && (
                       <Box>
                         <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
@@ -283,7 +282,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 )}
                 {bpi <= 2 && (
                   <Box>
-                     {!hasVoted && <SubmitButton/>}
+                    {!hasVoted && <SubmitButton />}
                     {hasVoted && (
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>

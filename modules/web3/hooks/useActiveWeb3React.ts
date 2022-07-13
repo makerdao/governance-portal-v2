@@ -13,7 +13,9 @@ export function useActiveWeb3React(): ActiveWeb3React {
   const context = useWeb3React<Web3Provider>() as ActiveWeb3React;
   const interfaceNetworkContext = useWeb3React<Web3Provider>(NetworkContextName) as ActiveWeb3React;
 
-  const network = chainIdToNetworkName(context.active ? context.chainId : interfaceNetworkContext.chainId) as SupportedNetworks;
+  const network = chainIdToNetworkName(
+    context.active ? context.chainId : interfaceNetworkContext.chainId
+  ) as SupportedNetworks;
 
   if (context.active) {
     return {

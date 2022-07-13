@@ -16,6 +16,8 @@ type SystemConfig = {
   REDIS_URL: string;
   DEFENDER_API_KEY: string;
   DEFENDER_API_SECRET: string;
+  ALCHEMY_ARBITRUM_KEY: string;
+  ALCHEMY_ARBITRUM_TESTNET_KEY: string;
 };
 
 export const config: SystemConfig = {
@@ -35,5 +37,7 @@ export const config: SystemConfig = {
   MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
   REDIS_URL: process.env.REDIS_URL || '',
   DEFENDER_API_KEY: process.env.DEFENDER_API_KEY || '',
-  DEFENDER_API_SECRET: process.env.DEFENDER_API_SECRET || ''
+  DEFENDER_API_SECRET: process.env.DEFENDER_API_SECRET || '',
+  ALCHEMY_ARBITRUM_KEY: process.env.LCHEMY_ARBITRUM_KEY || '',
+  ALCHEMY_ARBITRUM_TESTNET_KEY: process.env.ALCHEMY_ARBITRUM_TESTNET_KEY || ''
 };
