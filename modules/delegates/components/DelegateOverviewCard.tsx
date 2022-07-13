@@ -114,7 +114,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             >
               <Button
                 variant="primaryOutline"
-                disabled={!account}
+                disabled={!account || mkrDelegated?.lte(0)}
                 onClick={() => {
                   trackButtonClick('openUndelegateModal');
                   setShowUndelegateModal(true);
@@ -127,7 +127,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               <Button
                 variant="primaryLarge"
                 data-testid="button-delegate"
-                disabled={!account}
+                disabled={!account || !!delegate.next}
                 onClick={() => {
                   trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
