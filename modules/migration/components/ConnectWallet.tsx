@@ -29,7 +29,7 @@ export function ConnectWallet(): JSX.Element {
       <Flex sx={{ alignItems: 'center' }}>
         <Text variant="secondary" sx={{ my: 3 }}>
           If you are having trouble switching accounts, please reach out for support on our{' '}
-          <ExternalLink href="https://discord.gg/tQ5wnN6Ms4" title="Discord" styles={{ color: 'accentBlue' }}>
+          <ExternalLink href="https://discord.gg/GHcFMdKden" title="Discord" styles={{ color: 'accentBlue' }}>
             <Text>Discord</Text>
           </ExternalLink>
         </Text>
