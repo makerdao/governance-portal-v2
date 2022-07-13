@@ -99,7 +99,7 @@ export function SubmitBallotButtonAndModals({
             </Text>
             <Button
               onClick={() => {
-                // signComments();
+                signComments();
                 setStep('confirm');
               }}
               variant="primaryOutline"

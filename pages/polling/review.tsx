@@ -38,8 +38,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
-  const [showVoteModal, setShowVoteModal] = useState(false);
-  console.log('showVoteModal', showVoteModal);
   const toggleShareModal = (pollId?: number) => {
     setModalPollId(pollId);
     setShowMarkdownModal(!showMarkdownModal);
