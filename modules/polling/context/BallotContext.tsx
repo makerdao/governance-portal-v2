@@ -326,19 +326,23 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
-    //todo: move this to helper file
-    const getGaslessProvider = network => {
-      if (network === SupportedNetworks.GOERLI || network === SupportedNetworks.GOERLIFORK) {
-        if (!config.ALCHEMY_ARBITRUM_TESTNET_KEY) console.error('Missing alchemy arbitrum testnet key');
-        return new ethers.providers.JsonRpcProvider(
-          `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
-        );
-      } else if (network === SupportedNetworks.MAINNET) {
-        if (!config.ALCHEMY_ARBITRUM_KEY) console.error('Missing alchemy arbitrum key');
-        return new ethers.providers.JsonRpcProvider(
-          `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
-        );
+    //todo: move these 3 objects/functions helper file?
+    const gaslessUrls = {
+      [GaslessNetworks.ARBITRUM]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`,
+      [GaslessNetworks.ARBITRUMTESTNET]: `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+    };
+
+    const getGaslessNetwork = network => {
+      if (network === SupportedNetworks.MAINNET) {
+        return GaslessNetworks.ARBITRUM;
+      } else {
+        return GaslessNetworks.ARBITRUMTESTNET;
       }
+    };
+
+    const getGaslessProvider = network => {
+      const gaslessNetwork = getGaslessNetwork(network);
+      return new ethers.providers.JsonRpcProvider(gaslessUrls[gaslessNetwork]);
     };
 
     const provider = getGaslessProvider(network);
@@ -368,7 +372,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     }).then(res => {
       const voteTxCreator = () => provider.getTransaction(res.hash);
       //todo: get network name from a helper function that takes in current network
-      trackPollVote(voteTxCreator, GaslessNetworks.ARBITRUMTESTNET);
+      trackPollVote(voteTxCreator, getGaslessNetwork(network));
     });
   };
 
