@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Box, Flex, Button, Text, Heading } from 'theme-ui';
+import { Box, Flex, Button, Text, Heading, Close } from 'theme-ui';
 import { useContext, useState } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -80,16 +80,6 @@ export function SubmitBallotButtonAndModals({ onSubmit }: { onSubmit: () => void
           >
             Submit by gasless signature
           </Button>
-          <Button
-            onClick={() => {
-              setStep('initial');
-            }}
-            variant="outline"
-            disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
-            sx={{ mt: 3 }}
-          >
-            Back
-          </Button>
         </Flex>
       );
     case 'sign-comments':
@@ -119,6 +109,13 @@ export function SubmitBallotButtonAndModals({ onSubmit }: { onSubmit: () => void
               <Text>Sign comments</Text>
             </Flex>
           </Button>
+          <Button
+            mt={3}
+            variant="smallOutline"
+            onClick={() => {
+              setStep('method-select');
+            }}
+          >Back</Button>
         </Flex>
       );
     case 'confirm':
@@ -159,6 +156,8 @@ export function SubmitBallotButtonAndModals({ onSubmit }: { onSubmit: () => void
 
   if (ballotStep === 'initial') return modalOpenButton;
 
+  const close = () => setStep('initial');
+
   return (
   <div>
     {modalOpenButton}
@@ -171,7 +170,14 @@ export function SubmitBallotButtonAndModals({ onSubmit }: { onSubmit: () => void
             : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
         }
       >
+      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+        onClick={close}
+      />
         {modalContent()}
+      </Flex>
       </DialogContent>
     </DialogOverlay>
   </div>

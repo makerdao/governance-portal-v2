@@ -9,7 +9,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { SubmitBallotButtonAndModals } from '../SubmitBallotButtons';
+import { SubmitBallotButtonAndModals } from '../SubmitBallotButtonAndModals';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from './ActivePollsBox';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
