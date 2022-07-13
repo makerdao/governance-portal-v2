@@ -87,14 +87,14 @@ export default function DelegateExpiryDate({
               <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Icon
                   name={'info'}
-                  color={delegate.isAboutToExpire ? 'voterYellow' : 'warning'}
+                  color={delegate.expired ? 'warning' : 'voterYellow'}
                   sx={{
                     size: 50,
                     mb: 3
                   }}
                 />
                 <Heading sx={{ textAlign: 'center', mb: 3 }}>
-                  This delegate contract {delegate.isAboutToExpire ? 'is about to expire' : 'has expired'}.
+                  This delegate contract {delegate.expired ? 'has expired' : 'is about to expire'}.
                 </Heading>
                 <Text sx={{ mb: 3, color: 'onSecondary', textAlign: 'center' }}>
                   Maker delegate contracts expire after 1 year. Please migrate your MKR by undelegating from
