@@ -21,5 +21,7 @@ export async function fetchAllCurrentVotes(address: string, network: SupportedNe
     };
   });
 
+  console.log('^^^fetchallvotes response', res);
+
   return res;
 }

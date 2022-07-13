@@ -8,6 +8,7 @@ export const allCurrentVotes = gql`
         optionId
         optionIdRaw
         blockTimestamp
+        chainId
       }
     }
   }
