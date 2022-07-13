@@ -48,9 +48,9 @@ export function NewAddressInitial({
         </Flex>
       </Flex>
       <Alert variant="notice" sx={{ my: 4 }}>
-        You need to use a different wallet for generating your new delegate contract address. Make sure the
+        You need to use a different wallet address for generating your new delegate contract. Make sure the
         address is different from the currently connected address, and make sure you are the sole operator of
-        the address.{' '}
+        the address.
       </Alert>
       <Label sx={{ mb: 1 }}>Enter new address</Label>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>

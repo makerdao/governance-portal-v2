@@ -53,7 +53,7 @@ export function MigrationInfo({
             </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text as="h3" variant="microHeading">
-                You need to use a different wallet for generating your new delegate contract address
+                You need to use a different wallet address for generating your new delegate contract
               </Text>
               <Text as="p" variant="secondary" sx={{ mt: 2 }}>
                 Make sure the address you enter in the next step is different from the currently connected
