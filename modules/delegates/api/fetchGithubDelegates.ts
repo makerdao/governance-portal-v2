@@ -199,8 +199,7 @@ export async function fetchGithubDelegate(
       delegatesRepositoryInfo.page,
       GithubTokens.DelegatesFolder
     );
-    console.log('uhh');
-    console.log({ folders });
+
     const folder = folders.find(f => f.name.toLowerCase() === address.toLowerCase());
 
     const userInfo = folder
