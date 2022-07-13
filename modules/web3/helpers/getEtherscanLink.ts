@@ -7,7 +7,6 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'address'
 ): string {
-  console.log('network', network);
   const chainId = networkNameToChainId(network);
   const ALL_CHAINS = { ...CHAIN_INFO, ...GASLESS_CHAIN_INFO };
   const prefix = `https://${ALL_CHAINS[chainId].blockExplorerUrl}`;

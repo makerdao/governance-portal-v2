@@ -40,7 +40,11 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
       <ExternalLink
-        href={getEtherscanLink(tx.network ? tx.network : network, (tx as TXPending).hash, 'transaction')}
+        href={getEtherscanLink(
+          tx.gaslessNetwork ? tx.gaslessNetwork : network,
+          (tx as TXPending).hash,
+          'transaction'
+        )}
         target="_blank"
       >
         <Button
