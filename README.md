@@ -11,7 +11,7 @@ Install it and run:
 
 ```bash
 npm install
-npm build-sdk
+npm run build-sdk
 npm run dev
 # or
 yarn
