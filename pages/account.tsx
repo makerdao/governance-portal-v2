@@ -186,8 +186,7 @@ const AccountPage = (): React.ReactElement => {
                     <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
                       Warning: You will be unable to vote with a vote proxy contract or your existing chief
                       balance through the UI after creating a delegate contract. This functionality is only
-                      affected in the user interface and not at the contract level. Future updates will
-                      address this issue soon.
+                      affected in the user interface and not at the contract level.
                     </Alert>
                     <Label
                       sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}
