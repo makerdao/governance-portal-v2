@@ -123,9 +123,8 @@ export default function DelegateMigrationPage(): React.ReactElement {
             {isDelegateContractExpiring &&
               !isDelegateContractExpired &&
               'Your delegate contract is expiring soon. Please migrate as soon as possible.'}
-            {!isDelegateContractExpired &&
-              !isDelegateContractExpiring &&
-              newOwnerHasDelegateContract &&
+            {((!isDelegateContractExpired && !isDelegateContractExpiring && newOwnerHasDelegateContract) ||
+              !actionNeeded) &&
               'No contract migration is necessary at this time'}
           </Heading>
 
