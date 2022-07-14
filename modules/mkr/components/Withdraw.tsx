@@ -160,7 +160,7 @@ const Withdraw = (props): JSX.Element => {
   return (
     <>
       <DialogOverlay
-        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
+        style={{ zIndex: 200, background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         isOpen={showDialog}
         onDismiss={() => setShowDialog(false)}
       >
