@@ -8,6 +8,7 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 export default function DelegateExpiryDate({
   delegate,
@@ -97,8 +98,11 @@ export default function DelegateExpiryDate({
                   This delegate contract {delegate.expired ? 'has expired' : 'is about to expire'}.
                 </Heading>
                 <Text sx={{ mb: 3, color: 'onSecondary', textAlign: 'center' }}>
-                  Maker delegate contracts expire after 1 year. Please migrate your MKR by undelegating from
-                  the expiring/expired contracts and redelegating to the new contracts.
+                  Maker delegate contracts expire after 1 year. Please{' '}
+                  <InternalLink href="/migration/delegator" title="Migrate your MKR">
+                    <span sx={{ color: 'accentBlue' }}>migrate your MKR</span>
+                  </InternalLink>{' '}
+                  by undelegating from the expiring/expired contracts and redelegating to the new contracts.
                 </Text>
                 <ThemeUILink
                   href={'https://manual.makerdao.com/delegation/delegate-expiration'}
