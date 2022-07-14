@@ -4,6 +4,7 @@ import { AddressApiResponse } from '../types/addressApiResponse';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 export async function getAddressInfo(
   address: string,
@@ -23,7 +24,7 @@ export async function getAddressInfo(
     voteProxyInfo: voteProxyAddress,
     delegateInfo: delegate,
     address,
-    voteDelegateAdress
+    voteDelegateAdress: voteDelegateAdress !== ZERO_ADDRESS ? voteDelegateAdress: undefined
   };
 
   return response;
