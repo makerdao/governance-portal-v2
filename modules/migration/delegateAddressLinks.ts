@@ -8,7 +8,9 @@ export const delegateAddressLinks = {
     '0x2DD49B0AaCbAB93D7c8327e62DD145DEF2B84C6f': '0x7C924CCE0Dc79655019B142F26fA26df62777884',
     '0x68208127C20185b2C9772FE31e970B5704cd8922': '0x772c7141cd4A961aBec1B4241641f810d6188149'
   },
-  [SupportedNetworks.MAINNET]: {}
+  [SupportedNetworks.MAINNET]: {
+    '0xd52623EE9A40402A5a9ED82Bb0417e04d88A778C': '0xe491D9EA59cAe5dd84804b224535c64D5CB90c3A'
+  }
 };
 
 export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
