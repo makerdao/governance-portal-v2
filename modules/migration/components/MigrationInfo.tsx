@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Flex, Text, Label, Checkbox, Button, Box } from 'theme-ui';
 import { CircleIcon } from 'modules/app/components/CircleIcon';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export function MigrationInfo({
   setMigrationInfoAcknowledged
@@ -16,8 +17,17 @@ export function MigrationInfo({
     <Flex>
       <Flex sx={{ flexDirection: 'column' }}>
         <Text as="p" variant="secondary">
-          Maker delegate contracts are designed to expire annually in order to protect Maker governance from
-          unlikely incidents which could lead to stale MKR voting power in the system.
+          Maker delegate contracts are{' '}
+          <ExternalLink
+            href="https://manual.makerdao.com/delegation/delegate-expiration 
+"
+            title="Delegate expiration information"
+          >
+            <Text variant="secondary" sx={{ color: 'accentBlue' }}>
+              designed to expire annually
+            </Text>
+          </ExternalLink>{' '}
+          in order to protect the Maker protocol against stale MKR tokens participating in Maker governance.
         </Text>
 
         <Text as="p" variant="secondary" sx={{ mt: 3 }}>
