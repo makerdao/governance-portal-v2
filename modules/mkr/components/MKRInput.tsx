@@ -124,17 +124,17 @@ export function MKRInput({
       </Flex>
 
       {errorMax && (
-        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+        <Text variant="error" data-testid="mkr-input-error">
           {errorMaxMessage}
         </Text>
       )}
       {errorMin && (
-        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+        <Text variant="error" data-testid="mkr-input-error">
           Please enter a valid amount.
         </Text>
       )}
       {errorInvalidFormat && (
-        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+        <Text variant="error" data-testid="mkr-input-error">
           Please enter a valid number.
         </Text>
       )}

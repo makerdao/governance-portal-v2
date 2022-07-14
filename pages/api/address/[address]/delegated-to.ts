@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
-import { DelegationHistory } from 'modules/delegates/types';
+import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
@@ -12,7 +12,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 export type MKRDelegatedToAPIResponse = {
-  delegatedTo: DelegationHistory[];
+  delegatedTo: DelegationHistoryWithExpirationDate[];
   totalDelegated: number;
 };
 export default withApiHandler(
@@ -32,7 +32,7 @@ export default withApiHandler(
     );
 
     // if hasProxy, we need to combine the delegation history of hot, cold, proxy
-    let delegatedTo: DelegationHistory[];
+    let delegatedTo: DelegationHistoryWithExpirationDate[];
 
     if (proxyInfo.hasProxy && proxyInfo.coldAddress && proxyInfo.hotAddress && proxyInfo.voteProxyAddress) {
       const [coldHistory, hotHistory, proxyHistory] = await Promise.all([

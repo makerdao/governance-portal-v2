@@ -112,9 +112,6 @@ async function extractGithubInformationGraphQL(
 
       const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
       const html = await markdownToHtml(content);
-      console.log(
-        `https://github.com/${delegatesRepositoryInfo.owner}/${delegatesRepositoryInfo.repo}/raw/master/${picture.path}`
-      );
       const vd = {
         voteDelegateAddress,
         name,
@@ -202,6 +199,7 @@ export async function fetchGithubDelegate(
       delegatesRepositoryInfo.page,
       GithubTokens.DelegatesFolder
     );
+
     const folder = folders.find(f => f.name.toLowerCase() === address.toLowerCase());
 
     const userInfo = folder

@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'lib/bigNumberJs';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { DelegationHistory } from 'modules/delegates/types';
+import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -15,9 +15,10 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import AddressIconBox from './AddressIconBox';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
+import { DateWithHover } from 'modules/app/components/DateWithHover';
 
 type CollapsableRowProps = {
-  delegate: DelegationHistory;
+  delegate: DelegationHistoryWithExpirationDate;
   network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
@@ -29,8 +30,17 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
+  const formattedDate = formatDateWithTime(delegate.expirationDate);
+  const dateText = delegate.isExpired
+    ? `This contract expired ${formattedDate}`
+    : `This contract will expire ${formattedDate}`;
+
   return (
-    <tr>
+    <tr
+      sx={{
+        color: delegate.isExpired ? 'warning' : delegate.isAboutToExpire ? 'voterYellow' : 'onSecondary'
+      }}
+    >
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
           <InternalLink
@@ -107,6 +117,11 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           )}
         </Flex>
       </Box>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2, display: bpi > 1 ? 'table-cell' : 'none' }}>
+        <Text variant="caps" sx={{ color: 'inherit' }}>
+          <DateWithHover label={dateText} date={delegate.expirationDate} />
+        </Text>
+      </Box>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
@@ -158,7 +173,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
 };
 
 type AddressDelegatedToProps = {
-  delegatedTo: DelegationHistory[];
+  delegatedTo: DelegationHistoryWithExpirationDate[];
   totalDelegated: number;
 };
 
@@ -179,15 +194,22 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToP
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
               Address
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '30%' }} variant="caps">
               MKR Delegated
             </Text>
             <Tooltip label={'This is the percentage of the total MKR delegated by this address.'}>
-              <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
+              <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '30%' }} variant="caps">
                 Voting Weight
               </Text>
             </Tooltip>
-            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ textAlign: 'left', pb: 2, width: '20%', display: bpi > 1 ? 'bock' : 'none' }}
+              variant="caps"
+            >
+              Expiry Date
+            </Text>
+            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '10%' }} variant="caps">
               Expand
             </Text>
           </tr>

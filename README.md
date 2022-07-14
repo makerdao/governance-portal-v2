@@ -36,6 +36,7 @@ _Requires node version >= v11.15.0_
 11. Set `GOERLI_FORK_API_KEY` for the API key
 12. Set `ETHERSCAN_KEY` for ethers provider to use
 13. Set `POCKET_KEY` for ethers provider to use
+14. **Optional** Set `MIGRATION_WEBHOOK_URL` for delegators migration logic 
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 

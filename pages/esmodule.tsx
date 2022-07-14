@@ -160,7 +160,7 @@ const ESModule = (): React.ReactElement => {
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
-            border: '1px solid #F77249',
+            border: '1px solid #F75524',
             borderRadius: 'medium',
             backgroundColor: '#FDEDE8',
             color: '#994126',
