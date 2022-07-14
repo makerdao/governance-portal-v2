@@ -101,7 +101,7 @@ export default function DelegateExpiryDate({
                   the expiring/expired contracts and redelegating to the new contracts.
                 </Text>
                 <ThemeUILink
-                  href={'https://manual.makerdao.com/governance/what-is-delegation'}
+                  href={'https://manual.makerdao.com/delegation/delegate-expiration'}
                   sx={{ mb: 3 }}
                   target="_blank"
                   rel="noreferrer"
