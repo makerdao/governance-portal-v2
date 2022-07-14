@@ -48,7 +48,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
             title="View address detail"
             styles={{ fontSize: bpi < 1 ? 1 : 3 }}
           >
-            <AddressIconBox address={address} width={41} />
+            <AddressIconBox address={address} width={41} limitTextLength={15} />
           </InternalLink>
         </Heading>
         {expanded && (
@@ -191,20 +191,20 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToP
       >
         <thead>
           <tr>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: ['40%', '30%'] }} variant="caps">
               Address
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '30%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '25%' }} variant="caps">
               MKR Delegated
             </Text>
-            <Tooltip label={'This is the percentage of the total MKR delegated by this address.'}>
-              <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '30%' }} variant="caps">
-                Voting Weight
-              </Text>
-            </Tooltip>
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '25%' }} variant="caps">
+              <Tooltip label={'This is the percentage of the total MKR delegated by this address.'}>
+                <span>Voting Weight</span>
+              </Tooltip>
+            </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'left', pb: 2, width: '20%', display: bpi > 1 ? 'bock' : 'none' }}
+              sx={{ textAlign: 'left', pb: 2, width: '20%', display: bpi > 1 ? 'table-cell' : 'none' }}
               variant="caps"
             >
               Expiry Date

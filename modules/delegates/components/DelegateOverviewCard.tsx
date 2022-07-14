@@ -127,7 +127,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               <Button
                 variant="primaryLarge"
                 data-testid="button-delegate"
-                disabled={!account || !!delegate.next}
+                disabled={!account || !!delegate.next || delegate.expired}
                 onClick={() => {
                   trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);

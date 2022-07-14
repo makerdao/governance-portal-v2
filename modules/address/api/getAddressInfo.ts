@@ -24,7 +24,7 @@ export async function getAddressInfo(
     voteProxyInfo: voteProxyAddress,
     delegateInfo: delegate,
     address,
-    voteDelegateAdress: voteDelegateAdress !== ZERO_ADDRESS ? voteDelegateAdress: undefined
+    voteDelegateAdress: voteDelegateAdress !== ZERO_ADDRESS ? voteDelegateAdress : undefined
   };
 
   return response;

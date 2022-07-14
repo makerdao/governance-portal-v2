@@ -37,7 +37,8 @@ export function MigrationInfo({
 
         <Text as="p" variant="secondary" sx={{ mt: 3 }}>
           Completing the migration will also assist your delegators in migrating their MKR to your new
-          delegate contract address. Migration is not supported for Shadow Delegates, only for Recognized Delegates.
+          delegate contract address. Migration is not supported for Shadow Delegates, only for Recognized
+          Delegates.
         </Text>
         <Text as="h3" variant="smallHeading" sx={{ my: 4 }}>
           Before starting the flow, please consider the following notice:
