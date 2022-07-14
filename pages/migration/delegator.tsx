@@ -14,6 +14,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import Link from 'next/link';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account, network } = useActiveWeb3React();
@@ -113,7 +114,13 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   Action required: Migrate your delegated MKR
                 </Heading>
                 <Text as="p" variant="secondary">
-                  One or more of your MakerDAO delegate&lsquo;s contracts are expiring.
+                  One or more of your MakerDAO delegate&lsquo;s contracts are expiring.{' '}
+                  <ExternalLink
+                    href="https://manual.makerdao.com/delegation/delegate-expiration"
+                    title="Read more about delegate expiration"
+                  >
+                    <span sx={{ color: 'accentBlue' }}>Read more about delegate expiration.</span>
+                  </ExternalLink>
                 </Text>
               </Box>
 

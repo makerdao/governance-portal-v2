@@ -46,6 +46,8 @@ export async function fetchDelegatedTo(
         const delegatingTo = delegates.find(
           i => i?.voteDelegate?.toLowerCase() === immediateCaller.toLowerCase()
         );
+
+        const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
         // Get the expiration date of the delegate
 
         const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
@@ -54,8 +56,8 @@ export async function fetchDelegatedTo(
         const isExpired = isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
-        const newOwnerAddress = getNewOwnerFromPrevious(immediateCaller, network);
-
+        const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
+        console.log('new ', newOwnerAddress, delegatingToWalletAddress);
         const newRenewedContract = newOwnerAddress
           ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress.toLowerCase())
           : null;
