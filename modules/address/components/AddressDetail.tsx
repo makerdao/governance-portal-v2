@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box, Text, Flex, Divider } from 'theme-ui';
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
-import { AddressAPIStats } from '../types/addressApiResponse';
+import { AddressApiResponse, AddressAPIStats } from '../types/addressApiResponse';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import LastVoted from 'modules/polling/components/LastVoted';
 import AddressDelegatedTo from './AddressDelegatedTo';
-import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated-to';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
@@ -15,15 +14,17 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountComments from 'modules/comments/components/AccountComments';
 import Tabs from 'modules/app/components/Tabs';
+import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
-type PropTypes = {
-  address: string;
-};
-
-export function AddressDetail({ address }: PropTypes): React.ReactElement {
+export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse }): React.ReactElement {
   const { network } = useActiveWeb3React();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    address ? `/api/address/${address}/stats?network=${network}` : null,
+    addressInfo
+      ? `/api/address/stats?address=${
+          addressInfo.voteProxyInfo?.hotAddress ? addressInfo.voteProxyInfo.hotAddress : addressInfo.address
+        }&network=${network}`
+      : null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -32,20 +33,38 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
     }
   );
 
-  const { data: delegatedToData } = useSWR<MKRDelegatedToAPIResponse>(
-    address ? `/api/address/${address}/delegated-to?network=${network}` : null,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 0,
-      revalidateOnMount: true
-    }
-  );
+  const { data: delegatedToData } = useDelegatedTo(addressInfo.address, network);
 
   const tabTitles = ['Account Details', 'Comments'];
 
   const tabPanels = [
     <Box key="account-detail">
+      {addressInfo.voteDelegateAdress && (
+        <Box>
+          <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+            <Text
+              as="p"
+              sx={{
+                fontSize: 4,
+                mb: 3,
+                fontWeight: 'semiBold'
+              }}
+            >
+              Vote Delegate Contract
+            </Text>
+            <Text as="p">
+              <InternalLink href={`/address/${addressInfo.voteDelegateAdress}`} title="View address detail">
+                <AddressIconBox
+                  address={addressInfo.voteDelegateAdress.toLowerCase()}
+                  width={41}
+                  limitTextLength={0}
+                />
+              </InternalLink>
+            </Text>
+          </Box>
+        </Box>
+      )}
+
       <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
         <Text
           as="p"
@@ -109,7 +128,7 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
       )}
     </Box>,
     <Box key="account-comments" sx={{ p: [3, 4] }}>
-      <AccountComments address={address} />
+      <AccountComments address={addressInfo.address} />
     </Box>
   ];
 
@@ -126,7 +145,7 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
           pb: 1
         }}
       >
-        <AddressIconBox address={address} showExternalLink />
+        <AddressIconBox address={addressInfo.address} showExternalLink />
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted
@@ -137,7 +156,10 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
       </Flex>
 
       <Box sx={{ pl: [3, 4], pr: [3, 4], display: 'flex', flexDirection: 'column' }}>
-        <AddressMKRDelegatedStats totalMKRDelegated={delegatedToData?.totalDelegated} address={address} />
+        <AddressMKRDelegatedStats
+          totalMKRDelegated={delegatedToData?.totalDelegated}
+          address={addressInfo.address}
+        />
       </Box>
 
       <Tabs tabListStyles={{ pl: [3, 4] }} tabTitles={tabTitles} tabPanels={tabPanels}></Tabs>

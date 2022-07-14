@@ -2,7 +2,7 @@ import { getPollTally } from '../getPollTally';
 import { fetchRawPollTally } from '../../api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from '../../api/fetchVotesByAddress';
 import { PluralityResult, Poll } from '../../types';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import * as PRT from '../parseRawTally';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';

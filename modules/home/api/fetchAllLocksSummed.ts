@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { format } from 'date-fns';
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';

@@ -28,6 +28,7 @@ export function DelegatesTagFilter({
       delegates,
       delegateFilters.showShadow,
       delegateFilters.showRecognized,
+      delegateFilters.showExpired,
       name,
       delegateFilters.tags
     );

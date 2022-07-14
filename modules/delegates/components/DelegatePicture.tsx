@@ -158,7 +158,7 @@ export function DelegatePicture({
                   position: 'absolute',
                   bottom: width / -12,
                   right: width / -7,
-                  size: width / 2.5,
+                  width: `${Math.round(width / 2.5)}px`,
                   color: 'primary'
                 }}
               />

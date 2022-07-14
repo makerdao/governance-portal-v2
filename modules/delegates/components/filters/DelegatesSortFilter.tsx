@@ -2,7 +2,7 @@ import useDelegatesFiltersStore, { delegatesSortEnum } from '../../stores/delega
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-export default function DelegatesSort(): JSX.Element {
+export function DelegatesSortFilter(): JSX.Element {
   const [sort, setSort] = useDelegatesFiltersStore(state => [state.sort, state.setSort]);
 
   return (

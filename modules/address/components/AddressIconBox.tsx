@@ -55,9 +55,9 @@ export default function AddressIconBox({
 
   return (
     <Flex>
-      <Box sx={{ minWidth: width, mr: 2 }}>
+      <Flex sx={{ minWidth: width, mr: 2, alignItems: 'center' }}>
         <AddressIcon address={address} width={width} />
-      </Box>
+      </Flex>
       <Flex
         sx={{
           width: '100%',
@@ -65,7 +65,7 @@ export default function AddressIconBox({
           justifyContent: 'center'
         }}
       >
-        <Flex>
+        <Flex sx={{ flexDirection: ['column', 'row'] }}>
           <Flex>
             {delegateAddresses[address] ? (
               <Text>
@@ -96,7 +96,8 @@ export default function AddressIconBox({
                 display: 'inline-flex',
                 alignItems: 'center',
                 color: 'tagColorSeven',
-                ml: [1, 2]
+                ml: [0, 2],
+                mt: [1, 0]
               }}
             >
               <Text

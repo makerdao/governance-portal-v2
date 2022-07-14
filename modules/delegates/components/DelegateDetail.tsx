@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Text, Flex, Divider } from 'theme-ui';
+import { Alert, Box, Text, Flex, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tabs from 'modules/app/components/Tabs';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import {
   DelegatePicture,
-  DelegateContractExpiration,
   DelegateCredentials,
   DelegateVoteHistory,
   DelegateParticipationMetrics
@@ -32,6 +31,7 @@ import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import DelegateTags from './DelegateTags';
+import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 
 type PropTypes = {
   delegate: Delegate;
@@ -47,7 +47,9 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     setShowCoreUnitModal(!showCoreUnitModal);
   };
 
-  const dataKeyDelegateStats = `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`;
+  const dataKeyDelegateStats = `/api/address/stats?address=${
+    delegate.voteDelegateAddress
+  }&network=${network}${delegate.previous ? `&address=${delegate.previous.voteDelegateAddress}` : ''}`;
   const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -101,7 +103,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
     </Box>,
     <Box key="delegate-vote-history">
-      <DelegateVoteHistory delegate={delegate} />
+      <DelegateVoteHistory delegate={delegate} dataKeyDelegateStats={dataKeyDelegateStats} />
     </Box>,
     <Box key="account-comments" sx={{ p: [3, 4] }}>
       <AccountComments address={delegate.voteDelegateAddress} />
@@ -111,6 +113,21 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4], pb: 2 }}>
+        {delegate?.next?.voteDelegateAddress && (
+          <InternalLink href={`/address/${delegate?.next?.voteDelegateAddress}`} title="View migration page">
+            <Flex sx={{ mb: 4 }}>
+              <Alert
+                variant="warning"
+                sx={{
+                  fontWeight: 'normal'
+                }}
+              >
+                You are viewing an older contract. View delegate&apos;s renewed contract
+                <Icon name="chevron_right" size={2} ml={2} />
+              </Alert>
+            </Flex>
+          </InternalLink>
+        )}
         <Flex
           sx={{
             justifyContent: 'space-between',
@@ -167,7 +184,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
               date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
               styles={{ my: 1 }}
             />
-            <DelegateContractExpiration delegate={delegate} />
+            <DelegateExpiryDate delegate={delegate} />
           </Flex>
         </Flex>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>

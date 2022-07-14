@@ -53,7 +53,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
         <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
           {vote.poll.discussionLink && (
             <ExternalLink title="Discussion" href={vote.poll.discussionLink} styles={{ mr: 2, mb: [2, 0] }}>
-              <Text sx={{ fontSize: [2, 3], fontWeight: 'semiBold' }}>
+              <Text sx={{ fontWeight: 'semiBold' }}>
                 Discussion
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>

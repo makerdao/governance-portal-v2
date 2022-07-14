@@ -3,7 +3,7 @@ import { Input, Text, Button, Box, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { BigNumber as BigNumberJs } from 'bignumber.js';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { parseUnits } from 'ethers/lib/utils';
 import logger from 'lib/logger';
 
@@ -38,7 +38,7 @@ export function MKRInput({
 
     try {
       // Use bignumberjs to validate the number
-      const newValue = new BigNumberJs(newValueStr || '0');
+      const newValue = new BigNumberJS(newValueStr || '0');
 
       const invalidValue =
         newValue.isLessThan(min.toNumber()) || (max && newValue.isGreaterThan(max.toNumber()));
@@ -124,17 +124,17 @@ export function MKRInput({
       </Flex>
 
       {errorMax && (
-        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+        <Text variant="error" data-testid="mkr-input-error">
           {errorMaxMessage}
         </Text>
       )}
       {errorMin && (
-        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+        <Text variant="error" data-testid="mkr-input-error">
           Please enter a valid amount.
         </Text>
       )}
       {errorInvalidFormat && (
-        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+        <Text variant="error" data-testid="mkr-input-error">
           Please enter a valid number.
         </Text>
       )}

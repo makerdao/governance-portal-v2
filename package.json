@@ -1,7 +1,7 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "jest": {
     "testTimeout": 7000
   },
@@ -130,6 +130,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-testing-library": "^4.10.1",
+    "glob": "^8.0.3",
     "graphql": "^16.2.0",
     "husky": "^6.0.0",
     "jest": "^26.0.1",

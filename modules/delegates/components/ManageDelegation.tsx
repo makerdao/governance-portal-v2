@@ -61,20 +61,24 @@ export default function ManageDelegation({
           </Button>
         </Box>
       </Card>
-      <DelegateModal
-        delegate={delegate}
-        isOpen={showDelegateModal}
-        onDismiss={() => setShowDelegateModal(false)}
-        mutateTotalStaked={mutateTotalStaked}
-        mutateMKRDelegated={mutateMkrStaked}
-      />
-      <UndelegateModal
-        delegate={delegate}
-        isOpen={showUndelegateModal}
-        onDismiss={() => setShowUndelegateModal(false)}
-        mutateTotalStaked={mutateTotalStaked}
-        mutateMKRDelegated={mutateMkrStaked}
-      />
+      {showDelegateModal && (
+        <DelegateModal
+          delegate={delegate}
+          isOpen={showDelegateModal}
+          onDismiss={() => setShowDelegateModal(false)}
+          mutateTotalStaked={mutateTotalStaked}
+          mutateMKRDelegated={mutateMkrStaked}
+        />
+      )}
+      {showUndelegateModal && (
+        <UndelegateModal
+          delegate={delegate}
+          isOpen={showUndelegateModal}
+          onDismiss={() => setShowUndelegateModal(false)}
+          mutateTotalStaked={mutateTotalStaked}
+          mutateMKRDelegated={mutateMkrStaked}
+        />
+      )}
     </Box>
   );
 }

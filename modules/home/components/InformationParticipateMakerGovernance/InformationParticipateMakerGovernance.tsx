@@ -84,7 +84,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
               <ExternalLink
                 href="https://manual.makerdao.com/"
                 title="Learn more"
-                styles={{ color: 'inherit', fontSize: [2, 3] }}
+                styles={{ color: 'inherit' }}
               >
                 <ViewMore label="Learn More" />
               </ExternalLink>

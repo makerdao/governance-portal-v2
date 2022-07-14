@@ -21,7 +21,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
@@ -47,7 +47,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
   const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
-    const recognized = filterDelegates(delegates, false, true, null);
+    const recognized = filterDelegates(delegates, false, true, false, null);
     const meet = shuffleArray(recognized);
     return [recognized, meet];
   }, [delegates]);
