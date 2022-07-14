@@ -7,11 +7,25 @@ An open source interface for Dai Credit System governance
 
 ## Development
 
-Install it and run:
+### Prerequisites
+
+For building the SDK locally you need a etherscan-API-key. If you don't have it:
+
+- signup and login at https://etherscan.io/
+- go to https://etherscan.io/myapikey
+- generate an API key
+
+then
+
+```bash
+export ETHERSCAN_KEY=$YOURKEYHERE
+```
+
+### Install & Run
 
 ```bash
 npm install
-npm build-sdk
+npm run build-sdk
 npm run dev
 # or
 yarn
