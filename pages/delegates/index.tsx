@@ -29,7 +29,6 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
-import { hardcodedExpired } from 'modules/migration/delegateAddressLinks';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
@@ -79,10 +78,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
 
-    // TODO remove hardcoded
-    const expired = sorted.filter(
-      delegate => delegate.expired === true || hardcodedExpired.includes(delegate.address.toLowerCase())
-    );
+    const expired = sorted.filter(delegate => delegate.expired === true);
     return [sorted, recognized, shadow, expired];
   }, [filteredDelegates, sort]);
 
