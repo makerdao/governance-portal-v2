@@ -6,7 +6,6 @@ import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersS
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { useMemo } from 'react';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
-import { hardcodedExpired } from 'modules/migration/delegateAddressLinks';
 
 export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
   const [

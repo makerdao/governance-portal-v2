@@ -1,4 +1,3 @@
-import { hardcodedExpired } from 'modules/migration/delegateAddressLinks';
 import { DelegateStatusEnum } from '../delegates.constants';
 import { Delegate } from '../types';
 
@@ -32,11 +31,7 @@ export function filterDelegates(
           return false;
         }
 
-        // TODO remove hardcoded
-        if (
-          (!showExpired && hardcodedExpired.includes(delegate.address)) ||
-          (!showExpired && delegate.expired === true)
-        ) {
+        if (!showExpired && delegate.expired === true) {
           return false;
         }
 

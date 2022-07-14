@@ -9,7 +9,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
-import { getNewOwnerFromPrevious, hardcodedExpired } from 'modules/migration/delegateAddressLinks';
+import { getNewOwnerFromPrevious } from 'modules/migration/delegateAddressLinks';
 
 export async function fetchDelegatedTo(
   address: string,
@@ -47,13 +47,8 @@ export async function fetchDelegatedTo(
           i => i?.voteDelegate?.toLowerCase() === immediateCaller.toLowerCase()
         );
         // Get the expiration date of the delegate
-        // TODO: Remove hardcoded
-        const isHardcoded = hardcodedExpired.find(
-          c => c.toLowerCase() === delegatingTo?.delegate?.toLowerCase()
-        );
-        const expirationDate = isHardcoded
-          ? add(new Date(), { weeks: 1 })
-          : add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
+
+        const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
 
         const isAboutToExpire = isAboutToExpireCheck(expirationDate);
         const isExpired = isExpiredCheck(expirationDate);
