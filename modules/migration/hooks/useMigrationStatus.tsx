@@ -11,7 +11,7 @@ export function useMigrationStatus(): {
 } {
   const { account: address, network } = useActiveWeb3React();
 
-  const { data: delegatedToData } = useDelegatedTo('0x8fb87e819988036FFc2699c182B9836bF1679f7e', network);
+  const { data: delegatedToData } = useDelegatedTo(address, network);
   const { data: delegateContractExpirationDate } = useDelegateContractExpirationDate();
 
   const isDelegateContractExpiring = delegateContractExpirationDate
