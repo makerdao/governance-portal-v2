@@ -1,6 +1,7 @@
 import { config } from 'lib/config';
 import { Chain, GaslessChain } from '../types/chain';
 import { GaslessChainId, SupportedChainId } from './chainID';
+import { ethers } from 'ethers';
 
 export const NetworkContextName = 'NETWORK';
 
@@ -42,7 +43,7 @@ type GaslessChainInfo = {
   [key in GaslessChainId]: GaslessChain;
 };
 
-//change name to SUPPORTED_CHAIN_INFO
+//todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
   [SupportedChainId.MAINNET]: {
     blockExplorerUrl: 'etherscan.io',
@@ -94,6 +95,25 @@ export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
     label: 'Arbitrum',
     network: GaslessNetworks.ARBITRUM
   }
+};
+
+const gaslessUrls = {
+  [GaslessNetworks.ARBITRUM]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`,
+  [GaslessNetworks.ARBITRUMTESTNET]: `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+};
+
+export const getGaslessNetwork = (network: SupportedNetworks): GaslessNetworks => {
+  if (network === SupportedNetworks.MAINNET) {
+    return GaslessNetworks.ARBITRUM;
+  } else {
+    return GaslessNetworks.ARBITRUMTESTNET;
+  }
+};
+
+//todo add provider return type
+export const getGaslessProvider = (network: SupportedNetworks) => {
+  const gaslessNetwork = getGaslessNetwork(network);
+  return new ethers.providers.JsonRpcProvider(gaslessUrls[gaslessNetwork]);
 };
 
 export const DEFAULT_NETWORK = CHAIN_INFO[SupportedChainId.MAINNET];

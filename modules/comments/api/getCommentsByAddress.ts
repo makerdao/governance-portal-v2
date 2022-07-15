@@ -35,6 +35,7 @@ export async function getCommentsByAddress(
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
+      //TODO: handle arbitrum transactions
       let transaction;
       if (comment.txHash) {
         transaction = await provider

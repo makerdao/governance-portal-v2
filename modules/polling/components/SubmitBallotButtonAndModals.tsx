@@ -146,7 +146,7 @@ export function SubmitBallotButtonAndModals({
               </Button>
             ) : (
               <Button
-                onClick={() => submitBallot}
+                onClick={submitBallot}
                 variant="primaryLarge"
                 disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
                 sx={{ mt: 3 }}

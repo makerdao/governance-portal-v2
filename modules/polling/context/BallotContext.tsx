@@ -21,8 +21,7 @@ import logger from 'lib/logger';
 import { ethers } from 'ethers';
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { ContractTransaction } from 'ethers';
-import { GaslessNetworks, SupportedNetworks } from 'modules/web3/constants/networks';
-import { config } from 'lib/config';
+import { GaslessNetworks, getGaslessNetwork, getGaslessProvider } from 'modules/web3/constants/networks';
 
 type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting';
 type BallotSubmissionMethod = 'standard' | 'gasless';
@@ -249,6 +248,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               toast.error('Unable to store comments');
             });
 
+            //todo: have this happen after tx is mined? and also including when there's no comments
             // Invalidate tally cache for each voted poll
             Object.keys(ballot).forEach(pollId => {
               setTimeout(() => {
@@ -325,25 +325,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         pollOptions.push(ballot[key].option);
       }
     });
-
-    //todo: move these 3 objects/functions helper file?
-    const gaslessUrls = {
-      [GaslessNetworks.ARBITRUM]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`,
-      [GaslessNetworks.ARBITRUMTESTNET]: `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
-    };
-
-    const getGaslessNetwork = network => {
-      if (network === SupportedNetworks.MAINNET) {
-        return GaslessNetworks.ARBITRUM;
-      } else {
-        return GaslessNetworks.ARBITRUMTESTNET;
-      }
-    };
-
-    const getGaslessProvider = network => {
-      const gaslessNetwork = getGaslessNetwork(network);
-      return new ethers.providers.JsonRpcProvider(gaslessUrls[gaslessNetwork]);
-    };
 
     const provider = getGaslessProvider(network);
     const pollingContract = new ethers.Contract(
