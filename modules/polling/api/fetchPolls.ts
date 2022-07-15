@@ -15,6 +15,7 @@ import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
+import { getAllPollsCacheKey } from 'modules/cache/constants/cache-keys';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -90,9 +91,9 @@ export async function fetchSpockPolls(
 
 export async function _getAllPolls(
   network?: SupportedNetworks,
-  queryVariables?: PollsQueryVariables | null
+  queryVariables?: PollsQueryVariables
 ): Promise<Poll[]> {
-  const cacheKey = `polls-${queryVariables ? JSON.stringify(queryVariables) : 'all'}`;
+  const cacheKey = getAllPollsCacheKey(queryVariables);
 
   const cachedPolls = await cacheGet(cacheKey, network);
   if (cachedPolls) {
