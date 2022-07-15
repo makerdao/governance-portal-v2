@@ -40,7 +40,7 @@ export const localStorage = {
     if (hasLocalStorage()) {
       window.localStorage.setItem(key, value);
       if (expiryMS) {
-        window.localStorage.setIte(`${key}-expiry`, (Date.now() + expiryMS).toString());
+        window.localStorage.setItem(`${key}-expiry`, (Date.now() + expiryMS).toString());
       }
     }
   }
