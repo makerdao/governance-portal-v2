@@ -10,7 +10,7 @@ import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteP
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
 
-interface ContextProps {
+interface AccountContextProps {
   account?: string;
 
   voteDelegateContract?: ethers.Contract;
@@ -29,7 +29,7 @@ interface ContextProps {
   mutate?: () => void;
 }
 
-export const AccountContext = React.createContext<ContextProps>({ mutate: () => null });
+export const AccountContext = React.createContext<AccountContextProps>({ mutate: () => null });
 
 type PropTypes = {
   children: ReactNode;

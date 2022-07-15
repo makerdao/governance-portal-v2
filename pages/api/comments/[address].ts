@@ -13,11 +13,8 @@ export default withApiHandler(
   ) => {
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
     const address = req.query.address as string;
-
     const response = await getCommentsByAddress(address, network);
-
     res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
-    // only return the latest comment from each address
     res.status(200).json(response);
   }
 );

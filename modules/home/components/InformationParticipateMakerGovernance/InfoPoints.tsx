@@ -67,7 +67,7 @@ export const infoPoints: InfoPoint[] = [
     titleSecond: 'Delegate your voting power',
     links: [
       {
-        linkHref: 'https://manual.makerdao.com/governance/what-is-delegation',
+        linkHref: 'https://manual.makerdao.com/delegation/delegate-expiration',
         linkTitle: 'Learn more about delegation'
       },
       {

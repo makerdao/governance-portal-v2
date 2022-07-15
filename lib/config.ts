@@ -18,6 +18,7 @@ type SystemConfig = {
   DEFENDER_API_SECRET: string;
   ALCHEMY_ARBITRUM_KEY: string;
   ALCHEMY_ARBITRUM_TESTNET_KEY: string;
+  MIGRATION_WEBHOOK_URL: string;
 };
 
 export const config: SystemConfig = {
@@ -39,5 +40,6 @@ export const config: SystemConfig = {
   DEFENDER_API_KEY: process.env.DEFENDER_API_KEY || '',
   DEFENDER_API_SECRET: process.env.DEFENDER_API_SECRET || '',
   ALCHEMY_ARBITRUM_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY || '',
-  ALCHEMY_ARBITRUM_TESTNET_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY || ''
+  ALCHEMY_ARBITRUM_TESTNET_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY || '',
+  MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || ''
 };

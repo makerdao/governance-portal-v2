@@ -21,11 +21,20 @@ import { CMSProposal } from 'modules/executive/types';
 import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
+import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
+import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 
-function mergeDelegateInfo(
-  onChainDelegate: DelegateContractInformation,
-  githubDelegate?: DelegateRepoInformation
-): Delegate {
+function mergeDelegateInfo({
+  onChainDelegate,
+  previousOnChainDelegate,
+  newOnChainDelegate,
+  githubDelegate
+}: {
+  onChainDelegate: DelegateContractInformation;
+  githubDelegate?: DelegateRepoInformation;
+  previousOnChainDelegate?: DelegateContractInformation;
+  newOnChainDelegate?: DelegateContractInformation;
+}): Delegate {
   // check if contract is expired to assing the status
   const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
   const isExpired = isBefore(new Date(expirationDate), new Date());
@@ -34,9 +43,14 @@ function mergeDelegateInfo(
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
-    status: githubDelegate ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
+    status: isExpired
+      ? DelegateStatusEnum.expired
+      : githubDelegate
+      ? DelegateStatusEnum.recognized
+      : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
+    isAboutToExpire: isAboutToExpireCheck(expirationDate),
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
     picture: githubDelegate?.picture || '',
@@ -53,7 +67,19 @@ function mergeDelegateInfo(
     execSupported: undefined,
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp,
-    tags: (githubDelegate?.tags || []).map(tag => tags.find(t => t.id === tag)).filter(t => !!t) as Tag[]
+    tags: (githubDelegate?.tags || []).map(tag => tags.find(t => t.id === tag)).filter(t => !!t) as Tag[],
+    ...(previousOnChainDelegate && {
+      previous: {
+        address: previousOnChainDelegate.address,
+        voteDelegateAddress: previousOnChainDelegate.voteDelegateAddress
+      }
+    }),
+    ...(newOnChainDelegate && {
+      next: {
+        address: newOnChainDelegate.address,
+        voteDelegateAddress: newOnChainDelegate.voteDelegateAddress
+      }
+    })
   };
 }
 
@@ -80,12 +106,33 @@ export async function fetchDelegate(
 
   onChainDelegate.mkrLockedDelegate = delegationEvents;
 
+  // check if delegate owner has link to a previous contract
+  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
+
+  // fetch the previous contract if so
+  const previousOnChainDelegate = previousOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === previousOwnerAddress.toLowerCase())
+    : undefined;
+
+  // check if delegate owner has a link to a newer contract
+  const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
+
+  // fetch the newer contract if so
+  const newOnChainDelegate = newOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === newOwnerAddress.toLowerCase())
+    : undefined;
+
+  // note: this will only go back one contract relationship
+  // TODO: create a helper to fetch the earliest contract address
+  // fetch github info for delegate (if they have a link to prev contract, prev contract is the info directory key)
   const { data: githubDelegate } = await fetchGithubDelegate(
-    onChainDelegate.voteDelegateAddress,
+    previousOnChainDelegate
+      ? previousOnChainDelegate.voteDelegateAddress
+      : onChainDelegate.voteDelegateAddress,
     currentNetwork
   );
 
-  return mergeDelegateInfo(onChainDelegate, githubDelegate);
+  return mergeDelegateInfo({ onChainDelegate, previousOnChainDelegate, githubDelegate, newOnChainDelegate });
 }
 
 // Returns the delegate info without the chain data about votes
@@ -98,13 +145,38 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
 
   // Map all the raw delegates info and map it to Delegate structure with the github info
   const mergedDelegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
+    // check if delegate owner has link to a previous contract
+    const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
+
+    // fetch the previous contract if so
+    const previousOnChainDelegate = previousOwnerAddress
+      ? onChainDelegates.find(i => i.address.toLowerCase() === previousOwnerAddress.toLowerCase())
+      : undefined;
+
+    // check if delegate owner has a link to a newer contract
+    const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
+
+    // fetch the newer contract if so
+    const newOnChainDelegate = newOwnerAddress
+      ? onChainDelegates.find(i => i.address.toLowerCase() === newOwnerAddress.toLowerCase())
+      : undefined;
+
+    // note: this will only go back one contract relationship
+    // TODO: create a helper to fetch the earliest contract address
     const githubDelegate = gitHubDelegates
       ? gitHubDelegates.find(
-          i => i.voteDelegateAddress.toLowerCase() === onChainDelegate.voteDelegateAddress.toLowerCase()
+          i =>
+            i.voteDelegateAddress.toLowerCase() ===
+            (previousOnChainDelegate ?? onChainDelegate).voteDelegateAddress.toLowerCase()
         )
       : undefined;
 
-    return mergeDelegateInfo(onChainDelegate, githubDelegate);
+    return mergeDelegateInfo({
+      onChainDelegate,
+      previousOnChainDelegate,
+      githubDelegate,
+      newOnChainDelegate
+    });
   });
 
   return mergedDelegates;

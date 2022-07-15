@@ -11,6 +11,7 @@ type StoreDelegates = {
     creationDate: null | Date;
     showShadow: boolean;
     showRecognized: boolean;
+    showExpired: boolean;
     name: string | null;
     tags: { [key: string]: boolean };
   };
@@ -18,6 +19,7 @@ type StoreDelegates = {
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
   setShowRecognizedFilter: (showRecognized: boolean) => void;
+  setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: delegatesSortEnum) => void;
   setTagFilter: (tag: { [key: string]: boolean }) => void;
   setName: (text: string) => void;
@@ -27,8 +29,9 @@ type StoreDelegates = {
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
-    showShadow: false,
-    showRecognized: false,
+    showShadow: true,
+    showRecognized: true,
+    showExpired: false,
     name: null,
     tags: {}
   },
@@ -65,6 +68,15 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
+  setShowExpiredFilter: showExpired => {
+    set({
+      filters: {
+        ...get().filters,
+        showExpired
+      }
+    });
+  },
+
   setShowRecognizedFilter: showRecognized => {
     set({
       filters: {
@@ -89,8 +101,9 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         tags: {},
         name: null,
         creationDate: null,
-        showShadow: false,
-        showRecognized: false
+        showShadow: true,
+        showRecognized: true,
+        showExpired: false
       }
     });
   },
