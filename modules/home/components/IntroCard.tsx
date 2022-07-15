@@ -32,7 +32,7 @@ const IntroCard = ({ icon, title, children, linkDest, ...otherProps }: Props): J
         <Text mt="2" mb="1" sx={{ fontSize: [4, 5], textAlign: 'left', fontWeight: ['500', '400'] }}>
           {title}
         </Text>
-        <Text sx={{ fontSize: [2, 3], color: 'textSecondary', whiteSpace: 'initial' }}>{children}</Text>
+        <Text sx={{ color: 'textSecondary', whiteSpace: 'initial' }}>{children}</Text>
       </Flex>
     </Box>
   </ExternalLink>

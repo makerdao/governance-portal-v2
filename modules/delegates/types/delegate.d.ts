@@ -33,8 +33,9 @@ export type Delegate = {
   description: string;
   picture: string;
   status: DelegateStatus;
-  expired: boolean;
   lastVoteDate: string | null;
+  expired: boolean;
+  isAboutToExpire: boolean;
   expirationDate: Date;
   externalUrl?: string;
   combinedParticipation?: string;
@@ -48,12 +49,27 @@ export type Delegate = {
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
   tags: Tag[];
+  previous?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
 };
 
 export type DelegationHistory = {
   address: string;
   lockAmount: string;
   events: DelegationHistoryEvent[];
+};
+
+export type DelegationHistoryWithExpirationDate = DelegationHistory & {
+  expirationDate: Date;
+  isAboutToExpire: boolean;
+  isExpired: boolean;
+  isRenewed: boolean;
 };
 
 export type DelegationHistoryEvent = {

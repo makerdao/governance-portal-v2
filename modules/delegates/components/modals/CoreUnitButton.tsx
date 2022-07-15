@@ -16,7 +16,7 @@ export const CoreUnitButton = ({ handleInfoClick }: Props): JSX.Element => (
         color="voterYellow"
         sx={{
           size: 16,
-          mr: [1, 0]
+          mr: [2, 0]
         }}
       />
     </Flex>

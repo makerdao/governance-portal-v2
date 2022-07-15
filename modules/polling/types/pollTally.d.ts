@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'lib/bigNumberJs';
 import { PollParameters } from './poll';
 import { PollVoteType } from './pollVoteType';
 

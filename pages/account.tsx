@@ -1,16 +1,5 @@
 import { useState } from 'react';
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Flex,
-  Heading,
-  Label,
-  Text,
-  Link as ExternalLink
-} from 'theme-ui';
+import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -30,14 +19,16 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import useSWR from 'swr';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
-import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
+import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
+import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -54,10 +45,9 @@ const AccountPage = (): React.ReactElement => {
     ? voteProxyContractAddress
     : account;
 
-  const { data: addressInfo, error: errorLoadingAddressInfo } = useSWR<AddressApiResponse>(
-    addressToCheck ? `/api/address/${addressToCheck}?network=${network}` : null,
-    fetchJson
-  );
+  const { newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress } = useLinkedDelegateInfo();
+  const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(addressToCheck, network);
+  const { data: previousOwnerContractAddress } = useVoteDelegateAddress(previousOwnerAddress);
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -85,7 +75,7 @@ const AccountPage = (): React.ReactElement => {
                     <DelegateDetail delegate={addressInfo.delegateInfo} />
                   </Box>
                 )}
-                {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
+                {!addressInfo.delegateInfo && <AddressDetail addressInfo={addressInfo} />}
               </Box>
             )}
             {account && !addressInfo && !errorLoadingAddressInfo && (
@@ -96,7 +86,9 @@ const AccountPage = (): React.ReactElement => {
             {errorLoadingAddressInfo && <Text>Error loading address information</Text>}
           </Box>
           {!account ? (
-            <Text sx={{ color: 'textSecondary' }}>Connect a wallet to view account information</Text>
+            <Box>
+              <AccountSelect />
+            </Box>
           ) : (
             <Box sx={{ mt: 4 }}>
               <Box sx={{ my: 3 }}>
@@ -105,34 +97,58 @@ const AccountPage = (): React.ReactElement => {
                 </Heading>
               </Box>
               <Card>
-                {voteDelegateContractAddress && !modalOpen ? (
-                  <Box>
-                    <Text>Your delegate contract address:</Text>
+                {voteDelegateContractAddress && !modalOpen && (
+                  <Box sx={{ mb: 2 }}>
+                    <Label>Your delegate contract address:</Label>
                     <ExternalLink
                       title="View on etherescan"
                       href={getEtherscanLink(network, voteDelegateContractAddress, 'address')}
-                      target="_blank"
                     >
                       <Text as="p" data-testid="vote-delegate-address">
-                        {bpi > 0 ? voteDelegateContractAddress : cutMiddle(voteDelegateContractAddress, 8, 8)}
+                        {bpi > 0 ? voteDelegateContractAddress : cutMiddle(voteDelegateContractAddress, 8, 8)}{' '}
+                        <Icon name="arrowTopRight" size={2} ml={2} />
                       </Text>
                     </ExternalLink>
-
+                  </Box>
+                )}
+                {newOwnerConnected && previousOwnerContractAddress && (
+                  <Box sx={{ mb: 2 }}>
+                    <Label>Previous delegate contract address:</Label>
+                    <ExternalLink
+                      title="View on etherescan"
+                      href={getEtherscanLink(network, previousOwnerContractAddress, 'address')}
+                    >
+                      <Text as="p" data-testid="vote-delegate-address">
+                        {bpi > 0
+                          ? previousOwnerContractAddress
+                          : cutMiddle(previousOwnerContractAddress, 8, 8)}{' '}
+                        <Icon name="arrowTopRight" size={2} ml={2} />
+                      </Text>
+                    </ExternalLink>
+                  </Box>
+                )}
+                {voteDelegateContractAddress && !modalOpen && (
+                  <Box sx={{ mb: 2 }}>
+                    <Label>FAQ</Label>
                     <ExternalLink
                       title="How can I verify my delegate contract?"
                       href={
                         'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'
                       }
-                      target="_blank"
                     >
-                      <Text as="p" sx={{ display: 'flex', mt: 2, alignItems: 'center' }}>
+                      <Text as="p" sx={{ display: 'flex', alignItems: 'center' }}>
                         How can I verify my delegate contract? <Icon name="arrowTopRight" size={2} ml={2} />
                       </Text>
                     </ExternalLink>
                   </Box>
-                ) : (
+                )}
+                {!voteDelegateContractAddress && (
                   <Box>
-                    <Text as="p">No vote delegate contract detected</Text>
+                    <Label>
+                      {newOwnerConnected && !newOwnerHasDelegateContract
+                        ? 'Create a new delegate contract'
+                        : 'No vote delegate contract detected'}
+                    </Label>
                     {tx && (
                       <DialogOverlay
                         style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
@@ -167,14 +183,13 @@ const AccountPage = (): React.ReactElement => {
                         </DialogContent>
                       </DialogOverlay>
                     )}
-                    <Alert variant="notice" sx={{ mt: 3, flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
                       Warning: You will be unable to vote with a vote proxy contract or your existing chief
                       balance through the UI after creating a delegate contract. This functionality is only
-                      affected in the user interface and not at the contract level. Future updates will
-                      address this issue soon.
+                      affected in the user interface and not at the contract level.
                     </Alert>
                     <Label
-                      sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}
+                      sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}
                       data-testid="checkbox-create-delegate"
                     >
                       <Checkbox
@@ -183,7 +198,7 @@ const AccountPage = (): React.ReactElement => {
                           setWarningRead(!warningRead);
                           trackButtonClick('setWarningRead');
                         }}
-                      />{' '}
+                      />
                       I understand
                     </Label>
                     <Button
@@ -198,7 +213,7 @@ const AccountPage = (): React.ReactElement => {
                       sx={{ mt: 3, mb: 1 }}
                       data-testid="create-button"
                     >
-                      Create a delegate contract
+                      Create delegate contract
                     </Button>
                   </Box>
                 )}

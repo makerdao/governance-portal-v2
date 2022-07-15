@@ -12,6 +12,7 @@ export default function AccountComments({ address }: { address: string }): React
   const { data, error, isValidating } = useSWR<{
     comments: CommentsAPIResponseItem[];
   }>(`/api/comments/${address}?network=${network}`);
+
   return (
     <Box>
       {isValidating && !data && (

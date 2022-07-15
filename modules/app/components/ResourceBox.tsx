@@ -119,7 +119,7 @@ export default function ResourceBox({
         {resources[type].links.map(resource => (
           <Flex key={resource.linkTitle} sx={{ alignItems: 'center', ':not(:last-of-type)': { mb: 3 } }}>
             <ExternalLink href={resource.url} target="_blank">
-              <Text sx={{ color: 'accentBlue', fontSize: [2, 3], ':hover': { color: 'blueLinkHover' } }}>
+              <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                 {resource.linkTitle}
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>

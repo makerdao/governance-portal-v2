@@ -12,7 +12,7 @@ export const getVoteColor = (optionId: number, inputFormat: PollInputFormat, tex
   const colors = {
     0: '#708390',
     1: '#1AAB9B',
-    2: '#F77249'
+    2: '#F75524'
   };
 
   return colors[optionId];
