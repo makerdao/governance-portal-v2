@@ -47,30 +47,6 @@ export default function ReviewBox({
     </ActivePollsBox>
   );
 
-  const Initializing = props => (
-    <ReviewBoxCard {...props}>
-      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-        <TxIndicators.Pending sx={{ width: 6 }} />
-      </Flex>
-      <Text
-        mt={3}
-        px={4}
-        sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-      >
-        Please use your wallet to sign this transaction.
-      </Text>
-      <Button
-        mt={3}
-        mb={4}
-        onClick={clearTransaction}
-        variant="textual"
-        sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
-      >
-        Cancel vote submission
-      </Button>
-    </ReviewBoxCard>
-  );
-
   const Pending = props => (
     <ReviewBoxCard {...props} sx={{ p: [3, 4] }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -171,19 +147,5 @@ export default function ReviewBox({
     </ReviewBoxCard>
   );
 
-  const [transactionStatus, setTransactionStatus] = useState('default');
-
-  useEffect(() => {
-    setTransactionStatus(transaction?.status || 'default');
-  }, [transaction]);
-
-  const view = useMemo(() => {
-    if (transactionStatus === 'default') return <Default />;
-    if (transactionStatus === 'initialized') return <Initializing />;
-    if (transactionStatus === 'pending') return <Pending />;
-    if (transactionStatus === 'mined') return <Mined />;
-    if (transactionStatus === 'error') return <Error />;
-    return <Default />;
-  }, [transactionStatus, bpi, commentsSignature, ballot]);
-  return <Box {...props}>{view}</Box>;
+  return <Box {...props}><Default /></Box>;
 }

@@ -1,10 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Box, Flex, Button, Text, Heading, Close } from 'theme-ui';
-import { useContext, useState } from 'react';
+import { Card, Flex, Button, Text, Heading, Close } from 'theme-ui';
+import { useContext, useEffect } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import TxIndicators from 'modules/app/components/TxIndicators';
+
+const ReviewBoxCard = ({ children, ...props }) => (
+  <Card variant="compact" p={[0, 0]} {...props}>
+    <Flex sx={{ justifyContent: ['center'], flexDirection: 'column' }}>{children}</Flex>
+  </Card>
+);
 
 export function SubmitBallotButtonAndModals({
   onSubmit
@@ -22,7 +29,8 @@ export function SubmitBallotButtonAndModals({
     setStep,
     ballotStep,
     handleCommentsStep,
-    submissionMethod
+    submissionMethod,
+    clearTransaction
   } = useContext(BallotContext);
   const bpi = useBreakpointIndex();
 
@@ -34,7 +42,7 @@ export function SubmitBallotButtonAndModals({
         }}
         data-testid="submit-ballot-button"
         variant="primaryLarge"
-        disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+        disabled={!ballotCount || ballotStep !== 'initial'}
         sx={{ width: '100%' }}
       >
         Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
@@ -156,6 +164,32 @@ export function SubmitBallotButtonAndModals({
             )}
           </Flex>
         );
+      case 'submitting':
+        return (
+          <ReviewBoxCard>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+            <TxIndicators.Pending sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            mt={3}
+            px={4}
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
+          >
+            Please use your wallet to sign this transaction.
+          </Text>
+          <Button
+            mt={3}
+            mb={4}
+            onClick={clearTransaction}
+            variant="textual"
+            sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
+          >
+            Cancel vote submission
+          </Button>
+        </ReviewBoxCard>
+        );
+      case 'tx-pending':
+      case 'tx-error':
       default:
         return null;
     }
