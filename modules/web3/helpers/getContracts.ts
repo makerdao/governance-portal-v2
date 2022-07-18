@@ -20,16 +20,25 @@ const sdks: Sdks = {
   goerli: getGoerliSdk
 };
 
+export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
+  `${rpcUrl.substring(0, rpcUrl.lastIndexOf('/'))}/${newKey}`;
+
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
 export const getContracts = (
   chainId?: SupportedChainId,
   library?: Web3Provider,
   account?: string | null,
-  readOnly?: boolean
+  readOnly?: boolean,
+  apiKey?: string
 ): EthSdk => {
-  const { network, rpcUrl } = chainId
+  const networkInfo = chainId
     ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
     : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };
+
+  // If a custom API key is provided, replace it in the URL
+  if (apiKey) networkInfo.rpcUrl = replaceApiKey(networkInfo.rpcUrl, apiKey);
+
+  const { network, rpcUrl } = networkInfo;
 
   const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
