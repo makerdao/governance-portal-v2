@@ -60,11 +60,11 @@ const DashboardPage = (): React.ReactElement => {
         })
       });
       setLoading(false);
-      toast.success('Loggin succeslful');
+      toast.success('Authorization successful');
       setSignedIn(true);
     } catch (e) {
       setLoading(false);
-      toast.error('Error loggin in');
+      toast.error('Invalid password');
     }
   };
   return (
@@ -74,17 +74,12 @@ const DashboardPage = (): React.ReactElement => {
         <Heading>Dashboard</Heading>
         {!signedIn && (
           <Card>
-            <Text as="h3">Log in</Text>
+            <Text as="h3">Enter Password</Text>
             <Flex sx={{ mt: 3 }}>
               <Box sx={{ mr: 2 }}>
-                <Input
-                  type="password"
-                  placeholder="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                />
+                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} />
               </Box>
-              <Button onClick={logIn}>Log In</Button>
+              <Button onClick={logIn}>Submit</Button>
             </Flex>
           </Card>
         )}
