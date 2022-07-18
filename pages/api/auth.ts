@@ -14,7 +14,6 @@ export default withApiHandler(
         });
       }
       bcrypt.compare(password, config.DASHBOARD_PASSWORD_HASH, function (err, result) {
-        console.log(config.DASHBOARD_PASSWORD_HASH, password, result, err);
         if (result) {
           // password is valid
 
