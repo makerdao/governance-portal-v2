@@ -1,5 +1,5 @@
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchGitHubPage, GithubTokens } from 'lib/github';
 import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
@@ -10,10 +10,10 @@ import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
 import logger from 'lib/logger';
+import { githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
-  const cacheKey = 'github-proposals';
-  const cachedProposals = await cacheGet(cacheKey, network);
+  const cachedProposals = await cacheGet(githubExecutivesCacheKey, network);
   if (cachedProposals) {
     return JSON.parse(cachedProposals);
   }
@@ -53,7 +53,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     .sort(a => (a.active ? -1 : 1)) // Sort by active first
     .slice(0, 100);
 
-  cacheSet(cacheKey, JSON.stringify(sortedProposals), network);
+  cacheSet(githubExecutivesCacheKey, JSON.stringify(sortedProposals), network);
 
   return sortedProposals;
 }

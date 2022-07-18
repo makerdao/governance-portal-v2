@@ -3,8 +3,8 @@ import os from 'os';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { config } from 'lib/config';
 import Redis from 'ioredis';
-import packageJSON from '../package.json';
-import logger from './logger';
+import packageJSON from '../../package.json';
+import logger from 'lib/logger';
 
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
@@ -23,10 +23,13 @@ function getFilePath(name: string, network: string): string {
   return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}-${date}`;
 }
 
-export const cacheDel = (path: string): void => {
+export const cacheDel = (name: string, network: SupportedNetworks): void => {
+  const path = getFilePath(name, network);
+
   const isRedisCache = !!config.REDIS_URL;
 
   if (isRedisCache && redis) {
+    logger.debug('cacheDel redis: ', path);
     redis?.del(path);
   } else {
     try {
@@ -69,7 +72,7 @@ export const cacheGet = async (
 
         if (memCached.expiry && memCached.expiry < Date.now()) {
           logger.debug('mem cache expired');
-          cacheDel(path);
+          cacheDel(name, currentNetwork);
           return null;
         }
 
@@ -82,7 +85,7 @@ export const cacheGet = async (
         const { birthtime } = fs.statSync(path);
 
         if (expiryMs && birthtime && birthtime.getTime() < Date.now() + expiryMs) {
-          cacheDel(path);
+          cacheDel(name, currentNetwork);
           return null;
         }
 

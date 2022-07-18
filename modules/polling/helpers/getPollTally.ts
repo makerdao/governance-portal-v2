@@ -1,21 +1,13 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { backoffRetry } from 'lib/utils';
 import BigNumber from 'lib/bigNumberJs';
-import { cacheDel, cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchRawPollTally } from 'modules/polling/api/fetchRawPollTally';
 import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddress';
 import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
-import logger from 'lib/logger';
 import { pollHasEnded } from './utils';
-
-const getPollTallyCacheKey = (pollId: number) => `parsed-tally-${pollId}`;
-
-export function deleteCachedPollTally(pollId: number, network: SupportedNetworks): void {
-  const cacheKey = getPollTallyCacheKey(pollId);
-  logger.debug(`deleteCachedPollTally: ${pollId} - ${network}`);
-  cacheDel(cacheKey);
-}
+import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   const cacheKey = getPollTallyCacheKey(poll.pollId);

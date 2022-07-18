@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchGithubGraphQL, fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
@@ -9,6 +9,7 @@ import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegate
 import { ethers } from 'ethers';
 import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
 import logger from 'lib/logger';
+import { delegatesCacheKey } from 'modules/cache/constants/cache-keys';
 
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
@@ -140,7 +141,6 @@ export async function fetchGithubDelegates(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
-  const delegatesCacheKey = 'delegates';
   const cacheTime = 1000 * 60 * 60;
   const existingDelegates = await cacheGet(delegatesCacheKey, network, cacheTime);
 
