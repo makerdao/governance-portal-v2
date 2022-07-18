@@ -17,6 +17,7 @@ import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
 import logger from 'lib/logger';
 import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
+import { invalidateCache } from 'modules/cache/invalidateCache';
 interface ContextProps {
   ballot: Ballot;
   transaction?: Transaction;
@@ -236,15 +237,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         // Invalidate tally cache for each voted poll
         Object.keys(ballot).forEach(pollId => {
           setTimeout(() => {
-            fetchJson(`/api/cache/invalidate?network=${network}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                cacheKey: getPollTallyCacheKey(parseInt(pollId))
-              })
-            });
+            invalidateCache(getPollTallyCacheKey(parseInt(pollId)), network);
           }, 60000);
         });
       },

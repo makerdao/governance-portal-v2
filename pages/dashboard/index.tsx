@@ -13,6 +13,7 @@ import {
   getPollTallyCacheKey,
   githubExecutivesCacheKey
 } from 'modules/cache/constants/cache-keys';
+import { invalidateCache } from 'modules/cache/invalidateCache';
 import { toast } from 'react-toastify';
 
 const DashboardPage = (): React.ReactElement => {
@@ -22,18 +23,10 @@ const DashboardPage = (): React.ReactElement => {
   const [password, setPassword] = useState('');
   const [signedIn, setSignedIn] = useState(false);
 
-  const invalidateCache = async (cacheKey: string) => {
+  const invalidate = async (cacheKey: string) => {
     setLoading(true);
     try {
-      await fetchJson(`/api/cache/invalidate?network=${network}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          cacheKey
-        })
-      });
+      await invalidateCache(cacheKey, network);
       setLoading(false);
       toast.success('Cache cleared');
     } catch (e) {
@@ -90,22 +83,22 @@ const DashboardPage = (): React.ReactElement => {
               {loading && <Box>Clearing selected cache...</Box>}
               <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
                 <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidateCache(getAllPollsCacheKey())} disabled={loading}>
+                  <Button onClick={() => invalidate(getAllPollsCacheKey())} disabled={loading}>
                     All polls
                   </Button>
                 </Box>
                 <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidateCache(executiveSupportersCacheKey)} disabled={loading}>
+                  <Button onClick={() => invalidate(executiveSupportersCacheKey)} disabled={loading}>
                     Executive supporters
                   </Button>
                 </Box>
                 <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidateCache(githubExecutivesCacheKey)} disabled={loading}>
+                  <Button onClick={() => invalidate(githubExecutivesCacheKey)} disabled={loading}>
                     Executives from GitHub
                   </Button>
                 </Box>
                 <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidateCache(delegatesCacheKey)} disabled={loading}>
+                  <Button onClick={() => invalidate(delegatesCacheKey)} disabled={loading}>
                     Delegates
                   </Button>
                 </Box>
@@ -118,7 +111,7 @@ const DashboardPage = (): React.ReactElement => {
                     sx={{ mr: 2 }}
                   />
                   <Button
-                    onClick={() => invalidateCache(getPollTallyCacheKey(parseInt(pollId)))}
+                    onClick={() => invalidate(getPollTallyCacheKey(parseInt(pollId)))}
                     disabled={loading}
                     sx={{ minWidth: 150 }}
                   >

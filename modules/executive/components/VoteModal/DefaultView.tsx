@@ -28,6 +28,7 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import logger from 'lib/logger';
 import { executiveSupportersCacheKey } from 'modules/cache/constants/cache-keys';
+import { invalidateCache } from 'modules/cache/invalidateCache';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -161,15 +162,7 @@ export default function DefaultVoteModalView({
 
         // Invalidate supporters cache
         setTimeout(() => {
-          fetchJson(`/api/cache/invalidate?network=${network}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              cacheKey: executiveSupportersCacheKey
-            })
-          });
+          invalidateCache(executiveSupportersCacheKey, network);
         }, 30000);
       },
       error: () => onTransactionFailed()
