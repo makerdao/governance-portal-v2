@@ -10,12 +10,13 @@ import {
   delegatesCacheKey,
   executiveSupportersCacheKey,
   getAllPollsCacheKey,
-  getPollTallyCacheKey
+  getPollTallyCacheKey,
+  githubExecutivesCacheKey
 } from 'modules/cache/constants/cache-keys';
 import { toast } from 'react-toastify';
 
 const DashboardPage = (): React.ReactElement => {
-  const { network, account } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
   const [loading, setLoading] = useState(false);
   const [pollId, setPollId] = useState('');
   const [password, setPassword] = useState('');
@@ -49,7 +50,7 @@ const DashboardPage = (): React.ReactElement => {
 
     setLoading(true);
     try {
-      await fetchJson(`/api/auth`, {
+      await fetchJson('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -104,6 +105,11 @@ const DashboardPage = (): React.ReactElement => {
                   </Button>
                 </Box>
                 <Box sx={{ m: 3 }}>
+                  <Button onClick={() => invalidateCache(githubExecutivesCacheKey)} disabled={loading}>
+                    Executives from GitHub
+                  </Button>
+                </Box>
+                <Box sx={{ m: 3 }}>
                   <Button onClick={() => invalidateCache(delegatesCacheKey)} disabled={loading}>
                     Delegates
                   </Button>
@@ -119,6 +125,7 @@ const DashboardPage = (): React.ReactElement => {
                   <Button
                     onClick={() => invalidateCache(getPollTallyCacheKey(parseInt(pollId)))}
                     disabled={loading}
+                    sx={{ minWidth: 150 }}
                   >
                     Tally by poll ID
                   </Button>
