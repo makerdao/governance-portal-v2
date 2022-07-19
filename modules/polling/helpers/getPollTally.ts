@@ -8,6 +8,7 @@ import { Poll, PollTally, RawPollTally, RawPollTallyRankedChoice } from 'modules
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 import { pollHasEnded } from './utils';
 import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
+import { FIVE_MINUTES_IN_MS, ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   const cacheKey = getPollTallyCacheKey(poll.pollId);
@@ -55,11 +56,9 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   if ('rounds' in tally) (tallyObject as RawPollTallyRankedChoice).rounds = tally.rounds;
   const parsedTally = parseRawPollTally(tallyObject, poll);
 
-  const fiveMinutesInMs = 5 * 60 * 1000;
-  const oneDayInMs = 24 * 60 * 60 * 1000;
   const pollEnded = pollHasEnded(poll);
 
-  cacheSet(cacheKey, JSON.stringify(parsedTally), network, pollEnded ? oneDayInMs : fiveMinutesInMs);
+  cacheSet(cacheKey, JSON.stringify(parsedTally), network, pollEnded ? ONE_DAY_IN_MS : FIVE_MINUTES_IN_MS);
 
   return parsedTally;
 }

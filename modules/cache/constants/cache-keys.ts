@@ -6,6 +6,8 @@ export const githubExecutivesCacheKey = 'executives-github';
 
 export const delegatesCacheKey = 'delegates';
 
+export const getAddressDetailCacheKey = (address: string): string => `address-${address}`;
+
 export const getAllPollsCacheKey = (filters?: any): string =>
   `polls-${filters ? JSON.stringify(filters) : 'all'}`;
 
