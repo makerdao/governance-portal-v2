@@ -3,7 +3,11 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import withApiHandler from 'modules/app/api/withApiHandler';
 import logger from 'lib/logger';
 import { cacheDel } from 'modules/cache/cache';
-import { delegatesCacheKey, executiveSupportersCacheKey } from 'modules/cache/constants/cache-keys';
+import {
+  delegatesGithubCacheKey,
+  allDelegatesCacheKey,
+  executiveSupportersCacheKey
+} from 'modules/cache/constants/cache-keys';
 
 // Deletes cache for a tally
 export default withApiHandler(
@@ -11,7 +15,13 @@ export default withApiHandler(
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
     // Allowed cache keys to be deleted, they can be partial since we just check that the key is on the requested path.
-    const allowedCacheKeys = ['parsed-tally-', executiveSupportersCacheKey, 'polls-', delegatesCacheKey];
+    const allowedCacheKeys = [
+      'parsed-tally-',
+      executiveSupportersCacheKey,
+      'polls-',
+      delegatesGithubCacheKey,
+      allDelegatesCacheKey
+    ];
 
     try {
       const { cacheKey } = req.body;
