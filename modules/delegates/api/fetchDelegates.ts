@@ -196,7 +196,7 @@ export async function fetchDelegates(
   const cacheKey = allDelegatesCacheKey;
   const cachedResponse = await cacheGet(cacheKey, network);
   if (cachedResponse) {
-    return res.status(200).json(JSON.parse(cachedResponse));
+    return JSON.parse(cachedResponse);
   }
 
   // This contains all the delegates including info merged with recognized delegates
