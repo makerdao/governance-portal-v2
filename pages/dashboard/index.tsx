@@ -29,7 +29,7 @@ const DashboardPage = (): React.ReactElement => {
     try {
       await invalidateCache(cacheKey, network);
       setLoading(false);
-      toast.success('Cache cleared');
+      toast.success(`Cache ${cacheKey} cleared`);
     } catch (e) {
       setLoading(false);
       toast.error('Error invalidating cache');

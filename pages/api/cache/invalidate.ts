@@ -6,7 +6,8 @@ import { cacheDel } from 'modules/cache/cache';
 import {
   delegatesGithubCacheKey,
   allDelegatesCacheKey,
-  executiveSupportersCacheKey
+  executiveSupportersCacheKey,
+  githubExecutivesCacheKey
 } from 'modules/cache/constants/cache-keys';
 
 // Deletes cache for a tally
@@ -18,6 +19,7 @@ export default withApiHandler(
     const allowedCacheKeys = [
       'parsed-tally-',
       executiveSupportersCacheKey,
+      githubExecutivesCacheKey,
       'polls-',
       delegatesGithubCacheKey,
       allDelegatesCacheKey
