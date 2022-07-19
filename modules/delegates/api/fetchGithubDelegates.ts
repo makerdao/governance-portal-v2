@@ -2,7 +2,7 @@ import matter from 'gray-matter';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { fetchGithubGraphQL, fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
+import { fetchGithubGraphQL, fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegatesRepositoryInfo';
@@ -18,7 +18,7 @@ async function extractGithubInformation(
   folder: GithubPage
 ): Promise<DelegateRepoInformation | undefined> {
   try {
-    const folderContents = await fetchGitHubPage(owner, repo, folder.path, GithubTokens.Delegate);
+    const folderContents = await fetchGitHubPage(owner, repo, folder.path);
 
     const profileMd = folderContents.find(item => item.name === 'profile.md');
 
@@ -196,8 +196,7 @@ export async function fetchGithubDelegate(
     const folders = await fetchGitHubPage(
       delegatesRepositoryInfo.owner,
       delegatesRepositoryInfo.repo,
-      delegatesRepositoryInfo.page,
-      GithubTokens.DelegatesFolder
+      delegatesRepositoryInfo.page
     );
 
     const folder = folders.find(f => f.name.toLowerCase() === address.toLowerCase());
