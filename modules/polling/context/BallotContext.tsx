@@ -234,7 +234,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               hotAddress: account || '',
               comments: comments,
               signedMessage: commentsSignature,
-              txHash
+              txHash,
+              gaslessNetwork
             };
 
             fetchJson(`/api/comments/polling/add?network=${network}`, {
@@ -352,7 +353,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       body: JSON.stringify({ ...signatureValues, ...signature })
     }).then(res => {
       const voteTxCreator = () => provider.getTransaction(res.hash);
-      //todo: get network name from a helper function that takes in current network
       trackPollVote(voteTxCreator, getGaslessNetwork(network));
     });
   };

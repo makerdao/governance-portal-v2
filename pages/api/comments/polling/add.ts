@@ -27,13 +27,16 @@ export default withApiHandler(
     // TODO: check that the transaction is from a real polling contract
     // console.log(transaction);
 
+    //if L2 vote, store the L2 network as the network
+    const txNetwork = body.gaslessNetwork ?? network;
+
     const commentsToInsert: PollComment[] = body.comments.map(comment => ({
       pollId: comment.pollId as number,
       comment: comment.comment as string,
       hotAddress: body.hotAddress?.toLowerCase() || '',
       accountType: resultVerify,
       commentType: 'poll',
-      network,
+      network: txNetwork,
       date: new Date(),
       voterAddress: body.voterAddress.toLowerCase(),
       txHash: body.txHash
