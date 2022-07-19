@@ -8,6 +8,33 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
 import logger from 'lib/logger';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { FIVE_MINUTES_IN_MS } from 'modules/app/constants/time';
+
+const getCommentTransaction = async (
+  network: SupportedNetworks,
+  provider: ethers.providers.JsonRpcProvider,
+  txHash?: string
+) => {
+  const cacheKey = `transaction-comment-${txHash}`;
+
+  const cachedResponse = await cacheGet(cacheKey, network);
+  if (cachedResponse) {
+    return JSON.parse(cachedResponse);
+  }
+
+  try {
+    const transaction = txHash ? await provider.getTransaction(txHash as string) : null;
+
+    if (transaction) {
+      cacheSet(cacheKey, JSON.stringify(transaction), network, FIVE_MINUTES_IN_MS);
+    }
+
+    return transaction;
+  } catch (e) {
+    logger.error(`Error fetching comment transcation: ${txHash}`);
+  }
+};
 
 export async function getCommentsByAddress(
   address: string,
@@ -42,16 +69,7 @@ export async function getCommentsByAddress(
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
-      let transaction;
-      if (comment.txHash) {
-        transaction = await provider
-          .getTransaction(comment.txHash as string)
-          .catch(e =>
-            logger.error(
-              `GetCommentsByAddress: ${address}, There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`
-            )
-          );
-      }
+      const transaction = await getCommentTransaction(network, provider, comment.txHash);
 
       const isValid =
         transaction &&

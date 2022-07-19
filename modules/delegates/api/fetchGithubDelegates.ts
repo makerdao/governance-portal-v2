@@ -9,7 +9,8 @@ import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegate
 import { ethers } from 'ethers';
 import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
 import logger from 'lib/logger';
-import { delegatesCacheKey } from 'modules/cache/constants/cache-keys';
+import { delegatesGithubCacheKey, getDelegateGithubCacheKey } from 'modules/cache/constants/cache-keys';
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
@@ -141,8 +142,7 @@ export async function fetchGithubDelegates(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
-  const cacheTime = 1000 * 60 * 60;
-  const existingDelegates = await cacheGet(delegatesCacheKey, network, cacheTime);
+  const existingDelegates = await cacheGet(delegatesGithubCacheKey, network, ONE_HOUR_IN_MS);
 
   if (existingDelegates) {
     return Promise.resolve({
@@ -163,7 +163,7 @@ export async function fetchGithubDelegates(
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
 
     // Store in cache
-    cacheSet(delegatesCacheKey, JSON.stringify(data), network, cacheTime);
+    cacheSet(delegatesGithubCacheKey, JSON.stringify(data), network, ONE_HOUR_IN_MS);
 
     return {
       error: false,
@@ -181,9 +181,8 @@ export async function fetchGithubDelegate(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
-  const delegatesCacheKey = `delegate-${address}`;
-  const cacheTime = 1000 * 60 * 60;
-  const existingDelegate = await cacheGet(delegatesCacheKey, network, cacheTime);
+  const cacheKey = getDelegateGithubCacheKey(address);
+  const existingDelegate = await cacheGet(cacheKey, network, ONE_HOUR_IN_MS);
   if (existingDelegate) {
     return Promise.resolve({
       error: false,
@@ -208,7 +207,7 @@ export async function fetchGithubDelegate(
 
     // Store in cache
     if (userInfo) {
-      cacheSet(delegatesCacheKey, JSON.stringify(userInfo), network, cacheTime);
+      cacheSet(cacheKey, JSON.stringify(userInfo), network, ONE_HOUR_IN_MS);
     }
 
     return {
