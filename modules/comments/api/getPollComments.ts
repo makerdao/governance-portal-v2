@@ -1,5 +1,5 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { getGaslessNetwork, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../types/comments';
@@ -15,11 +15,11 @@ export async function getPollComments(
   const { db, client } = await connectToDatabase;
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
-
+  const gaslessNetwork = getGaslessNetwork(network);
   const collection = db.collection('comments');
   // decending sort
   const commentsFromDB: PollCommentFromDB[] = await collection
-    .find({ pollId, network, commentType: 'poll' })
+    .find({ pollId, network: { $in: [network, gaslessNetwork] }, commentType: 'poll' })
     .sort({ date: -1 })
     .toArray();
   const comments: PollComment[] = await Promise.all(
@@ -38,17 +38,19 @@ export async function getPollComments(
   // only return the latest comment from each address
   const uniqueComments = uniqBy(comments, 'voterAddress');
 
-  const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
-  const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
   const promises = uniqueComments.map(async (comment: PollComment) => {
     // verify tx ownership
-    //todo: handle arbitrum
+    const rpcUrl = getRPCFromChainID(networkNameToChainId(comment.network));
+    const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
     const transaction = await provider.getTransaction(comment.txHash as string);
-
     const isValid =
       transaction &&
-      ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
+      (ethers.utils.getAddress(transaction.from).toLowerCase() ===
+        ethers.utils.getAddress(comment.hotAddress).toLowerCase() ||
+        ethers.utils.getAddress(transaction.from).toLowerCase() ===
+          //TODO: Fix. For now just hardcoding the relayer address
+          //get this programatically at the very least
+          '0xccdd98cea0896355ea5082a5f3eb41e8f4761e17');
     return {
       comment,
       isValid,

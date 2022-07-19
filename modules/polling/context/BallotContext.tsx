@@ -23,7 +23,14 @@ import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.j
 import { ContractTransaction } from 'ethers';
 import { GaslessNetworks, getGaslessNetwork, getGaslessProvider } from 'modules/web3/constants/networks';
 
-type BallotSteps = 'initial' | 'method-select' | 'sign-comments' | 'confirm' | 'submitting' | 'tx-pending' | 'tx-error';
+type BallotSteps =
+  | 'initial'
+  | 'method-select'
+  | 'sign-comments'
+  | 'confirm'
+  | 'submitting'
+  | 'tx-pending'
+  | 'tx-error';
 type BallotSubmissionMethod = 'standard' | 'gasless';
 
 interface ContextProps {

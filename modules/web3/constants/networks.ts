@@ -2,6 +2,8 @@ import { config } from 'lib/config';
 import { Chain, GaslessChain } from '../types/chain';
 import { GaslessChainId, SupportedChainId } from './chainID';
 import { ethers } from 'ethers';
+import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 export const NetworkContextName = 'NETWORK';
 
@@ -87,19 +89,22 @@ export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
     blockExplorerUrl: 'testnet.arbiscan.io',
     chainId: GaslessChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
-    network: GaslessNetworks.ARBITRUMTESTNET
+    network: GaslessNetworks.ARBITRUMTESTNET,
+    defaultRpc: NodeProviders.ALCHEMY,
+    rpcs: {
+      [NodeProviders.ALCHEMY]: `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+    }
   },
   [GaslessChainId.ARBITRUM]: {
     blockExplorerUrl: 'arbiscan.io',
     chainId: GaslessChainId.ARBITRUM,
     label: 'Arbitrum',
-    network: GaslessNetworks.ARBITRUM
+    network: GaslessNetworks.ARBITRUM,
+    defaultRpc: NodeProviders.ALCHEMY,
+    rpcs: {
+      [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
+    }
   }
-};
-
-const gaslessUrls = {
-  [GaslessNetworks.ARBITRUM]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`,
-  [GaslessNetworks.ARBITRUMTESTNET]: `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
 };
 
 export const getGaslessNetwork = (network: SupportedNetworks): GaslessNetworks => {
@@ -113,7 +118,9 @@ export const getGaslessNetwork = (network: SupportedNetworks): GaslessNetworks =
 //todo add provider return type
 export const getGaslessProvider = (network: SupportedNetworks) => {
   const gaslessNetwork = getGaslessNetwork(network);
-  return new ethers.providers.JsonRpcProvider(gaslessUrls[gaslessNetwork]);
+  const chainId = networkNameToChainId(gaslessNetwork);
+  const url = getRPCFromChainID(chainId);
+  return new ethers.providers.JsonRpcProvider(url);
 };
 
 export const DEFAULT_NETWORK = CHAIN_INFO[SupportedChainId.MAINNET];

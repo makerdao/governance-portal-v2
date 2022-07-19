@@ -18,4 +18,8 @@ export type GaslessChain = {
   chainId: GaslessChainId;
   label: string;
   network: GaslessNetworks;
+  defaultRpc: string;
+  rpcs: {
+    [key: string]: string;
+  };
 };

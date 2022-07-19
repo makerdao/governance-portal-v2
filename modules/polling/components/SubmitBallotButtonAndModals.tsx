@@ -167,26 +167,26 @@ export function SubmitBallotButtonAndModals({
       case 'submitting':
         return (
           <ReviewBoxCard>
-          <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-            <TxIndicators.Pending sx={{ width: 6 }} />
-          </Flex>
-          <Text
-            mt={3}
-            px={4}
-            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-          >
-            Please use your wallet to sign this transaction.
-          </Text>
-          <Button
-            mt={3}
-            mb={4}
-            onClick={clearTransaction}
-            variant="textual"
-            sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
-          >
-            Cancel vote submission
-          </Button>
-        </ReviewBoxCard>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+              <TxIndicators.Pending sx={{ width: 6 }} />
+            </Flex>
+            <Text
+              mt={3}
+              px={4}
+              sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
+            >
+              Please use your wallet to sign this transaction.
+            </Text>
+            <Button
+              mt={3}
+              mb={4}
+              onClick={clearTransaction}
+              variant="textual"
+              sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
+            >
+              Cancel vote submission
+            </Button>
+          </ReviewBoxCard>
         );
       case 'tx-pending':
       case 'tx-error':

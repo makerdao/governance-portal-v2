@@ -147,5 +147,9 @@ export default function ReviewBox({
     </ReviewBoxCard>
   );
 
-  return <Box {...props}><Default /></Box>;
+  return (
+    <Box {...props}>
+      <Default />
+    </Box>
+  );
 }
