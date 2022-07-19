@@ -50,7 +50,7 @@ export async function fetchGitHubPage(owner: string, repo: string, path: string)
     path
   });
 
-  return data;
+  return data as GithubPage[];
 }
 
 export async function fetchGithubGraphQL(
@@ -59,5 +59,5 @@ export async function fetchGithubGraphQL(
 ): Promise<GraphQlQueryResponseData> {
   const octokit = getNextToken();
   const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
-  return data;
+  return data as GraphQlQueryResponseData;
 }
