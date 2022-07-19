@@ -154,8 +154,7 @@ export async function fetchGithubDelegates(
   try {
     const allDelegates = await fetchGithubGraphQL(
       delegatesRepositoryInfo,
-      allGithubDelegates,
-      GithubTokens.DelegatesFolder
+      allGithubDelegates
     );
     const results = await extractGithubInformationGraphQL(allDelegates, delegatesRepositoryInfo);
 
