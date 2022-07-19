@@ -15,7 +15,7 @@ type SystemConfig = {
   MIXPANEL_DEV: string;
   REDIS_URL: string;
   MIGRATION_WEBHOOK_URL: string;
-  DASHBOARD_PASSWORD_HASH: string;
+  DASHBOARD_PASSWORD: string;
 };
 
 export const config: SystemConfig = {
@@ -35,5 +35,5 @@ export const config: SystemConfig = {
   MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
   REDIS_URL: process.env.REDIS_URL || '',
   MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || '',
-  DASHBOARD_PASSWORD_HASH: process.env.DASHBOARD_PASSWORD_HASH || ''
+  DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || ''
 };

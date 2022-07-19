@@ -53,7 +53,6 @@
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.13",
     "babel-plugin-superjson-next": "^0.3.0",
-    "bcrypt": "^5.0.1",
     "color": "^4.2.3",
     "d3-hierarchy": "^3.0.1",
     "d3-selection": "^3.0.0",
