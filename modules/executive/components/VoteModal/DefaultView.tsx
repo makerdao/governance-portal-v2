@@ -164,7 +164,7 @@ export default function DefaultVoteModalView({
         setTimeout(() => {
           invalidateCache(executiveSupportersCacheKey, network);
           invalidateCache('proposals-', network);
-        }, 30000);
+        }, 45000);
       },
       error: () => onTransactionFailed()
     };
