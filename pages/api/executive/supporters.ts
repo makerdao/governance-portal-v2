@@ -15,16 +15,15 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  
   const cached = await cacheGet(executiveSupportersCacheKey, network);
-  
+
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
-  
+
   if (cached) {
     res.status(200).json(cached);
     return;
   }
-  
+
   const chief = getContracts(networkNameToChainId(network), undefined, undefined, true).chief;
   const allSupporters = await fetchExecutiveVoteTally(chief);
 

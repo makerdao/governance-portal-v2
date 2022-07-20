@@ -152,10 +152,7 @@ export async function fetchGithubDelegates(
   }
 
   try {
-    const allDelegates = await fetchGithubGraphQL(
-      delegatesRepositoryInfo,
-      allGithubDelegates
-    );
+    const allDelegates = await fetchGithubGraphQL(delegatesRepositoryInfo, allGithubDelegates);
     const results = await extractGithubInformationGraphQL(allDelegates, delegatesRepositoryInfo);
 
     // Filter out negatives

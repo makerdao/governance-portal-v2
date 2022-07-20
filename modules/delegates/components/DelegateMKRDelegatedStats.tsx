@@ -36,7 +36,15 @@ export function DelegateMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={ !votingWeight ? <Skeleton width='100%' height='15px' />: votingWeight?.chiefBalanceHot ? formatValue(votingWeight?.chiefBalanceHot) : 'Untracked'}
+        value={
+          !votingWeight ? (
+            <Skeleton width="100%" height="15px" />
+          ) : votingWeight?.chiefBalanceHot ? (
+            formatValue(votingWeight?.chiefBalanceHot)
+          ) : (
+            'Untracked'
+          )
+        }
         label={'Total MKR Delegated'}
         tooltip={
           <Tooltip label={getDescription({ votingWeight, isDelegate: true })}>

@@ -11,6 +11,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
 import logger from 'lib/logger';
 import { githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cachedProposals = await cacheGet(githubExecutivesCacheKey, network);
@@ -130,7 +131,7 @@ export async function getExecutiveProposals(
     })
   );
 
-  cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
+  cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork, ONE_HOUR_IN_MS);
 
   return analyzedProposals;
 }

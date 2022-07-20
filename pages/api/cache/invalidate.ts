@@ -18,6 +18,7 @@ export default withApiHandler(
     // Allowed cache keys to be deleted, they can be partial since we just check that the key is on the requested path.
     const allowedCacheKeys = [
       'parsed-tally-',
+      'proposals-',
       executiveSupportersCacheKey,
       githubExecutivesCacheKey,
       'polls-',

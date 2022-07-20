@@ -6,6 +6,7 @@ import { VoteProxy } from '../../../types/ethers-contracts/VoteProxy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { ONE_HOUR_IN_MS } from '../constants/time';
 
 export type VoteProxyAddresses = {
   hotAddress?: string;
@@ -91,7 +92,7 @@ export const getVoteProxyAddresses = async (
   const proxyInfo = { hotAddress, coldAddress, voteProxyAddress, hasProxy };
 
   // cache for 60 mins
-  cacheSet(cacheKey, JSON.stringify(proxyInfo), network, 3600000);
+  cacheSet(cacheKey, JSON.stringify(proxyInfo), network, ONE_HOUR_IN_MS);
 
   // it's been a long journey through the proxy jungles, let's go home
   return proxyInfo;
