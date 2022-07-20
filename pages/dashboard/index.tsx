@@ -7,7 +7,8 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { fetchJson } from 'lib/fetchJson';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import {
-  delegatesCacheKey,
+  allDelegatesCacheKey,
+  delegatesGithubCacheKey,
   executiveSupportersCacheKey,
   getAllPollsCacheKey,
   getPollTallyCacheKey,
@@ -28,7 +29,7 @@ const DashboardPage = (): React.ReactElement => {
     try {
       await invalidateCache(cacheKey, network);
       setLoading(false);
-      toast.success('Cache cleared');
+      toast.success(`Cache ${cacheKey} cleared`);
     } catch (e) {
       setLoading(false);
       toast.error('Error invalidating cache');
@@ -98,7 +99,13 @@ const DashboardPage = (): React.ReactElement => {
                   </Button>
                 </Box>
                 <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidate(delegatesCacheKey)} disabled={loading}>
+                  <Button
+                    onClick={() => {
+                      invalidate(delegatesGithubCacheKey);
+                      invalidate(allDelegatesCacheKey);
+                    }}
+                    disabled={loading}
+                  >
                     Delegates
                   </Button>
                 </Box>

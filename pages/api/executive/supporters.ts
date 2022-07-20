@@ -9,22 +9,23 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { fetchExecutiveVoteTally } from 'modules/executive/api/fetchExecutiveVoteTally';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { executiveSupportersCacheKey } from 'modules/cache/constants/cache-keys';
+import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const chief = getContracts(networkNameToChainId(network), undefined, undefined, true).chief;
-
+  
   const cached = await cacheGet(executiveSupportersCacheKey, network);
-
+  
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
-
+  
   if (cached) {
     res.status(200).json(cached);
     return;
   }
-
+  
+  const chief = getContracts(networkNameToChainId(network), undefined, undefined, true).chief;
   const allSupporters = await fetchExecutiveVoteTally(chief);
 
   // handle percent and check address
@@ -34,7 +35,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     });
   });
 
-  const tenMinutesInMs = 10 * 60 * 1000;
-  cacheSet(executiveSupportersCacheKey, JSON.stringify(allSupporters), network, tenMinutesInMs);
+  cacheSet(executiveSupportersCacheKey, JSON.stringify(allSupporters), network, TEN_MINUTES_IN_MS);
   res.status(200).json(allSupporters);
 });

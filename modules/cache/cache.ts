@@ -5,14 +5,13 @@ import { config } from 'lib/config';
 import Redis from 'ioredis';
 import packageJSON from '../../package.json';
 import logger from 'lib/logger';
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
       connectTimeout: 10000
     })
   : null;
-
-const oneHourInMS = 60 * 60 * 1000;
 
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const memoryCache = {};
@@ -103,7 +102,7 @@ export const cacheSet = (
   name: string,
   data: string,
   network?: SupportedNetworks,
-  expiryMs = oneHourInMS
+  expiryMs = ONE_HOUR_IN_MS
 ): void => {
   if (!config.USE_CACHE || config.USE_CACHE === 'false') {
     return;
