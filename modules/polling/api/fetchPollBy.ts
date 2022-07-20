@@ -1,4 +1,4 @@
-import { cacheGet, cacheSet } from 'lib/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { markdownToHtml } from 'lib/markdown';
 import { QueryFilterNames } from 'modules/gql/gql.constants';
 import { getQueryFilter } from 'modules/gql/gqlFilters';

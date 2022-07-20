@@ -95,21 +95,21 @@ export const resources: LandingResource[] = [
     color: ResourceColor.DEVELOPERS,
     logo: '/assets/resource_icon_7.svg',
     summary:
-      'A data dashboard for the Maker Protocol and MakerDAO, displaying burn rate, revenues, expenses and more.'
-  },
-  {
-    title: 'API Docs',
-    url: 'https://vote.makerdao.com/api-docs',
-    category: ResourceCategory.DEVELOPERS,
-    bg: ResourceBackground.DEVELOPERS,
-    color: ResourceColor.DEVELOPERS,
-    logo: '/assets/resource_icon_8.svg',
-    summary:
       'Technical documentation about the MakerDAO protocol, covering all its mechanisms, smart contracts and more.'
   },
   {
     title: 'MakerDAO GitHub',
     url: 'https://github.com/makerdao/',
+    category: ResourceCategory.DEVELOPERS,
+    bg: ResourceBackground.DEVELOPERS,
+    color: ResourceColor.DEVELOPERS,
+    logo: '/assets/resource_icon_8.svg',
+    summary:
+      'GitHub organization with many repositories relevant to MakerDAO and goverance, including the community repo and the codebase for this site.'
+  },
+  {
+    title: 'API Docs',
+    url: 'https://vote.makerdao.com/api-docs',
     category: ResourceCategory.DEVELOPERS,
     bg: ResourceBackground.DEVELOPERS,
     color: ResourceColor.DEVELOPERS,

@@ -6,6 +6,7 @@ import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { Query } from 'modules/gql/generated/graphql';
+import { config } from 'lib/config';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
@@ -15,7 +16,7 @@ export async function fetchChainDelegates(
 
   const delegates = data.allDelegates.nodes;
 
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const contracts = getContracts(chainId, undefined, undefined, true, config.ALCHEMY_KEY_DELEGATES);
 
   const delegatesWithMkrStaked: DelegateContractInformation[] = await Promise.all(
     delegates.map(async (delegate): Promise<DelegateContractInformation> => {

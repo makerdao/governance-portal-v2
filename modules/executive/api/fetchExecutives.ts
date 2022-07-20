@@ -1,6 +1,6 @@
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { cacheGet, cacheSet } from 'lib/cache';
-import { fetchGitHubPage, GithubTokens } from 'lib/github';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { fetchGitHubPage } from 'lib/github';
 import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
@@ -10,10 +10,11 @@ import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
 import logger from 'lib/logger';
+import { githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
-  const cacheKey = 'github-proposals';
-  const cachedProposals = await cacheGet(cacheKey, network);
+  const cachedProposals = await cacheGet(githubExecutivesCacheKey, network);
   if (cachedProposals) {
     return JSON.parse(cachedProposals);
   }
@@ -24,7 +25,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   const repo = 'community';
   const path = 'governance/votes';
 
-  const githubResponse = await fetchGitHubPage(owner, repo, path, GithubTokens.Executives);
+  const githubResponse = await fetchGitHubPage(owner, repo, path);
   const proposalUrls = githubResponse
     .filter(x => x.type === 'file')
     .map(x => x.download_url)
@@ -53,7 +54,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     .sort(a => (a.active ? -1 : 1)) // Sort by active first
     .slice(0, 100);
 
-  cacheSet(cacheKey, JSON.stringify(sortedProposals), network);
+  cacheSet(githubExecutivesCacheKey, JSON.stringify(sortedProposals), network);
 
   return sortedProposals;
 }
@@ -130,7 +131,7 @@ export async function getExecutiveProposals(
     })
   );
 
-  cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
+  cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork, ONE_HOUR_IN_MS);
 
   return analyzedProposals;
 }

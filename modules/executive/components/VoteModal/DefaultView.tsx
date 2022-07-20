@@ -27,6 +27,8 @@ import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import logger from 'lib/logger';
+import { executiveSupportersCacheKey, githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
+import { invalidateCache } from 'modules/cache/invalidateCache';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -157,6 +159,12 @@ export default function DefaultVoteModalView({
         mutateVotedProposals();
         mutateMkrOnHat();
         onTransactionMined();
+
+        // Invalidate supporters cache
+        setTimeout(() => {
+          invalidateCache(executiveSupportersCacheKey, network);
+          invalidateCache('proposals-', network);
+        }, 45000);
       },
       error: () => onTransactionFailed()
     };

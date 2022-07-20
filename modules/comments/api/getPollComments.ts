@@ -8,6 +8,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
+import { getCommentTransaction } from './getCommentTransaction';
 export async function getPollComments(
   pollId: number,
   network: SupportedNetworks
@@ -42,7 +43,8 @@ export async function getPollComments(
     // verify tx ownership
     const rpcUrl = getRPCFromChainID(networkNameToChainId(comment.network));
     const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-    const transaction = await provider.getTransaction(comment.txHash as string);
+    const transaction = await getCommentTransaction(network, provider, comment.txHash);
+
     const isValid =
       transaction &&
       (ethers.utils.getAddress(transaction.from).toLowerCase() ===

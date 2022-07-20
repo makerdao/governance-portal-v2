@@ -1,6 +1,7 @@
 type SystemConfig = {
   USE_CACHE: string;
   ALCHEMY_KEY: string;
+  ALCHEMY_KEY_DELEGATES: string;
   INFURA_KEY: string;
   ETHERSCAN_KEY: string;
   POCKET_KEY: string;
@@ -19,11 +20,13 @@ type SystemConfig = {
   ALCHEMY_ARBITRUM_KEY: string;
   ALCHEMY_ARBITRUM_TESTNET_KEY: string;
   MIGRATION_WEBHOOK_URL: string;
+  DASHBOARD_PASSWORD: string;
 };
 
 export const config: SystemConfig = {
   USE_CACHE: process.env.USE_CACHE || '',
   ALCHEMY_KEY: process.env.ALCHEMY_KEY || '',
+  ALCHEMY_KEY_DELEGATES: process.env.ALCHEMY_KEY_DELEGATES || '',
   INFURA_KEY: process.env.INFURA_KEY || '',
   ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
   POCKET_KEY: process.env.POCKET_KEY || '',
@@ -41,5 +44,6 @@ export const config: SystemConfig = {
   DEFENDER_API_SECRET: process.env.DEFENDER_API_SECRET || '',
   ALCHEMY_ARBITRUM_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY || '',
   ALCHEMY_ARBITRUM_TESTNET_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY || '',
-  MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || ''
+  MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || '',
+  DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || '',
 };

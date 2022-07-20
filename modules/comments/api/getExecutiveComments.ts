@@ -12,6 +12,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
+import { getCommentTransaction } from './getCommentTransaction';
 export async function getExecutiveComments(
   spellAddress: string,
   network: SupportedNetworks
@@ -47,7 +48,7 @@ export async function getExecutiveComments(
 
   const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
     // verify tx ownership
-    const transaction = await provider.getTransaction(comment.txHash as string);
+    const transaction = await getCommentTransaction(network, provider, comment.txHash);
 
     const isValid =
       transaction &&
