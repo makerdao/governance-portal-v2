@@ -7,9 +7,6 @@ import { markdownToHtml } from 'lib/markdown';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
-import logger from 'lib/logger';
-import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { FIVE_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getCommentTransaction } from './getCommentTransaction';
 
 export async function getCommentsByAddress(
