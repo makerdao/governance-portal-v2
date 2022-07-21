@@ -1,7 +1,7 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "jest": {
     "testTimeout": 7000
   },
