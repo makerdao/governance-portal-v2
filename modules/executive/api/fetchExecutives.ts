@@ -126,6 +126,8 @@ export async function getExecutiveProposals(
     subset.map(async p => {
       return {
         ...p,
+        content: p.content?.substring(0, 100) + '...',
+        about: p.about?.substring(0, 100) + '...',
         spellData: await analyzeSpell(p.address, currentNetwork)
       };
     })
