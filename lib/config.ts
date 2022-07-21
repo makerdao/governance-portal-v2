@@ -1,6 +1,7 @@
 type SystemConfig = {
   USE_CACHE: string;
   ALCHEMY_KEY: string;
+  ALCHEMY_KEY_DELEGATES: string;
   INFURA_KEY: string;
   ETHERSCAN_KEY: string;
   POCKET_KEY: string;
@@ -15,11 +16,13 @@ type SystemConfig = {
   MIXPANEL_DEV: string;
   REDIS_URL: string;
   MIGRATION_WEBHOOK_URL: string;
+  DASHBOARD_PASSWORD: string;
 };
 
 export const config: SystemConfig = {
   USE_CACHE: process.env.USE_CACHE || '',
   ALCHEMY_KEY: process.env.ALCHEMY_KEY || '',
+  ALCHEMY_KEY_DELEGATES: process.env.ALCHEMY_KEY_DELEGATES || '',
   INFURA_KEY: process.env.INFURA_KEY || '',
   ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
   POCKET_KEY: process.env.POCKET_KEY || '',
@@ -33,5 +36,6 @@ export const config: SystemConfig = {
   MIXPANEL_PROD: process.env.NEXT_PUBLIC_MIXPANEL_PROD || '',
   MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
   REDIS_URL: process.env.REDIS_URL || '',
-  MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || ''
+  MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || '',
+  DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || ''
 };

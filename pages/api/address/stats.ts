@@ -6,6 +6,9 @@ import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPol
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';
+import { getAddressStatsCacheKey } from 'modules/cache/constants/cache-keys';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 
 /**
  * @swagger
@@ -74,6 +77,7 @@ import { resolveENS } from 'modules/web3/helpers/ens';
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+
   const tempAddresses =
     typeof req.query.address === 'string'
       ? [req.query.address.toLowerCase()]
@@ -87,32 +91,36 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  try {
-    const addresses = await Promise.all(
-      tempAddresses.map(async tempAddress => {
-        return tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
-      })
-    );
+  const cacheKey = getAddressStatsCacheKey(tempAddresses);
 
-    const pollVoteHistories = await Promise.all(
-      addresses
-        .filter(a => !!a)
-        .map(async (address: string) => {
-          const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
-
-          return pollVoteHistory;
-        })
-    );
-
-    const combinedPollVoteHistory = pollVoteHistories.flat();
-    const response: AddressAPIStats = {
-      pollVoteHistory: combinedPollVoteHistory,
-      lastVote: combinedPollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
-    };
-
-    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-    res.status(200).json(response);
-  } catch (err) {
-    console.error(err);
+  const cachedResponse = await cacheGet(cacheKey, network);
+  if (cachedResponse) {
+    return res.status(200).json(JSON.parse(cachedResponse));
   }
+
+  const addresses = await Promise.all(
+    tempAddresses.map(async tempAddress => {
+      return tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
+    })
+  );
+
+  const pollVoteHistories = await Promise.all(
+    addresses
+      .filter(a => !!a)
+      .map(async (address: string) => {
+        const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
+
+        return pollVoteHistory;
+      })
+  );
+
+  const combinedPollVoteHistory = pollVoteHistories.flat();
+  const response: AddressAPIStats = {
+    pollVoteHistory: combinedPollVoteHistory,
+    lastVote: combinedPollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
+  };
+
+  res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+  cacheSet(cacheKey, JSON.stringify(response), network, TEN_MINUTES_IN_MS);
+  res.status(200).json(response);
 });

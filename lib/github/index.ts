@@ -5,17 +5,13 @@ import { RepositoryInfo } from 'modules/delegates/api/getDelegatesRepositoryInfo
 
 // Handle errors of configuration by disabling oktokit
 
-export enum GithubTokens {
-  Delegate = 1,
-  DelegatesFolder = 2,
-  Executives = 3
-}
-
 const token1 = config.GITHUB_TOKEN;
 const token2 = config.GITHUB_TOKEN_2 ? config.GITHUB_TOKEN_2 : config.GITHUB_TOKEN;
 const token3 = config.GITHUB_TOKEN_3 ? config.GITHUB_TOKEN_3 : config.GITHUB_TOKEN;
 
-export const octokits = new Array(Object.keys(GithubTokens).length / 2);
+let kitIndex = 0;
+
+const octokits: Octokit[] = [];
 
 try {
   octokits[0] = new Octokit({ auth: token1 });
@@ -35,34 +31,33 @@ export type GithubPage = {
   type: string;
 };
 
-export async function fetchGitHubPage(
-  owner: string,
-  repo: string,
-  path: string,
-  tokenNum: GithubTokens
-): Promise<GithubPage[]> {
-  if (!octokits[tokenNum - 1]) {
-    return Promise.resolve([]);
+const getNextToken = () => {
+  if (kitIndex >= octokits.length - 1) {
+    kitIndex = 0;
+  } else {
+    kitIndex++;
   }
 
-  const { data } = await octokits[tokenNum - 1].request('GET /repos/{owner}/{repo}/contents/{path}', {
+  return octokits[kitIndex];
+};
+
+export async function fetchGitHubPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
+  const octokit = getNextToken();
+
+  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner,
     repo,
     path
   });
 
-  return data;
+  return data as GithubPage[];
 }
 
 export async function fetchGithubGraphQL(
   { owner, repo, page }: RepositoryInfo,
-  query: string,
-  tokenNum: GithubTokens
+  query: string
 ): Promise<GraphQlQueryResponseData> {
-  if (!octokits[tokenNum - 1]) {
-    return Promise.resolve([]);
-  }
-  const octokit = octokits[tokenNum - 1];
+  const octokit = getNextToken();
   const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
-  return data;
+  return data as GraphQlQueryResponseData;
 }

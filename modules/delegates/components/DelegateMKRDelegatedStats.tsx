@@ -10,6 +10,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import Tooltip from 'modules/app/components/Tooltip';
 import { getDescription } from 'modules/polling/components/VotingWeight';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import Skeleton from 'react-loading-skeleton';
 
 export function DelegateMKRDelegatedStats({
   delegate,
@@ -35,7 +36,15 @@ export function DelegateMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={formatValue(parseUnits(delegate.mkrDelegated)) ?? 'Untracked'}
+        value={
+          !votingWeight ? (
+            <Skeleton width="100%" height="15px" />
+          ) : votingWeight?.chiefBalanceHot ? (
+            formatValue(votingWeight?.chiefBalanceHot)
+          ) : (
+            'Untracked'
+          )
+        }
         label={'Total MKR Delegated'}
         tooltip={
           <Tooltip label={getDescription({ votingWeight, isDelegate: true })}>

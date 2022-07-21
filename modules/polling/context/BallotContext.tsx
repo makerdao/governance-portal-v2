@@ -16,6 +16,11 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
 import logger from 'lib/logger';
+import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
+import { invalidateCache } from 'modules/cache/invalidateCache';
+
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
 interface ContextProps {
   ballot: Ballot;
   transaction?: Transaction;
@@ -78,7 +83,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const clearBallot = () => {
     setCommentSignature('');
     setBallot({});
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}));
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}), ONE_DAY_MS);
   };
 
   const loadBallotFromStorage = () => {
@@ -115,7 +120,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     };
     setBallot(newBallot);
 
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot));
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
   };
 
   const removeVoteFromBallot = (pollId: number) => {
@@ -125,7 +130,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const { [pollId]: pollToDelete, ...rest } = ballot;
     setBallot(rest);
 
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(rest));
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(rest), ONE_DAY_MS);
   };
 
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
@@ -139,7 +144,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     };
     setBallot(newBallot);
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot));
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
   };
 
   // Helpers
@@ -231,14 +236,13 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             logger.error('POST Polling Comments: failed to add comment');
             toast.error('Unable to store comments');
           });
-
-          // Invalidate tally cache for each voted poll
-          Object.keys(ballot).forEach(pollId => {
-            setTimeout(() => {
-              fetchJson(`/api/polling/tally/${pollId}/invalidate-cache?network=${network}`);
-            }, 60000);
-          });
         }
+        // Invalidate tally cache for each voted poll
+        Object.keys(ballot).forEach(pollId => {
+          setTimeout(() => {
+            invalidateCache(getPollTallyCacheKey(parseInt(pollId)), network);
+          }, 60000);
+        });
       },
       mined: (txId, txHash) => {
         // Set votes

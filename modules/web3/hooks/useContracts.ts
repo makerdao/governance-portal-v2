@@ -10,11 +10,11 @@ type Props = {
   account?: string | null;
 };
 
-export const useContracts = (): EthSdk => {
+export const useContracts = (apiKey?: string): EthSdk => {
   const { chainId, library, account }: Props = useActiveWeb3React();
 
   const sdk = useMemo(
-    () => getContracts(chainId ?? SupportedChainId.MAINNET, library, account, false),
+    () => getContracts(chainId ?? SupportedChainId.MAINNET, library, account, false, apiKey),
     [chainId, library, account]
   );
 

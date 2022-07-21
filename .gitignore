@@ -7,7 +7,7 @@
 
 # testing
 /coverage
-cache
+/cache
 
 # next.js
 /.next/
@@ -20,7 +20,7 @@ cache
 .DS_Store
 .env*
 !.env.sample
-cache
+/cache
 
 cypress/screenshots/*
 types/ethers-contracts

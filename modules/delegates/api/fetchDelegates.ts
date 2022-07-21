@@ -23,6 +23,10 @@ import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
 import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import { config } from 'lib/config';
+import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -189,10 +193,22 @@ export async function fetchDelegates(
 ): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
+  const cacheKey = allDelegatesCacheKey;
+  const cachedResponse = await cacheGet(cacheKey, network);
+  if (cachedResponse) {
+    return JSON.parse(cachedResponse);
+  }
+
   // This contains all the delegates including info merged with recognized delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
+  const contracts = getContracts(
+    networkNameToChainId(currentNetwork),
+    undefined,
+    undefined,
+    true,
+    config.ALCHEMY_KEY_DELEGATES
+  );
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
@@ -265,6 +281,8 @@ export async function fetchDelegates(
       totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
     }
   };
+
+  cacheSet(cacheKey, JSON.stringify(delegatesResponse), network, TEN_MINUTES_IN_MS);
 
   return delegatesResponse;
 }
