@@ -1,5 +1,5 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { SupportedNetworks, getGaslessNetwork } from 'modules/web3/constants/networks';
+import { SupportedNetworks, getGaslessNetwork, getGaslessProvider, getProvider } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
@@ -33,14 +33,16 @@ export async function getCommentsByAddress(
     .sort({ date: -1 })
     .toArray();
 
+  const provider = await getProvider(network);
+  const gaslessProvider = await getGaslessProvider(network);
+  const providers = {[network]: provider, [gaslessNetwork]: gaslessProvider};
+
   const comments: CommentsAPIResponseItem[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
-      const rpcUrl = getRPCFromChainID(networkNameToChainId(comment.network));
-      const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-      const { transaction, isValid } = await getCommentTransaction(network, provider, comment);
+      const { transaction, isValid } = await getCommentTransaction(network, providers[comment.network], comment);
 
       return {
         comment: {

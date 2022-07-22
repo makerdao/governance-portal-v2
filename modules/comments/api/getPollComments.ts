@@ -1,5 +1,5 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { getGaslessNetwork, SupportedNetworks } from 'modules/web3/constants/networks';
+import { getGaslessNetwork, SupportedNetworks, getGaslessProvider, getProvider } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../types/comments';
@@ -23,6 +23,11 @@ export async function getPollComments(
     .find({ pollId, network: { $in: [network, gaslessNetwork] }, commentType: 'poll' })
     .sort({ date: -1 })
     .toArray();
+  
+  const provider = await getProvider(network);
+  const gaslessProvider = await getGaslessProvider(network);
+  const providers = {[network]: provider, [gaslessNetwork]: gaslessProvider};
+
   const comments: PollComment[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, voterAddress, ...rest } = comment;
@@ -41,9 +46,7 @@ export async function getPollComments(
 
   const promises = uniqueComments.map(async (comment: PollComment) => {
     // verify tx ownership
-    const rpcUrl = getRPCFromChainID(networkNameToChainId(comment.network));
-    const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-    const { transaction, isValid } = await getCommentTransaction(network, provider, comment);
+    const { transaction, isValid } = await getCommentTransaction(network, providers[comment.network], comment);
 
     return {
       comment,

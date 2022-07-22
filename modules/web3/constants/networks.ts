@@ -121,7 +121,12 @@ export const getGaslessNetwork = (network: SupportedNetworks): GaslessNetworks =
   }
 };
 
-//todo add provider return type
+export const getProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
+  const chainId = networkNameToChainId(network);
+  const url = getRPCFromChainID(chainId);
+  return new ethers.providers.JsonRpcProvider(url);
+};
+
 export const getGaslessProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
   const gaslessNetwork = getGaslessNetwork(network);
   const chainId = networkNameToChainId(gaslessNetwork);
