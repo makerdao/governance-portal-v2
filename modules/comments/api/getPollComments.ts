@@ -43,16 +43,8 @@ export async function getPollComments(
     // verify tx ownership
     const rpcUrl = getRPCFromChainID(networkNameToChainId(comment.network));
     const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-    const transaction = await getCommentTransaction(network, provider, comment.txHash);
+    const { transaction, isValid } = await getCommentTransaction(network, provider, comment);
 
-    const isValid =
-      transaction &&
-      (ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase() ||
-        ethers.utils.getAddress(transaction.from).toLowerCase() ===
-          //TODO: Fix. For now just hardcoding the relayer address
-          //get this programatically at the very least
-          '0xccdd98cea0896355ea5082a5f3eb41e8f4761e17');
     return {
       comment,
       isValid,

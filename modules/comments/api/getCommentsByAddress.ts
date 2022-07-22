@@ -1,5 +1,5 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { SupportedNetworks, getGaslessNetwork } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
@@ -25,30 +25,23 @@ export async function getCommentsByAddress(
   if (addressInfo.delegateInfo?.previous?.address) {
     addresses.push(addressInfo.delegateInfo?.previous?.voteDelegateAddress.toLowerCase());
   }
-
+  const gaslessNetwork = getGaslessNetwork(network);
   // decending sort
   const commentsFromDB: CommentFromDB[] = await db
     .collection('comments')
-    .find({ voterAddress: { $in: addresses }, network })
+    .find({ voterAddress: { $in: addresses }, network: { $in: [network, gaslessNetwork] } })
     .sort({ date: -1 })
     .toArray();
-
-  const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
-
-  const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
 
   const comments: CommentsAPIResponseItem[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
-      //TODO: handle arbitrum transactions
-      const transaction = await getCommentTransaction(network, provider, comment.txHash);
+      const rpcUrl = getRPCFromChainID(networkNameToChainId(comment.network));
+      const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
+      const { transaction, isValid } = await getCommentTransaction(network, provider, comment);
 
-      const isValid =
-        transaction &&
-        ethers.utils.getAddress(transaction.from).toLowerCase() ===
-          ethers.utils.getAddress(comment.hotAddress).toLowerCase();
       return {
         comment: {
           ...rest,
