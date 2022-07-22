@@ -235,8 +235,17 @@ export async function fetchDelegates(
 
       return {
         ...delegate,
+        // Trim the description when fetching all the delegates
+        description: delegate.description.substring(0, 100) + '...',
         proposalsSupported,
-        execSupported,
+        execSupported: execSupported
+          ? {
+              ...execSupported,
+              content: '...',
+              about: '...',
+              proposalBlurb: '...'
+            }
+          : undefined,
         lastVoteDate: lastVote ? lastVote.blockTimestamp : null,
         mkrLockedDelegate
       };
