@@ -4,14 +4,14 @@ import { Web3Provider } from '@ethersproject/providers';
 import logger from 'lib/logger';
 import { SupportedChainId } from '../constants/chainID';
 import { CHAIN_INFO } from '../constants/networks';
-import { Chain } from '../types/chain';
+import { SupportedChain } from '../types/chain';
 
 interface SwitchNetworkArguments {
   library: Web3Provider;
   chainId: SupportedChainId;
 }
 
-export function connectToNetwork(chain: Chain, ethereum: any): Promise<any> {
+export function connectToNetwork(chain: SupportedChain, ethereum: any): Promise<any> {
   const params = {
     chainId: hexStripZeros(BigNumber.from(chain.chainId).toHexString()), // A 0x-prefixed hexadecimal string
 

@@ -1,5 +1,5 @@
 import { config } from 'lib/config';
-import { Chain, GaslessChain } from '../types/chain';
+import { SupportedChain, GaslessChain, BlockExplorer } from '../types/chain';
 import { GaslessChainId, SupportedChainId } from './chainID';
 import { ethers } from 'ethers';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
@@ -38,7 +38,7 @@ export enum NodeProviders {
 }
 
 type ChainInfo = {
-  [key in SupportedChainId]: Chain;
+  [key in SupportedChainId]: SupportedChain;
 };
 
 type GaslessChainInfo = {
@@ -49,6 +49,7 @@ type GaslessChainInfo = {
 export const CHAIN_INFO: ChainInfo = {
   [SupportedChainId.MAINNET]: {
     blockExplorerUrl: 'etherscan.io',
+    blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
     network: SupportedNetworks.MAINNET,
@@ -61,6 +62,7 @@ export const CHAIN_INFO: ChainInfo = {
   },
   [SupportedChainId.GOERLI]: {
     blockExplorerUrl: 'goerli.etherscan.io',
+    blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
     network: SupportedNetworks.GOERLI,
@@ -73,6 +75,7 @@ export const CHAIN_INFO: ChainInfo = {
   },
   [SupportedChainId.GOERLIFORK]: {
     blockExplorerUrl: 'goerli.etherscan.io',
+    blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.GOERLIFORK,
     label: 'GoerliFork',
     network: SupportedNetworks.GOERLIFORK,
@@ -87,6 +90,7 @@ export const CHAIN_INFO: ChainInfo = {
 export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
   [GaslessChainId.ARBITRUMTESTNET]: {
     blockExplorerUrl: 'testnet.arbiscan.io',
+    blockExplorerName: 'Arbiscan',
     chainId: GaslessChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
     network: GaslessNetworks.ARBITRUMTESTNET,
@@ -97,6 +101,7 @@ export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
   },
   [GaslessChainId.ARBITRUM]: {
     blockExplorerUrl: 'arbiscan.io',
+    blockExplorerName: 'Arbiscan',
     chainId: GaslessChainId.ARBITRUM,
     label: 'Arbitrum',
     network: GaslessNetworks.ARBITRUM,
@@ -107,6 +112,7 @@ export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
   }
 };
 
+//todo: move these functions below to a different file
 export const getGaslessNetwork = (network: SupportedNetworks): GaslessNetworks => {
   if (network === SupportedNetworks.MAINNET) {
     return GaslessNetworks.ARBITRUM;
@@ -121,6 +127,13 @@ export const getGaslessProvider = (network: SupportedNetworks) => {
   const chainId = networkNameToChainId(gaslessNetwork);
   const url = getRPCFromChainID(chainId);
   return new ethers.providers.JsonRpcProvider(url);
+};
+
+export const getBlockExplorerName = (network: SupportedNetworks | GaslessNetworks): BlockExplorer => {
+  const chainId = networkNameToChainId(network);
+  const networksMapping = {...CHAIN_INFO, ...GASLESS_CHAIN_INFO};
+  if (!networksMapping) return 'block explorer';
+  return networksMapping[chainId].blockExplorerName;
 };
 
 export const DEFAULT_NETWORK = CHAIN_INFO[SupportedChainId.MAINNET];
