@@ -27,6 +27,7 @@ type BallotSteps =
   | 'initial'
   | 'method-select'
   | 'sign-comments'
+  | 'signing-comments'
   | 'confirm'
   | 'submitting'
   | 'tx-pending'

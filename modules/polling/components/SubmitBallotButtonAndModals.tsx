@@ -99,16 +99,16 @@ export function SubmitBallotButtonAndModals({
         return (
           <Flex sx={{ flexDirection: 'column', p: 3 }}>
             <Heading variant="microHeading" sx={{ mt: 3, textAlign: 'center' }}>
-              Poll Comments
+              {`Poll Comment${commentsCount > 1 ? 's' : ''} Signature`}
             </Heading>
             <Text sx={{ mt: 3, color: 'onSecondary' }}>
-              Sign your comments with your wallet in order to validate them. They will be stored off-chain but
-              displayed along with your vote.
+              {`Sign your comment${commentsCount > 1 ? 's' : ''} with your wallet in order to validate them. They will be stored off-chain but
+              displayed along with your vote.`}
             </Text>
             <Button
               onClick={() => {
                 signComments();
-                setStep('confirm');
+                setStep('signing-comments');
               }}
               variant="primaryOutline"
               data-testid="sign-comments-button"
@@ -119,7 +119,7 @@ export function SubmitBallotButtonAndModals({
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                 {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
-                <Text>Sign comments</Text>
+                <Text>{`Sign comment${commentsCount > 1 ? 's' : ''}`}</Text>
               </Flex>
             </Button>
             <Button
@@ -132,6 +132,21 @@ export function SubmitBallotButtonAndModals({
               Back
             </Button>
           </Flex>
+        );
+      case 'signing-comments':
+        return (
+          <ReviewBoxCard>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+              <TxIndicators.Pending sx={{ width: 6 }} />
+            </Flex>
+            <Text
+              mt={3}
+              px={4}
+              sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
+            >
+              {`Please use your wallet to sign your comment${commentsCount > 1 ? 's' : ''}`}
+            </Text>
+          </ReviewBoxCard>
         );
       case 'confirm':
         return (
