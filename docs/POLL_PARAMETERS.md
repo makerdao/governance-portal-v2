@@ -1,0 +1,270 @@
+# Poll Parameters
+
+The governance portal reads and parses the poll parameters defined on each poll on the [MakerDAO community repo](https://github.com/makerdao/community/tree/master/governance/polls).
+
+Each poll file includes some markdown on the header, currently (july 2022) there are 2 kinds of poll parameters, the legacy ones and the new ones that describe the voting options in more details.
+The legacy poll parameters only determine if a poll is ranked (IRV) or plurality. The new poll parameters have more options.
+
+## Legacy poll parameters:
+
+Example of a plurality voting. Always asume that "Abstain" is the 0 choice.
+
+```
+---
+title: Short Ratification Poll for MIP10c7-SP2 - Modify Oracle Data Models - May 30, 2022
+summary: Signal your support or opposition for MIP10c7-SP2 - Modify Data Models for BTC/USD, LINK/USD, MANA/USD, USDT/USD, and YFI/USD.
+discussion_link: https://forum.makerdao.com/t/mip10c7-sp2-modify-data-models-for-btc-usd-link-usd-mana-usd-usdt-usd-yfi-usd-data-model/15235
+vote_type: Plurality Voting
+categories:
+   - MIPs
+   - Medium Impact
+options:
+   0: Abstain
+   1: Yes
+   2: No
+start_date: 2022-05-30T16:00:00
+end_date: 2022-06-02T16:00:00
+---
+```
+
+Example if a ranked choice voting. Always asume that "Abstain" is the 0 choice.
+
+```
+---
+title: Increase the UNIV2DAIUSDC-A Maximum Debt Ceiling - August 2, 2021
+summary: Rank your preferred options for adjusting the UNIV2DAIUSDC-A Maximum Debt Ceiling.
+discussion_link: https://forum.makerdao.com/t/signal-request-adjust-univ2daiusdc-a-dc-iam-line/9481/
+vote_type: Ranked Choice IRV
+categories:
+  - Risk Variable
+options:
+   0: Abstain
+   1: Increase Maximum Debt Ceiling to 250 million DAI (+200M)
+   2: Increase Maximum Debt Ceiling to 150 million DAI (+100M)
+   3: Increase Maximum Debt Ceiling to 100 million DAI (+50M)
+   4: Keep Maximum Debt Ceiling set to 50 million DAI (+0)
+start_date: 2021-08-02T16:00:00
+end_date: 2021-08-05T16:00:00
+---
+
+```
+
+## New poll parameters
+
+The new poll parameters transform the "Ranked Choice IRV" and "Plurality Voting" into 3 different options:
+
+- Input format
+  - Defines how the users will select the options:
+    - single-choice : only select one option
+    - rank-free: ranked choice selection
+    - choose-free: choose multiple options
+- Victory conditions
+  - Defines the algorithm used to determine the winner
+    - plurality:
+    - instant-runoff:
+    - approval:
+    - comparison:
+    - default:
+- Result display.
+  - Defines how the governance portal will display in the UI the voted options.
+
+When combining these 3 options we can get the ranked choice, plurality or other vote types like approval.
+We also introduced the "version" option, version 2.0.0 refers to the new polls. Not all the options can be combined together, for example rank-free has to be combined with a instant-runoff victory condition.
+
+### Input format
+
+| single-choice | Current Single Choice input UI as used for plurality     |
+| ------------- | -------------------------------------------------------- |
+| rank-free     | Current Ranked Choice input UI as used for Ranked Choice |
+| choose-free   | UI to Select n options from list of options              |
+
+### Victory conditions:
+
+Victory conditions is an array of values that determine the wining condition of the algorithm
+
+Currently we supported plurality and instant-runoff(IRV)
+
+| victory_conditions                                                 | summary                                                                                                                            |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| majority                                                           | Condition returns true for the option with more than 50% of the total vote-weight - false for others                               |
+| plurality                                                          | Condition return true for the option with more vote weight than any other option - false for others                                |
+| instant-runoff                                                     | Condition returns true for the option winning when applying the IRV algorthim - false for others                                   |
+| "condition-<option(s)> : <option/value><comparator><option/value>" | Condition returns true for <option(s)> if expression <option/value><comparator><option/value> evaluates to true - false for others |
+| no-victor                                                          | Condition returns false for every option (marking a poll that is not supposed to result in a winning option)                       |
+| default-<option>                                                   | Condition returns true for <option> if no other option returns true on all other victory conditions                                |
+| approval                                                           | Condition return true for the option with the most approval - false for others                                                     |
+
+### Result display:
+
+| result_display                               |                                                                                                                    |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| single-vote-breakdown                        | Displays current breakdown UI for Plurality                                                                        |
+| instant-runoff-breakdown                     | Displays current breakdown UI for Ranked Choice                                                                    |
+| condition-summary                            | Displays a table that lists each victory condition and shows whether it evaluates to true or false for each option |
+| score-<option/value><operator><option/value> | Displays an output score where score = <option/value><operator><option/value>                                      |
+| approval-breakdown                           | Displays current breakdown UI for Plurality - but with approval scores.                                            |
+| weight-breakdown                             | Displays current breakdown UI for Plurality - but with weighted scores.                                            |
+
+
+
+### New plurality voting:
+
+```
+---
+title: POLL PARAMETERS Single choice plurality
+summary: something
+discussion_link: link
+parameters:
+    input_format: single-choice
+    victory_conditions:
+        - { type : plurality }
+    result_display: single-vote-breakdown
+version: v2.0.0
+options:
+  0: Abstain
+  1: Yes
+  2: No
+start_date: 2022-03-06T16:00:00
+end_date: 2025-11-05T16:00:00
+---
+
+```
+
+### New ranked choice voting:
+
+---
+
+title: POLL PARAMETERS Rank Free Instant Runoff
+summary: something
+discussion_link: link
+parameters:
+input_format: rank-free
+victory_conditions: - { type : instant-runoff }
+result_display: instant-runoff-breakdown
+version: v2.0.0  
+options:
+0: Option 1
+1: Option 2
+2: Option 3
+3: Option 4
+4: Option 5
+start_date: 2022-03-06T16:00:00
+end_date: 2025-11-05T16:00:00
+
+---
+
+### Approval voting
+
+Approval voting allows user to select multiple options but should only allow the user to choose one if they select "Abstain" or "None of the above". To do this we use the "options" field on the "input-format".
+
+Example:
+
+- { type: 'approval', options: [1,2,3] } : means the users can multiple choice the options 1,2,3, but selecting any other option will only allow for one selction.
+
+```
+---
+title: Approval
+summary: something
+discussion_link: link
+parameters:
+  input_format: choose-free
+  victory_conditions:
+      - { type : approval, options: [1,2,3] }
+  result_display: approval-breakdown
+version: v2.0.0
+options:
+  0: Abstain
+  1: Approve
+  2: Approve (With plan B)
+  3: Approve (With plan C)
+  4: None of the above
+start_date: 2022-03-06T16:00:00
+end_date: 2025-11-05T16:00:00
+---
+
+```
+
+Approval voting can be combined also with other conditions like "Comparison" and "Default".
+
+#### Comparison
+
+The victory condition "comparison" indicates that for the selected options to be declared winner they need to satisfy the "comparator" threshold. In the following example, the options 0,1,4 need at least 10,000 MKR to be determined as winners.
+
+```
+parameters:
+  input_format: choose-free
+  victory_conditions:
+    - { type : approval, options: [1,2,3] }
+    - { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+  result_display: approval-breakdown
+```
+
+#### Default
+
+The default option determines which option will be selected if none of the previous conditions are met.
+
+```
+parameters:
+  input_format: choose-free
+  victory_conditions:
+    - [
+        { type : approval, options: [1,2,3] },
+        { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+      ]
+    - { type : default, value : 2 }
+  result_display: approval-breakdown
+```
+
+### AND / OR logic.
+
+Victory conditions use the OR logic. The winner will be determined by one of the conditions being met. If we want to create an AND condition, the victory_conditions need to be grouped in an array.
+
+In the following example, the victory conditions require that:
+
+- Theres an approval winner, for the 0,1,4 options it needs to have at least 10,000 MKR.
+- If the previous condition is not met, default to winner 2.
+
+In this example, if the most voted option is the option 1, but the amount of MKR is less than 10,000 MKR, the winner will be option 2.
+
+```
+parameters:
+  input_format: choose-free
+  victory_conditions:
+    - [
+        { type : approval, options: [1,2,3] },
+        { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+      ]
+    - { type : default, value : 2 }
+  result_display: approval-breakdown
+```
+
+If we also want to add a requirement that option 1 has to have more than 50% of the votes to be determined as the winner, we would do :
+
+```
+parameters:
+  input_format: choose-free
+  victory_conditions:
+    - [
+        { type : approval, options: [1,2,3] },
+        { type : comparison, options: [0, 1, 4], comparator : '>=10000' },
+        { type : majority: options: [1] },
+      ]
+    - { type : default, value : 2 }
+  result_display: approval-breakdown
+```
+
+In the following example, a majorty condition determines that options 1,2,3 need at least 50% of the votes to win, if that condition is not met, we would check the next one "comparison". If option 0, 1 or 4 is voted with more than 10,000MKR, that option will be determined as the winner. If none of those 2 first victory conditions are met, then we would default to option 1
+
+```
+parameters:
+  input_format: choose-free
+  victory_conditions:
+    - { type : majority, options: [1,2,3] }
+    - { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+    - { type : default, value : 1 }
+  result_display: approval-breakdown
+```
+
+### Example of the new poll parameters on a poll
+
+We have created several test polls that can be found at: https://github.com/makerdao-dux/community/tree/dux/goerli-polls/governance/polls/poll-parameters
