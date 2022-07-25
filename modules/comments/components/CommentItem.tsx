@@ -80,12 +80,17 @@ export default function CommentItem({
           {comment.comment.txHash && (
             <Box>
               <ExternalLink
-                href={getEtherscanLink(comment.comment.network ?? network, comment.comment.txHash, 'transaction')}
+                href={getEtherscanLink(
+                  comment.comment.network ?? network,
+                  comment.comment.txHash,
+                  'transaction'
+                )}
                 styles={{ my: 3 }}
                 title="View on etherscan"
               >
                 <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                  View on {getBlockExplorerName(comment.comment.network)} {!comment.completed ? '(Pending)' : ''}
+                  View on {getBlockExplorerName(comment.comment.network)}{' '}
+                  {!comment.completed ? '(Pending)' : ''}
                   <Icon name="arrowTopRight" pt={2} color="accentBlue" />
                 </Text>
               </ExternalLink>

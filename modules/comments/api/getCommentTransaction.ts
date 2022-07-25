@@ -26,13 +26,13 @@ export const getCommentTransaction = async (
     }
 
     const isValid =
-    transaction &&
-    (ethers.utils.getAddress(transaction.from).toLowerCase() ===
-      ethers.utils.getAddress(comment.hotAddress).toLowerCase() ||
-      ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        //TODO: get this programatically at the very least
-        //For now just hardcoding the relayer address
-        '0xccdd98cea0896355ea5082a5f3eb41e8f4761e17');
+      transaction &&
+      (ethers.utils.getAddress(transaction.from).toLowerCase() ===
+        ethers.utils.getAddress(comment.hotAddress).toLowerCase() ||
+        ethers.utils.getAddress(transaction.from).toLowerCase() ===
+          //TODO: get this programatically at the very least
+          //For now just hardcoding the relayer address
+          '0xccdd98cea0896355ea5082a5f3eb41e8f4761e17');
 
     return { transaction, isValid };
   } catch (e) {

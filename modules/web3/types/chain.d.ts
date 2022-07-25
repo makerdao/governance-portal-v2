@@ -5,7 +5,7 @@ export type BlockExplorer = 'Etherscan' | 'Arbiscan' | 'block explorer';
 
 export type SupportedChain = {
   blockExplorerUrl: string;
-  blockExplorerName: BlockExplorer,
+  blockExplorerName: BlockExplorer;
   chainId: SupportedChainId;
   label: string;
   network: SupportedNetworks;
@@ -18,7 +18,7 @@ export type SupportedChain = {
 
 export type GaslessChain = {
   blockExplorerUrl: string;
-  blockExplorerName: BlockExplorer,
+  blockExplorerName: BlockExplorer;
   chainId: GaslessChainId;
   label: string;
   network: GaslessNetworks;

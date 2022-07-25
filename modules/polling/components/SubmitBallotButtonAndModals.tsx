@@ -105,8 +105,9 @@ export function SubmitBallotButtonAndModals({
               Sign Comment{commentsCount > 1 ? 's' : ''}
             </Heading>
             <Text sx={{ mt: 3, color: 'onSecondary' }}>
-              Sign your comment{commentsCount > 1 ? 's' : ''} with your wallet in order to validate {commentsCount > 1 ? 'them' : 'it'}. {commentsCount > 1 ? 'They' : 'It'} will be stored off-chain but
-              displayed along with your vote.
+              Sign your comment{commentsCount > 1 ? 's' : ''} with your wallet in order to validate{' '}
+              {commentsCount > 1 ? 'them' : 'it'}. {commentsCount > 1 ? 'They' : 'It'} will be stored
+              off-chain but displayed along with your vote.
             </Text>
             <Button
               onClick={() => {
@@ -114,9 +115,7 @@ export function SubmitBallotButtonAndModals({
               }}
               variant="primaryOutline"
               data-testid="sign-comments-button"
-              disabled={
-                !!commentsSignature || signingComments
-              }
+              disabled={!!commentsSignature || signingComments}
               sx={{ width: '100%', mt: 3 }}
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -202,9 +201,13 @@ export function SubmitBallotButtonAndModals({
             >
               Transaction Pending
             </Text>
-      
+
             <ExternalLink
-              href={getEtherscanLink(transaction?.gaslessNetwork ?? network, (transaction as TXMined).hash, 'transaction')}
+              href={getEtherscanLink(
+                transaction?.gaslessNetwork ?? network,
+                (transaction as TXMined).hash,
+                'transaction'
+              )}
               styles={{ p: 0, mt: 3 }}
               title="View on block explorer"
             >
@@ -218,36 +221,36 @@ export function SubmitBallotButtonAndModals({
       case 'tx-error':
         return (
           <React.Fragment>
-          <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-            <TxIndicators.Failed sx={{ width: 6 }} />
-          </Flex>
-          <Text
-            mt={3}
-            px={4}
-            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-          >
-            Transaction Failed.
-          </Text>
-          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-            Something went wrong with your transaction. Please try again.
-          </Text>
-          <InternalLink href={'/polling/review'} title="Back">
-            <Button
-              pb={3}
-              variant="textual"
-              sx={{
-                borderColor: 'primary',
-                color: 'secondaryEmphasis',
-                fontSize: 2,
-                width: 'max-content',
-                margin: 'auto'
-              }}
-              onClick={clearTransaction}
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+              <TxIndicators.Failed sx={{ width: 6 }} />
+            </Flex>
+            <Text
+              mt={3}
+              px={4}
+              sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
             >
-              Go back
-            </Button>
-          </InternalLink>
-        </React.Fragment>
+              Transaction Failed.
+            </Text>
+            <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+              Something went wrong with your transaction. Please try again.
+            </Text>
+            <InternalLink href={'/polling/review'} title="Back">
+              <Button
+                pb={3}
+                variant="textual"
+                sx={{
+                  borderColor: 'primary',
+                  color: 'secondaryEmphasis',
+                  fontSize: 2,
+                  width: 'max-content',
+                  margin: 'auto'
+                }}
+                onClick={clearTransaction}
+              >
+                Go back
+              </Button>
+            </InternalLink>
+          </React.Fragment>
         );
       default:
         return null;
