@@ -16,7 +16,6 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
-import { SubmitBallotButtonAndModals } from 'modules/polling/components/SubmitBallotButtonAndModals';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -75,16 +74,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
       return findPollById(polls, pollId);
     })
     .filter(p => !!p) as Poll[];
-
-  const SubmitButton = props => (
-    <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <SubmitBallotButtonAndModals
-        onSubmit={() => {
-          trackButtonClick('submitBallot');
-        }}
-      />
-    </Flex>
-  );
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
@@ -281,7 +270,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 )}
                 {bpi <= 2 && (
                   <Box>
-                    {!hasVoted && <SubmitButton />}
                     {hasVoted && (
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>

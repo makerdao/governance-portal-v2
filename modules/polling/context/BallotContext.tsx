@@ -27,7 +27,6 @@ type BallotSteps =
   | 'initial'
   | 'method-select'
   | 'sign-comments'
-  | 'signing-comments'
   | 'confirm'
   | 'submitting'
   | 'tx-pending'
@@ -58,6 +57,8 @@ interface ContextProps {
   ballotStep: BallotSteps;
   submissionMethod: BallotSubmissionMethod | null;
   handleCommentsStep: (method: BallotSubmissionMethod) => void;
+  signingComments: boolean;
+  close: () => void;
 }
 
 export const BallotContext = React.createContext<ContextProps>({
@@ -78,7 +79,9 @@ export const BallotContext = React.createContext<ContextProps>({
   setStep: (step: BallotSteps) => null,
   ballotStep: 'initial',
   submissionMethod: null,
-  handleCommentsStep: () => null
+  handleCommentsStep: () => null,
+  signingComments: false,
+  close: () => null
 });
 
 type PropTypes = {
@@ -93,6 +96,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   // Used to track the signature of the comments API call
   const [commentsSignature, setCommentSignature] = useState('');
+
+  //true if comment is currently being signed
+  const [signingComments, setSigningComments] = useState(false);
 
   const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
 
@@ -203,7 +209,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     if (!account) {
       return;
     }
-
+    setSigningComments(true);
     const comments = getComments();
 
     const data = await fetchJson('/api/comments/nonce', {
@@ -218,6 +224,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const signature = comments.length > 0 ? await sign(account, data.nonce, library) : '';
     setCommentSignature(signature);
+    setStep('confirm');
   };
 
   // Ballot submission
@@ -238,6 +245,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`,
       {
         pending: txHash => {
+          setBallotStep('tx-pending');
           const comments = getComments();
           // if comment included, add to comments db
           if (comments.length > 0) {
@@ -291,6 +299,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             );
         },
         error: () => {
+          setBallotStep('tx-error');
           toast.error('Error submitting ballot');
         }
       },
@@ -373,6 +382,11 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setBallotStep(step);
   };
 
+  const close = () => {
+    setCommentSignature('');
+    setStep('initial');
+  };
+
   const handleCommentsStep = (method: BallotSubmissionMethod) => {
     setSubmissionMethod(method);
     if (commentsCount > 0) {
@@ -412,7 +426,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         setStep,
         ballotStep,
         submissionMethod,
-        handleCommentsStep
+        handleCommentsStep,
+        signingComments,
+        close
       }}
     >
       {children}

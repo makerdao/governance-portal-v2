@@ -1,17 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Flex, Button, Text, Heading, Close } from 'theme-ui';
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import TxIndicators from 'modules/app/components/TxIndicators';
-
-const ReviewBoxCard = ({ children, ...props }) => (
-  <Card variant="compact" p={[0, 0]} {...props}>
-    <Flex sx={{ justifyContent: ['center'], flexDirection: 'column' }}>{children}</Flex>
-  </Card>
-);
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { TXMined } from 'modules/web3/types/transaction';
+import { getBlockExplorerName } from 'modules/web3/constants/networks';
 
 export function SubmitBallotButtonAndModals({
   onSubmit
@@ -30,9 +30,13 @@ export function SubmitBallotButtonAndModals({
     ballotStep,
     handleCommentsStep,
     submissionMethod,
-    clearTransaction
+    clearTransaction,
+    signingComments,
+    close
   } = useContext(BallotContext);
   const bpi = useBreakpointIndex();
+
+  const { network } = useActiveWeb3React();
 
   const modalOpenButton = (
     <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
@@ -49,7 +53,6 @@ export function SubmitBallotButtonAndModals({
       </Button>
     </Flex>
   );
-
   const modalContent = () => {
     switch (ballotStep) {
       case 'method-select':
@@ -99,27 +102,26 @@ export function SubmitBallotButtonAndModals({
         return (
           <Flex sx={{ flexDirection: 'column', p: 3 }}>
             <Heading variant="microHeading" sx={{ mt: 3, textAlign: 'center' }}>
-              {`Poll Comment${commentsCount > 1 ? 's' : ''} Signature`}
+              Sign Comment{commentsCount > 1 ? 's' : ''}
             </Heading>
             <Text sx={{ mt: 3, color: 'onSecondary' }}>
-              {`Sign your comment${commentsCount > 1 ? 's' : ''} with your wallet in order to validate them. They will be stored off-chain but
-              displayed along with your vote.`}
+              Sign your comment{commentsCount > 1 ? 's' : ''} with your wallet in order to validate {commentsCount > 1 ? 'them' : 'it'}. {commentsCount > 1 ? 'They' : 'It'} will be stored off-chain but
+              displayed along with your vote.
             </Text>
             <Button
               onClick={() => {
                 signComments();
-                setStep('signing-comments');
               }}
               variant="primaryOutline"
               data-testid="sign-comments-button"
               disabled={
-                !ballotCount || !!(transaction && transaction?.status !== 'error') || !!commentsSignature
+                !!commentsSignature || signingComments
               }
               sx={{ width: '100%', mt: 3 }}
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                 {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
-                <Text>{`Sign comment${commentsCount > 1 ? 's' : ''}`}</Text>
+                <Text>Sign comment{commentsCount > 1 ? 's' : ''}</Text>
               </Flex>
             </Button>
             <Button
@@ -132,21 +134,6 @@ export function SubmitBallotButtonAndModals({
               Back
             </Button>
           </Flex>
-        );
-      case 'signing-comments':
-        return (
-          <ReviewBoxCard>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-              <TxIndicators.Pending sx={{ width: 6 }} />
-            </Flex>
-            <Text
-              mt={3}
-              px={4}
-              sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-            >
-              {`Please use your wallet to sign your comment${commentsCount > 1 ? 's' : ''}`}
-            </Text>
-          </ReviewBoxCard>
         );
       case 'confirm':
         return (
@@ -181,7 +168,7 @@ export function SubmitBallotButtonAndModals({
         );
       case 'submitting':
         return (
-          <ReviewBoxCard>
+          <React.Fragment>
             <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
@@ -201,18 +188,73 @@ export function SubmitBallotButtonAndModals({
             >
               Cancel vote submission
             </Button>
-          </ReviewBoxCard>
+          </React.Fragment>
         );
       case 'tx-pending':
+        return (
+          <React.Fragment>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+              <TxIndicators.Pending sx={{ width: 6 }} />
+            </Flex>
+            <Text
+              px={4}
+              sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+            >
+              Transaction Pending
+            </Text>
+      
+            <ExternalLink
+              href={getEtherscanLink(transaction?.gaslessNetwork ?? network, (transaction as TXMined).hash, 'transaction')}
+              styles={{ p: 0, mt: 3 }}
+              title="View on block explorer"
+            >
+              <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+                View on {getBlockExplorerName(transaction?.gaslessNetwork ?? network)}
+                <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+              </Text>
+            </ExternalLink>
+          </React.Fragment>
+        );
       case 'tx-error':
+        return (
+          <React.Fragment>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+            <TxIndicators.Failed sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            mt={3}
+            px={4}
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
+          >
+            Transaction Failed.
+          </Text>
+          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+            Something went wrong with your transaction. Please try again.
+          </Text>
+          <InternalLink href={'/polling/review'} title="Back">
+            <Button
+              pb={3}
+              variant="textual"
+              sx={{
+                borderColor: 'primary',
+                color: 'secondaryEmphasis',
+                fontSize: 2,
+                width: 'max-content',
+                margin: 'auto'
+              }}
+              onClick={clearTransaction}
+            >
+              Go back
+            </Button>
+          </InternalLink>
+        </React.Fragment>
+        );
       default:
         return null;
     }
   };
 
   if (ballotStep === 'initial') return modalOpenButton;
-
-  const close = () => setStep('initial');
 
   return (
     <div>
