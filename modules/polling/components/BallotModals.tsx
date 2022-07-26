@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Card, Flex, Button, Text, Heading, Close } from 'theme-ui';
-import React, { useContext, useEffect } from 'react';
+import { Flex, Button, Text, Heading, Close } from 'theme-ui';
+import React, { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -13,11 +13,11 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { TXMined } from 'modules/web3/types/transaction';
 import { getBlockExplorerName } from 'modules/web3/constants/networks';
 
-export function SubmitBallotButtonAndModals({
+export function BallotModals({
   onSubmit
 }: {
   onSubmit: () => void;
-}): React.ReactElement | null {
+}): React.ReactElement {
   const {
     signComments,
     transaction,
@@ -36,21 +36,8 @@ export function SubmitBallotButtonAndModals({
 
   const { network } = useActiveWeb3React();
 
-  const modalOpenButton = (
-    <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
-      <Button
-        onClick={() => {
-          setStep('method-select');
-        }}
-        data-testid="submit-ballot-button"
-        variant="primaryLarge"
-        disabled={!ballotCount || ballotStep !== 'initial'}
-        sx={{ width: '100%' }}
-      >
-        Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
-      </Button>
-    </Flex>
-  );
+  //todo: create separate components for each modal
+
   const modalContent = () => {
     switch (ballotStep) {
       case 'method-select':
@@ -268,14 +255,11 @@ export function SubmitBallotButtonAndModals({
     }
   };
 
-  if (ballotStep === 'initial') return modalOpenButton;
-
   return (
     <div>
-      {modalOpenButton}
       <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
         <DialogContent
-          aria-label="Executive Vote"
+          aria-label="Polling Vote"
           sx={
             bpi === 0
               ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
