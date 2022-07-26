@@ -6,17 +6,22 @@ import isEqual from 'lodash/isEqual';
 import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
-import { extractCurrentPollVote, isInputFormatRankFree } from 'modules/polling/helpers/utils';
+import {
+  extractCurrentPollVote,
+  isInputFormatChooseFree,
+  isInputFormatRankFree,
+  isInputFormatSingleChoice
+} from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
-import ChoiceSummary from './ChoiceSummary';
+import ChoiceSummary from '../ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import VotingStatus from './PollVotingStatus';
+import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { BallotContext } from '../context/BallotContext';
+import { BallotContext } from '../../context/BallotContext';
 
 type Props = {
   poll: Poll;
@@ -88,6 +93,7 @@ const QuickVote = ({
   };
 
   const gap = 2;
+
   return (
     <Stack gap={gap} {...props}>
       <Flex
@@ -133,10 +139,14 @@ const QuickVote = ({
         />
       ) : (
         <div>
-          {isInputFormatRankFree(poll.parameters) ? (
+          {isInputFormatRankFree(poll.parameters) && (
             <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
-          ) : (
+          )}
+          {isInputFormatSingleChoice(poll.parameters) && (
             <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
+          )}
+          {isInputFormatChooseFree(poll.parameters) && (
+            <ChooseFreeSelect {...{ poll, setChoice }} choice={choice as number | null} />
           )}
           <Button
             data-testid="button-add-vote-to-ballot-desktop"

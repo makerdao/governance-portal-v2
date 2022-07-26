@@ -69,8 +69,8 @@ export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeU
                   <Text>{type.name}</Text>
                   <Text sx={{ color: 'mutedAlt', ml: 3 }}>
                     {
-                      filteredPolls.filter(
-                        i => findVictoryCondition(i.parameters.victoryConditions, type.key)
+                      filteredPolls.filter(i =>
+                        findVictoryCondition(i.parameters.victoryConditions, type.key)
                       ).length
                     }
                   </Text>

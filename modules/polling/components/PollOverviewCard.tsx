@@ -4,7 +4,6 @@ import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } fro
 import shallow from 'zustand/shallow';
 import {
   isActivePoll,
-  isInputFormatRankFree,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
@@ -29,6 +28,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
+import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 
 type Props = {
   poll: Poll;
@@ -92,11 +92,10 @@ export default function PollOverviewCard({
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}
                       />
-                      {!showQuickVote && isInputFormatRankFree(poll.parameters) && (
-                        <Flex sx={{ alignItems: 'center', mb: 3 }}>
-                          <Text variant="caps">Ranked-choice poll</Text>
-                          <Icon name="stackedVotes" size={3} ml={2} />
-                        </Flex>
+                      {!showQuickVote && (
+                        <Box sx={{ mb: 3 }}>
+                          <PollVoteTypeIndicator poll={poll} />
+                        </Box>
                       )}
                     </Flex>
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
