@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally, PluralityResult, RankedChoiceResult } from '../types';
 import BigNumber from 'lib/bigNumberJs';
-import { isPluralityVictoryConditionPoll, isRankedChoiceVictoryConditionPoll } from './utils';
+import { hasVictoryConditionPlurality, hasVictoryConditionInstantRunOff } from './utils';
 
 export function getRankedChoiceResults(rawTally: RawPollTally, poll: Poll): RankedChoiceResult[] {
   const rankedChoiceResult: RankedChoiceResult[] = Object.keys(poll.options)
@@ -82,9 +82,9 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
 
   const totalMkrParticipation = rawTally.totalMkrParticipation.toNumber();
 
-  const isRanked = isRankedChoiceVictoryConditionPoll(poll.parameters);
+  const isRanked = hasVictoryConditionInstantRunOff(poll.parameters.victoryConditions);
 
-  const isPlurality = isPluralityVictoryConditionPoll(poll.parameters);
+  const isPlurality = hasVictoryConditionPlurality(poll.parameters.victoryConditions);
 
   // TODO: Not supported yet, but introduced in the codebase as an example of logic extension.
   // const isMajority = poll.parameters.victoryConditions.find(v => v.type === PollVictoryConditions.majority);

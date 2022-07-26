@@ -30,15 +30,22 @@ export type PollVictoryConditionInstantRunoff = {
   type: PollVictoryConditions.instantRunoff;
 };
 
+// { type : 'approval' }
+export type PollVictoryConditionApproval = {
+  type: PollVictoryConditions.approval;
+};
+
+export type NestedVictoryCondition =
+  | PollVictoryConditionComparison
+  | PollVictoryConditionDefault
+  | PollVictoryConditionMajority
+  | PollVictoryConditionApproval
+  | PollVictoryConditionInstantRunoff
+  | PollVictoryConditionPlurality;
+
 type PollParameters = {
   inputFormat: PollInputFormat;
-  victoryConditions: (
-    | PollVictoryConditionComparison
-    | PollVictoryConditionDefault
-    | PollVictoryConditionMajority
-    | PollVictoryConditionInstantRunoff
-    | PollVictoryConditionPlurality
-  )[];
+  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][];
   resultDisplay: PollResultDisplay;
 };
 

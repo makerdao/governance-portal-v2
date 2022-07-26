@@ -1,5 +1,5 @@
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
-import { Poll, PollParameters, PollVote } from '../types';
+import { NestedVictoryCondition, Poll, PollParameters, PollVote } from '../types';
 
 export function pollHasEnded(poll: Poll): boolean {
   const now = Date.now();
@@ -15,11 +15,55 @@ export function isActivePoll(poll: Poll): boolean {
   return !pollHasEnded(poll) && pollHasStarted(poll);
 }
 
-export function isRankedChoiceVictoryConditionPoll(parameters: PollParameters): boolean {
-  return !!parameters.victoryConditions.find(v => v.type === PollVictoryConditions.instantRunoff);
+export function hasVictoryConditionInstantRunOff(
+  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+): boolean {
+  return !!(victoryConditions as Array<NestedVictoryCondition | NestedVictoryCondition[]>).find(
+    (v: NestedVictoryCondition[] | NestedVictoryCondition) => {
+      if (Array.isArray(v)) {
+        return !!v.find(i => i.type === PollVictoryConditions.instantRunoff);
+      }
+      return v.type === PollVictoryConditions.instantRunoff;
+    }
+  );
 }
-export function isPluralityVictoryConditionPoll(parameters: PollParameters): boolean {
-  return !!parameters.victoryConditions.find(v => v.type === PollVictoryConditions.plurality);
+export function hasVictoryConditionPlurality(
+  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+): boolean {
+  return !!(victoryConditions as Array<NestedVictoryCondition | NestedVictoryCondition[]>).find(
+    (v: NestedVictoryCondition[] | NestedVictoryCondition) => {
+      if (Array.isArray(v)) {
+        return !!v.find(i => i.type === PollVictoryConditions.plurality);
+      }
+      return v.type === PollVictoryConditions.plurality;
+    }
+  );
+}
+
+export function hasVictoryConditionMajority(
+  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+): boolean {
+  return !!(victoryConditions as Array<NestedVictoryCondition | NestedVictoryCondition[]>).find(
+    (v: NestedVictoryCondition[] | NestedVictoryCondition) => {
+      if (Array.isArray(v)) {
+        return !!v.find(i => i.type === PollVictoryConditions.majority);
+      }
+      return v.type === PollVictoryConditions.majority;
+    }
+  );
+}
+
+export function hasVictoryConditionApproval(
+  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+): boolean {
+  return !!(victoryConditions as Array<NestedVictoryCondition | NestedVictoryCondition[]>).find(
+    (v: NestedVictoryCondition[] | NestedVictoryCondition) => {
+      if (Array.isArray(v)) {
+        return !!v.find(i => i.type === PollVictoryConditions.approval);
+      }
+      return v.type === PollVictoryConditions.approval;
+    }
+  );
 }
 
 export function isResultDisplaySingleVoteBreakdown(parameters: PollParameters): boolean {

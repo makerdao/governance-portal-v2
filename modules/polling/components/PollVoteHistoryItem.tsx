@@ -10,7 +10,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
 import {
   isInputFormatRankFree,
-  isPluralityVictoryConditionPoll,
+  hasVictoryConditionPlurality,
   isResultDisplayInstantRunoffBreakdown
 } from '../helpers/utils';
 import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
@@ -20,7 +20,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
   const bpi = useBreakpointIndex();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const { tally } = usePollTally(vote.pollId);
-  const isPluralityVote = isPluralityVictoryConditionPoll(vote.poll.parameters);
+  const isPluralityVote = hasVictoryConditionPlurality(vote.poll.parameters.victoryConditions);
   return (
     <Box
       sx={{

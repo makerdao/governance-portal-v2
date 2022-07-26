@@ -95,7 +95,32 @@ parameters:
     expect(parsed).toBe(null);
     expect(errors.length).toBeGreaterThan(0);
 
-    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInvalidCombination);
+    expect(errors[0]).toEqual(
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndMajoritynNotBeCombined
+    );
+  });
+
+  it('should error if victory_conditions combine instant-runoff and majority', () => {
+    const parameters = `---
+parameters:
+    input_format: single-choice
+    victory_conditions:
+      - { type : 'majority' }
+      - { type: 'instant-runoff'}
+
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndPluralityCanNotBeCombined
+    );
   });
 
   it('should error if victory_condition plurality does not have input_format single-choice conditions', () => {
@@ -259,6 +284,54 @@ parameters:
     expect(errors.length).toBeGreaterThan(0);
 
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.missingVictoryConditions);
+  });
+
+  it('should enforce "choose-free" input-format if victory condition is approval', () => {
+    const parameters = `---
+parameters:
+    input_format: rank-free
+    victory_conditions:
+      - { type : 'approval' }
+    result_display: 'approval-breakdown'
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.missingVictoryConditions);
+  });
+
+  it('should error if victory_condition approval does not have result_display approval-breakdown', () => {
+    const parameters = `---
+parameters:
+    input_format: choose-free
+    victory_conditions:
+      - { type : 'approval' }
+    result_display: 'other'
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.approvalRequiresApprovalBreakdownDisplay);
+  });
+
+  it('can not combine majority with instant runoff in an AND condition', () => {
+    // TODO
+  });
+
+  it('notifies that the default victory condition misses the option', () => {
+    // TODO
   });
 
   // TODO: Majority support
