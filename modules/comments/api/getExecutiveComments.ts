@@ -48,7 +48,7 @@ export async function getExecutiveComments(
 
   const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
     // verify tx ownership
-    const transaction = await getCommentTransaction(network, provider, comment.txHash);
+    const transaction = await getCommentTransaction(network, provider, comment);
 
     const isValid =
       transaction &&
