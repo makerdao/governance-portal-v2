@@ -1,5 +1,6 @@
+import { PollVictoryConditions } from '../polling.constants';
 import { Poll } from '../types';
-import { isActivePoll } from './utils';
+import { findVictoryCondition, isActivePoll } from './utils';
 
 type PollFilterInputs = {
   polls: Poll[];
@@ -76,7 +77,9 @@ export function filterPolls({ polls, pollFilters }: PollFilterInputs): Poll[] {
 
         return (
           noPollVictoryConditionsSelected ||
-          poll.parameters.victoryConditions.find(v => victoryConditions.indexOf(v.type) !== -1)
+          victoryConditions.find(condition =>
+            findVictoryCondition(poll.parameters.victoryConditions, condition as PollVictoryConditions)
+          )
         );
       })
   );
