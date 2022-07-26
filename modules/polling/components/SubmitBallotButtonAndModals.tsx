@@ -189,6 +189,20 @@ export function SubmitBallotButtonAndModals({
             </Button>
           </React.Fragment>
         );
+      case 'awaiting-relayer':
+        return (
+          <React.Fragment>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+              <TxIndicators.Pending sx={{ width: 6 }} />
+            </Flex>
+            <Text
+              px={4}
+              sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+            >
+              Sending Vote to Relayer
+            </Text>
+          </React.Fragment>
+        );
       case 'tx-pending':
         return (
           <React.Fragment>

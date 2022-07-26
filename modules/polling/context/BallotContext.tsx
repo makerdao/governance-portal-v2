@@ -29,6 +29,7 @@ type BallotSteps =
   | 'sign-comments'
   | 'confirm'
   | 'submitting'
+  | 'awaiting-relayer'
   | 'tx-pending'
   | 'tx-error';
 type BallotSubmissionMethod = 'standard' | 'gasless';
@@ -245,7 +246,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`,
       {
         pending: txHash => {
-          setBallotStep('tx-pending');
+          setStep('tx-pending');
           const comments = getComments();
           // if comment included, add to comments db
           if (comments.length > 0) {
@@ -299,7 +300,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             );
         },
         error: () => {
-          setBallotStep('tx-error');
+          setStep('tx-error');
           toast.error('Error submitting ballot');
         }
       },
@@ -364,18 +365,29 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
-
-    const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
+    let signature;
+    try {
+      signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
+    } catch (error) {
+      toast.error(error);
+      setStep('tx-error');
+    }
+    setStep('awaiting-relayer');
     fetchJson(`/api/polling/vote?network=${network}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ ...signatureValues, ...signature })
-    }).then(res => {
-      const voteTxCreator = () => provider.getTransaction(res.hash);
-      trackPollVote(voteTxCreator, getGaslessNetwork(network));
-    });
+    })
+      .then(res => {
+        const voteTxCreator = () => provider.getTransaction(res.hash);
+        trackPollVote(voteTxCreator, getGaslessNetwork(network));
+      })
+      .catch(error => {
+        toast.error(error);
+        setStep('tx-error');
+      });
   };
 
   const setStep = (step: BallotSteps) => {
@@ -397,7 +409,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   };
   const clearTransaction = () => {
     setTxId(null);
-    setBallotStep('initial');
+    setStep('initial');
     setSubmissionMethod(null);
   };
 
