@@ -19,7 +19,7 @@ export async function signTypedBallotData(
   message: BallotDataValues,
   provider: Web3Provider,
   chainId: SupportedChainId
-): Promise<SignatureObject> {
+): Promise<SignatureObject | null> {
   const typedData = JSON.stringify({
     types: {
       EIP712Domain: [
@@ -74,11 +74,14 @@ export async function signTypedBallotData(
     message
   });
 
-  const rawSig = await provider.send('eth_signTypedData_v4', [message.voter, typedData]);
-
+  let rawSig;
+  try {
+    rawSig = await provider.send('eth_signTypedData_v4', [message.voter, typedData]);
+  } catch (error) {
+    return null;
+  }
   const r = rawSig.slice(0, 66);
   const s = '0x' + rawSig.slice(66, 130);
   const v = Number('0x' + rawSig.slice(130, 132));
-  console.log({ v, r, s });
   return { v, r, s };
 }

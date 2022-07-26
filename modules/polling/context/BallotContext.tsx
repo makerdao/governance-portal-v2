@@ -48,7 +48,6 @@ interface ContextProps {
   submitBallot: () => void;
   submitBallotGasless: () => void;
   clearBallot: () => void;
-  clearTransaction: () => void;
   isPollOnBallot: (pollId: number) => boolean;
   ballotCount: number;
   signComments: () => void;
@@ -67,7 +66,6 @@ export const BallotContext = React.createContext<ContextProps>({
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
   addVoteToBallot: (pollId: number, ballotVote: BallotVote) => null,
   clearBallot: () => null,
-  clearTransaction: () => null,
   removeVoteFromBallot: (pollId: number) => null,
   submitBallot: () => null,
   submitBallotGasless: () => null,
@@ -359,14 +357,13 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
-    let signature;
-    try {
-      signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
-    } catch (error) {
-      toast.error(error);
+    const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
+    console.log({ signature });
+    if (signature) {
+      setStep('awaiting-relayer');
+    } else {
       setStep('tx-error');
     }
-    setStep('awaiting-relayer');
     fetchJson(`/api/polling/vote?network=${network}`, {
       method: 'POST',
       headers: {
@@ -390,7 +387,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const close = () => {
     setCommentSignature('');
+    setTxId(null);
     setStep('initial');
+    setSubmissionMethod(null);
   };
 
   const handleCommentsStep = (method: BallotSubmissionMethod) => {
@@ -400,11 +399,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     } else {
       setStep('confirm');
     }
-  };
-  const clearTransaction = () => {
-    setTxId(null);
-    setStep('initial');
-    setSubmissionMethod(null);
   };
 
   useEffect(() => {
@@ -417,7 +411,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballot,
         previousBallot,
         clearBallot,
-        clearTransaction,
         addVoteToBallot,
         removeVoteFromBallot,
         updateVoteFromBallot,

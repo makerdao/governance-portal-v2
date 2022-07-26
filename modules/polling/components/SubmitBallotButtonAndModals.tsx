@@ -30,7 +30,6 @@ export function SubmitBallotButtonAndModals({
     ballotStep,
     handleCommentsStep,
     submissionMethod,
-    clearTransaction,
     close
   } = useContext(BallotContext);
   const bpi = useBreakpointIndex();
@@ -60,17 +59,16 @@ export function SubmitBallotButtonAndModals({
             <Heading variant="microHeading" sx={{ mt: 3, textAlign: 'center' }}>
               Submission options
             </Heading>
-            <Text variant="smallCaps" sx={{ mt: 3 }}>
+            <Heading variant="microHeading" sx={{ mt: 3 }}>
               Standard
-            </Text>
+            </Heading>
             <Text sx={{ mt: 3, color: 'onSecondary' }}>
-              Submit your vote as a standard transaction and sent to the polling contract on Mainnet. You pay
-              the gas fee.
+              Submit your vote as a standard transaction and send it to the polling contract on Mainnet. You
+              pay the gas fee.
             </Text>
             <Button
               onClick={() => {
                 handleCommentsStep('standard');
-                // submitBallot();
                 // onSubmit();
               }}
               variant="primaryLarge"
@@ -79,12 +77,12 @@ export function SubmitBallotButtonAndModals({
             >
               Submit by transaction
             </Button>
-            <Text variant="smallCaps" sx={{ mt: 3 }}>
+            <Heading variant="microHeading" sx={{ mt: 3 }}>
               Gasless
-            </Text>
+            </Heading>
             <Text sx={{ mt: 3, color: 'onSecondary' }}>
               Submit your vote by signing your ballot and sending it to the polling contract on Arbitrum via
-              our relayed. The gas fee is covered by Maker.
+              our relayer. The gas fee is covered by Maker.
             </Text>
             <Button
               onClick={() => handleCommentsStep('gasless')}
@@ -175,12 +173,12 @@ export function SubmitBallotButtonAndModals({
               px={4}
               sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
             >
-              Please use your wallet to sign this transaction.
+              Please use your wallet to sign your {submissionMethod === 'gasless' ? 'ballot' : 'transaction'}
             </Text>
             <Button
               mt={3}
               mb={4}
-              onClick={clearTransaction}
+              onClick={close}
               variant="textual"
               sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
             >
@@ -198,7 +196,7 @@ export function SubmitBallotButtonAndModals({
               px={4}
               sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
             >
-              Sending Vote to Relayer
+              Sending Ballot to Relayer
             </Text>
           </React.Fragment>
         );
@@ -258,7 +256,7 @@ export function SubmitBallotButtonAndModals({
                   width: 'max-content',
                   margin: 'auto'
                 }}
-                onClick={clearTransaction}
+                onClick={close}
               >
                 Go back
               </Button>
