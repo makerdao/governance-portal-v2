@@ -31,7 +31,6 @@ export function SubmitBallotButtonAndModals({
     handleCommentsStep,
     submissionMethod,
     clearTransaction,
-    signingComments,
     close
   } = useContext(BallotContext);
   const bpi = useBreakpointIndex();
@@ -115,7 +114,7 @@ export function SubmitBallotButtonAndModals({
               }}
               variant="primaryOutline"
               data-testid="sign-comments-button"
-              disabled={!!commentsSignature || signingComments}
+              disabled={!!commentsSignature}
               sx={{ width: '100%', mt: 3 }}
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>

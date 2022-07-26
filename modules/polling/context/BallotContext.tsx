@@ -58,7 +58,6 @@ interface ContextProps {
   ballotStep: BallotSteps;
   submissionMethod: BallotSubmissionMethod | null;
   handleCommentsStep: (method: BallotSubmissionMethod) => void;
-  signingComments: boolean;
   close: () => void;
 }
 
@@ -81,7 +80,6 @@ export const BallotContext = React.createContext<ContextProps>({
   ballotStep: 'initial',
   submissionMethod: null,
   handleCommentsStep: () => null,
-  signingComments: false,
   close: () => null
 });
 
@@ -97,9 +95,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   // Used to track the signature of the comments API call
   const [commentsSignature, setCommentSignature] = useState('');
-
-  //true if comment is currently being signed
-  const [signingComments, setSigningComments] = useState(false);
 
   const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
 
@@ -210,7 +205,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     if (!account) {
       return;
     }
-    setSigningComments(true);
     const comments = getComments();
 
     const data = await fetchJson('/api/comments/nonce', {
@@ -439,7 +433,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballotStep,
         submissionMethod,
         handleCommentsStep,
-        signingComments,
         close
       }}
     >

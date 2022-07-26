@@ -3,7 +3,7 @@ import logger from 'lib/logger';
 import { FIVE_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { CommentFromDB } from '../types/comments';
+import { CommentFromDB, PollComment } from '../types/comments';
 
 export const getCommentTransaction = async (
   network: SupportedNetworks,
