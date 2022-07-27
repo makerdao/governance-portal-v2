@@ -12,17 +12,17 @@ export enum MKRWeightTimeRanges {
 
 export const MEET_DELEGATE_URLS = {
   // Schuppi
-  '0xb21e535fb349e4ef0520318acfe589e174b0126b': 'https://www.youtube-nocookie.com/embed/3483QFS4_qQ',
+  '0xb4b82978fce6d26a22dea7e653bb9ce8e14f8056': 'https://www.youtube-nocookie.com/embed/3483QFS4_qQ',
   // Feedblack Loops
-  '0x845b36e1e4f41a361dd711bda8ea239bf191fe95': 'https://www.youtube-nocookie.com/embed/n4eILXWY_28',
+  '0x92e1ca8b69a44bb17afa92838da68fc41f12250a': 'https://www.youtube-nocookie.com/embed/n4eILXWY_28',
   // Flip Flop Flap
-  '0xaf8aa6846539033eaf0c3ca4c9c7373e370e039b': 'https://www.youtube-nocookie.com/embed/SVUm1Bz0U9A',
+  '0x0f4be9f208c552a6b04d9a1222f385785f95beaa': 'https://www.youtube-nocookie.com/embed/SVUm1Bz0U9A',
   // MonetSupply
   '0x45127ec92b58c3a89e89f63553073adcaf2f1f5f': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg',
   // MakerMan
   '0x22d5294a23d49294bf11d9db8beda36e104ad9b3': 'https://www.youtube-nocookie.com/embed/Cm0Qy8PTEf0',
   // Gauntlet
-  '0xb0b829a6aae0f7e59b43391b2c8a1cfd0c801c8c':
+  '0x2e0a608c3d85ee7ee3ee0f557c1dae2f6e01df3f':
     'https://www.youtube-nocookie.com/embed/PbdUe4diPjg?start=1710',
   // GFX
   '0xf60d7a62c98f65480725255e831de531efe3fe14': 'https://www.youtube-nocookie.com/embed/SoiTAghnWFE',
@@ -44,7 +44,16 @@ export const MEET_DELEGATE_URLS = {
   // Blockchain@Columbia
   '0xb8df77c3bd57761bd0c55d2f873d3aa89b3da8b7':
     'https://www.youtube-nocookie.com/embed/9B-gDrEiK6o?start=2123',
+  // mhonkasalo & teemulau
+  '0xaa19f47e6acb02df88efa9f023f2a38412069902': 'https://www.youtube-nocookie.com/embed/KYiC2hVHwII',
+  // ChicagoDAO
+  '0x797d63cb6709c79b9eca99d9585ea613da205156':
+    'https://www.youtube-nocookie.com/embed/KYiC2hVHwII?start=1806',
   // Chris Blec
   '0x2c511d932c5a6fe4071262d49bfc018cfbaaa1f5':
-    'https://player.vimeo.com/video/716051719?h=3c7aa24f14&color=68FEE3&autoplay=1'
+    'https://player.vimeo.com/video/716051719?h=3c7aa24f14&color=68FEE3&autoplay=1',
+  // Governance House
+  '0x4e314eba76c3062140ad196e4ffd34485e33c5f5': 'https://www.youtube-nocookie.com/embed/67PFalZks5I'
+  // pvl https://www.youtube.com/watch?v=yIHFRJDA7cM
+  // '': 'https://www.youtube-nocookie.com/embed/yIHFRJDA7cM'
 };
