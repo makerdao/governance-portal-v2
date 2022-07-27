@@ -22,7 +22,7 @@ export const MEET_DELEGATE_URLS = {
   // MakerMan
   '0x22d5294a23d49294bf11d9db8beda36e104ad9b3': 'https://www.youtube-nocookie.com/embed/Cm0Qy8PTEf0',
   // Gauntlet
-  '0x2e0a608c3d85ee7ee3ee0f557c1dae2f6e01df3f':
+  '0xa149694b5b67e2078576a6f225de6b138efba043':
     'https://www.youtube-nocookie.com/embed/PbdUe4diPjg?start=1710',
   // GFX
   '0xf60d7a62c98f65480725255e831de531efe3fe14': 'https://www.youtube-nocookie.com/embed/SoiTAghnWFE',
