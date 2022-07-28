@@ -26,7 +26,7 @@ export default function PollCommentItem({
     }
 
     const voteOptionText = isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
-      <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
+      <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat.type) }}>
         {poll.options[commentVote.optionId]}
       </Text>
     ) : (

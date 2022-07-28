@@ -96,7 +96,7 @@ parameters:
     expect(errors.length).toBeGreaterThan(0);
 
     expect(errors[0]).toEqual(
-      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndMajoritynNotBeCombined
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndPluralityCanNotBeCombined
     );
   });
 
@@ -119,7 +119,7 @@ parameters:
     expect(errors.length).toBeGreaterThan(0);
 
     expect(errors[0]).toEqual(
-      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndPluralityCanNotBeCombined
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndMajoritynNotBeCombined
     );
   });
 
@@ -218,7 +218,11 @@ parameters:
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
-      inputFormat: 'single-choice',
+      inputFormat: {
+        type: 'single-choice',
+        abstain: [0],
+        options: []
+      },
       victoryConditions: [{ type: 'plurality' }],
       resultDisplay: 'single-vote-breakdown'
     });
@@ -260,7 +264,11 @@ parameters:
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
-      inputFormat: 'rank-free',
+      inputFormat: {
+        type: 'rank-free',
+        abstain: [0],
+        options: []
+      },
       victoryConditions: [{ type: 'instant-runoff' }],
       resultDisplay: 'instant-runoff-breakdown'
     });
@@ -303,7 +311,7 @@ parameters:
     expect(parsed).toBe(null);
     expect(errors.length).toBeGreaterThan(0);
 
-    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.missingVictoryConditions);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.approvalRequiresChooseFree);
   });
 
   it('should error if victory_condition approval does not have result_display approval-breakdown', () => {
@@ -324,6 +332,63 @@ parameters:
     expect(errors.length).toBeGreaterThan(0);
 
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.approvalRequiresApprovalBreakdownDisplay);
+  });
+
+  it('extracts correctly the options for a choose-free', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+    victory_conditions:
+      - { type : 'approval' }
+    result_display: 'approval-breakdown'
+---
+# hello
+    
+        `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual({
+      inputFormat: {
+        type: 'choose-free',
+        abstain: [0],
+        options: [1, 2]
+      },
+      victoryConditions: [{ type: 'approval' }],
+      resultDisplay: 'approval-breakdown'
+    });
+    expect(errors.length).toBe(0);
+  });
+
+  it('extracts correctly the abstain option', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - { type : 'approval' }
+    result_display: 'approval-breakdown'
+---
+# hello
+    
+        `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual({
+      inputFormat: {
+        type: 'choose-free',
+        abstain: [0, 4],
+        options: [1, 2]
+      },
+      victoryConditions: [{ type: 'approval' }],
+      resultDisplay: 'approval-breakdown'
+    });
+    expect(errors.length).toBe(0);
   });
 
   it('can not combine majority with instant runoff in an AND condition', () => {
@@ -355,7 +420,11 @@ describe('Transform old vote type to new parameters', () => {
   it('transforms plurality to new structure', () => {
     const result = oldVoteTypeToNewParameters(POLL_VOTE_TYPE.PLURALITY_VOTE);
     expect(result).toEqual({
-      inputFormat: 'single-choice',
+      inputFormat: {
+        type: 'single-choice',
+        abstain: [0],
+        options: []
+      },
       victoryConditions: [{ type: 'plurality' }],
       resultDisplay: 'single-vote-breakdown'
     });
@@ -364,7 +433,11 @@ describe('Transform old vote type to new parameters', () => {
   it('transforms IRV to new structure', () => {
     const result = oldVoteTypeToNewParameters(POLL_VOTE_TYPE.RANKED_VOTE);
     expect(result).toEqual({
-      inputFormat: 'rank-free',
+      inputFormat: {
+        type: 'rank-free',
+        abstain: [0],
+        options: []
+      },
       victoryConditions: [{ type: 'instant-runoff' }],
       resultDisplay: 'instant-runoff-breakdown'
     });

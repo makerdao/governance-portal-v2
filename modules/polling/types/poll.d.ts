@@ -44,7 +44,11 @@ export type NestedVictoryCondition =
   | PollVictoryConditionPlurality;
 
 type PollParameters = {
-  inputFormat: PollInputFormat;
+  inputFormat: {
+    type: PollInputFormat;
+    abstain: number[];
+    options: number[];
+  };
   victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][];
   resultDisplay: PollResultDisplay;
 };

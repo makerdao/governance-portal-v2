@@ -62,15 +62,15 @@ export function isResultDisplayInstantRunoffBreakdown(parameters: PollParameters
 }
 
 export function isInputFormatRankFree(parameters: PollParameters): boolean {
-  return parameters.inputFormat === PollInputFormat.rankFree;
+  return parameters.inputFormat.type === PollInputFormat.rankFree;
 }
 
 export function isInputFormatChooseFree(parameters: PollParameters): boolean {
-  return parameters.inputFormat === PollInputFormat.chooseFree;
+  return parameters.inputFormat.type === PollInputFormat.chooseFree;
 }
 
 export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
-  return parameters.inputFormat === PollInputFormat.singleChoice;
+  return parameters.inputFormat.type === PollInputFormat.singleChoice;
 }
 
 export function extractCurrentPollVote(

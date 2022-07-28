@@ -12,6 +12,7 @@ import { getVoteColor } from '../helpers/getVoteColor';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { StatusText } from 'modules/app/components/StatusText';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 export default function PollWinningOptionBox({
   tally,
@@ -23,40 +24,44 @@ export default function PollWinningOptionBox({
   const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
-      {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
-        <StatusText>
-          <>
-            {textWin}:{' '}
-            <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.parameters.inputFormat) }}>
-              {tally?.winningOptionName}
-            </span>{' '}
-            {isInputFormatSingleChoice(poll.parameters) &&
-              'with ' +
-                formatValue(
-                  parseUnits(
-                    (tally.results as PluralityResult[])
-                      .find(({ optionId }) => optionId === tally.winner)
-                      ?.mkrSupport.toString() || '0'
-                  )
-                ) +
-                ' MKR supporting.'}
-            {(isInputFormatRankFree(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
-              'with ' +
-                formatValue(
-                  parseUnits(
-                    (tally.results as RankedChoiceResult[])
-                      .find(({ optionId }) => optionId === tally.winner)
-                      ?.firstChoice.toString() || '0'
-                  )
-                ) +
-                ' MKR supporting as first choice.'}
-          </>
-        </StatusText>
-      ) : tally && !tally.winningOptionName ? (
-        <StatusText>{isActivePoll(poll) ? 'No leading option' : 'No winning option'}</StatusText>
-      ) : (
-        <SkeletonThemed />
-      )}
+      <ErrorBoundary componentName="Winning option">
+        {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
+          <StatusText>
+            <>
+              {textWin}:{' '}
+              <span
+                sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.parameters.inputFormat.type) }}
+              >
+                {tally?.winningOptionName}
+              </span>{' '}
+              {(isInputFormatSingleChoice(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
+                'with ' +
+                  formatValue(
+                    parseUnits(
+                      (tally.results as PluralityResult[])
+                        .find(({ optionId }) => optionId === tally.winner)
+                        ?.mkrSupport.toString() || '0'
+                    )
+                  ) +
+                  ' MKR supporting.'}
+              {isInputFormatRankFree(poll.parameters) &&
+                'with ' +
+                  formatValue(
+                    parseUnits(
+                      (tally.results as RankedChoiceResult[])
+                        .find(({ optionId }) => optionId === tally.winner)
+                        ?.firstChoice.toString() || '0'
+                    )
+                  ) +
+                  ' MKR supporting as first choice.'}
+            </>
+          </StatusText>
+        ) : tally && !tally.winningOptionName ? (
+          <StatusText>{isActivePoll(poll) ? 'No leading option' : 'No winning option'}</StatusText>
+        ) : (
+          <SkeletonThemed />
+        )}
+      </ErrorBoundary>
     </Flex>
   );
 }

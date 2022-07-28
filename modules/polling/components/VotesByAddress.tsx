@@ -158,7 +158,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Box
                     as="td"
                     sx={{
-                      color: getVoteColor(v.optionId, poll.parameters.inputFormat),
+                      color: getVoteColor(v.optionId, poll.parameters.inputFormat.type),
                       pb: 2
                     }}
                   >

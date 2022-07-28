@@ -88,14 +88,30 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
 
 export function validatePollParameters(params: Record<string, unknown>): [PollParameters | null, string[]] {
   const errors: string[] = [];
+  let inputFormatType = '';
+  let inputFormatOptions = [];
+  let inputFormatAbstain = [0];
+
   if (!params.input_format) {
     errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.missingInputFormat);
-  } else if (
-    params.input_format !== PollInputFormat.rankFree &&
-    params.input_format !== PollInputFormat.singleChoice &&
-    params.input_format !== PollInputFormat.chooseFree
-  ) {
-    errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.invalidInputFormat);
+  } else {
+    // Extract the input format type
+    if (typeof params.input_format === 'string') {
+      // if is an string, asume is the type, and use the default options
+      inputFormatType = params.input_format;
+    } else {
+      inputFormatType = (params.input_format as any).type;
+      inputFormatOptions = (params.input_format as any).options || inputFormatOptions;
+      inputFormatAbstain = (params.input_format as any).abstain || inputFormatAbstain;
+    }
+
+    if (
+      inputFormatType !== PollInputFormat.rankFree &&
+      inputFormatType !== PollInputFormat.singleChoice &&
+      inputFormatType !== PollInputFormat.chooseFree
+    ) {
+      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.invalidInputFormat);
+    }
   }
 
   if (!params.victory_conditions) {
@@ -137,17 +153,17 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     // Can not combine instant runoff and comparison , can not combine instant runoff and majority, etc
 
     // Rank free requires instant runoff condition
-    if (params.input_format !== PollInputFormat.rankFree && hasInstantRunOff) {
+    if (inputFormatType !== PollInputFormat.rankFree && hasInstantRunOff) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.instantRunoffRequiresRankFree);
     }
 
     // plurality requires requires single_choice
-    if (params.input_format !== PollInputFormat.singleChoice && hasPlurality) {
+    if (inputFormatType !== PollInputFormat.singleChoice && hasPlurality) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.pluralityRequiresSingleChoice);
     }
 
     // Approval requires input_format choose_free
-    if (params.input_format !== PollInputFormat.chooseFree && hasApproval) {
+    if (inputFormatType !== PollInputFormat.chooseFree && hasApproval) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.approvalRequiresChooseFree);
     }
   }
@@ -158,7 +174,7 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
   } else {
     // input_format single-choice requires single-vote-breakdown result_display
     if (
-      params.input_format === PollInputFormat.singleChoice &&
+      inputFormatType === PollInputFormat.singleChoice &&
       params.result_display !== PollResultDisplay.singleVoteBreakdown
     ) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.singleChoiceRequiresSingleVoteBreakdownDisplay);
@@ -166,7 +182,7 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
 
     // input_format rank-free requires instant-runoff-breakdown result_display
     if (
-      params.input_format === PollInputFormat.rankFree &&
+      inputFormatType === PollInputFormat.rankFree &&
       params.result_display !== PollResultDisplay.instantRunoffBreakdown
     ) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeRequiresInstantRunoffBreakdownDisplay);
@@ -188,7 +204,11 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     // Correct object
     return [
       {
-        inputFormat: params.input_format,
+        inputFormat: {
+          type: inputFormatType,
+          abstain: inputFormatAbstain,
+          options: inputFormatOptions
+        },
         resultDisplay: params.result_display,
         victoryConditions: params.victory_conditions
       } as PollParameters,
@@ -214,7 +234,11 @@ function validateVictoryConditionGroup(vc: NestedVictoryCondition[]) {
 export function oldVoteTypeToNewParameters(voteType: PollVoteType): PollParameters {
   if (voteType === POLL_VOTE_TYPE.PLURALITY_VOTE || voteType === POLL_VOTE_TYPE.UNKNOWN) {
     return {
-      inputFormat: PollInputFormat.singleChoice,
+      inputFormat: {
+        type: PollInputFormat.singleChoice,
+        abstain: [0],
+        options: []
+      },
       resultDisplay: PollResultDisplay.singleVoteBreakdown,
       victoryConditions: [
         {
@@ -224,7 +248,11 @@ export function oldVoteTypeToNewParameters(voteType: PollVoteType): PollParamete
     };
   } else {
     return {
-      inputFormat: PollInputFormat.rankFree,
+      inputFormat: {
+        type: PollInputFormat.rankFree,
+        abstain: [0],
+        options: []
+      },
       resultDisplay: PollResultDisplay.instantRunoffBreakdown,
       victoryConditions: [
         {

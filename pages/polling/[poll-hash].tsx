@@ -24,7 +24,7 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
-import VoteBox from 'modules/polling/components/VoteBox';
+import VoteBox from 'modules/polling/components/poll-vote-input/VoteBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';

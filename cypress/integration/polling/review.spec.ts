@@ -28,7 +28,7 @@ describe('/polling/review page', async () => {
       // click on option
       cy.get('[data-testid="single-select-option-Yes"]').first().click();
 
-      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot-desktop"]');
+      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
 
       // Click the button
       buttonsVote.first().should('not.be.disabled');
@@ -88,7 +88,7 @@ describe('/polling/review page', async () => {
       // click on option
       cy.get('[data-testid="single-select-option-Yes"]').first().click();
 
-      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot-desktop"]');
+      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
 
       // Click the button
       buttonsVote.first().should('not.be.disabled');
@@ -122,7 +122,7 @@ describe('/polling/review page', async () => {
       // click on option
       cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
 
-      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot-desktop"]');
+      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
 
       // Click the button
       buttonsVote.eq(1).should('not.be.disabled');
@@ -192,9 +192,9 @@ describe('/polling/review page', async () => {
 
       // Add votes to ballot
       // Each time we click one, it dissapears, so we need to click the second element again
-      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').eq(1).click();
+      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(1).click();
 
-      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').eq(1).click();
+      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(1).click();
 
       // Check ballot votes added to ballot
       cy.contains(/2 of \d\d available polls added to ballot/).should('be.visible');

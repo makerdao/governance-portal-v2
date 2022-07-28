@@ -22,13 +22,15 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
+import ChooseFreeSelect from './ChooseFreeSelect';
 
 type Props = {
   poll: Poll;
   showHeader: boolean;
   showStatus?: boolean;
   showReviewButton?: boolean;
-  sx?: ThemeUIStyleObject;
+  onSubmit?: () => void;
+  buttonVariant?: string;
 };
 
 const rankedChoiceBlurb = (
@@ -47,7 +49,8 @@ const QuickVote = ({
   showHeader,
   showStatus,
   showReviewButton,
-  ...props
+  onSubmit,
+  buttonVariant
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
@@ -90,12 +93,13 @@ const QuickVote = ({
         : addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     }
     setEditing(false);
+    if (onSubmit) {
+      onSubmit();
+    }
   };
 
-  const gap = 2;
-
   return (
-    <Stack gap={gap} {...props}>
+    <Stack gap={2}>
       <Flex
         sx={{
           justifyContent: 'space-between',
@@ -140,23 +144,23 @@ const QuickVote = ({
       ) : (
         <div>
           {isInputFormatRankFree(poll.parameters) && (
-            <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
+            <RankedChoiceSelect poll={poll} setChoice={setChoice} choice={choice as number[] | null} />
           )}
           {isInputFormatSingleChoice(poll.parameters) && (
-            <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
+            <SingleSelect poll={poll} setChoice={setChoice} choice={choice as number | null} />
           )}
           {isInputFormatChooseFree(poll.parameters) && (
-            <ChooseFreeSelect {...{ poll, setChoice }} choice={choice as number | null} />
+            <ChooseFreeSelect poll={poll} setChoice={setChoice} choice={choice as number[] | null} />
           )}
           <Button
-            data-testid="button-add-vote-to-ballot-desktop"
-            variant={showHeader ? 'primaryOutline' : 'primary'}
+            data-testid="button-add-vote-to-ballot"
+            variant={buttonVariant ? buttonVariant : showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
             onClick={() => {
               trackButtonClick('addVoteToBallot');
               submit();
             }}
-            mt={gap}
+            mt={2}
             disabled={!isChoiceValid}
           >
             {editing ? 'Update vote' : 'Add vote to ballot'}

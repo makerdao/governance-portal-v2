@@ -158,8 +158,10 @@ end_date: 2025-11-05T16:00:00
 Approval voting allows user to select multiple options but should only allow the user to choose one if they select "Abstain" or "None of the above". To do this we use the "options" field on the "input-format".
 
 Example:
-
-- { type: 'approval', options: [1,2,3] } : means the users can multiple choice the options 1,2,3, but selecting any other option will only allow for one selction.
+- input_format 
+    type: approval
+    options: [1,2,3] : Determine that the user can only select multiple 1,2,3. Option number 4 or 0 will be exclusive.
+- { type: 'approval', options: [1,2,3] } : Determine the options that will count as "approved", in theory it should match the input format options. 
 
 ```
 ---
@@ -167,7 +169,9 @@ title: Approval
 summary: something
 discussion_link: link
 parameters:
-  input_format: choose-free
+  input_format: 
+    type: choose-free
+    options: [1,2,3]
   victory_conditions:
       - { type : approval, options: [1,2,3] }
   result_display: approval-breakdown
