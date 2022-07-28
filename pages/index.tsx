@@ -50,7 +50,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
     const recognized = filterDelegates(delegates, false, true, false, null);
     const meet = shuffleArray(
       // filter out previous contracts for delegates who have migrated, but the old contract has not yet expired
-      recognized.filter(({ address }) => !delegates.find(del => del?.previous?.address === address))
+      recognized.filter(({ next }) => !next)
     );
     return [recognized, meet];
   }, [delegates]);
