@@ -48,7 +48,10 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
   const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
     const recognized = filterDelegates(delegates, false, true, false, null);
-    const meet = shuffleArray(recognized);
+    const meet = shuffleArray(
+      // filter out previous contracts for delegates who have migrated, but the old contract has not yet expired
+      recognized.filter(({ next }) => !next)
+    );
     return [recognized, meet];
   }, [delegates]);
 
