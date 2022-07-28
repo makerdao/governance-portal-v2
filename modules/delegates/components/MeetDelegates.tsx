@@ -183,7 +183,7 @@ export default function MeetYourDelegates({
         >
           {delegates.map(delegate => (
             <MeetDelegateCard
-              key={delegate.name}
+              key={delegate.id}
               delegate={delegate}
               trackButtonClick={trackButtonClick}
               bpi={bpi}
