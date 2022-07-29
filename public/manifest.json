@@ -1,0 +1,16 @@
+{
+  "short_name": "Maker Governance Portal",
+  "name": "Maker Governance Portal",
+  "description": "Maker Governance Portal",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

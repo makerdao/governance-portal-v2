@@ -12,8 +12,6 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { useWeb3React } from '@web3-react/core';
 import { ErrorBoundary } from '../../ErrorBoundary';
@@ -21,22 +19,23 @@ import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 import MetaMaskCard from 'modules/web3/components/connectorCards/MetaMaskCard';
+import GnosisSafeCard from 'modules/web3/components/connectorCards/GnosisSafeCard';
 
-const walletButtonStyle: ThemeUICSSObject = {
-  cursor: 'pointer',
-  width: '100%',
-  p: 3,
-  border: '1px solid',
-  borderColor: 'secondaryMuted',
-  borderRadius: 'medium',
-  mb: 2,
-  flexDirection: 'row',
-  alignItems: 'center',
-  '&:hover': {
-    color: 'text',
-    backgroundColor: 'background'
-  }
-};
+// const walletButtonStyle: ThemeUICSSObject = {
+//   cursor: 'pointer',
+//   width: '100%',
+//   p: 3,
+//   border: '1px solid',
+//   borderColor: 'secondaryMuted',
+//   borderRadius: 'medium',
+//   mb: 2,
+//   flexDirection: 'row',
+//   alignItems: 'center',
+//   '&:hover': {
+//     color: 'text',
+//     backgroundColor: 'background'
+//   }
+// };
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -75,6 +74,7 @@ const AccountSelect = (): React.ReactElement => {
   const walletOptions = (
     <Flex>
       <MetaMaskCard />
+      <GnosisSafeCard />
     </Flex>
   );
 

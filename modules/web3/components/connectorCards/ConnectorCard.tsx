@@ -7,9 +7,10 @@ import { Accounts } from '../Accounts';
 import { Chain } from '../Chain';
 import { ConnectWithSelect } from '../ConnectWithSelect';
 import { Status } from '../Status';
+import { SupportedConnector } from 'modules/web3/constants/connectors';
 
 interface Props {
-  connector: MetaMask | Network;
+  connector: SupportedConnector;
   chainId: ReturnType<Web3ReactHooks['useChainId']>;
   isActivating: ReturnType<Web3ReactHooks['useIsActivating']>;
   isActive: ReturnType<Web3ReactHooks['useIsActive']>;
