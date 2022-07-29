@@ -95,7 +95,7 @@ export async function _getAllPolls(
   queryVariables?: PollsQueryVariables
 ): Promise<Poll[]> {
   // TODO: Remove mock
-  return Promise.resolve(mockPolls as any);
+  //return Promise.resolve(mockPolls as any);
   const cacheKey = getAllPollsCacheKey(queryVariables);
 
   const cachedPolls = await cacheGet(cacheKey, network);

@@ -1,22 +1,82 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { PollParameters, RawPollTally } from 'modules/polling/types';
+import { Poll, PollParameters, RawPollTally } from 'modules/polling/types';
 import { fetchTallyPlurality } from './fetchTallyPlurality';
 import { fetchTallyRankedChoice } from './fetchTallyRankedChoice';
-import { hasVictoryConditionPlurality } from '../helpers/utils';
+import { hasVictoryConditionPlurality, isInputFormatSingleChoice } from '../helpers/utils';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
+import { PollVictoryConditions } from '../polling.constants';
+import { ParsedSpockVote, SpockVote } from '../types/tallyVotes';
+import { paddedArray, toBuffer } from 'lib/utils';
 
-export async function fetchRawPollTally(
-  pollId: number,
-  parameters: PollParameters,
-  network: SupportedNetworks
-): Promise<RawPollTally> {
+
+function extractBallotFromSpockVotes(spockVotes:SpockVote[] ): {
+
+}
+export async function fetchRawPollTally(poll: Poll, network: SupportedNetworks): Promise<RawPollTally> {
+
+  // Fetch spock votes for the poll
+  const data = await gqlRequest({
+    chainId: networkNameToChainId(network),
+    query: voteMkrWeightsAtTimeRankedChoice,
+    variables: {
+      argPollId: poll.pollId,
+      argUnix: poll.endDate
+    }
+  });
+
+  const spockVotes: SpockVote[] =
+    data.voteMkrWeightsAtTimeRankedChoice.nodes;
+
+  // Transform the votes 
+
+  // Iterate every group if the winner is not found in a group
+  let hasFoundWinner = false;
   let tally;
-  // TODO: Include majority victory conditions calculations
-  // const isRanked = parameters.victoryConditions.find(v => v.type === PollVictoryConditions.instantRunoff);
-  const isPlurality = hasVictoryConditionPlurality(parameters.victoryConditions);
+
+  // extract the ballot or single votes based on the poll input format:
+  const votes: ParsedSpockVote[] =
+    spockVotes.map(vote => {
+      const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
+      const ballot = isInputFormatSingleChoice(poll.parameters) ? [vote.optionIdRaw] : paddedArray(32 - ballotBuffer.length, ballotBuffer);
+
+      return {
+        ...vote,
+        optionIdRaw: vote.optionIdRaw.toString(),
+        ballot
+      };
+    });
+
+  poll.parameters.victoryConditions.forEach(victoryGroup => {
+    if (victoryGroup.type === PollVictoryConditions.and) {
+      const andGroupResults = []
+      victoryGroup.conditions.forEach((andConditionGroup) => {
+        if (andConditionGroup.type === PollVictoryConditions.approval) {
+
+        }
+      });
+    }
+  })
+
+  // Calculate now the winner based on the victory conditions.
+
+  // Every first order victory condition acts as an "if-else", 
+  // If there's a majority option 
+
+  // If theres a "default" option, check if there is no winner, and attach it to the default
+
+  // TODO: Include majority victory conditions calculations and approval
+  const isPlurality = hasVictoryConditionPlurality(poll.parameters.victoryConditions);
+
+  const victoryGroups = poll.parameters.victoryConditions;
+
+  // get spock votes
+
   if (isPlurality) {
-    tally = await fetchTallyPlurality(pollId, network);
+    tally = await fetchTallyPlurality(votes);
   } else {
-    tally = await fetchTallyRankedChoice(pollId, network);
+    tally = await fetchTallyRankedChoice(votes);
   }
 
   return tally;

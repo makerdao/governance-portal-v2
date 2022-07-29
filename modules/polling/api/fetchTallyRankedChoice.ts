@@ -5,43 +5,16 @@ import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWei
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { RawPollTallyRankedChoice } from '../types';
+import { SpockVote } from '../types/tallyVotes';
 import { fetchSpockPollById } from './fetchPollBy';
 
 const MAX_ROUNDS = 32;
 
 export async function fetchTallyRankedChoice(
-  pollId: number,
-  network: SupportedNetworks
+  currentVotes: SpockVote[]
 ): Promise<RawPollTallyRankedChoice | null> {
-  const poll = await fetchSpockPollById(pollId, network);
-
-  if (!poll) {
-    return null;
-  }
-
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: voteMkrWeightsAtTimeRankedChoice,
-    variables: {
-      argPollId: pollId,
-      argUnix: poll.endDate
-    }
-  });
-
-  const votesRaw: { optionIdRaw: string; mkrSupport: number }[] = data.voteMkrWeightsAtTimeRankedChoice.nodes;
-
   // plus ballot to votes
-  const votes: { optionIdRaw: string; mkrSupport: number; choice: number | undefined; ballot: number[] }[] =
-    votesRaw.map(vote => {
-      const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
-      const ballot = paddedArray(32 - ballotBuffer.length, ballotBuffer);
-
-      return {
-        ...vote,
-        choice: undefined,
-        ballot
-      };
-    });
+  
 
   const totalMkrParticipation = votes.reduce(
     (acc, cur) => new BigNumber(cur.mkrSupport || 0).plus(acc),

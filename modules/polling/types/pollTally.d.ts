@@ -1,6 +1,5 @@
 import BigNumber from 'lib/bigNumberJs';
 import { PollParameters } from './poll';
-import { PollVoteType } from './pollVoteType';
 
 export type RankedChoiceResult = {
   optionId: string;

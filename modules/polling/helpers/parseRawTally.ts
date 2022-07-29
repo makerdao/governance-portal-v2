@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally, PluralityResult, RankedChoiceResult } from '../types';
 import BigNumber from 'lib/bigNumberJs';
-import { hasVictoryConditionPlurality, hasVictoryConditionInstantRunOff } from './utils';
+import { hasVictoryConditionPlurality, hasVictoryConditionInstantRunOff, hasVictoryConditionApproval, hasVictoryConditionMajority } from './utils';
 
 export function getRankedChoiceResults(rawTally: RawPollTally, poll: Poll): RankedChoiceResult[] {
   const rankedChoiceResult: RankedChoiceResult[] = Object.keys(poll.options)
@@ -86,8 +86,10 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
 
   const isPlurality = hasVictoryConditionPlurality(poll.parameters.victoryConditions);
 
-  // TODO: Not supported yet, but introduced in the codebase as an example of logic extension.
-  // const isMajority = poll.parameters.victoryConditions.find(v => v.type === PollVictoryConditions.majority);
+  const isApproval = hasVictoryConditionApproval(poll.parameters.victoryConditions);
+
+  const isMajority = hasVictoryConditionMajority(poll.parameters.victoryConditions);
+
 
   // Select the logic to format the results based on the victory condition
   if (isRanked) {

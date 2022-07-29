@@ -4,29 +4,15 @@ import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWei
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { RawPollTallyPlurality } from '../types';
+import { ParsedSpockVote, SpockVote } from '../types/tallyVotes';
 import { fetchSpockPollById } from './fetchPollBy';
 
 export async function fetchTallyPlurality(
-  pollId: number,
-  network: SupportedNetworks
+  currentVotes: ParsedSpockVote[]
 ): Promise<RawPollTallyPlurality | null> {
-  const poll = await fetchSpockPollById(pollId, network);
+ 
 
-  if (!poll) {
-    return null;
-  }
-
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: voteMkrWeightsAtTimeRankedChoice,
-    variables: {
-      argPollId: pollId,
-      argUnix: poll.endDate
-    }
-  });
-
-  const currentVotes: { optionIdRaw: number; mkrSupport: number }[] =
-    data.voteMkrWeightsAtTimeRankedChoice.nodes;
+  
   const numVoters = currentVotes.length;
 
   const resultsObject = currentVotes.reduce((acc, cur) => {
