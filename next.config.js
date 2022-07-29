@@ -15,10 +15,11 @@ const securityHeaders = [
   },
 
   // adds x-frame-options
-  {
-    key: 'X-Frame-Options',
-    value: 'SAMEORIGIN'
-  },
+  // remove for safe app to load
+  // {
+  //   key: 'X-Frame-Options',
+  //   value: 'SAMEORIGIN'
+  // },
 
   // adds x-content-type
   {
