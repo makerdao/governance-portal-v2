@@ -5,18 +5,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { getMigrationBannerContent } from 'modules/migration/helpers/getMigrationBannerContent';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
-export function DelegatationMigrationStatusBanner(): React.ReactElement | null {
-  //   {
-  //   isDelegatedToExpiredContract,
-  //   isDelegateContractExpired,
-  //   isDelegatedToExpiringContract,
-  //   isDelegateContractExpiring
-  // }: {
-  //   isDelegatedToExpiredContract: boolean;
-  //   isDelegatedToExpiringContract: boolean;
-  //   isDelegateContractExpired: boolean;
-  //   isDelegateContractExpiring: boolean;
-  // }
+export function MigrationBanner(): React.ReactElement | null {
   const link = <Icon name="chevron_right" size={2} ml={2} />;
 
   const {
