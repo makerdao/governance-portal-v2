@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { gnosisSafe, hooks } from 'modules/web3/connectors/gnosisSafe';
 import { ConnectorCard } from './ConnectorCard';
+import { gnosisSafeConnection } from 'modules/web3/connections';
+import { SupportedConnector } from 'modules/web3/constants/connectors';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } =
+  gnosisSafeConnection.hooks;
 
 export default function GnosisSafeCard(): React.ReactElement {
   const chainId = useChainId();
@@ -14,18 +16,18 @@ export default function GnosisSafeCard(): React.ReactElement {
   const provider = useProvider();
   const ENSNames = useENSNames(provider);
 
-  const [error, setError] = useState(undefined);
+  const [error, setError] = useState();
 
   // attempt to connect eagerly on mount
   useEffect(() => {
-    void gnosisSafe.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to gnosis safe');
-    });
+    if (gnosisSafeConnection.connector.connectEagerly) {
+      void gnosisSafeConnection.connector.connectEagerly();
+    }
   }, []);
 
   return (
     <ConnectorCard
-      connector={gnosisSafe}
+      connector={gnosisSafeConnection.connector as SupportedConnector}
       chainId={chainId}
       isActivating={isActivating}
       isActive={isActive}

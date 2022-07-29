@@ -153,7 +153,7 @@ export function ConnectWithSelect({
         {!(connector instanceof GnosisSafe) && (
           <ChainSelect
             chainId={desiredChainId}
-            switchChain={isActivating ? undefined : switchChain}
+            switchChain={switchChain}
             displayDefault={displayDefault}
             chainIds={chainIds}
           />

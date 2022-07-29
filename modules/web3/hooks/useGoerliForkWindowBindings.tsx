@@ -1,15 +1,15 @@
-import { useWeb3React } from '@web3-react/core';
-import { Wallet } from 'ethers';
+// import { useWeb3React } from '@web3-react/core';
+// import { Wallet } from 'ethers';
 import { useEffect } from 'react';
-import { SupportedChainId } from '../constants/chainID';
-import { JsonRpcProvider } from '@ethersproject/providers';
+// import { SupportedChainId } from '../constants/chainID';
+// import { JsonRpcProvider } from '@ethersproject/providers';
 // import { InjectedConnector } from '@web3-react/injected-connector';
-import { CustomizedBridge } from '../connectors/CustomizedBridge';
-import logger from 'lib/logger';
+// import { CustomizedBridge } from '../connectors/CustomizedBridge';
+// import logger from 'lib/logger';
 
 export function useGoerliForkWindowBindings(): void {
   // TODO this should only run in non-prod environments
-  const context = useWeb3React();
+  // const context = useWeb3React();
   // Define a window function that changes the account for testing purposes
   useEffect(() => {
     // if (typeof window !== 'undefined') {

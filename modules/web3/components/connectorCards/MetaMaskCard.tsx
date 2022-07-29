@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { hooks, metaMask } from 'modules/web3/connectors/metaMask';
 import { ConnectorCard } from './ConnectorCard';
+import { injectedConnection } from 'modules/web3/connections';
+import { SupportedConnector } from 'modules/web3/constants/connectors';
 
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } =
+  injectedConnection.hooks;
 
 export default function MetaMaskCard(): JSX.Element {
   const chainId = useChainId();
@@ -18,14 +20,14 @@ export default function MetaMaskCard(): JSX.Element {
 
   // attempt to connect eagerly on mount
   useEffect(() => {
-    void metaMask.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to metamask');
-    });
+    if (injectedConnection.connector.connectEagerly) {
+      void injectedConnection.connector.connectEagerly();
+    }
   }, []);
 
   return (
     <ConnectorCard
-      connector={metaMask}
+      connector={injectedConnection.connector as SupportedConnector}
       chainId={chainId}
       isActivating={isActivating}
       isActive={isActive}

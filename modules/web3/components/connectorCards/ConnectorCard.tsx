@@ -15,7 +15,8 @@ interface Props {
   isActivating: ReturnType<Web3ReactHooks['useIsActivating']>;
   isActive: ReturnType<Web3ReactHooks['useIsActive']>;
   error: Error | undefined;
-  setError: (error: Error | undefined) => void;
+  // setError: (error: Error | undefined) => void;
+  setError: any;
   ENSNames: ReturnType<Web3ReactHooks['useENSNames']>;
   provider?: ReturnType<Web3ReactHooks['useProvider']>;
   accounts?: string[];
@@ -55,7 +56,7 @@ export function ConnectorCard({
         borderRadius: '1rem'
       }}
     >
-      <b>{getName(connector)}</b>
+      <b>{getName(connector as Connector)}</b>
       <div style={{ marginBottom: '1rem' }}>
         <Status isActivating={isActivating} isActive={isActive} error={error} />
       </div>
