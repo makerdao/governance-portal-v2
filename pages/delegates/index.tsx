@@ -55,6 +55,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     return filterDelegates(delegates, showShadow, showRecognized, showExpired, name, delegateTags);
   }, [delegates, showRecognized, showShadow, showExpired, name, delegateTags]);
 
+  const { voteDelegateContractAddress } = useAccount();
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const [sortedDelegates, recognizedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
