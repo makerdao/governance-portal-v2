@@ -52,6 +52,10 @@ _Requires node version >= v11.15.0_
 13. Set `POCKET_KEY` for ethers provider to use
 14. **Optional** Set `MIGRATION_WEBHOOK_URL` for delegators migration logic 
 15. **Optional** Set `DASHBOARD_PASSWORD` for adding protection to the `/dashboard` route. 
+16. **Optional** Set `DEFENDER_API_KEY` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting) 
+17. **Optional** Set `DEFENDER_API_SECRET` to a valid OpenZeppelin Defender Relay secret
+18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
+19. **Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 
