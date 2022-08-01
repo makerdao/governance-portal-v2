@@ -20,6 +20,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 import MetaMaskCard from 'modules/web3/components/connectorCards/MetaMaskCard';
 import GnosisSafeCard from 'modules/web3/components/connectorCards/GnosisSafeCard';
+import WalletConnectCard from 'modules/web3/components/connectorCards/WalletConnectCard';
 
 // const walletButtonStyle: ThemeUICSSObject = {
 //   cursor: 'pointer',
@@ -74,6 +75,7 @@ const AccountSelect = (): React.ReactElement => {
   const walletOptions = (
     <Flex>
       <MetaMaskCard />
+      <WalletConnectCard />
       <GnosisSafeCard />
     </Flex>
   );
