@@ -104,9 +104,17 @@ export async function _getAllPolls(
 
   const polls = await fetchAllPollsMetadata(pollList);
 
-  cacheSet(cacheKey, JSON.stringify(polls), network);
+  // remove markdown from "all-polls" to avoid sending too much data
+  const trimmedPolls = polls.map(poll => {
+    return {
+      ...poll,
+      content: poll.content.substring(0, 100) + '...'
+    };
+  });
 
-  return polls;
+  cacheSet(cacheKey, JSON.stringify(trimmedPolls), network);
+
+  return trimmedPolls;
 }
 
 // Public method that returns the polls, and accepts filters

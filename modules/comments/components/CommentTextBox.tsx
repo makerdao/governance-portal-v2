@@ -1,5 +1,7 @@
 import React from 'react';
 import { Text, Box, Label, Textarea } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
+import TooltipComponent from 'modules/app/components/Tooltip';
 
 export default function CommentTextBox({
   value,
@@ -46,7 +48,12 @@ export default function CommentTextBox({
         sx={{ fontSize: 1, color: value.length > 1500 ? 'error' : 'textMuted', mt: 1 }}
       >
         Optional. You&apos;ll be prompted to sign a message with your wallet. {1500 - value.length} characters
-        remaining. Commenting is not yet supported for multisig users.
+        remaining. Commenting is not yet supported for multisig users.{' '}
+        <TooltipComponent label={'Your comment may take some minutes to appear into the voting portal.'}>
+          <Text>
+            <Icon name="info" />
+          </Text>
+        </TooltipComponent>
       </Text>
     </Box>
   );
