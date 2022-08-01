@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Flex, Button, Text, Heading, Close } from 'theme-ui';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -38,7 +38,7 @@ export function BallotModals({
 
   //todo: create separate components for each modal
 
-  const modalContent = () => {
+  const modalContent = useMemo(() => {
     switch (ballotStep) {
       case 'method-select':
         return (
@@ -253,7 +253,7 @@ export function BallotModals({
       default:
         return null;
     }
-  };
+  }, [ballotStep, commentsSignature, ballotCount, commentsCount]);
 
   return (
     <div>
@@ -272,7 +272,7 @@ export function BallotModals({
               sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
               onClick={close}
             />
-            {modalContent()}
+            {modalContent}
           </Flex>
         </DialogContent>
       </DialogOverlay>
