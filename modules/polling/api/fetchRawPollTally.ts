@@ -1,6 +1,6 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll, PollParameters, RawPollTally } from 'modules/polling/types';
-import { fetchTallyPlurality } from './fetchTallyPlurality';
+import { fetchTallyPlurality } from './victory_conditions/plurality';
 import { fetchTallyRankedChoice } from './fetchTallyRankedChoice';
 import { hasVictoryConditionPlurality, isInputFormatSingleChoice } from '../helpers/utils';
 import { gqlRequest } from 'modules/gql/gqlRequest';
@@ -47,6 +47,17 @@ export async function fetchRawPollTally(poll: Poll, network: SupportedNetworks):
         ballot
       };
     });
+
+  // Abstain
+  const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
+
+  // Remove all the votes that voted "Abstain" in any option. (It should only be 1 abstain option)
+  const filtered = votes.filter(vote => {
+    if (vote.ballot.filter(i => abstain.indexOf(i) !== -1).length > 0) {
+      return false;
+    }
+    return true;
+  });
 
   poll.parameters.victoryConditions.forEach(victoryGroup => {
     if (victoryGroup.type === PollVictoryConditions.and) {

@@ -97,4 +97,6 @@ describe('Majority calculation', () => {
 
     expect(winner).toEqual(1);
   });
+
+
 });

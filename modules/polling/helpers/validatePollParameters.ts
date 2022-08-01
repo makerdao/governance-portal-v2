@@ -7,6 +7,7 @@ import {
 import { PollVoteType } from '../types';
 import { NestedVictoryCondition, PollParameters } from '../types/poll';
 import {
+  hasVictoryConditionAND,
   hasVictoryConditionApproval,
   hasVictoryConditionInstantRunOff,
   hasVictoryConditionMajority,
@@ -24,6 +25,7 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
     'victory_conditions combination not valid. instant-runoff and plurality can not be combined together.',
   victoryConditionsInstantRunOffAndMajoritynNotBeCombined:
     'victory_conditions combination not valid. instant-runoff and majority can not be combined together.',
+  victoryConditionANDRequiresConditions: 'victory_condition AND requires inserting nested conditions',
   instantRunoffRequiresRankFree: 'victory_condition instant-runoff requires input_format rank-free',
   pluralityRequiresSingleChoice: 'victory_condition plurality requires input_format single-choice',
   approvalRequiresChooseFree: 'victory_condition approval requires input_format choose-free',
@@ -119,25 +121,11 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
   } else if (!Array.isArray(params.victory_conditions)) {
     errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsNotArray);
   } else {
-    // const hasVictoryConditionInstantRunOff = params.victory_conditions.find(
-    //   i => i.type === PollVictoryConditions.instantRunoff
-    // );
-    // const hasVictoryConditionPlurality = params.victory_conditions.find(
-    //   i => i.type === PollVictoryConditions.plurality
-    // );
-    // const hasVictoryConditionApproval = params.victory_conditions.find(
-    //   i => i.type === PollVictoryConditions.approval
-    // );
-
-    // const hasVictoryConditionMajority = params.victory_conditions.find(
-    //   i => i.type === PollVictoryConditions.approval
-    // );
-
-    // TODO: Continue here: reuse the helpers defined above
     const hasInstantRunOff = hasVictoryConditionInstantRunOff(params.victory_conditions);
     const hasPlurality = hasVictoryConditionPlurality(params.victory_conditions);
     const hasApproval = hasVictoryConditionApproval(params.victory_conditions);
     const hasMajority = hasVictoryConditionMajority(params.victory_conditions);
+    const hasAND = hasVictoryConditionAND(params.victory_conditions);
 
     // Can not combine instant runoff and plurality
     if (hasInstantRunOff && hasPlurality) {
@@ -148,9 +136,6 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     if (hasInstantRunOff && hasMajority) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndMajoritynNotBeCombined);
     }
-
-    // TODO: create comprobations for (When majority supported)
-    // Can not combine instant runoff and comparison , can not combine instant runoff and majority, etc
 
     // Rank free requires instant runoff condition
     if (inputFormatType !== PollInputFormat.rankFree && hasInstantRunOff) {
@@ -166,6 +151,20 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     if (inputFormatType !== PollInputFormat.chooseFree && hasApproval) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.approvalRequiresChooseFree);
     }
+
+    // Validate that the AND victory condition has conditions inside
+    if (hasAND) {
+      const andCondition = params.victory_conditions.find(i => i.type === PollVictoryConditions.and);
+
+      if (!andCondition.conditions || andCondition.conditions?.length === 0) {
+        errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionANDRequiresConditions);
+      }
+    }
+
+    // If it has default victory condition, the default has to have a value
+    // TODO
+
+    // If it has a majority condition, check that the majority has a value
   }
 
   // Validate result display

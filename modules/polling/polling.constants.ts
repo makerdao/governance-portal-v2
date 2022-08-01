@@ -21,6 +21,7 @@ export enum PollInputFormat {
 }
 
 export enum PollVictoryConditions {
+  and = 'and',
   majority = 'majority',
   approval = 'approval',
   plurality = 'plurality',

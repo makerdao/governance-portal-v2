@@ -1,7 +1,7 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchSpockPollById } from '../fetchPollBy';
-import { fetchTallyPlurality } from '../fetchTallyPlurality';
+import { fetchTallyPlurality } from '../victory_conditions/plurality';
 jest.mock('modules/gql/gqlRequest');
 jest.mock('../fetchPollBy');
 

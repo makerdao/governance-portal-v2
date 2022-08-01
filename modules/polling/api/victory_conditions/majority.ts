@@ -8,6 +8,7 @@ export function extractWinnerMajority(currentVotes: ParsedSpockVote[], percent: 
   const votes: { [key: number]: BigNumber } = {};
   let totalMKR = new BigNumber(0);
 
+
   currentVotes.forEach(vote => {
     totalMKR = totalMKR.plus(vote.mkrSupport);
 
@@ -32,6 +33,7 @@ export function extractWinnerMajority(currentVotes: ParsedSpockVote[], percent: 
       return prev.mkrSupport.isGreaterThanOrEqualTo(next.mkrSupport) ? -1 : 1;
     });
   
+
   const mostVoted = sortedOptions[0];
 
   // Check percentage of majority
