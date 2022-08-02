@@ -2,7 +2,6 @@ import { fetchJson } from 'lib/fetchJson';
 import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { sign } from 'modules/web3/helpers/sign';
 import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -357,8 +356,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
-    const signature = await signTypedBallotData(signatureValues, library, networkNameToChainId(network));
-    console.log({ signature });
+    const signature = await signTypedBallotData(signatureValues, library, network);
     if (signature) {
       setStep('awaiting-relayer');
     } else {
@@ -369,7 +367,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ...signatureValues, ...signature })
+      body: JSON.stringify({ ...signatureValues, signature, network })
     })
       .then(res => {
         const voteTxCreator = () => provider.getTransaction(res.hash);
