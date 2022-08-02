@@ -13,7 +13,7 @@ type Props = {
   address: string;
   accountName: ConnectionName | undefined;
   change: () => void;
-  disconnect: any;
+  disconnect: () => void;
 };
 
 const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.Element => {
