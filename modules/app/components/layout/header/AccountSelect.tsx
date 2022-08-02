@@ -21,6 +21,7 @@ import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecuti
 import MetaMaskCard from 'modules/web3/components/connectorCards/MetaMaskCard';
 import GnosisSafeCard from 'modules/web3/components/connectorCards/GnosisSafeCard';
 import WalletConnectCard from 'modules/web3/components/connectorCards/WalletConnectCard';
+import CoinbaseWalletCard from 'modules/web3/components/connectorCards/CoinbaseWalletCard';
 
 // const walletButtonStyle: ThemeUICSSObject = {
 //   cursor: 'pointer',
@@ -76,6 +77,7 @@ const AccountSelect = (): React.ReactElement => {
     <Flex>
       <MetaMaskCard />
       <WalletConnectCard />
+      <CoinbaseWalletCard />
       <GnosisSafeCard />
     </Flex>
   );

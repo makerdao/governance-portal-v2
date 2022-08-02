@@ -28,17 +28,6 @@ export default function WalletConnectCard(): React.ReactElement {
   //   });
   // }, []);
 
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    if (walletConnectConnection.connector.connectEagerly) {
-      try {
-        walletConnectConnection.connector.connectEagerly();
-      } catch {
-        logger.debug('Failed to connect eagerly to walletconnect');
-      }
-    }
-  }, []);
-
   return (
     <ConnectorCard
       connector={walletConnectConnection.connector as SupportedConnector}

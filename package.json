@@ -33,6 +33,7 @@
     "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\""
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^3.3.0",
     "@ethersproject/experimental": "^5.5.0",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",

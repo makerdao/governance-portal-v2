@@ -18,13 +18,6 @@ export default function GnosisSafeCard(): React.ReactElement {
 
   const [error, setError] = useState();
 
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    if (gnosisSafeConnection.connector.connectEagerly) {
-      void gnosisSafeConnection.connector.connectEagerly();
-    }
-  }, []);
-
   return (
     <ConnectorCard
       connector={gnosisSafeConnection.connector as SupportedConnector}

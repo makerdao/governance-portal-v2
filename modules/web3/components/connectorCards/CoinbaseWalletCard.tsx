@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
+import { coinbaseWalletConnection } from 'modules/web3/connections';
 import { ConnectorCard } from './ConnectorCard';
-import { injectedConnection } from 'modules/web3/connections';
 import { SupportedConnector } from 'modules/web3/constants/connectors';
 
 const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } =
-  injectedConnection.hooks;
+  coinbaseWalletConnection.hooks;
 
-export default function MetaMaskCard(): JSX.Element {
+export default function CoinbaseWalletCard() {
   const chainId = useChainId();
   const accounts = useAccounts();
   const isActivating = useIsActivating();
@@ -16,11 +16,11 @@ export default function MetaMaskCard(): JSX.Element {
   const provider = useProvider();
   const ENSNames = useENSNames(provider);
 
-  const [error, setError] = useState<any>(undefined);
+  const [error, setError] = useState(undefined);
 
   return (
     <ConnectorCard
-      connector={injectedConnection.connector as SupportedConnector}
+      connector={coinbaseWalletConnection.connector as SupportedConnector}
       chainId={chainId}
       isActivating={isActivating}
       isActive={isActive}
