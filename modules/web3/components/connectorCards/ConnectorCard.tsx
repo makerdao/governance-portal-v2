@@ -2,10 +2,11 @@ import { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { Network } from '@web3-react/network';
+import { WalletConnect } from '@web3-react/walletconnect';
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Connector } from '@web3-react/types';
 import { Accounts } from '../Accounts';
 import { Chain } from '../Chain';
-import { ConnectWithSelect } from '../ConnectWithSelect';
 import { Status } from '../Status';
 import { SupportedConnector } from 'modules/web3/constants/connectors';
 
@@ -24,8 +25,8 @@ interface Props {
 
 const getName = (connector: Connector) => {
   if (connector instanceof MetaMask) return 'MetaMask';
-  // if (connector instanceof WalletConnect) return 'WalletConnect'
-  // if (connector instanceof CoinbaseWallet) return 'Coinbase Wallet'
+  if (connector instanceof WalletConnect) return 'WalletConnect';
+  if (connector instanceof CoinbaseWallet) return 'Coinbase Wallet';
   if (connector instanceof Network) return 'Network';
   if (connector instanceof GnosisSafe) return 'Gnosis Safe';
   return 'Unknown';
@@ -64,14 +65,6 @@ export function ConnectorCard({
       <div style={{ marginBottom: '1rem' }}>
         <Accounts accounts={accounts} provider={provider} ENSNames={ENSNames} />
       </div>
-      <ConnectWithSelect
-        connector={connector}
-        chainId={chainId}
-        isActivating={isActivating}
-        isActive={isActive}
-        error={error}
-        setError={setError}
-      />
     </div>
   );
 }
