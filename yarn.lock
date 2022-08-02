@@ -678,7 +678,7 @@
   resolved "https://registry.yarnpkg.com/@dethcrypto/eth-sdk-client/-/eth-sdk-client-0.1.6.tgz#900c0b541523a9c77db0ad9608e74480ef6b4913"
   integrity sha512-Iv2xdcxernDINyLsuet9bfySXoFXhNGXmP9GEabpaFjK1AGUTVTurEEQObbu1RTIPNqx0+l2vu9fd14RLpCsqg==
 
-"@dethcrypto/eth-sdk@^0.3.3":
+"@dethcrypto/eth-sdk@^0.3.1":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@dethcrypto/eth-sdk/-/eth-sdk-0.3.3.tgz#403a378c1f397abf09e24a0a0065b319bc4b5f32"
   integrity sha512-Q0UI8hyl3BAC9fTce46z7fbMXZkK5aXGFxcEhwre0hTvpCU5T9nVUVngcOoniFRRtgAadhrYknHGQ6TpymKlvA==
