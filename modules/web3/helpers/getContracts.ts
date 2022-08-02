@@ -51,12 +51,14 @@ export const getContracts = (
   eth-sdk only accepts a signer for now, but there's an issue for it
   https://github.com/dethcrypto/eth-sdk/issues/63
   */
-  const signer =
+  // const signerOrProvider = account && library ? library.getSigner(account) : provider;
+
+  const signerOrProvider =
     account && library
       ? readOnly
         ? (provider as providers.JsonRpcBatchProvider).getSigner(account)
         : library.getSigner(account)
       : new ethers.VoidSigner(ZERO_ADDRESS, provider);
 
-  return sdks[sdkNetwork](signer);
+  return sdks[sdkNetwork](signerOrProvider);
 };
