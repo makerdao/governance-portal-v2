@@ -21,19 +21,19 @@ export default withApiHandler(
       // TODO add all validation here
 
       //verify that signature and address correspond
-      console.log('about to recover signature!!!!!!!!!');
-      console.log('getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network)', getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network));
-      console.log('signature', signature);
-      const recovered = recoverTypedSignature({
-        data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
-        signature,
-        version: 'V4'
-      });
-      console.log('recovered signature', recovered);
-      invariant (
-        ethers.utils.getAddress(recovered) === ethers.utils.getAddress(voter),
-        'Failed to verify signer when comparing ' + recovered + ' to ' + voter
-      );
+      // console.log('about to recover signature!!!!!!!!!');
+      // console.log('getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network)', getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network));
+      // console.log('signature', signature);
+      // const recovered = recoverTypedSignature({
+      //   data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
+      //   signature,
+      //   version: 'V4'
+      // });
+      // console.log('recovered signature', recovered);
+      // invariant (
+      //   ethers.utils.getAddress(recovered) === ethers.utils.getAddress(voter),
+      //   'Failed to verify signer when comparing ' + recovered + ' to ' + voter
+      // );
 
 
       // if validation passes, send tx
