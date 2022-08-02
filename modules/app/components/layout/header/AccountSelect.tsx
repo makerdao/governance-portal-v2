@@ -12,32 +12,31 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
-import { ConnectorName } from 'modules/web3/types/connectors';
+import { ConnectionName } from 'modules/web3/types/connections';
 import { useWeb3React } from '@web3-react/core';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { isAndroid, isIOS } from 'react-device-detect';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
-import MetaMaskCard from 'modules/web3/components/connectorCards/MetaMaskCard';
-import GnosisSafeCard from 'modules/web3/components/connectorCards/GnosisSafeCard';
-import WalletConnectCard from 'modules/web3/components/connectorCards/WalletConnectCard';
-import CoinbaseWalletCard from 'modules/web3/components/connectorCards/CoinbaseWalletCard';
+import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
+import { Connection } from 'modules/web3/connections';
 
-// const walletButtonStyle: ThemeUICSSObject = {
-//   cursor: 'pointer',
-//   width: '100%',
-//   p: 3,
-//   border: '1px solid',
-//   borderColor: 'secondaryMuted',
-//   borderRadius: 'medium',
-//   mb: 2,
-//   flexDirection: 'row',
-//   alignItems: 'center',
-//   '&:hover': {
-//     color: 'text',
-//     backgroundColor: 'background'
-//   }
-// };
+const walletButtonStyle: ThemeUICSSObject = {
+  cursor: 'pointer',
+  width: '100%',
+  p: 3,
+  border: '1px solid',
+  borderColor: 'secondaryMuted',
+  borderRadius: 'medium',
+  mb: 2,
+  flexDirection: 'row',
+  alignItems: 'center',
+  '&:hover': {
+    color: 'text',
+    backgroundColor: 'background'
+  }
+};
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -59,7 +58,7 @@ const AccountSelect = (): React.ReactElement => {
   ]);
 
   const [showDialog, setShowDialog] = useState(false);
-  const [accountName, setAccountName] = useState<ConnectorName>();
+  const [accountName, setAccountName] = useState<ConnectionName>();
   const [changeWallet, setChangeWallet] = useState(false);
   // const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const { account, voteDelegateContractAddress } = useAccount();
@@ -67,20 +66,56 @@ const AccountSelect = (): React.ReactElement => {
 
   const close = () => setShowDialog(false);
 
+  // Handles UI state for loading
+  const [loadingConnectors, setLoadingConnectors] = useState({});
+
+  // Handles the logic when clicking on a connector
+  const onClickConnection = async (connection: Connection, name: ConnectionName) => {
+    try {
+      setLoadingConnectors({
+        [name]: true
+      });
+
+      connection.connector.activate();
+
+      setAccountName(name);
+      setChangeWallet(false);
+
+      setLoadingConnectors({
+        [name]: false
+      });
+    } catch (e) {
+      // Manually set the error in the web-react account context
+      // setError(e);
+      console.log(e);
+      setLoadingConnectors({
+        [name]: false
+      });
+    }
+  };
+
   useEffect(() => {
     setShowDialog(false);
   }, [router.pathname]);
 
   const bpi = useBreakpointIndex();
 
-  const walletOptions = (
-    <Flex>
-      <MetaMaskCard />
-      <WalletConnectCard />
-      <CoinbaseWalletCard />
-      <GnosisSafeCard />
+  const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: ConnectionName) => (
+    <Flex
+      sx={walletButtonStyle}
+      key={connectionName}
+      onClick={
+        (isAndroid || isIOS) && SUPPORTED_WALLETS[connectionName].deeplinkUri
+          ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri)
+          : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connection, connectionName)
+      }
+    >
+      <Icon name={SUPPORTED_WALLETS[connectionName].name} />
+      <Text sx={{ ml: 3 }}>
+        {loadingConnectors[connectionName] ? 'Loading...' : SUPPORTED_WALLETS[connectionName].name}
+      </Text>
     </Flex>
-  );
+  ));
 
   const BackButton = ({ onClick }) => (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -131,7 +166,13 @@ const AccountSelect = (): React.ReactElement => {
                       {...{ address, accountName }}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
-                      disconnect={connector?.deactivate}
+                      disconnect={() => {
+                        if (connector?.deactivate) {
+                          void connector.deactivate();
+                        } else {
+                          void connector.resetState();
+                        }
+                      }}
                     />
                   </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
