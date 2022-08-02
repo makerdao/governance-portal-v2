@@ -1,13 +1,12 @@
 import { getPollTally } from '../getPollTally';
-import { fetchRawPollTally } from '../../api/fetchPollTally';
+import { fetchPollTally } from '../../api/fetchPollTally';
 import { fetchVotesByAddressForPoll } from '../../api/fetchVotesByAddress';
-import { PluralityResult, Poll } from '../../types';
+import { Poll } from '../../types';
 import BigNumber from 'lib/bigNumberJs';
-import * as PRT from '../parseRawTally';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 
-jest.mock('../../api/fetchRawPollTally');
+jest.mock('../../api/fetchPollTally');
 jest.mock('../../api/fetchVotesByAddress');
 
 const mockPoll: Poll = {
@@ -29,7 +28,11 @@ const mockPoll: Poll = {
   summary: '',
   title: '2011,10,30',
   parameters: {
-    inputFormat: PollInputFormat.singleChoice,
+    inputFormat: {
+      type: PollInputFormat.singleChoice,
+      abstain: [0],
+      options: []
+    },
     resultDisplay: PollResultDisplay.singleVoteBreakdown,
     victoryConditions: [{ type: PollVictoryConditions.plurality }]
   },
@@ -38,7 +41,11 @@ const mockPoll: Poll = {
 
 const expectedPRTArg = {
   parameters: {
-    inputFormat: PollInputFormat.singleChoice,
+    inputFormat: {
+      type: PollInputFormat.singleChoice,
+      abstain: [0],
+      options: []
+    },
     resultDisplay: PollResultDisplay.singleVoteBreakdown,
     victoryConditions: [{ type: PollVictoryConditions.plurality }]
   },
@@ -64,7 +71,7 @@ const expectedPRTArg = {
 
 describe('getPollTally', () => {
   beforeAll(() => {
-    (fetchRawPollTally as jest.Mock).mockReturnValue(
+    (fetchPollTally as jest.Mock).mockReturnValue(
       Promise.resolve({
         totalMkrParticipation: new BigNumber(0),
         winner: '0',

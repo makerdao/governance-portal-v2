@@ -1,7 +1,7 @@
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { Box } from 'theme-ui';
-import { PollTally, PluralityResult } from '../types';
+import { PollTally } from '../types';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 
 export function PollVotePluralityResultsCompact({
@@ -11,11 +11,11 @@ export function PollVotePluralityResultsCompact({
   tally: PollTally;
   showTitles?: boolean;
 }): React.ReactElement {
-  const voteTallyResults = tally.results as PluralityResult[];
+  const voteTallyResults = tally.results;
 
-  const yesPercent = voteTallyResults.find(({ optionId }) => optionId === '1')?.firstPct || 0;
-  const abstainPercent = voteTallyResults.find(({ optionId }) => optionId === '0')?.firstPct || 0;
-  const noPercent = voteTallyResults.find(({ optionId }) => optionId === '2')?.firstPct || 0;
+  const yesPercent = voteTallyResults.find(({ optionId }) => optionId === 1)?.firstPct || 0;
+  const abstainPercent = voteTallyResults.find(({ optionId }) => optionId === 0)?.firstPct || 0;
+  const noPercent = voteTallyResults.find(({ optionId }) => optionId === 2)?.firstPct || 0;
 
   return (
     <Box>

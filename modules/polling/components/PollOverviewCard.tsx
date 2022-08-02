@@ -219,7 +219,7 @@ export default function PollOverviewCard({
                           )}
                           {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
                             <RankedChoiceVoteSummary
-                              choices={tally.results.map(i => parseInt(i.optionId))}
+                              choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}
                             />

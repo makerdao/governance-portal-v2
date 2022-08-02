@@ -163,7 +163,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       pb: 2
                     }}
                   >
-                    {isInputFormatRankFree(poll.parameters) ? (
+                    {v.ballot.length > 1 ? (
                       v.ballot.map((choice, index) => (
                         <Box
                           key={`voter-${v.voter}-option-${choice}`}

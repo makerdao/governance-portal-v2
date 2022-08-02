@@ -14,6 +14,7 @@ import { extractWinnerMajority } from './victory_conditions/majority';
 import { extractWinnerInstantRunoff } from './victory_conditions/instantRunoff';
 import { extractWinnerDefault } from './victory_conditions/default';
 import { InstantRunoffResults } from '../types/instantRunoff';
+import { parseRawOptionId } from '../helpers/parseRawOptionId';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -60,14 +61,14 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   // Transform the votes
   // extract the ballot or single votes based on the poll input format:
   const votes: ParsedSpockVote[] = spockVotes.map(vote => {
-    const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
-    const ballot = isInputFormatSingleChoice(poll.parameters)
-      ? [vote.optionIdRaw]
-      : [...ballotBuffer].reverse();
+    // const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
+    // const ballot = isInputFormatSingleChoice(poll.parameters)
+    //   ? [vote.optionIdRaw]
+    //   : [...ballotBuffer].reverse();
     return {
       ...vote,
       optionIdRaw: vote.optionIdRaw.toString(),
-      ballot
+      ballot: parseRawOptionId(vote.optionIdRaw.toString())
     };
   });
 
@@ -156,22 +157,24 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   const results: PollTallyOption[] = Object.keys(votesInfo)
     .map(key => {
       const optionId = parseInt(key);
-      const mkrSupport = winnerOption.results
-      ? winnerOption.results?.options[optionId]?.mkrSupport:  votesInfo[optionId];
+      const instantRunoffOption = winnerOption.results?.options[optionId];
+      const mkrSupport = winnerOption.results && instantRunoffOption
+      ? instantRunoffOption?.mkrSupport:  votesInfo[optionId];
+
       return {
         optionId,
         winner: winnerOption.winner === optionId,
         mkrSupport: mkrSupport.toString(),
         optionName: poll.options[optionId],
-        eliminated: winnerOption.results?.options[optionId]?.eliminated,
-        transfer: winnerOption.results?.options[optionId]?.transfer.toString(),
+        eliminated: instantRunoffOption?.eliminated,
+        transfer: instantRunoffOption?.transfer?.toString(),
         firstPct:
           totalMkrParticipation.gt(0) 
             ? new BigNumber(mkrSupport).div(totalMkrParticipation).times(100).toNumber()
             : 0,
         transferPct:
-          totalMkrParticipation.gt(0) && winnerOption.results?.options[optionId]?.transfer
-            ? new BigNumber(winnerOption.results?.options[optionId]?.transfer)
+          totalMkrParticipation.gt(0) && instantRunoffOption?.transfer
+            ? new BigNumber(instantRunoffOption?.transfer)
                 .div(totalMkrParticipation)
                 .times(100)
                 .toNumber()
