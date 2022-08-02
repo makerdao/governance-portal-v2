@@ -188,7 +188,6 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
 
 // Returns a list of delegates, mixin onchain and repo information
 export async function fetchDelegates(
-  provider: any,
   network?: SupportedNetworks,
   sortBy: 'mkr' | 'random' | 'delegators' | 'date' = 'random'
 ): Promise<DelegatesAPIResponse> {

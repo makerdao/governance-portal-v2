@@ -7,12 +7,16 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
+import invariant from 'tiny-invariant';
+import { isSupportedNetwork } from './networks';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 
+type SignerOrProvider = Signer | providers.Provider;
+
 type Sdks = {
-  mainnet: (signer: Signer) => MainnetSdk;
-  goerli: (signer: Signer) => GoerliSdk;
+  mainnet: (signerOrProvider: SignerOrProvider) => MainnetSdk;
+  goerli: (signerOrProvider: SignerOrProvider) => GoerliSdk;
 };
 
 const sdks: Sdks = {
@@ -23,7 +27,19 @@ const sdks: Sdks = {
 export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
   `${rpcUrl.substring(0, rpcUrl.lastIndexOf('/'))}/${newKey}`;
 
-// this name doesn't feel right, maybe getSdk? or getContractLibrary?
+let connectedAccount: string | undefined = '';
+
+const contractSingletons = {
+  provider: {
+    mainnet: null,
+    goerli: null
+  },
+  signer: {
+    mainnet: null,
+    goerli: null
+  }
+};
+
 export const getContracts = (
   chainId?: SupportedChainId,
   library?: Web3Provider,
@@ -35,30 +51,34 @@ export const getContracts = (
     ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
     : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };
 
+  invariant(isSupportedNetwork(networkInfo.network), `unsupported network ${networkInfo.network}`);
+
   // If a custom API key is provided, replace it in the URL
   if (apiKey) networkInfo.rpcUrl = replaceApiKey(networkInfo.rpcUrl, apiKey);
 
   const { network, rpcUrl } = networkInfo;
 
-  const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
+  const needsSigner = !readOnly && !!account && !!library;
 
-  // Map goerlifork to goerli contracts
-  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
-  /* 
-  A read-only signer, when an API requires a Signer as a parameter, but it is known only read-only operations will be carried.
-  https://docs.ethers.io/v5/api/signer/#VoidSigner 
+  const connectionType = needsSigner ? 'signer' : 'provider';
 
-  eth-sdk only accepts a signer for now, but there's an issue for it
-  https://github.com/dethcrypto/eth-sdk/issues/63
-  */
-  // const signerOrProvider = account && library ? library.getSigner(account) : provider;
+  const changeAccount = !!account && account !== connectedAccount;
 
-  const signerOrProvider =
-    account && library
-      ? readOnly
-        ? (provider as providers.JsonRpcBatchProvider).getSigner(account)
-        : library.getSigner(account)
-      : new ethers.VoidSigner(ZERO_ADDRESS, provider);
+  if (changeAccount || !contractSingletons[connectionType][network]) {
+    const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
-  return sdks[sdkNetwork](signerOrProvider);
+    // Map goerlifork to goerli contracts
+    const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+
+    // const signerOrProvider = account && library ? library.getSigner(account) : provider;
+
+    const signerOrProvider = needsSigner ? library.getSigner(account) : provider;
+
+    // Keep track of the connected account so we know if it needs to be changed later
+    if (account) connectedAccount = account;
+    contractSingletons[connectionType][network] = sdks[sdkNetwork](signerOrProvider);
+  }
+
+  // TODO need to account for sdkNetwork above
+  return contractSingletons[connectionType][network];
 };
