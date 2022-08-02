@@ -7,16 +7,17 @@ export type PollVictoryConditionComparison = {
   options: number[];
   comparator: string;
 };
-// { type : default, options : [2] }
+
+// { type : default, value: 2 }
 export type PollVictoryConditionDefault = {
   type: PollVictoryConditions.default;
-  options: number[];
+  value: number;
 };
 
-// NOT SUPPORTED YET: { type : majority, options : [2] }
+// { type : majority, percent: 50 }
 export type PollVictoryConditionMajority = {
   type: PollVictoryConditions.majority;
-  options: number[];
+  percent: number;
 };
 
 // { type : 'plurality' }

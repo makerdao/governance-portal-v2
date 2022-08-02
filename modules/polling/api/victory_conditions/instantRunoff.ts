@@ -1,20 +1,7 @@
 import BigNumber from 'lib/bigNumberJs';
+import { InstantRunoffOption, InstantRunoffOptions, InstantRunoffResults } from 'modules/polling/types/instantRunoff';
 import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 
-type InstantRunoffOption = {
-  firstChoice: BigNumber;
-  transfer: BigNumber;
-  winner: boolean;
-  eliminated: boolean;
-};
-
-type InstantRunoffOptions = { [key: number]: InstantRunoffOption };
-
-type InstantRunoffResults = {
-  rounds: number;
-  winner: number | undefined;
-  options: InstantRunoffOptions;
-};
 const MAX_ROUNDS = 32;
 
 export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): InstantRunoffResults | null {
@@ -23,7 +10,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
   let rounds = 1;
 
   const defaultOptionObj: InstantRunoffOption = {
-    firstChoice: new BigNumber(0),
+    mkrSupport: new BigNumber(0),
     transfer: new BigNumber(0),
     winner: false,
     eliminated: false
@@ -40,9 +27,12 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
     totalMKR = totalMKR.plus(vote.mkrSupport);
 
     // take the highest preference option from each voter's ballot
+    // Copy ballot to avoid modifications of the same object
+    const newBallot = [...vote.ballot];
     const newVote = {
       ...vote,
-      choice: vote.ballot.pop()
+      ballot: newBallot,
+      choice: newBallot.shift()
     };
 
     if (typeof newVote.choice !== 'undefined') {
@@ -50,15 +40,15 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
         options[newVote.choice] = { ...defaultOptionObj };
       }
 
-      options[newVote.choice].firstChoice = options[newVote.choice].firstChoice.plus(newVote.mkrSupport || 0);
+      options[newVote.choice].mkrSupport = options[newVote.choice].mkrSupport.plus(newVote.mkrSupport || 0);
     }
 
     return newVote;
   });
 
   // does any candidate have the majority after the first round?
-  Object.entries(options).forEach(([option, { firstChoice }]) => {
-    if (firstChoice.gt(totalMKR.div(2))) {
+  Object.entries(options).forEach(([option, { mkrSupport }]) => {
+    if (mkrSupport.gt(totalMKR.div(2))) {
       winner = parseInt(option);
     }
   });
@@ -81,7 +71,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
     const [optionToEliminate] = filteredOptions.reduce((prv, cur) => {
       const [, prvVotes] = prv;
       const [, curVotes] = cur;
-      if (curVotes.firstChoice.plus(curVotes.transfer).lt(prvVotes.firstChoice.plus(prvVotes.transfer)))
+      if (curVotes.mkrSupport.plus(curVotes.transfer).lt(prvVotes.mkrSupport.plus(prvVotes.transfer)))
         return cur;
       return prv;
     });
@@ -101,7 +91,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
     // move votes to the next choice on their preference list
     votesToBeMoved.forEach(vote => {
       const prevChoice = choiceVotes[vote.index].choice;
-      choiceVotes[vote.index].choice = choiceVotes[vote.index].ballot.pop();
+      choiceVotes[vote.index].choice = choiceVotes[vote.index].ballot.shift();
       if (typeof choiceVotes[vote.index].choice === 'undefined') {
         return;
       }
@@ -111,7 +101,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
       }
 
       if (options[choiceVotes[vote.index].choice as number].eliminated) {
-        choiceVotes[vote.index].choice = choiceVotes[vote.index].ballot.pop();
+        choiceVotes[vote.index].choice = choiceVotes[vote.index].ballot.shift();
         let validVoteFound = false;
 
         while (typeof choiceVotes[vote.index].choice !== 'undefined') {
@@ -122,7 +112,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
             validVoteFound = true;
             break;
           }
-          choiceVotes[vote.index].choice = choiceVotes[vote.index].ballot.pop();
+          choiceVotes[vote.index].choice = choiceVotes[vote.index].ballot.shift();
         }
 
         if (!validVoteFound) return;
@@ -139,8 +129,8 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
     });
 
     // look for a candidate with the majority
-    Object.entries(options).forEach(([option, { firstChoice, transfer }]) => {
-      if (firstChoice.plus(transfer).gt(totalMKR.div(2))) {
+    Object.entries(options).forEach(([option, { mkrSupport, transfer }]) => {
+      if (mkrSupport.plus(transfer).gt(totalMKR.div(2))) {
         winner = parseInt(option);
       }
     });
@@ -155,7 +145,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
     if ((rounds > MAX_ROUNDS || remainingOptions === 1) && typeof winner === 'undefined') {
       return {
         options,
-        winner,
+        winner: null,
         rounds
       };
     }
@@ -166,7 +156,7 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
       // return the tally without declaring a winner
       return {
         options,
-        winner,
+        winner: null,
         rounds
       };
     }

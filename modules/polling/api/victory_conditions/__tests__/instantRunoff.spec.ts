@@ -34,17 +34,17 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [3, 1]
+        ballot: [1, 3]
       },
       {
         mkrSupport: '200.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [1, 3]
+        ballot: [3, 1]
       },
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [3, 2]
+        ballot: [2, 3]
       }
     ];
 
@@ -55,19 +55,19 @@ describe('Instant runoff calculation', () => {
       winner: 3,
       options: {
         '1': {
-          firstChoice: '60.025',
+          mkrSupport: '60.025',
           transfer: '0',
           winner: false,
           eliminated: false
         },
         '2': {
-          firstChoice: '64.068823529411764706',
+          mkrSupport: '64.068823529411764706',
           transfer: '0',
           winner: false,
           eliminated: false
         },
         '3': {
-          firstChoice: '200.598801867883985831',
+          mkrSupport: '200.598801867883985831',
           transfer: '0',
           winner: true,
           eliminated: false
@@ -83,17 +83,17 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [3, 1]
+        ballot: [1, 3]
       },
       {
         mkrSupport: '102.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [1, 3]
+        ballot: [3, 1]
       },
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [3, 2]
+        ballot: [2, 3]
       }
     ];
 
@@ -104,19 +104,19 @@ describe('Instant runoff calculation', () => {
       winner: 3,
       options: {
         '1': {
-          firstChoice: '60.025',
+          mkrSupport: '60.025',
           transfer: '-60.025',
           winner: false,
           eliminated: true
         },
         '2': {
-          firstChoice: '64.068823529411764706',
+          mkrSupport: '64.068823529411764706',
           transfer: '0',
           winner: false,
           eliminated: false
         },
         '3': {
-          firstChoice: '102.598801867883985831',
+          mkrSupport: '102.598801867883985831',
           transfer: '60.025',
           winner: true,
           eliminated: false
@@ -132,22 +132,22 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [3, 1]
+        ballot: [1, 3]
       },
       {
         mkrSupport: '102.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [1, 3]
+        ballot: [3, 1]
       },
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [3, 2]
+        ballot: [2,3]
       },
       {
         mkrSupport: 4,
         optionIdRaw: fromBuffer([4, 1].reverse()),
-        ballot: [1, 4]
+        ballot: [4, 1]
       }
     ];
 
@@ -157,25 +157,25 @@ describe('Instant runoff calculation', () => {
       winner: 3,
       options: {
         '1': {
-          firstChoice: '60.025',
+          mkrSupport: '60.025',
           transfer: '-56.025',
           winner: false,
           eliminated: true
         },
         '2': {
-          firstChoice: '64.068823529411764706',
+          mkrSupport: '64.068823529411764706',
           transfer: '0',
           winner: false,
           eliminated: false
         },
         '3': {
-          firstChoice: '102.598801867883985831',
+          mkrSupport: '102.598801867883985831',
           transfer: '60.025',
           winner: true,
           eliminated: false
         },
         '4': {
-          firstChoice: '4',
+          mkrSupport: '4',
           transfer: '-4',
           winner: false,
           eliminated: true
@@ -191,22 +191,22 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [3, 1]
+        ballot: [1,3]
       },
       {
         mkrSupport: '102.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [1, 3]
+        ballot: [3, 1]
       },
       {
         mkrSupport: '54.068823529411764706',
         optionIdRaw: fromBuffer([2, 4].reverse()),
-        ballot: [4, 2]
+        ballot: [2, 4]
       },
       {
         mkrSupport: 4,
         optionIdRaw: fromBuffer([4, 1].reverse()),
-        ballot: [1, 4]
+        ballot: [4, 1]
       }
     ];
 
@@ -216,25 +216,25 @@ describe('Instant runoff calculation', () => {
       winner: 3,
       options: {
         '1': {
-          firstChoice: '60.025',
+          mkrSupport: '60.025',
           transfer: '-56.025',
           winner: false,
           eliminated: true
         },
         '2': {
-          firstChoice: '54.068823529411764706',
+          mkrSupport: '54.068823529411764706',
           transfer: '0',
           winner: false,
           eliminated: true
         },
         '3': {
-          firstChoice: '102.598801867883985831',
+          mkrSupport: '102.598801867883985831',
           transfer: '60.025',
           winner: true,
           eliminated: false
         },
         '4': {
-          firstChoice: '4',
+          mkrSupport: '4',
           transfer: '-4',
           winner: false,
           eliminated: true
@@ -255,7 +255,7 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '100',
         optionIdRaw: fromBuffer([2, 1].reverse()),
-        ballot: [1, 2]
+        ballot: [2, 1]
       },
       {
         mkrSupport: '50',
@@ -265,7 +265,7 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: 49,
         optionIdRaw: fromBuffer([4, 3].reverse()),
-        ballot: [3, 4]
+        ballot: [4, 3]
       }
     ];
 
@@ -275,25 +275,25 @@ describe('Instant runoff calculation', () => {
       winner: 1,
       options: {
         '1': {
-          firstChoice: '101',
+          mkrSupport: '101',
           transfer: '100',
           winner: true,
           eliminated: false
         },
         '2': {
-          firstChoice: '100',
+          mkrSupport: '100',
           transfer: '-100',
           winner: false,
           eliminated: true
         },
         '3': {
-          firstChoice: '50',
+          mkrSupport: '50',
           transfer: '49',
           winner: false,
           eliminated: true
         },
         '4': {
-          firstChoice: '49',
+          mkrSupport: '49',
           transfer: '-49',
           winner: false,
           eliminated: true

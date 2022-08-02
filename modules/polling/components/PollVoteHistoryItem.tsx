@@ -101,7 +101,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {isResultDisplayInstantRunoffBreakdown(vote.poll.parameters) ? (
               <RankedChoiceVoteSummary
-                choices={vote.rankedChoiceOption || []}
+                choices={vote.ballot || []}
                 poll={vote.poll}
                 align={bpi < 1 ? 'left' : 'right'}
               />

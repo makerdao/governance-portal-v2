@@ -9,6 +9,7 @@ import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
+import { isInputFormatRankFree } from '../helpers/utils';
 
 type Props = {
   tally: PollTally;
@@ -51,7 +52,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
         );
       case 'option':
         return votes?.sort((a, b) =>
-          sortBy.order === 1 ? (a.optionId > b.optionId ? -1 : 1) : a.optionId > b.optionId ? 1 : -1
+          sortBy.order === 1 ? (a.ballot[0] > b.ballot[0] ? -1 : 1) : a.ballot[0] > b.ballot[0] ? 1 : -1
         );
       default:
         return votes;
@@ -158,12 +159,12 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Box
                     as="td"
                     sx={{
-                      color: getVoteColor(v.optionId, poll.parameters.inputFormat.type),
+                      color: getVoteColor(v.ballot[0], poll.parameters.inputFormat.type),
                       pb: 2
                     }}
                   >
-                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 ? (
-                      v.rankedChoiceOption.map((choice, index) => (
+                    {isInputFormatRankFree(poll.parameters) ? (
+                      v.ballot.map((choice, index) => (
                         <Box
                           key={`voter-${v.voter}-option-${choice}`}
                           sx={{
@@ -176,7 +177,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                         </Box>
                       ))
                     ) : (
-                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.optionId]}</Text>
+                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.ballot[0]]}</Text>
                     )}
                   </Box>
                   <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>

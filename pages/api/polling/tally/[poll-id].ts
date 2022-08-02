@@ -22,7 +22,7 @@ import { PollTally } from 'modules/polling/types';
  *         type: string
  *       mkrSupport:
  *         type: string
- *       rankedChoiceOption:
+ *       ballot:
  *         type: array
  *         items:
  *           type: integer
@@ -31,7 +31,7 @@ import { PollTally } from 'modules/polling/types';
  *         optionId: 1
  *         optionIdRaw: "1"
  *         mkrSupport: "23232.23132"
- *         rankedChoiceOption: [1]
+ *         ballot: [1]
  *   ResultTally:
  *     type: object
  *     properties:
@@ -85,10 +85,8 @@ import { PollTally } from 'modules/polling/types';
  *         winningOptionName: '30% of Real AAVEv2 DAI Supply'
  *         votesByAddress:
  *           - voter: "0xcfeed3fbefe9eb09b37539eaa0ddd58d1e1044ca"
- *             optionId: 1
- *             optionIdRaw: "1"
  *             mkrSupport: "23232.23132"
- *             rankedChoiceOption: [1]
+ *             ballot: [1]
  *         results:
  *           - optionId: "1"
  *             optionName: "Yes"
@@ -123,7 +121,6 @@ import { PollTally } from 'modules/polling/types';
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
   const poll = await fetchPollById(parseInt(req.query['poll-id'] as string, 10), network);
 
   if (!poll) {
@@ -140,6 +137,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       numVoters: 0,
       results: [],
       totalMkrParticipation: 0,
+      totalMkrActiveParticipation: 0,
       winner: null,
       winningOptionName: '',
       votesByAddress: []
@@ -147,7 +145,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
     return res.status(200).json(emptyTally);
   }
-
   const tally = await getPollTally(poll, network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

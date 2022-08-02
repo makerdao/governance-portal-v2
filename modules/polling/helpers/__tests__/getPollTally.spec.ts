@@ -1,5 +1,5 @@
 import { getPollTally } from '../getPollTally';
-import { fetchRawPollTally } from '../../api/fetchRawPollTally';
+import { fetchRawPollTally } from '../../api/fetchPollTally';
 import { fetchVotesByAddressForPoll } from '../../api/fetchVotesByAddress';
 import { PluralityResult, Poll } from '../../types';
 import BigNumber from 'lib/bigNumberJs';

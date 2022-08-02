@@ -25,7 +25,7 @@ export function isActivePoll(poll: Poll): boolean {
 export function findVictoryCondition(
   victoryConditions: (PollVictoryConditionAND | VictoryCondition)[],
   victoryCondition: PollVictoryConditions
-) {
+): boolean {
   return !!victoryConditions.find((v: VictoryCondition | PollVictoryConditionAND) => {
     if (v.type === PollVictoryConditions.and) {
       if (victoryCondition === PollVictoryConditions.and) {
@@ -95,7 +95,7 @@ export function extractCurrentPollVote(
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
 
   if (isInputFormatRankFree(poll.parameters)) {
-    return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
+    return currentVote?.ballot !== undefined ? currentVote.ballot : null;
   } else if (isInputFormatSingleChoice(poll.parameters)) {
     return currentVote?.optionId !== undefined ? currentVote.optionId : null;
   }
