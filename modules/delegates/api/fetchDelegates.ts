@@ -276,12 +276,17 @@ export async function fetchDelegates(
     }
   });
 
+  // Exclude expired, and dedupe migrated delegates for stats purposes
+  const dedupedDelegates = sortedDelegates
+    .filter(({ status }) => status !== DelegateStatusEnum.expired)
+    .filter(({ next }) => !next);
+
   const delegatesResponse: DelegatesAPIResponse = {
     delegates: sortedDelegates,
     stats: {
-      total: sortedDelegates.length,
-      shadow: sortedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
-      recognized: sortedDelegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
+      total: dedupedDelegates.length,
+      shadow: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
+      recognized: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
       totalMKRDelegated: new BigNumberJS(
         delegates.reduce((prev, next) => {
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);

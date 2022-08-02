@@ -1,5 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
+import logger from 'lib/logger';
 import { chainIdToNetworkName } from '../helpers/chain';
 
 // TODO type this
@@ -7,7 +8,12 @@ import { chainIdToNetworkName } from '../helpers/chain';
 export function useActiveWeb3React(): any {
   const context = useWeb3React<Web3Provider>();
 
-  const network = chainIdToNetworkName(context.chainId);
+  let network;
+  try {
+    network = chainIdToNetworkName(context.chainId);
+  } catch (err) {
+    logger.warn('connected to unsupported network');
+  }
 
   return {
     ...context,

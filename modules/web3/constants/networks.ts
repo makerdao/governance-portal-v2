@@ -14,10 +14,10 @@ import {
 export enum SupportedConnectors {
   METAMASK = 'metamask',
   WALLET_CONNECT = 'walletConnect',
-  COINBASE_WALLET = 'coinbaseWallet'
-  // LEDGER = 'ledger',
-  // TREZOR = 'trezor'
+  COINBASE_WALLET = 'coinbaseWallet',
+  GNOSIS_SAFE = 'gnosisSafe'
 }
+
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',

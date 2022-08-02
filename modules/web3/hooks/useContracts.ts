@@ -3,6 +3,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { EthSdk, getContracts } from '../helpers/getContracts';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { SupportedChainId } from '../constants/chainID';
+import { isSupportedChain } from 'modules/web3/helpers/chain';
 
 type Props = {
   chainId?: SupportedChainId;
@@ -14,7 +15,14 @@ export const useContracts = (apiKey?: string): EthSdk => {
   const { chainId, library, account }: Props = useActiveWeb3React();
 
   const sdk = useMemo(
-    () => getContracts(chainId ?? SupportedChainId.MAINNET, library, account, false, apiKey),
+    () =>
+      getContracts(
+        isSupportedChain(chainId) ? chainId : SupportedChainId.MAINNET,
+        library,
+        account,
+        false,
+        apiKey
+      ),
     [chainId, library, account]
   );
 

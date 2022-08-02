@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-
+import { Network } from '@web3-react/network';
+import { WalletConnect } from '@web3-react/walletconnect';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
-import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
+// import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
@@ -40,7 +41,41 @@ const closeButtonStyle: ThemeUICSSObject = {
 };
 
 const NetworkSelect = (): React.ReactElement => {
-  const { library, chainId, account } = useActiveWeb3React();
+  const { chainId, account, connector } = useActiveWeb3React();
+  const isNetwork = connector instanceof Network;
+  const [desiredChainId, setDesiredChainId] = useState<number>(isNetwork ? 1 : -1);
+  const [error, setError] = useState<any>(undefined);
+
+  const switchChain = useCallback(
+    (desiredChainId: number) => {
+      setDesiredChainId(desiredChainId);
+      // if we're already connected to the desired chain, return
+      if (desiredChainId === chainId) {
+        setError(undefined);
+        return;
+      }
+
+      // if they want to connect to the default chain and we're already connected, return
+      if (desiredChainId === -1 && chainId !== undefined) {
+        setError(undefined);
+        return;
+      }
+
+      if (connector instanceof WalletConnect || connector instanceof Network) {
+        connector
+          .activate(desiredChainId === -1 ? undefined : desiredChainId)
+          .then(() => setError(undefined))
+          .catch(setError);
+      } else {
+        connector
+          .activate(desiredChainId === -1 ? undefined : desiredChainId)
+          .then(() => setError(undefined))
+          .catch(setError);
+      }
+    },
+    [connector, chainId, setError]
+  );
+
   // We can only switch MM network if injected connector is active
   const disabled = !account;
 
@@ -56,7 +91,7 @@ const NetworkSelect = (): React.ReactElement => {
         sx={walletButtonStyle}
         key={CHAIN_INFO[chainKey].label}
         onClick={() => {
-          switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library });
+          switchChain(CHAIN_INFO[chainKey].chainId);
           setShowDialog(false);
         }}
       >
