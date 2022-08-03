@@ -809,5 +809,9 @@
   "836": ["misc-governance"],
   "837": ["high-impact", "real-world-assets", "collateral-onboard", "risk-parameter"],
   "838": ["high-impact", "ratification", "mips", "core-unit-onboard"],
-  "839": ["medium-impact", "greenlight"]
+  "839": ["medium-impact", "greenlight"],
+  "840": ["high-impact", "risk-parameter", "momc"],
+  "841": ["high-impact", "risk-parameter", "bridge"],
+  "842": ["medium-impact", "greenlight"],
+  "843": ["medium-impact", "misc-governance", "misc-funding", "budget"]
 }

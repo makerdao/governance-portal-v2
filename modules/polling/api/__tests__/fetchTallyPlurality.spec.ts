@@ -84,6 +84,30 @@ describe('Fetch tally plurality', () => {
           firstPct: 13.473423980222497,
           transferPct: 0,
           winner: false
+        },
+        {
+          optionId: 4,
+          optionName: 'Fourth',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 2,
+          optionName: 'Second',
+          mkrSupport: '0',
+          firstPct: 0,
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 3,
+          optionName: 'Third',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
         }
       ]
     };
@@ -160,6 +184,22 @@ describe('Fetch tally plurality', () => {
           firstPct: 5.340519353258207,
           transferPct: 0,
           winner: false
+        },
+        {
+          optionId: 4,
+          optionName: 'Fourth',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 3,
+          optionName: 'Third',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
         }
       ]
     };
@@ -183,7 +223,49 @@ describe('Fetch tally plurality', () => {
       totalMkrParticipation: '0',
       totalMkrActiveParticipation: '0',
       numVoters: 0,
-      results: []
+      results: [
+        {
+          optionId: 0,
+          optionName: 'Abstain',
+          mkrSupport: '0',
+          firstPct: 0,
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 1,
+          optionName: 'First',
+          mkrSupport: '0',
+          firstPct: 0,
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 4,
+          optionName: 'Fourth',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 2,
+          optionName: 'Second',
+          mkrSupport: '0',
+          firstPct: 0,
+          transferPct: 0,
+          winner: false
+        },
+
+        {
+          optionId: 3,
+          optionName: 'Third',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        }
+      ]
     };
 
     expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
@@ -256,6 +338,22 @@ describe('Fetch tally plurality', () => {
           optionName: 'Second',
           mkrSupport: '32',
           firstPct: 1.567858892699657,
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 4,
+          optionName: 'Fourth',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 3,
+          optionName: 'Third',
+          firstPct: 0,
+          mkrSupport: '0',
           transferPct: 0,
           winner: false
         }

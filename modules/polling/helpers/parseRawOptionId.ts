@@ -5,11 +5,8 @@ export function parseRawOptionId(rawValue?: string): number[] {
   if (rawValue) {
     const ballotBuffer = toBuffer(rawValue, { endian: 'little' });
     const ballot = [...ballotBuffer];
-    voteBallot = ballot.reverse()
-    
-    // TODO: Check what happens when removing abstain options .filter(choice => choice !== 0);
+    voteBallot = ballot.reverse();
   }
 
   return voteBallot;
 }
- 

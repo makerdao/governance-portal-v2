@@ -115,6 +115,22 @@ describe('Fetch tally ranked', () => {
           transferPct: 0,
           winner: false,
           eliminated: false
+        },
+        {
+          optionId: 0,
+          optionName: 'Abstain',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 4,
+          optionName: 'Fourth',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
         }
       ],
       numVoters: 3
@@ -173,6 +189,14 @@ describe('Fetch tally ranked', () => {
           eliminated: false
         },
         {
+          optionId: 0,
+          optionName: 'Abstain',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
           optionId: 1,
           optionName: 'First',
           firstPct: 26.47858521855385,
@@ -181,6 +205,15 @@ describe('Fetch tally ranked', () => {
           transferPct: -26.47858521855385,
           winner: false,
           eliminated: true
+        },
+
+        {
+          optionId: 4,
+          optionName: 'Fourth',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
         }
       ],
       numVoters: 3
@@ -254,6 +287,14 @@ describe('Fetch tally ranked', () => {
           eliminated: true
         },
         {
+          optionId: 0,
+          optionName: 'Abstain',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+        {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 1.7339089158620713,
@@ -297,7 +338,6 @@ describe('Fetch tally ranked', () => {
 
     const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
-
     const expectedResult = {
       parameters: mockPoll.parameters,
       rounds: 4,
@@ -312,7 +352,7 @@ describe('Fetch tally ranked', () => {
           mkrSupport: '102.598801867883985831',
           firstPct: 46.48945640262485,
           transfer: '60.025',
-          transferPct:  27.1984620654821,
+          transferPct: 27.1984620654821,
           winner: true,
           eliminated: false
         },
@@ -320,7 +360,7 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           mkrSupport: '54.068823529411764706',
-          firstPct:  24.499605925696823,
+          firstPct: 24.499605925696823,
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -329,12 +369,21 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 1,
           optionName: 'First',
-          firstPct:  27.1984620654821,
+          firstPct: 27.1984620654821,
           mkrSupport: '60.025',
           transfer: '-56.025',
           transferPct: -25.385986459285874,
           winner: false,
           eliminated: true
+        },
+
+        {
+          optionId: 0,
+          optionName: 'Abstain',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
         },
         {
           optionId: 4,
@@ -388,8 +437,6 @@ describe('Fetch tally ranked', () => {
 
     const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
-    
-    
     const expectedResult = {
       parameters: mockPoll.parameters,
       rounds: 4,
@@ -401,26 +448,33 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 1,
           optionName: 'First',
-          firstPct:  33.666666666666664,
+          firstPct: 33.666666666666664,
           mkrSupport: '101',
           transfer: '100',
-          transferPct:  33.333333333333336,
+          transferPct: 33.333333333333336,
           winner: true,
           eliminated: false
         },
-       
+
         {
           optionId: 3,
           optionName: 'Third',
           mkrSupport: '50',
-          firstPct:  16.666666666666668,
+          firstPct: 16.666666666666668,
           transfer: '49',
-          transferPct:  16.333333333333332,
+          transferPct: 16.333333333333332,
           winner: false,
           eliminated: true
         },
-       
-        
+        {
+          optionId: 0,
+          optionName: 'Abstain',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        },
+
         {
           optionId: 4,
           optionName: 'Fourth',
@@ -435,12 +489,12 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           mkrSupport: '100',
-          firstPct:   33.333333333333336,
+          firstPct: 33.333333333333336,
           transfer: '-100',
           transferPct: -33.333333333333336,
           winner: false,
           eliminated: true
-        },
+        }
       ],
       numVoters: 4
     };

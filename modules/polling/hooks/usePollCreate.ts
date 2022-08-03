@@ -39,7 +39,13 @@ export const usePollCreate = (): CreateResponse => {
   );
 
   const createPoll = (startDate, endDate, multiHash, url, callbacks) => {
-    const createTxCreator = () => (network === SupportedNetworks.GOERLI ? polling : pollingOld).createPoll(startDate, endDate, multiHash, url);
+    const createTxCreator = () =>
+      (network === SupportedNetworks.GOERLI ? polling : pollingOld).createPoll(
+        startDate,
+        endDate,
+        multiHash,
+        url
+      );
     const txId = track(createTxCreator, account, 'Creating poll', {
       initialized: () => {
         if (typeof callbacks?.initialized === 'function') callbacks.initialized();

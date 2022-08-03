@@ -142,7 +142,7 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [2,3]
+        ballot: [2, 3]
       },
       {
         mkrSupport: 4,
@@ -191,7 +191,7 @@ describe('Instant runoff calculation', () => {
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [1,3]
+        ballot: [1, 3]
       },
       {
         mkrSupport: '102.598801867883985831',

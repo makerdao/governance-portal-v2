@@ -29,16 +29,14 @@ export default function PollWinningOptionBox({
           <StatusText>
             <>
               {textWin}:{' '}
-              <span
-                sx={{ color: getVoteColor(tally?.winner || 0, poll.parameters.inputFormat.type) }}
-              >
+              <span sx={{ color: getVoteColor(tally?.winner || 0, poll.parameters) }}>
                 {tally?.winningOptionName}
               </span>{' '}
               {(isInputFormatSingleChoice(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
                 'with ' +
                   formatValue(
                     parseUnits(
-                      (tally.results)
+                      tally.results
                         .find(({ optionId }) => optionId === tally.winner)
                         ?.mkrSupport.toString() || '0'
                     )
@@ -48,7 +46,7 @@ export default function PollWinningOptionBox({
                 'with ' +
                   formatValue(
                     parseUnits(
-                      (tally.results)
+                      tally.results
                         .find(({ optionId }) => optionId === tally.winner)
                         ?.mkrSupport.toString() || '0'
                     )

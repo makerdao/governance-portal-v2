@@ -1,5 +1,9 @@
 import BigNumber from 'lib/bigNumberJs';
-import { InstantRunoffOption, InstantRunoffOptions, InstantRunoffResults } from 'modules/polling/types/instantRunoff';
+import {
+  InstantRunoffOption,
+  InstantRunoffOptions,
+  InstantRunoffResults
+} from 'modules/polling/types/instantRunoff';
 import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 
 const MAX_ROUNDS = 32;

@@ -1,118 +1,97 @@
 {
-  "options": {
-    "0": {
-      "firstChoice": "2.001309",
-      "transfer": 0,
-      "winner": false,
-      "eliminated": false
+  "parameters": {
+    "inputFormat": {
+      "type": "single-choice",
+      "abstain": [0],
+      "options": []
     },
-    "1": {
-      "firstChoice": "70286.578047787892861292",
-      "transfer": 0,
-      "winner": true,
-      "eliminated": false
-    }
+    "resultDisplay": "single-vote-breakdown",
+    "victoryConditions": [{ "type": "plurality" }]
   },
   "winner": "1",
   "rounds": 1,
   "totalMkrParticipation": 70288.579356787892861292,
+  "totalMkrActiveParticipation": 70288.579356787892861292,
   "numVoters": 13,
   "votesByAddress": [
     {
       "voter": "0xad2fda5f6ce305d2ced380fdfa791b6a26e7f281",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 28312.074392254362747305,
       "ballot": [1]
     },
     {
       "voter": "0x00daec2c2a6a3fcc66b02e38b7e56dcdfa9347a1",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 25032.0,
       "ballot": [1]
     },
     {
       "voter": "0xaf8aa6846539033eaf0c3ca4c9c7373e370e039b",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 7207.435367996405220986,
       "ballot": [1]
     },
     {
       "voter": "0xefcc3401739427eb0491cc27c7baa06817c7dfdb",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 5976.197480361166301154,
       "ballot": [1]
     },
     {
       "voter": "0x2c3b917cceaf41503145ceb4b37c8623d862c4cd",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 2000.0,
       "ballot": [1]
     },
     {
       "voter": "0xc54c3691419c2996eb6e76b421e7f1132ab0ee7a",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 1325.121561578451363619,
       "ballot": [1]
     },
     {
       "voter": "0x14a4ed2000ca405452c140e21c10b3536c1a98e4",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 239.5,
       "ballot": [1]
     },
     {
       "voter": "0x845b36e1e4f41a361dd711bda8ea239bf191fe95",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 102.258150844420618896,
       "ballot": [1]
     },
     {
       "voter": "0x22d5294a23d49294bf11d9db8beda36e104ad9b3",
-      "optionId": 1,
-      "optionIdRaw": "1",
+
       "mkrSupport": 48.829897397075800509,
       "ballot": [1]
     },
     {
       "voter": "0xb21e535fb349e4ef0520318acfe589e174b0126b",
-      "optionId": 1,
-      "optionIdRaw": "1",
       "mkrSupport": 33.000066666531976857,
       "ballot": [1]
     },
     {
       "voter": "0xfdd650e5838fb21ead6479c7430da3f9cb3a833f",
-      "optionId": 1,
-      "optionIdRaw": "1",
       "mkrSupport": 9.406817049088377244,
       "ballot": [1]
     },
     {
       "voter": "0xc3e497ab2958946bd715a6862052876a68dd3110",
-      "optionId": 0,
-      "optionIdRaw": "0",
       "mkrSupport": 2.001309,
       "ballot": []
     },
     {
       "voter": "0xb4610639e76c7a1ece45c99df592c677c60a3a84",
-      "optionId": 1,
-      "optionIdRaw": "1",
       "mkrSupport": 0.754313640390454722,
       "ballot": [1]
     }
   ],
   "results": [
     {
-      "optionId": "1",
+      "optionId": 1,
       "optionName": "Yes",
       "firstChoice": 70286.578047787892861292,
       "transfer": 0,
@@ -122,7 +101,7 @@
       "winner": true
     },
     {
-      "optionId": "0",
+      "optionId": 0,
       "optionName": "Abstain",
       "firstChoice": 2.001309,
       "transfer": 0,
@@ -132,7 +111,7 @@
       "winner": false
     },
     {
-      "optionId": "2",
+      "optionId": 2,
       "optionName": "No",
       "firstChoice": 0,
       "transfer": 0,

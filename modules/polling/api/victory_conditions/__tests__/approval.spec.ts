@@ -7,7 +7,7 @@ describe('Extract winner condition approval', () => {
       {
         mkrSupport: 15,
         optionIdRaw: 1,
-        ballot: [1,2]
+        ballot: [1, 2]
       },
       {
         mkrSupport: 20,
@@ -43,5 +43,4 @@ describe('Extract winner condition approval', () => {
 
     expect(winner).toEqual(null);
   });
-
 });

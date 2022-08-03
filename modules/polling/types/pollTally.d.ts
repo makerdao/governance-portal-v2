@@ -13,8 +13,8 @@ export type PollTallyOption = {
   optionName: string;
   winner: boolean;
   firstPct: number;
-  eliminated?:boolean;
-  transferPct?: number ;
+  eliminated?: boolean;
+  transferPct?: number;
   transfer?: number | string;
 };
 

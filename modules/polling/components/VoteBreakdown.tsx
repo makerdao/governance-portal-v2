@@ -7,8 +7,13 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { isResultDisplayInstantRunoffBreakdown, isResultDisplaySingleVoteBreakdown } from '../helpers/utils';
+import {
+  isResultDisplayApprovalBreakdown,
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from '../helpers/utils';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
+import React from 'react';
 
 export default function VoteBreakdown({
   poll,
@@ -27,11 +32,69 @@ export default function VoteBreakdown({
         </Text>
         <Box sx={{ mb: 3 }}>
           <PollVoteTypeIndicator poll={poll} />
-          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && <Text as="p" variant="caps" sx={{ textAlign: 'left' }}>
-            Rounds {tally?.rounds}
-          </Text>}
+          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
+            <Text as="p" variant="caps" sx={{ textAlign: 'left' }}>
+              Rounds {tally?.rounds}
+            </Text>
+          )}
         </Box>
       </Flex>
+      {isResultDisplayApprovalBreakdown(poll.parameters) &&
+        Object.keys(poll.options).map((_, i) => {
+          const tallyResult = tally?.results.find(r => r.optionId === i);
+          const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
+
+          return (
+            <div key={i}>
+              <Flex sx={{ justifyContent: 'space-between' }}>
+                {tally && tallyResult ? (
+                  <React.Fragment>
+                    <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
+                      {tallyResult.optionName}
+                    </Text>
+                    <Text
+                      as="p"
+                      sx={{
+                        color: 'textSecondary',
+                        width: tally ? 'unset' : '30%',
+                        textAlign: 'right'
+                      }}
+                    >
+                      {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting (${formatValue(
+                        parseUnits(tallyResult.firstPct.toString())
+                      )}%)`}
+                    </Text>
+                  </React.Fragment>
+                ) : (
+                  <Delay>
+                    <Skeleton />
+                  </Delay>
+                )}
+              </Flex>
+
+              {tally && tallyResult ? (
+                <Tooltip label={`First choice ${formatValue(parseUnits(mkrSupport.toString()))}`}>
+                  <Box my={2}>
+                    <Progress
+                      sx={{
+                        backgroundColor: 'muted',
+                        mb: '3',
+                        height: 2,
+                        color: getVoteColor(tallyResult.optionId, poll.parameters)
+                      }}
+                      max={tally.totalMkrParticipation}
+                      value={mkrSupport}
+                    />
+                  </Box>
+                </Tooltip>
+              ) : (
+                <Delay>
+                  <Skeleton />
+                </Delay>
+              )}
+            </div>
+          );
+        })}
       {isResultDisplayInstantRunoffBreakdown(poll.parameters) &&
         Object.keys(poll.options)
           .slice(0, shownOptions)
@@ -167,7 +230,7 @@ export default function VoteBreakdown({
                         backgroundColor: 'muted',
                         mb: '3',
                         height: 2,
-                        color: getVoteColor(tallyResult.optionId, poll.parameters.inputFormat.type)
+                        color: getVoteColor(tallyResult.optionId, poll.parameters)
                       }}
                       max={tally.totalMkrParticipation}
                       value={mkrSupport}

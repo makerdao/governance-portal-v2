@@ -95,7 +95,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: getVoteColor(vote.optionId as number, vote.poll.parameters.inputFormat.type),
+              color: getVoteColor(vote.optionId as number, vote.poll.parameters),
               fontWeight: 'semiBold'
             }}
           >

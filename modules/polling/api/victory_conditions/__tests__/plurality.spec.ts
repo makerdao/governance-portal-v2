@@ -43,5 +43,4 @@ describe('Extract winner condition plurality', () => {
 
     expect(winner).toEqual(null);
   });
-
 });

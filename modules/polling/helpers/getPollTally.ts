@@ -17,7 +17,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
 
   // Builds poll tally
   const tally: PollTally = await backoffRetry(3, () => fetchPollTally(poll, network));
-  
+
   const endUnix = new Date(poll.endDate).getTime() / 1000;
   const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
 

@@ -72,8 +72,6 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     };
   });
 
-  
-
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
 
@@ -101,7 +99,6 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     if (winnerOption.winner) {
       return;
     }
-    
 
     if (victoryGroup.type === PollVictoryConditions.and) {
       // If all the winners are the same, and a winner is found, declare this the winner.
@@ -111,7 +108,6 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       let andWinner: WinnerOption | null = null;
 
       victoryGroup.conditions.forEach(condition => {
-
         const winnerOptionAnd = findWinner(condition, filteredVotes, poll);
 
         if (!winnerOptionAnd.winner) {
@@ -152,14 +148,15 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     });
   });
 
-
   // Form the results structure
-  const results: PollTallyOption[] = Object.keys(votesInfo)
+  const results: PollTallyOption[] = Object.keys(poll.options)
     .map(key => {
       const optionId = parseInt(key);
       const instantRunoffOption = winnerOption.results?.options[optionId];
-      const mkrSupport = winnerOption.results && instantRunoffOption
-      ? instantRunoffOption?.mkrSupport:  votesInfo[optionId];
+      const mkrSupport =
+        winnerOption.results && instantRunoffOption
+          ? instantRunoffOption?.mkrSupport
+          : votesInfo[optionId] || new BigNumber(0);
 
       return {
         optionId,
@@ -168,16 +165,12 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
         optionName: poll.options[optionId],
         eliminated: instantRunoffOption?.eliminated,
         transfer: instantRunoffOption?.transfer?.toString(),
-        firstPct:
-          totalMkrParticipation.gt(0) 
-            ? new BigNumber(mkrSupport).div(totalMkrParticipation).times(100).toNumber()
-            : 0,
+        firstPct: totalMkrParticipation.gt(0)
+          ? new BigNumber(mkrSupport).div(totalMkrParticipation).times(100).toNumber()
+          : 0,
         transferPct:
           totalMkrParticipation.gt(0) && instantRunoffOption?.transfer
-            ? new BigNumber(instantRunoffOption?.transfer)
-                .div(totalMkrParticipation)
-                .times(100)
-                .toNumber()
+            ? new BigNumber(instantRunoffOption?.transfer).div(totalMkrParticipation).times(100).toNumber()
             : 0
       };
     })

@@ -35,13 +35,11 @@ export type PollVictoryConditionApproval = {
   type: PollVictoryConditions.approval;
 };
 
-
 // { type : 'and', conditions: conditions[] }
 export type PollVictoryConditionAND = {
   type: PollVictoryConditions.and;
-  conditions: VictoryCondition[]
+  conditions: VictoryCondition[];
 };
-
 
 export type VictoryCondition =
   | PollVictoryConditionComparison
@@ -57,7 +55,7 @@ type PollParameters = {
     abstain: number[];
     options: number[];
   };
-  victoryConditions: (PollVictoryConditionAND|VictoryCondition)[];
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[];
   resultDisplay: PollResultDisplay;
 };
 

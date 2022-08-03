@@ -5,7 +5,7 @@ import {
   POLL_VOTE_TYPE
 } from '../polling.constants';
 import { PollVoteType } from '../types';
-import { NestedVictoryCondition, PollParameters } from '../types/poll';
+import { PollParameters } from '../types/poll';
 import {
   hasVictoryConditionAND,
   hasVictoryConditionApproval,
@@ -165,6 +165,7 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     // TODO
 
     // If it has a majority condition, check that the majority has a value
+    // TODO
   }
 
   // Validate result display
@@ -214,19 +215,6 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
       []
     ];
   }
-}
-
-// Validate single victory condition structure
-// For example: Comparison has a threshold defined
-function validateVictoryCondition(vc: NestedVictoryCondition | NestedVictoryCondition[]) {
-  // TODO: Implement
-}
-
-// Victory conditions can be grouped in an AND logic group
-// There are certain restrictions to an AND group:
-// instant-runoff can not be combined with majority
-function validateVictoryConditionGroup(vc: NestedVictoryCondition[]) {
-  // TODO: implement
 }
 
 // Formats old vote types to new poll parameters
