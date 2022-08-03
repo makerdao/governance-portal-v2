@@ -69,19 +69,35 @@ const AccountSelect = (): React.ReactElement => {
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(account);
 
-  const close = () => setShowDialog(false);
+  const close = () => {
+    setShowDialog(false);
+    setError(null);
+  };
 
   // Handles UI state for loading
   const [loadingConnectors, setLoadingConnectors] = useState({});
+  const [error, setError] = useState<string | null>(null);
+
+  const handleError = e => {
+    logger.error(e);
+    let message = '';
+    if (e.toString().includes('NoSafeContext')) {
+      message = 'Please try connecting from within the Gnosis Safe app';
+    } else {
+      message = 'Something went wrong. Select an option to connect.';
+    }
+    setError(message);
+  };
 
   // Handles the logic when clicking on a connector
   const onClickConnection = async (connection: Connection, name: ConnectionName) => {
+    setError(null);
     try {
       setLoadingConnectors({
         [name]: true
       });
 
-      await connection.connector.activate(chainId);
+      await connection.connector.activate();
       if (chainId) {
         setUserData({ wallet: name });
       }
@@ -93,7 +109,7 @@ const AccountSelect = (): React.ReactElement => {
         [name]: false
       });
     } catch (e) {
-      logger.error(e);
+      handleError(e);
       setLoadingConnectors({
         [name]: false
       });
@@ -115,6 +131,15 @@ const AccountSelect = (): React.ReactElement => {
   }, [chainId]);
 
   const bpi = useBreakpointIndex();
+
+  const disconnect = () => {
+    setError(null);
+    if (connector?.deactivate) {
+      void connector.deactivate();
+    } else {
+      void connector.resetState();
+    }
+  };
 
   const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: ConnectionName) => (
     <Flex
@@ -145,16 +170,7 @@ const AccountSelect = (): React.ReactElement => {
 
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
-      <NetworkAlertModal
-        chainIdError={chainIdError}
-        deactivate={() => {
-          if (connector?.deactivate) {
-            void connector.deactivate();
-          } else {
-            void connector.resetState();
-          }
-        }}
-      />
+      <NetworkAlertModal chainIdError={chainIdError} deactivate={disconnect} />
       <ConnectWalletButton
         onClickConnect={() => {
           setShowDialog(true);
@@ -176,6 +192,11 @@ const AccountSelect = (): React.ReactElement => {
             <>
               <BackButton onClick={() => setChangeWallet(false)} />
               {walletOptions}
+              {error && (
+                <Text sx={{ mt: 2 }} variant="error">
+                  {error}
+                </Text>
+              )}
             </>
           ) : (
             <>
@@ -192,13 +213,7 @@ const AccountSelect = (): React.ReactElement => {
                       {...{ address, accountName }}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
-                      disconnect={() => {
-                        if (connector?.deactivate) {
-                          void connector.deactivate();
-                        } else {
-                          void connector.resetState();
-                        }
-                      }}
+                      disconnect={disconnect}
                     />
                   </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
@@ -244,7 +259,14 @@ const AccountSelect = (): React.ReactElement => {
                   </Button>
                 </>
               ) : (
-                <Flex sx={{ flexDirection: 'column' }}>{walletOptions}</Flex>
+                <Flex sx={{ flexDirection: 'column' }}>
+                  {walletOptions}
+                  {error && (
+                    <Text sx={{ mt: 2 }} variant="error">
+                      {error}
+                    </Text>
+                  )}
+                </Flex>
               )}
             </>
           )}
