@@ -1,11 +1,5 @@
 import { Connector } from '@web3-react/types';
-import {
-  gnosisSafeConnection,
-  networkConnection,
-  injectedConnection,
-  coinbaseWalletConnection,
-  walletConnectConnection
-} from 'modules/web3/connections';
+import { orderedConnections } from 'modules/web3/connections';
 import { useEffect } from 'react';
 
 async function connect(connector: Connector) {
@@ -22,10 +16,6 @@ async function connect(connector: Connector) {
 
 export default function useEagerlyConnect(): void {
   useEffect(() => {
-    connect(gnosisSafeConnection.connector);
-    connect(coinbaseWalletConnection.connector);
-    connect(walletConnectConnection.connector);
-    connect(networkConnection.connector);
-    connect(injectedConnection.connector);
+    orderedConnections.map(connection => connection.connector).forEach(connect);
   }, []);
 }

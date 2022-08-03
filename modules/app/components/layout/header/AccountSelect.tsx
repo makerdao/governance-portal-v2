@@ -13,7 +13,7 @@ import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { NetworkAlertModal, ChainIdError } from 'modules/web3/components/NetworkAlertModal';
-import { ConnectionName } from 'modules/web3/types/connections';
+import { ConnectionName } from 'modules/web3/connections';
 import { useWeb3React } from '@web3-react/core';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
@@ -25,6 +25,7 @@ import { Connection } from 'modules/web3/connections';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import logger from 'lib/logger';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -55,7 +56,7 @@ const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
   const router = useRouter();
 
-  const { account: address, connector, chainId } = useWeb3React();
+  const { account: address, connector, chainId, isActive, isActivating } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -82,13 +83,14 @@ const AccountSelect = (): React.ReactElement => {
     logger.error(e);
     let message = '';
     if (e.toString().includes('NoSafeContext')) {
-      message = 'Please try connecting from within the Gnosis Safe app';
+      message = 'Please try connecting from within the Gnosis Safe app.';
     } else {
       message = 'Something went wrong. Select an option to connect.';
     }
     setError(message);
   };
 
+  console.log({ connector, address, isActive, isActivating });
   // Handles the logic when clicking on a connector
   const onClickConnection = async (connection: Connection, name: ConnectionName) => {
     setError(null);
@@ -98,6 +100,7 @@ const AccountSelect = (): React.ReactElement => {
       });
 
       await connection.connector.activate();
+
       if (chainId) {
         setUserData({ wallet: name });
       }
