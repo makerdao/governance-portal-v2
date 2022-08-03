@@ -7,8 +7,11 @@ import {
   walletConnectConnection
 } from 'modules/web3/connections';
 import { useEffect } from 'react';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
-async function connect(connector: Connector) {
+export async function connect(connector: Connector) {
+  console.log('connecting to..');
+  console.log(connector);
   try {
     if (connector.connectEagerly) {
       await connector.connectEagerly();
@@ -21,11 +24,21 @@ async function connect(connector: Connector) {
 }
 
 export default function useEagerlyConnect(): void {
+  const { selectedConnection } = useAccount();
   useEffect(() => {
+    console.log({ selectedConnection });
     connect(gnosisSafeConnection.connector);
-    connect(coinbaseWalletConnection.connector);
-    connect(walletConnectConnection.connector);
     connect(networkConnection.connector);
-    connect(injectedConnection.connector);
+
+    if (selectedConnection) {
+      connect(selectedConnection.connector);
+    } else {
+      [injectedConnection, coinbaseWalletConnection, walletConnectConnection]
+        .map(connection => connection.connector)
+        .forEach(connect);
+    }
+    // connect(coinbaseWalletConnection.connector);
+    // connect(walletConnectConnection.connector);
+    // connect(injectedConnection.connector);
   }, []);
 }

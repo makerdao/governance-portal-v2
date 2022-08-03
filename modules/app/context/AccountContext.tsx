@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, Dispatch, SetStateAction } from 'react';
 import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
@@ -8,6 +8,7 @@ import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteP
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
 import { useWeb3React } from '@web3-react/core';
+import { Connection } from 'modules/web3/connections';
 
 interface AccountContextProps {
   account?: string;
@@ -24,6 +25,9 @@ interface AccountContextProps {
   voteProxyOldContractAddress?: string;
   voteProxyOldHotAddress?: string;
   voteProxyOldColdAddress?: string;
+
+  selectedConnection?: Connection;
+  setSelectedConnection?: Dispatch<SetStateAction<Connection | undefined>>;
 
   mutate?: () => void;
 }
@@ -46,6 +50,7 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
   const { data: voteProxyContract } = useCurrentUserVoteProxyContract();
   const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
 
+  const [selectedConnection, setSelectedConnection] = useState<Connection | undefined>(undefined);
   // Use for tesing purposes, allow to log-in an account on the localhost network with a fork of goerli
   // useGoerliForkWindowBindings();
 
@@ -66,6 +71,9 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
         voteProxyOldContractAddress: voteProxyOldResponse?.voteProxyAddress,
         voteProxyOldHotAddress: voteProxyOldResponse?.hotAddress,
         voteProxyOldColdAddress: voteProxyOldResponse?.coldAddress,
+
+        selectedConnection,
+        setSelectedConnection,
 
         mutate: () => {
           mutateVoteDelegate();

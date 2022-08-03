@@ -71,8 +71,7 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<any>(
       actions,
       options: {
         url: getRPCFromChainID(SupportedChainId.MAINNET),
-        appName: 'vote.makerdao.com',
-        reloadOnDisconnect: false
+        appName: 'vote.makerdao.com'
       }
     })
 );
