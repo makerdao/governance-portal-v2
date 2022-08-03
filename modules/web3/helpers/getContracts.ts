@@ -27,17 +27,11 @@ const sdks: Sdks = {
 export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
   `${rpcUrl.substring(0, rpcUrl.lastIndexOf('/'))}/${newKey}`;
 
-let connectedAccount: string | undefined = '';
+let connectedAccount: string | undefined;
 
-const contractSingletons = {
-  provider: {
-    mainnet: null,
-    goerli: null
-  },
-  signer: {
-    mainnet: null,
-    goerli: null
-  }
+const contractSingletons: { provider: null | EthSdk; signer: null | EthSdk } = {
+  provider: null,
+  signer: null
 };
 
 export const getContracts = (
@@ -64,21 +58,21 @@ export const getContracts = (
 
   const changeAccount = !!account && account !== connectedAccount;
 
-  if (changeAccount || !contractSingletons[connectionType][network]) {
+  if (changeAccount || !contractSingletons[connectionType]) {
     const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
     // Map goerlifork to goerli contracts
     const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
 
-    // const signerOrProvider = account && library ? library.getSigner(account) : provider;
-
     const signerOrProvider = needsSigner ? library.getSigner(account) : provider;
 
     // Keep track of the connected account so we know if it needs to be changed later
-    if (account) connectedAccount = account;
-    contractSingletons[connectionType][network] = sdks[sdkNetwork](signerOrProvider);
+    if (needsSigner && changeAccount) connectedAccount = account;
+    contractSingletons[connectionType] = sdks[sdkNetwork](signerOrProvider);
   }
 
   // TODO need to account for sdkNetwork above
-  return contractSingletons[connectionType][network];
+  // TODO need to fix connected acounts
+  // TODO fix non-null assertion
+  return contractSingletons[connectionType]!;
 };
