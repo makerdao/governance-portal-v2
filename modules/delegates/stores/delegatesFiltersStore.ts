@@ -29,8 +29,8 @@ type StoreDelegates = {
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
-    showShadow: true,
-    showRecognized: true,
+    showShadow: false,
+    showRecognized: false,
     showExpired: false,
     name: null,
     tags: {}
