@@ -257,7 +257,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
+                      {tally && tally.votesByAddress && tally.numVoters > 0 ? (
                         <VotesByAddress tally={tally} poll={poll} />
                       ) : tally && tally.numVoters === 0 ? (
                         <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>

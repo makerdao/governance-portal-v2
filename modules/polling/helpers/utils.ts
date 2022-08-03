@@ -1,5 +1,5 @@
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
-import { NestedVictoryCondition, Poll, PollParameters, PollVote } from '../types';
+import { Poll, PollParameters, PollVictoryConditionAND, PollVote, VictoryCondition } from '../types';
 
 export function pollHasEnded(poll: Poll): boolean {
   const now = Date.now();
@@ -17,40 +17,49 @@ export function isActivePoll(poll: Poll): boolean {
 
 // Generic function to determine if a victory condition exists in the nested array of victory conditions
 export function findVictoryCondition(
-  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][],
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[],
   victoryCondition: PollVictoryConditions
-) {
-  return !!(victoryConditions as Array<NestedVictoryCondition | NestedVictoryCondition[]>).find(
-    (v: NestedVictoryCondition[] | NestedVictoryCondition) => {
-      if (Array.isArray(v)) {
-        return !!v.find(i => i.type === victoryCondition);
+): boolean {
+  return !!victoryConditions.find((v: VictoryCondition | PollVictoryConditionAND) => {
+    if (v.type === PollVictoryConditions.and) {
+      if (victoryCondition === PollVictoryConditions.and) {
+        return true;
       }
-      return v.type === victoryCondition;
+
+      return !!(v.conditions || []).find(i => i.type === victoryCondition);
     }
-  );
+
+    return v.type === victoryCondition;
+  });
 }
 
 export function hasVictoryConditionInstantRunOff(
-  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
 ): boolean {
   return findVictoryCondition(victoryConditions, PollVictoryConditions.instantRunoff);
 }
 export function hasVictoryConditionPlurality(
-  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
 ): boolean {
   return findVictoryCondition(victoryConditions, PollVictoryConditions.plurality);
 }
 
 export function hasVictoryConditionMajority(
-  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
 ): boolean {
   return findVictoryCondition(victoryConditions, PollVictoryConditions.majority);
 }
 
 export function hasVictoryConditionApproval(
-  victoryConditions: NestedVictoryCondition[] | NestedVictoryCondition[][]
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
 ): boolean {
   return findVictoryCondition(victoryConditions, PollVictoryConditions.approval);
+}
+
+export function hasVictoryConditionAND(
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
+): boolean {
+  return findVictoryCondition(victoryConditions, PollVictoryConditions.and);
 }
 
 export function isResultDisplaySingleVoteBreakdown(parameters: PollParameters): boolean {
@@ -59,6 +68,10 @@ export function isResultDisplaySingleVoteBreakdown(parameters: PollParameters): 
 
 export function isResultDisplayInstantRunoffBreakdown(parameters: PollParameters): boolean {
   return parameters.resultDisplay === PollResultDisplay.instantRunoffBreakdown;
+}
+
+export function isResultDisplayApprovalBreakdown(parameters: PollParameters): boolean {
+  return parameters.resultDisplay === PollResultDisplay.approvalBreakdown;
 }
 
 export function isInputFormatRankFree(parameters: PollParameters): boolean {
@@ -80,7 +93,7 @@ export function extractCurrentPollVote(
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
 
   if (isInputFormatRankFree(poll.parameters)) {
-    return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
+    return currentVote?.ballot !== undefined ? currentVote.ballot : null;
   } else if (isInputFormatSingleChoice(poll.parameters)) {
     return currentVote?.optionId !== undefined ? currentVote.optionId : null;
   }

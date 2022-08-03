@@ -40,7 +40,7 @@ export default function PollVotedOption({
           <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
             <Text
               sx={{
-                color: getVoteColor(votedOption as number, poll.parameters.inputFormat.type),
+                color: getVoteColor(votedOption as number, poll.parameters),
                 fontWeight: 'semiBold',
                 fontSize: 2
               }}

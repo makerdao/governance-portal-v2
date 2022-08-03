@@ -23,6 +23,7 @@ import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 
 type Props = {
   poll: Poll;
@@ -54,6 +55,7 @@ const QuickVote = ({
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(account);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
@@ -161,9 +163,13 @@ const QuickVote = ({
               submit();
             }}
             mt={2}
-            disabled={!isChoiceValid}
+            disabled={!isChoiceValid || !votingWeight || !votingWeight.total.gt(0)}
           >
-            {editing ? 'Update vote' : 'Add vote to ballot'}
+            {!votingWeight || !votingWeight.total.gt(0)
+              ? 'You need MKR to vote'
+              : editing
+              ? 'Update vote'
+              : 'Add vote to ballot'}
           </Button>
         </div>
       )}

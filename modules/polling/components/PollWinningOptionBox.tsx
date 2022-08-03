@@ -1,5 +1,5 @@
 import React from 'react';
-import { PluralityResult, Poll, PollTally, RankedChoiceResult } from '../types';
+import { Poll, PollTally } from '../types';
 import { Flex } from 'theme-ui';
 import {
   isActivePoll,
@@ -29,16 +29,14 @@ export default function PollWinningOptionBox({
           <StatusText>
             <>
               {textWin}:{' '}
-              <span
-                sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.parameters.inputFormat.type) }}
-              >
+              <span sx={{ color: getVoteColor(tally?.winner || 0, poll.parameters) }}>
                 {tally?.winningOptionName}
               </span>{' '}
               {(isInputFormatSingleChoice(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
                 'with ' +
                   formatValue(
                     parseUnits(
-                      (tally.results as PluralityResult[])
+                      tally.results
                         .find(({ optionId }) => optionId === tally.winner)
                         ?.mkrSupport.toString() || '0'
                     )
@@ -48,9 +46,9 @@ export default function PollWinningOptionBox({
                 'with ' +
                   formatValue(
                     parseUnits(
-                      (tally.results as RankedChoiceResult[])
+                      tally.results
                         .find(({ optionId }) => optionId === tally.winner)
-                        ?.firstChoice.toString() || '0'
+                        ?.mkrSupport.toString() || '0'
                     )
                   ) +
                   ' MKR supporting as first choice.'}

@@ -399,6 +399,28 @@ parameters:
     // TODO
   });
 
+  it('requires adding AND conditions', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - { type : 'and' }
+      - { type : 'default' }
+    result_display: 'approval-breakdown'
+---
+# hello
+        
+            `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual(null);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionANDRequiresConditions);
+  });
+
   // TODO: Majority support
   //   it('should return valid for a correct structure', () => {
   //     const parameters = `

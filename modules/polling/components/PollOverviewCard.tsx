@@ -159,7 +159,9 @@ export default function PollOverviewCard({
               {showQuickVote && bpi > 0 && (
                 <Box sx={{ ml: 2, minWidth: '265px' }}>
                   <ErrorBoundary componentName="Vote in Poll">
-                    <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
+                    <Box sx={{ maxWidth: 7 }}>
+                      <QuickVote poll={poll} showHeader={true} showStatus={!reviewPage} />
+                    </Box>
                   </ErrorBoundary>
                 </Box>
               )}
@@ -219,7 +221,7 @@ export default function PollOverviewCard({
                           )}
                           {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
                             <RankedChoiceVoteSummary
-                              choices={tally.results.map(i => parseInt(i.optionId))}
+                              choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}
                             />
