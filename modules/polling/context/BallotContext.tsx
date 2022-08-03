@@ -102,7 +102,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     }
   };
 
-  const { network, library } = useActiveWeb3React();
+  const { network, provider } = useActiveWeb3React();
   // Reset ballot on network change
   useEffect(() => {
     setPreviousBallot({});
@@ -183,7 +183,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       })
     });
 
-    const signature = comments.length > 0 ? await sign(account, data.nonce, library) : '';
+    const signature = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
     setCommentSignature(signature);
   };
 

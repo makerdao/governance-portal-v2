@@ -14,15 +14,15 @@ export interface DavatarProps {
 }
 
 export default function Davatar({ size, address, defaultComponent, style }: DavatarProps): JSX.Element {
-  const { chainId, library } = useActiveWeb3React();
+  const { chainId, provider } = useActiveWeb3React();
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
   useEffect(() => {
-    if (library) {
+    if (provider) {
       if (chainId !== SupportedChainId.GOERLIFORK) {
-        library.lookupAddress(address).then(ensName => {
+        provider.lookupAddress(address).then(ensName => {
           if (ensName) {
-            library.getResolver(ensName).then(resolver => {
+            provider.getResolver(ensName).then(resolver => {
               resolver &&
                 resolver.getText('avatar').then(avatar => {
                   if (avatar && avatar.length > 0) {
@@ -34,14 +34,14 @@ export default function Davatar({ size, address, defaultComponent, style }: Dava
         });
       }
     }
-  }, [address, library]);
+  }, [address, provider]);
 
   return (
     <Image
       size={size}
       address={address}
       uri={avatarUri}
-      provider={library}
+      provider={provider}
       defaultComponent={defaultComponent}
       style={style}
     />

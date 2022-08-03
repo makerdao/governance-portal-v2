@@ -6,7 +6,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatAddress } from 'lib/utils';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AddressIcon from 'modules/address/components/AddressIcon';
-import { ConnectionName } from 'modules/web3/types/connections';
+import { ConnectionName } from 'modules/web3/connections';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {

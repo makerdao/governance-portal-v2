@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, Dispatch, SetStateAction } from 'react';
 import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
@@ -8,6 +8,7 @@ import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteP
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
 import { useWeb3React } from '@web3-react/core';
+import { Connection } from 'modules/web3/connections';
 
 interface AccountContextProps {
   account?: string;

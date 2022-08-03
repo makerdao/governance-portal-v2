@@ -16,7 +16,7 @@ import { sign } from 'modules/web3/helpers/sign';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { account, library } = useActiveWeb3React();
+  const { account, provider } = useActiveWeb3React();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
   const { isDelegateContractExpiring, isDelegateContractExpired } = useMigrationStatus();
@@ -96,7 +96,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
   const handleSubmitNewAddress = async (newAddress: string) => {
     const msg = `This is a request to link ${account} to ${newAddress} for the purposes of delegation history.`;
 
-    const sig = await sign(account as string, msg, library);
+    const sig = await sign(account as string, msg, provider);
 
     const payload = { address: account, msg, sig };
 

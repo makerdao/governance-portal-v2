@@ -22,6 +22,8 @@ export enum ConnectionType {
   GNOSIS_SAFE = 'GNOSIS_SAFE'
 }
 
+export type ConnectionName = 'MetaMask' | 'WalletConnect' | 'Coinbase Wallet' | 'Gnosis Safe';
+
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
   actions =>
@@ -71,7 +73,8 @@ const [web3CoinbaseWallet, web3CoinbaseWalletHooks] = initializeConnector<any>(
       actions,
       options: {
         url: getRPCFromChainID(SupportedChainId.MAINNET),
-        appName: 'Maker Governance Portal'
+        appName: 'vote.makerdao.com',
+        reloadOnDisconnect: false
       }
     })
 );
@@ -90,3 +93,11 @@ export const gnosisSafeConnection: Connection = {
   hooks: web3GnosisSafeHooks,
   type: ConnectionType.GNOSIS_SAFE
 };
+
+export const orderedConnections = [
+  gnosisSafeConnection,
+  coinbaseWalletConnection,
+  walletConnectConnection,
+  injectedConnection,
+  networkConnection
+];

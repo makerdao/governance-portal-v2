@@ -22,14 +22,14 @@ type LockResponse = {
 export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { chainId, library, account } = useActiveWeb3React();
+  const { chainId, provider, account } = useActiveWeb3React();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
-  const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, library, account);
+  const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, provider, account);
 
   const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
     const lockTxCreator = () => vdContract.lock(mkrToDeposit);

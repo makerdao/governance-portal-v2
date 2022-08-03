@@ -36,7 +36,7 @@ const contractSingletons: { provider: null | EthSdk; signer: null | EthSdk } = {
 
 export const getContracts = (
   chainId?: SupportedChainId,
-  library?: Web3Provider,
+  provider?: Web3Provider,
   account?: string | null,
   readOnly?: boolean,
   apiKey?: string
@@ -52,19 +52,19 @@ export const getContracts = (
 
   const { network, rpcUrl } = networkInfo;
 
-  const needsSigner = !readOnly && !!account && !!library;
+  const needsSigner = !readOnly && !!account && !!provider;
 
   const connectionType = needsSigner ? 'signer' : 'provider';
 
   const changeAccount = !!account && account !== connectedAccount;
 
   if (changeAccount || !contractSingletons[connectionType]) {
-    const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
+    const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
     // Map goerlifork to goerli contracts
     const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
 
-    const signerOrProvider = needsSigner ? library.getSigner(account) : provider;
+    const signerOrProvider = needsSigner ? provider.getSigner(account) : providerToUse;
 
     // Keep track of the connected account so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;
