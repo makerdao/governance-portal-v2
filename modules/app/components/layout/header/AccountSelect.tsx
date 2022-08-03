@@ -25,7 +25,7 @@ import { Connection } from 'modules/web3/connections';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import logger from 'lib/logger';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -69,6 +69,7 @@ const AccountSelect = (): React.ReactElement => {
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(account);
+  const setSelectedConnection = useSelectedConnectionStore(state => state.setSelectedConnection);
 
   const close = () => {
     setShowDialog(false);
@@ -90,7 +91,6 @@ const AccountSelect = (): React.ReactElement => {
     setError(message);
   };
 
-  console.log({ connector, address, isActive, isActivating });
   // Handles the logic when clicking on a connector
   const onClickConnection = async (connection: Connection, name: ConnectionName) => {
     setError(null);
@@ -100,6 +100,8 @@ const AccountSelect = (): React.ReactElement => {
       });
 
       await connection.connector.activate();
+
+      setSelectedConnection(connection);
 
       if (chainId) {
         setUserData({ wallet: name });
@@ -212,7 +214,8 @@ const AccountSelect = (): React.ReactElement => {
                 <>
                   <ErrorBoundary componentName="Account Details">
                     <AccountBox
-                      {...{ address, accountName }}
+                      address={address}
+                      accountName={accountName}
                       // This needs to be the change function for the wallet select dropdown
                       change={() => setChangeWallet(true)}
                       disconnect={disconnect}
