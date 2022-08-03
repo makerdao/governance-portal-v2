@@ -11,15 +11,15 @@ export const Address = React.memo(function Address({
   address: string;
   maxLength?: number;
 }): React.ReactElement {
-  const { library } = useActiveWeb3React();
+  const { provider } = useActiveWeb3React();
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
   async function fetchENSName() {
-    if (!address || !library) {
+    if (!address || !provider) {
       return;
     }
 
-    const ens = await getENS({ address, library });
+    const ens = await getENS({ address, provider });
 
     ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }

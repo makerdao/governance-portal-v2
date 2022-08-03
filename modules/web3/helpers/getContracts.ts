@@ -26,7 +26,7 @@ export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
 export const getContracts = (
   chainId?: SupportedChainId,
-  library?: Web3Provider,
+  provider?: Web3Provider,
   account?: string | null,
   readOnly?: boolean,
   apiKey?: string
@@ -40,7 +40,7 @@ export const getContracts = (
 
   const { network, rpcUrl } = networkInfo;
 
-  const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
+  const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
   // Map goerlifork to goerli contracts
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
@@ -52,11 +52,11 @@ export const getContracts = (
   https://github.com/dethcrypto/eth-sdk/issues/63
   */
   const signer =
-    account && library
+    account && provider
       ? readOnly
-        ? (provider as providers.JsonRpcBatchProvider).getSigner(account)
-        : library.getSigner(account)
-      : new ethers.VoidSigner(ZERO_ADDRESS, provider);
+        ? (providerToUse as providers.JsonRpcBatchProvider).getSigner(account)
+        : provider.getSigner(account)
+      : new ethers.VoidSigner(ZERO_ADDRESS, providerToUse);
 
   return sdks[sdkNetwork](signer);
 };

@@ -18,7 +18,7 @@ export const useMkrDelegated = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): TokenAllowanceResponse => {
-  const { chainId, library, account } = useActiveWeb3React();
+  const { chainId, provider, account } = useActiveWeb3React();
 
   const { data, error, mutate } = useSWR(
     userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
@@ -27,7 +27,7 @@ export const useMkrDelegated = (
         voteDelegateAddress as string,
         abi,
         chainId,
-        library,
+        provider,
         account,
         true
       );

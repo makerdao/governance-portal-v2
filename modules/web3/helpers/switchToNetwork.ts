@@ -7,7 +7,7 @@ import { CHAIN_INFO } from '../constants/networks';
 import { Chain } from '../types/chain';
 
 interface SwitchNetworkArguments {
-  library: Web3Provider;
+  provider: Web3Provider;
   chainId: SupportedChainId;
 }
 
@@ -26,8 +26,8 @@ export function connectToNetwork(chain: Chain, ethereum: any): Promise<any> {
 
 // provider.request returns Promise<any>, but wallet_switchEthereumChain must return null or throw
 // see https://github.com/rekmarks/EIPs/blob/3326-create/EIPS/eip-3326.md for more info on wallet_switchEthereumChain
-export async function switchToNetwork({ library, chainId }: SwitchNetworkArguments): Promise<null | void> {
-  if (!library?.provider?.request) {
+export async function switchToNetwork({ provider, chainId }: SwitchNetworkArguments): Promise<null | void> {
+  if (!provider?.provider?.request) {
     return;
   }
   const formattedChainId = hexStripZeros(BigNumber.from(chainId).toHexString());
@@ -44,7 +44,7 @@ export async function switchToNetwork({ library, chainId }: SwitchNetworkArgumen
     // 4902 is the error code for attempting to switch to an unrecognized chainId
     // if (error.code === 4902) {
     //   const info = CHAIN_INFO[chainId];
-    //   await library.provider.request({
+    //   await provider.provider.request({
     //     method: 'wallet_addEthereumChain',
     //     params: [
     //       {
@@ -60,7 +60,7 @@ export async function switchToNetwork({ library, chainId }: SwitchNetworkArgumen
     //   // the second call is done here because that behavior is not a part of the spec and cannot be relied upon in the future
     //   // metamask's behavior when switching to the current network is just to return null (a no-op)
     //   try {
-    //     await library.provider.request({
+    //     await provider.provider.request({
     //       method: 'wallet_switchEthereumChain',
     //       params: [{ chainId: formattedChainId }]
     //     });

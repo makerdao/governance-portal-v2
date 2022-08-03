@@ -121,7 +121,6 @@ const AccountSelect = (): React.ReactElement => {
   }, [router.pathname]);
 
   useEffect(() => {
-    // TODO check for network mismatch
     let error = null;
     if (isSupportedChain(chainId)) {
       if (!error) setChainIdError(null);

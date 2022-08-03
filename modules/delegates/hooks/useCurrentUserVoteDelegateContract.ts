@@ -12,7 +12,7 @@ type VoteDelegateResponse = {
 };
 
 export const useCurrentUserVoteDelegateContract = (): VoteDelegateResponse => {
-  const { chainId, library, account } = useActiveWeb3React();
+  const { chainId, provider, account } = useActiveWeb3React();
 
   const { data: contractAddress } = useVoteDelegateAddress(account);
 
@@ -20,7 +20,7 @@ export const useCurrentUserVoteDelegateContract = (): VoteDelegateResponse => {
     const contract = useMemo(
       () =>
         contractAddress
-          ? getEthersContracts<VoteDelegate>(contractAddress, abi, chainId, library, account)
+          ? getEthersContracts<VoteDelegate>(contractAddress, abi, chainId, provider, account)
           : undefined,
       [contractAddress]
     );

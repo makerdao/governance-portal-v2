@@ -23,9 +23,9 @@ async function connect(connector: Connector) {
 export default function useEagerlyConnect(): void {
   useEffect(() => {
     connect(gnosisSafeConnection.connector);
-    connect(networkConnection.connector);
-    connect(injectedConnection.connector);
     connect(coinbaseWalletConnection.connector);
     connect(walletConnectConnection.connector);
+    connect(networkConnection.connector);
+    connect(injectedConnection.connector);
   }, []);
 }

@@ -51,7 +51,7 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
-  const { network, library } = useActiveWeb3React();
+  const { network, provider } = useActiveWeb3React();
   const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
@@ -90,7 +90,7 @@ export default function DefaultVoteModalView({
         })
       });
       setIsFetcingNonce(false);
-      const signed = await sign(account?.toLowerCase() as string, data.nonce, library);
+      const signed = await sign(account?.toLowerCase() as string, data.nonce, provider);
       setSignedMessage(signed);
     } catch (e) {
       setIsFetcingNonce(false);
