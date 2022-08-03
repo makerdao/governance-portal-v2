@@ -22,3 +22,6 @@ export const getAllPollsCacheKey = (filters?: any): string =>
   `polls-${filters ? JSON.stringify(filters) : 'all'}`;
 
 export const pollTagsMappingJSONCacheKey = 'poll-tags-mapping';
+
+export const getRecentlyUsedGaslessVoting = (address: string): string =>
+  `recently-used-gasless-voting-${address}`;

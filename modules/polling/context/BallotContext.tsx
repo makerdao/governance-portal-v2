@@ -348,6 +348,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       PollingContractAbi,
       provider
     );
+    //TODO: pass in connected account address below
     const nonce = await pollingContract.nonces('0x14341f81dF14cA86E1420eC9e6Abd343Fb1c5bfC');
     const signatureValues = {
       voter: account.toLowerCase(),
