@@ -8,7 +8,6 @@ import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteP
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
 import { useWeb3React } from '@web3-react/core';
-import { Connection } from 'modules/web3/connections';
 
 interface AccountContextProps {
   account?: string;
@@ -48,7 +47,7 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
   const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
 
   // Use for tesing purposes, allow to log-in an account on the localhost network with a fork of goerli
-  // useGoerliForkWindowBindings();
+  useGoerliForkWindowBindings();
 
   return (
     <AccountContext.Provider
