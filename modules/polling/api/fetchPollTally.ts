@@ -186,8 +186,15 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     .map(key => {
       const optionId = parseInt(key);
       const instantRunoffOption = winnerOption.results?.options[optionId];
+
+      // To get the real MKR support we need to get the one extracted from the ranked results, for instant-runoff, since
+      // it will count the firstChoice MKR support based on the algorithm. Except for abstain
+      // for other algorithms we just use the accumulated MKR
+
+      const isAbstainOption = poll.parameters.inputFormat.abstain.indexOf(parseInt(key)) !== -1;
+
       const mkrSupport =
-        winnerOption.results
+        winnerOption.results  && !isAbstainOption
           ? instantRunoffOption?.mkrSupport || new BigNumber(0)
           : votesInfo[optionId] || new BigNumber(0);
 
