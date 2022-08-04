@@ -6,14 +6,11 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
 import {
-  isResultDisplayApprovalBreakdown,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
-import { RankedChoiceVoteSummary } from 'modules/polling/components/vote-summary/RankedChoiceVoteSummary';
-import { ApprovalVoteSummary } from 'modules/polling/components/vote-summary/ApprovalVoteSummary';
+import { ListVoteSummary } from 'modules/polling/components/vote-summary/ListVoteSummary';
 
 export default function PollCommentItem({
   comment,
@@ -36,12 +33,11 @@ export default function PollCommentItem({
       </Text>
     ) : (
       <Box>
-        {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
-          <RankedChoiceVoteSummary choices={commentVote.ballot || []} poll={poll} />
-        )}
-        {isResultDisplayApprovalBreakdown(poll.parameters) && (
-          <ApprovalVoteSummary choices={commentVote.ballot || []} poll={poll} />
-        )}
+        <ListVoteSummary
+          choices={commentVote.ballot || []}
+          poll={poll}
+          showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters)}
+        />
       </Box>
     );
 

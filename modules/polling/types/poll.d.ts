@@ -6,6 +6,7 @@ export type PollVictoryConditionComparison = {
   type: PollVictoryConditions.comparison;
   options: number[];
   comparator: string;
+  value: number;
 };
 
 // { type : default, value: 2 }

@@ -391,12 +391,90 @@ parameters:
     expect(errors.length).toBe(0);
   });
 
-  it('can not combine majority with instant runoff in an AND condition', () => {
-    // TODO
+  it('notifies that the default victory condition misses the option', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - { type : 'default' }
+    result_display: 'approval-breakdown'
+---
+# hello
+        
+            `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual(null);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionDefaultRequiresDefaultValue);
   });
 
-  it('notifies that the default victory condition misses the option', () => {
-    // TODO
+  it('notifies that the majority victory condition requires a percent', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - { type : 'majority' }
+    result_display: 'approval-breakdown'
+---
+# hello
+        
+            `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual(null);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionMajorityRequiresAPercentValue);
+  });
+
+  it('notifies that the comparison victory condition requires a valid comparator', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - { type : 'comparison', comparator: '?', value: 23 }
+    result_display: 'approval-breakdown'
+---
+# hello
+        
+            `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual(null);
+    expect(errors[0]).toEqual(
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionComparisonRequiresValidComparator
+    );
+  });
+
+  it('notifies that the comparison victory condition requires a valid value', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - { type : 'comparison', comparator: '>', value: 'abc' }
+    result_display: 'approval-breakdown'
+---
+# hello
+        
+            `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual(null);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionComparisonRequiresValidValue);
   });
 
   it('requires adding AND conditions', () => {
@@ -408,7 +486,7 @@ parameters:
       abstain: [0,4]
     victory_conditions:
       - { type : 'and' }
-      - { type : 'default' }
+      - { type : 'approval' }
     result_display: 'approval-breakdown'
 ---
 # hello

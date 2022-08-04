@@ -11,9 +11,9 @@ import { getVoteColor } from '../helpers/getVoteColor';
 import {
   isInputFormatRankFree,
   hasVictoryConditionPlurality,
-  isResultDisplayInstantRunoffBreakdown
+  isResultDisplaySingleVoteBreakdown
 } from '../helpers/utils';
-import { RankedChoiceVoteSummary } from './vote-summary/RankedChoiceVoteSummary';
+import { ListVoteSummary } from './vote-summary/ListVoteSummary';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
@@ -99,14 +99,14 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               fontWeight: 'semiBold'
             }}
           >
-            {isResultDisplayInstantRunoffBreakdown(vote.poll.parameters) ? (
-              <RankedChoiceVoteSummary
+            {isResultDisplaySingleVoteBreakdown(vote.poll.parameters) ? (
+              vote.optionValue[0]
+            ) : (
+              <ListVoteSummary
                 choices={vote.ballot || []}
                 poll={vote.poll}
                 align={bpi < 1 ? 'left' : 'right'}
               />
-            ) : (
-              vote.optionValue[0]
             )}
           </Text>
         </Box>

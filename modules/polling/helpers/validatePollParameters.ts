@@ -5,10 +5,19 @@ import {
   POLL_VOTE_TYPE
 } from '../polling.constants';
 import { PollVoteType } from '../types';
-import { PollParameters } from '../types/poll';
 import {
+  PollParameters,
+  PollVictoryConditionAND,
+  PollVictoryConditionComparison,
+  PollVictoryConditionDefault,
+  PollVictoryConditionMajority
+} from '../types/poll';
+import {
+  findVictoryCondition,
   hasVictoryConditionAND,
   hasVictoryConditionApproval,
+  hasVictoryConditionComparison,
+  hasVictoryConditionDefault,
   hasVictoryConditionInstantRunOff,
   hasVictoryConditionMajority,
   hasVictoryConditionPlurality
@@ -26,6 +35,11 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
   victoryConditionsInstantRunOffAndMajoritynNotBeCombined:
     'victory_conditions combination not valid. instant-runoff and majority can not be combined together.',
   victoryConditionANDRequiresConditions: 'victory_condition AND requires inserting nested conditions',
+  victoryConditionDefaultRequiresDefaultValue: 'victory_condition default requires a value',
+  victoryConditionMajorityRequiresAPercentValue: 'victory_condition majority requires a percent',
+  victoryConditionComparisonRequiresValidComparator:
+    'victory_condition comparison requires a valid comparator (>, >=, =, <=, <).',
+  victoryConditionComparisonRequiresValidValue: 'victory_condition comparison requires a valid value',
   instantRunoffRequiresRankFree: 'victory_condition instant-runoff requires input_format rank-free',
   pluralityRequiresSingleChoice: 'victory_condition plurality requires input_format single-choice',
   approvalRequiresChooseFree: 'victory_condition approval requires input_format choose-free',
@@ -126,6 +140,8 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     const hasApproval = hasVictoryConditionApproval(params.victory_conditions);
     const hasMajority = hasVictoryConditionMajority(params.victory_conditions);
     const hasAND = hasVictoryConditionAND(params.victory_conditions);
+    const hasDefault = hasVictoryConditionDefault(params.victory_conditions);
+    const hasComparison = hasVictoryConditionComparison(params.victory_conditions);
 
     // Can not combine instant runoff and plurality
     if (hasInstantRunOff && hasPlurality) {
@@ -154,18 +170,60 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
 
     // Validate that the AND victory condition has conditions inside
     if (hasAND) {
-      const andCondition = params.victory_conditions.find(i => i.type === PollVictoryConditions.and);
+      const andConditions = findVictoryCondition(params.victory_conditions, PollVictoryConditions.and);
 
-      if (!andCondition.conditions || andCondition.conditions?.length === 0) {
-        errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionANDRequiresConditions);
-      }
+      andConditions.forEach((condition: PollVictoryConditionAND) => {
+        if (!condition.conditions || condition.conditions?.length === 0) {
+          errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionANDRequiresConditions);
+        }
+      });
     }
 
     // If it has default victory condition, the default has to have a value
-    // TODO
+    if (hasDefault) {
+      const defaultConditions = findVictoryCondition(
+        params.victory_conditions,
+        PollVictoryConditions.default
+      );
+
+      defaultConditions.forEach((condition: PollVictoryConditionDefault) => {
+        if (typeof condition.value === 'undefined') {
+          errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionDefaultRequiresDefaultValue);
+        }
+      });
+    }
 
     // If it has a majority condition, check that the majority has a value
-    // TODO
+    if (hasMajority) {
+      const majorityConditions = findVictoryCondition(
+        params.victory_conditions,
+        PollVictoryConditions.majority
+      );
+
+      majorityConditions.forEach((condition: PollVictoryConditionMajority) => {
+        if (typeof condition.percent === 'undefined') {
+          errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionMajorityRequiresAPercentValue);
+        }
+      });
+    }
+
+    // If it has a comparision condition, check that the comparison has a comparator and a value
+    if (hasComparison) {
+      const comparisonConditions = findVictoryCondition(
+        params.victory_conditions,
+        PollVictoryConditions.comparison
+      );
+
+      comparisonConditions.forEach((condition: PollVictoryConditionComparison) => {
+        if (!condition.comparator || ['>', '>=', '<=', '=', '<'].indexOf(condition.comparator) === -1) {
+          errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionComparisonRequiresValidComparator);
+        }
+
+        if (!condition.value || typeof condition.value !== 'number') {
+          errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionComparisonRequiresValidValue);
+        }
+      });
+    }
   }
 
   // Validate result display

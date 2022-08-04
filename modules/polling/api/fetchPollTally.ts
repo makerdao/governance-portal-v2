@@ -1,13 +1,11 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll, PollTally, PollTallyOption, VictoryCondition } from 'modules/polling/types';
 import { extractWinnerPlurality } from './victory_conditions/plurality';
-import { isInputFormatSingleChoice } from '../helpers/utils';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
 import { PollVictoryConditions } from '../polling.constants';
 import { ParsedSpockVote, SpockVote } from '../types/tallyVotes';
-import { paddedArray, toBuffer } from 'lib/utils';
 import BigNumber from 'lib/bigNumberJs';
 import { extractWinnerApproval } from './victory_conditions/approval';
 import { extractWinnerMajority } from './victory_conditions/majority';
@@ -15,6 +13,7 @@ import { extractWinnerInstantRunoff } from './victory_conditions/instantRunoff';
 import { extractWinnerDefault } from './victory_conditions/default';
 import { InstantRunoffResults } from '../types/instantRunoff';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
+import { extractSatisfiesComparison, extractWinnerComparison } from './victory_conditions/comparison';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -37,6 +36,8 @@ export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[]
     case PollVictoryConditions.default:
       return { winner: extractWinnerDefault(poll, condition.value), results };
     //TODO: case PollVictoryConditions.comparison:
+    case PollVictoryConditions.comparison:
+      return { winner: extractWinnerComparison(votes, condition.comparator, condition.value), results };
     default:
       return {
         winner: null,
@@ -61,10 +62,6 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   // Transform the votes
   // extract the ballot or single votes based on the poll input format:
   const votes: ParsedSpockVote[] = spockVotes.map(vote => {
-    // const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
-    // const ballot = isInputFormatSingleChoice(poll.parameters)
-    //   ? [vote.optionIdRaw]
-    //   : [...ballotBuffer].reverse();
     return {
       ...vote,
       optionIdRaw: vote.optionIdRaw.toString(),
@@ -108,8 +105,34 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       let andWinner: WinnerOption | null = null;
 
       victoryGroup.conditions.forEach(condition => {
-        const winnerOptionAnd = findWinner(condition, filteredVotes, poll);
+        // Comparison is a filter
+        if (condition.type === PollVictoryConditions.comparison) {
+          // Comparison returns an array of options that satisfy the condition
+          const satisfiesConditions = extractSatisfiesComparison(
+            filteredVotes,
+            condition.comparator,
+            condition.value
+          );
+          if (satisfiesConditions.length === 0) {
+            allWinners = false;
+          }
 
+          if (!andWinner?.winner) {
+            andWinner = {
+              winner: satisfiesConditions.length > 0 ? satisfiesConditions[0] : null,
+              results: null
+            };
+          } else {
+            // There's no winner that satisfies conditions
+            if (satisfiesConditions.indexOf(andWinner.winner) === -1) {
+              allTheSame = false;
+            }
+          }
+          return;
+        }
+
+        // For all the other conditions except comparison, we find the winner and compare.
+        const winnerOptionAnd = findWinner(condition, filteredVotes, poll);
         if (!winnerOptionAnd.winner) {
           allWinners = false;
           return;
@@ -120,7 +143,9 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
           return;
         }
 
-        andWinner = winnerOptionAnd;
+        if (!andWinner) {
+          andWinner = winnerOptionAnd;
+        }
       });
 
       if (allTheSame && allWinners && andWinner) {

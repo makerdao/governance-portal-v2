@@ -77,8 +77,10 @@ export function filterPolls({ polls, pollFilters }: PollFilterInputs): Poll[] {
 
         return (
           noPollVictoryConditionsSelected ||
-          victoryConditions.find(condition =>
-            findVictoryCondition(poll.parameters.victoryConditions, condition as PollVictoryConditions)
+          victoryConditions.find(
+            condition =>
+              findVictoryCondition(poll.parameters.victoryConditions, condition as PollVictoryConditions)
+                .length > 0
           )
         );
       })

@@ -4,7 +4,6 @@ import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } fro
 import shallow from 'zustand/shallow';
 import {
   isActivePoll,
-  isResultDisplayApprovalBreakdown,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
@@ -28,9 +27,8 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import { RankedChoiceVoteSummary } from './vote-summary/RankedChoiceVoteSummary';
+import { ListVoteSummary } from './vote-summary/ListVoteSummary';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
-import { ApprovalVoteSummary } from './vote-summary/ApprovalVoteSummary';
 
 type Props = {
   poll: Poll;
@@ -218,21 +216,14 @@ export default function PollOverviewCard({
                     >
                       <Box sx={{ mt: 3 }}>
                         <ErrorBoundary componentName="Poll Results">
-                          {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
+                          {isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
                             <PluralityVoteSummary tally={tally} showTitles={false} />
-                          )}
-                          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
-                            <RankedChoiceVoteSummary
+                          ) : (
+                            <ListVoteSummary
                               choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}
-                            />
-                          )}
-                          {isResultDisplayApprovalBreakdown(poll.parameters) && (
-                            <ApprovalVoteSummary
-                              choices={tally.results.map(i => i.optionId)}
-                              poll={poll}
-                              limit={3}
+                              showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters)}
                             />
                           )}
                         </ErrorBoundary>
