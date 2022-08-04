@@ -8,11 +8,13 @@ import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 // maybe we should use eth-sdk for this if it supports arb testnet
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { config } from 'lib/config';
 import { fetchJson } from 'lib/fetchJson';
+import { WAD } from 'modules/web3/constants/numbers';
+import BigNumber from 'lib/bigNumberJs';
 
 const MIN_MKR = 0.1;
 
@@ -41,21 +43,19 @@ export default withApiHandler(
       const nonceFromContract = await pollingContract.nonces(voter);
       invariant(nonceFromContract.toNumber() === parseInt(nonce), 'Invalid nonce for address');
       invariant(expiry < Date.now(), 'Expiration date already passed');
-
-      const { data: votingWeight } = useMKRVotingWeight(voter);
+      const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
       invariant(
-        votingWeight?.total.gte(MIN_MKR),
+        pollWeight?.total.gte(WAD.div(1/MIN_MKR)), //ether's bignumber library doesnt handle decimals
         `Address must have a poll voting weight of at least ${MIN_MKR}`
       );
 
       //get all active polls
       const allPollsResponse = await fetchJson(
-        `/api/polling/all-polls?network=${network}&startDate=${new Date().toString()}`
+        `https://vote.makerdao.com/api/polling/all-polls?network=${network}&startDate=${new Date().toString()}`
       );
-      const activePollIds = allPollsResponse.polls.map(p => p.pollId);
-      console.log('activePollIds', activePollIds);
+      const activePollIds = allPollsResponse.polls.map(p => parseInt(p.pollId));
       pollIds.forEach(pollId => {
-        invariant(activePollIds.includes(pollId), `Cannot vote in poll #${pollId} as it is not active`);
+        invariant(activePollIds.includes(parseInt(pollId)), `Cannot vote in poll #${pollId} as it is not active`);
       });
 
       //verify that signature and address correspond
@@ -74,7 +74,6 @@ export default withApiHandler(
 
       const cacheKey = getRecentlyUsedGaslessVoting(voter);
       const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
-      console.log('recentlyUsedGaslessVoting', recentlyUsedGaslessVoting);
       invariant(
         !recentlyUsedGaslessVoting,
         'Address cannot use gasless service more than once per 10 minutes'
