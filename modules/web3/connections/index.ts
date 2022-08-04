@@ -22,8 +22,6 @@ export enum ConnectionType {
   GNOSIS_SAFE = 'GNOSIS_SAFE'
 }
 
-export type ConnectionName = 'MetaMask' | 'WalletConnect' | 'Coinbase Wallet' | 'Gnosis Safe';
-
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
   actions =>
@@ -94,10 +92,41 @@ export const gnosisSafeConnection: Connection = {
   type: ConnectionType.GNOSIS_SAFE
 };
 
-export const orderedConnections = [
+export const orderedConnectionTypes = [
+  gnosisSafeConnection.type,
+  coinbaseWalletConnection.type,
+  walletConnectConnection.type,
+  injectedConnection.type,
+  networkConnection.type
+];
+
+const CONNECTIONS = [
   gnosisSafeConnection,
   coinbaseWalletConnection,
   walletConnectConnection,
   injectedConnection,
   networkConnection
 ];
+
+export function getConnection(c: Connector | ConnectionType) {
+  if (c instanceof Connector) {
+    const connection = CONNECTIONS.find(connection => connection.connector === c);
+    if (!connection) {
+      throw Error('unsupported connector');
+    }
+    return connection;
+  } else {
+    switch (c) {
+      case ConnectionType.INJECTED:
+        return injectedConnection;
+      case ConnectionType.COINBASE_WALLET:
+        return coinbaseWalletConnection;
+      case ConnectionType.WALLET_CONNECT:
+        return walletConnectConnection;
+      case ConnectionType.NETWORK:
+        return networkConnection;
+      case ConnectionType.GNOSIS_SAFE:
+        return gnosisSafeConnection;
+    }
+  }
+}

@@ -13,14 +13,13 @@ import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { NetworkAlertModal, ChainIdError } from 'modules/web3/components/NetworkAlertModal';
-import { ConnectionName } from 'modules/web3/connections';
 import { useWeb3React } from '@web3-react/core';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { isAndroid, isIOS } from 'react-device-detect';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
-import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
+import { SUPPORTED_WALLETS, WalletName } from 'modules/web3/constants/wallets';
 import { Connection } from 'modules/web3/connections';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
@@ -56,7 +55,7 @@ const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
   const router = useRouter();
 
-  const { account: address, connector, chainId, isActive, isActivating } = useWeb3React();
+  const { account: address, connector, chainId } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -64,7 +63,7 @@ const AccountSelect = (): React.ReactElement => {
   ]);
 
   const [showDialog, setShowDialog] = useState(false);
-  const [accountName, setAccountName] = useState<ConnectionName>();
+  const [accountName, setAccountName] = useState<WalletName>();
   const [changeWallet, setChangeWallet] = useState(false);
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const { account, voteDelegateContractAddress } = useAccount();
@@ -92,7 +91,7 @@ const AccountSelect = (): React.ReactElement => {
   };
 
   // Handles the logic when clicking on a connector
-  const onClickConnection = async (connection: Connection, name: ConnectionName) => {
+  const onClickConnection = async (connection: Connection, name: WalletName) => {
     setError(null);
     try {
       setLoadingConnectors({
@@ -101,7 +100,7 @@ const AccountSelect = (): React.ReactElement => {
 
       await connection.connector.activate();
 
-      setSelectedConnection(connection);
+      setSelectedConnection(connection.type);
 
       if (chainId) {
         setUserData({ wallet: name });
@@ -145,13 +144,13 @@ const AccountSelect = (): React.ReactElement => {
     }
   };
 
-  const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: ConnectionName) => (
+  const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: WalletName) => (
     <Flex
       sx={walletButtonStyle}
       key={connectionName}
       onClick={
         (isAndroid || isIOS) && SUPPORTED_WALLETS[connectionName].deeplinkUri
-          ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri)
+          ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri || '')
           : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connection, connectionName)
       }
     >

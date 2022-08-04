@@ -7,22 +7,27 @@ import {
 import { WalletInfo } from '../types/wallets';
 import { SupportedConnectors } from './networks';
 
-export const SUPPORTED_WALLETS: { [connector in SupportedConnectors]: WalletInfo } = {
+// "Network" connector is not a wallet type and must be excluded
+export const SUPPORTED_WALLETS: {
+  [connector in Exclude<SupportedConnectors, SupportedConnectors.NETWORK>]: WalletInfo;
+} = {
   [SupportedConnectors.METAMASK]: {
     connection: injectedConnection,
-    name: 'MetaMask',
+    name: SupportedConnectors.METAMASK,
     deeplinkUri: 'https://metamask.app.link/dapp/vote.makerdao.com/'
   },
   [SupportedConnectors.WALLET_CONNECT]: {
     connection: walletConnectConnection,
-    name: 'WalletConnect'
+    name: SupportedConnectors.WALLET_CONNECT
   },
   [SupportedConnectors.COINBASE_WALLET]: {
     connection: coinbaseWalletConnection,
-    name: 'Coinbase Wallet'
+    name: SupportedConnectors.COINBASE_WALLET
   },
   [SupportedConnectors.GNOSIS_SAFE]: {
     connection: gnosisSafeConnection,
-    name: 'Gnosis Safe'
+    name: SupportedConnectors.GNOSIS_SAFE
   }
 };
+
+export type WalletName = Exclude<SupportedConnectors, SupportedConnectors.NETWORK>;
