@@ -7,7 +7,6 @@ import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddres
 
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useRouter } from 'next/router';
-import { getENS } from 'modules/web3/helpers/ens';
 
 jest.mock('modules/web3/helpers/ens');
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
@@ -40,7 +39,6 @@ describe('Header component', () => {
 
   test('display account when connected', async () => {
     const address = '0x477b8D5eF7C2C42DB84deB555419cd817c336b6J';
-    (getENS as jest.Mock).mockImplementation(address => Promise.resolve(address));
 
     (useWeb3React as jest.Mock).mockReturnValue({
       account: address,
