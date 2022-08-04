@@ -125,11 +125,11 @@ const AccountSelect = (): React.ReactElement => {
   }, [router.pathname]);
 
   useEffect(() => {
-    let error = null;
-    if (isSupportedChain(chainId)) {
-      if (!error) setChainIdError(null);
-    } else {
+    const unsupportedNetwork = chainId && !isSupportedChain(chainId);
+    if (unsupportedNetwork) {
       setChainIdError('unsupported network');
+    } else {
+      setChainIdError(null);
     }
   }, [chainId]);
 
