@@ -18,19 +18,21 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const pollsResponse = await getPolls(filters, network);
 
-  const tallies = await Promise.all(pollsResponse.polls.map(async ( poll) => {
-    try{
+  const tallies = await Promise.all(
+    pollsResponse.polls.map(async poll => {
+      try {
         const tally = await getPollTally(poll, network);
-    return {
-        ...tally, 
-        pollId: poll.pollId
-    }
-    }catch(e) {
         return {
-            pollId: poll.pollId
-        }
-    }
-  }))
+          ...tally,
+          pollId: poll.pollId
+        };
+      } catch (e) {
+        return {
+          pollId: poll.pollId
+        };
+      }
+    })
+  );
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(tallies);
