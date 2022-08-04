@@ -11,11 +11,11 @@ import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
 import { FIVE_MINUTES_IN_MS, ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
-  const cacheKey = getPollTallyCacheKey(poll.pollId);
-  const cachedTally = await cacheGet(cacheKey, network);
-  if (cachedTally) {
-    return JSON.parse(cachedTally);
-  }
+  // const cacheKey = getPollTallyCacheKey(poll.pollId);
+  // const cachedTally = await cacheGet(cacheKey, network);
+  // if (cachedTally) {
+  //   return JSON.parse(cachedTally);
+  // }
   // Builds raw poll tally
   const tally: RawPollTally = await backoffRetry(3, () =>
     fetchRawPollTally(poll.pollId, poll.parameters, network)
@@ -58,7 +58,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
 
   const pollEnded = pollHasEnded(poll);
 
-  cacheSet(cacheKey, JSON.stringify(parsedTally), network, pollEnded ? ONE_DAY_IN_MS : FIVE_MINUTES_IN_MS);
+  // cacheSet(cacheKey, JSON.stringify(parsedTally), network, pollEnded ? ONE_DAY_IN_MS : FIVE_MINUTES_IN_MS);
 
   return parsedTally;
 }
