@@ -144,6 +144,8 @@ const AccountSelect = (): React.ReactElement => {
     }
   };
 
+  const SUPPORTED_WALLETS = {};
+
   const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: WalletName) => (
     <Flex
       sx={walletButtonStyle}

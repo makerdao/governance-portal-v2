@@ -8,17 +8,16 @@ import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddres
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useRouter } from 'next/router';
 
-jest.mock('modules/web3/helpers/ens');
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
 jest.mock('next/router');
+jest.mock('modules/web3/constants/wallets', () => ({ SUPPORTED_WALLETS: {} }));
 
 describe('Header component', () => {
   beforeEach(() => {
     (useWeb3React as jest.Mock).mockReturnValue({
-      account: '',
-      activate: () => null
+      account: ''
     });
     (useDelegateAddressMap as jest.Mock).mockReturnValue({ data: {} });
     (useAccount as jest.Mock).mockReturnValue({
