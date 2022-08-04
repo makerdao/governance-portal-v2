@@ -8,11 +8,13 @@ import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
-
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 // maybe we should use eth-sdk for this if it supports arb testnet
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
-
 import { config } from 'lib/config';
+import { fetchJson } from 'lib/fetchJson';
+
+const MIN_MKR = 0.1;
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -41,6 +43,20 @@ export default withApiHandler(
         'Invalid nonce for address');
       invariant(expiry < Date.now(),
         'Expiration date already passed');
+
+      const { data: votingWeight } = useMKRVotingWeight(voter);
+      invariant(votingWeight?.total.gte(MIN_MKR),
+      `Address must have a poll voting weight of at least ${MIN_MKR}`);
+      
+      //get all active polls
+      const allPollsResponse = await fetchJson(`/api/polling/all-polls?network=${network}&startDate=${(new Date).toString()}`);
+      const activePollIds = allPollsResponse.polls.map(p => p.pollId);
+      console.log('activePollIds', activePollIds);
+      pollIds.forEach( pollId => {
+        invariant(activePollIds.includes(pollId),
+        `Cannot vote in poll #${pollId} as it is not active`);
+      });
+
       //verify that signature and address correspond
       // console.log('getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network)', getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network));
       // console.log('signature', signature);
