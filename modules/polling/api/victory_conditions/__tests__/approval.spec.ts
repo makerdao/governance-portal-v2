@@ -25,7 +25,7 @@ describe('Extract winner condition approval', () => {
 
     expect(winner).toEqual(2);
   });
-  it('gets first winner if two votes have the same MKR amount', async () => {
+  it('finds no winner if two votes have the same MKR amount', async () => {
     const votes: ParsedSpockVote[] = [
       {
         mkrSupport: 10,
@@ -41,6 +41,6 @@ describe('Extract winner condition approval', () => {
 
     const winner = extractWinnerApproval(votes);
 
-    expect(winner).toEqual(1);
+    expect(winner).toEqual(null);
   });
 });

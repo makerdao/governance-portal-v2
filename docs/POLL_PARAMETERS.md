@@ -172,8 +172,9 @@ parameters:
   input_format: 
     type: choose-free
     options: [1,2,3]
+    abstain: [0]
   victory_conditions:
-      - { type : approval, options: [1,2,3] }
+      - { type : approval }
   result_display: approval-breakdown
 version: v2.0.0
 options:
@@ -194,12 +195,17 @@ Approval voting can be combined also with other conditions like "Comparison" and
 
 The victory condition "comparison" indicates that for the selected options to be declared winner they need to satisfy the "comparator" threshold. In the following example, the options 0,1,4 need at least 10,000 MKR to be determined as winners.
 
+**NOTE: The "options" field is ignored for now, and the comparison applies to all the options"
+
 ```
 parameters:
-  input_format: choose-free
+  input_format: 
+    type: choose-free
+    options: [1,2,3]
+    abstain: [0]
   victory_conditions:
-    - { type : approval, options: [1,2,3] }
-    - { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+    - { type : approval }
+    - { type : comparison, options: [1,2,3], comparator : '>=', value: 10000 }
   result_display: approval-breakdown
 ```
 
@@ -209,65 +215,67 @@ The default option determines which option will be selected if none of the previ
 
 ```
 parameters:
-  input_format: choose-free
+  input_format: 
+    type: choose-free
+    options: [1,2,3]
+    abstain: [0]
   victory_conditions:
-    - [
-        { type : approval, options: [1,2,3] },
-        { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
-      ]
+    - { type : approval }
     - { type : default, value : 2 }
   result_display: approval-breakdown
 ```
 
-### AND / OR logic.
+### AND  logic.
 
-Victory conditions use the OR logic. The winner will be determined by one of the conditions being met. If we want to create an AND condition, the victory_conditions need to be grouped in an array.
+Victory conditions use the IF / ELSE logic. The winner will be determined by the first of the conditions being met. If we want to create an AND condition, the victory_conditions need to be grouped in an AND condition.
 
 In the following example, the victory conditions require that:
 
-- Theres an approval winner, for the 0,1,4 options it needs to have at least 10,000 MKR.
+- Theres an approval winner, it needs to have at least 10,000 MKR.
 - If the previous condition is not met, default to winner 2.
 
 In this example, if the most voted option is the option 1, but the amount of MKR is less than 10,000 MKR, the winner will be option 2.
 
 ```
 parameters:
-  input_format: choose-free
+  input_format: 
+    type: choose-free
+    options: [1,2,3]
+    abstain: [0]
   victory_conditions:
-    - [
-        { type : approval, options: [1,2,3] },
-        { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
-      ]
+    - { 
+        type: 'and', 
+        conditions: [
+          { type : approval },
+          { type : comparison, comparator : '>=10000' }
+        ]
+      }
     - { type : default, value : 2 }
   result_display: approval-breakdown
 ```
 
-If we also want to add a requirement that option 1 has to have more than 50% of the votes to be determined as the winner, we would do :
+If we also want to add a requirement that an option has to have more than 50% of the votes to be determined as the winner, we would do :
 
 ```
 parameters:
-  input_format: choose-free
+  input_format: 
+    type: choose-free
+    options: [1,2,3]
+    abstain: [0]
   victory_conditions:
-    - [
-        { type : approval, options: [1,2,3] },
-        { type : comparison, options: [0, 1, 4], comparator : '>=10000' },
-        { type : majority: options: [1] },
-      ]
+    - { 
+        type: 'and', 
+        conditions: [
+          { type : approval },
+          { type: majority, percent: 50 },
+          { type : comparison, comparator : '>=10000' }
+        ]
+      }
     - { type : default, value : 2 }
   result_display: approval-breakdown
-```
-
-In the following example, a majorty condition determines that options 1,2,3 need at least 50% of the votes to win, if that condition is not met, we would check the next one "comparison". If option 0, 1 or 4 is voted with more than 10,000MKR, that option will be determined as the winner. If none of those 2 first victory conditions are met, then we would default to option 1
-
-```
-parameters:
-  input_format: choose-free
-  victory_conditions:
-    - { type : majority, options: [1,2,3] }
-    - { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
-    - { type : default, value : 1 }
   result_display: approval-breakdown
 ```
+
 
 ### Example of the new poll parameters on a poll
 

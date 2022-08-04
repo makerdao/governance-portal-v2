@@ -30,7 +30,91 @@ describe('Fetch tally approval', () => {
     }
   } as any as Poll;
 
-  it('gives first option as winner if both have the same MKR voting weight', async () => {
+  it('gives first option as winner if it has most mkr', async () => {
+    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+      voteMkrWeightsAtTimeRankedChoice: {
+        nodes: [
+          {
+            optionIdRaw: '258',
+            mkrSupport: '820.2125800'
+          },
+          {
+            optionIdRaw: '258',
+            mkrSupport: '17.3630'
+          },
+          {
+            optionIdRaw: '1',
+            mkrSupport: '10'
+          },
+          {
+            optionIdRaw: '4',
+            mkrSupport: '14'
+          },
+          {
+            optionIdRaw: '4',
+            mkrSupport: '0'
+          }
+        ]
+      }
+    });
+
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+
+    const expectedResult = {
+      parameters: mockPoll.parameters,
+      winner: 1,
+      winningOptionName: 'Approve Existing Budget',
+      totalMkrParticipation: '861.57558',
+      totalMkrActiveParticipation: '861.57558',
+      numVoters: 5,
+      results: [
+        {
+          optionId: 1,
+          optionName: 'Approve Existing Budget',
+          mkrSupport: '847.57558',
+          firstPct: 98.37507000836769,
+          transferPct: 0,
+          winner: true
+        },
+        {
+          optionId: 2,
+          optionName: 'Approve Increase',
+          mkrSupport: '837.57558',
+          firstPct: 97.21440572863033,
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 4,
+          optionName: 'None of the above',
+          firstPct: 1.624929991632307,
+          mkrSupport: '14',
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 0,
+          optionName: 'Abstain',
+          mkrSupport: '0',
+          firstPct: 0,
+          transferPct: 0,
+          winner: false
+        },
+        {
+          optionId: 3,
+          optionName: 'Reject',
+          firstPct: 0,
+          mkrSupport: '0',
+          transferPct: 0,
+          winner: false
+        }
+      ]
+    };
+
+    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+  });
+
+  it('gives no option as winner if both have the same MKR voting weight', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
       voteMkrWeightsAtTimeRankedChoice: {
         nodes: [
@@ -58,8 +142,8 @@ describe('Fetch tally approval', () => {
 
     const expectedResult = {
       parameters: mockPoll.parameters,
-      winner: 1,
-      winningOptionName: 'Approve Existing Budget',
+      winner: null,
+      winningOptionName: 'None found',
       totalMkrParticipation: '851.57558',
       totalMkrActiveParticipation: '851.57558',
       numVoters: 4,
@@ -70,7 +154,7 @@ describe('Fetch tally approval', () => {
           mkrSupport: '837.57558',
           firstPct: 98.35598855476809,
           transferPct: 0,
-          winner: true
+          winner: false
         },
         {
           optionId: 2,
