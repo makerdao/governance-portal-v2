@@ -13,7 +13,7 @@ import { extractWinnerInstantRunoff } from './victory_conditions/instantRunoff';
 import { extractWinnerDefault } from './victory_conditions/default';
 import { InstantRunoffResults } from '../types/instantRunoff';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
-import { extractSatisfiesComparison, extractWinnerComparison } from './victory_conditions/comparison';
+import { extractSatisfiesComparison } from './victory_conditions/comparison';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -35,9 +35,17 @@ export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[]
       return { winner: results ? results.winner : null, results };
     case PollVictoryConditions.default:
       return { winner: extractWinnerDefault(poll, condition.value), results };
-    //TODO: case PollVictoryConditions.comparison:
+    // In case comparison is set on the top level instead of inside a AND logic.
+    // Inside of an AND logic, comparison is set as a filter to be complied with
+    // on the top level we would take the first option that passes this condition and declare it a winner
     case PollVictoryConditions.comparison:
-      return { winner: extractWinnerComparison(votes, condition.comparator, condition.value), results };
+      return {
+        winner:
+          extractSatisfiesComparison(votes, condition.comparator, condition.value).length > 0
+            ? extractSatisfiesComparison(votes, condition.comparator, condition.value)[0]
+            : null,
+        results
+      };
     default:
       return {
         winner: null,
