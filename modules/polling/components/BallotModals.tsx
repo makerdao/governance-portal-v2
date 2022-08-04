@@ -13,11 +13,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { TXMined } from 'modules/web3/types/transaction';
 import { getBlockExplorerName } from 'modules/web3/constants/networks';
 
-export function BallotModals({
-  onSubmit
-}: {
-  onSubmit: () => void;
-}): React.ReactElement {
+export function BallotModals({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
   const {
     signComments,
     transaction,

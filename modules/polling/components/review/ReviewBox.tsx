@@ -17,17 +17,18 @@ export default function ReviewBox({
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const {
-    ballotStep,
-  } = useContext(BallotContext);
+  const { ballotStep } = useContext(BallotContext);
 
   const Default = props => (
     <ActivePollsBox polls={polls} activePolls={activePolls} {...props}>
-      <SubmitBallotButton/>
-      {ballotStep !== 'initial' && (<BallotModals
-        onSubmit={() => {
-          trackButtonClick('submitBallot');
-        }}/>)}
+      <SubmitBallotButton />
+      {ballotStep !== 'initial' && (
+        <BallotModals
+          onSubmit={() => {
+            trackButtonClick('submitBallot');
+          }}
+        />
+      )}
     </ActivePollsBox>
   );
 

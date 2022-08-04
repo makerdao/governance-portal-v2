@@ -10,10 +10,7 @@ type BallotDataValues = {
   expiry: number;
 };
 
-export function getTypedBallotData(
-  message: BallotDataValues,
-  network: SupportedNetworks
-): string {
+export function getTypedBallotData(message: BallotDataValues, network: SupportedNetworks): string {
   const chainId = networkNameToChainId(network);
   return JSON.stringify({
     types: {
@@ -97,7 +94,6 @@ export async function signTypedBallotData(
   provider: Web3Provider,
   network: SupportedNetworks
 ): Promise<string | null> {
-
   const typedData = getTypedBallotData(message, network);
 
   try {

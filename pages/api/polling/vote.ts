@@ -39,22 +39,23 @@ export default withApiHandler(
       );
 
       const nonceFromContract = await pollingContract.nonces(voter);
-      invariant(nonceFromContract.toNumber() === parseInt(nonce),
-        'Invalid nonce for address');
-      invariant(expiry < Date.now(),
-        'Expiration date already passed');
+      invariant(nonceFromContract.toNumber() === parseInt(nonce), 'Invalid nonce for address');
+      invariant(expiry < Date.now(), 'Expiration date already passed');
 
       const { data: votingWeight } = useMKRVotingWeight(voter);
-      invariant(votingWeight?.total.gte(MIN_MKR),
-      `Address must have a poll voting weight of at least ${MIN_MKR}`);
-      
+      invariant(
+        votingWeight?.total.gte(MIN_MKR),
+        `Address must have a poll voting weight of at least ${MIN_MKR}`
+      );
+
       //get all active polls
-      const allPollsResponse = await fetchJson(`/api/polling/all-polls?network=${network}&startDate=${(new Date).toString()}`);
+      const allPollsResponse = await fetchJson(
+        `/api/polling/all-polls?network=${network}&startDate=${new Date().toString()}`
+      );
       const activePollIds = allPollsResponse.polls.map(p => p.pollId);
       console.log('activePollIds', activePollIds);
-      pollIds.forEach( pollId => {
-        invariant(activePollIds.includes(pollId),
-        `Cannot vote in poll #${pollId} as it is not active`);
+      pollIds.forEach(pollId => {
+        invariant(activePollIds.includes(pollId), `Cannot vote in poll #${pollId} as it is not active`);
       });
 
       //verify that signature and address correspond
@@ -74,7 +75,10 @@ export default withApiHandler(
       const cacheKey = getRecentlyUsedGaslessVoting(voter);
       const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
       console.log('recentlyUsedGaslessVoting', recentlyUsedGaslessVoting);
-      invariant(!recentlyUsedGaslessVoting, 'Address cannot use gasless service more than once per 10 minutes');
+      invariant(
+        !recentlyUsedGaslessVoting,
+        'Address cannot use gasless service more than once per 10 minutes'
+      );
       cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
       // if validation passes, send tx
       const tx = await pollingContract[
