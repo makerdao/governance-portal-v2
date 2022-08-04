@@ -17,7 +17,7 @@ export const Address = React.memo(function Address({
     if (address) {
       ENSName ? setAddressFormatted(ENSName) : setAddressFormatted(formatAddress(address).toLowerCase());
     }
-  }, [address]);
+  }, [address, ENSName]);
 
   return (
     <React.Fragment>
