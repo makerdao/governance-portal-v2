@@ -187,8 +187,8 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       const optionId = parseInt(key);
       const instantRunoffOption = winnerOption.results?.options[optionId];
       const mkrSupport =
-        winnerOption.results && instantRunoffOption
-          ? instantRunoffOption?.mkrSupport
+        winnerOption.results
+          ? instantRunoffOption?.mkrSupport || new BigNumber(0)
           : votesInfo[optionId] || new BigNumber(0);
 
       return {
