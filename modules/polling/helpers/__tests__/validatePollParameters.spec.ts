@@ -477,6 +477,31 @@ parameters:
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionComparisonRequiresValidValue);
   });
 
+  it('notifies that victory conditions are not objects', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: choose-free
+      options: [1,2]
+      abstain: [0,4]
+    victory_conditions:
+      - [
+          { type : approval, options: [1,2,3,4] },
+          { type : majority, options: [1,2,3,4], percent : 50 }
+        ]
+      - { type : default, value : 3 }
+    result_display: 'approval-breakdown'
+---
+# hello
+        
+            `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual(null);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.invalidVictoryConditions);
+  });
+
   it('requires adding AND conditions', () => {
     const parameters = `---
 parameters:

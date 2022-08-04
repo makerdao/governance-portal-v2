@@ -247,7 +247,7 @@ parameters:
         type: 'and', 
         conditions: [
           { type : approval },
-          { type : comparison, comparator : '>=10000' }
+          { type : comparison, comparator : '>=', value: 10000 }
         ]
       }
     - { type : default, value : 2 }
@@ -268,11 +268,10 @@ parameters:
         conditions: [
           { type : approval },
           { type: majority, percent: 50 },
-          { type : comparison, comparator : '>=10000' }
+          { type : comparison, comparator : '>=', value: 10000 }
         ]
       }
     - { type : default, value : 2 }
-  result_display: approval-breakdown
   result_display: approval-breakdown
 ```
 

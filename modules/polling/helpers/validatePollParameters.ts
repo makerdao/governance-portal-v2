@@ -27,9 +27,10 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
   missingInputFormat: 'Missing input_format on poll parameters',
   invalidInputFormat: 'Invalid input_format. Supported values are rank-free, choose-free and single-choice',
   missingVictoryConditions: 'Missing victory_conditions',
-  victoryConditionsNotArray: 'victory_conditions should be an array',
+  victoryConditionsNotArray: 'victory_conditions should be an array of victory conditions',
+  invalidVictoryConditions: 'victory_conditions should be objects',
   victoryConditionsNotValid:
-    'victory_conditions must include a valid condition. Valid conditions are "plurality" or "instant_runoff"',
+    'victory_conditions must include a valid condition. Valid conditions are "plurality", "instant_runoff", "approval" or "majority"',
   victoryConditionsInstantRunOffAndPluralityCanNotBeCombined:
     'victory_conditions combination not valid. instant-runoff and plurality can not be combined together.',
   victoryConditionsInstantRunOffAndMajoritynNotBeCombined:
@@ -142,6 +143,24 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     const hasAND = hasVictoryConditionAND(params.victory_conditions);
     const hasDefault = hasVictoryConditionDefault(params.victory_conditions);
     const hasComparison = hasVictoryConditionComparison(params.victory_conditions);
+
+    params.victory_conditions.forEach(v => {
+      if (!v.type) {
+        errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.invalidVictoryConditions);
+      } else if (
+        [
+          PollVictoryConditions.and,
+          PollVictoryConditions.approval,
+          PollVictoryConditions.comparison,
+          PollVictoryConditions.default,
+          PollVictoryConditions.instantRunoff,
+          PollVictoryConditions.majority,
+          PollVictoryConditions.plurality
+        ].indexOf(v.type) === -1
+      ) {
+        errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.invalidVictoryConditions);
+      }
+    });
 
     // Can not combine instant runoff and plurality
     if (hasInstantRunOff && hasPlurality) {
