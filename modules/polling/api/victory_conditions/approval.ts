@@ -27,15 +27,15 @@ export function extractWinnerApproval(currentVotes: ParsedSpockVote[]): number |
       };
     })
     .sort((prev, next) => {
-      return prev.mkrSupport.isGreaterThanOrEqualTo(next.mkrSupport) ? -1 : 1;
+      return prev.mkrSupport.isGreaterThan(next.mkrSupport) ? -1 : 1;
     });
 
   // if the 2 first options share the same MKR amount, return null
-  if (sortedOptions.length >= 2) {
-    if (sortedOptions[0].mkrSupport.isEqualTo(sortedOptions[1].mkrSupport)) {
-      return null;
-    }
-  }
+  // if (sortedOptions.length >= 2) {
+  //   if (sortedOptions[0].mkrSupport.isEqualTo(sortedOptions[1].mkrSupport)) {
+  //     return null;
+  //   }
+  // }
 
   const winner = sortedOptions.length > 0 ? sortedOptions[0].option : null;
   return winner;

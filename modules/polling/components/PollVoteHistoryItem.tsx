@@ -1,6 +1,6 @@
 import { Box, Text } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
-import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
+import { PluralityVoteSummary } from './vote-summary/PluralityVoteSummary';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -13,7 +13,7 @@ import {
   hasVictoryConditionPlurality,
   isResultDisplayInstantRunoffBreakdown
 } from '../helpers/utils';
-import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
+import { RankedChoiceVoteSummary } from './vote-summary/RankedChoiceVoteSummary';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
@@ -72,7 +72,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
       >
         {isPluralityVote && (
           <Box mr={0} ml={0}>
-            {tally && <PollVotePluralityResultsCompact tally={tally} />}
+            {tally && <PluralityVoteSummary tally={tally} />}
             {!tally && <SkeletonThemed width={'130px'} height={'30px'} />}
           </Box>
         )}

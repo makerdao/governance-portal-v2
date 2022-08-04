@@ -4,6 +4,7 @@ import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } fro
 import shallow from 'zustand/shallow';
 import {
   isActivePoll,
+  isResultDisplayApprovalBreakdown,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
@@ -14,7 +15,7 @@ import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './poll-vote-input/QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
-import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
+import { PluralityVoteSummary } from './vote-summary/PluralityVoteSummary';
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -27,8 +28,9 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
+import { RankedChoiceVoteSummary } from './vote-summary/RankedChoiceVoteSummary';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
+import { ApprovalVoteSummary } from './vote-summary/ApprovalVoteSummary';
 
 type Props = {
   poll: Poll;
@@ -217,10 +219,17 @@ export default function PollOverviewCard({
                       <Box sx={{ mt: 3 }}>
                         <ErrorBoundary componentName="Poll Results">
                           {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
-                            <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                            <PluralityVoteSummary tally={tally} showTitles={false} />
                           )}
                           {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
                             <RankedChoiceVoteSummary
+                              choices={tally.results.map(i => i.optionId)}
+                              poll={poll}
+                              limit={3}
+                            />
+                          )}
+                          {isResultDisplayApprovalBreakdown(poll.parameters) && (
+                            <ApprovalVoteSummary
                               choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}

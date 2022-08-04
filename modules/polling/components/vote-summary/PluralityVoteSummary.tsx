@@ -1,10 +1,10 @@
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { Box } from 'theme-ui';
-import { PollTally } from '../types';
-import { YesNoAbstainBar } from './YesNoAbstainBar';
+import { PollTally } from '../../types';
+import { YesNoAbstainBar } from '../YesNoAbstainBar';
 
-export function PollVotePluralityResultsCompact({
+export function PluralityVoteSummary({
   tally,
   showTitles = true
 }: {

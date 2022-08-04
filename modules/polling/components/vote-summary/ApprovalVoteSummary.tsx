@@ -1,8 +1,8 @@
 import { limitString } from 'lib/string';
 import { Box } from 'theme-ui';
-import { Poll } from '../types';
+import { Poll } from '../../types';
 
-export function RankedChoiceVoteSummary({
+export function ApprovalVoteSummary({
   choices,
   poll,
   limit = 0,
@@ -35,8 +35,8 @@ export function RankedChoiceVoteSummary({
             title={poll.options[choice]}
           >
             {align === 'right'
-              ? `${limitString(poll.options[choice], 30, '...')} - ${index + 1}`
-              : `${index + 1} - ${limitString(poll.options[choice], 30, '...')}`}
+              ? `${limitString(poll.options[choice], 35, '...')}`
+              : `${limitString(poll.options[choice], 35, '...')}`}
           </Box>
         ))}
     </Box>

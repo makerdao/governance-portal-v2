@@ -7,8 +7,13 @@ import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { isResultDisplaySingleVoteBreakdown } from 'modules/polling/helpers/utils';
-import { RankedChoiceVoteSummary } from 'modules/polling/components/RankedChoiceVoteSummary';
+import {
+  isResultDisplayApprovalBreakdown,
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from 'modules/polling/helpers/utils';
+import { RankedChoiceVoteSummary } from 'modules/polling/components/vote-summary/RankedChoiceVoteSummary';
+import { ApprovalVoteSummary } from 'modules/polling/components/vote-summary/ApprovalVoteSummary';
 
 export default function PollCommentItem({
   comment,
@@ -31,7 +36,12 @@ export default function PollCommentItem({
       </Text>
     ) : (
       <Box>
-        <RankedChoiceVoteSummary choices={commentVote.ballot || []} poll={poll} />
+        {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
+          <RankedChoiceVoteSummary choices={commentVote.ballot || []} poll={poll} />
+        )}
+        {isResultDisplayApprovalBreakdown(poll.parameters) && (
+          <ApprovalVoteSummary choices={commentVote.ballot || []} poll={poll} />
+        )}
       </Box>
     );
 

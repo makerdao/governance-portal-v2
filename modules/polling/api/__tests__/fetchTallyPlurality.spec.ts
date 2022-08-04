@@ -2,7 +2,6 @@ import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modul
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { fetchSpockPollById } from '../fetchPollBy';
 import { fetchPollTally } from '../fetchPollTally';
 jest.mock('modules/gql/gqlRequest');
 
