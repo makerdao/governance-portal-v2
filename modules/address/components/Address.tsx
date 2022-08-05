@@ -1,6 +1,5 @@
 import { limitString } from 'lib/string';
 import { formatAddress } from 'lib/utils';
-import { getENS } from 'modules/web3/helpers/ens';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import React, { useEffect, useState } from 'react';
 
@@ -11,23 +10,14 @@ export const Address = React.memo(function Address({
   address: string;
   maxLength?: number;
 }): React.ReactElement {
-  const { provider } = useActiveWeb3React();
+  const { ENSName } = useActiveWeb3React();
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
-  async function fetchENSName() {
-    if (!address || !provider) {
-      return;
-    }
-
-    const ens = await getENS({ address, provider });
-
-    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
-  }
   useEffect(() => {
     if (address) {
-      fetchENSName();
+      ENSName ? setAddressFormatted(ENSName) : setAddressFormatted(formatAddress(address).toLowerCase());
     }
-  }, [address]);
+  }, [address, ENSName]);
 
   return (
     <React.Fragment>

@@ -7,6 +7,7 @@ import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { SUPPORTED_WALLETS } from '../constants/wallets';
 
 export interface Connection {
   connector: Connector;
@@ -21,8 +22,6 @@ export enum ConnectionType {
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE'
 }
-
-export type ConnectionName = 'MetaMask' | 'WalletConnect' | 'Coinbase Wallet' | 'Gnosis Safe';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -94,10 +93,56 @@ export const gnosisSafeConnection: Connection = {
   type: ConnectionType.GNOSIS_SAFE
 };
 
-export const orderedConnections = [
+export const orderedConnectionTypes = [
+  gnosisSafeConnection.type,
+  coinbaseWalletConnection.type,
+  walletConnectConnection.type,
+  injectedConnection.type,
+  networkConnection.type
+];
+
+const CONNECTIONS = [
   gnosisSafeConnection,
   coinbaseWalletConnection,
   walletConnectConnection,
   injectedConnection,
   networkConnection
 ];
+
+export function getConnection(c: Connector | ConnectionType) {
+  if (c instanceof Connector) {
+    const connection = CONNECTIONS.find(connection => connection.connector === c);
+    if (!connection) {
+      throw Error('unsupported connector');
+    }
+    return connection;
+  } else {
+    switch (c) {
+      case ConnectionType.INJECTED:
+        return injectedConnection;
+      case ConnectionType.COINBASE_WALLET:
+        return coinbaseWalletConnection;
+      case ConnectionType.WALLET_CONNECT:
+        return walletConnectConnection;
+      case ConnectionType.NETWORK:
+        return networkConnection;
+      case ConnectionType.GNOSIS_SAFE:
+        return gnosisSafeConnection;
+    }
+  }
+}
+
+export function connectorToWalletName(connector: Connector) {
+  const connection = CONNECTIONS.find(connection => connection.connector === connector);
+
+  switch (connection?.type) {
+    case ConnectionType.INJECTED:
+      return SUPPORTED_WALLETS.MetaMask.name;
+    case ConnectionType.COINBASE_WALLET:
+      return SUPPORTED_WALLETS['Coinbase Wallet'].name;
+    case ConnectionType.WALLET_CONNECT:
+      return SUPPORTED_WALLETS.WalletConnect.name;
+    case ConnectionType.GNOSIS_SAFE:
+      return SUPPORTED_WALLETS['Gnosis Safe'].name;
+  }
+}

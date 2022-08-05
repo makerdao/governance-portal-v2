@@ -1,10 +1,10 @@
 import create from 'zustand';
-import { Connection } from 'modules/web3/connections';
+import { ConnectionType } from 'modules/web3/connections';
 
 type Store = {
-  selectedConnection: Connection | null;
+  selectedConnection: ConnectionType | null;
 
-  setSelectedConnection: (connection: Connection) => void;
+  setSelectedConnection: (connection: ConnectionType) => void;
 };
 
 const [useSelectedConnectionStore] = create<Store>((set, get) => ({

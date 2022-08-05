@@ -4,22 +4,29 @@ import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import { useWeb3React } from '@web3-react/core';
 import { formatAddress } from 'lib/utils';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
-
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useRouter } from 'next/router';
-import { getENS } from 'modules/web3/helpers/ens';
 
-jest.mock('modules/web3/helpers/ens');
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
 jest.mock('next/router');
 
+const walletName = 'MetaMask';
+jest.mock('modules/web3/constants/wallets', () => ({
+  SUPPORTED_WALLETS: {
+    [walletName]: {
+      connection: null,
+      name: walletName
+    }
+  }
+}));
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
+
 describe('Header component', () => {
   beforeEach(() => {
     (useWeb3React as jest.Mock).mockReturnValue({
-      account: '',
-      activate: () => null
+      account: ''
     });
     (useDelegateAddressMap as jest.Mock).mockReturnValue({ data: {} });
     (useAccount as jest.Mock).mockReturnValue({
@@ -40,7 +47,6 @@ describe('Header component', () => {
 
   test('display account when connected', async () => {
     const address = '0x477b8D5eF7C2C42DB84deB555419cd817c336b6J';
-    (getENS as jest.Mock).mockImplementation(address => Promise.resolve(address));
 
     (useWeb3React as jest.Mock).mockReturnValue({
       account: address,

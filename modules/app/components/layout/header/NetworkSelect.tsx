@@ -9,8 +9,8 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
-// import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { isSupportedChain } from 'modules/web3/helpers/chain';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -42,13 +42,10 @@ const closeButtonStyle: ThemeUICSSObject = {
 
 const NetworkSelect = (): React.ReactElement => {
   const { chainId, account, connector } = useActiveWeb3React();
-  const isNetwork = connector instanceof Network;
-  const [desiredChainId, setDesiredChainId] = useState<number>(isNetwork ? 1 : -1);
   const [error, setError] = useState<any>(undefined);
 
   const switchChain = useCallback(
     (desiredChainId: number) => {
-      setDesiredChainId(desiredChainId);
       // if we're already connected to the desired chain, return
       if (desiredChainId === chainId) {
         setError(undefined);
@@ -107,7 +104,7 @@ const NetworkSelect = (): React.ReactElement => {
           onClickConnect={() => {
             setShowDialog(true);
           }}
-          activeNetwork={CHAIN_INFO[chainId].label}
+          activeNetwork={isSupportedChain(chainId) ? CHAIN_INFO[chainId].label : 'Unsupported Network'}
           disabled={disabled}
         />
       )}

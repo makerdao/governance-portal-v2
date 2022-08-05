@@ -8,7 +8,7 @@ import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
 import invariant from 'tiny-invariant';
 import { isSupportedNetwork } from './networks';
-import { AccessType } from '../constants/connectors';
+import { AccessType } from '../constants/wallets';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 
