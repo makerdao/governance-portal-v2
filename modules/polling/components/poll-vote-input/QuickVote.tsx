@@ -156,8 +156,8 @@ const QuickVote = ({
           )}
           <Button
             data-testid="button-add-vote-to-ballot"
-            variant={buttonVariant ? buttonVariant : showHeader ? 'primaryOutline' : 'primary'}
-            sx={{ width: '100%' }}
+            variant={buttonVariant ? buttonVariant : 'primary'}
+            sx={{ width: '100%', mt: 3 }}
             onClick={() => {
               trackButtonClick('addVoteToBallot');
               submit();

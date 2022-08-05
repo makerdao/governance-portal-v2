@@ -54,7 +54,7 @@ export default function ChooseFreeSelect({ poll, choice, setChoice }: props): Re
             <Button
               key={`choose-free-${poll.pollId}-${option}`}
               onClick={() => selectOption(parseInt(option))}
-              variant={choice && choice.indexOf(parseInt(option)) !== -1 ? 'primary' : 'outline'}
+              variant={choice && choice.indexOf(parseInt(option)) !== -1 ? 'primaryOutline' : 'outline'}
             >
               {poll.options[option]}
             </Button>
