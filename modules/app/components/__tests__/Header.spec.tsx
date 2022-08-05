@@ -4,7 +4,6 @@ import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import { useWeb3React } from '@web3-react/core';
 import { formatAddress } from 'lib/utils';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
-
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useRouter } from 'next/router';
 
@@ -12,7 +11,17 @@ jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
 jest.mock('next/router');
-jest.mock('modules/web3/constants/wallets', () => ({ SUPPORTED_WALLETS: {} }));
+
+const walletName = 'MetaMask';
+jest.mock('modules/web3/constants/wallets', () => ({
+  SUPPORTED_WALLETS: {
+    [walletName]: {
+      connection: null,
+      name: walletName
+    }
+  }
+}));
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 describe('Header component', () => {
   beforeEach(() => {

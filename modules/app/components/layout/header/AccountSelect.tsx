@@ -20,7 +20,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { isAndroid, isIOS } from 'react-device-detect';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 import { SUPPORTED_WALLETS, WalletName } from 'modules/web3/constants/wallets';
-import { Connection } from 'modules/web3/connections';
+import { Connection, connectorToWalletName } from 'modules/web3/connections';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import logger from 'lib/logger';
@@ -106,7 +106,6 @@ const AccountSelect = (): React.ReactElement => {
         setUserData({ wallet: name });
       }
 
-      setAccountName(name);
       setChangeWallet(false);
 
       setLoadingConnectors({
@@ -144,8 +143,6 @@ const AccountSelect = (): React.ReactElement => {
     }
   };
 
-  const SUPPORTED_WALLETS = {};
-
   const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: WalletName) => (
     <Flex
       sx={walletButtonStyle}
@@ -172,6 +169,12 @@ const AccountSelect = (): React.ReactElement => {
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
+
+  useEffect(() => {
+    if (connector) {
+      setAccountName(connectorToWalletName(connector));
+    }
+  }, [address]);
 
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>

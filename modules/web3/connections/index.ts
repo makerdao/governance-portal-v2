@@ -7,6 +7,7 @@ import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { SUPPORTED_WALLETS } from '../constants/wallets';
 
 export interface Connection {
   connector: Connector;
@@ -128,5 +129,20 @@ export function getConnection(c: Connector | ConnectionType) {
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection;
     }
+  }
+}
+
+export function connectorToWalletName(connector: Connector) {
+  const connection = CONNECTIONS.find(connection => connection.connector === connector);
+
+  switch (connection?.type) {
+    case ConnectionType.INJECTED:
+      return SUPPORTED_WALLETS.MetaMask.name;
+    case ConnectionType.COINBASE_WALLET:
+      return SUPPORTED_WALLETS['Coinbase Wallet'].name;
+    case ConnectionType.WALLET_CONNECT:
+      return SUPPORTED_WALLETS.WalletConnect.name;
+    case ConnectionType.GNOSIS_SAFE:
+      return SUPPORTED_WALLETS['Gnosis Safe'].name;
   }
 }
