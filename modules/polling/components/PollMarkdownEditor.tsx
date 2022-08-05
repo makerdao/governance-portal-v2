@@ -19,7 +19,6 @@ export function PollMarkdownEditor(): React.ReactElement {
 
   useEffect(() => {
     const result = validatePollMarkdown(markdown);
-    console.log(result);
     if (result.parsedData) {
       let victoryCondition = '';
       if (hasVictoryConditionApproval(result.parsedData.parameters.victoryConditions)) {
