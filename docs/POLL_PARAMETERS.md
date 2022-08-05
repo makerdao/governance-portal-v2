@@ -7,7 +7,7 @@ The legacy poll parameters only determine if a poll is ranked-choice (IRV) or pl
 
 ## Legacy poll parameters:
 
-Xxample of a plurality poll. It is always assumed that "Abstain" is the 0 choice.
+Example of a plurality poll. It is always assumed that "Abstain" is the 0 choice.
 
 ```
 ---
