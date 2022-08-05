@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { useOrderedConnections } from 'modules/web3/hooks/useOrderedConnections';
 
 export async function connect(connector: Connector) {
+  console.log('eagerly connecting to...');
+  console.log(connector);
   try {
     if (connector.connectEagerly) {
       await connector.connectEagerly();

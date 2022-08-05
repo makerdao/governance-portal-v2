@@ -3,13 +3,6 @@
   "name": "Maker Governance Portal",
   "description": "Maker Governance Portal",
   "iconPath": "maker.svg",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
-    }
-  ],
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",
