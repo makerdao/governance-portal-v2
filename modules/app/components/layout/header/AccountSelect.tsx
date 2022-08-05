@@ -82,7 +82,8 @@ const AccountSelect = (): React.ReactElement => {
   const handleError = e => {
     logger.error(e);
     let message = '';
-    if (e.toString().includes('NoSafeContext')) {
+    console.log({ windowIsParent: window !== window.parent });
+    if (e.toString().includes('NoSafeContext') || e.toString().includes('safe context')) {
       message = 'Please try connecting from within the Gnosis Safe app.';
     } else {
       message = 'Something went wrong. Select an option to connect.';

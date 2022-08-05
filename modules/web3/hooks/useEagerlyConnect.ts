@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useOrderedConnections } from 'modules/web3/hooks/useOrderedConnections';
 
 export async function connect(connector: Connector) {
+  console.log({ windowIsParent: window !== window.parent });
   console.log('eagerly connecting to...');
   console.log(connector);
   try {
