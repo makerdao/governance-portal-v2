@@ -82,14 +82,14 @@ We also introduced the "version" option, version 2.0.0, which refers to the new 
 
 Victory conditions is an array of values that determine the winning condition of the algorithm.
 
-Currently we support plurality and instant-runoff (IRV).
+Currently we support plurality, majority, approval, instant-runoff (IRV), "and", and comparison (comparison acts as a safe check).
 
 | victory_conditions                                                 | summary                                                                                                                            |
 | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
 | majority                                                           | Condition returns true for the option with more than 50% of the total vote-weight - false for others                               |
 | plurality                                                          | Condition return true for the option with more vote weight than any other option - false for others                                |
 | instant-runoff                                                     | Condition returns true for the option winning when applying the IRV algorthim - false for others                                   |
-| "condition-<option(s)> : <option/value><comparator><option/value>" | Condition returns true for <option(s)> if expression <option/value><comparator><option/value> evaluates to true - false for others |
+| "comparison"  | Condition returns true for <option(s)> if expression <option/value><comparator><option/value> evaluates to true - false for others |
 | no-victor                                                          | Condition returns false for every option (marking a poll that is not supposed to result in a winning option)                       |
 | default-<option>                                                   | Condition returns true for <option> if no other option returns true on all other victory conditions                                |
 | approval                                                           | Condition return true for the option with the most approval - false for others                                                     |
@@ -100,10 +100,10 @@ Currently we support plurality and instant-runoff (IRV).
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | single-vote-breakdown                        | Displays current breakdown UI for Plurality                                                                        |
 | instant-runoff-breakdown                     | Displays current breakdown UI for Ranked Choice                                                                    |
-| condition-summary                            | Displays a table that lists each victory condition and shows whether it evaluates to true or false for each option |
-| score-<option/value><operator><option/value> | Displays an output score where score = <option/value><operator><option/value>                                      |
+| condition-summary (Not implemented)                           | Displays a table that lists each victory condition and shows whether it evaluates to true or false for each option |
+| score-<option/value><operator><option/value> (Not implemented) | Displays an output score where score = <option/value><operator><option/value>                                      |
 | approval-breakdown                           | Displays current breakdown UI for Plurality - but with approval scores.                                            |
-| weight-breakdown                             | Displays current breakdown UI for Plurality - but with weighted scores.                                            |
+| weight-breakdown  (Not implemented)                           | Displays current breakdown UI for Plurality - but with weighted scores.                                            |
 
 ### New plurality voting:
 
@@ -130,26 +130,29 @@ end_date: 2025-11-05T16:00:00
 
 ### New ranked choice voting:
 
+```
 ---
 
 title: POLL PARAMETERS Rank Free Instant Runoff
 summary: something
 discussion_link: link
 parameters:
-input_format: rank-free
-victory_conditions: - { type : instant-runoff }
-result_display: instant-runoff-breakdown
+  input_format: rank-free
+  victory_conditions: 
+    - { type : instant-runoff }
+  result_display: instant-runoff-breakdown
 version: v2.0.0  
 options:
-0: Option 1
-1: Option 2
-2: Option 3
-3: Option 4
-4: Option 5
+  0: Option 1
+  1: Option 2
+  2: Option 3
+  3: Option 4
+  4: Option 5
 start_date: 2022-03-06T16:00:00
 end_date: 2025-11-05T16:00:00
 
 ---
+```
 
 ### Approval voting
 
@@ -158,8 +161,8 @@ Approval voting allows user to select multiple options but should only allow the
 Example:
 
 - input_format
-  type: approval
-  options: [1,2,3] : Determine that the user can only select multiple 1,2,3. Option number 4 or 0 will be exclusive.
+    type: approval
+    options: [1,2,3] : Determine that the user can only select multiple 1,2,3. Option number 4 or 0 will be exclusive.
 - { type: 'approval', options: [1,2,3] } : Determine the options that will count as "approved", in theory it should match the input format options.
 
 ```
