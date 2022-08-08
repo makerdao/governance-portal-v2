@@ -18,8 +18,13 @@ export function filterDelegates(
         return delegate.name.toLowerCase().includes(name.toLowerCase());
       })
       .filter(delegate => {
-        // Return all if unchecked
-        if (!showShadow && !showRecognized && !showExpired) {
+        // filter out expired if show expired not checked
+        if (!showExpired && delegate.expired === true) {
+          return false;
+        }
+
+        // return all if show shadow and show recognized are both unchecked
+        if (!showShadow && !showRecognized) {
           return true;
         }
 
@@ -28,10 +33,6 @@ export function filterDelegates(
         }
 
         if (!showRecognized && delegate.status === DelegateStatusEnum.recognized) {
-          return false;
-        }
-
-        if (!showExpired && delegate.expired === true) {
           return false;
         }
 

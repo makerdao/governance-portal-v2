@@ -46,7 +46,7 @@ export function DelegatesTagFilter({
         <Flex sx={{ flexDirection: 'column' }}>
           {tags.map(tag => (
             <Flex key={tag.id}>
-              <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
+              <Label variant="thinLabel" sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
                   checked={(delegateFilters.tags && delegateFilters.tags[tag.id]) || false}
