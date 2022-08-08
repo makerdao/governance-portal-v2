@@ -13,7 +13,7 @@ import { PlayButton } from 'modules/home/components/PlayButton';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -290,7 +290,7 @@ export default function Index({
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const delegatesData = useAllDelegates();
 
   const fallbackData = isDefaultNetwork(network)

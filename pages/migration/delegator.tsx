@@ -2,7 +2,7 @@ import { Box, Button, Card, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useDelegates } from 'modules/delegates/hooks/useDelegates';
 import { useMemo } from 'react';
@@ -17,7 +17,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { account, network } = useActiveWeb3React();
+  const { account, network } = useWeb3();
 
   const { data: delegatesData } = useDelegates();
 

@@ -2,7 +2,7 @@ import { Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { Transaction, TXMined } from 'modules/web3/types/transaction';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
@@ -23,7 +23,7 @@ export const TxFinal = ({
   success: boolean;
   children?: React.ReactNode;
 }): React.ReactElement => {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>

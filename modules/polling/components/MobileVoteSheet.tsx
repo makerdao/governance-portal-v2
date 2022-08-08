@@ -24,7 +24,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { BallotContext } from '../context/BallotContext';
 
 enum ViewState {
@@ -52,7 +52,7 @@ export default function MobileVoteSheet({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
 
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 

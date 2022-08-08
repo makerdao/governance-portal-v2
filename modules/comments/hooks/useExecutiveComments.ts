@@ -1,6 +1,6 @@
 import { parseUnits } from 'ethers/lib/utils';
 import { fetchJson } from 'lib/fetchJson';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR from 'swr';
 import { ExecutiveCommentsAPIResponseItem, ParsedExecutiveComments } from '../types/comments';
 
@@ -14,7 +14,7 @@ export function useExecutiveComments(
   proposalAddress: string,
   refreshInterval = 0
 ): UseExecutiveCommentsResponse {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const {
     data: commentsDatas,

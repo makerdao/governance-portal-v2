@@ -9,9 +9,6 @@ import logger from 'lib/logger';
 
 export function useGoerliForkWindowBindings(): void {
   // TODO this should only run in non-prod environments
-  const context = useWeb3React();
-  console.log({ context });
-
   // Define a window function that changes the account for testing purposes
   useEffect(() => {
     if (typeof window !== 'undefined') {

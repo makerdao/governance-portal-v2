@@ -3,7 +3,7 @@ import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import { sign } from 'modules/web3/helpers/sign';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import useTransactionsStore, {
   transactionsApi,
@@ -102,7 +102,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     }
   };
 
-  const { network, provider } = useActiveWeb3React();
+  const { network, provider } = useWeb3();
   // Reset ballot on network change
   useEffect(() => {
     setPreviousBallot({});
