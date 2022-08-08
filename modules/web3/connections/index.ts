@@ -9,18 +9,18 @@ import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS } from '../constants/wallets';
 
-export interface Connection {
-  connector: Connector;
-  hooks: Web3ReactHooks;
-  type: ConnectionType;
-}
-
 export enum ConnectionType {
   INJECTED = 'INJECTED',
   COINBASE_WALLET = 'COINBASE_WALLET',
   WALLET_CONNECT = 'WALLET_CONNECT',
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE'
+}
+
+export interface Connection {
+  connector: Connector;
+  hooks: Web3ReactHooks;
+  type: ConnectionType;
 }
 
 // network
