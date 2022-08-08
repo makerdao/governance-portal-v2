@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { useRouter } from 'next/router';
+import { ConnectionType } from 'modules/web3/connections';
 
 jest.mock('next/router');
 
@@ -10,7 +11,7 @@ const walletName = 'MetaMask';
 jest.mock('modules/web3/constants/wallets', () => ({
   SUPPORTED_WALLETS: {
     [walletName]: {
-      connection: null,
+      connectionType: 'INJECTED',
       name: walletName
     }
   }

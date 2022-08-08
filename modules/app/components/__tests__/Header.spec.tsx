@@ -16,7 +16,7 @@ const walletName = 'MetaMask';
 jest.mock('modules/web3/constants/wallets', () => ({
   SUPPORTED_WALLETS: {
     [walletName]: {
-      connection: null,
+      connectionType: 'INJECTED',
       name: walletName
     }
   }
