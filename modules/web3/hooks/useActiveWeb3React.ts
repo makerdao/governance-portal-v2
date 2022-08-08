@@ -4,6 +4,7 @@ import logger from 'lib/logger';
 import { chainIdToNetworkName } from '../helpers/chain';
 
 // TODO type this
+// TODO separate network from this hook
 
 export function useActiveWeb3React(): any {
   const context = useWeb3React<Web3Provider>();

@@ -20,7 +20,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { isAndroid, isIOS } from 'react-device-detect';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 import { SUPPORTED_WALLETS, WalletName } from 'modules/web3/constants/wallets';
-import { Connection } from 'modules/web3/connections';
+import { connectorToWalletName, getConnection, ConnectionType } from 'modules/web3/connections';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import logger from 'lib/logger';
@@ -82,7 +82,7 @@ const AccountSelect = (): React.ReactElement => {
   const handleError = e => {
     logger.error(e);
     let message = '';
-    if (e.toString().includes('NoSafeContext')) {
+    if (e.toString().includes('NoSafeContext') || e.toString().includes('safe context')) {
       message = 'Please try connecting from within the Gnosis Safe app.';
     } else {
       message = 'Something went wrong. Select an option to connect.';
@@ -91,7 +91,8 @@ const AccountSelect = (): React.ReactElement => {
   };
 
   // Handles the logic when clicking on a connector
-  const onClickConnection = async (connection: Connection, name: WalletName) => {
+  const onClickConnection = async (connectionType: ConnectionType, name: WalletName) => {
+    const connection = getConnection(connectionType);
     setError(null);
     try {
       setLoadingConnectors({
@@ -106,7 +107,6 @@ const AccountSelect = (): React.ReactElement => {
         setUserData({ wallet: name });
       }
 
-      setAccountName(name);
       setChangeWallet(false);
 
       setLoadingConnectors({
@@ -151,7 +151,7 @@ const AccountSelect = (): React.ReactElement => {
       onClick={
         (isAndroid || isIOS) && SUPPORTED_WALLETS[connectionName].deeplinkUri
           ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri || '')
-          : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connection, connectionName)
+          : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)
       }
     >
       <Icon name={SUPPORTED_WALLETS[connectionName].name} />
@@ -170,6 +170,12 @@ const AccountSelect = (): React.ReactElement => {
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
+
+  useEffect(() => {
+    if (connector) {
+      setAccountName(connectorToWalletName(connector));
+    }
+  }, [address]);
 
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
