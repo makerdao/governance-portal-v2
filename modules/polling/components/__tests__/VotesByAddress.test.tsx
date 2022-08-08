@@ -12,15 +12,6 @@ import { Poll, PollTally } from 'modules/polling/types';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
-const walletName = 'MetaMask';
-jest.mock('modules/web3/constants/wallets', () => ({
-  SUPPORTED_WALLETS: {
-    [walletName]: {
-      connectionType: 'INJECTED',
-      name: walletName
-    }
-  }
-}));
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 const mockPoll: Poll = {

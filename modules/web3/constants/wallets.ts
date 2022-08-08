@@ -1,6 +1,13 @@
-import { ConnectionType } from 'modules/web3/connections';
 import { WalletInfo } from '../types/wallets';
 import { SupportedConnectors } from './networks';
+
+export enum ConnectionType {
+  INJECTED = 'INJECTED',
+  COINBASE_WALLET = 'COINBASE_WALLET',
+  WALLET_CONNECT = 'WALLET_CONNECT',
+  NETWORK = 'NETWORK',
+  GNOSIS_SAFE = 'GNOSIS_SAFE'
+}
 
 // "Network" connector is not a wallet type and must be excluded
 export const SUPPORTED_WALLETS: {

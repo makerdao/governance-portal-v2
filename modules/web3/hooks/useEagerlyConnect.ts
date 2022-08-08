@@ -1,7 +1,7 @@
 import { Connector } from '@web3-react/types';
 import { useEffect } from 'react';
 import { useOrderedConnections } from 'modules/web3/hooks/useOrderedConnections';
-import { ConnectionType } from '../connections';
+import { ConnectionType } from '../constants/wallets';
 import logger from 'lib/logger';
 
 export async function connect(connector: Connector, retry = false) {

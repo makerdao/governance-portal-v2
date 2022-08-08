@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Connection, getConnection, orderedConnectionTypes } from 'modules/web3/connections';
+import { getConnection, orderedConnectionTypes } from 'modules/web3/connections';
+import { Connection } from 'modules/web3/types/connection';
 import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 
 export function useOrderedConnections() {
