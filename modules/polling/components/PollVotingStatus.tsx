@@ -25,10 +25,10 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
 
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'flex-start' }} {...otherProps}>
-      {icon && <Icon mr="2" name={icon} sx={{ color }} />}
       <Text variant="caps" color={color}>
         {text}
       </Text>
+      {icon && <Icon ml="2" name={icon} sx={{ color }} />}
     </Flex>
   );
 };

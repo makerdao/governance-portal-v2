@@ -87,7 +87,7 @@ export default function PollOverviewCard({
                 )}
                 <Box>
                   <Box>
-                    <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
                       <CardHeader
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}

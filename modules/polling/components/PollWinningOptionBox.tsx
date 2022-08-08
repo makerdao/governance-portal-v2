@@ -7,7 +7,6 @@ import {
   isInputFormatRankFree,
   isInputFormatSingleChoice
 } from '../helpers/utils';
-import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
@@ -19,45 +18,56 @@ export default function PollWinningOptionBox({
   poll
 }: {
   poll: Poll;
-  tally?: PollTally;
+  tally: PollTally;
 }): React.ReactElement {
   const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
+  const isFinishedWithNoWinner = !tally.winner && !isActivePoll(poll);
+
+  // Winner will be null if the winning conditions are not met, but we want to display the leading option too
+  const leadingOption = typeof tally.winner === 'number' ? tally.winner : tally.results[0].optionId;
+  const leadingOptionName =
+    typeof tally.winner === 'number' ? tally.winningOptionName : tally.results[0].optionName;
+
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
-          <StatusText>
-            <>
-              {textWin}:{' '}
-              <span sx={{ color: getVoteColor(tally?.winner || 0, poll.parameters) }}>
-                {tally?.winningOptionName}
-              </span>{' '}
-              {(isInputFormatSingleChoice(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
-                'with ' +
-                  formatValue(
-                    parseUnits(
-                      tally.results
-                        .find(({ optionId }) => optionId === tally.winner)
-                        ?.mkrSupport.toString() || '0'
-                    )
-                  ) +
-                  ' MKR supporting.'}
-              {isInputFormatRankFree(poll.parameters) &&
-                'with ' +
-                  formatValue(
-                    parseUnits(
-                      tally.results
-                        .find(({ optionId }) => optionId === tally.winner)
-                        ?.mkrSupport.toString() || '0'
-                    )
-                  ) +
-                  ' MKR supporting as first choice.'}
-            </>
-          </StatusText>
-        ) : tally && !tally.winningOptionName ? (
-          <StatusText>{isActivePoll(poll) ? 'No leading option' : 'No winning option'}</StatusText>
+        {tally.totalMkrActiveParticipation > 0 ? (
+          <>
+            {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
+
+            {(isActivePoll(poll) || !isFinishedWithNoWinner) && (
+              <StatusText>
+                <>
+                  {textWin}:{' '}
+                  <span sx={{ color: getVoteColor(leadingOption, poll.parameters) }}>
+                    {leadingOptionName}
+                  </span>{' '}
+                  {(isInputFormatSingleChoice(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
+                    'with ' +
+                      formatValue(
+                        parseUnits(
+                          tally.results
+                            .find(({ optionId }) => optionId === leadingOption)
+                            ?.mkrSupport.toString() || '0'
+                        )
+                      ) +
+                      ' MKR supporting.'}
+                  {isInputFormatRankFree(poll.parameters) &&
+                    'with ' +
+                      formatValue(
+                        parseUnits(
+                          tally.results
+                            .find(({ optionId }) => optionId === leadingOption)
+                            ?.mkrSupport.toString() || '0'
+                        )
+                      ) +
+                      ' MKR supporting as first choice.'}
+                </>
+              </StatusText>
+            )}
+          </>
         ) : (
-          <SkeletonThemed />
+          <StatusText>No participation.</StatusText>
         )}
       </ErrorBoundary>
     </Flex>

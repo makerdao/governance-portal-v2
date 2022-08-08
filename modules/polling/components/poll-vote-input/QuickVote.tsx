@@ -24,6 +24,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { PollVoteTypeIndicator } from '../PollOverviewCard/PollVoteTypeIndicator';
 
 type Props = {
   poll: Poll;
@@ -105,35 +106,13 @@ const QuickVote = ({
       <Flex
         sx={{
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'flex-end',
+          flexDirection: 'column'
         }}
       >
-        <Flex
-          sx={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            display: showHeader ? undefined : 'none'
-          }}
-        >
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text variant="caps" color="textSecondary">
-              Your Vote
-            </Text>
-          </Flex>
-
-          {isInputFormatRankFree(poll.parameters) && (
-            <Tooltip label={rankedChoiceBlurb}>
-              <Box sx={{ position: 'relative' }}>
-                {/* Box is used because tooltip needs a child that can be passed a ref */}
-                <Icon name="stackedVotes" size={3} ml={2} />
-              </Box>
-            </Tooltip>
-          )}
-        </Flex>
         {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
+        <PollVoteTypeIndicator poll={poll} />
       </Flex>
-
       {(!!addedChoice || currentVote !== null) && !editing ? (
         <ChoiceSummary
           voteIsPending={voteIsPending}

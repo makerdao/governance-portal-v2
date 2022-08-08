@@ -21,7 +21,11 @@
     },
     "discussionLink": "https://forum.makerdao.com/t/2462",
     "parameters": {
-      "inputFormat": "rank-free",
+      "inputFormat": {
+        "type": "rank-free",
+        "abstain": [0],
+        "options": []
+      },
       "victoryConditions": [{ "type": "instant-runoff" }],
       "resultDisplay": "instant-runoff-breakdown"
     },
@@ -55,7 +59,11 @@
     },
     "discussionLink": "https://forum.makerdao.com/t/2664",
     "parameters": {
-      "inputFormat": "single-choice",
+      "inputFormat": {
+        "type": "single-choice",
+        "abstain": [0],
+        "options": []
+      },
       "victoryConditions": [{ "type": "plurality" }],
       "resultDisplay": "single-vote-breakdown"
     },

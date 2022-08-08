@@ -114,7 +114,7 @@ export function extractCurrentPollVote(
 ): number[] | number | null {
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
 
-  if (isInputFormatRankFree(poll.parameters)) {
+  if (isInputFormatRankFree(poll.parameters) || isInputFormatChooseFree(poll.parameters)) {
     return currentVote?.ballot !== undefined ? currentVote.ballot : null;
   } else if (isInputFormatSingleChoice(poll.parameters)) {
     return currentVote?.optionId !== undefined ? currentVote.optionId : null;

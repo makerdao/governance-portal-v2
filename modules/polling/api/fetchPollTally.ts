@@ -194,7 +194,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       const isAbstainOption = poll.parameters.inputFormat.abstain.indexOf(parseInt(key)) !== -1;
 
       const mkrSupport =
-        winnerOption.results  && !isAbstainOption
+        winnerOption.results && !isAbstainOption
           ? instantRunoffOption?.mkrSupport || new BigNumber(0)
           : votesInfo[optionId] || new BigNumber(0);
 

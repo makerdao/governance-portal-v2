@@ -10,7 +10,7 @@ describe('filterPolls', () => {
       endDate: new Date(p.endDate),
       startDate: new Date(p.startDate)
     };
-  }) as Poll[];
+  }) as any as Poll[];
 
   const filters = {
     title: null,
