@@ -9,8 +9,6 @@ import { chainIdToNetworkName } from '../helpers/chain';
 export function useActiveWeb3React(): any {
   const context = useWeb3React<Web3Provider>();
 
-  console.log({ context });
-
   let network;
   try {
     network = chainIdToNetworkName(context.chainId);
