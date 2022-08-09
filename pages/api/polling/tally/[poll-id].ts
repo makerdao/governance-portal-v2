@@ -41,8 +41,10 @@ import { PollTally } from 'modules/polling/types';
  *         type: string
  *       firstPct:
  *         type: string
- *       firstChoice:
- *         type: string
+ *       transfer:
+ *         type: number
+ *       transferPct:
+ *         type: number
  *       mkrSupport:
  *         type: string
  *       winner:
@@ -52,7 +54,7 @@ import { PollTally } from 'modules/polling/types';
  *     example:
  *       - optionId: "1"
  *         optionName: "Yes"
- *         firstChoice: "213123.21312"
+ *         transferPct: 2
  *         transfer: "0"
  *         mkrSupport: "23232.23132"
  *         firstPct: "12.222"
@@ -90,7 +92,6 @@ import { PollTally } from 'modules/polling/types';
  *         results:
  *           - optionId: "1"
  *             optionName: "Yes"
- *             firstChoice: "213123.21312"
  *             transfer: "0"
  *             mkrSupport: "23232.23132"
  *             firstPct: "12.222"
