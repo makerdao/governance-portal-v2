@@ -43,7 +43,11 @@ describe('Parse poll metadata', () => {
         options: { '0': 'Abstain', '1': 'Yes', '2': 'No' },
         discussionLink: 'https://forum.makerdao.com/t/signal-request-increasing-dust-parameter/5963',
         parameters: {
-          inputFormat: PollInputFormat.singleChoice,
+          inputFormat: {
+            type: PollInputFormat.singleChoice,
+            abstain: [0],
+            options: []
+          },
           resultDisplay: PollResultDisplay.singleVoteBreakdown,
           victoryConditions: [{ type: PollVictoryConditions.plurality }]
         },
@@ -77,7 +81,11 @@ describe('Parse poll metadata', () => {
         content: expect.any(String),
         discussionLink: 'https://forum.makerdao.com/t/4435',
         parameters: {
-          inputFormat: PollInputFormat.singleChoice,
+          inputFormat: {
+            type: PollInputFormat.singleChoice,
+            abstain: [0],
+            options: []
+          },
           resultDisplay: PollResultDisplay.singleVoteBreakdown,
           victoryConditions: [{ type: PollVictoryConditions.plurality }]
         },

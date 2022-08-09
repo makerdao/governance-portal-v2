@@ -1,17 +1,7 @@
-type LegacyPollVote = {
-  pollId: number;
-  optionId: number;
-  optionIdRaw?: string;
-  rankedChoiceOption?: number[];
-  blockTimestamp: string;
-};
-
-type RankedChoicePollVote = {
+export type PollVote = {
   pollId: number;
   optionId?: number;
   optionIdRaw?: string;
-  rankedChoiceOption: number[];
+  ballot: number[];
   blockTimestamp: string;
 };
-
-export type PollVote = LegacyPollVote | RankedChoicePollVote;

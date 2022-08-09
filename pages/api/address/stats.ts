@@ -30,7 +30,7 @@ import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
  *         type: array
  *         items:
  *           type: string
- *       rankedChoiceOption:
+ *       ballot:
  *         type: array
  *         items:
  *           type: integer
@@ -41,7 +41,7 @@ import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
  *         blockTimestamp: "2021-11-20T19:25:47+00:00"
  *         option: 1
  *         optionValue: ["Yes"]
- *         rankedChoiceOption: [1]
+ *         ballot: [1]
  *         poll:
  *           pollId: 1
  *   AddressStats:

@@ -4,7 +4,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Poll } from 'modules/polling/types';
 
 type Props = { poll: Poll; choice: number | null; setChoice: (number) => void };
-export default function SingleSelect({ poll, choice, setChoice, ...props }: Props): JSX.Element {
+
+export default function SingleSelect({ poll, choice, setChoice }: Props): JSX.Element {
   const [defaultValue, setDefaultValue] = useState('default');
 
   useEffect(() => {
@@ -17,7 +18,6 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
         setChoice(parseInt(x));
       }}
       defaultValue={defaultValue}
-      {...props}
     >
       <ListboxButton
         data-testid="single-select"

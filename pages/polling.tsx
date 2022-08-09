@@ -20,7 +20,7 @@ import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
 import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
-// import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
+import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
 import { DateFilter } from 'modules/polling/components/filters/DateFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
@@ -42,7 +42,6 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
-import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;

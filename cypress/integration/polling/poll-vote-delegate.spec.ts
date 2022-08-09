@@ -23,7 +23,7 @@ describe('/polling/review page as a delegate', async () => {
       // click on option
       cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
 
-      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot-desktop"]');
+      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
 
       // Click the button
       buttonsVote.eq(1).should('not.be.disabled');

@@ -13,8 +13,8 @@ import { extractCurrentPollVote, isActivePoll, isInputFormatRankFree } from 'mod
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 
-import RankedChoiceSelect from './RankedChoiceSelect';
-import SingleSelect from './SingleSelect';
+import RankedChoiceSelect from './poll-vote-input/RankedChoiceSelect';
+import SingleSelect from './poll-vote-input/SingleSelect';
 import { useRouter } from 'next/router';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
@@ -26,6 +26,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { BallotContext } from '../context/BallotContext';
+import QuickVote from './poll-vote-input/QuickVote';
 
 enum ViewState {
   START,
@@ -80,13 +81,6 @@ export default function MobileVoteSheet({
   }, [pollsData]);
 
   const submit = () => {
-    invariant(isChoiceValid);
-    if (currentVote && isEqual(currentVote, choice)) {
-      removeVoteFromBallot(poll.pollId);
-      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
-    } else {
-      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
-    }
     if (editingOnly) {
       if (close) {
         close();
@@ -217,23 +211,9 @@ export default function MobileVoteSheet({
               <Text>{poll.summary}</Text>
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
-              ) : isInputFormatRankFree(poll.parameters) ? (
-                <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
               ) : (
-                <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
+                <QuickVote poll={poll} onSubmit={submit} showHeader={false} buttonVariant="primaryLarge" />
               )}
-              <Button
-                variant="primaryLarge"
-                data-testid="button-add-vote-to-ballot"
-                sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                onClick={() => {
-                  trackButtonClick('addVoteToBallot');
-                  submit();
-                }}
-                disabled={!isChoiceValid || viewState == ViewState.ADDING}
-              >
-                {editingOnly ? 'Update vote' : 'Add vote to ballot'}
-              </Button>
             </Stack>
           )}
         </DialogContent>

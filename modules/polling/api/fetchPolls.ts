@@ -16,6 +16,7 @@ import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql
 import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
 import { getAllPollsCacheKey } from 'modules/cache/constants/cache-keys';
+import mockPolls from './mocks/pollsv2.json';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -93,6 +94,8 @@ export async function _getAllPolls(
   network?: SupportedNetworks,
   queryVariables?: PollsQueryVariables
 ): Promise<Poll[]> {
+  // TODO: Remove mock
+  //return Promise.resolve(mockPolls as any);
   const cacheKey = getAllPollsCacheKey(queryVariables);
 
   const cachedPolls = await cacheGet(cacheKey, network);

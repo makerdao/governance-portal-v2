@@ -34,8 +34,9 @@ export function validatePollMarkdown(text: string): ValidationResult {
     if (data.vote_type && !POLL_VOTE_TYPES_ARRAY.includes(data.vote_type)) {
       errors.push(`Invalid vote type: "${data.vote_type}"`);
     }
+    let parameters, errorParameters;
     if (!data.vote_type) {
-      const [parameters, errorParameters] = validatePollParameters(data.parameters);
+      [parameters, errorParameters] = validatePollParameters(data.parameters);
       if (!parameters) {
         errorParameters.forEach(e => errors.push(e));
       }
@@ -79,7 +80,17 @@ export function validatePollMarkdown(text: string): ValidationResult {
     if (startDate && endDate && endDate.getTime() - startDate.getTime() < 3600000)
       errors.push('Poll duration is too short');
 
-    return { valid: errors.length === 0, errors };
+    return {
+      valid: errors.length === 0,
+      errors,
+      parsedData:
+        errors.length === 0
+          ? ({
+              ...data,
+              parameters
+            } as any)
+          : null
+    };
   } catch (err) {
     return { valid: false, errors: [err.message] };
   }
