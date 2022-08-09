@@ -4,7 +4,12 @@ import { useOrderedConnections } from 'modules/web3/hooks/useOrderedConnections'
 import { ConnectionType } from '../constants/wallets';
 import logger from 'lib/logger';
 
-export async function connect(connector: Connector, retry = false) {
+export async function connect(connector: Connector, gnosis = false) {
+  // gnosis web3-react package has a call, this.safe.sdk.getInfo(), that will timeout occasionally
+  // this gives it more time to be able to detect the safe context
+  if (gnosis) {
+    await new Promise<undefined>(resolve => setTimeout(resolve, 1000));
+  }
   try {
     if (connector.connectEagerly) {
       await connector.connectEagerly();
@@ -12,11 +17,6 @@ export async function connect(connector: Connector, retry = false) {
       await connector.activate();
     }
   } catch (error) {
-    // sometimes gnosis safe fails to detect the safe context
-    // this attempts to reconnect once more if the safe context is not detected
-    if (retry) {
-      connect(connector);
-    }
     logger.debug(`web3-react eager connection error: ${error}`);
   }
 }
