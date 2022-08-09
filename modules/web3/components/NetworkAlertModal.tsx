@@ -4,7 +4,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -16,7 +16,7 @@ export const NetworkAlertModal = ({
   deactivate: () => void;
 }): JSX.Element | null => {
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   if (chainIdError === 'network mismatch') {
     return (

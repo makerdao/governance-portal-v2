@@ -31,7 +31,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
@@ -67,7 +67,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [showHistorical, setShowHistorical] = React.useState(false);
@@ -443,7 +443,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 export default function ExecutiveOverviewPage({
   proposals: prefetchedProposals
 }: ExecutivePageData): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

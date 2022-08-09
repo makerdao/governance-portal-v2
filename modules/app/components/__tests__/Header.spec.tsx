@@ -12,15 +12,6 @@ jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
 jest.mock('next/router');
 
-const walletName = 'MetaMask';
-jest.mock('modules/web3/constants/wallets', () => ({
-  SUPPORTED_WALLETS: {
-    [walletName]: {
-      connection: null,
-      name: walletName
-    }
-  }
-}));
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 describe('Header component', () => {

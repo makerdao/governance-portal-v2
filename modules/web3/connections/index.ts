@@ -1,4 +1,4 @@
-import { initializeConnector, Web3ReactHooks } from '@web3-react/core';
+import { initializeConnector } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { Network } from '@web3-react/network';
 import { MetaMask } from '@web3-react/metamask';
@@ -7,21 +7,8 @@ import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { GnosisSafe } from '@web3-react/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { SUPPORTED_WALLETS } from '../constants/wallets';
-
-export interface Connection {
-  connector: Connector;
-  hooks: Web3ReactHooks;
-  type: ConnectionType;
-}
-
-export enum ConnectionType {
-  INJECTED = 'INJECTED',
-  COINBASE_WALLET = 'COINBASE_WALLET',
-  WALLET_CONNECT = 'WALLET_CONNECT',
-  NETWORK = 'NETWORK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE'
-}
+import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
+import { Connection } from '../types/connection';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(

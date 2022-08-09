@@ -8,7 +8,7 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { usePollCreate } from '../hooks/usePollCreate';
 
 type Props = {
@@ -130,7 +130,7 @@ const Signing = ({ close }) => (
 );
 
 const Pending = ({ tx, close }) => {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

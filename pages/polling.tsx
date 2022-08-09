@@ -33,7 +33,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -101,7 +101,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const filteredPolls = useMemo(() => {
     return filterPolls({
@@ -350,7 +350,7 @@ export default function PollingOverviewPage({
   polls: prefetchedPolls,
   tags: prefetchedCategories
 }: PollingPageData): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

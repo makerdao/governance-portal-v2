@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
@@ -22,7 +22,7 @@ type LockResponse = {
 export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { chainId, provider, account } = useActiveWeb3React();
+  const { chainId, provider, account } = useWeb3();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

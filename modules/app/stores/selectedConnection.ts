@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { ConnectionType } from 'modules/web3/connections';
+import { ConnectionType } from 'modules/web3/constants/wallets';
 
 type Store = {
   selectedConnection: ConnectionType | null;

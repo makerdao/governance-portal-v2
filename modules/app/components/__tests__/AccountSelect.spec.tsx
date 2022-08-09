@@ -6,15 +6,6 @@ import { useRouter } from 'next/router';
 
 jest.mock('next/router');
 
-const walletName = 'MetaMask';
-jest.mock('modules/web3/constants/wallets', () => ({
-  SUPPORTED_WALLETS: {
-    [walletName]: {
-      connection: null,
-      name: walletName
-    }
-  }
-}));
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 describe('Account select', () => {
@@ -28,7 +19,7 @@ describe('Account select', () => {
 
     userEvent.click(connectButton);
 
-    const metamaskButton = await screen.findByText(walletName);
+    const metamaskButton = await screen.findByText('MetaMask');
     expect(metamaskButton).toBeInTheDocument();
   });
 });

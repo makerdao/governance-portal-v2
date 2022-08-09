@@ -1,6 +1,6 @@
 import { limitString } from 'lib/string';
 import { formatAddress } from 'lib/utils';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import React, { useEffect, useState } from 'react';
 
 export const Address = React.memo(function Address({
@@ -10,7 +10,7 @@ export const Address = React.memo(function Address({
   address: string;
   maxLength?: number;
 }): React.ReactElement {
-  const { ENSName } = useActiveWeb3React();
+  const { ENSName } = useWeb3();
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
   useEffect(() => {

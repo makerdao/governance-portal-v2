@@ -7,7 +7,7 @@ import { Network } from '@web3-react/network';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
@@ -41,7 +41,7 @@ const closeButtonStyle: ThemeUICSSObject = {
 };
 
 const NetworkSelect = (): React.ReactElement => {
-  const { chainId, account, connector } = useActiveWeb3React();
+  const { chainId, account, connector } = useWeb3();
   const [error, setError] = useState<any>(undefined);
 
   const switchChain = useCallback(
