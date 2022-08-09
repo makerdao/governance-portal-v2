@@ -35,13 +35,13 @@ const ChoiceSummary = ({
   return (
     <Box {...props}>
       {isInputFormatSingleChoice(poll.parameters) && (
-        <Box bg="background" sx={{ p: 3, mb: 2 }}>
+        <Box bg="onSurfaceAlt" sx={{ p: 3, mb: 2 }}>
           <Text data-testid="choice">{choice === ABSTAIN ? 'Abstain' : poll.options[choice as number]}</Text>
         </Box>
       )}
       {isInputFormatRankFree(poll.parameters) &&
         (choice as number[]).map((id, index) => (
-          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={id}>
+          <Flex sx={{ backgroundColor: 'onSurfaceAlt', py: 2, px: 3, mb: 2 }} key={id}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
               <Text data-testid="choice">{poll.options[id]}</Text>
@@ -50,7 +50,7 @@ const ChoiceSummary = ({
         ))}
       {isInputFormatChooseFree(poll.parameters) &&
         (choice as number[]).map(id => (
-          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={id}>
+          <Flex sx={{ backgroundColor: 'onSurfaceAlt', py: 2, px: 3, mb: 2 }} key={id}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text data-testid="choice">{poll.options[id]}</Text>
             </Flex>

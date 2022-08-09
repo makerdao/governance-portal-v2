@@ -87,17 +87,10 @@ export default function PollOverviewCard({
                 )}
                 <Box>
                   <Box>
-                    <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
                       <CardHeader
                         text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
                         styles={{ mb: 2 }}
                       />
-                      {!showQuickVote && (
-                        <Box sx={{ mb: 3 }}>
-                          <PollVoteTypeIndicator poll={poll} />
-                        </Box>
-                      )}
-                    </Flex>
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
                       <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
                     </InternalLink>
@@ -178,7 +171,7 @@ export default function PollOverviewCard({
                 <Flex
                   sx={{
                     alignItems: 'center',
-                    justifyContent: 'flex-start',
+                    justifyContent: 'space-between',
                     width: bpi > 0 ? 'auto' : '100%',
                     p: 0,
                     mt: 3
@@ -194,6 +187,9 @@ export default function PollOverviewCard({
                       View Details
                     </Button>
                   </InternalLink>
+
+                          {bpi === 0 && <PollVoteTypeIndicator poll={poll} />}
+                 
                 </Flex>
 
                 {showQuickVote && bpi === 0 && (
@@ -208,6 +204,9 @@ export default function PollOverviewCard({
                 )}
 
                 <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                {bpi > 0 && <Flex sx={{ mb: 3, justifyContent: 'flex-end' }}>
+                          <PollVoteTypeIndicator poll={poll} />
+                        </Flex>}
                   {tally && tally.totalMkrParticipation > 0 && (
                     <InternalLink
                       href={`/polling/${poll.slug}`}
