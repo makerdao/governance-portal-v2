@@ -206,13 +206,13 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
               </Flex>
             </section>
 
-            <section>
+            {/* <section>
               <ErrorBoundary componentName="Governance Stats">
                 <GovernanceStats polls={polls} stats={stats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
               </ErrorBoundary>
-            </section>
+            </section> */}
 
-            <section id="vote">
+            {/* <section id="vote">
               <Sticky topOffset={bpi < 1 ? 1050 : 700}>
                 {({ style, isSticky }) => (
                   <Box
@@ -232,21 +232,21 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
                 <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
               </Box>
               <PollCategoriesLanding pollCategories={pollCategories} />
-            </section>
+            </section> */}
 
-            <section id="delegate">
+            {/* <section id="delegate">
               <Box ref={delegateRef} />
               <ErrorBoundary componentName="Meet Delegates">
                 <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
               </ErrorBoundary>
-            </section>
+            </section> */}
 
-            <section>
+            {/* <section>
               <TopDelegates
                 delegates={topDelegates}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
-            </section>
+            </section> */}
 
             <section sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
               <Box

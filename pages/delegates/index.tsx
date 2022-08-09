@@ -164,7 +164,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                 </Flex>
               )}
 
-              {recognizedDelegates.length > 0 && (
+              {/* {recognizedDelegates.length > 0 && (
                 <Stack gap={3}>
                   <Heading as="h1">Recognized Delegates</Heading>
 
@@ -176,9 +176,9 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                     </Box>
                   ))}
                 </Stack>
-              )}
+              )} */}
 
-              {shadowDelegates.length > 0 && (
+              {/* {shadowDelegates.length > 0 && (
                 <Stack gap={3}>
                   <Heading as="h1">Shadow Delegates</Heading>
 
@@ -190,7 +190,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                     </Box>
                   ))}
                 </Stack>
-              )}
+              )} */}
 
               {expiredDelegates.length > 0 && (
                 <Stack gap={3}>
