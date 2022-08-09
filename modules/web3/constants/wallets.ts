@@ -33,8 +33,3 @@ export const SUPPORTED_WALLETS: {
 };
 
 export type WalletName = Exclude<SupportedConnectors, SupportedConnectors.NETWORK>;
-
-export enum AccessType {
-  READ_ONLY = 'readOnly',
-  WRITE = 'write'
-}

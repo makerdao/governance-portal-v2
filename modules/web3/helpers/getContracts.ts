@@ -6,9 +6,7 @@ import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/net
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
-import invariant from 'tiny-invariant';
-import { isSupportedNetwork } from './networks';
-import { AccessType } from '../constants/wallets';
+import { getReadOnlyContracts } from './getReadOnlyContracts';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 
@@ -30,9 +28,8 @@ export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
 let connectedAccount: string | undefined;
 let currentNetwork: string | undefined;
 
-const contracts: { readOnly: null | EthSdk; write: null | EthSdk } = {
-  readOnly: null,
-  write: null
+const contracts: Record<string, EthSdk | null> = {
+  default: null
 };
 
 export const getContracts = (
@@ -42,42 +39,45 @@ export const getContracts = (
   readOnly?: boolean,
   apiKey?: string
 ): EthSdk => {
-  const networkInfo = chainId
-    ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
-    : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };
+  const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
+  let rpcUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
 
-  invariant(isSupportedNetwork(networkInfo.network), `unsupported network ${networkInfo.network}`);
+  // Map goerlifork to goerli contracts
+  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
 
-  // TODO fix this
-  // // If a custom API key is provided, replace it in the URL
-  // if (apiKey) networkInfo.rpcUrl = replaceApiKey(networkInfo.rpcUrl, apiKey);
+  if (readOnly) {
+    return getReadOnlyContracts(rpcUrl, sdkNetwork);
+  }
 
-  const { network, rpcUrl } = networkInfo;
+  let contractsKey = 'default';
 
-  // If the contract we need is not read only, and we have an account/provider then we need a signer
-  const needsSigner = !readOnly && !!account && !!provider;
+  if (apiKey) {
+    contractsKey = apiKey;
 
-  // Keeping track of access type allows us to use specialized providers like JsonRpcBatchProvider
-  const accessType: AccessType = needsSigner ? AccessType.WRITE : AccessType.READ_ONLY;
+    // If a custom API key is provided, replace it in the URL
+    rpcUrl = replaceApiKey(rpcUrl, apiKey);
+  }
 
-  // If our account or network changes, create a new provider
+  // If we have an account and provider then we'll use a signer
+  const needsSigner = !!account && !!provider;
+
+  // If our account or network changes, recreate the contracts SDK
   const changeAccount = !!account && account !== connectedAccount;
   const changeNetwork = network !== currentNetwork;
 
-  if (changeAccount || changeNetwork || !contracts[accessType]) {
-    const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
+  const recreateContracts = changeAccount || changeNetwork || !contracts;
 
-    // Map goerlifork to goerli contracts
-    const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  if (recreateContracts) {
+    const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
-    const signerOrProvider = needsSigner ? provider.getSigner(account) : providerToUse;
+    const signerOrProvider = needsSigner ? providerToUse.getSigner(account) : providerToUse;
 
     // Keep track of the connected account and network so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;
     if (changeNetwork) currentNetwork = network;
 
-    contracts[accessType] = sdkGenerators[sdkNetwork](signerOrProvider);
+    contracts[contractsKey] = sdkGenerators[sdkNetwork](signerOrProvider);
   }
 
-  return contracts[accessType] as EthSdk;
+  return contracts[contractsKey] as EthSdk;
 };
