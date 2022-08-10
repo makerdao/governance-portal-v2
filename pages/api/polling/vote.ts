@@ -3,7 +3,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
 import { ethers } from 'ethers';
 import invariant from 'tiny-invariant';
-import { recoverTypedSignature } from 'eth-sig-util';
+import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
@@ -35,18 +35,15 @@ export default withApiHandler(
       const v = Number('0x' + signature.slice(130, 132));
 
       //verify that signature and address correspond
-      // console.log('getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network)', getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network));
-      // console.log('signature', signature);
-      // const recovered = recoverTypedSignature({
-      //   data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
-      //   signature,
-      //   version: 'V4'
-      // });
-      // console.log('recovered signature', recovered);
-      // invariant (
-      //   ethers.utils.getAddress(recovered) === ethers.utils.getAddress(voter),
-      //   'Failed to verify signer when comparing ' + recovered + ' to ' + voter
-      // );
+      const recovered = recoverTypedSignature({
+        data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
+        signature,
+        version: SignTypedDataVersion.V4
+      });
+      invariant (
+        ethers.utils.getAddress(recovered) === ethers.utils.getAddress(voter),
+        'Failed to verify signer when comparing ' + recovered + ' to ' + voter
+      );
 
       const credentials = { apiKey: config.DEFENDER_API_KEY, apiSecret: config.DEFENDER_API_SECRET };
       const provider = new DefenderRelayProvider(credentials);
@@ -66,11 +63,9 @@ export default withApiHandler(
       invariant(expiry < Date.now(), 'Expiration date already passed');
       const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
       invariant(
-        pollWeight?.total.gte(WAD.div(1/MIN_MKR)), //ether's bignumber library doesnt handle decimals
+        pollWeight?.total.gte(WAD.div(1 / MIN_MKR)), //ether's bignumber library doesnt handle decimals
         `Address must have a poll voting weight of at least ${MIN_MKR}`
       );
-
-      console.log('pollIds', pollIds);
 
       //get all active polls
       const allPollsResponse = await fetchJson(
@@ -78,7 +73,10 @@ export default withApiHandler(
       );
       const activePollIds = allPollsResponse.polls.map(p => parseInt(p.pollId));
       pollIds.forEach(pollId => {
-        invariant(activePollIds.includes(parseInt(pollId)), `Cannot vote in poll #${pollId} as it is not active`);
+        invariant(
+          activePollIds.includes(parseInt(pollId)),
+          `Cannot vote in poll #${pollId} as it is not active`
+        );
       });
 
       //can't use gasless service to vote in a poll you've already voted on
@@ -87,7 +85,6 @@ export default withApiHandler(
       pollIds.forEach(pollId => {
         invariant(!votedPollIds.includes(parseInt(pollId)), `Already voted in poll #${pollId}`);
       });
-
 
       cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
       // if validation passes, send tx
