@@ -56,7 +56,7 @@ export const getContracts = (
   const changeNetwork = network !== currentNetwork;
 
   // If our account or network changes, recreate the contracts SDK
-  if (changeAccount || changeNetwork || !contracts) {
+  if (changeAccount || changeNetwork || !contracts[contractsKey]) {
     const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
     const signerOrProvider = needsSigner ? providerToUse.getSigner(account) : providerToUse;
