@@ -1,23 +1,24 @@
 import { Tag } from 'modules/app/types/tag';
 import { PollResultDisplay, PollVictoryConditions } from '../polling.constants';
-import { PollVoteType } from './pollVoteType';
 
 //  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
 export type PollVictoryConditionComparison = {
   type: PollVictoryConditions.comparison;
   options: number[];
   comparator: string;
-};
-// { type : default, options : [2] }
-export type PollVictoryConditionDefault = {
-  type: PollVictoryConditions.default;
-  options: number[];
+  value: number;
 };
 
-// NOT SUPPORTED YET: { type : majority, options : [2] }
+// { type : default, value: 2 }
+export type PollVictoryConditionDefault = {
+  type: PollVictoryConditions.default;
+  value: number;
+};
+
+// { type : majority, percent: 50 }
 export type PollVictoryConditionMajority = {
   type: PollVictoryConditions.majority;
-  options: number[];
+  percent: number;
 };
 
 // { type : 'plurality' }
@@ -30,15 +31,32 @@ export type PollVictoryConditionInstantRunoff = {
   type: PollVictoryConditions.instantRunoff;
 };
 
+// { type : 'approval' }
+export type PollVictoryConditionApproval = {
+  type: PollVictoryConditions.approval;
+};
+
+// { type : 'and', conditions: conditions[] }
+export type PollVictoryConditionAND = {
+  type: PollVictoryConditions.and;
+  conditions: VictoryCondition[];
+};
+
+export type VictoryCondition =
+  | PollVictoryConditionComparison
+  | PollVictoryConditionDefault
+  | PollVictoryConditionMajority
+  | PollVictoryConditionApproval
+  | PollVictoryConditionInstantRunoff
+  | PollVictoryConditionPlurality;
+
 type PollParameters = {
-  inputFormat: PollInputFormat;
-  victoryConditions: (
-    | PollVictoryConditionComparison
-    | PollVictoryConditionDefault
-    | PollVictoryConditionMajority
-    | PollVictoryConditionInstantRunoff
-    | PollVictoryConditionPlurality
-  )[];
+  inputFormat: {
+    type: PollInputFormat;
+    abstain: number[];
+    options: number[];
+  };
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[];
   resultDisplay: PollResultDisplay;
 };
 

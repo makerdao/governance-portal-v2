@@ -7,7 +7,7 @@ import omitBy from 'lodash/omitBy';
 
 import { getNumberWithOrdinal } from 'lib/utils';
 import { Poll } from 'modules/polling/types';
-import Stack from '../../app/components/layout/layouts/Stack';
+import Stack from '../../../app/components/layout/layouts/Stack';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
@@ -20,8 +20,7 @@ type RankedChoiceSelectProps = {
 export default function RankedChoiceSelect({
   poll,
   setChoice,
-  choice: _choice,
-  ...props
+  choice: _choice
 }: RankedChoiceSelectProps): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const choice = _choice || [];
@@ -79,7 +78,7 @@ export default function RankedChoiceSelect({
   if (showListboxInput && showAddButton) setShowAddButton(false);
 
   return (
-    <Box {...props}>
+    <Box>
       <Stack gap={2}>
         {Array.from({ length: numConfirmed }).map((_, index) => (
           <Flex sx={{ backgroundColor: 'background', p: 2 }} key={index}>

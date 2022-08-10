@@ -1,7 +1,7 @@
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import { useState } from 'react';
 import { Box, Text, Divider } from 'theme-ui';
-import { isPluralityVictoryConditionPoll } from '../helpers/utils';
+import { hasVictoryConditionPlurality } from '../helpers/utils';
 import { PollVoteHistoryItem } from './PollVoteHistoryItem';
 
 export function PollVoteHistoryList({ votes }: { votes: PollVoteHistory[] }): React.ReactElement {
@@ -19,7 +19,8 @@ export function PollVoteHistoryList({ votes }: { votes: PollVoteHistory[] }): Re
   };
   const [showAllVotes, setShowAllVotes] = useState(votes.length <= 5);
   const votesToShow = showAllVotes ? votes : votes.slice(0, 5);
-  const showDivider = votes.filter(vote => isPluralityVictoryConditionPoll(vote.poll.parameters)).length > 0;
+  const showDivider =
+    votes.filter(vote => hasVictoryConditionPlurality(vote.poll.parameters.victoryConditions)).length > 0;
 
   return (
     <Box>

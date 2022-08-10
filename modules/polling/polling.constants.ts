@@ -21,7 +21,9 @@ export enum PollInputFormat {
 }
 
 export enum PollVictoryConditions {
+  and = 'and',
   majority = 'majority',
+  approval = 'approval',
   plurality = 'plurality',
   instantRunoff = 'instant-runoff',
   default = 'default',
@@ -30,5 +32,6 @@ export enum PollVictoryConditions {
 
 export enum PollResultDisplay {
   singleVoteBreakdown = 'single-vote-breakdown',
-  instantRunoffBreakdown = 'instant-runoff-breakdown'
+  instantRunoffBreakdown = 'instant-runoff-breakdown',
+  approvalBreakdown = 'approval-breakdown'
 }

@@ -2,7 +2,7 @@
   "pollId": 634,
   "option": 1,
   "blockTimestamp": 13217846,
-  "rankedChoiceOption": [1],
+  "ballot": [1],
   "poll": {
     "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
     "pollId": 634,

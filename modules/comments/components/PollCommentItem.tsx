@@ -6,9 +6,11 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
-import { isResultDisplaySingleVoteBreakdown } from 'modules/polling/helpers/utils';
-import { RankedChoiceVoteSummary } from 'modules/polling/components/RankedChoiceVoteSummary';
+import {
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from 'modules/polling/helpers/utils';
+import { ListVoteSummary } from 'modules/polling/components/vote-summary/ListVoteSummary';
 
 export default function PollCommentItem({
   comment,
@@ -26,12 +28,16 @@ export default function PollCommentItem({
     }
 
     const voteOptionText = isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
-      <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
-        {poll.options[commentVote.optionId]}
+      <Text sx={{ color: getVoteColor(commentVote.ballot[0], poll.parameters) }}>
+        {poll.options[commentVote.ballot[0]]}
       </Text>
     ) : (
       <Box>
-        <RankedChoiceVoteSummary choices={commentVote.rankedChoiceOption || []} poll={poll} />
+        <ListVoteSummary
+          choices={commentVote.ballot || []}
+          poll={poll}
+          showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters)}
+        />
       </Box>
     );
 
