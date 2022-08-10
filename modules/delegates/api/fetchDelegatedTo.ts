@@ -57,7 +57,7 @@ export async function fetchDelegatedTo(
 
         // If it has a new owner address, check if it has renewed the contract
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
-        console.log('new ', newOwnerAddress, delegatingToWalletAddress);
+
         const newRenewedContract = newOwnerAddress
           ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress.toLowerCase())
           : null;

@@ -72,7 +72,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
         return d.r;
       })
       .style('fill', d => {
-        return getVoteColor(d.data.optionId, poll.parameters.inputFormat, false);
+        return getVoteColor(d.data.ballot[0], poll.parameters, false);
       })
       .style('cursor', 'pointer')
       .on('click', handleVoterClick);

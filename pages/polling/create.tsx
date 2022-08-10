@@ -150,7 +150,9 @@ const PollingCreate = (): React.ReactElement => {
                           ))}
                       </CreateText>
                       <Label>Input Format</Label>
-                      <CreateText>{poll?.parameters.inputFormat}</CreateText>
+                      <CreateText>{poll?.parameters.inputFormat.type}</CreateText>
+                      <Label>Abstain Options</Label>
+                      <CreateText>{poll?.parameters.inputFormat.abstain}</CreateText>
                       <Label>Victory Conditions</Label>
                       <CreateText>
                         {poll?.parameters.victoryConditions.map(v => (

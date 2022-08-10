@@ -41,7 +41,11 @@ describe('Poll vote history item', () => {
         endDate: new Date(mockVote.poll.endDate),
         startDate: new Date(mockVote.poll.startDate),
         parameters: {
-          inputFormat: PollInputFormat.singleChoice,
+          inputFormat: {
+            type: PollInputFormat.singleChoice,
+            options: [],
+            abstain: [0]
+          },
           resultDisplay: PollResultDisplay.singleVoteBreakdown,
           victoryConditions: [{ type: PollVictoryConditions.plurality }]
         }
@@ -68,7 +72,11 @@ describe('Poll vote history item', () => {
       poll: {
         ...mockVote.poll,
         parameters: {
-          inputFormat: PollInputFormat.rankFree,
+          inputFormat: {
+            type: PollInputFormat.rankFree,
+            options: [],
+            abstain: [0]
+          },
           resultDisplay: PollResultDisplay.instantRunoffBreakdown,
           victoryConditions: [
             {

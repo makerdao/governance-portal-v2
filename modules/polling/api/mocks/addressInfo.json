@@ -26,7 +26,7 @@
         "pollId": 634,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 634,
@@ -78,7 +78,7 @@
         "pollId": 633,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 633,
@@ -124,7 +124,7 @@
         "pollId": 632,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 632,
@@ -170,7 +170,7 @@
         "pollId": 631,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 631,
@@ -222,7 +222,7 @@
         "pollId": 630,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 630,
@@ -280,7 +280,7 @@
         "pollId": 629,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 629,
@@ -326,7 +326,7 @@
         "pollId": 628,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 628,
@@ -372,7 +372,7 @@
         "pollId": 627,
         "option": 1,
         "blockTimestamp": "2021-09-15T13:50:47+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 627,
@@ -424,7 +424,7 @@
         "pollId": 626,
         "option": 0,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [],
+        "ballot": [],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 626,
@@ -481,7 +481,7 @@
         "pollId": 625,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 625,
@@ -539,7 +539,7 @@
         "pollId": 624,
         "option": 1,
         "blockTimestamp": "2021-09-13T20:04:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 624,
@@ -591,7 +591,7 @@
         "pollId": 623,
         "option": 1,
         "blockTimestamp": "2021-09-07T20:23:15+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0x66f40f044e0e2f77bb746e3275e82e88dcba2d69",
           "pollId": 623,
@@ -649,7 +649,7 @@
         "pollId": 622,
         "option": 1,
         "blockTimestamp": "2021-09-07T20:23:15+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0x66f40f044e0e2f77bb746e3275e82e88dcba2d69",
           "pollId": 622,
@@ -707,7 +707,7 @@
         "pollId": 621,
         "option": 1,
         "blockTimestamp": "2021-08-30T16:08:22+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 621,
@@ -765,7 +765,7 @@
         "pollId": 620,
         "option": 1,
         "blockTimestamp": "2021-08-30T16:08:22+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 620,
@@ -811,7 +811,7 @@
         "pollId": 619,
         "option": 1,
         "blockTimestamp": "2021-08-16T21:03:06+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 619,
@@ -863,7 +863,7 @@
         "pollId": 618,
         "option": 1,
         "blockTimestamp": "2021-08-16T21:03:06+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 618,
@@ -909,7 +909,7 @@
         "pollId": 617,
         "option": 1,
         "blockTimestamp": "2021-08-16T21:03:06+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 617,
@@ -967,7 +967,7 @@
         "pollId": 616,
         "option": 1,
         "blockTimestamp": "2021-08-16T21:03:06+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 616,
@@ -1025,7 +1025,7 @@
         "pollId": 615,
         "option": 1,
         "blockTimestamp": "2021-08-16T21:03:06+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 615,
@@ -1083,7 +1083,7 @@
         "pollId": 614,
         "option": 1,
         "blockTimestamp": "2021-08-09T16:31:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 614,
@@ -1141,7 +1141,7 @@
         "pollId": 613,
         "option": 0,
         "blockTimestamp": "2021-08-09T16:31:21+00:00",
-        "rankedChoiceOption": [],
+        "ballot": [],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 613,
@@ -1192,7 +1192,7 @@
         "pollId": 612,
         "option": 1,
         "blockTimestamp": "2021-08-09T16:31:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 612,
@@ -1250,7 +1250,7 @@
         "pollId": 610,
         "option": 1,
         "blockTimestamp": "2021-08-09T16:31:21+00:00",
-        "rankedChoiceOption": [1],
+        "ballot": [1],
         "poll": {
           "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
           "pollId": 610,

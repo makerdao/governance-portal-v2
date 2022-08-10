@@ -45,7 +45,7 @@ const NetworkSelect = (): React.ReactElement => {
   const [error, setError] = useState<any>(undefined);
 
   const switchChain = useCallback(
-    (desiredChainId: number) => {
+    async (desiredChainId: number) => {
       // if we're already connected to the desired chain, return
       if (desiredChainId === chainId) {
         setError(undefined);
@@ -58,16 +58,11 @@ const NetworkSelect = (): React.ReactElement => {
         return;
       }
 
-      if (connector instanceof WalletConnect || connector instanceof Network) {
-        connector
-          .activate(desiredChainId === -1 ? undefined : desiredChainId)
-          .then(() => setError(undefined))
-          .catch(setError);
-      } else {
-        connector
-          .activate(desiredChainId === -1 ? undefined : desiredChainId)
-          .then(() => setError(undefined))
-          .catch(setError);
+      try {
+        await connector.activate(desiredChainId === -1 ? undefined : desiredChainId);
+        setError(undefined);
+      } catch (err) {
+        setError(err);
       }
     },
     [connector, chainId, setError]
@@ -102,6 +97,7 @@ const NetworkSelect = (): React.ReactElement => {
       {chainId && (
         <ConnectNetworkButton
           onClickConnect={() => {
+            setError(undefined);
             setShowDialog(true);
           }}
           activeNetwork={isSupportedChain(chainId) ? CHAIN_INFO[chainId].label : 'Unsupported Network'}
@@ -125,6 +121,11 @@ const NetworkSelect = (): React.ReactElement => {
             <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
           </Flex>
           {chainId && networkOptions}
+          {error && (
+            <Text sx={{ mt: 2 }} variant="error">
+              An error has occured.
+            </Text>
+          )}
         </DialogContent>
       </DialogOverlay>
     </Box>

@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { commify, formatUnits } from 'ethers/lib/utils';
 
 export function limitString(str: string, length: number, overflow: string): string {
-  return str.length <= length ? str : `${str.substr(0, length - 1)}${overflow}`;
+  return (str || '').length <= length ? str : `${(str || '').substr(0, length - 1)}${overflow}`;
 }
 
 export function cutMiddle(text = '', left = 6, right = 4): string {
