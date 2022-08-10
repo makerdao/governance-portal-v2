@@ -73,7 +73,7 @@
     "mersenne-twister": "^1.1.0",
     "mixpanel-browser": "^2.39.0",
     "mongodb": "^3.6.2",
-    "next": "^12.1.0",
+    "next": "^12.2.4",
     "next-swagger-doc": "^0.1.10",
     "nextjs-progressbar": "^0.0.13",
     "ramda": "^0.28.0",
