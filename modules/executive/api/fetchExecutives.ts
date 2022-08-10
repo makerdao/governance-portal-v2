@@ -93,9 +93,9 @@ export async function getExecutiveProposals(
   const cacheKey = `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
 
   const cachedProposals = await cacheGet(cacheKey, currentNetwork);
-  // if (cachedProposals) {
-  //   return JSON.parse(cachedProposals);
-  // }
+  if (cachedProposals) {
+    return JSON.parse(cachedProposals);
+  }
   const proposals =
     sortBy === 'mkr'
       ? await getGithubExecutivesWithMKR(currentNetwork)
@@ -133,7 +133,7 @@ export async function getExecutiveProposals(
     })
   );
 
-  // cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork, ONE_HOUR_IN_MS);
+  cacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork, ONE_HOUR_IN_MS);
 
   return analyzedProposals;
 }
