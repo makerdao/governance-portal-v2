@@ -1,5 +1,4 @@
-import { providers, Signer } from 'ethers';
-import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { Web3Provider } from '@ethersproject/providers';
 import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
@@ -7,15 +6,7 @@ import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
 import { getReadOnlyContracts } from './getReadOnlyContracts';
-
-export type EthSdk = MainnetSdk | GoerliSdk;
-
-type SignerOrProvider = Signer | providers.Provider;
-
-type SdkGenerators = {
-  mainnet: (signerOrProvider: SignerOrProvider) => MainnetSdk;
-  goerli: (signerOrProvider: SignerOrProvider) => GoerliSdk;
-};
+import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
@@ -49,11 +40,11 @@ export const getContracts = (
     return getReadOnlyContracts(rpcUrl, sdkNetwork);
   }
 
+  // Use the default API key, unless a custom API key is provided
   let contractsKey = 'default';
 
   if (apiKey) {
     contractsKey = apiKey;
-
     // If a custom API key is provided, replace it in the URL
     rpcUrl = replaceApiKey(rpcUrl, apiKey);
   }
@@ -61,13 +52,11 @@ export const getContracts = (
   // If we have an account and provider then we'll use a signer
   const needsSigner = !!account && !!provider;
 
-  // If our account or network changes, recreate the contracts SDK
   const changeAccount = !!account && account !== connectedAccount;
   const changeNetwork = network !== currentNetwork;
 
-  const recreateContracts = changeAccount || changeNetwork || !contracts;
-
-  if (recreateContracts) {
+  // If our account or network changes, recreate the contracts SDK
+  if (changeAccount || changeNetwork || !contracts) {
     const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
     const signerOrProvider = needsSigner ? providerToUse.getSigner(account) : providerToUse;

@@ -1,16 +1,8 @@
-import { providers, Signer } from 'ethers';
-import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { providers } from 'ethers';
+import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { SupportedNetworks } from '../constants/networks';
-
-export type EthSdk = MainnetSdk | GoerliSdk;
-
-type SignerOrProvider = Signer | providers.Provider;
-
-type SdkGenerators = {
-  mainnet: (signerOrProvider: SignerOrProvider) => MainnetSdk;
-  goerli: (signerOrProvider: SignerOrProvider) => GoerliSdk;
-};
+import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
@@ -48,5 +40,6 @@ export const getReadOnlyContracts = (
     if (changeNetwork) currentNetwork = network;
     readOnlyContracts[contractsKey] = sdkGenerators[network](batchProvider);
   }
+
   return readOnlyContracts[contractsKey] as EthSdk;
 };
