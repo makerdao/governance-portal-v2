@@ -10,9 +10,9 @@ type BallotDataValues = {
   expiry: number;
 };
 
-export function getTypedBallotData(message: BallotDataValues, network: SupportedNetworks): string {
+export function getTypedBallotData(message: BallotDataValues, network: SupportedNetworks) {
   const chainId = networkNameToChainId(network);
-  return JSON.stringify({
+  return {
     types: {
       EIP712Domain: [
         {
@@ -53,31 +53,9 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
           name: 'optionIds',
           type: 'uint256[]'
         }
-      ],
-      Message: [
-        {
-          name: 'voter',
-          type: 'address'
-        },
-        {
-          name: 'nonce',
-          type: 'uint256'
-        },
-        {
-          name: 'expiry',
-          type: 'uint256'
-        },
-        {
-          name: 'pollIds',
-          type: 'uint256[]'
-        },
-        {
-          name: 'optionIds',
-          type: 'uint256[]'
-        }
       ]
     },
-    primaryType: 'Vote',
+    primaryType: 'Vote' as const,
     domain: {
       name: 'MakerDAO Polling',
       version: 'Arbitrum.1',
@@ -86,7 +64,7 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
       verifyingContract: '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3'
     },
     message
-  });
+  };
 }
 
 export async function signTypedBallotData(
@@ -94,7 +72,7 @@ export async function signTypedBallotData(
   provider: Web3Provider,
   network: SupportedNetworks
 ): Promise<string | null> {
-  const typedData = getTypedBallotData(message, network);
+  const typedData = JSON.stringify(getTypedBallotData(message, network));
 
   try {
     return provider.send('eth_signTypedData_v4', [message.voter, typedData]);

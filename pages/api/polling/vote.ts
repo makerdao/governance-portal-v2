@@ -34,6 +34,20 @@ export default withApiHandler(
       const s = '0x' + signature.slice(66, 130);
       const v = Number('0x' + signature.slice(130, 132));
 
+      //verify that signature and address correspond
+      // console.log('getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network)', getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network));
+      // console.log('signature', signature);
+      // const recovered = recoverTypedSignature({
+      //   data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
+      //   signature,
+      //   version: 'V4'
+      // });
+      // console.log('recovered signature', recovered);
+      // invariant (
+      //   ethers.utils.getAddress(recovered) === ethers.utils.getAddress(voter),
+      //   'Failed to verify signer when comparing ' + recovered + ' to ' + voter
+      // );
+
       const credentials = { apiKey: config.DEFENDER_API_KEY, apiSecret: config.DEFENDER_API_SECRET };
       const provider = new DefenderRelayProvider(credentials);
       const signer = new DefenderRelaySigner(credentials, provider, {
@@ -66,20 +80,6 @@ export default withApiHandler(
       pollIds.forEach(pollId => {
         invariant(activePollIds.includes(parseInt(pollId)), `Cannot vote in poll #${pollId} as it is not active`);
       });
-
-      //verify that signature and address correspond
-      // console.log('getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network)', getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network));
-      // console.log('signature', signature);
-      // const recovered = recoverTypedSignature({
-      //   data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
-      //   signature,
-      //   version: 'V4'
-      // });
-      // console.log('recovered signature', recovered);
-      // invariant (
-      //   ethers.utils.getAddress(recovered) === ethers.utils.getAddress(voter),
-      //   'Failed to verify signer when comparing ' + recovered + ' to ' + voter
-      // );
 
       //can't use gasless service to vote in a poll you've already voted on
       const voteHistory = await fetchAddressPollVoteHistory(voter, network);
