@@ -14,7 +14,7 @@ import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.j
 import { config } from 'lib/config';
 import { fetchJson } from 'lib/fetchJson';
 import { WAD } from 'modules/web3/constants/numbers';
-import BigNumber from 'lib/bigNumberJs';
+import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 
 const MIN_MKR = 0.1;
 
@@ -22,10 +22,17 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { voter, pollIds, optionIds, nonce, expiry, signature, network } = req.body;
+
+      const cacheKey = getRecentlyUsedGaslessVoting(voter);
+      const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
+      invariant(
+        !recentlyUsedGaslessVoting,
+        'Address cannot use gasless service more than once per 10 minutes'
+      );
+
       const r = signature.slice(0, 66);
       const s = '0x' + signature.slice(66, 130);
       const v = Number('0x' + signature.slice(130, 132));
-      // TODO add all validation here
 
       const credentials = { apiKey: config.DEFENDER_API_KEY, apiSecret: config.DEFENDER_API_SECRET };
       const provider = new DefenderRelayProvider(credentials);
@@ -48,6 +55,8 @@ export default withApiHandler(
         pollWeight?.total.gte(WAD.div(1/MIN_MKR)), //ether's bignumber library doesnt handle decimals
         `Address must have a poll voting weight of at least ${MIN_MKR}`
       );
+
+      console.log('pollIds', pollIds);
 
       //get all active polls
       const allPollsResponse = await fetchJson(
@@ -72,12 +81,14 @@ export default withApiHandler(
       //   'Failed to verify signer when comparing ' + recovered + ' to ' + voter
       // );
 
-      const cacheKey = getRecentlyUsedGaslessVoting(voter);
-      const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
-      invariant(
-        !recentlyUsedGaslessVoting,
-        'Address cannot use gasless service more than once per 10 minutes'
-      );
+      //can't use gasless service to vote in a poll you've already voted on
+      const voteHistory = await fetchAddressPollVoteHistory(voter, network);
+      const votedPollIds = voteHistory.map(v => v.pollId);
+      pollIds.forEach(pollId => {
+        invariant(!votedPollIds.includes(parseInt(pollId)), `Already voted in poll #${pollId}`);
+      });
+
+
       cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
       // if validation passes, send tx
       const tx = await pollingContract[
