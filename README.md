@@ -124,7 +124,7 @@ Jest tests under the folder `__tests__` currently execute unit tests of the plat
 
 jest:
 
-```
+```bash
 # runs jest tests on live-reload mode
 npm run test
 
@@ -134,11 +134,11 @@ npm run test:ci
 
 Cypress:
 
-```
-opens a cypress browser for the e2e
+```bash
+# opens a cypress browser for the e2e
 npm run e2e
 
-runs e2e tests in a headless manner, for CI systems
+# runs e2e tests in a headless manner, for CI systems
 npm run e2e:headless
 ```
 
@@ -146,7 +146,7 @@ npm run e2e:headless
 
 By default, e2e tests run on a fork of Goerli. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
 
-```
+```bash
 npm run hardhat
 ```
 
@@ -176,7 +176,7 @@ After each push the system will execute:
 
 - E2E, executy cypress test suite and record results at https://dashboard.cypress.io/projects/uckcr1/runs
 
-```
+```bash
 npm run start:ci
 ```
 
