@@ -13,10 +13,7 @@ export function useGoerliForkWindowBindings(): void {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       (window as any).setAccount = (address: string, key: string) => {
-        console.log('here');
         if (address && key) {
-          console.log('now here');
-
           try {
             const rpcUrl = 'http://localhost:8545';
             const provider = new JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
