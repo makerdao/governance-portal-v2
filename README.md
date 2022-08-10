@@ -19,29 +19,40 @@ In order to run the project locally, you must have the following installed on th
 To get started, clone the repository to the desired directory and then navigate into the project folder:
 
 ```bash
-# clone repo
+# clones repo
 git clone https://github.com/makerdao/governance-portal-v2.git
 
-# change directory to cloned project folder
+# changes directory to cloned project folder
 cd governance-portal-v2
 ```
 
-Next, install the project's dependencies:
+Next, install the project's dependencies using [npm](https://docs.npmjs.com/about-npm) or [yarn](https://yarnpkg.com/getting-started):
+
+#### Using npm:
 
 ```bash
 
+# installs dependencies
 npm install
 
+# builds eth-sdk for interacting with contracts
 npm run build-sdk
 
+# runs the application on localhost:3000
 npm run dev
+```
 
-# or
+#### Or, if using yarn:
 
+```bash
+
+# installs dependencies
 yarn
 
+# builds eth-sdk for interacting with contracts
 yarn build-sdk
 
+# runs the application on localhost:3000
 yarn dev
 
 ```
@@ -95,7 +106,7 @@ The following configuration values can be added to the `.env` file:
 
 - Set `DASHBOARD_PASSWORD` for adding protection to the `/dashboard` route.
 
-### Architecture Diagram
+### Architecture diagram
 
 ![](./architecture-diagram.png)
 
@@ -105,7 +116,7 @@ The Governance portal includes two test suites: Jest and Cypress
 
 Jest tests under the folder `__tests__` currently execute unit tests of the platform. The e2e Cypress tests are under the `cypress` folder.
 
-#### Test Commands
+#### Test commands
 
 Jest:
 
@@ -127,7 +138,7 @@ Cypress:
 
 ```
 
-#### Goerli Fork
+#### Goerli fork
 
 By default, e2e tests run on a fork of Goerli. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
 
@@ -143,11 +154,11 @@ You can use this local network from MetaMask, by switching to the "localhost:854
 
 For more information about the fund process, take a look at `/scripts/setup.js`
 
-**Writting E2E**:
+**Writing e2e**:
 
 Please refer to: https://docs.cypress.io/guides/references/best-practices and check current test examples under the cypress folder.
 
-**Windows Support**
+**Windows support**
 
 If you are using Windows and WSL you will need to install XLaunch to be able to launch a client for the UI.
 
