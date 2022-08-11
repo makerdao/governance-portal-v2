@@ -5,7 +5,6 @@ import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { Address } from 'modules/address/components/Address';
-import { InternalLink } from 'modules/app/components/InternalLink';
 
 export function DelegatePicture({
   delegate,
@@ -132,24 +131,22 @@ export function DelegatePicture({
       <Box>
         <Tooltip label={delegateMetrics}>
           <Box>
-            <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View profile details">
-              {delegate.picture ? (
-                <Image
-                  src={delegate.picture}
-                  key={delegate.id}
-                  sx={{
-                    objectFit: 'cover',
-                    width: '100%',
-                    borderRadius: '100%',
-                    maxHeight: width
-                  }}
-                />
-              ) : (
-                <Box>
-                  <Davatar size={width} address={delegate.address} />
-                </Box>
-              )}
-            </InternalLink>
+            {delegate.picture ? (
+              <Image
+                src={delegate.picture}
+                key={delegate.id}
+                sx={{
+                  objectFit: 'cover',
+                  width: '100%',
+                  borderRadius: '100%',
+                  maxHeight: width
+                }}
+              />
+            ) : (
+              <Box>
+                <Davatar size={width} address={delegate.address} />
+              </Box>
+            )}
 
             {delegate.status === DelegateStatusEnum.recognized && (
               <Icon
