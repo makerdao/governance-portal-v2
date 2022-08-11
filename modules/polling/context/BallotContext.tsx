@@ -167,7 +167,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   };
 
   const signComments = async () => {
-    if (!account) {
+    if (!account || !provider) {
       return;
     }
 

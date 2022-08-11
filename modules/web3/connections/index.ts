@@ -4,7 +4,7 @@ import { Network } from '@web3-react/network';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
-import { GnosisSafe } from '@web3-react/gnosis-safe';
+import { GnosisSafe } from '@makerdao-dux/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
