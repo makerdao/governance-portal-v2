@@ -49,7 +49,7 @@ export default function CommentTextBox({
       >
         Optional. You&apos;ll be prompted to sign a message with your wallet. {1500 - value.length} characters
         remaining. Commenting is not yet supported for multisig users.{' '}
-        <TooltipComponent label={'Your comment may take some minutes to appear into the voting portal.'}>
+        <TooltipComponent label={'Your comment may take a few minutes to appear into the voting portal.'}>
           <Text>
             <Icon name="info" />
           </Text>

@@ -244,7 +244,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                               <Box mt={[1, 3]}>
                                 <TooltipComponent
                                   label={
-                                    'Your comment may take some minutes to appear into the voting portal.'
+                                    'Your comment may take a few minutes to appear into the voting portal.'
                                   }
                                 >
                                   <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
