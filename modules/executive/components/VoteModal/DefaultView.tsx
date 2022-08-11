@@ -78,6 +78,7 @@ export default function DefaultVoteModalView({
   const [isFetchingNonce, setIsFetcingNonce] = useState(false);
 
   const signComment = async () => {
+    if (!provider) return;
     try {
       setIsFetcingNonce(true);
       const data = await fetchJson('/api/comments/nonce', {

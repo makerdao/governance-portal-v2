@@ -35,7 +35,7 @@
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.3.0",
     "@ethersproject/experimental": "^5.5.0",
-    "@makerdao-dux/gnosis-safe": "^8.0.6-beta.0",
+    "@makerdao-dux/gnosis-safe": "^8.0.6-beta.1",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/i18n-helper": "^0.1.8",

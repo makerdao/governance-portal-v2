@@ -2593,10 +2593,10 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@makerdao-dux/gnosis-safe@^8.0.6-beta.0":
-  version "8.0.6-beta.0"
-  resolved "https://registry.yarnpkg.com/@makerdao-dux/gnosis-safe/-/gnosis-safe-8.0.6-beta.0.tgz#3bc8de821d0e5afabd29ff27e4a300e662d9f451"
-  integrity sha512-PhzRGJlZHeJ4vc02K7IeW3dQp2DFZv8qZ17Q9mmu3Zy3B2w8E92oQ4oooNRN/3i5uEJ/LJnHV8sjQKSiE/MKXA==
+"@makerdao-dux/gnosis-safe@^8.0.6-beta.1":
+  version "8.0.6-beta.1"
+  resolved "https://registry.yarnpkg.com/@makerdao-dux/gnosis-safe/-/gnosis-safe-8.0.6-beta.1.tgz#8b94e7a14bab7d08000730f524d13530150f5789"
+  integrity sha512-2J/E90F/ATZKSjtpx4F7y+312iPZaOWYK12mCKjxJWEk8u84BHQPRms+hxb/lZ8uWhJvuVzIPTvPBVeEt6h3cg==
   dependencies:
     "@gnosis.pm/safe-apps-provider" "^0.12.0"
     "@gnosis.pm/safe-apps-sdk" "^7.6.0"
