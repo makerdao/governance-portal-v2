@@ -21,6 +21,7 @@ type SystemConfig = {
   ALCHEMY_ARBITRUM_TESTNET_KEY: string;
   MIGRATION_WEBHOOK_URL: string;
   DASHBOARD_PASSWORD: string;
+  GASLESS_BACKDOOR_SECRET: string;
 };
 
 export const config: SystemConfig = {
@@ -45,5 +46,6 @@ export const config: SystemConfig = {
   ALCHEMY_ARBITRUM_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY || '',
   ALCHEMY_ARBITRUM_TESTNET_KEY: process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY || '',
   MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || '',
-  DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || ''
+  DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || '',
+  GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || '',
 };

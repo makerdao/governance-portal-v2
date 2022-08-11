@@ -56,6 +56,7 @@ _Requires node version >= v11.15.0_
 17. **Optional** Set `DEFENDER_API_SECRET` to a valid OpenZeppelin Defender Relay secret
 18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
 19. **Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
+20. **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibilty checks by anyone with the password
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 
