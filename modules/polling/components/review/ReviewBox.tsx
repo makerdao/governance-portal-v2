@@ -121,7 +121,7 @@ export default function ReviewBox({
         <Button
           mt={3}
           variant="outline"
-          sx={{ borderColor: 'primary', color: 'primary' }}
+          sx={{ borderColor: 'primary', color: 'primary', width: '100%' }}
           onClick={clearTransaction}
         >
           Back To All Polls
