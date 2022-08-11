@@ -19,7 +19,7 @@ export default function Davatar({ size, address, defaultComponent, style }: Dava
 
   useEffect(() => {
     if (provider) {
-      if (chainId !== SupportedChainId.GOERLIFORK) {
+      if (chainId === SupportedChainId.MAINNET) {
         provider.lookupAddress(address).then(ensName => {
           if (ensName) {
             provider.getResolver(ensName).then(resolver => {
