@@ -139,6 +139,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       results: [],
       totalMkrParticipation: 0,
       totalMkrActiveParticipation: 0,
+      victoryConditionMatched: null,
       winner: null,
       winningOptionName: '',
       votesByAddress: []

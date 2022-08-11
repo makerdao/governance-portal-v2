@@ -59,6 +59,7 @@ describe('Fetch tally majority', () => {
       totalMkrParticipation: '270',
       totalMkrActiveParticipation: '270',
       numVoters: 3,
+      victoryConditionMatched: null,
       results: [
         {
           optionId: 1,
@@ -127,6 +128,7 @@ describe('Fetch tally majority', () => {
       totalMkrParticipation: '370',
       totalMkrActiveParticipation: '370',
       numVoters: 3,
+      victoryConditionMatched: 0,
       results: [
         {
           optionId: 1,

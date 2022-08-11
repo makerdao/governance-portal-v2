@@ -78,7 +78,7 @@ export default function PollOverviewCard({
       <Flex sx={{ flexDirection: 'column' }}>
         <ErrorBoundary componentName="Poll Card">
           <Box sx={{ px: [3, 4], py: 3 }}>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: 210 }}>
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: ['auto', 210] }}>
               <Flex sx={{ flexDirection: 'column', width: '100%' }}>
                 {bpi === 0 && (
                   <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
@@ -163,7 +163,8 @@ export default function PollOverviewCard({
             <Box>
               <Flex
                 sx={{
-                  alignItems: 'center',
+                  alignItems: 'flex-end',
+                  mt: 2,
                   justifyContent: 'space-between',
                   flexDirection: ['column', 'row']
                 }}
@@ -173,8 +174,7 @@ export default function PollOverviewCard({
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     width: bpi > 0 ? 'auto' : '100%',
-                    p: 0,
-                    mt: 3
+                    p: 0
                   }}
                 >
                   <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
@@ -193,18 +193,15 @@ export default function PollOverviewCard({
 
                 {showQuickVote && bpi === 0 && (
                   <Box sx={{ mt: 3, width: '100%' }}>
-                    <ErrorBoundary componentName="Voting Status">
-                      <VotingStatus poll={poll} />
-                    </ErrorBoundary>
                     <ErrorBoundary componentName="Vote in Poll">
                       <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
                     </ErrorBoundary>
                   </Box>
                 )}
 
-                <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                <Box sx={{ width: bpi > 0 ? '265px' : '100%' }}>
                   {bpi > 0 && (
-                    <Flex sx={{ mb: 3, justifyContent: 'flex-end' }}>
+                    <Flex sx={{ justifyContent: 'flex-end' }}>
                       <PollVoteTypeIndicator poll={poll} />
                     </Flex>
                   )}
@@ -214,7 +211,7 @@ export default function PollOverviewCard({
                       hash="vote-breakdown"
                       title="View poll vote breakdown"
                     >
-                      <Box sx={{ mt: 3 }}>
+                      <Box sx={{ mt: 2 }}>
                         <ErrorBoundary componentName="Poll Results">
                           {isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
                             <PluralityVoteSummary tally={tally} showTitles={false} />

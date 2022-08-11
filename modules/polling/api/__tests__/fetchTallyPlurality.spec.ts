@@ -65,6 +65,7 @@ describe('Fetch tally plurality', () => {
       winner: 1,
       winningOptionName: 'First',
       totalMkrParticipation: '809',
+      victoryConditionMatched: 0,
       totalMkrActiveParticipation: '700',
       numVoters: 5,
       results: [
@@ -157,6 +158,7 @@ describe('Fetch tally plurality', () => {
       winner: 2,
       winningOptionName: 'Second',
       totalMkrParticipation: '2041',
+      victoryConditionMatched: 0,
       totalMkrActiveParticipation: '1932',
       numVoters: 7,
       results: [
@@ -220,6 +222,7 @@ describe('Fetch tally plurality', () => {
       winner: null,
       winningOptionName: 'None found',
       totalMkrParticipation: '0',
+      victoryConditionMatched: null,
       totalMkrActiveParticipation: '0',
       numVoters: 0,
       results: [
@@ -313,6 +316,7 @@ describe('Fetch tally plurality', () => {
       winner: 1,
       winningOptionName: 'First',
       totalMkrParticipation: '2041',
+      victoryConditionMatched: 0,
       totalMkrActiveParticipation: '732',
       numVoters: 7,
       results: [

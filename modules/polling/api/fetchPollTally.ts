@@ -98,8 +98,10 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
 
   let winnerOption: WinnerOption = { winner: null, results: null };
 
+  let victoryConditionMatched: number | null = null;
+
   // Victory conditions work like an "if-else", if the first does not find a winner, we move to the next one
-  poll.parameters.victoryConditions.forEach(victoryGroup => {
+  poll.parameters.victoryConditions.forEach((victoryGroup, index) => {
     // A winner has found, skip.
     if (winnerOption.winner) {
       return;
@@ -158,11 +160,13 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
 
       if (allTheSame && allWinners && andWinner) {
         winnerOption = andWinner;
+        victoryConditionMatched = index;
       }
     } else {
       const winnerGroup = findWinner(victoryGroup, filteredVotes, poll);
       if (winnerGroup.winner) {
         winnerOption = winnerGroup;
+        victoryConditionMatched = index;
       }
     }
   });
@@ -224,6 +228,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   const tally: PollTally = {
     parameters: poll.parameters,
     winner: winnerOption.winner ? winnerOption.winner : null,
+    victoryConditionMatched,
     numVoters: spockVotes.length,
     totalMkrParticipation: totalMkrParticipation.toString(),
     totalMkrActiveParticipation: totalMkrActiveParticipation.toString(),
