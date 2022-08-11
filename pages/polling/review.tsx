@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR, { useSWRConfig } from 'swr';
-import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
+import { isActivePoll, findPollById, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -138,7 +138,10 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
         option = `**${poll.options[optionData]}**`;
       } else {
         const markdownArray = (optionData as number[]).map(
-          (id, index) => `**${getNumberWithOrdinal(index + 1)} choice:** ${poll.options[id]}  \n`
+          (id, index) =>
+            `${
+              isInputFormatRankFree(poll.parameters) ? `**${getNumberWithOrdinal(index + 1)} choice:**` : ''
+            } ${poll.options[id]}  \n`
         );
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
