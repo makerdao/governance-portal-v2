@@ -77,7 +77,7 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
                 (ie. &gt;50% of the total participating MKR excluding abstains) victory condition may also be
                 applied
                 <br />
-                as opposed to a relative majority. Usually includes a minimum MKR participation threshold.
+                as opposed to a relative majority.
               </Text>
             }
           >
