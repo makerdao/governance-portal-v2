@@ -22,7 +22,7 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
           <TooltipComponent
             label={
               <Text>
-                Ranked choice voting polls require <b>multiple-choice</b> ballots in <b>ranked</b> order,
+                Ranked choice voting polls require multiple-choice ballots in ranked order,
                 <br />
                 and determines the winning vote option by finding the one with an absolute majority in MKR
                 voting weight
@@ -67,9 +67,9 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
           <TooltipComponent
             label={
               <Text>
-                Approval voting polls require <b>multiple-choice</b> ballots in <b>unranked</b> order,
+                Approval voting polls require multiple-choice ballots in unranked order,
                 <br />
-                and determines the winning vote option by finding the one with a <b>relative</b> majority
+                and determines the winning vote option by finding the one with a relative majority
                 <br />
                 in MKR voting weight. When used in situations where no winner is required, an absolute
                 majority
@@ -94,9 +94,9 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
           <TooltipComponent
             label={
               <Text>
-                Majority voting polls require <b>single-choice</b> ballots and determines the winning
+                Majority voting polls require single-choice ballots and determines the winning
                 <br />
-                vote option by finding the one with an <b>absolute</b> majority in MKR voting weight,
+                vote option by finding the one with an absolute majority in MKR voting weight,
                 <br />
                 being &gt;50% of the total participating MKR (excluding abstains).
               </Text>
