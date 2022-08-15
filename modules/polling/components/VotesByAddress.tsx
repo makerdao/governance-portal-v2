@@ -9,7 +9,11 @@ import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
-import { isInputFormatChooseFree, isInputFormatRankFree } from '../helpers/utils';
+import {
+  isInputFormatChooseFree,
+  isInputFormatRankFree,
+  isResultDisplayApprovalBreakdown
+} from '../helpers/utils';
 
 type Props = {
   tally: PollTally;
@@ -59,6 +63,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     }
   }, [votes, sortBy.type, sortBy.order]);
 
+  console.log(poll.parameters);
+
   return (
     <Box>
       <table
@@ -92,7 +98,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               variant="caps"
               onClick={() => changeSort('option')}
             >
-              Option
+              {`Option${isResultDisplayApprovalBreakdown(poll.parameters) ? '(s)' : ''}`}
               {sortBy.type === 'option' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} ml={1} />
@@ -168,9 +174,17 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                         <Box
                           key={`voter-${v.voter}-option-${choice}`}
                           sx={{
+                            lineHeight: '1.7',
                             color:
                               index === 0 || isInputFormatChooseFree(poll.parameters) ? 'inherit' : '#708390',
-                            fontSize: bpi < 1 ? 1 : index === 0 ? 3 : 2,
+                            fontSize:
+                              bpi < 1
+                                ? 1
+                                : isResultDisplayApprovalBreakdown(poll.parameters)
+                                ? 3
+                                : index === 0
+                                ? 3
+                                : 2,
                             mb: 1
                           }}
                         >
