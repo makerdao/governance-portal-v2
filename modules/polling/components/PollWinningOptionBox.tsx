@@ -1,11 +1,12 @@
 import React from 'react';
-import { Poll, PollTally } from '../types';
+import { Poll, PollTally, PollVictoryConditionComparison } from '../types';
 import { Flex } from 'theme-ui';
 import {
   isActivePoll,
   isInputFormatChooseFree,
   isInputFormatRankFree,
-  isInputFormatSingleChoice
+  isInputFormatSingleChoice,
+  findVictoryCondition
 } from '../helpers/utils';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { formatValue } from 'lib/string';
@@ -35,8 +36,18 @@ export default function PollWinningOptionBox({
   let textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
   let isDefault = false;
 
+  const hasComparison = findVictoryCondition(
+    poll.parameters.victoryConditions,
+    PollVictoryConditions.comparison
+  ) as PollVictoryConditionComparison[];
+
+  const comparisonText =
+    hasComparison.length > 0 &&
+    hasComparison[0].comparator === '>=' &&
+    ` Requires ${formatValue(parseUnits(hasComparison[0].value.toString()))} MKR participation. `;
+
   if (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) {
-    textWin = 'No winner condition met. Defaulting to';
+    textWin = `No winner condition met.${comparisonText ? comparisonText : ' '}Defaulting to`;
     isDefault = true;
   }
 
