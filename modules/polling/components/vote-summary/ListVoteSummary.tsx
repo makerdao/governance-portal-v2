@@ -1,4 +1,5 @@
 import { limitString } from 'lib/string';
+import { isResultDisplayApprovalBreakdown } from 'modules/polling/helpers/utils';
 import { Box } from 'theme-ui';
 import { Poll } from '../../types';
 
@@ -15,6 +16,7 @@ export function ListVoteSummary({
   align?: 'right' | 'left';
   showOrdinal?: boolean;
 }): React.ReactElement {
+  const isApproval = isResultDisplayApprovalBreakdown(poll.parameters);
   return (
     <Box>
       {choices
@@ -29,9 +31,9 @@ export function ListVoteSummary({
           <Box
             key={`voter-${poll.pollId}-option-${choice}-${index}`}
             sx={{
-              fontSize: index === 0 ? 2 : 1,
-              fontWeight: index === 0 ? 'semiBold' : 'normal',
-              color: index === 0 ? 'text' : '#708390',
+              fontSize: isApproval ? 2 : index === 0 ? 2 : 1,
+              fontWeight: isApproval ? 'semiBold' : index === 0 ? 'semiBold' : 'normal',
+              color: isApproval ? '#708390' : index === 0 ? 'text' : '#708390',
               textAlign: align
             }}
             title={poll.options[choice]}
