@@ -49,7 +49,7 @@ export default function VoteBreakdown({
               <Flex sx={{ justifyContent: 'space-between' }}>
                 {tally && tallyResult ? (
                   <React.Fragment>
-                    <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
+                    <Text as="p" sx={{ color: 'textSecondary', mr: 2 }}>
                       {tallyResult.optionName}
                     </Text>
                     <Text
@@ -60,9 +60,10 @@ export default function VoteBreakdown({
                         textAlign: 'right'
                       }}
                     >
-                      {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting (${formatValue(
-                        parseUnits(tallyResult.firstPct.toString())
-                      )}%)`}
+                      {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting`}
+                      {!isResultDisplayApprovalBreakdown(poll.parameters)
+                        ? ` (${formatValue(parseUnits(tallyResult.firstPct.toString()))}%)`
+                        : ''}
                     </Text>
                   </React.Fragment>
                 ) : (
