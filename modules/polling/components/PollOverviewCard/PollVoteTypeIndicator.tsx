@@ -38,7 +38,7 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
             }
           >
             <Flex>
-              <Icon name="stackedVotes" size={3} ml={2} />
+              <Icon name="stackedVotes" size={3} ml={2} color={'textSecondary'} />
             </Flex>
           </TooltipComponent>
         </Flex>
@@ -55,8 +55,8 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
               </Text>
             }
           >
-            <Flex>
-              <Icon name="question" ml={2} />
+            <Flex sx={{ mb: '2px' }}>
+              <Icon name="question" ml={2} color={'textSecondary'} />
             </Flex>
           </TooltipComponent>
         </Flex>
@@ -81,8 +81,8 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
               </Text>
             }
           >
-            <Flex>
-              <Icon name="question" ml={2} />
+            <Flex sx={{ mb: '2px' }}>
+              <Icon name="question" ml={2} color={'textSecondary'} />
             </Flex>
           </TooltipComponent>
         </Flex>
@@ -102,8 +102,8 @@ export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElem
               </Text>
             }
           >
-            <Flex>
-              <Icon name="question" ml={2} />
+            <Flex sx={{ mb: '2px' }}>
+              <Icon name="question" ml={2} color={'textSecondary'} />
             </Flex>
           </TooltipComponent>
         </Flex>
