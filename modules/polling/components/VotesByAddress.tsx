@@ -63,8 +63,6 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     }
   }, [votes, sortBy.type, sortBy.order]);
 
-  console.log(poll.parameters);
-
   return (
     <Box>
       <table
