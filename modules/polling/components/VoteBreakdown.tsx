@@ -34,7 +34,7 @@ export default function VoteBreakdown({
           <PollVoteTypeIndicator poll={poll} />
           {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
             <Text as="p" variant="caps" sx={{ textAlign: 'left' }}>
-              Rounds {tally?.rounds}
+              Rounds: {tally?.rounds || 0}
             </Text>
           )}
         </Box>

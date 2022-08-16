@@ -63,8 +63,6 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     }
   }, [votes, sortBy.type, sortBy.order]);
 
-  console.log(poll.parameters);
-
   return (
     <Box>
       <table
@@ -115,7 +113,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
-              Voting Power
+              Vote %
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} ml={1} />

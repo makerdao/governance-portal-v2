@@ -14,6 +14,7 @@ import { extractWinnerDefault } from './victory_conditions/default';
 import { InstantRunoffResults } from '../types/instantRunoff';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { extractSatisfiesComparison } from './victory_conditions/comparison';
+import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -102,7 +103,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
 
   // Victory conditions work like an "if-else", if the first does not find a winner, we move to the next one
   poll.parameters.victoryConditions.forEach((victoryGroup, index) => {
-    // A winner has found, skip.
+    // A winner has been found, skip.
     if (winnerOption.winner) {
       return;
     }
@@ -174,15 +175,28 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   // Format results
   const votesInfo: { [key: number]: BigNumber } = {};
 
-  // Aggregate all the MKR support
+  // needs to consider IRV without comparator threshold met when aggregating MKR
+  const isIrv = hasVictoryConditionInstantRunOff(poll.parameters.victoryConditions);
+
+  // Aggregate the MKR support
   votes.forEach(vote => {
-    vote.ballot.forEach(votedOption => {
-      if (votesInfo[votedOption]) {
-        votesInfo[votedOption] = votesInfo[votedOption].plus(vote.mkrSupport);
+    // if IRV and no winner, only consider weight from first ballot option
+    if (isIrv && !winnerOption.results) {
+      if (votesInfo[vote.ballot[0]]) {
+        votesInfo[vote.ballot[0]] = votesInfo[vote.ballot[0]].plus(vote.mkrSupport);
       } else {
-        votesInfo[votedOption] = new BigNumber(vote.mkrSupport);
+        votesInfo[vote.ballot[0]] = new BigNumber(vote.mkrSupport);
       }
-    });
+    } else {
+      // otherwise aggregate all votes
+      vote.ballot.forEach(votedOption => {
+        if (votesInfo[votedOption]) {
+          votesInfo[votedOption] = votesInfo[votedOption].plus(vote.mkrSupport);
+        } else {
+          votesInfo[votedOption] = new BigNumber(vote.mkrSupport);
+        }
+      });
+    }
   });
 
   // Form the results structure
