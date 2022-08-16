@@ -35,7 +35,7 @@ export function ListVoteSummary({
               sx={{
                 fontSize: isApproval ? 2 : index === 0 ? 2 : 1,
                 fontWeight: isApproval ? 'semiBold' : index === 0 ? 'semiBold' : 'normal',
-                color: isApproval ? '#708390' : index === 0 ? 'text' : '#708390',
+                color: isApproval ? 'text' : index === 0 ? 'text' : '#708390',
                 textAlign: align
               }}
               title={choiceText}
