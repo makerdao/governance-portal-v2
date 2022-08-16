@@ -819,5 +819,9 @@
   "846": ["high-impact", "ratification", "mips", "budget"],
   "847": ["medium-impact", "ratification", "mips", "d3m"],
   "848": ["high-impact", "misc-funding", "ratification", "mips"],
-  "849": ["high-impact", "ratification", "mips", "core-unit-offboard"]
+  "849": ["high-impact", "ratification", "mips", "core-unit-offboard"],
+  "850": ["medium-impact", "greenlight"],
+  "851": ["medium-impact", "greenlight"],
+  "852": ["medium-impact", "greenlight"],
+  "853": ["medium-impact", "risk-parameter", "bridge"]
 }
