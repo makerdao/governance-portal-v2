@@ -49,7 +49,7 @@ describe('Polling votes by address', () => {
     // look for columns
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
-    await screen.findByText(/Voting Power/);
+    await screen.findByText(/Vote %/);
     await screen.findByText(/MKR Amount/);
 
     // look for yes votes
@@ -95,7 +95,7 @@ describe('Polling votes by address', () => {
     // look for columns
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
-    await screen.findByText(/Voting Power/);
+    await screen.findByText(/Vote %/);
     await screen.findByText(/MKR Amount/);
 
     // check first choice is displayed with number
