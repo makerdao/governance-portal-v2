@@ -24,10 +24,15 @@ export default function PollWinningOptionBox({
 }): React.ReactElement {
   const isFinishedWithNoWinner = !tally.winner && !isActivePoll(poll);
 
+  const numberOfLeadingOptions = tally.results.filter(
+    result => result.mkrSupport === tally.results[0].mkrSupport
+  ).length;
+
   // Winner will be null if the winning conditions are not met, but we want to display the leading option too
   const leadingOption = typeof tally.winner === 'number' ? tally.winner : tally.results[0].optionId;
-  const leadingOptionName =
-    typeof tally.winner === 'number' ? tally.winningOptionName : tally.results[0].optionName;
+  const leadingOptionName = `${
+    typeof tally.winner === 'number' ? tally.winningOptionName : tally.results[0].optionName
+  }${numberOfLeadingOptions > 1 ? ` & ${numberOfLeadingOptions - 1} more` : ''}`;
 
   const winningVictoryCondition = tally.parameters.victoryConditions.find(
     (v, index) => index === tally.victoryConditionMatched

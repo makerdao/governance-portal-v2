@@ -4,6 +4,7 @@ import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } fro
 import shallow from 'zustand/shallow';
 import {
   isActivePoll,
+  isResultDisplayApprovalBreakdown,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
@@ -214,14 +215,14 @@ export default function PollOverviewCard({
                         <ErrorBoundary componentName="Poll Results">
                           {isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
                             <PluralityVoteSummary tally={tally} showTitles={false} />
-                          ) : (
+                          ) : !isResultDisplayApprovalBreakdown(poll.parameters) ? (
                             <ListVoteSummary
                               choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}
                               showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters)}
                             />
-                          )}
+                          ) : null}
                         </ErrorBoundary>
                       </Box>
                     </InternalLink>

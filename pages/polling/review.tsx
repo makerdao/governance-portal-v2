@@ -167,11 +167,17 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
         {hasVoted && (
           <Box mb={3}>
             <Heading as="h4">
-              You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}.
+              You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}
             </Heading>
-            <Text>
-              Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.
+            <Text as="p" sx={{ mt: 2 }}>
+              Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes
             </Text>
+            <Flex sx={{ alignItems: 'center', mt: 1 }}>
+              <Icon name="info" color="textSecondary" />
+              <Text as="p" variant="secondary" sx={{ ml: 1 }}>
+                Your vote and comment may take a few minutes to appear in the Voting Portal
+              </Text>
+            </Flex>
           </Box>
         )}
         <SidebarLayout>
