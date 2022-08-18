@@ -282,9 +282,9 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
               </Heading>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box sx={{ pt: '3px', mr: 1 }}>
-                  <Icon name="info" color="textMuted" size={14} />
+                  <Icon name="info" color="textSecondary" size={14} />
                 </Box>
-                <Text sx={{ fontSize: 1, color: 'textMuted' }}>Updated every five minutes</Text>
+                <Text sx={{ fontSize: 1, color: 'textSecondary' }}>Updated every five minutes</Text>
               </Flex>
             </Flex>
             <ErrorBoundary componentName="Executive Supporters">
