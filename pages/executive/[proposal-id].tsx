@@ -41,7 +41,6 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
-import TooltipComponent from 'modules/app/components/Tooltip';
 
 type Props = {
   proposal: Proposal;
@@ -277,16 +276,17 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             </Box>
           )}
           <Box>
-            <TooltipComponent label="Updates every five minutes">
-              <Flex sx={{ mt: 3, mb: 2, alignItems: 'center' }}>
-                <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
-                  Supporters
-                </Heading>
-                <Box sx={{ pt: '7px' }}>
-                  <Icon name="info" />
+            <Flex sx={{ mt: 3, mb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
+              <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
+                Supporters
+              </Heading>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Box sx={{ pt: '3px', mr: 1 }}>
+                  <Icon name="info" color="textMuted" size={14} />
                 </Box>
+                <Text sx={{ fontSize: 1, color: 'textMuted' }}>Updated every five minutes</Text>
               </Flex>
-            </TooltipComponent>
+            </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>
                 <Box>
