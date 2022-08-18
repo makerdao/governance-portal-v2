@@ -232,23 +232,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard
-                            poll={poll}
-                            reviewPage={true}
-                            showVoting={false}
-                            // yourVote={
-                            //   <Box ml={[0, 3]} mt={[3, 0]}>
-                            //     <PollVotedOption
-                            //       poll={poll}
-                            //       votedOption={previousBallot[poll.pollId].option}
-                            //       votingWeight={votingWeight?.total}
-                            //       transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                            //       toggleShareModal={toggleShareModal}
-                            //     />
-                            //   </Box>
-                            // }
-                            hideTally
-                          >
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false}>
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
                                 <TooltipComponent
