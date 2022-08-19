@@ -16,7 +16,7 @@ export const TxFinal = ({
   children
 }: {
   title: string;
-  description: string;
+  description: string | JSX.Element;
   buttonLabel: string;
   onClick: () => void;
   tx: Transaction;
@@ -39,7 +39,9 @@ export const TxFinal = ({
           <TxIndicators.Failed sx={{ width: 6 }} />
         </Flex>
       )}
-      <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
+      <Flex sx={{ justifyContent: 'center' }}>
+        <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
+      </Flex>
       {children}
       <ExternalLink
         href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
