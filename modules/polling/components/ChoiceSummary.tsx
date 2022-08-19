@@ -15,14 +15,12 @@ const ChoiceSummary = ({
   poll,
   edit,
   voteIsPending,
-  showHeader,
   showReviewButton,
   ...props
 }: {
   poll: Poll;
   edit: () => void;
   voteIsPending: boolean;
-  showHeader: boolean;
   showReviewButton?: boolean;
   choice: number | number[];
 }): React.ReactElement => {
@@ -69,11 +67,12 @@ const ChoiceSummary = ({
             trackButtonClick('editChoice');
             edit();
           }}
-          variant={showHeader ? 'smallOutline' : 'outline'}
+          variant={'smallOutline'}
           sx={{
             display: voteIsPending ? 'none' : 'inline-flex',
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'center',
+            mt: 1
           }}
         >
           <Icon name="edit" size={3} mr={1} />
@@ -85,12 +84,13 @@ const ChoiceSummary = ({
             onClick={() => {
               removeVoteFromBallot(poll.pollId);
             }}
-            variant={showHeader ? 'smallOutline' : 'outline'}
+            variant={'smallOutline'}
             sx={{
               display: voteIsPending ? 'none' : 'inline-flex',
               flexDirection: 'row',
               alignItems: 'center',
-              ml: 2
+              ml: 2,
+              mt: 1
             }}
           >
             {' '}

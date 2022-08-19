@@ -26,7 +26,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 type Props = {
   poll: Poll;
-  showHeader: boolean;
   showStatus?: boolean;
   showReviewButton?: boolean;
   onSubmit?: () => void;
@@ -46,7 +45,6 @@ const rankedChoiceBlurb = (
 
 const QuickVote = ({
   poll,
-  showHeader,
   showStatus,
   showReviewButton,
   onSubmit,
@@ -117,7 +115,6 @@ const QuickVote = ({
           poll={poll}
           choice={addedChoice?.option ?? currentVote}
           edit={() => setEditing(true)}
-          showHeader={showHeader}
           showReviewButton={showReviewButton}
         />
       ) : (

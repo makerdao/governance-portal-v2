@@ -153,7 +153,7 @@ export default function PollOverviewCard({
                 <Box sx={{ ml: 2, minWidth: '265px' }}>
                   <ErrorBoundary componentName="Vote in Poll">
                     <Box sx={{ maxWidth: 7 }}>
-                      <QuickVote poll={poll} showHeader={true} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} />
                     </Box>
                   </ErrorBoundary>
                 </Box>
@@ -194,7 +194,7 @@ export default function PollOverviewCard({
                 {showQuickVote && bpi === 0 && (
                   <Box sx={{ mt: 3, width: '100%' }}>
                     <ErrorBoundary componentName="Vote in Poll">
-                      <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} />
                     </ErrorBoundary>
                   </Box>
                 )}

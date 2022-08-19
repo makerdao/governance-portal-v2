@@ -195,7 +195,7 @@ export default function MobileVoteSheet({
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
               ) : (
-                <QuickVote poll={poll} onSubmit={submit} showHeader={false} buttonVariant="primaryLarge" />
+                <QuickVote poll={poll} onSubmit={submit} buttonVariant="primaryLarge" />
               )}
             </Stack>
           )}
