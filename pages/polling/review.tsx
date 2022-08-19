@@ -31,7 +31,6 @@ import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
-import TooltipComponent from 'modules/app/components/Tooltip';
 
 const PollingReview = ({ polls }: PollingReviewPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -232,25 +231,19 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false}>
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
-                                <TooltipComponent
-                                  label={
-                                    'Your comment may take a few minutes to appear into the voting portal.'
-                                  }
-                                >
-                                  <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
-                                    <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mr: 1 }}>
-                                      Your comment
-                                    </Text>
-
-                                    <Icon name="info" />
-                                  </Flex>
-                                </TooltipComponent>
-                                <Text sx={{ fontSize: [1, 3], color: 'onSecondary' }}>
-                                  <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
-                                </Text>
+                                <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
+                                  <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mr: 1 }}>
+                                    Your comment
+                                  </Text>
+                                </Flex>
+                                <Box sx={{ bg: 'onSurfaceAlt', py: 1, px: 3, borderRadius: 'medium' }}>
+                                  <Text as="p">
+                                    <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
+                                  </Text>
+                                </Box>
                               </Box>
                             )}
                           </PollOverviewCard>
