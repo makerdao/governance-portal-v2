@@ -23,6 +23,12 @@ const contracts: Record<string, EthSdk | null> = {
   default: null
 };
 
+// Check the SDK contracts for a signer, this assumes there is at least one contract
+// and all contracts in the SDK use the signer.
+const hasSigner = (contracts: EthSdk | null) => {
+  return contracts && !!contracts[Object.keys(contracts)[0]]?.signer;
+};
+
 export const getContracts = (
   chainId?: SupportedChainId,
   provider?: Web3Provider,
@@ -56,10 +62,15 @@ export const getContracts = (
   const changeNetwork = network !== currentNetwork;
 
   // If our account or network changes, recreate the contracts SDK
-  if (changeAccount || changeNetwork || !contracts[contractsKey]) {
+  if (
+    changeAccount ||
+    changeNetwork ||
+    !contracts[contractsKey] ||
+    (needsSigner && !hasSigner(contracts[contractsKey]))
+  ) {
     const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
-    const signerOrProvider = needsSigner ? providerToUse.getSigner(account) : providerToUse;
+    const signerOrProvider = needsSigner ? (providerToUse as Web3Provider).getSigner(account) : providerToUse;
 
     // Keep track of the connected account and network so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;
