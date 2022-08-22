@@ -31,7 +31,7 @@ export default withApiHandler(
       const { cacheKey } = req.body;
 
       if (!req.body?.password || req.body?.password !== config.DASHBOARD_PASSWORD) {
-        logger.error(`invalidate-cache: invalid password`);
+        logger.error('invalidate-cache: invalid password');
         return res.status(401).json({
           invalidated: false
         });
