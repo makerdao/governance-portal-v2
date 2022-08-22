@@ -9,6 +9,11 @@ import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
+import {
+  isInputFormatChooseFree,
+  isInputFormatRankFree,
+  isResultDisplayApprovalBreakdown
+} from '../helpers/utils';
 
 type Props = {
   tally: PollTally;
@@ -51,7 +56,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
         );
       case 'option':
         return votes?.sort((a, b) =>
-          sortBy.order === 1 ? (a.optionId > b.optionId ? -1 : 1) : a.optionId > b.optionId ? 1 : -1
+          sortBy.order === 1 ? (a.ballot[0] > b.ballot[0] ? -1 : 1) : a.ballot[0] > b.ballot[0] ? 1 : -1
         );
       default:
         return votes;
@@ -91,7 +96,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               variant="caps"
               onClick={() => changeSort('option')}
             >
-              Option
+              {`Option${isResultDisplayApprovalBreakdown(poll.parameters) ? '(s)' : ''}`}
               {sortBy.type === 'option' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} ml={1} />
@@ -108,7 +113,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
-              Voting Power
+              Vote %
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} ml={1} />
@@ -158,29 +163,43 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Box
                     as="td"
                     sx={{
-                      color: getVoteColor(v.optionId, poll.parameters.inputFormat),
+                      color: getVoteColor(v.ballot[0], poll.parameters),
                       pb: 2
                     }}
                   >
-                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 ? (
-                      v.rankedChoiceOption.map((choice, index) => (
+                    {v.ballot.length > 1 ? (
+                      v.ballot.map((choice, index) => (
                         <Box
                           key={`voter-${v.voter}-option-${choice}`}
                           sx={{
-                            color: index === 0 ? 'inherit' : '#708390',
-                            fontSize: bpi < 1 ? 1 : index === 0 ? 3 : 2,
+                            lineHeight: '1.7',
+                            color:
+                              index === 0 || isInputFormatChooseFree(poll.parameters) ? 'inherit' : '#708390',
+                            fontSize:
+                              bpi < 1
+                                ? 1
+                                : isResultDisplayApprovalBreakdown(poll.parameters)
+                                ? 3
+                                : index === 0
+                                ? 3
+                                : 2,
                             mb: 1
                           }}
                         >
-                          {index + 1} - {poll.options[choice]}
+                          {isInputFormatRankFree(poll.parameters) ? `${index + 1} - ` : ''}
+                          {poll.options[choice]}
                         </Box>
                       ))
                     ) : (
-                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.optionId]}</Text>
+                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.ballot[0]]}</Text>
                     )}
                   </Box>
                   <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
-                    {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
+                    {`${
+                      new BigNumber(v.mkrSupport).isGreaterThan(0)
+                        ? new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)
+                        : 0
+                    }%`}
                   </Text>
                   <Text
                     as="td"

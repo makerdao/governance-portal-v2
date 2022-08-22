@@ -22,8 +22,8 @@ export async function fetchAddressPollVoteHistory(
 
       const optionValue: string[] = [];
       if (isInputFormatRankFree(poll.parameters)) {
-        if (pollVote.rankedChoiceOption && pollVote.rankedChoiceOption.length > 0) {
-          pollVote.rankedChoiceOption.forEach(option => {
+        if (pollVote.ballot && pollVote.ballot.length > 0) {
+          pollVote.ballot.forEach(option => {
             optionValue.push(poll.options[option]);
           });
         }

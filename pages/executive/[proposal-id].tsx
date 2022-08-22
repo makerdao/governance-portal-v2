@@ -276,9 +276,17 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             </Box>
           )}
           <Box>
-            <Heading mt={3} mb={2} as="h3" variant="microHeading">
-              Supporters
-            </Heading>
+            <Flex sx={{ mt: 3, mb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
+              <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
+                Supporters
+              </Heading>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Box sx={{ pt: '3px', mr: 1 }}>
+                  <Icon name="info" color="textSecondary" size={14} />
+                </Box>
+                <Text sx={{ fontSize: 1, color: 'textSecondary' }}>Updated every five minutes</Text>
+              </Flex>
+            </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>
                 <Box>

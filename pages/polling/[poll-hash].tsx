@@ -6,17 +6,11 @@ import { useRouter } from 'next/router';
 import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-
-// lib
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-
-// api
 import { Poll } from 'modules/polling/types';
-
-// components
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -24,7 +18,7 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
-import VoteBox from 'modules/polling/components/VoteBox';
+import VoteBox from 'modules/polling/components/poll-vote-input/VoteBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
@@ -257,7 +251,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
+                      {tally && tally.votesByAddress && tally.numVoters > 0 ? (
                         <VotesByAddress tally={tally} poll={poll} />
                       ) : tally && tally.numVoters === 0 ? (
                         <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>

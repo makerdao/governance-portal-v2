@@ -4,18 +4,17 @@ import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } fro
 import shallow from 'zustand/shallow';
 import {
   isActivePoll,
-  isInputFormatRankFree,
+  isResultDisplayApprovalBreakdown,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import QuickVote from './QuickVote';
+import QuickVote from './poll-vote-input/QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
-import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
+import { PluralityVoteSummary } from './vote-summary/PluralityVoteSummary';
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -28,7 +27,8 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
+import { ListVoteSummary } from './vote-summary/ListVoteSummary';
+import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 
 type Props = {
   poll: Poll;
@@ -78,7 +78,7 @@ export default function PollOverviewCard({
       <Flex sx={{ flexDirection: 'column' }}>
         <ErrorBoundary componentName="Poll Card">
           <Box sx={{ px: [3, 4], py: 3 }}>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: 210 }}>
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: ['auto', 210] }}>
               <Flex sx={{ flexDirection: 'column', width: '100%' }}>
                 {bpi === 0 && (
                   <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
@@ -87,18 +87,10 @@ export default function PollOverviewCard({
                 )}
                 <Box>
                   <Box>
-                    <Flex sx={{ justifyContent: 'space-between' }}>
-                      <CardHeader
-                        text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
-                        styles={{ mb: 2 }}
-                      />
-                      {!showQuickVote && isInputFormatRankFree(poll.parameters) && (
-                        <Flex sx={{ alignItems: 'center', mb: 3 }}>
-                          <Text variant="caps">Ranked-choice poll</Text>
-                          <Icon name="stackedVotes" size={3} ml={2} />
-                        </Flex>
-                      )}
-                    </Flex>
+                    <CardHeader
+                      text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
+                      styles={{ mb: 2 }}
+                    />
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
                       <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
                     </InternalLink>
@@ -160,7 +152,9 @@ export default function PollOverviewCard({
               {showQuickVote && bpi > 0 && (
                 <Box sx={{ ml: 2, minWidth: '265px' }}>
                   <ErrorBoundary componentName="Vote in Poll">
-                    <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
+                    <Box sx={{ maxWidth: 7 }}>
+                      <QuickVote poll={poll} showStatus={!reviewPage} />
+                    </Box>
                   </ErrorBoundary>
                 </Box>
               )}
@@ -169,7 +163,8 @@ export default function PollOverviewCard({
             <Box>
               <Flex
                 sx={{
-                  alignItems: 'center',
+                  alignItems: 'flex-end',
+                  mt: 2,
                   justifyContent: 'space-between',
                   flexDirection: ['column', 'row']
                 }}
@@ -177,10 +172,9 @@ export default function PollOverviewCard({
                 <Flex
                   sx={{
                     alignItems: 'center',
-                    justifyContent: 'flex-start',
+                    justifyContent: 'space-between',
                     width: bpi > 0 ? 'auto' : '100%',
-                    p: 0,
-                    mt: 3
+                    p: 0
                   }}
                 >
                   <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
@@ -193,38 +187,42 @@ export default function PollOverviewCard({
                       View Details
                     </Button>
                   </InternalLink>
+
+                  {bpi === 0 && <PollVoteTypeIndicator poll={poll} />}
                 </Flex>
 
                 {showQuickVote && bpi === 0 && (
                   <Box sx={{ mt: 3, width: '100%' }}>
-                    <ErrorBoundary componentName="Voting Status">
-                      <VotingStatus poll={poll} />
-                    </ErrorBoundary>
                     <ErrorBoundary componentName="Vote in Poll">
-                      <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} />
                     </ErrorBoundary>
                   </Box>
                 )}
 
-                <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                <Box sx={{ width: bpi > 0 ? '265px' : '100%' }}>
+                  {bpi > 0 && (
+                    <Flex sx={{ justifyContent: 'flex-end' }}>
+                      <PollVoteTypeIndicator poll={poll} />
+                    </Flex>
+                  )}
                   {tally && tally.totalMkrParticipation > 0 && (
                     <InternalLink
                       href={`/polling/${poll.slug}`}
                       hash="vote-breakdown"
                       title="View poll vote breakdown"
                     >
-                      <Box sx={{ mt: 3 }}>
+                      <Box sx={{ mt: 2 }}>
                         <ErrorBoundary componentName="Poll Results">
-                          {isResultDisplaySingleVoteBreakdown(poll.parameters) && (
-                            <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
-                          )}
-                          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
-                            <RankedChoiceVoteSummary
-                              choices={tally.results.map(i => parseInt(i.optionId))}
+                          {isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
+                            <PluralityVoteSummary tally={tally} showTitles={false} />
+                          ) : !isResultDisplayApprovalBreakdown(poll.parameters) ? (
+                            <ListVoteSummary
+                              choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}
+                              showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters)}
                             />
-                          )}
+                          ) : null}
                         </ErrorBoundary>
                       </Box>
                     </InternalLink>

@@ -27,12 +27,16 @@ const DashboardPage = (): React.ReactElement => {
   const invalidate = async (cacheKey: string) => {
     setLoading(true);
     try {
-      await invalidateCache(cacheKey, network);
+      await invalidateCache(cacheKey, password, network);
       setLoading(false);
       toast.success(`Cache ${cacheKey} cleared`);
     } catch (e) {
       setLoading(false);
-      toast.error('Error invalidating cache');
+      if (e.toString().includes('Unauthorized')) {
+        toast.error('Unauthorized');
+      } else {
+        toast.error('Error invalidating cache');
+      }
     }
   };
 

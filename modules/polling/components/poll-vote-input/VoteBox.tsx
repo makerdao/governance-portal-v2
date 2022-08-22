@@ -1,7 +1,7 @@
 import { Box, Heading, Card, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import VotingStatus from './PollVotingStatus';
+import VotingStatus from '../PollVotingStatus';
 import QuickVote from './QuickVote';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
@@ -26,7 +26,7 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
           {poll.summary}
         </Text>
         <VotingStatus sx={{ my: 2, textAlign: 'center' }} poll={poll} />
-        {showQuickVote && <QuickVote poll={poll} showHeader={false} showReviewButton={true} />}
+        {showQuickVote && <QuickVote poll={poll} showReviewButton={true} />}
       </Card>
     </Box>
   );

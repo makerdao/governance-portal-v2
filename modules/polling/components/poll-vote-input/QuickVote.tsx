@@ -1,29 +1,35 @@
 import { useState, useEffect, useContext } from 'react';
-import { Text, Flex, Button, Box, ThemeUIStyleObject } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Text, Flex, Button } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
-import { extractCurrentPollVote, isInputFormatRankFree } from 'modules/polling/helpers/utils';
+import {
+  extractCurrentPollVote,
+  isInputFormatChooseFree,
+  isInputFormatRankFree,
+  isInputFormatSingleChoice
+} from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
-import ChoiceSummary from './ChoiceSummary';
+import ChoiceSummary from '../ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import VotingStatus from './PollVotingStatus';
+import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { BallotContext } from '../context/BallotContext';
+import { BallotContext } from '../../context/BallotContext';
+import ChooseFreeSelect from './ChooseFreeSelect';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 type Props = {
   poll: Poll;
-  showHeader: boolean;
   showStatus?: boolean;
   showReviewButton?: boolean;
-  sx?: ThemeUIStyleObject;
+  onSubmit?: () => void;
+  buttonVariant?: string;
 };
 
 const rankedChoiceBlurb = (
@@ -39,13 +45,14 @@ const rankedChoiceBlurb = (
 
 const QuickVote = ({
   poll,
-  showHeader,
   showStatus,
   showReviewButton,
-  ...props
+  onSubmit,
+  buttonVariant
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(account);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
@@ -85,71 +92,58 @@ const QuickVote = ({
         : addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     }
     setEditing(false);
+    if (onSubmit) {
+      onSubmit();
+    }
   };
 
-  const gap = 2;
   return (
-    <Stack gap={gap} {...props}>
+    <Stack gap={2}>
       <Flex
         sx={{
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'flex-end',
+          flexDirection: 'row'
         }}
       >
-        <Flex
-          sx={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            display: showHeader ? undefined : 'none'
-          }}
-        >
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text variant="caps" color="textSecondary">
-              Your Vote
-            </Text>
-          </Flex>
-
-          {isInputFormatRankFree(poll.parameters) && (
-            <Tooltip label={rankedChoiceBlurb}>
-              <Box sx={{ position: 'relative' }}>
-                {/* Box is used because tooltip needs a child that can be passed a ref */}
-                <Icon name="stackedVotes" size={3} ml={2} />
-              </Box>
-            </Tooltip>
-          )}
-        </Flex>
-        {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
+        <Text variant="caps">Your vote</Text>
+        {showStatus && <VotingStatus poll={poll} />}
       </Flex>
-
       {(!!addedChoice || currentVote !== null) && !editing ? (
         <ChoiceSummary
           voteIsPending={voteIsPending}
           poll={poll}
           choice={addedChoice?.option ?? currentVote}
           edit={() => setEditing(true)}
-          showHeader={showHeader}
           showReviewButton={showReviewButton}
         />
       ) : (
         <div>
-          {isInputFormatRankFree(poll.parameters) ? (
-            <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
-          ) : (
-            <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
+          {isInputFormatRankFree(poll.parameters) && (
+            <RankedChoiceSelect poll={poll} setChoice={setChoice} choice={choice as number[] | null} />
+          )}
+          {isInputFormatSingleChoice(poll.parameters) && (
+            <SingleSelect poll={poll} setChoice={setChoice} choice={choice as number | null} />
+          )}
+          {isInputFormatChooseFree(poll.parameters) && (
+            <ChooseFreeSelect poll={poll} setChoice={setChoice} choice={choice as number[] | null} />
           )}
           <Button
-            data-testid="button-add-vote-to-ballot-desktop"
-            variant={showHeader ? 'primaryOutline' : 'primary'}
-            sx={{ width: '100%' }}
+            data-testid="button-add-vote-to-ballot"
+            variant={buttonVariant ? buttonVariant : 'primary'}
+            sx={{ width: '100%', mt: 3 }}
             onClick={() => {
               trackButtonClick('addVoteToBallot');
               submit();
             }}
-            mt={gap}
-            disabled={!isChoiceValid}
+            mt={2}
+            disabled={!isChoiceValid || !votingWeight || !votingWeight.total.gt(0)}
           >
-            {editing ? 'Update vote' : 'Add vote to ballot'}
+            {!votingWeight || !votingWeight.total.gt(0)
+              ? 'Deposit MKR to vote'
+              : editing
+              ? 'Update vote'
+              : 'Add vote to ballot'}
           </Button>
         </div>
       )}
