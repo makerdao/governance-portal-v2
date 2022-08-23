@@ -96,7 +96,7 @@ export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
     network: GaslessNetworks.ARBITRUMTESTNET,
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
-      [NodeProviders.ALCHEMY]: `https://arb-rinkeby.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+      [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
     }
   },
   [GaslessChainId.ARBITRUM]: {
