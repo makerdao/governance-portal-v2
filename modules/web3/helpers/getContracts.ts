@@ -1,21 +1,14 @@
-import { ethers, providers, Signer } from 'ethers';
-import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { Web3Provider } from '@ethersproject/providers';
 import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
-import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
+import { getReadOnlyContracts } from './getReadOnlyContracts';
+import { EthSdk, SdkGenerators } from '../types/contracts';
 
-export type EthSdk = MainnetSdk | GoerliSdk;
-
-type Sdks = {
-  mainnet: (signer: Signer) => MainnetSdk;
-  goerli: (signer: Signer) => GoerliSdk;
-};
-
-const sdks: Sdks = {
+const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
   goerli: getGoerliSdk
 };
@@ -23,7 +16,19 @@ const sdks: Sdks = {
 export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
   `${rpcUrl.substring(0, rpcUrl.lastIndexOf('/'))}/${newKey}`;
 
-// this name doesn't feel right, maybe getSdk? or getContractLibrary?
+let connectedAccount: string | undefined;
+let currentNetwork: string | undefined;
+
+const contracts: Record<string, EthSdk | null> = {
+  default: null
+};
+
+// Check the SDK contracts for a signer, this assumes there is at least one contract
+// and all contracts in the SDK use the signer.
+const hasSigner = (contracts: EthSdk | null) => {
+  return contracts && !!contracts[Object.keys(contracts)[0]]?.signer;
+};
+
 export const getContracts = (
   chainId?: SupportedChainId,
   provider?: Web3Provider,
@@ -31,32 +36,48 @@ export const getContracts = (
   readOnly?: boolean,
   apiKey?: string
 ): EthSdk => {
-  const networkInfo = chainId
-    ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
-    : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };
-
-  // If a custom API key is provided, replace it in the URL
-  if (apiKey) networkInfo.rpcUrl = replaceApiKey(networkInfo.rpcUrl, apiKey);
-
-  const { network, rpcUrl } = networkInfo;
-
-  const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
+  const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
+  let rpcUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
 
   // Map goerlifork to goerli contracts
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
-  /* 
-  A read-only signer, when an API requires a Signer as a parameter, but it is known only read-only operations will be carried.
-  https://docs.ethers.io/v5/api/signer/#VoidSigner 
 
-  eth-sdk only accepts a signer for now, but there's an issue for it
-  https://github.com/dethcrypto/eth-sdk/issues/63
-  */
-  const signer =
-    account && provider
-      ? readOnly
-        ? (providerToUse as providers.JsonRpcBatchProvider).getSigner(account)
-        : provider.getSigner(account)
-      : new ethers.VoidSigner(ZERO_ADDRESS, providerToUse);
+  if (readOnly) {
+    return getReadOnlyContracts(rpcUrl, sdkNetwork);
+  }
 
-  return sdks[sdkNetwork](signer);
+  // Use the default API key, unless a custom API key is provided
+  let contractsKey = 'default';
+
+  if (apiKey) {
+    contractsKey = apiKey;
+    // If a custom API key is provided, replace it in the URL
+    rpcUrl = replaceApiKey(rpcUrl, apiKey);
+  }
+
+  // If we have an account and provider then we'll use a signer
+  const needsSigner = !!account && !!provider;
+
+  const changeAccount = !!account && account !== connectedAccount;
+  const changeNetwork = network !== currentNetwork;
+
+  // If our account or network changes, recreate the contracts SDK
+  if (
+    changeAccount ||
+    changeNetwork ||
+    !contracts[contractsKey] ||
+    (needsSigner && !hasSigner(contracts[contractsKey]))
+  ) {
+    const providerToUse = provider ?? getDefaultProvider(rpcUrl);
+
+    const signerOrProvider = needsSigner ? (providerToUse as Web3Provider).getSigner(account) : providerToUse;
+
+    // Keep track of the connected account and network so we know if it needs to be changed later
+    if (needsSigner && changeAccount) connectedAccount = account;
+    if (changeNetwork) currentNetwork = network;
+
+    contracts[contractsKey] = sdkGenerators[sdkNetwork](signerOrProvider);
+  }
+
+  return contracts[contractsKey] as EthSdk;
 };
