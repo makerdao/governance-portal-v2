@@ -15,13 +15,13 @@ export interface AvatarProps {
 export function Avatar({ size, address, defaultComponent, style }: AvatarProps): JSX.Element {
   const { chainId, library } = useActiveWeb3React();
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
 
   const fetchAvatarUri = async () => {
     if (library && address && chainId !== SupportedChainId.GOERLIFORK) {
       try {
         const ensName = await library.lookupAddress(address);
         if (ensName) {
-          const avt = new AvatarResolver(library);
           const uri = await avt.getAvatar(ensName, {});
           if (uri) {
             setAvatarUri(uri);
