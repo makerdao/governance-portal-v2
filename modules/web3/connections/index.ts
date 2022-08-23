@@ -15,8 +15,10 @@ const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
   actions =>
     new Network({
       actions,
-      // TODO update for all chains
-      urlMap: { [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET) },
+      urlMap: {
+        [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
+        [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
+      },
       defaultChainId: 1
     })
 );
@@ -40,8 +42,10 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<any>(
     new WalletConnect({
       actions,
       options: {
-        // TODO update for all chains
-        rpc: { [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET) },
+        rpc: {
+          [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
+          [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
+        },
         qrcode: true
       }
     })
