@@ -83,6 +83,7 @@ describe('Fetch tally ranked', () => {
       rounds: 1,
       winner: 3,
       winningOptionName: 'Third',
+      victoryConditionMatched: 0,
       totalMkrParticipation: '324.692625397295750537',
       totalMkrActiveParticipation: '324.692625397295750537',
       results: [
@@ -165,6 +166,7 @@ describe('Fetch tally ranked', () => {
       rounds: 2,
       winner: 3,
       winningOptionName: 'Third',
+      victoryConditionMatched: 0,
       totalMkrParticipation: '226.692625397295750537',
       totalMkrActiveParticipation: '226.692625397295750537',
       results: [
@@ -253,6 +255,7 @@ describe('Fetch tally ranked', () => {
       rounds: 3,
       winner: 3,
       winningOptionName: 'Third',
+      victoryConditionMatched: 0,
       totalMkrParticipation: '230.692625397295750537',
       totalMkrActiveParticipation: '230.692625397295750537',
       results: [
@@ -342,6 +345,7 @@ describe('Fetch tally ranked', () => {
       parameters: mockPoll.parameters,
       rounds: 4,
       winner: 3,
+      victoryConditionMatched: 0,
       winningOptionName: 'Third',
       totalMkrParticipation: '220.692625397295750537',
       totalMkrActiveParticipation: '220.692625397295750537',
@@ -441,6 +445,7 @@ describe('Fetch tally ranked', () => {
       parameters: mockPoll.parameters,
       rounds: 4,
       winner: 1,
+      victoryConditionMatched: 0,
       winningOptionName: 'First',
       totalMkrParticipation: '300',
       totalMkrActiveParticipation: '300',

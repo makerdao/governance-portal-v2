@@ -1,9 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
-import { Text, Flex, Button, Box, ThemeUIStyleObject } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Text, Flex, Button } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
 import {
@@ -24,11 +22,10 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
-import { PollVoteTypeIndicator } from '../PollOverviewCard/PollVoteTypeIndicator';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 type Props = {
   poll: Poll;
-  showHeader: boolean;
   showStatus?: boolean;
   showReviewButton?: boolean;
   onSubmit?: () => void;
@@ -48,7 +45,6 @@ const rankedChoiceBlurb = (
 
 const QuickVote = ({
   poll,
-  showHeader,
   showStatus,
   showReviewButton,
   onSubmit,
@@ -107,11 +103,11 @@ const QuickVote = ({
         sx={{
           justifyContent: 'space-between',
           alignItems: 'flex-end',
-          flexDirection: 'column'
+          flexDirection: 'row'
         }}
       >
-        {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
-        <PollVoteTypeIndicator poll={poll} />
+        <Text variant="caps">Your vote</Text>
+        {showStatus && <VotingStatus poll={poll} />}
       </Flex>
       {(!!addedChoice || currentVote !== null) && !editing ? (
         <ChoiceSummary
@@ -119,7 +115,6 @@ const QuickVote = ({
           poll={poll}
           choice={addedChoice?.option ?? currentVote}
           edit={() => setEditing(true)}
-          showHeader={showHeader}
           showReviewButton={showReviewButton}
         />
       ) : (

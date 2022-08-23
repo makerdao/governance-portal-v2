@@ -9,6 +9,7 @@ import {
   executiveSupportersCacheKey,
   githubExecutivesCacheKey
 } from 'modules/cache/constants/cache-keys';
+import { config } from 'lib/config';
 
 // Deletes cache for a tally
 export default withApiHandler(
@@ -29,6 +30,12 @@ export default withApiHandler(
     try {
       const { cacheKey } = req.body;
 
+      if (!req.body?.password || req.body?.password !== config.DASHBOARD_PASSWORD) {
+        logger.error('invalidate-cache: invalid password');
+        return res.status(401).json({
+          invalidated: false
+        });
+      }
       const isAllowed = allowedCacheKeys.reduce((prev, next) => {
         return prev || cacheKey.indexOf(next) !== -1;
       }, false);

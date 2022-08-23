@@ -166,9 +166,7 @@ export default function Participation({
                 >
                   <Flex sx={{ alignItems: 'center', gap: 2 }}>
                     <Text>{i + 1}</Text>
-                    <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                      <DelegateAvatarNameLight delegate={delegate} />
-                    </InternalLink>
+                    <DelegateAvatarNameLight delegate={delegate} />
                   </Flex>
                   <Text>{delegate.combinedParticipation}</Text>
                 </Flex>

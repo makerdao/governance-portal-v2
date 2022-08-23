@@ -67,6 +67,7 @@ describe('Fetch tally approval', () => {
       totalMkrParticipation: '861.57558',
       totalMkrActiveParticipation: '861.57558',
       numVoters: 5,
+      victoryConditionMatched: 0,
       results: [
         {
           optionId: 1,
@@ -147,6 +148,7 @@ describe('Fetch tally approval', () => {
       totalMkrParticipation: '851.57558',
       totalMkrActiveParticipation: '851.57558',
       numVoters: 4,
+      victoryConditionMatched: null,
       results: [
         {
           optionId: 1,
@@ -215,6 +217,7 @@ describe('Fetch tally approval', () => {
       totalMkrParticipation: '400',
       totalMkrActiveParticipation: '0',
       numVoters: 1,
+      victoryConditionMatched: null,
       results: [
         {
           optionId: 0,

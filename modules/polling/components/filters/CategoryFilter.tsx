@@ -41,7 +41,7 @@ export function CategoryFilter({
       active={itemsSelected > 0}
       {...props}
     >
-      <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
+      <Box p={2} sx={{ maxHeight: '315px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
           {tags.map(tag => (
             <Flex key={tag.id}>
