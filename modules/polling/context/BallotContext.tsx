@@ -16,8 +16,6 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
 import logger from 'lib/logger';
-import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
-import { invalidateCache } from 'modules/cache/invalidateCache';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -237,12 +235,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             toast.error('Unable to store comments');
           });
         }
-        // Invalidate tally cache for each voted poll
-        Object.keys(ballot).forEach(pollId => {
-          setTimeout(() => {
-            invalidateCache(getPollTallyCacheKey(parseInt(pollId)), network);
-          }, 60000);
-        });
       },
       mined: (txId, txHash) => {
         // Set votes

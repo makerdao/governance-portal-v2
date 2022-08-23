@@ -5,28 +5,19 @@ import invariant from 'tiny-invariant';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
-import isEqual from 'lodash/isEqual';
 import lottie from 'lottie-web';
-
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
-import { extractCurrentPollVote, isActivePoll, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-
-import RankedChoiceSelect from './poll-vote-input/RankedChoiceSelect';
-import SingleSelect from './poll-vote-input/SingleSelect';
 import { useRouter } from 'next/router';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
-import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import { BallotContext } from '../context/BallotContext';
 import QuickVote from './poll-vote-input/QuickVote';
+import { BallotContext } from '../context/BallotContext';
 
 enum ViewState {
   START,
@@ -50,19 +41,10 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const { account, voteDelegateContractAddress } = useAccount();
-
   const { network } = useWeb3();
-  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
-  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
-  const currentVote = extractCurrentPollVote(poll, allUserVotes);
+  const { ballot, ballotCount } = useContext(BallotContext);
 
-  const { addVoteToBallot, ballot, removeVoteFromBallot, ballotCount } = useContext(BallotContext);
-
-  const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
-  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
   const router = useRouter();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
@@ -93,7 +75,6 @@ export default function MobileVoteSheet({
   };
 
   const goToNextPoll = () => {
-    setChoice(null);
     const nextPoll = activePolls.find(p => !ballot[p.pollId]);
     invariant(nextPoll && setPoll);
     setPoll(nextPoll);
@@ -212,7 +193,7 @@ export default function MobileVoteSheet({
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
               ) : (
-                <QuickVote poll={poll} onSubmit={submit} showHeader={false} buttonVariant="primaryLarge" />
+                <QuickVote poll={poll} onSubmit={submit} buttonVariant="primaryLarge" />
               )}
             </Stack>
           )}

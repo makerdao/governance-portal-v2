@@ -97,7 +97,8 @@ export default function AddressIconBox({
                 alignItems: 'center',
                 color: 'tagColorSeven',
                 ml: [0, 2],
-                mt: [1, 0]
+                mt: [1, 0],
+                minWidth: '54px'
               }}
             >
               <Text

@@ -43,7 +43,7 @@ const config: EthSdkConfig = {
       vow: '0x23f78612769b9013b3145E43896Fa1578cAa2c2a'
     }
   },
-  etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY }
+  etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY || '' }
 };
 
 export default config;

@@ -59,7 +59,14 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
         {step === 'mined' && tx && (
           <TxFinal
             title="Transaction Sent"
-            description="Your vote will be reflected once the transaction has been confirmed."
+            description={
+              <Flex sx={{ alignItems: 'center', mt: 1 }}>
+                <Icon name="info" color="textSecondary" />
+                <Text as="p" variant="secondary" sx={{ ml: 1 }}>
+                  Your vote and comment may take a few minutes to appear in the Voting Portal
+                </Text>
+              </Flex>
+            }
             buttonLabel="Close"
             onClick={close}
             tx={tx}

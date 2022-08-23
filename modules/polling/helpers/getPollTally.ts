@@ -6,7 +6,7 @@ import { fetchVotesByAddressForPoll } from 'modules/polling/api/fetchVotesByAddr
 import { Poll, PollTally } from 'modules/polling/types';
 import { pollHasEnded } from './utils';
 import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
-import { FIVE_MINUTES_IN_MS, ONE_DAY_IN_MS } from 'modules/app/constants/time';
+import { THIRTY_SECONDS_IN_MS, ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   const cacheKey = getPollTallyCacheKey(poll.pollId);
@@ -28,7 +28,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
 
   const pollEnded = pollHasEnded(poll);
 
-  cacheSet(cacheKey, JSON.stringify(tallyObject), network, pollEnded ? ONE_DAY_IN_MS : FIVE_MINUTES_IN_MS);
+  cacheSet(cacheKey, JSON.stringify(tallyObject), network, pollEnded ? ONE_DAY_IN_MS : THIRTY_SECONDS_IN_MS);
 
   return tallyObject;
 }

@@ -97,6 +97,7 @@ describe('Fetch tally combined with other options', () => {
       winningOptionName: 'Reject',
       totalMkrParticipation: '270',
       totalMkrActiveParticipation: '270',
+      victoryConditionMatched: 1,
       numVoters: 3,
       results: [
         {
@@ -164,6 +165,7 @@ describe('Fetch tally combined with other options', () => {
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
       totalMkrParticipation: '370',
+      victoryConditionMatched: 0,
       totalMkrActiveParticipation: '370',
       numVoters: 3,
       results: [
@@ -271,6 +273,7 @@ describe('Fetch tally combined with other options', () => {
     const expectedResult = {
       parameters: mockPollRanked.parameters,
       winner: 3,
+      victoryConditionMatched: 1,
       winningOptionName: 'Reject',
       totalMkrParticipation: '300',
       totalMkrActiveParticipation: '300',
@@ -355,6 +358,7 @@ describe('Fetch tally combined with other options', () => {
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
       totalMkrParticipation: '500',
+      victoryConditionMatched: 0,
       totalMkrActiveParticipation: '500',
       rounds: 1,
       results: [
@@ -484,6 +488,7 @@ describe('Fetch tally combined with other options', () => {
       winner: null,
       winningOptionName: 'None found',
       totalMkrParticipation: '500',
+      victoryConditionMatched: null,
       totalMkrActiveParticipation: '500',
       results: [
         {
@@ -570,6 +575,7 @@ describe('Fetch tally combined with other options', () => {
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
       totalMkrParticipation: '3200',
+      victoryConditionMatched: 0,
       totalMkrActiveParticipation: '3200',
       rounds: 1,
       results: [

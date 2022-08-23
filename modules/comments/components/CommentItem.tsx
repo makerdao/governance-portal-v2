@@ -36,14 +36,7 @@ export default function CommentItem({
           {comment.address && (
             <Box>
               {comment.address.isDelegate && comment.address.delegateInfo ? (
-                <Box>
-                  <InternalLink
-                    href={`/address/${comment.address.delegateInfo.voteDelegateAddress}`}
-                    title="View profile details"
-                  >
-                    <DelegateAvatarName delegate={comment.address.delegateInfo} />
-                  </InternalLink>
-                </Box>
+                <DelegateAvatarName delegate={comment.address.delegateInfo} />
               ) : (
                 <Box>
                   <InternalLink href={`/address/${comment.address.address}`} title="Profile details">

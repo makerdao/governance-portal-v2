@@ -6,17 +6,11 @@ import { useRouter } from 'next/router';
 import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-
-// lib
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-
-// api
 import { Poll } from 'modules/polling/types';
-
-// components
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
