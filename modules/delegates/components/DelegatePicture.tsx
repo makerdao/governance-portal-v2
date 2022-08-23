@@ -1,10 +1,10 @@
 import { Box, Flex, Image, Text } from 'theme-ui';
-import Davatar from 'lib/davatar';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { Address } from 'modules/address/components/Address';
+import { Avatar } from 'modules/address/components/Avatar';
 
 export function DelegatePicture({
   delegate,
@@ -38,7 +38,7 @@ export function DelegatePicture({
             />
           ) : (
             <Box>
-              <Davatar size={tooltipAvatarWidth} address={delegate.address} />
+              <Avatar size={tooltipAvatarWidth} address={delegate.address} />
             </Box>
           )}
           {delegate.status === DelegateStatusEnum.recognized && (
@@ -144,7 +144,7 @@ export function DelegatePicture({
               />
             ) : (
               <Box>
-                <Davatar size={width} address={delegate.address} />
+                <Avatar size={width} address={delegate.address} />
               </Box>
             )}
 
