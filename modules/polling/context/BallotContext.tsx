@@ -344,7 +344,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const pollingContract = new ethers.Contract(
       // arbitrum testnet polling address,
       // maybe we should use eth-sdk for this if it's supported
-      '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3',
+      '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050',
       PollingContractAbi,
       provider
     );

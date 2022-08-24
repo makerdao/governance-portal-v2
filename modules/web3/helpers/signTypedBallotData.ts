@@ -61,7 +61,7 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
       version: 'Arbitrum.1',
       chainId,
       //TODO: get verifying contract address from constant variable that accounts for network
-      verifyingContract: '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3'
+      verifyingContract: '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050'
     },
     message
   };
