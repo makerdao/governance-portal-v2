@@ -6,7 +6,7 @@ export enum SupportedChainId {
 
 export enum GaslessChainId {
   ARBITRUM = 42161,
-  ARBITRUMTESTNET = 421611
+  ARBITRUMTESTNET = 421613
 }
 
 export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(

@@ -42,7 +42,7 @@ export default withApiHandler(
       const pollingContract = new ethers.Contract(
         // arbitrum testnet polling address,
         // maybe we should use eth-sdk for this if it's supported
-        '0xc5C7bC9f0F54f2F6c441A774Ef93aCf06cE3DfA3',
+        '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050',
         PollingContractAbi,
         signer
       );
@@ -53,24 +53,28 @@ export default withApiHandler(
       if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
         //check that address hasn't used gasless service recently
         const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
-        if (recentlyUsedGaslessVoting) return res.status(401).json('Address cannot use gasless service more than once per 10 minutes');
+        if (recentlyUsedGaslessVoting)
+          return res.status(401).json('Address cannot use gasless service more than once per 10 minutes');
 
         //verify that signature and address correspond
         const recovered = recoverTypedSignature({
-          data: getTypedBallotData({voter, pollIds, optionIds, nonce, expiry }, network),
+          data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
           signature,
           version: SignTypedDataVersion.V4
         });
-        if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) return res.status(400).json('Voter address could not be recovered from signature');
+        if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter))
+          return res.status(400).json('Voter address could not be recovered from signature');
 
         //verify valid nonce and expiry date
         const nonceFromContract = await pollingContract.nonces(voter);
-        if (nonceFromContract.toNumber() !== parseInt(nonce)) return res.status(400).json('Invalid nonce for address');
+        if (nonceFromContract.toNumber() !== parseInt(nonce))
+          return res.status(400).json('Invalid nonce for address');
         if (expiry >= Date.now()) return res.status(400).json('Expiration date already passed');
-        
+
         //verify address has a poll weight > 0.1 MKR
         const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
-        if (pollWeight.total.lt(WAD.div(1 / MIN_MKR))) //ether's bignumber library doesnt handle decimals
+        if (pollWeight.total.lt(WAD.div(1 / MIN_MKR)))
+          //ether's bignumber library doesnt handle decimals
           return res.status(400).json(`Address must have a poll voting weight of at least ${MIN_MKR}`);
 
         //verify address hasn't already voted in any of the polls
