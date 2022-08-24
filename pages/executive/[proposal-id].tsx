@@ -470,7 +470,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
-  const MAX = 10;
+  const MAX = 5;
 
   const paths = proposals.slice(0, MAX).map(proposal => `/executive/${proposal.key}`);
 
