@@ -101,7 +101,7 @@ const moduleExports = {
     ];
   },
 
-  staticPageGenerationTimeout: 120
+  staticPageGenerationTimeout: 210
 };
 
 const SentryWebpackPluginOptions = {
