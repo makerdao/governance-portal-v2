@@ -14,14 +14,24 @@ import { config } from 'lib/config';
 import { fetchJson } from 'lib/fetchJson';
 import { WAD } from 'modules/web3/constants/numbers';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 const MIN_MKR = 0.1;
 
+//TODO: add swagger documentation
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
-      
+
+      if (typeof voter !== 'string') return res.status(401).json('voter must be a string');
+      if (!Array.isArray(pollIds) || !pollIds.every(e => typeof e === 'number')) return res.status(401).json('pollIds must be an array of numbers');
+      if (!Array.isArray(optionIds) || !optionIds.every(e => typeof e === 'number')) return res.status(401).json('optionIds must be an array of numbers');
+      if (typeof nonce !== 'number') return res.status(401).json('nonce must be a number');
+      if (typeof expiry !== 'number') return res.status(401).json('expiry must be a number');
+      if (typeof signature !== 'string') return res.status(401).json('signature must be a string');
+      if (!Object.values(SupportedNetworks).includes(network)) return res.status(401).json('invalid network');
+
       const cacheKey = getRecentlyUsedGaslessVoting(voter);
 
       const credentials = { apiKey: config.DEFENDER_API_KEY, apiSecret: config.DEFENDER_API_SECRET };
