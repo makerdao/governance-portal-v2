@@ -53,7 +53,11 @@ export const MEET_DELEGATE_URLS = {
   '0x2c511d932c5a6fe4071262d49bfc018cfbaaa1f5':
     'https://player.vimeo.com/video/716051719?h=3c7aa24f14&color=68FEE3&autoplay=1',
   // Governance House
-  '0x4e314eba76c3062140ad196e4ffd34485e33c5f5': 'https://www.youtube-nocookie.com/embed/67PFalZks5I'
-  // pvl https://www.youtube.com/watch?v=yIHFRJDA7cM
-  // '': 'https://www.youtube-nocookie.com/embed/yIHFRJDA7cM'
+  '0x4e314eba76c3062140ad196e4ffd34485e33c5f5': 'https://www.youtube-nocookie.com/embed/67PFalZks5I',
+  // pvl
+  '0xd9d00c42bed99a6d3a0f2902c640bccceecf6c29': 'https://www.youtube-nocookie.com/embed/yIHFRJDA7cM',
+  // CodeKnight
+  '0xe89f973a19cd76c3e5e236062668e43042176638': 'https://www.youtube-nocookie.com/embed/KZFZ1xQ6ZzU',
+  // monetsupply
+  '0xb056e45fd47d962f4ef25714714abc7a79886064': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg'
 };
