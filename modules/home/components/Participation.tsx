@@ -1,5 +1,4 @@
 import { Text, Image, Flex, Heading, Container, Link as ExternalLink, Card } from 'theme-ui';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from './ViewMore';
 import useSWR from 'swr';
@@ -17,13 +16,13 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Flex sx={{ justifyContent: 'space-between' }}>
-        <Heading>Relevant Forum Posts</Heading>
+        <Heading>Browse the Governance Forum</Heading>
         <ExternalLink href="https://forum.makerdao.com/" title="View Forum Posts" target="_blank">
           <ViewMore label="View Forum" />
         </ExternalLink>
       </Flex>
       <Flex sx={{ gap: 3, justifyContent: 'space-between', flexWrap: 'wrap' }}>
-        {posts.map(({ title, image, summary, username, link }) => {
+        {posts.map(({ title, image, summary, link }) => {
           return (
             <Card
               key={title}
@@ -52,9 +51,6 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
                     <Heading variant="microHeading">{title}</Heading>
                     <Text variant="smallText" sx={{ color: 'textSecondary' }}>
                       {summary}
-                    </Text>
-                    <Text variant="smallText" sx={{ fontStyle: 'italic' }}>
-                      by {username}
                     </Text>
                   </Flex>
                   <ExternalLink href={link} title="View Forum Post" target="_blank">
