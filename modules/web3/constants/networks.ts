@@ -89,7 +89,7 @@ export const CHAIN_INFO: ChainInfo = {
 
 export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
   [GaslessChainId.ARBITRUMTESTNET]: {
-    blockExplorerUrl: 'testnet.arbiscan.io',
+    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
     blockExplorerName: 'Arbiscan',
     chainId: GaslessChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',

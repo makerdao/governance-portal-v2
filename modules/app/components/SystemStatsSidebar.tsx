@@ -14,9 +14,12 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
+import { GaslessNetworks, SupportedNetworks } from 'modules/web3/constants/networks';
 
 type StatField =
   | 'chief contract'
+  | 'arbitrum polling contract'
   | 'mkr in chief'
   | 'polling contract'
   | 'mkr needed to pass'
@@ -84,6 +87,32 @@ export default function SystemStatsSidebar({
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
               <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
+                <Text>{formatAddress(pollingAddress)}</Text>
+              </ExternalLink>
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'arbitrum polling contract': key => {
+      const pollingAddress = ArbitrumPollingAddressMap[network];
+      const arbitrumNetwork =
+        network === SupportedNetworks.MAINNET ? GaslessNetworks.ARBITRUM : GaslessNetworks.ARBITRUMTESTNET;
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Arbitrum Polling Contract</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {pollingAddress ? (
+              <ExternalLink
+                href={getEtherscanLink(arbitrumNetwork, pollingAddress, 'address')}
+                target="_blank"
+              >
                 <Text>{formatAddress(pollingAddress)}</Text>
               </ExternalLink>
             ) : (

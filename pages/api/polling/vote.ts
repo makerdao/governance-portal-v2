@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
 import { ethers } from 'ethers';
 import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
@@ -8,13 +7,12 @@ import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
 import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
-// maybe we should use eth-sdk for this if it supports arb testnet
-import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { config } from 'lib/config';
 import { fetchJson } from 'lib/fetchJson';
 import { WAD } from 'modules/web3/constants/numbers';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 
 const MIN_MKR = 0.1;
 
@@ -36,18 +34,7 @@ export default withApiHandler(
 
       const cacheKey = getRecentlyUsedGaslessVoting(voter);
 
-      const credentials = { apiKey: config.DEFENDER_API_KEY, apiSecret: config.DEFENDER_API_SECRET };
-      const provider = new DefenderRelayProvider(credentials);
-      const signer = new DefenderRelaySigner(credentials, provider, {
-        speed: 'fast'
-      });
-      const pollingContract = new ethers.Contract(
-        // arbitrum testnet polling address,
-        // maybe we should use eth-sdk for this if it's supported
-        '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050',
-        PollingContractAbi,
-        signer
-      );
+      const pollingContract = getArbitrumPollingContract();
 
       if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) return res.status(401).json('Wrong secret');
 
@@ -69,8 +56,7 @@ export default withApiHandler(
 
         //verify valid nonce and expiry date
         const nonceFromContract = await pollingContract.nonces(voter);
-        if (nonceFromContract.toNumber() !== parseInt(nonce))
-          return res.status(400).json('Invalid nonce for address');
+        if (nonceFromContract.toNumber() !== nonce) return res.status(400).json('Invalid nonce for address');
         if (expiry >= Date.now()) return res.status(400).json('Expiration date already passed');
 
         //verify address has a poll weight > 0.1 MKR
