@@ -25,8 +25,10 @@ export default withApiHandler(
       const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
 
       if (typeof voter !== 'string') return res.status(401).json('voter must be a string');
-      if (!Array.isArray(pollIds) || !pollIds.every(e => typeof e === 'number')) return res.status(401).json('pollIds must be an array of numbers');
-      if (!Array.isArray(optionIds) || !optionIds.every(e => typeof e === 'number')) return res.status(401).json('optionIds must be an array of numbers');
+      if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e))))
+        return res.status(401).json('pollIds must be an array of numbers');
+      if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e))))
+        return res.status(401).json('optionIds must be an array of numbers');
       if (typeof nonce !== 'number') return res.status(401).json('nonce must be a number');
       if (typeof expiry !== 'number') return res.status(401).json('expiry must be a number');
       if (typeof signature !== 'string') return res.status(401).json('signature must be a string');
