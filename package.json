@@ -1,7 +1,7 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "jest": {
     "testTimeout": 7000
   },
@@ -33,6 +33,7 @@
     "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\""
   },
   "dependencies": {
+    "@ensdomains/ens-avatar": "^0.1.6",
     "@ethersproject/experimental": "^5.5.0",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
@@ -61,7 +62,6 @@
     "ethers": "^5.5.2",
     "graphql-request": "^4.0.0",
     "gray-matter": "^4.0.2",
-    "hardhat": "^2.9.1",
     "ioredis": "^5.0.6",
     "ipfs-only-hash": "^4.0.0",
     "lodash": "^4.17.21",
@@ -101,7 +101,7 @@
   "devDependencies": {
     "@dethcrypto/eth-sdk": "^0.3.1",
     "@dethcrypto/eth-sdk-client": "^0.1.6",
-    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/cli": "^2.11.7",
     "@graphql-codegen/introspection": "^2.1.1",
     "@graphql-codegen/typescript": "^2.4.5",
     "@graphql-codegen/typescript-operations": "^2.3.2",
@@ -132,6 +132,7 @@
     "eslint-plugin-testing-library": "^4.10.1",
     "glob": "^8.0.3",
     "graphql": "^16.2.0",
+    "hardhat": "^2.10.2",
     "husky": "^6.0.0",
     "jest": "^26.0.1",
     "jest-canvas-mock": "^2.3.1",

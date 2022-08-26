@@ -63,7 +63,7 @@ export default function Cookies(): React.ReactElement | null {
         >
           <Box sx={{ mr: 2 }}>
             <Label>
-              <Text sx={{ fontSize: 2, mr: 1 }}>Functional Cookies</Text>
+              <Text sx={{ fontSize: 2, mr: 1 }}>Functional cookies</Text>
               <Checkbox
                 type="checkbox"
                 checked={cookies.functional}
