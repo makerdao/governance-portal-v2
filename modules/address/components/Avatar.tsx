@@ -1,5 +1,5 @@
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useEffect, useCallback, useState, ReactChild, CSSProperties } from 'react';
 import { AvatarResolver } from '@ensdomains/ens-avatar';
 import Jazzicon from './Jazzicon';
@@ -13,12 +13,13 @@ export interface AvatarProps {
 }
 
 export function Avatar({ size, address, defaultComponent, style }: AvatarProps): JSX.Element {
-  const { chainId, library } = useActiveWeb3React();
+  const { chainId, provider: library } = useWeb3();
+  // const { chainId, library } = useActiveWeb3React();
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
-  const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
 
   const fetchAvatarUri = async () => {
     if (library && address && chainId !== SupportedChainId.GOERLIFORK) {
+      const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
       try {
         const ensName = await library.lookupAddress(address);
         if (ensName) {
