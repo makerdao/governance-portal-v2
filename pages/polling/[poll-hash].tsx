@@ -31,7 +31,7 @@ import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -342,7 +342,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
@@ -404,11 +404,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const pollsResponse = await getPolls();
-  const MAX = 10;
+  const MAX = 5;
   const paths = pollsResponse.polls.slice(0, MAX).map(p => `/polling/${p.slug}`);
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: true
   };
 };

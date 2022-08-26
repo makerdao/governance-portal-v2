@@ -6,20 +6,18 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
 import lottie from 'lottie-web';
-
-import { Poll } from 'modules/polling/types';
 import { isActivePoll } from 'modules/polling/helpers/utils';
+import { Poll } from 'modules/polling/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-
 import { useRouter } from 'next/router';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { BallotContext } from '../context/BallotContext';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import QuickVote from './poll-vote-input/QuickVote';
+import { BallotContext } from '../context/BallotContext';
 
 enum ViewState {
   START,
@@ -43,7 +41,7 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const { ballot, ballotCount } = useContext(BallotContext);
 

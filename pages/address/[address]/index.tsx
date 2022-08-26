@@ -17,7 +17,7 @@ import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { DelegateDetail } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -92,7 +92,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
 export default function AddressPage(): JSX.Element {
   const router = useRouter();
   const { address } = router.query;
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { cache } = useSWRConfig();
 
   const dataKeyAccount = `/api/address/${address}?network=${network}`;
