@@ -404,11 +404,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const pollsResponse = await getPolls();
-  const MAX = 10;
+  const MAX = 5;
   const paths = pollsResponse.polls.slice(0, MAX).map(p => `/polling/${p.slug}`);
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: true
   };
 };
