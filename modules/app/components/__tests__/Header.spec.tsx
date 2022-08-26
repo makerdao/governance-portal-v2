@@ -10,7 +10,23 @@ import { useRouter } from 'next/router';
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+      events: {
+        on: jest.fn(),
+        off: jest.fn()
+      },
+      beforePopState: jest.fn(() => null),
+      prefetch: jest.fn(() => null)
+    };
+  }
+}));
 
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
@@ -23,7 +39,6 @@ describe('Header component', () => {
     (useAccount as jest.Mock).mockReturnValue({
       account: ''
     });
-    (useRouter as jest.Mock).mockReturnValue({ pathname: '' });
   });
 
   test('finds icons and an empty connect button', async () => {

@@ -4,14 +4,27 @@ import { screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { useRouter } from 'next/router';
 
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+      events: {
+        on: jest.fn(),
+        off: jest.fn()
+      },
+      beforePopState: jest.fn(() => null),
+      prefetch: jest.fn(() => null)
+    };
+  }
+}));
 
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 describe('Account select', () => {
-  beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({ pathname: '' });
-  });
   test('can connect an account', async () => {
     render(<WrappedAccountSelect />);
     const connectButton = await screen.findByText('Connect wallet');
