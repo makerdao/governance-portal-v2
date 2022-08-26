@@ -1,8 +1,7 @@
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { ConnectorName } from './connectors';
+import { WalletName, ConnectionType } from 'modules/web3/constants/wallets';
 
 export interface WalletInfo {
-  connector: AbstractConnector;
-  name: ConnectorName;
+  connectionType: ConnectionType;
+  name: WalletName;
   deeplinkUri?: string;
 }

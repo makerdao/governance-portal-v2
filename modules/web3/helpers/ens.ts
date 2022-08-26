@@ -5,13 +5,13 @@ import logger from 'lib/logger';
 
 export async function getENS({
   address,
-  library
+  provider
 }: {
   address: string;
-  library: Web3Provider;
+  provider: Web3Provider;
 }): Promise<string | null> {
   try {
-    const name = await library.lookupAddress(address);
+    const name = await provider.lookupAddress(address);
     return name;
   } catch (err) {
     logger.error(`getENS: ${address}. Unable to get ENS.`, err);

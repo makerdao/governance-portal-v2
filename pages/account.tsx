@@ -18,7 +18,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
@@ -32,7 +32,7 @@ import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const {
     account,
     mutate: mutateAccount,

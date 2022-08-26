@@ -4,28 +4,41 @@ import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import { useWeb3React } from '@web3-react/core';
 import { formatAddress } from 'lib/utils';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
-
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useRouter } from 'next/router';
-import { getENS } from 'modules/web3/helpers/ens';
 
-jest.mock('modules/web3/helpers/ens');
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+      events: {
+        on: jest.fn(),
+        off: jest.fn()
+      },
+      beforePopState: jest.fn(() => null),
+      prefetch: jest.fn(() => null)
+    };
+  }
+}));
+
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 describe('Header component', () => {
   beforeEach(() => {
     (useWeb3React as jest.Mock).mockReturnValue({
-      account: '',
-      activate: () => null
+      account: ''
     });
     (useDelegateAddressMap as jest.Mock).mockReturnValue({ data: {} });
     (useAccount as jest.Mock).mockReturnValue({
       account: ''
     });
-    (useRouter as jest.Mock).mockReturnValue({ pathname: '' });
   });
 
   test('finds icons and an empty connect button', async () => {
@@ -40,7 +53,6 @@ describe('Header component', () => {
 
   test('display account when connected', async () => {
     const address = '0x477b8D5eF7C2C42DB84deB555419cd817c336b6J';
-    (getENS as jest.Mock).mockImplementation(address => Promise.resolve(address));
 
     (useWeb3React as jest.Mock).mockReturnValue({
       account: address,

@@ -1,12 +1,12 @@
 import { Flex, Button, Text, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const BurnTxSuccess = ({ tx, close }) => {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

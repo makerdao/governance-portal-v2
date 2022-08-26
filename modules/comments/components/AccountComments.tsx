@@ -1,4 +1,4 @@
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR from 'swr';
 import { Box, Text } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
@@ -7,7 +7,7 @@ import { formatDateWithTime } from 'lib/datetime';
 import { InternalLink } from 'modules/app/components/InternalLink';
 
 export default function AccountComments({ address }: { address: string }): React.ReactElement {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const { data, error, isValidating } = useSWR<{
     comments: CommentsAPIResponseItem[];

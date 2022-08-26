@@ -8,8 +8,8 @@ import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 
 type CreateResponse = {
   txId: string | null;
@@ -28,7 +28,7 @@ export const usePollCreate = (): CreateResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   // We want to use the original polling contract deployment for creating polls to avoid pollId collisions
   const { pollingOld, polling } = useContracts() as MainnetSdk;

@@ -21,7 +21,7 @@ import { useVoteProxyVote } from 'modules/executive/hooks/useVoteProxyVote';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber, utils } from 'ethers';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { sign } from 'modules/web3/helpers/sign';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -49,7 +49,7 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
-  const { network, library } = useActiveWeb3React();
+  const { network, provider } = useWeb3();
   const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
@@ -76,6 +76,7 @@ export default function DefaultVoteModalView({
   const [isFetchingNonce, setIsFetcingNonce] = useState(false);
 
   const signComment = async () => {
+    if (!provider) return;
     try {
       setIsFetcingNonce(true);
       const data = await fetchJson('/api/comments/nonce', {
@@ -88,7 +89,7 @@ export default function DefaultVoteModalView({
         })
       });
       setIsFetcingNonce(false);
-      const signed = await sign(account?.toLowerCase() as string, data.nonce, library);
+      const signed = await sign(account?.toLowerCase() as string, data.nonce, provider);
       setSignedMessage(signed);
     } catch (e) {
       setIsFetcingNonce(false);

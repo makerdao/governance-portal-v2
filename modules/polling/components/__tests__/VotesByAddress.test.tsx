@@ -7,6 +7,7 @@ import { Poll, PollTally } from 'modules/polling/types';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 const mockPoll: Poll = {
   ...mockPolls[0],

@@ -1,21 +1,30 @@
 import { useMemo } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
-import { EthSdk, getContracts } from '../helpers/getContracts';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { getContracts } from '../helpers/getContracts';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { SupportedChainId } from '../constants/chainID';
+import { isSupportedChain } from 'modules/web3/helpers/chain';
+import { EthSdk } from '../types/contracts';
 
 type Props = {
   chainId?: SupportedChainId;
-  library?: Web3Provider;
+  provider?: Web3Provider;
   account?: string | null;
 };
 
 export const useContracts = (apiKey?: string): EthSdk => {
-  const { chainId, library, account }: Props = useActiveWeb3React();
+  const { chainId, provider, account }: Props = useWeb3();
 
   const sdk = useMemo(
-    () => getContracts(chainId ?? SupportedChainId.MAINNET, library, account, false, apiKey),
-    [chainId, library, account]
+    () =>
+      getContracts(
+        isSupportedChain(chainId) ? chainId : SupportedChainId.MAINNET,
+        provider,
+        account,
+        false,
+        apiKey
+      ),
+    [chainId, provider, account]
   );
 
   return sdk;
