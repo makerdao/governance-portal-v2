@@ -1,7 +1,7 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "jest": {
     "testTimeout": 7000
   },
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.3.0",
+    "@ensdomains/ens-avatar": "^0.1.6",
     "@ethersproject/experimental": "^5.5.0",
     "@makerdao-dux/gnosis-safe": "^8.0.6-beta.1",
     "@makerdao/dai-ui-icons": "^0.0.39",
