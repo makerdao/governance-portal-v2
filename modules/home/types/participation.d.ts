@@ -13,7 +13,6 @@ export type AllLocksResponse = {
 export type ForumPost = {
   title: string;
   summary: string;
-  username: string;
   link: string;
   image: string;
 };
