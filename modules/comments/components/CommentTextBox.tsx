@@ -1,7 +1,6 @@
 import React from 'react';
-import { Text, Box, Label, Textarea } from 'theme-ui';
+import { Text, Box, Label, Textarea, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import TooltipComponent from 'modules/app/components/Tooltip';
 
 export default function CommentTextBox({
   value,
@@ -21,9 +20,11 @@ export default function CommentTextBox({
         borderColor: 'secondaryMuted'
       }}
     >
-      <Label variant="microHeading" sx={{ fontSize: 3, mb: 1 }}>
-        Why are you voting for this proposal?
-      </Label>
+      <Flex sx={{ justifyContent: 'flex-start' }}>
+        <Label variant="microHeading" sx={{ fontSize: 3, mb: 1 }}>
+          Why are you voting for this proposal?&nbsp;<Text variant="secondary">(Optional)</Text>
+        </Label>
+      </Flex>
       <Textarea
         data-testid="poll-comment-box"
         sx={{
@@ -41,20 +42,19 @@ export default function CommentTextBox({
         value={value}
         disabled={disabled}
       />
-
       <Text
         as="p"
-        variant="text"
+        variant="textSecondary"
         sx={{ fontSize: 1, color: value.length > 1500 ? 'error' : 'textMuted', mt: 1 }}
       >
-        Optional. You&apos;ll be prompted to sign a message with your wallet. {1500 - value.length} characters
-        remaining. Commenting is not yet supported for multisig users.{' '}
-        <TooltipComponent label={'Your comment may take some minutes to appear into the voting portal.'}>
-          <Text>
-            <Icon name="info" />
-          </Text>
-        </TooltipComponent>
+        {1500 - value.length} characters remaining
       </Text>
+      <Flex sx={{ alignItems: 'center', mt: 2 }}>
+        <Icon name="info" color="textSecondary" />
+        <Text as="p" variant="secondary" sx={{ ml: 1 }}>
+          Commenting is not yet supported for multisig users
+        </Text>
+      </Flex>
     </Box>
   );
 }

@@ -9,6 +9,8 @@ const config: EthSdkConfig = {
       chief: '0x0a3f6849f78076aefaDf113F5BED87720274dDC0',
       chiefOld: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
       dai: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      // This is an arbitrary spell address that must be changed with each implementation
+      dssSpell: '0x6f076E9eB81828fa83d9c3E0aa3E088AD24Ee20B',
       end: '0x0e2e8F1D1326A4B9633D96222Ce399c708B19c28',
       esm: '0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58',
       iou: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7',
@@ -28,6 +30,8 @@ const config: EthSdkConfig = {
     goerli: {
       chief: '0x33Ed584fc655b08b2bca45E1C5b5f07c98053bC1',
       dai: '0x11fe4b6ae13d2a6055c8d9cf65c55bac32b5d844',
+      // This is an arbitrary spell address that must be changed with each implementation
+      dssSpell: '0xc4BCED0F4f141915dcCE58DbAB2D2DEe88af472B',
       end: '0xb82F60bAf6980b9fE035A82cF6Acb770C06d3896',
       esm: '0x023A960cb9BE7eDE35B433256f4AfE9013334b55',
       iou: '0x651D1B91e4F657392a51Dba7A6A1A1a72eC6aD1c',
@@ -46,7 +50,7 @@ const config: EthSdkConfig = {
       polling: '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050'
     }
   },
-  etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY },
+  etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY || '' },
   etherscanURLs: {
     arbitrumGoerliTestnet: 'https://goerli-rollup-explorer.arbitrum.io/api'
   }

@@ -1,62 +1,107 @@
 import React from 'react';
-import { PluralityResult, Poll, PollTally, RankedChoiceResult } from '../types';
+import { Poll, PollTally, PollVictoryConditionComparison } from '../types';
 import { Flex } from 'theme-ui';
 import {
   isActivePoll,
   isInputFormatChooseFree,
   isInputFormatRankFree,
-  isInputFormatSingleChoice
+  isInputFormatSingleChoice,
+  findVictoryCondition
 } from '../helpers/utils';
-import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { StatusText } from 'modules/app/components/StatusText';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { PollVictoryConditions } from '../polling.constants';
 
 export default function PollWinningOptionBox({
   tally,
   poll
 }: {
   poll: Poll;
-  tally?: PollTally;
+  tally: PollTally;
 }): React.ReactElement {
-  const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
+  const isFinishedWithNoWinner = !tally.winner && !isActivePoll(poll);
+
+  const numberOfLeadingOptions = tally.results.filter(
+    result => result.mkrSupport === tally.results[0].mkrSupport
+  ).length;
+
+  // Winner will be null if the winning conditions are not met, but we want to display the leading option too
+  const leadingOption = typeof tally.winner === 'number' ? tally.winner : tally.results[0].optionId;
+  const leadingOptionName = `${
+    typeof tally.winner === 'number' ? tally.winningOptionName : tally.results[0].optionName
+  }${numberOfLeadingOptions > 1 ? ` & ${numberOfLeadingOptions - 1} more` : ''}`;
+
+  const winningVictoryCondition = tally.parameters.victoryConditions.find(
+    (v, index) => index === tally.victoryConditionMatched
+  );
+
+  let textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
+  let isDefault = false;
+
+  const hasComparison = findVictoryCondition(
+    poll.parameters.victoryConditions,
+    PollVictoryConditions.comparison
+  ) as PollVictoryConditionComparison[];
+
+  const comparisonText =
+    hasComparison.length > 0 &&
+    hasComparison[0].comparator === '>=' &&
+    ` Requires ${formatValue(parseUnits(hasComparison[0].value.toString()))} MKR participation. `;
+
+  if (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) {
+    textWin = `No winner condition met.${comparisonText ? comparisonText : ' '}Defaulting to`;
+    isDefault = true;
+  }
+
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
-      {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
-        <StatusText>
+      <ErrorBoundary componentName="Winning option">
+        {tally.totalMkrActiveParticipation > 0 ? (
           <>
-            {textWin}:{' '}
-            <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.parameters.inputFormat) }}>
-              {tally?.winningOptionName}
-            </span>{' '}
-            {isInputFormatSingleChoice(poll.parameters) &&
-              'with ' +
-                formatValue(
-                  parseUnits(
-                    (tally.results as PluralityResult[])
-                      .find(({ optionId }) => optionId === tally.winner)
-                      ?.mkrSupport.toString() || '0'
-                  )
-                ) +
-                ' MKR supporting.'}
-            {(isInputFormatRankFree(poll.parameters) || isInputFormatChooseFree(poll.parameters)) &&
-              'with ' +
-                formatValue(
-                  parseUnits(
-                    (tally.results as RankedChoiceResult[])
-                      .find(({ optionId }) => optionId === tally.winner)
-                      ?.firstChoice.toString() || '0'
-                  )
-                ) +
-                ' MKR supporting as first choice.'}
+            {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
+
+            {(isActivePoll(poll) || !isFinishedWithNoWinner) && (
+              <StatusText>
+                <>
+                  {textWin}:{' '}
+                  <span sx={{ color: getVoteColor(leadingOption, poll.parameters) }}>
+                    {leadingOptionName}
+                  </span>
+                  {!isDefault &&
+                    (isInputFormatSingleChoice(poll.parameters) ||
+                      isInputFormatChooseFree(poll.parameters)) &&
+                    ' with ' +
+                      formatValue(
+                        parseUnits(
+                          tally.results
+                            .find(({ optionId }) => optionId === leadingOption)
+                            ?.mkrSupport.toString() || '0'
+                        )
+                      ) +
+                      ' MKR supporting.'}
+                  {!isDefault &&
+                    isInputFormatRankFree(poll.parameters) &&
+                    ' with ' +
+                      formatValue(
+                        parseUnits(
+                          tally.results
+                            .find(({ optionId }) => optionId === leadingOption)
+                            ?.mkrSupport.toString() || '0'
+                        )
+                      ) +
+                      ' MKR supporting as first choice.'}
+                  {isDefault && '.'}
+                </>
+              </StatusText>
+            )}
           </>
-        </StatusText>
-      ) : tally && !tally.winningOptionName ? (
-        <StatusText>{isActivePoll(poll) ? 'No leading option' : 'No winning option'}</StatusText>
-      ) : (
-        <SkeletonThemed />
-      )}
+        ) : (
+          <StatusText>No participation.</StatusText>
+        )}
+      </ErrorBoundary>
     </Flex>
   );
 }

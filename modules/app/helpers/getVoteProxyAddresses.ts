@@ -45,7 +45,7 @@ export const getVoteProxyAddresses = async (
     );
 
     // this will fail if vpContract is not an instance of vote proxy
-    const [proxyAddressCold, proxyAddressHot] = await Promise.all([vpContract.hot(), vpContract.cold()]);
+    const [proxyAddressCold, proxyAddressHot] = await Promise.all([vpContract.cold(), vpContract.hot()]);
 
     // if the calls above didn't fail, account is a proxy contract, so set values
     hotAddress = proxyAddressHot;

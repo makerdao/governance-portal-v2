@@ -9,7 +9,7 @@ import TxIndicators from 'modules/app/components/TxIndicators';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { TXMined } from 'modules/web3/types/transaction';
 import { getBlockExplorerName } from 'modules/web3/constants/networks';
 
@@ -30,7 +30,7 @@ export function BallotModals({ onSubmit }: { onSubmit: () => void }): React.Reac
   } = useContext(BallotContext);
   const bpi = useBreakpointIndex();
 
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   //todo: create separate components for each modal
 

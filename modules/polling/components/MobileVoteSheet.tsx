@@ -5,26 +5,18 @@ import invariant from 'tiny-invariant';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
-import isEqual from 'lodash/isEqual';
 import lottie from 'lottie-web';
-
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
-import { extractCurrentPollVote, isActivePoll, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-
-import RankedChoiceSelect from './RankedChoiceSelect';
-import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import QuickVote from './poll-vote-input/QuickVote';
 import { BallotContext } from '../context/BallotContext';
 
 enum ViewState {
@@ -49,19 +41,10 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const { account, voteDelegateContractAddress } = useAccount();
+  const { network } = useWeb3();
 
-  const { network } = useActiveWeb3React();
-  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
-  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
+  const { ballot, ballotCount } = useContext(BallotContext);
 
-  const currentVote = extractCurrentPollVote(poll, allUserVotes);
-
-  const { addVoteToBallot, ballot, removeVoteFromBallot, ballotCount } = useContext(BallotContext);
-
-  const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
-  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
   const router = useRouter();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
@@ -80,13 +63,6 @@ export default function MobileVoteSheet({
   }, [pollsData]);
 
   const submit = () => {
-    invariant(isChoiceValid);
-    if (currentVote && isEqual(currentVote, choice)) {
-      removeVoteFromBallot(poll.pollId);
-      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
-    } else {
-      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
-    }
     if (editingOnly) {
       if (close) {
         close();
@@ -99,7 +75,6 @@ export default function MobileVoteSheet({
   };
 
   const goToNextPoll = () => {
-    setChoice(null);
     const nextPoll = activePolls.find(p => !ballot[p.pollId]);
     invariant(nextPoll && setPoll);
     setPoll(nextPoll);
@@ -217,23 +192,9 @@ export default function MobileVoteSheet({
               <Text>{poll.summary}</Text>
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
-              ) : isInputFormatRankFree(poll.parameters) ? (
-                <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
               ) : (
-                <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
+                <QuickVote poll={poll} onSubmit={submit} buttonVariant="primaryLarge" />
               )}
-              <Button
-                variant="primaryLarge"
-                data-testid="button-add-vote-to-ballot"
-                sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                onClick={() => {
-                  trackButtonClick('addVoteToBallot');
-                  submit();
-                }}
-                disabled={!isChoiceValid || viewState == ViewState.ADDING}
-              >
-                {editingOnly ? 'Update vote' : 'Add vote to ballot'}
-              </Button>
             </Stack>
           )}
         </DialogContent>

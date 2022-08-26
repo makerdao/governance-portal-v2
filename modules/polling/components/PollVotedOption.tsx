@@ -6,7 +6,7 @@ import { Box, Button, Flex, Text, Link as ThemeUILink } from 'theme-ui';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { Poll } from '../types';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import InternalIcon from 'modules/app/components/Icon';
 import { isInputFormatSingleChoice } from '../helpers/utils';
 
@@ -23,7 +23,7 @@ export default function PollVotedOption({
   transactionHash: string;
   votingWeight?: BigNumber;
 }): React.ReactElement {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Box>
@@ -40,7 +40,7 @@ export default function PollVotedOption({
           <Flex sx={{ justifyContent: ['flex-start', 'flex-end'] }}>
             <Text
               sx={{
-                color: getVoteColor(votedOption as number, poll.parameters.inputFormat),
+                color: getVoteColor(votedOption as number, poll.parameters),
                 fontWeight: 'semiBold',
                 fontSize: 2
               }}

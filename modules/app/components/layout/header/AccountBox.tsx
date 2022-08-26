@@ -4,14 +4,14 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress } from 'lib/utils';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AddressIcon from 'modules/address/components/AddressIcon';
-import { ConnectorName } from 'modules/web3/types/connectors';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { WalletName } from 'modules/web3/constants/wallets';
 
 type Props = {
   address: string;
-  accountName: ConnectorName | undefined;
+  accountName?: WalletName;
   change: () => void;
   disconnect: () => void;
 };
@@ -19,7 +19,7 @@ type Props = {
 const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [copied, setCopied] = useState(false);
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Flex

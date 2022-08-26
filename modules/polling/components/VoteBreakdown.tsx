@@ -2,13 +2,18 @@ import { Box, Text, Progress, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';
-import { Icon } from '@makerdao/dai-ui-icons';
-import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
+import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
-import { isResultDisplayInstantRunoffBreakdown } from '../helpers/utils';
+import {
+  isResultDisplayApprovalBreakdown,
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from '../helpers/utils';
+import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
+import React from 'react';
 
 export default function VoteBreakdown({
   poll,
@@ -19,24 +24,85 @@ export default function VoteBreakdown({
   shownOptions: number;
   tally: PollTally | undefined;
 }): JSX.Element {
-  if (isResultDisplayInstantRunoffBreakdown(poll.parameters)) {
-    return (
-      <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
-        <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
-          <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
-            Vote Breakdown
-          </Text>
-          <Flex sx={{ alignItems: 'center', mb: 3 }}>
-            <Text variant="caps">Ranked-choice poll</Text>
-            <Icon name="stackedVotes" size={3} ml={2} />
-          </Flex>
-        </Flex>
-        {Object.keys(poll.options)
+  return (
+    <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
+      <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
+        <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
+          Vote Breakdown
+        </Text>
+        <Box sx={{ mb: 3 }}>
+          <PollVoteTypeIndicator poll={poll} />
+          {isResultDisplayInstantRunoffBreakdown(poll.parameters) && (
+            <Text as="p" variant="caps" sx={{ textAlign: 'left' }}>
+              Rounds: {tally?.rounds || 0}
+            </Text>
+          )}
+        </Box>
+      </Flex>
+      {isResultDisplayApprovalBreakdown(poll.parameters) &&
+        Object.keys(poll.options).map((_, i) => {
+          const tallyResult = tally?.results.find(r => r.optionId === i);
+          const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
+
+          return (
+            <div key={i}>
+              <Flex sx={{ justifyContent: 'space-between' }}>
+                {tally && tallyResult ? (
+                  <React.Fragment>
+                    <Text as="p" sx={{ color: 'textSecondary', mr: 2 }}>
+                      {tallyResult.optionName}
+                    </Text>
+                    <Text
+                      as="p"
+                      sx={{
+                        color: 'textSecondary',
+                        width: tally ? 'unset' : '30%',
+                        textAlign: 'right'
+                      }}
+                    >
+                      {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting`}
+                      {!isResultDisplayApprovalBreakdown(poll.parameters)
+                        ? ` (${formatValue(parseUnits(tallyResult.firstPct.toString()))}%)`
+                        : ''}
+                    </Text>
+                  </React.Fragment>
+                ) : (
+                  <Delay>
+                    <Skeleton />
+                  </Delay>
+                )}
+              </Flex>
+
+              {tally && tallyResult ? (
+                <Tooltip label={`First choice ${formatValue(parseUnits(mkrSupport.toString()))}`}>
+                  <Box my={2}>
+                    <Progress
+                      sx={{
+                        backgroundColor: 'muted',
+                        mb: '3',
+                        height: 2,
+                        color: getVoteColor(tallyResult.optionId, poll.parameters)
+                      }}
+                      max={tally.totalMkrParticipation}
+                      value={mkrSupport}
+                    />
+                  </Box>
+                </Tooltip>
+              ) : (
+                <Delay>
+                  <Skeleton />
+                </Delay>
+              )}
+            </div>
+          );
+        })}
+      {isResultDisplayInstantRunoffBreakdown(poll.parameters) &&
+        Object.keys(poll.options)
           .slice(0, shownOptions)
           .map((_, i) => {
-            const tallyResult = tally?.results[i] as RankedChoiceResult;
-            const firstChoice = new BigNumberJS(tallyResult.firstChoice || 0);
-            const transfer = new BigNumberJS(tallyResult.transfer || 0);
+            const tallyResult = tally?.results[i];
+            const firstChoice = new BigNumberJS(tallyResult?.mkrSupport || 0);
+            const transfer = new BigNumberJS(tallyResult?.transfer || 0);
             return (
               <div key={i}>
                 <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
@@ -62,7 +128,7 @@ export default function VoteBreakdown({
                         parseUnits(firstChoice.plus(transfer).toString())
                       )} MKR Voting (${formatValue(
                         parseUnits(
-                          new BigNumberJS(tallyResult.firstPct).plus(tallyResult.transferPct).toString()
+                          new BigNumberJS(tallyResult.firstPct).plus(tallyResult?.transferPct || 0).toString()
                         )
                       )}%)`}
                     </Text>
@@ -120,74 +186,66 @@ export default function VoteBreakdown({
               </div>
             );
           })}
-      </Box>
-    );
-  }
+      {isResultDisplaySingleVoteBreakdown(poll.parameters) &&
+        Object.keys(poll.options).map((_, i) => {
+          const tallyResult = tally?.results[i];
+          const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
 
-  return (
-    <div key={2} sx={{ p: [3, 4] }}>
-      <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
-        Vote Breakdown
-      </Text>
-      {Object.keys(poll.options).map((_, i) => {
-        const tallyResult = tally?.results[i] as PluralityResult;
-        const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
-
-        return (
-          <div key={i}>
-            <Flex sx={{ justifyContent: 'space-between' }}>
-              {tallyResult ? (
-                <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
-                  {tallyResult.optionName}
-                </Text>
-              ) : (
-                <Delay>
-                  <Skeleton />
-                </Delay>
-              )}
-              {tally && tallyResult ? (
-                <Text
-                  as="p"
-                  sx={{
-                    color: 'textSecondary',
-                    width: tally ? 'unset' : '30%',
-                    textAlign: 'right'
-                  }}
-                >
-                  {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting (${formatValue(
-                    parseUnits(tallyResult.firstPct.toString())
-                  )}%)`}
-                </Text>
-              ) : (
-                <Delay>
-                  <Skeleton />
-                </Delay>
-              )}
-            </Flex>
-
-            {tally && tallyResult ? (
-              <Tooltip label={`First choice ${formatValue(parseUnits(mkrSupport.toString()))}`}>
-                <Box my={2}>
-                  <Progress
+          return (
+            <div key={i}>
+              <Flex sx={{ justifyContent: 'space-between' }}>
+                {tallyResult ? (
+                  <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
+                    {tallyResult.optionName}
+                  </Text>
+                ) : (
+                  <Delay>
+                    <Skeleton />
+                  </Delay>
+                )}
+                {tally && tallyResult ? (
+                  <Text
+                    as="p"
                     sx={{
-                      backgroundColor: 'muted',
-                      mb: '3',
-                      height: 2,
-                      color: getVoteColor(parseInt(tallyResult.optionId), poll.parameters.inputFormat)
+                      color: 'textSecondary',
+                      width: tally ? 'unset' : '30%',
+                      textAlign: 'right'
                     }}
-                    max={tally.totalMkrParticipation}
-                    value={mkrSupport}
-                  />
-                </Box>
-              </Tooltip>
-            ) : (
-              <Delay>
-                <Skeleton />
-              </Delay>
-            )}
-          </div>
-        );
-      })}
-    </div>
+                  >
+                    {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting (${formatValue(
+                      parseUnits(tallyResult.firstPct.toString())
+                    )}%)`}
+                  </Text>
+                ) : (
+                  <Delay>
+                    <Skeleton />
+                  </Delay>
+                )}
+              </Flex>
+
+              {tally && tallyResult ? (
+                <Tooltip label={`First choice ${formatValue(parseUnits(mkrSupport.toString()))}`}>
+                  <Box my={2}>
+                    <Progress
+                      sx={{
+                        backgroundColor: 'muted',
+                        mb: '3',
+                        height: 2,
+                        color: getVoteColor(tallyResult.optionId, poll.parameters)
+                      }}
+                      max={tally.totalMkrParticipation}
+                      value={mkrSupport}
+                    />
+                  </Box>
+                </Tooltip>
+              ) : (
+                <Delay>
+                  <Skeleton />
+                </Delay>
+              )}
+            </div>
+          );
+        })}
+    </Box>
   );
 }

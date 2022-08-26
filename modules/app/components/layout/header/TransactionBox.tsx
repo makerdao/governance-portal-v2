@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Transaction, TXPending } from 'modules/web3/types/transaction';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 
 type Props = {
   tx: Transaction;
@@ -14,7 +14,7 @@ type MainProps = {
   txs: Transaction[];
 };
 const TransactionRow = ({ tx, index }: Props): JSX.Element => {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Flex

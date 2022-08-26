@@ -1,5 +1,5 @@
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useEffect, useState, ReactChild, CSSProperties } from 'react';
 
 import Image from './Image';
@@ -14,15 +14,15 @@ export interface DavatarProps {
 }
 
 export default function Davatar({ size, address, defaultComponent, style }: DavatarProps): JSX.Element {
-  const { chainId, library } = useActiveWeb3React();
+  const { chainId, provider } = useWeb3();
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
   useEffect(() => {
-    if (library) {
-      if (chainId !== SupportedChainId.GOERLIFORK) {
-        library.lookupAddress(address).then(ensName => {
+    if (provider) {
+      if (chainId === SupportedChainId.MAINNET) {
+        provider.lookupAddress(address).then(ensName => {
           if (ensName) {
-            library.getResolver(ensName).then(resolver => {
+            provider.getResolver(ensName).then(resolver => {
               resolver &&
                 resolver.getText('avatar').then(avatar => {
                   if (avatar && avatar.length > 0) {
@@ -34,14 +34,14 @@ export default function Davatar({ size, address, defaultComponent, style }: Dava
         });
       }
     }
-  }, [address, library]);
+  }, [address, provider]);
 
   return (
     <Image
       size={size}
       address={address}
       uri={avatarUri}
-      provider={library}
+      provider={provider}
       defaultComponent={defaultComponent}
       style={style}
     />

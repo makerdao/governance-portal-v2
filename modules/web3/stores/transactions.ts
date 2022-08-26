@@ -6,11 +6,11 @@ import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../type
 import { parseTxError } from '../helpers/errors';
 import { GaslessNetworks } from '../constants/networks';
 
-type Callbacks = {
+export type TxCallbacks = {
   initialized?: (txId: string) => void;
   pending?: (txHash: string) => void;
   mined?: (txId: string, txHash: string) => void;
-  error?: (txId: string) => void;
+  error?: (txId: string, error?: string) => void;
 };
 
 type Store = {
@@ -24,10 +24,10 @@ type Store = {
     txCreator: () => Promise<ContractTransaction>,
     account?: string,
     message?: string,
-    callbacks?: Callbacks,
+    callbacks?: TxCallbacks,
     gaslessNetwork?: GaslessNetworks
   ) => string | null;
-  listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
+  listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: TxCallbacks) => void;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -138,7 +138,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       tx = await txPromise;
     } catch (e) {
       get().setError(txId, e);
-      if (typeof callbacks?.error === 'function') callbacks.error(txId);
+      if (typeof callbacks?.error === 'function') callbacks.error(txId, e);
       return;
     }
     // We are in "pending" state because the txn has now been been sent
@@ -153,7 +153,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       })
       .catch(e => {
         get().setError(txId, e);
-        if (typeof callbacks?.error === 'function') callbacks.error(txId);
+        if (typeof callbacks?.error === 'function') callbacks.error(txId, e);
       });
   }
 }));

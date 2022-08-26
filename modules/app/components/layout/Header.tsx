@@ -23,7 +23,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { Proposal } from 'modules/executive/types';
@@ -132,7 +132,7 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { data: gas } = useGasPrice({ network });
   const { cache } = useSWRConfig();
   const [mode, setMode] = useColorMode();

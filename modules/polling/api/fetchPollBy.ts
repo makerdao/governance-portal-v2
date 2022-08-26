@@ -8,6 +8,7 @@ import { Poll } from '../types';
 import { PollSpock } from '../types/pollSpock';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { fetchSpockPolls } from './fetchPolls';
+import { getPollTagsMapping } from './getPollTags';
 
 export async function fetchSpockPollById(
   pollId: number,
@@ -38,7 +39,9 @@ export async function fetchPollById(pollId: number, network: SupportedNetworks):
     return null;
   }
 
-  const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data));
+  const tagsMapping = await getPollTagsMapping();
+
+  const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data), tagsMapping);
   if (parsedPoll) {
     const prev = await fetchSpockPollById(pollId - 1, network);
 
@@ -74,7 +77,9 @@ export async function fetchPollBySlug(slug: string, network: SupportedNetworks):
     return null;
   }
 
-  const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data));
+  const tagsMapping = await getPollTagsMapping();
+
+  const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data), tagsMapping);
 
   if (parsedPoll) {
     const prev = await fetchSpockPollById(parsedPoll.pollId - 1, network);

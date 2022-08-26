@@ -32,8 +32,8 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
   const edits = Object.keys(ballotToPick).filter(pollId => {
     const existingVote = allUserVotes?.find(vote => vote.pollId === parseInt(pollId));
     if (existingVote) {
-      return existingVote.rankedChoiceOption
-        ? !isEqual(existingVote.rankedChoiceOption, ballotToPick[pollId].option)
+      return existingVote.ballot
+        ? !isEqual(existingVote.ballot, ballotToPick[pollId].option)
         : !isEqual(existingVote.optionId, ballotToPick[pollId].option);
     }
     return false;

@@ -17,3 +17,8 @@ export const networkNameToChainId = (networkName: string): number => {
   if (key && GaslessChainId[key]) return parseInt(GaslessChainId[key]);
   throw new Error(`Unsupported network name ${networkName}`);
 };
+
+export const isSupportedChain = (chainId?: number): boolean => {
+  if (!chainId) return false;
+  return !!CHAIN_INFO[chainId];
+};

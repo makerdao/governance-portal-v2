@@ -35,7 +35,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
@@ -81,7 +81,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { account } = useAccount();
 
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
@@ -276,9 +276,17 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             </Box>
           )}
           <Box>
-            <Heading mt={3} mb={2} as="h3" variant="microHeading">
-              Supporters
-            </Heading>
+            <Flex sx={{ mt: 3, mb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
+              <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
+                Supporters
+              </Heading>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Box sx={{ pt: '3px', mr: 1 }}>
+                  <Icon name="info" color="textSecondary" size={14} />
+                </Box>
+                <Text sx={{ fontSize: 1, color: 'textSecondary' }}>Updated every five minutes</Text>
+              </Flex>
+            </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>
                 <Box>
@@ -383,7 +391,7 @@ export default function ProposalPage({
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
   // const spellAddress = prefetchedProposal?.address;
@@ -462,12 +470,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
-  const MAX = 10;
+  const MAX = 5;
 
   const paths = proposals.slice(0, MAX).map(proposal => `/executive/${proposal.key}`);
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: true
   };
 };

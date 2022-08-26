@@ -7,7 +7,7 @@ import { format, sub } from 'date-fns';
 import ParticipationChart from './ParticipationChart';
 import forumPosts from '../data/forumPosts.json';
 import { Delegate } from 'modules/delegates/types';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
 import DelegateAvatarNameLight from 'modules/delegates/components/DelegateAvatarNameLight';
@@ -77,7 +77,7 @@ export default function Participation({
   activeDelegates: Delegate[];
   bpi: number;
 }): React.ReactElement {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const MONTHS_PAST = 6;
   // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
   const unixtimeStart =
@@ -166,9 +166,7 @@ export default function Participation({
                 >
                   <Flex sx={{ alignItems: 'center', gap: 2 }}>
                     <Text>{i + 1}</Text>
-                    <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                      <DelegateAvatarNameLight delegate={delegate} />
-                    </InternalLink>
+                    <DelegateAvatarNameLight delegate={delegate} />
                   </Flex>
                   <Text>{delegate.combinedParticipation}</Text>
                 </Flex>

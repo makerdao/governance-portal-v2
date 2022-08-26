@@ -6,6 +6,7 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { PollVictoryConditions } from 'modules/polling/polling.constants';
+import { findVictoryCondition } from 'modules/polling/helpers/utils';
 
 const VICTORY_CONDITIONS = [
   {
@@ -15,11 +16,15 @@ const VICTORY_CONDITIONS = [
   {
     name: 'Ranked Choice',
     key: PollVictoryConditions.instantRunoff
+  },
+  {
+    name: 'Majority',
+    key: PollVictoryConditions.majority
+  },
+  {
+    name: 'Approval',
+    key: PollVictoryConditions.approval
   }
-  // {
-  //   name: 'Majority',
-  //   key: PollVictoryConditions.majority
-  // }
 ];
 
 export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
@@ -65,7 +70,7 @@ export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeU
                   <Text sx={{ color: 'mutedAlt', ml: 3 }}>
                     {
                       filteredPolls.filter(
-                        i => i.parameters.victoryConditions.filter(v => v.type === type.key).length > 0
+                        i => findVictoryCondition(i.parameters.victoryConditions, type.key).length > 0
                       ).length
                     }
                   </Text>

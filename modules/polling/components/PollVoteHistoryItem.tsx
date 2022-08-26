@@ -1,6 +1,6 @@
 import { Box, Text } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
-import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
+import { PluralityVoteSummary } from './vote-summary/PluralityVoteSummary';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -10,17 +10,17 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
 import {
   isInputFormatRankFree,
-  isPluralityVictoryConditionPoll,
-  isResultDisplayInstantRunoffBreakdown
+  hasVictoryConditionPlurality,
+  isResultDisplaySingleVoteBreakdown
 } from '../helpers/utils';
-import { RankedChoiceVoteSummary } from './RankedChoiceVoteSummary';
+import { ListVoteSummary } from './vote-summary/ListVoteSummary';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const { tally } = usePollTally(vote.pollId);
-  const isPluralityVote = isPluralityVictoryConditionPoll(vote.poll.parameters);
+  const isPluralityVote = hasVictoryConditionPlurality(vote.poll.parameters.victoryConditions);
   return (
     <Box
       sx={{
@@ -72,7 +72,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
       >
         {isPluralityVote && (
           <Box mr={0} ml={0}>
-            {tally && <PollVotePluralityResultsCompact tally={tally} />}
+            {tally && <PluralityVoteSummary tally={tally} />}
             {!tally && <SkeletonThemed width={'130px'} height={'30px'} />}
           </Box>
         )}
@@ -95,18 +95,18 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: getVoteColor(vote.optionId as number, vote.poll.parameters.inputFormat),
+              color: getVoteColor(vote.optionId as number, vote.poll.parameters),
               fontWeight: 'semiBold'
             }}
           >
-            {isResultDisplayInstantRunoffBreakdown(vote.poll.parameters) ? (
-              <RankedChoiceVoteSummary
-                choices={vote.rankedChoiceOption || []}
+            {isResultDisplaySingleVoteBreakdown(vote.poll.parameters) ? (
+              vote.optionValue[0]
+            ) : (
+              <ListVoteSummary
+                choices={vote.ballot || []}
                 poll={vote.poll}
                 align={bpi < 1 ? 'left' : 'right'}
               />
-            ) : (
-              vote.optionValue[0]
             )}
           </Text>
         </Box>

@@ -1,7 +1,8 @@
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
 import { isAboutToExpireCheck, isExpiredCheck } from '../helpers/expirationChecks';
+import BigNumber from 'bignumber.js';
 
 export function useMigrationStatus(): {
   isDelegatedToExpiredContract: boolean;
@@ -9,7 +10,7 @@ export function useMigrationStatus(): {
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
 } {
-  const { account: address, network } = useActiveWeb3React();
+  const { account: address, network } = useWeb3();
 
   const { data: delegatedToData } = useDelegatedTo(address, network);
   const { data: delegateContractExpirationDate } = useDelegateContractExpirationDate();
@@ -25,14 +26,14 @@ export function useMigrationStatus(): {
 
   // Checks if its delegating to an expiring contract that is already renewed.
   const isDelegatedToExpiringContract = delegatedToData
-    ? delegatedToData.delegatedTo.reduce((prev, next) => {
-        return prev || (next.isAboutToExpire && next.isRenewed);
+    ? delegatedToData.delegatedTo.reduce((acc, cur) => {
+        return acc || (cur.isAboutToExpire && cur.isRenewed && new BigNumber(cur.lockAmount).gt(0));
       }, false)
     : false;
 
   const isDelegatedToExpiredContract = delegatedToData
-    ? delegatedToData.delegatedTo.reduce((prev, next) => {
-        return prev || next.isExpired;
+    ? delegatedToData.delegatedTo.reduce((acc, cur) => {
+        return acc || (cur.isExpired && new BigNumber(cur.lockAmount).gt(0));
       }, false)
     : false;
 

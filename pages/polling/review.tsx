@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR, { useSWRConfig } from 'swr';
-import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
+import { isActivePoll, findPollById, isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -18,7 +18,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
@@ -30,7 +30,6 @@ import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
-import TooltipComponent from 'modules/app/components/Tooltip';
 
 const PollingReview = ({ polls }: PollingReviewPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -126,7 +125,10 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
         option = `**${poll.options[optionData]}**`;
       } else {
         const markdownArray = (optionData as number[]).map(
-          (id, index) => `**${getNumberWithOrdinal(index + 1)} choice:** ${poll.options[id]}  \n`
+          (id, index) =>
+            `${
+              isInputFormatRankFree(poll.parameters) ? `**${getNumberWithOrdinal(index + 1)} choice:**` : ''
+            } ${poll.options[id]}  \n`
         );
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
@@ -152,11 +154,17 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
         {hasVoted && (
           <Box mb={3}>
             <Heading as="h4">
-              You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}.
+              You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}
             </Heading>
-            <Text>
-              Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.
+            <Text as="p" sx={{ mt: 2 }}>
+              Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes
             </Text>
+            <Flex sx={{ alignItems: 'center', mt: 1 }}>
+              <Icon name="info" color="textSecondary" />
+              <Text as="p" variant="secondary" sx={{ ml: 1 }}>
+                Your vote and comment may take a few minutes to appear in the Voting Portal
+              </Text>
+            </Flex>
           </Box>
         )}
         <SidebarLayout>
@@ -211,41 +219,19 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard
-                            poll={poll}
-                            reviewPage={true}
-                            showVoting={false}
-                            // yourVote={
-                            //   <Box ml={[0, 3]} mt={[3, 0]}>
-                            //     <PollVotedOption
-                            //       poll={poll}
-                            //       votedOption={previousBallot[poll.pollId].option}
-                            //       votingWeight={votingWeight?.total}
-                            //       transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                            //       toggleShareModal={toggleShareModal}
-                            //     />
-                            //   </Box>
-                            // }
-                            hideTally
-                          >
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
-                                <TooltipComponent
-                                  label={
-                                    'Your comment may take some minutes to appear into the voting portal.'
-                                  }
-                                >
-                                  <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
-                                    <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mr: 1 }}>
-                                      Your comment
-                                    </Text>
-
-                                    <Icon name="info" />
-                                  </Flex>
-                                </TooltipComponent>
-                                <Text sx={{ fontSize: [1, 3], color: 'onSecondary' }}>
-                                  <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
-                                </Text>
+                                <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
+                                  <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mr: 1 }}>
+                                    Your comment
+                                  </Text>
+                                </Flex>
+                                <Box sx={{ bg: 'onSurfaceAlt', py: 1, px: 3, borderRadius: 'medium' }}>
+                                  <Text as="p">
+                                    <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
+                                  </Text>
+                                </Box>
                               </Box>
                             )}
                           </PollOverviewCard>
@@ -342,7 +328,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 };
 
 export default function PollingReviewPage({ polls: prefetchedPolls }: PollingReviewPageData): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
