@@ -52,7 +52,7 @@ export function InputDelegateMkr({
           {buttonLabel}
         </Button>
       </Box>
-      {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.gt(0) && (
+      {showAlert && lockedMkr && lockedMkr.gte(0.1) && balance && balance.gt(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {`You have ${formatValue(lockedMkr)} additional MKR locked in the voting contract. `}
