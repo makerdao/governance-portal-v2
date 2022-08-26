@@ -7,7 +7,7 @@ export type ExecutivePageData = {
   proposals: Proposal[];
 };
 
-export const EXEC_FETCH_SIZE = 10;
+export const EXEC_FETCH_SIZE = 5;
 const EXEC_SORT_BY = 'active';
 
 export async function fetchExecutivePageData(

@@ -39,7 +39,7 @@
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/i18n-helper": "^0.1.8",
-    "@octokit/core": "^3.2.5",
+    "@octokit/core": "^4.0.5",
     "@reach/dialog": "^0.16.2",
     "@reach/listbox": "^0.16.2",
     "@reach/menu-button": "^0.16.2",
