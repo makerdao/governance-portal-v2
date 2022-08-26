@@ -10,11 +10,12 @@ export type CMSProposal = {
   title: string;
   date: string;
   proposalLink: string;
-  spellData?: {
-    mkrSupport: string;
-  };
+  // spellData?: {
+  //   mkrSupport: string;
+  // };
+  spellData?: any;
 };
 
 export type Proposal = CMSProposal & {
-  spellData: SpellData;
+  // spellData: SpellData;
 };
