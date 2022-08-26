@@ -14,5 +14,5 @@ export type CMSProposal = {
 };
 
 export type Proposal = CMSProposal & {
-  // spellData: SpellData;
+  spellData: SpellData;
 };

@@ -124,8 +124,8 @@ export async function getExecutiveProposals(
       return {
         ...p,
         content: p.content?.substring(0, 100) + '...',
-        about: p.about?.substring(0, 100) + '...'
-        // spellData: await analyzeSpell(p.address, currentNetwork)
+        about: p.about?.substring(0, 100) + '...',
+        spellData: await analyzeSpell(p.address, currentNetwork)
       };
     })
   );
@@ -150,11 +150,11 @@ export async function getExecutiveProposal(
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
 
-  // const spellData = await analyzeSpell(proposal.address, currentNetwork);
+  const spellData = await analyzeSpell(proposal.address, currentNetwork);
   const content = await markdownToHtml(proposal.about || '');
   return {
     ...proposal,
-    // spellData: {},
+    spellData,
     content
   };
 }
