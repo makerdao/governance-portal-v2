@@ -340,13 +340,13 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
-    const provider = getGaslessProvider(network);
+    const gaslessProvider = getGaslessProvider(network);
     const pollingContract = new ethers.Contract(
       // arbitrum testnet polling address,
       // maybe we should use eth-sdk for this if it's supported
       '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050',
       PollingContractAbi,
-      provider
+      gaslessProvider
     );
 
     const nonce = await pollingContract.nonces(account);
@@ -357,7 +357,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
-    const signature = await signTypedBallotData(signatureValues, library, network);
+    const signature = await signTypedBallotData(signatureValues, gaslessProvider, network);
     if (signature) {
       setStep('awaiting-relayer');
     } else {
@@ -371,7 +371,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       body: JSON.stringify({ ...signatureValues, signature, network })
     })
       .then(res => {
-        const voteTxCreator = () => provider.getTransaction(res.hash);
+        const voteTxCreator = () => gaslessProvider.getTransaction(res.hash);
         trackPollVote(voteTxCreator, getGaslessNetwork(network));
       })
       .catch(error => {

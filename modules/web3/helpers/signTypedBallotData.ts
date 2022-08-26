@@ -1,4 +1,4 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
@@ -69,7 +69,7 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
 
 export async function signTypedBallotData(
   message: BallotDataValues,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   network: SupportedNetworks
 ): Promise<string | null> {
   const typedData = JSON.stringify(getTypedBallotData(message, network));
