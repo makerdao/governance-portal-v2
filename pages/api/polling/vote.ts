@@ -93,7 +93,7 @@ export default withApiHandler(
 
       return res.status(200).json(tx);
     } catch (err) {
-      return res.status(400).json('Error');
+      return res.status(400).json(`Error: ${err.message}`);
     }
   },
   { allowPost: true }

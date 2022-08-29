@@ -324,7 +324,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   };
 
   const submitBallotGasless = async () => {
-    if (!account) {
+    if (!account || !provider) {
       return;
     }
 
@@ -357,7 +357,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
-    const signature = await signTypedBallotData(signatureValues, gaslessProvider, network);
+    const signature = await signTypedBallotData(signatureValues, provider, network);
     if (signature) {
       setStep('awaiting-relayer');
     } else {
