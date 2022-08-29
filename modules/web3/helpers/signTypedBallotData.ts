@@ -1,6 +1,7 @@
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { ArbitrumPollingAddressMap } from '../constants/addresses';
 
 type BallotDataValues = {
   voter: string;
@@ -60,8 +61,7 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
       name: 'MakerDAO Polling',
       version: 'Arbitrum.1',
       chainId,
-      //TODO: get verifying contract address from constant variable that accounts for network
-      verifyingContract: '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050'
+      verifyingContract: ArbitrumPollingAddressMap[network]
     },
     message
   };

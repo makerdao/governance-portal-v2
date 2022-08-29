@@ -340,6 +340,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
+    const optionIds = parsePollOptions(pollOptions);
+
     const gaslessProvider = getGaslessProvider(network);
     const pollingContract = new ethers.Contract(
       // arbitrum testnet polling address,
@@ -353,7 +355,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const signatureValues = {
       voter: account.toLowerCase(),
       pollIds,
-      optionIds: pollOptions,
+      optionIds,
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
     };
