@@ -14,7 +14,6 @@ export interface AvatarProps {
 
 export function Avatar({ size, address, defaultComponent, style }: AvatarProps): JSX.Element {
   const { chainId, provider: library } = useWeb3();
-  // const { chainId, library } = useActiveWeb3React();
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
   const fetchAvatarUri = async () => {
