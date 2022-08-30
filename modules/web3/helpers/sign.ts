@@ -1,6 +1,6 @@
 import { providers } from 'ethers';
 
-export async function sign(address: string, message: string, provider: providers.Web3Provider): Promise<any> {
+export function sign(address: string, message: string, provider: providers.Web3Provider): Promise<string> {
   const signer = provider.getSigner(address);
   return signer.signMessage(message);
 }
