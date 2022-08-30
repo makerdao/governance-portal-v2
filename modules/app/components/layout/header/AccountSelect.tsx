@@ -122,7 +122,10 @@ const AccountSelect = (): React.ReactElement => {
   };
 
   const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: WalletName, index) => (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}>
+    <Flex
+      key={connectionName}
+      sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}
+    >
       <Flex sx={{ alignItems: 'center' }}>
         <Icon name={SUPPORTED_WALLETS[connectionName].name} />
         <Text sx={{ ml: 3 }}>{SUPPORTED_WALLETS[connectionName].name}</Text>
