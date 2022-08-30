@@ -31,6 +31,8 @@ export function formatValue(
       }
     }
   }
+
+  if (value.eq(0)) { return '0'}
   const formatted = formatUnits(value, type);
   if (+formatted > 999) dp = 0;
   const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
