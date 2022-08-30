@@ -60,7 +60,8 @@ export default function ExecutiveOverviewCard({
   return (
     <Card
       sx={{
-        p: [0, 0]
+        p: [0, 0],
+        width: '100%'
       }}
     >
       <Flex

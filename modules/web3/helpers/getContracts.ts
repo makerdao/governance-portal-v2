@@ -70,7 +70,9 @@ export const getContracts = (
   ) {
     const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
-    const signerOrProvider = needsSigner ? (providerToUse as providers.Web3Provider).getSigner(account) : providerToUse;
+    const signerOrProvider = needsSigner
+      ? (providerToUse as providers.Web3Provider).getSigner(account)
+      : providerToUse;
 
     // Keep track of the connected account and network so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;
