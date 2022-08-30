@@ -96,9 +96,7 @@ export default function TopDelegates({
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>
-                  <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                    <DelegateAvatarNameLight delegate={delegate} />
-                  </InternalLink>
+                  <DelegateAvatarNameLight delegate={delegate} />
                 </Flex>
                 <Box sx={{ width: '15%', display: ['none', 'block'] }}>
                   <Text>

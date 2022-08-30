@@ -16,7 +16,7 @@ import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql
 import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
 import { getAllPollsCacheKey } from 'modules/cache/constants/cache-keys';
-import mockPolls from './mocks/pollsv2.json';
+import { getPollTagsMapping } from './getPollTags';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -42,12 +42,14 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
     p => p.multiHash
   );
 
+  const tagsMapping = await getPollTagsMapping();
+
   for (const pollGroup of chunk(dedupedPolls, 20)) {
     // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
       pollGroup.map(async (p: PollSpock) => {
         try {
-          return await fetchPollMetadata(spockPollToPartialPoll(p));
+          return await fetchPollMetadata(spockPollToPartialPoll(p), tagsMapping);
         } catch (err) {
           numFailedFetches += 1;
           failedPollIds.push(p.pollId);
@@ -94,8 +96,6 @@ export async function _getAllPolls(
   network?: SupportedNetworks,
   queryVariables?: PollsQueryVariables
 ): Promise<Poll[]> {
-  // TODO: Remove mock
-  //return Promise.resolve(mockPolls as any);
   const cacheKey = getAllPollsCacheKey(queryVariables);
 
   const cachedPolls = await cacheGet(cacheKey, network);

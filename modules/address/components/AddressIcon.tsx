@@ -1,5 +1,5 @@
 import { Box } from 'theme-ui';
-import Davatar from 'lib/davatar';
+import { Avatar } from 'modules/address/components/Avatar';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { DelegatePicture } from 'modules/delegates/components';
 
@@ -17,7 +17,7 @@ export default function AddressIcon({
       {delegateAddresses[address] ? (
         <DelegatePicture delegate={delegateAddresses[address]} width={width} />
       ) : (
-        <Davatar size={width} address={address} />
+        <Avatar size={width} address={address} />
       )}
     </Box>
   );

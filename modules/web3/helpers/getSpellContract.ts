@@ -1,12 +1,12 @@
-import { getEthersContracts } from './getEthersContracts';
-import spellAbi from 'modules/contracts/ethers/dsSpell.json';
-import { DsSpell } from '../../../types/ethers-contracts';
+import { DssSpell } from '.dethcrypto/eth-sdk-client/esm/types';
 import { SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from './chain';
+import { getContracts } from './getContracts';
 
-export const getSpellContract = (address: string, network: SupportedNetworks): DsSpell => {
+export const getSpellContract = (address: string, network: SupportedNetworks): DssSpell => {
   const chainId = networkNameToChainId(network);
-  const spellContract = getEthersContracts<DsSpell>(address, spellAbi, chainId, undefined, undefined, true);
+  const { dssSpell } = getContracts(chainId, undefined, undefined, true);
 
-  return spellContract;
+  // Returns a new instance of the contract attached to this address
+  return dssSpell.attach(address);
 };

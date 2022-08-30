@@ -9,20 +9,20 @@ export const getEthersContracts = <T extends Contract>(
   address: string, // deployed contract address
   abi: any,
   chainId?: SupportedChainId,
-  library?: Web3Provider,
+  provider?: Web3Provider,
   account?: string,
   readOnly?: boolean
 ): T => {
   const rcpUrl = getRPCFromChainID(chainId ?? DEFAULT_NETWORK.chainId);
 
-  const provider = readOnly ? new providers.JsonRpcBatchProvider(rcpUrl) : getDefaultProvider(rcpUrl);
+  const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rcpUrl) : getDefaultProvider(rcpUrl);
 
   const signerOrProvider =
-    account && library
+    account && provider
       ? readOnly
-        ? (provider as providers.JsonRpcBatchProvider).getSigner(account)
-        : library.getSigner(account)
-      : provider;
+        ? (providerToUse as providers.JsonRpcBatchProvider).getSigner(account)
+        : provider.getSigner(account)
+      : providerToUse;
 
   return new ethers.Contract(address, abi, signerOrProvider) as T;
 };

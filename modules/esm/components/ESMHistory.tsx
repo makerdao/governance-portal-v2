@@ -1,7 +1,7 @@
 import BigNumber from 'lib/bigNumberJs';
 import { Card, Text, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
@@ -15,7 +15,7 @@ type Props = {
 
 const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Card mt={3} p={3} pb={4}>

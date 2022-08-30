@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { BigNumber } from 'ethers';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { TokenName } from 'modules/web3/types/tokens';
 
@@ -20,7 +20,7 @@ export const useTokenBalance = (token: TokenName, address?: string): UseTokenBal
   if (address) {
     account = address;
   } else {
-    const activeWeb3 = useActiveWeb3React();
+    const activeWeb3 = useWeb3();
     account = activeWeb3.account;
   }
 

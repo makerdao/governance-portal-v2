@@ -1,11 +1,10 @@
 import { Box, Flex, Image, Text } from 'theme-ui';
-import Davatar from 'lib/davatar';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { Address } from 'modules/address/components/Address';
-import { InternalLink } from 'modules/app/components/InternalLink';
+import { Avatar } from 'modules/address/components/Avatar';
 
 export function DelegatePicture({
   delegate,
@@ -39,7 +38,7 @@ export function DelegatePicture({
             />
           ) : (
             <Box>
-              <Davatar size={tooltipAvatarWidth} address={delegate.address} />
+              <Avatar size={tooltipAvatarWidth} address={delegate.address} />
             </Box>
           )}
           {delegate.status === DelegateStatusEnum.recognized && (
@@ -132,24 +131,22 @@ export function DelegatePicture({
       <Box>
         <Tooltip label={delegateMetrics}>
           <Box>
-            <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View profile details">
-              {delegate.picture ? (
-                <Image
-                  src={delegate.picture}
-                  key={delegate.id}
-                  sx={{
-                    objectFit: 'cover',
-                    width: '100%',
-                    borderRadius: '100%',
-                    maxHeight: width
-                  }}
-                />
-              ) : (
-                <Box>
-                  <Davatar size={width} address={delegate.address} />
-                </Box>
-              )}
-            </InternalLink>
+            {delegate.picture ? (
+              <Image
+                src={delegate.picture}
+                key={delegate.id}
+                sx={{
+                  objectFit: 'cover',
+                  width: '100%',
+                  borderRadius: '100%',
+                  maxHeight: width
+                }}
+              />
+            ) : (
+              <Box>
+                <Avatar size={width} address={delegate.address} />
+              </Box>
+            )}
 
             {delegate.status === DelegateStatusEnum.recognized && (
               <Icon

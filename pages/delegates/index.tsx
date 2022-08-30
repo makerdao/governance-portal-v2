@@ -24,7 +24,7 @@ import { DelegatesTagFilter } from 'modules/delegates/components/filters/Delegat
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
@@ -249,7 +249,7 @@ export default function DelegatesPage({
   stats: prefetchedStats,
   tags: prefetchedTags
 }: DelegatesPageData): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

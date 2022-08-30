@@ -12,12 +12,13 @@ import {
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
-  METAMASK = 'metamask',
-  WALLET_CONNECT = 'walletConnect',
-  COINBASE_WALLET = 'coinbaseWallet'
-  // LEDGER = 'ledger',
-  // TREZOR = 'trezor'
+  METAMASK = 'MetaMask',
+  WALLET_CONNECT = 'WalletConnect',
+  COINBASE_WALLET = 'Coinbase Wallet',
+  GNOSIS_SAFE = 'Gnosis Safe',
+  NETWORK = 'Network'
 }
+
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',

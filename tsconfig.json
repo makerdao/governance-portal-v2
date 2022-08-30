@@ -33,6 +33,7 @@
     "__tests__",
     "cypress",
     "node_modules/cypress",
-    "@testing-library/jest-dom"
+    "@testing-library/jest-dom",
+    "middleware.ts"
   ]
 }

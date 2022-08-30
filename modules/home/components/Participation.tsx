@@ -1,5 +1,4 @@
 import { Text, Image, Flex, Heading, Container, Link as ExternalLink, Card } from 'theme-ui';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from './ViewMore';
 import useSWR from 'swr';
@@ -7,7 +6,7 @@ import { format, sub } from 'date-fns';
 import ParticipationChart from './ParticipationChart';
 import forumPosts from '../data/forumPosts.json';
 import { Delegate } from 'modules/delegates/types';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
 import DelegateAvatarNameLight from 'modules/delegates/components/DelegateAvatarNameLight';
@@ -17,13 +16,13 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Flex sx={{ justifyContent: 'space-between' }}>
-        <Heading>Relevant Forum Posts</Heading>
+        <Heading>Browse the Governance Forum</Heading>
         <ExternalLink href="https://forum.makerdao.com/" title="View Forum Posts" target="_blank">
           <ViewMore label="View Forum" />
         </ExternalLink>
       </Flex>
       <Flex sx={{ gap: 3, justifyContent: 'space-between', flexWrap: 'wrap' }}>
-        {posts.map(({ title, image, summary, username, link }) => {
+        {posts.map(({ title, image, summary, link }) => {
           return (
             <Card
               key={title}
@@ -53,9 +52,6 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
                     <Text variant="smallText" sx={{ color: 'textSecondary' }}>
                       {summary}
                     </Text>
-                    <Text variant="smallText" sx={{ fontStyle: 'italic' }}>
-                      by {username}
-                    </Text>
                   </Flex>
                   <ExternalLink href={link} title="View Forum Post" target="_blank">
                     <ViewMore label="Read More" />
@@ -77,7 +73,7 @@ export default function Participation({
   activeDelegates: Delegate[];
   bpi: number;
 }): React.ReactElement {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const MONTHS_PAST = 6;
   // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
   const unixtimeStart =
@@ -166,9 +162,7 @@ export default function Participation({
                 >
                   <Flex sx={{ alignItems: 'center', gap: 2 }}>
                     <Text>{i + 1}</Text>
-                    <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                      <DelegateAvatarNameLight delegate={delegate} />
-                    </InternalLink>
+                    <DelegateAvatarNameLight delegate={delegate} />
                   </Flex>
                   <Text>{delegate.combinedParticipation}</Text>
                 </Flex>

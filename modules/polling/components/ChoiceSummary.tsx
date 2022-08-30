@@ -15,14 +15,12 @@ const ChoiceSummary = ({
   poll,
   edit,
   voteIsPending,
-  showHeader,
   showReviewButton,
   ...props
 }: {
   poll: Poll;
   edit: () => void;
   voteIsPending: boolean;
-  showHeader: boolean;
   showReviewButton?: boolean;
   choice: number | number[];
 }): React.ReactElement => {
@@ -35,13 +33,16 @@ const ChoiceSummary = ({
   return (
     <Box {...props}>
       {isInputFormatSingleChoice(poll.parameters) && (
-        <Box bg="onSurfaceAlt" sx={{ p: 3, mb: 2 }}>
+        <Box sx={{ backgroundColor: 'onSurfaceAlt', p: 3, mb: 2, borderRadius: 'medium' }}>
           <Text data-testid="choice">{choice === ABSTAIN ? 'Abstain' : poll.options[choice as number]}</Text>
         </Box>
       )}
       {isInputFormatRankFree(poll.parameters) &&
         (choice as number[]).map((id, index) => (
-          <Flex sx={{ backgroundColor: 'onSurfaceAlt', py: 2, px: 3, mb: 2 }} key={id}>
+          <Flex
+            sx={{ backgroundColor: 'onSurfaceAlt', py: 2, px: 3, mb: 2, borderRadius: 'medium' }}
+            key={id}
+          >
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
               <Text data-testid="choice">{poll.options[id]}</Text>
@@ -50,7 +51,10 @@ const ChoiceSummary = ({
         ))}
       {isInputFormatChooseFree(poll.parameters) &&
         (choice as number[]).map(id => (
-          <Flex sx={{ backgroundColor: 'onSurfaceAlt', py: 2, px: 3, mb: 2 }} key={id}>
+          <Flex
+            sx={{ backgroundColor: 'onSurfaceAlt', py: 2, px: 3, mb: 2, borderRadius: 'medium' }}
+            key={id}
+          >
             <Flex sx={{ flexDirection: 'column' }}>
               <Text data-testid="choice">{poll.options[id]}</Text>
             </Flex>
@@ -63,11 +67,12 @@ const ChoiceSummary = ({
             trackButtonClick('editChoice');
             edit();
           }}
-          variant={showHeader ? 'smallOutline' : 'outline'}
+          variant={'smallOutline'}
           sx={{
             display: voteIsPending ? 'none' : 'inline-flex',
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'center',
+            mt: 1
           }}
         >
           <Icon name="edit" size={3} mr={1} />
@@ -79,12 +84,13 @@ const ChoiceSummary = ({
             onClick={() => {
               removeVoteFromBallot(poll.pollId);
             }}
-            variant={showHeader ? 'smallOutline' : 'outline'}
+            variant={'smallOutline'}
             sx={{
               display: voteIsPending ? 'none' : 'inline-flex',
               flexDirection: 'row',
               alignItems: 'center',
-              ml: 2
+              ml: 2,
+              mt: 1
             }}
           >
             {' '}

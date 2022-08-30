@@ -34,6 +34,10 @@ export function extractWinnerMajority(currentVotes: ParsedSpockVote[], percent: 
 
   const mostVoted = sortedOptions[0];
 
+  if (!mostVoted) {
+    return null;
+  }
+
   // Check percentage of majority
   if (mostVoted.mkrSupport.div(totalMKR).isGreaterThanOrEqualTo(percent > 0 ? percent / 100 : 0)) {
     return mostVoted.option;

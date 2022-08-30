@@ -9,7 +9,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { fetchExecutiveVoteTally } from 'modules/executive/api/fetchExecutiveVoteTally';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { executiveSupportersCacheKey } from 'modules/cache/constants/cache-keys';
-import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { FIVE_MINUTES_IN_MS } from 'modules/app/constants/time';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
@@ -34,6 +34,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     });
   });
 
-  cacheSet(executiveSupportersCacheKey, JSON.stringify(allSupporters), network, TEN_MINUTES_IN_MS);
+  cacheSet(executiveSupportersCacheKey, JSON.stringify(allSupporters), network, FIVE_MINUTES_IN_MS);
   res.status(200).json(allSupporters);
 });

@@ -3,7 +3,7 @@ import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import { sign } from 'modules/web3/helpers/sign';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import useTransactionsStore, {
   transactionsApi,
@@ -16,8 +16,6 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
 import logger from 'lib/logger';
-import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
-import { invalidateCache } from 'modules/cache/invalidateCache';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -102,7 +100,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     }
   };
 
-  const { network, library } = useActiveWeb3React();
+  const { network, provider } = useWeb3();
   // Reset ballot on network change
   useEffect(() => {
     setPreviousBallot({});
@@ -167,7 +165,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   };
 
   const signComments = async () => {
-    if (!account) {
+    if (!account || !provider) {
       return;
     }
 
@@ -183,7 +181,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       })
     });
 
-    const signature = comments.length > 0 ? await sign(account, data.nonce, library) : '';
+    const signature = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
     setCommentSignature(signature);
   };
 
@@ -237,12 +235,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             toast.error('Unable to store comments');
           });
         }
-        // Invalidate tally cache for each voted poll
-        Object.keys(ballot).forEach(pollId => {
-          setTimeout(() => {
-            invalidateCache(getPollTallyCacheKey(parseInt(pollId)), network);
-          }, 60000);
-        });
       },
       mined: (txId, txHash) => {
         // Set votes

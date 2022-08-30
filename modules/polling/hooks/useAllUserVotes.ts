@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { PollVote } from 'modules/polling/types';
 import { fetchAllCurrentVotes } from '../api/fetchAllCurrentVotes';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 
 type AllUserVotesResponse = {
   data?: PollVote[];
@@ -11,7 +11,7 @@ type AllUserVotesResponse = {
 };
 
 export const useAllUserVotes = (address?: string): AllUserVotesResponse => {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { data, error, mutate } = useSWR<PollVote[]>(
     address ? `/user/voting-for/${address}` : null,
     () => {

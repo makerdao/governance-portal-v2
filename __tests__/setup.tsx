@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { mockIntersectionObserver } from '../__tests__/helpers';
-import { getENS } from 'modules/web3/helpers/ens';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { config } from 'lib/config';
@@ -56,9 +55,6 @@ beforeAll(async () => {
   });
   global.IntersectionObserver = mockIntersectionObserver;
 
-  // Mock ens calls
-  (getENS as jest.Mock).mockReturnValue('');
-  
   config.REDIS_URL = '';
   config.USE_CACHE = 'false';
 });

@@ -1,5 +1,5 @@
 import { fetchJson } from 'lib/fetchJson';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR from 'swr';
 import { PollTally } from '../types';
 
@@ -11,17 +11,21 @@ type UsePollTallyResponse = {
 };
 
 export function usePollTally(pollId: number, refreshInterval = 0): UsePollTallyResponse {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const {
     data: tallyData,
     mutate,
     error,
     isValidating
-  } = useSWR<PollTally>(pollId ? `/api/polling/tally/${pollId}?network=${network}` : null, fetchJson, {
-    revalidateOnFocus: false,
-    refreshInterval,
-    revalidateOnMount: true
-  });
+  } = useSWR<PollTally>(
+    typeof pollId !== 'undefined' ? `/api/polling/tally/${pollId}?network=${network}` : null,
+    fetchJson,
+    {
+      revalidateOnFocus: false,
+      refreshInterval,
+      revalidateOnMount: true
+    }
+  );
 
   return {
     tally: tallyData,

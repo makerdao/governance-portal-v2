@@ -7,6 +7,7 @@ import { Poll, PollTally } from 'modules/polling/types';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 const mockPoll: Poll = {
   ...mockPolls[0],
@@ -49,7 +50,7 @@ describe('Polling votes by address', () => {
     // look for columns
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
-    await screen.findByText(/Voting Power/);
+    await screen.findByText(/Vote %/);
     await screen.findByText(/MKR Amount/);
 
     // look for yes votes
@@ -95,7 +96,7 @@ describe('Polling votes by address', () => {
     // look for columns
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
-    await screen.findByText(/Voting Power/);
+    await screen.findByText(/Vote %/);
     await screen.findByText(/MKR Amount/);
 
     // check first choice is displayed with number

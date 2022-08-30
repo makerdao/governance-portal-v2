@@ -17,7 +17,13 @@ export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   return formatted;
 }
 
-export async function parsePollMetadata(poll: PartialPoll, document: string): Promise<Poll> {
+export async function parsePollMetadata(
+  poll: PartialPoll,
+  document: string,
+  tagsMapping: {
+    [key: number]: string[];
+  }
+): Promise<Poll> {
   const { data: pollMeta, content } = matter(document);
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
@@ -40,9 +46,8 @@ export async function parsePollMetadata(poll: PartialPoll, document: string): Pr
   }
 
   const tags = getPollTags();
-  const mapping = await getPollTagsMapping();
 
-  const pollTags = mapping[poll.pollId] || [];
+  const pollTags = tagsMapping[poll.pollId] || [];
 
   let startDate, endDate;
   //poll coming from poll create page

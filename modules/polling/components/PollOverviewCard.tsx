@@ -4,12 +4,12 @@ import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } fro
 import shallow from 'zustand/shallow';
 import {
   isActivePoll,
+  isResultDisplayApprovalBreakdown,
   isResultDisplayInstantRunoffBreakdown,
   isResultDisplaySingleVoteBreakdown
 } from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './poll-vote-input/QuickVote';
@@ -78,7 +78,7 @@ export default function PollOverviewCard({
       <Flex sx={{ flexDirection: 'column' }}>
         <ErrorBoundary componentName="Poll Card">
           <Box sx={{ px: [3, 4], py: 3 }}>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: 210 }}>
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: ['auto', 210] }}>
               <Flex sx={{ flexDirection: 'column', width: '100%' }}>
                 {bpi === 0 && (
                   <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
@@ -153,7 +153,7 @@ export default function PollOverviewCard({
                 <Box sx={{ ml: 2, minWidth: '265px' }}>
                   <ErrorBoundary componentName="Vote in Poll">
                     <Box sx={{ maxWidth: 7 }}>
-                      <QuickVote poll={poll} showHeader={true} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} />
                     </Box>
                   </ErrorBoundary>
                 </Box>
@@ -163,7 +163,8 @@ export default function PollOverviewCard({
             <Box>
               <Flex
                 sx={{
-                  alignItems: 'center',
+                  alignItems: 'flex-end',
+                  mt: 2,
                   justifyContent: 'space-between',
                   flexDirection: ['column', 'row']
                 }}
@@ -173,8 +174,7 @@ export default function PollOverviewCard({
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     width: bpi > 0 ? 'auto' : '100%',
-                    p: 0,
-                    mt: 3
+                    p: 0
                   }}
                 >
                   <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
@@ -193,18 +193,15 @@ export default function PollOverviewCard({
 
                 {showQuickVote && bpi === 0 && (
                   <Box sx={{ mt: 3, width: '100%' }}>
-                    <ErrorBoundary componentName="Voting Status">
-                      <VotingStatus poll={poll} />
-                    </ErrorBoundary>
                     <ErrorBoundary componentName="Vote in Poll">
-                      <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} />
                     </ErrorBoundary>
                   </Box>
                 )}
 
-                <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                <Box sx={{ width: bpi > 0 ? '265px' : '100%' }}>
                   {bpi > 0 && (
-                    <Flex sx={{ mb: 3, justifyContent: 'flex-end' }}>
+                    <Flex sx={{ justifyContent: 'flex-end' }}>
                       <PollVoteTypeIndicator poll={poll} />
                     </Flex>
                   )}
@@ -214,18 +211,18 @@ export default function PollOverviewCard({
                       hash="vote-breakdown"
                       title="View poll vote breakdown"
                     >
-                      <Box sx={{ mt: 3 }}>
+                      <Box sx={{ mt: 2 }}>
                         <ErrorBoundary componentName="Poll Results">
                           {isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
                             <PluralityVoteSummary tally={tally} showTitles={false} />
-                          ) : (
+                          ) : !isResultDisplayApprovalBreakdown(poll.parameters) ? (
                             <ListVoteSummary
                               choices={tally.results.map(i => i.optionId)}
                               poll={poll}
                               limit={3}
                               showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters)}
                             />
-                          )}
+                          ) : null}
                         </ErrorBoundary>
                       </Box>
                     </InternalLink>

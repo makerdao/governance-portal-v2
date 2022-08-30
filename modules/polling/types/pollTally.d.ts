@@ -26,6 +26,7 @@ export type PollTally = {
   totalMkrParticipation: number | string;
   totalMkrActiveParticipation: number | string;
   winningOptionName: string;
+  victoryConditionMatched: number | null;
   votesByAddress?: PollTallyVote[];
   rounds?: number;
 };

@@ -22,7 +22,7 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountComments from 'modules/comments/components/AccountComments';
 import { Address } from 'modules/address/components/Address';
 import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
@@ -39,7 +39,7 @@ type PropTypes = {
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { cache } = useSWRConfig();
   const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
 
