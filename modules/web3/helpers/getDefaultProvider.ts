@@ -1,14 +1,13 @@
-import { BaseProvider } from '@ethersproject/providers';
 import { SupportedNetworks } from '../constants/networks';
 import { config } from 'lib/config';
-import { ethers } from 'ethers';
+import { ethers, providers } from 'ethers';
 
 ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
 export const getDefaultProvider = (
   network: SupportedNetworks | string | undefined,
   optionsOverrides?: Record<string, string>
-): BaseProvider => {
+): providers.BaseProvider => {
   const options = {
     infura: config.INFURA_KEY,
     alchemy: config.ALCHEMY_KEY,
