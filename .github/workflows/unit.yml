@@ -20,13 +20,7 @@ jobs:
       - name: Install node packages
         run: yarn
 
-      - name: Cypress install
-        uses: cypress-io/github-action@v2
-        with:
-          # Disable running of tests within install job
-          runTests: false
-          build: yarn build
-          install: false
+      - run: yarn build-sdk
 
       - run: yarn lint
 
@@ -36,13 +30,3 @@ jobs:
         run: |
           yarn add --dev codecov
           ./node_modules/.bin/codecov
-
-      # Store built next data
-      # - name: Save build folder
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: build
-      #     if-no-files-found: error
-      #     path: |
-      #       .next
-      #       public
