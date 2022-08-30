@@ -13,6 +13,7 @@ import { WAD } from 'modules/web3/constants/numbers';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
+import logger from 'lib/logger';
 
 const MIN_MKR = 0.1;
 
@@ -21,7 +22,6 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
-
       if (typeof voter !== 'string') return res.status(401).json('voter must be a string');
       if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e))))
         return res.status(401).json('pollIds must be an array of numbers');
@@ -35,7 +35,6 @@ export default withApiHandler(
       const cacheKey = getRecentlyUsedGaslessVoting(voter);
 
       const pollingContract = getArbitrumPollingContract();
-
       if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) return res.status(401).json('Wrong secret');
 
       //run eligibility checks unless backdoor secret provided
@@ -93,6 +92,7 @@ export default withApiHandler(
 
       return res.status(200).json(tx);
     } catch (err) {
+      logger.error(err);
       return res.status(400).json(`Error: ${err.message}`);
     }
   },
