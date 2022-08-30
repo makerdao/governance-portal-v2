@@ -121,7 +121,7 @@ export default function ExecutiveOverviewCard({
               sx={{
                 flexDirection: ['column-reverse', 'row'],
                 flexWrap: 'wrap-reverse',
-                width: ['auto', 'auto', 'auto', 'auto', '55%'],
+                width: ['auto', 'auto', 'auto', 'auto'],
                 gap: [0, 3]
               }}
             >

@@ -33,7 +33,9 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     .filter(entry => entry.type === 'blob')
     .map(file => {
       try {
-        const path = `https://github.com/${githubRepo.owner}/${githubRepo.repo}/raw/master/${file.path}`;
+        const pathParts = file.path.split('/')
+        const last = pathParts.pop()
+        const path = `https://raw.githubusercontent.com/${githubRepo.owner}/${githubRepo.repo}/master/${pathParts.join('/')}/${encodeURIComponent(last)}`;
         return parseExecutive(file.object.text, proposalIndex, path, network);
       } catch (e) {
         logger.error(`getGithubExecutives: network ${network}`, e);
