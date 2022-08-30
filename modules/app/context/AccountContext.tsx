@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, Dispatch, SetStateAction } from 'react';
+import React, { ReactNode } from 'react';
 import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';

@@ -22,7 +22,6 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 
 type Props = {
   poll: Poll;

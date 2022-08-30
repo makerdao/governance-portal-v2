@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Web3Provider } from '@ethersproject/providers';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
