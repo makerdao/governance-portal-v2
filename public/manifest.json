@@ -1,7 +1,7 @@
 {
   "short_name": "Maker Governance Portal",
   "name": "Maker Governance Portal",
-  "description": "Maker Governance Portal",
+  "description": "Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol",
   "iconPath": "maker.svg",
   "start_url": "./index.html",
   "display": "standalone",
