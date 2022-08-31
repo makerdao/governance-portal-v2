@@ -1,4 +1,3 @@
-import BigNumber from 'lib/bigNumberJs';
 import { PollParameters } from './poll';
 
 export type PollTallyVote = {

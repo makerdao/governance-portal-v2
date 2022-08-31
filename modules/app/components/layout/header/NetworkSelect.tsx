@@ -3,8 +3,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { Network } from '@web3-react/network';
-import { WalletConnect } from '@web3-react/walletconnect';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
