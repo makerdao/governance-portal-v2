@@ -30,7 +30,12 @@ describe('Parse poll metadata', () => {
   });
 
   test('return the expected values', async () => {
-    const actual = await parsePollMetadata(spockPollToPartialPoll(pollJson431 as PollSpock), pollMetadata431);
+    const tagsMapping = await getPollTagsMapping();
+    const actual = await parsePollMetadata(
+      spockPollToPartialPoll(pollJson431 as PollSpock),
+      pollMetadata431,
+      tagsMapping
+    );
     expect(actual).toEqual(
       expect.objectContaining({
         pollId: 431,
@@ -67,7 +72,12 @@ describe('Parse poll metadata', () => {
   });
 
   test('return the expected values for an old uncategorized poll', async () => {
-    const actual = await parsePollMetadata(spockPollToPartialPoll(pollJson327 as PollSpock), pollMetadata327);
+    const tagsMapping = await getPollTagsMapping();
+    const actual = await parsePollMetadata(
+      spockPollToPartialPoll(pollJson327 as PollSpock),
+      pollMetadata327,
+      tagsMapping
+    );
     expect(actual).toEqual(
       expect.objectContaining({
         pollId: 327,

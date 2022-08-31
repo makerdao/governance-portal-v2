@@ -75,38 +75,63 @@ export default function PollOverviewCard({
         p: [0, 0]
       }}
     >
-      <Flex sx={{ flexDirection: 'column' }}>
-        <ErrorBoundary componentName="Poll Card">
-          <Box sx={{ px: [3, 4], py: 3 }}>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: ['auto', 210] }}>
-              <Flex sx={{ flexDirection: 'column', width: '100%' }}>
-                {bpi === 0 && (
-                  <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                    <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-                  </Box>
-                )}
+      <ErrorBoundary componentName="Poll Card">
+        <Flex sx={{ flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+          <Box
+            sx={{
+              px: [3, 4],
+              py: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Flex
+              sx={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                minHeight: ['auto', 210],
+                height: '100%'
+              }}
+            >
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'space-between'
+                }}
+              >
                 <Box>
+                  {bpi === 0 && (
+                    <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+                      <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                    </Box>
+                  )}
                   <Box>
-                    <CardHeader
-                      text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
-                      styles={{ mb: 2 }}
-                    />
+                    <Box>
+                      <CardHeader
+                        text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
+                        styles={{ mb: 2 }}
+                      />
+                      <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
+                        <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
+                      </InternalLink>
+                    </Box>
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                      <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
+                      <CardSummary text={poll.summary} styles={{ my: 2 }} />
                     </InternalLink>
                   </Box>
-                  <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                    <CardSummary text={poll.summary} styles={{ my: 2 }} />
-                  </InternalLink>
-                </Box>
 
-                <Flex sx={{ flexWrap: 'wrap' }}>
-                  {poll.tags.map(c => (
-                    <Box key={c.id} sx={{ marginRight: 2, marginBottom: 2 }}>
-                      <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} />
-                    </Box>
-                  ))}
-                </Flex>
+                  <Flex sx={{ flexWrap: 'wrap' }}>
+                    {poll.tags.map(c => (
+                      <Box key={c.id} sx={{ marginRight: 2, marginBottom: 2 }}>
+                        <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} />
+                      </Box>
+                    ))}
+                  </Flex>
+                </Box>
                 {bpi > 0 && (
                   <Flex mt={3} sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
                     <Box>
@@ -260,8 +285,8 @@ export default function PollOverviewCard({
               </ErrorBoundary>
             </Flex>
           )}
-        </ErrorBoundary>
-      </Flex>
+        </Flex>
+      </ErrorBoundary>
     </Card>
   );
 }

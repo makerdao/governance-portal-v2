@@ -1,4 +1,3 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { getRPCFromChainID } from './getRPC';
 import { SupportedChainId } from '../constants/chainID';
 import { Contract, ethers, providers } from 'ethers';
@@ -9,7 +8,7 @@ export const getEthersContracts = <T extends Contract>(
   address: string, // deployed contract address
   abi: any,
   chainId?: SupportedChainId,
-  provider?: Web3Provider,
+  provider?: providers.Web3Provider,
   account?: string,
   readOnly?: boolean
 ): T => {

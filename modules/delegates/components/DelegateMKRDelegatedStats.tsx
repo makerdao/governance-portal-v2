@@ -6,7 +6,6 @@ import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
 import Tooltip from 'modules/app/components/Tooltip';
 import { getDescription } from 'modules/polling/components/VotingWeight';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';

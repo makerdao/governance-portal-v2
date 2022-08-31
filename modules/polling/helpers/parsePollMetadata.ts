@@ -1,9 +1,9 @@
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
-import { Poll, PartialPoll, PollVoteType, PollParameters } from 'modules/polling/types';
+import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
-import { getPollTags, getPollTagsMapping } from '../api/getPollTags';
+import { getPollTags } from '../api/getPollTags';
 import { Tag } from 'modules/app/types/tag';
 import { oldVoteTypeToNewParameters, validatePollParameters } from './validatePollParameters';
 
