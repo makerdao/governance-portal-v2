@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
-import { Web3Provider } from '@ethersproject/providers';
 import { getContracts } from '../helpers/getContracts';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { SupportedChainId } from '../constants/chainID';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import { EthSdk } from '../types/contracts';
+import { providers } from 'ethers';
 
 type Props = {
   chainId?: SupportedChainId;
-  provider?: Web3Provider;
+  provider?: providers.Web3Provider;
   account?: string | null;
 };
 

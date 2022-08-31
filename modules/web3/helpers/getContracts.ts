@@ -1,6 +1,6 @@
 import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 
-import { Web3Provider } from '@ethersproject/providers';
+import { providers } from 'ethers';
 import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
@@ -31,7 +31,7 @@ const hasSigner = (contracts: EthSdk | null) => {
 
 export const getContracts = (
   chainId?: SupportedChainId,
-  provider?: Web3Provider,
+  provider?: providers.Web3Provider,
   account?: string | null,
   readOnly?: boolean,
   apiKey?: string
@@ -70,7 +70,9 @@ export const getContracts = (
   ) {
     const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
-    const signerOrProvider = needsSigner ? (providerToUse as Web3Provider).getSigner(account) : providerToUse;
+    const signerOrProvider = needsSigner
+      ? (providerToUse as providers.Web3Provider).getSigner(account)
+      : providerToUse;
 
     // Keep track of the connected account and network so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;

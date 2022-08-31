@@ -1,6 +1,6 @@
 import { SupportedNetworks } from '../constants/networks';
 import { getDefaultProvider } from './getDefaultProvider';
-import { Web3Provider } from '@ethersproject/providers';
+import { providers } from 'ethers';
 import logger from 'lib/logger';
 
 export async function getENS({
@@ -8,7 +8,7 @@ export async function getENS({
   provider
 }: {
   address: string;
-  provider: Web3Provider;
+  provider: providers.Web3Provider;
 }): Promise<string | null> {
   try {
     const name = await provider.lookupAddress(address);

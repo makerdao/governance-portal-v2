@@ -1,8 +1,7 @@
-import { useWeb3React } from '@web3-react/core';
 import { Wallet } from 'ethers';
 import { useEffect } from 'react';
 import { SupportedChainId } from '../constants/chainID';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { providers } from 'ethers';
 import { injectedConnection } from 'modules/web3/connections';
 import { CustomizedBridge } from '../connections/CustomizedBridge';
 import logger from 'lib/logger';
@@ -16,7 +15,7 @@ export function useGoerliForkWindowBindings(): void {
         if (address && key) {
           try {
             const rpcUrl = 'http://localhost:8545';
-            const provider = new JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
+            const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
             const signer = new Wallet(key, provider);
             const bridge = new CustomizedBridge(signer, provider);
             bridge.setAddress(address);
