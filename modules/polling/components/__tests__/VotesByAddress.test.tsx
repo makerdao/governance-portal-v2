@@ -51,7 +51,7 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
     await screen.findByText(/Vote %/);
-    await screen.findByText(/MKR Amount/);
+    await screen.findByText(/MKR/);
 
     // look for yes votes
     await screen.findAllByText(/Yes/);
@@ -97,7 +97,7 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
     await screen.findByText(/Vote %/);
-    await screen.findByText(/MKR Amount/);
+    await screen.findByText(/MKR/);
 
     // check first choice is displayed with number
     await screen.findByText(/1 - test1/);
