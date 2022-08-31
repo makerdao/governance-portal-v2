@@ -4,7 +4,7 @@ import logger from 'lib/logger';
 import { SupportedNetworks } from '../constants/networks';
 import { chainIdToNetworkName } from '../helpers/chain';
 
-export function useWeb3():  Web3ContextType<Web3Provider>  & { network: SupportedNetworks } {
+export function useWeb3(): Web3ContextType<Web3Provider> & { network: SupportedNetworks } {
   const context = useWeb3React<Web3Provider>();
 
   let network;
