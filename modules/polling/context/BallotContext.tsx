@@ -55,6 +55,7 @@ interface ContextProps {
   setStep: (step: BallotSteps) => void;
   ballotStep: BallotSteps;
   submissionMethod: BallotSubmissionMethod | null;
+  setSubmissionMethod: (method: BallotSubmissionMethod) => void;
   handleCommentsStep: (method: BallotSubmissionMethod) => void;
   close: () => void;
 }
@@ -76,6 +77,7 @@ export const BallotContext = React.createContext<ContextProps>({
   setStep: (step: BallotSteps) => null,
   ballotStep: 'initial',
   submissionMethod: null,
+  setSubmissionMethod: (method: BallotSubmissionMethod) => null,
   handleCommentsStep: () => null,
   close: () => null
 });
@@ -166,6 +168,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
     const newBallot = {
       ...ballot,
       [pollId]: {
@@ -426,6 +429,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         setStep,
         ballotStep,
         submissionMethod,
+        setSubmissionMethod,
         handleCommentsStep,
         close
       }}

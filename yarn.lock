@@ -228,7 +228,7 @@
     "@babel/template" "^7.16.0"
     "@babel/types" "^7.16.0"
 
-"@babel/helper-function-name@^7.18.9":
+"@babel/helper-function-name@^7.16.7", "@babel/helper-function-name@^7.18.9":
   version "7.18.9"
   resolved "https://registry.yarnpkg.com/@babel/helper-function-name/-/helper-function-name-7.18.9.tgz#940e6084a55dee867d33b4e487da2676365e86b0"
   integrity sha512-fJgWlZt7nxGksJS9a0XdSaI4XvpExnNIgRP+rVefWh5U7BL8pPuir6SJUmFKRfjWQ51OtWSzwOxhaH/EBWWc0A==
@@ -250,7 +250,7 @@
   dependencies:
     "@babel/types" "^7.16.0"
 
-"@babel/helper-hoist-variables@^7.18.6":
+"@babel/helper-hoist-variables@^7.16.7", "@babel/helper-hoist-variables@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/helper-hoist-variables/-/helper-hoist-variables-7.18.6.tgz#d4d2c8fb4baeaa5c68b99cc8245c56554f926678"
   integrity sha512-UlJQPkFqFULIcyW5sbzgbkxn2FKRgwWiRexcuaR8RNJRy8+LLveqPjwZV/bwrLZCN0eUHD/x8D0heK1ozuoo6Q==
@@ -1598,7 +1598,7 @@
   dependencies:
     "@ethersproject/logger" "^5.6.0"
 
-"@ethersproject/providers@5.7.0", "@ethersproject/providers@^5.6.2", "@ethersproject/providers@^5.7.0":
+"@ethersproject/providers@5.7.0", "@ethersproject/providers@^5.6.2":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.7.0.tgz#a885cfc7650a64385e7b03ac86fe9c2d4a9c2c63"
   integrity sha512-+TTrrINMzZ0aXtlwO/95uhAggKm4USLm1PbeCBR/3XZ7+Oey+3pMyddzZEyRhizHpy1HXV0FRWRMI1O3EGYibA==
@@ -5564,7 +5564,7 @@ cachedir@^2.3.0:
   resolved "https://registry.yarnpkg.com/cachedir/-/cachedir-2.3.0.tgz#0c75892a052198f0b21c7c1804d8331edfcae0e8"
   integrity sha512-A+Fezp4zxnit6FanDmv9EqXNAi3vt9DWp51/71UEhXukb7QUuvtv9344h91dyAxuTLoSYJFU299qzR3tzwPAhw==
 
-"call-bind@^1.0,.2", call-bind@^1.0.0, call-bind@^1.0.2:
+call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
   integrity sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==
@@ -7424,7 +7424,7 @@ ethereumjs-util@^7.1.1, ethereumjs-util@^7.1.4, ethereumjs-util@^7.1.5:
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@5.7.0, ethers@^5.6.8:
+ethers@5.7.0, ethers@^5.6.8, ethers@^5.7.0:
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.0.tgz#0055da174b9e076b242b8282638bc94e04b39835"
   integrity sha512-5Xhzp2ZQRi0Em+0OkOcRHxPzCfoBfgtOQA+RUylSkuHbhTEaQklnYi2hsWbRgs3ztJsXVXd9VKBcO1ScWL8YfA==
