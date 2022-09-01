@@ -4,6 +4,7 @@ export type PollTallyVote = {
   voter: string;
   ballot: number[];
   mkrSupport: number;
+  chainId: number;
 };
 
 export type PollTallyOption = {
