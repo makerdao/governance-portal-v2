@@ -26,7 +26,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   try {
     const promises = await Promise.all(allowedCacheKeys.map(key => getCacheInfo(key, network)));
-    let response = {};
+    const response = {};
     promises.map((key, index) => {
       response[allowedCacheKeys[index]] = key;
     });
