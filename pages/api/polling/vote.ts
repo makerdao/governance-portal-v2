@@ -3,9 +3,9 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { ethers } from 'ethers';
 import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
-import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
-import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
+import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { config } from 'lib/config';
 import { WAD } from 'modules/web3/constants/numbers';
@@ -15,6 +15,7 @@ import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumP
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
+import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 
 const MIN_MKR = 0.1;
 
@@ -51,14 +52,12 @@ export default withApiHandler(
         return res.status(401).json('Wrong secret');
       }
 
-      const cacheKey = getRecentlyUsedGaslessVoting(voter);
-
       const pollingContract = getArbitrumPollingContract();
 
       //run eligibility checks unless backdoor secret provided
       if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
         //check that address hasn't used gasless service recently
-        const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
+        const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
         if (recentlyUsedGaslessVoting) {
           return res.status(401).json('Address cannot use gasless service more than once per 10 minutes');
         }
@@ -128,6 +127,7 @@ export default withApiHandler(
       const s = '0x' + signature.slice(66, 130);
       const v = Number('0x' + signature.slice(130, 132));
 
+      const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
       cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
 
       const tx = await pollingContract[
