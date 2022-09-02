@@ -1,11 +1,11 @@
-import { Box, Button, Card, Divider, Flex, Heading, Text } from 'theme-ui';
+import { Box, Button, Card, Divider, Flex, Text } from 'theme-ui';
 import { Poll } from 'modules/polling/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import ActivePollsBox from './ActivePollsBox';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BallotContext } from '../../context/BallotContext';
 import LocalIcon from 'modules/app/components/Icon';
 import CommentCount from 'modules/comments/components/CommentCount';
@@ -18,11 +18,15 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
+import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
+import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 
 export default function ReviewBox({
+  account,
   activePolls,
   polls
 }: {
+  account: string;
   activePolls: Poll[];
   polls: Poll[];
 }): JSX.Element {
@@ -40,14 +44,39 @@ export default function ReviewBox({
     submitBallot,
     submitBallotGasless
   } = useContext(BallotContext);
-
   const { network } = useWeb3();
+  const [validationChecks, setValidationChecks] = useState({
+    validationPassed: false,
+    hasMkrRequired: false,
+    recentlyUsedGaslessVoting: false
+  });
 
   // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = false;
 
-  // TODO: Add more async checks to see if it can use gasless. (Hasn't used in the last 10 mins and other requirements TBD)
-  const canUseGasless = !isGnosisSafe;
+  // runs validation checks to determine eligibility for gasless voting
+  // each check is stored in validationChecks state object
+  async function runGaslessPrevalidationChecks() {
+    // TODO add a check to see if user has already voted in polls?
+    const [hasMkrRequired, recentlyUsedGaslessVoting] = await Promise.all([
+      hasMkrRequiredForGaslessVotingCheck(account, network),
+      recentlyUsedGaslessVotingCheck(account, network)
+    ]);
+
+    setValidationChecks({
+      hasMkrRequired,
+      recentlyUsedGaslessVoting,
+      validationPassed: hasMkrRequired && !recentlyUsedGaslessVoting
+    });
+  }
+
+  useEffect(() => {
+    if (account && network) {
+      runGaslessPrevalidationChecks();
+    }
+  }, [account, network]);
+
+  const canUseGasless = !isGnosisSafe && validationChecks.validationPassed;
   const canUseComments = !isGnosisSafe;
 
   // Done on the first step, we decide which is the appropiate selected method
@@ -141,7 +170,9 @@ export default function ReviewBox({
                     submitBallotGasless();
                   }}
                   variant="primaryLarge"
-                  disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+                  disabled={
+                    !ballotCount || !!(transaction && transaction?.status !== 'error') || !canUseGasless
+                  }
                   sx={{ mt: 3, width: '100%' }}
                 >
                   Proceed with Gasless submission
