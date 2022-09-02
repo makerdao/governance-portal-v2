@@ -1,11 +1,10 @@
-import { Box, Button, Card, Divider, Flex, Heading, Text } from 'theme-ui';
+import { Box, Button, Card, Divider, Flex, Heading, Text, Spinner } from 'theme-ui';
 import { Poll } from 'modules/polling/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import ActivePollsBox from './ActivePollsBox';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { BallotContext } from '../../context/BallotContext';
 import LocalIcon from 'modules/app/components/Icon';
 import CommentCount from 'modules/comments/components/CommentCount';
@@ -18,6 +17,8 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
+import logger from 'lib/logger';
+import { toast } from 'react-toastify';
 
 export default function ReviewBox({
   activePolls,
@@ -40,9 +41,8 @@ export default function ReviewBox({
     submitBallot,
     submitBallotGasless
   } = useContext(BallotContext);
-
   const { network } = useWeb3();
-
+  const [commentsLoading, setCommentsLoading] = useState(false);
   // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = false;
 
@@ -61,6 +61,17 @@ export default function ReviewBox({
     setStep('method-select');
   };
 
+  const handleCommentsStep = async () => {
+    setCommentsLoading(true);
+    try {
+      await signComments();
+    } catch (err) {
+      toast.error('Something went wrong signing your comments. Please try again.');
+      logger.error(`signComments: ${err}`);
+    }
+    setCommentsLoading(false);
+  };
+
   return (
     <Box>
       {ballotStep === 'initial' && (
@@ -69,17 +80,16 @@ export default function ReviewBox({
             <Box p={3}>
               <StackLayout gap={2}>
                 <Button
-                  onClick={() => {
-                    signComments();
-                  }}
+                  onClick={handleCommentsStep}
                   variant="primaryOutline"
                   data-testid="sign-comments-button"
-                  disabled={!!commentsSignature}
+                  disabled={!!commentsSignature || commentsLoading}
                   sx={{ width: '100%', mt: 3 }}
                 >
                   <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                     {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
                     <Text>1 - Sign comment{commentsCount > 1 ? 's' : ''}</Text>
+                    {commentsLoading && <Spinner sx={{ ml: 2 }} size={'16px'} />}
                   </Flex>
                 </Button>
                 <Button
