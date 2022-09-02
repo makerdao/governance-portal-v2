@@ -25,7 +25,6 @@ import { GaslessNetworks, getGaslessNetwork, getGaslessProvider } from 'modules/
 type BallotSteps =
   | 'initial'
   | 'method-select'
-  | 'sign-comments'
   | 'confirm'
   | 'submitting'
   | 'awaiting-relayer'
