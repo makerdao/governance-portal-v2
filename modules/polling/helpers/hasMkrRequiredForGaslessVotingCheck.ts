@@ -10,7 +10,7 @@ export async function hasMkrRequiredForGaslessVotingCheck(
   //verify address has a poll weight > 0.1 MKR
   const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
 
-  const hasMkrRequired = pollWeight.total.gt(WAD.div(1 / MIN_MKR_REQUIRED_FOR_GASLESS_VOTING));
+  const hasMkrRequired = pollWeight.total.lt(WAD.div(1 / MIN_MKR_REQUIRED_FOR_GASLESS_VOTING));
 
   return hasMkrRequired;
 }

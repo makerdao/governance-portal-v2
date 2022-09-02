@@ -20,6 +20,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
+import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 
 export default function ReviewBox({
   account,
@@ -78,6 +79,16 @@ export default function ReviewBox({
 
   const canUseGasless = !isGnosisSafe && validationChecks.validationPassed;
   const canUseComments = !isGnosisSafe;
+
+  useEffect(() => {
+    if (!canUseGasless) {
+      setSubmissionMethod('standard');
+    }
+
+    if (canUseGasless) {
+      setSubmissionMethod('gasless');
+    }
+  }, [canUseGasless]);
 
   // Done on the first step, we decide which is the appropiate selected method
   const onClickSubmitBallot = () => {
@@ -271,6 +282,17 @@ export default function ReviewBox({
                     <Text>Switch to gasless voting</Text>
                   </Flex>
                 </Button>
+                {/* TODO needs design */}
+                <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text>More than ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING} MKR in wallet:</Text>
+                    <Text>{validationChecks.hasMkrRequired ? 'true' : 'false'}</Text>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text>Has not used gasless voting in last x minutes:</Text>
+                    <Text>{validationChecks.recentlyUsedGaslessVoting ? 'false' : 'true'}</Text>
+                  </Flex>
+                </Flex>
               </Box>
             </Box>
           )}
