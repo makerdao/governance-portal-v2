@@ -146,6 +146,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const addVoteToBallot = (pollId: number, ballotVote: BallotVote) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
     const newBallot = {
       ...ballot,
       [pollId]: ballotVote
@@ -158,6 +159,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const removeVoteFromBallot = (pollId: number) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
     setBallot(rest);
