@@ -6,9 +6,7 @@ import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
-import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { config } from 'lib/config';
-import { WAD } from 'modules/web3/constants/numbers';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
@@ -16,8 +14,8 @@ import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
-
-const MIN_MKR = 0.1;
+import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
+import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 
 //TODO: add swagger documentation
 export default withApiHandler(
@@ -84,11 +82,15 @@ export default withApiHandler(
         }
 
         //verify address has a poll weight > 0.1 MKR
-        const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
+        const hasMkrRequired = await hasMkrRequiredForGaslessVotingCheck(voter, network);
 
-        if (pollWeight.total.lt(WAD.div(1 / MIN_MKR))) {
+        if (!hasMkrRequired) {
           //ether's bignumber library doesnt handle decimals
-          return res.status(400).json(`Address must have a poll voting weight of at least ${MIN_MKR}`);
+          return res
+            .status(400)
+            .json(
+              `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING}`
+            );
         }
 
         //verify address hasn't already voted in any of the polls

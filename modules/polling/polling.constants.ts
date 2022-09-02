@@ -2,6 +2,8 @@ import { PollVoteType } from './types';
 
 export const ABSTAIN = 0;
 
+export const MIN_MKR_REQUIRED_FOR_GASLESS_VOTING = 0.1;
+
 export const POLL_VOTE_TYPE = {
   PLURALITY_VOTE: 'Plurality Voting' as PollVoteType,
   RANKED_VOTE: 'Ranked Choice IRV' as PollVoteType,
