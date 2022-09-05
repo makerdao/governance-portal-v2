@@ -41,6 +41,26 @@ export const cacheDel = (name: string, network: SupportedNetworks): void => {
   }
 };
 
+export const getCacheInfo = async (name: string, network: SupportedNetworks): Promise<any> => {
+  if (!config.USE_CACHE || config.USE_CACHE === 'false') {
+    return Promise.resolve(null);
+  }
+
+  const isRedisCache = !!config.REDIS_URL;
+
+  try {
+    const currentNetwork = network || DEFAULT_NETWORK.network;
+    const path = getFilePath(name, currentNetwork);
+    console.log(path);
+    if (isRedisCache && redis) {
+      const ttl = await redis?.ttl(path);
+      return ttl;
+    }
+  } catch (e) {
+    logger.error(e);
+  }
+};
+
 export const cacheGet = async (
   name: string,
   network?: SupportedNetworks,
