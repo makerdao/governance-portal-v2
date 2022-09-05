@@ -8,12 +8,13 @@ import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
 import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { config } from 'lib/config';
-import { fetchJson } from 'lib/fetchJson';
 import { WAD } from 'modules/web3/constants/numbers';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 import logger from 'lib/logger';
+import { getPolls } from 'modules/polling/api/fetchPolls';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 
 const MIN_MKR = 0.1;
 
@@ -22,27 +23,86 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
-      if (typeof voter !== 'string') return res.status(401).json('voter must be a string');
-      if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e))))
+
+      if (typeof voter !== 'string') {
+        return res.status(401).json('voter must be a string');
+      }
+      if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e)))) {
         return res.status(401).json('pollIds must be an array of numbers');
-      if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e))))
+      }
+      if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e)))) {
         return res.status(401).json('optionIds must be an array of numbers');
-      if (typeof nonce !== 'number') return res.status(401).json('nonce must be a number');
-      if (typeof expiry !== 'number') return res.status(401).json('expiry must be a number');
-      if (typeof signature !== 'string') return res.status(401).json('signature must be a string');
-      if (!Object.values(SupportedNetworks).includes(network)) return res.status(401).json('invalid network');
+      }
+      if (typeof nonce !== 'number') {
+        return res.status(401).json('nonce must be a number');
+      }
+      if (typeof expiry !== 'number') {
+        return res.status(401).json('expiry must be a number');
+      }
+      if (typeof signature !== 'string') {
+        return res.status(401).json('signature must be a string');
+      }
+
+      if (!Object.values(SupportedNetworks).includes(network)) {
+        return res.status(401).json('invalid network');
+      }
+
+      if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) {
+        return res.status(401).json('Wrong secret');
+      }
+      const pollingContract = getArbitrumPollingContract();
+
+      //verify valid nonce and expiry date
+      const nonceFromContract = await pollingContract.nonces(voter);
+      if (nonceFromContract.toNumber() !== nonce) {
+        return res.status(400).json('Invalid nonce for address');
+      }
+
+      if (expiry >= Date.now()) {
+        return res.status(400).json('Expiration date already passed');
+      }
+
+      //verify address has a poll weight > 0.1 MKR
+      const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
+
+      if (pollWeight.total.lt(WAD.div(1 / MIN_MKR))) {
+        //ether's bignumber library doesnt handle decimals
+        return res.status(400).json(`Address must have a poll voting weight of at least ${MIN_MKR}`);
+      }
+
+      // Verify that all the polls are active
+      const filters = {
+        startDate: new Date(),
+        endDate: null,
+        tags: null
+      };
+
+      const pollsResponse = await getPolls(filters, network);
+      const areAllPollsActive = pollIds
+        .map(pollId => {
+          const poll = pollsResponse.polls.find(p => p.pollId === pollId);
+          if (!poll || !isActivePoll(poll)) {
+            return false;
+          }
+          return true;
+        })
+        .reduce((prev, next) => {
+          return prev && next;
+        });
+
+      if (!areAllPollsActive) {
+        return res.status(400).json('Can only vote in active polls');
+      }
 
       const cacheKey = getRecentlyUsedGaslessVoting(voter);
-
-      const pollingContract = getArbitrumPollingContract();
-      if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) return res.status(401).json('Wrong secret');
 
       //run eligibility checks unless backdoor secret provided
       if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
         //check that address hasn't used gasless service recently
         const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
-        if (recentlyUsedGaslessVoting)
+        if (recentlyUsedGaslessVoting) {
           return res.status(401).json('Address cannot use gasless service more than once per 10 minutes');
+        }
 
         //verify that signature and address correspond
         const recovered = recoverTypedSignature({
@@ -50,29 +110,12 @@ export default withApiHandler(
           signature,
           version: SignTypedDataVersion.V4
         });
-        if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter))
+
+        if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
           return res.status(400).json('Voter address could not be recovered from signature');
-
-        //verify valid nonce and expiry date
-        const nonceFromContract = await pollingContract.nonces(voter);
-        if (nonceFromContract.toNumber() !== nonce) return res.status(400).json('Invalid nonce for address');
-        if (expiry >= Date.now()) return res.status(400).json('Expiration date already passed');
-
-        //verify address has a poll weight > 0.1 MKR
-        const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
-        if (pollWeight.total.lt(WAD.div(1 / MIN_MKR)))
-          //ether's bignumber library doesnt handle decimals
-          return res.status(400).json(`Address must have a poll voting weight of at least ${MIN_MKR}`);
+        }
 
         //verify address hasn't already voted in any of the polls
-        const allPollsResponse = await fetchJson(
-          //get all active polls
-          `https://vote.makerdao.com/api/polling/all-polls?network=${network}&startDate=${new Date().toString()}`
-        );
-        const activePollIds = allPollsResponse.polls.map(p => parseInt(p.pollId));
-        const areActive = pollIds.map(pollId => activePollIds.includes(parseInt(pollId)));
-        if (areActive.includes(false)) return res.status(400).json('Can only vote in active polls');
-
         //can't use gasless service to vote in a poll you've already voted on
         const voteHistory = await fetchAddressPollVoteHistory(voter, network);
         const votedPollIds = voteHistory.map(v => v.pollId);

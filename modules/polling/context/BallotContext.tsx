@@ -25,7 +25,6 @@ import { GaslessNetworks, getGaslessNetwork, getGaslessProvider } from 'modules/
 type BallotSteps =
   | 'initial'
   | 'method-select'
-  | 'sign-comments'
   | 'confirm'
   | 'submitting'
   | 'awaiting-relayer'
@@ -55,7 +54,7 @@ interface ContextProps {
   setStep: (step: BallotSteps) => void;
   ballotStep: BallotSteps;
   submissionMethod: BallotSubmissionMethod | null;
-  handleCommentsStep: (method: BallotSubmissionMethod) => void;
+  setSubmissionMethod: (method: BallotSubmissionMethod) => void;
   close: () => void;
 }
 
@@ -76,7 +75,7 @@ export const BallotContext = React.createContext<ContextProps>({
   setStep: (step: BallotSteps) => null,
   ballotStep: 'initial',
   submissionMethod: null,
-  handleCommentsStep: () => null,
+  setSubmissionMethod: (method: BallotSubmissionMethod) => null,
   close: () => null
 });
 
@@ -144,6 +143,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const addVoteToBallot = (pollId: number, ballotVote: BallotVote) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
     const newBallot = {
       ...ballot,
       [pollId]: ballotVote
@@ -156,6 +156,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const removeVoteFromBallot = (pollId: number) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
     setBallot(rest);
@@ -166,6 +167,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
     const newBallot = {
       ...ballot,
       [pollId]: {
@@ -393,15 +395,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setSubmissionMethod(null);
   };
 
-  const handleCommentsStep = (method: BallotSubmissionMethod) => {
-    setSubmissionMethod(method);
-    if (commentsCount > 0) {
-      setStep('sign-comments');
-    } else {
-      setStep('confirm');
-    }
-  };
-
   useEffect(() => {
     loadBallotFromStorage();
   }, []);
@@ -426,7 +419,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         setStep,
         ballotStep,
         submissionMethod,
-        handleCommentsStep,
+        setSubmissionMethod,
         close
       }}
     >
