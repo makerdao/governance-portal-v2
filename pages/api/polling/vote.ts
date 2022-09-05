@@ -115,7 +115,6 @@ export default withApiHandler(
           return res.status(400).json('Voter address could not be recovered from signature');
         }
 
-        
         //verify address hasn't already voted in any of the polls
         //can't use gasless service to vote in a poll you've already voted on
         const voteHistory = await fetchAddressPollVoteHistory(voter, network);
