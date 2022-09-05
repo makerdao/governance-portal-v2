@@ -17,7 +17,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
-import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
+import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/polling.constants';
 import logger from 'lib/logger';
 import { toast } from 'react-toastify';
 
@@ -296,7 +296,7 @@ export default function ReviewBox({
                 {/* TODO needs design */}
                 <Flex sx={{ flexDirection: 'column', mt: 3 }}>
                   <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text>More than ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING} MKR in wallet:</Text>
+                    <Text>More than {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR in wallet:</Text>
                     <Text>{validationChecks.hasMkrRequired ? 'true' : 'false'}</Text>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between' }}>
