@@ -8,6 +8,7 @@ export const voteAddressMkrWeightsAtTime = gql`
         optionId
         optionIdRaw
         mkrSupport
+        chainId
       }
     }
   }
