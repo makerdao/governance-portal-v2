@@ -397,15 +397,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setSubmissionMethod(null);
   };
 
-  const handleCommentsStep = (method: BallotSubmissionMethod) => {
-    setSubmissionMethod(method);
-    if (commentsCount > 0) {
-      setStep('sign-comments');
-    } else {
-      setStep('confirm');
-    }
-  };
-
   useEffect(() => {
     loadBallotFromStorage();
   }, []);

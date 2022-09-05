@@ -1,17 +1,14 @@
-import { Box, Button, Card, Divider, Flex, Text } from 'theme-ui';
+import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
 import { Poll } from 'modules/polling/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import ActivePollsBox from './ActivePollsBox';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { BallotContext } from '../../context/BallotContext';
 import LocalIcon from 'modules/app/components/Icon';
-import CommentCount from 'modules/comments/components/CommentCount';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { ViewMore } from 'modules/home/components/ViewMore';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { getBlockExplorerName } from 'modules/web3/constants/networks';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
@@ -21,6 +18,8 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
+import logger from 'lib/logger';
+import { toast } from 'react-toastify';
 
 export default function ReviewBox({
   account,
@@ -90,6 +89,8 @@ export default function ReviewBox({
     }
   }, [canUseGasless]);
 
+  const [commentsLoading, setCommentsLoading] = useState(false);
+
   // Done on the first step, we decide which is the appropiate selected method
   const onClickSubmitBallot = () => {
     if (canUseGasless) {
@@ -101,6 +102,17 @@ export default function ReviewBox({
     setStep('method-select');
   };
 
+  const handleCommentsStep = async () => {
+    setCommentsLoading(true);
+    try {
+      await signComments();
+    } catch (err) {
+      toast.error('Something went wrong signing your comments. Please try again.');
+      logger.error(`signComments: ${err}`);
+    }
+    setCommentsLoading(false);
+  };
+
   return (
     <Box>
       {ballotStep === 'initial' && (
@@ -109,17 +121,16 @@ export default function ReviewBox({
             <Box p={3}>
               <StackLayout gap={2}>
                 <Button
-                  onClick={() => {
-                    signComments();
-                  }}
                   variant="primaryOutline"
                   data-testid="sign-comments-button"
-                  disabled={!!commentsSignature}
+                  onClick={handleCommentsStep}
+                  disabled={!!commentsSignature || commentsLoading}
                   sx={{ width: '100%', mt: 3 }}
                 >
                   <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                     {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
                     <Text>1 - Sign comment{commentsCount > 1 ? 's' : ''}</Text>
+                    {commentsLoading && <Spinner sx={{ ml: 2 }} size={'16px'} />}
                   </Flex>
                 </Button>
                 <Button
