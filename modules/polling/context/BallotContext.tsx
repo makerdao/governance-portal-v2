@@ -55,7 +55,6 @@ interface ContextProps {
   ballotStep: BallotSteps;
   submissionMethod: BallotSubmissionMethod | null;
   setSubmissionMethod: (method: BallotSubmissionMethod) => void;
-  handleCommentsStep: (method: BallotSubmissionMethod) => void;
   close: () => void;
 }
 
@@ -77,7 +76,6 @@ export const BallotContext = React.createContext<ContextProps>({
   ballotStep: 'initial',
   submissionMethod: null,
   setSubmissionMethod: (method: BallotSubmissionMethod) => null,
-  handleCommentsStep: () => null,
   close: () => null
 });
 
@@ -422,7 +420,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballotStep,
         submissionMethod,
         setSubmissionMethod,
-        handleCommentsStep,
         close
       }}
     >
