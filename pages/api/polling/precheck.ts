@@ -3,7 +3,8 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet } from 'modules/cache/cache';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
+import { hasMkrRequiredWeight } from 'modules/polling/helpers/hasMkrRequiredWeight';
+import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
@@ -19,7 +20,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   // TODO add a check to see if user has already voted in polls?
   const [recentlyUsedGaslessVoting, hasMkrRequired] = await Promise.all([
     cacheGet(cacheKey, network),
-    hasMkrRequiredForGaslessVotingCheck(voter, network)
+    hasMkrRequiredWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING)
   ]);
 
   return res.status(200).json({

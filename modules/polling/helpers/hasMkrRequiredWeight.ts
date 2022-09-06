@@ -1,15 +1,17 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
-import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
+import { BigNumber } from 'ethers';
 
-export async function hasMkrRequiredForGaslessVotingCheck(
+export async function hasMkrRequiredWeight(
   voter: string,
-  network: SupportedNetworks
+  network: SupportedNetworks,
+  weight: BigNumber,
+  canBeEqual = false
 ): Promise<boolean> {
   //verify address has a poll weight > 0.1 MKR
   const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
 
-  const hasMkrRequired = pollWeight.total.gte(MIN_MKR_REQUIRED_FOR_GASLESS_VOTING);
+  const hasMkrRequired = canBeEqual ? pollWeight.total.gte(weight) : pollWeight.total.gt(weight);
 
   return hasMkrRequired;
 }
