@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { BigNumber as BigNumberJs } from 'bignumber.js';
+import BigNumberJs from 'lib/bigNumberJs';
 import { parseUnits } from 'ethers/lib/utils';
 import { WAD } from 'modules/web3/constants/numbers';
 import { PollVoteType } from './types';
