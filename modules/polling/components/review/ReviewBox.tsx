@@ -19,6 +19,7 @@ import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/pol
 import logger from 'lib/logger';
 import { toast } from 'react-toastify';
 import { fetchJson } from 'lib/fetchJson';
+import useSWR from 'swr';
 
 export default function ReviewBox({
   account,
@@ -44,38 +45,20 @@ export default function ReviewBox({
     submitBallotGasless
   } = useContext(BallotContext);
   const { network } = useWeb3();
-  const [validationChecks, setValidationChecks] = useState({
-    validationPassed: false,
-    hasMkrRequired: false,
-    recentlyUsedGaslessVoting: false
-  });
+
+  const { data: precheckData } = useSWR(
+    account ? `/api/polling/precheck?network=${network}&voter=${account}` : null,
+    fetchJson
+  );
+
+  const hasMkrRequired = precheckData?.hasMkrRequired;
+  const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
+  const validationPassed = precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting;
 
   // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = false;
 
-  // runs validation checks to determine eligibility for gasless voting
-  // each check is stored in validationChecks state object
-  async function runGaslessPrevalidationChecks() {
-    // TODO add a check to see if user has already voted in polls?
-    // TODO move this to SWR
-    const { hasMkrRequired, recentlyUsedGaslessVoting } = await fetchJson(
-      `/api/polling/precheck?network=${network}&voter=${account}`
-    );
-
-    setValidationChecks({
-      hasMkrRequired,
-      recentlyUsedGaslessVoting,
-      validationPassed: hasMkrRequired && !recentlyUsedGaslessVoting
-    });
-  }
-
-  useEffect(() => {
-    if (account && network) {
-      runGaslessPrevalidationChecks();
-    }
-  }, [account, network]);
-
-  const canUseGasless = !isGnosisSafe && validationChecks.validationPassed;
+  const canUseGasless = !isGnosisSafe && validationPassed;
   const canUseComments = !isGnosisSafe;
 
   useEffect(() => {
@@ -296,11 +279,11 @@ export default function ReviewBox({
                 <Flex sx={{ flexDirection: 'column', mt: 3 }}>
                   <Flex sx={{ justifyContent: 'space-between' }}>
                     <Text>More than {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR in wallet:</Text>
-                    <Text>{validationChecks.hasMkrRequired ? 'true' : 'false'}</Text>
+                    <Text>{hasMkrRequired ? 'true' : 'false'}</Text>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between' }}>
                     <Text>Has not used gasless voting in last x minutes:</Text>
-                    <Text>{validationChecks.recentlyUsedGaslessVoting ? 'false' : 'true'}</Text>
+                    <Text>{recentlyUsedGaslessVoting ? 'false' : 'true'}</Text>
                   </Flex>
                 </Flex>
               </Box>

@@ -16,6 +16,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   }
   const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
 
+  // TODO add a check to see if user has already voted in polls?
   const [recentlyUsedGaslessVoting, hasMkrRequired] = await Promise.all([
     cacheGet(cacheKey, network),
     hasMkrRequiredForGaslessVotingCheck(voter, network)
