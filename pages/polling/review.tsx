@@ -190,7 +190,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
                 {bpi <= 2 && !!account && (
                   <Box>
-                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} />}
+                    {!hasVoted && <ReviewBox account={account} polls={polls} activePolls={activePolls} />}
                     {hasVoted && (
                       <Box>
                         <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
@@ -292,7 +292,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                     Submit Ballot
                   </Heading>
-                  <ReviewBox polls={polls} activePolls={activePolls} />
+                  <ReviewBox account={account} polls={polls} activePolls={activePolls} />
                 </Box>
               )}
               {hasVoted && (
