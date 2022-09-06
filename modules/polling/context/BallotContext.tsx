@@ -33,6 +33,7 @@ type BallotSteps =
 type BallotSubmissionMethod = 'standard' | 'gasless';
 import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
 import { invalidateCache } from 'modules/cache/invalidateCache';
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -359,7 +360,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       pollIds,
       optionIds,
       nonce: nonce.toNumber(),
-      expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
+      expiry: Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000) //8 hour expiry
     };
     const signature = await signTypedBallotData(signatureValues, provider, network);
     if (signature) {
