@@ -15,11 +15,10 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
-import { hasMkrRequiredForGaslessVotingCheck } from 'modules/polling/helpers/hasMkrRequiredForGaslessVotingCheck';
-import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/polling.constants';
 import logger from 'lib/logger';
 import { toast } from 'react-toastify';
+import { fetchJson } from 'lib/fetchJson';
 
 export default function ReviewBox({
   account,
@@ -58,10 +57,10 @@ export default function ReviewBox({
   // each check is stored in validationChecks state object
   async function runGaslessPrevalidationChecks() {
     // TODO add a check to see if user has already voted in polls?
-    const [hasMkrRequired, recentlyUsedGaslessVoting] = await Promise.all([
-      hasMkrRequiredForGaslessVotingCheck(account, network),
-      recentlyUsedGaslessVotingCheck(account, network)
-    ]);
+    // TODO move this to SWR
+    const { hasMkrRequired, recentlyUsedGaslessVoting } = await fetchJson(
+      `/api/polling/precheck?network=${network}&voter=${account}`
+    );
 
     setValidationChecks({
       hasMkrRequired,
