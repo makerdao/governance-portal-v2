@@ -14,7 +14,7 @@ import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
-import { hasMkrRequiredWeight } from 'modules/polling/helpers/hasMkrRequiredWeight';
+import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 
 //TODO: add swagger documentation
@@ -82,7 +82,7 @@ export default withApiHandler(
         }
 
         //verify address has a poll weight > 0.1 MKR
-        const hasMkrRequired = await hasMkrRequiredWeight(
+        const hasMkrRequired = await hasMkrRequiredVotingWeight(
           voter,
           network,
           MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
