@@ -11,14 +11,15 @@ import { cacheGet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { parseUnits } from 'ethers/lib/utils';
-import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
 import { recoverTypedSignature } from '@metamask/eth-sig-util';
+import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 
 jest.mock('modules/polling/helpers/getArbitrumPollingContract');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
 jest.mock('modules/cache/cache');
 jest.mock('modules/polling/api/fetchPolls');
 jest.mock('@metamask/eth-sig-util');
+jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
@@ -233,13 +234,8 @@ describe('/api/polling/vote API Endpoint', () => {
         ]
       })
     );
+    (recentlyUsedGaslessVotingCheck as jest.Mock).mockReturnValue(Promise.resolve(true));
 
-    (cacheGet as jest.Mock).mockImplementation(key => {
-      if (key === getRecentlyUsedGaslessVoting('0x2')) {
-        return Promise.resolve(true);
-      }
-      Promise.resolve(null);
-    });
     const { req, res } = mockRequestResponse('POST', {
       voter: '0x2',
       pollIds: [1],
@@ -258,6 +254,8 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if voter and signer do not match', async () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
+    (recentlyUsedGaslessVotingCheck as jest.Mock).mockReturnValue(Promise.resolve(false));
+
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
         total: parseUnits('0.2')

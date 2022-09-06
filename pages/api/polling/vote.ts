@@ -3,12 +3,10 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { ethers } from 'ethers';
 import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
-import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
-import { getRecentlyUsedGaslessVoting } from 'modules/cache/constants/cache-keys';
-import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
+import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
-import { WAD } from 'modules/web3/constants/numbers';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
@@ -16,8 +14,9 @@ import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { parseUnits } from 'ethers/lib/utils';
-
-const MIN_MKR = 0.1;
+import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
+import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
+import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -33,7 +32,7 @@ export const API_VOTE_ERRORS = {
   EXPIRED_POLLS: 'Can only vote in active polls',
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature',
-  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR}`
+  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`
 };
 
 //TODO: add swagger documentation
@@ -91,6 +90,7 @@ export default withApiHandler(
           error: API_VOTE_ERRORS.WRONG_SECRET
         });
       }
+
       const pollingContract = getArbitrumPollingContract();
 
       //verify valid nonce and expiry date
@@ -102,9 +102,13 @@ export default withApiHandler(
       }
 
       //verify address has a poll weight > 0.1 MKR
-      const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network);
+      const hasMkrRequired = await hasMkrRequiredVotingWeight(
+        voter,
+        network,
+        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
+      );
 
-      if (pollWeight.total.lt(parseUnits(MIN_MKR.toString()))) {
+      if (!hasMkrRequired) {
         //ether's bignumber library doesnt handle decimals
         return res.status(400).json({
           error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED
@@ -137,12 +141,10 @@ export default withApiHandler(
         });
       }
 
-      const cacheKey = getRecentlyUsedGaslessVoting(voter);
-
       //run eligibility checks unless backdoor secret provided
       if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
         //check that address hasn't used gasless service recently
-        const recentlyUsedGaslessVoting = await cacheGet(cacheKey, network);
+        const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
         if (recentlyUsedGaslessVoting) {
           return res.status(400).json({
             error: API_VOTE_ERRORS.RATE_LIMITED
@@ -162,7 +164,6 @@ export default withApiHandler(
           });
         }
 
-        //verify address hasn't already voted in any of the polls
         //can't use gasless service to vote in a poll you've already voted on
         // TODO: Consider if we really want this check. We should allow users to vote multiple times on a poll ( edit votes )
         const voteHistory = await fetchAddressPollVoteHistory(voter, network);
@@ -175,6 +176,7 @@ export default withApiHandler(
       const s = '0x' + signature.slice(66, 130);
       const v = Number('0x' + signature.slice(130, 132));
 
+      const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
       cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
 
       const tx = await pollingContract[

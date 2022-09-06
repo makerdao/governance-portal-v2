@@ -1,29 +1,32 @@
-import { Box, Button, Card, Divider, Flex, Heading, Text, Spinner } from 'theme-ui';
+import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
 import { Poll } from 'modules/polling/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ActivePollsBox from './ActivePollsBox';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { BallotContext } from '../../context/BallotContext';
 import LocalIcon from 'modules/app/components/Icon';
-import CommentCount from 'modules/comments/components/CommentCount';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { ViewMore } from 'modules/home/components/ViewMore';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { getBlockExplorerName } from 'modules/web3/constants/networks';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
+import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/polling.constants';
 import logger from 'lib/logger';
 import { toast } from 'react-toastify';
+import { fetchJson } from 'lib/fetchJson';
+import useSWR from 'swr';
 
 export default function ReviewBox({
+  account,
   activePolls,
   polls
 }: {
+  account: string;
   activePolls: Poll[];
   polls: Poll[];
 }): JSX.Element {
@@ -42,13 +45,33 @@ export default function ReviewBox({
     submitBallotGasless
   } = useContext(BallotContext);
   const { network } = useWeb3();
-  const [commentsLoading, setCommentsLoading] = useState(false);
+
+  const { data: precheckData } = useSWR(
+    account ? `/api/polling/precheck?network=${network}&voter=${account}` : null,
+    fetchJson
+  );
+
+  const hasMkrRequired = precheckData?.hasMkrRequired;
+  const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
+  const validationPassed = precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting;
+
   // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = false;
 
-  // TODO: Add more async checks to see if it can use gasless. (Hasn't used in the last 10 mins and other requirements TBD)
-  const canUseGasless = !isGnosisSafe;
+  const canUseGasless = !isGnosisSafe && validationPassed;
   const canUseComments = !isGnosisSafe;
+
+  useEffect(() => {
+    if (!canUseGasless) {
+      setSubmissionMethod('standard');
+    }
+
+    if (canUseGasless) {
+      setSubmissionMethod('gasless');
+    }
+  }, [canUseGasless]);
+
+  const [commentsLoading, setCommentsLoading] = useState(false);
 
   // Done on the first step, we decide which is the appropiate selected method
   const onClickSubmitBallot = () => {
@@ -80,9 +103,9 @@ export default function ReviewBox({
             <Box p={3}>
               <StackLayout gap={2}>
                 <Button
-                  onClick={handleCommentsStep}
                   variant="primaryOutline"
                   data-testid="sign-comments-button"
+                  onClick={handleCommentsStep}
                   disabled={!!commentsSignature || commentsLoading}
                   sx={{ width: '100%', mt: 3 }}
                 >
@@ -151,7 +174,9 @@ export default function ReviewBox({
                     submitBallotGasless();
                   }}
                   variant="primaryLarge"
-                  disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+                  disabled={
+                    !ballotCount || !!(transaction && transaction?.status !== 'error') || !canUseGasless
+                  }
                   sx={{ mt: 3, width: '100%' }}
                 >
                   Proceed with Gasless submission
@@ -250,6 +275,17 @@ export default function ReviewBox({
                     <Text>Switch to gasless voting</Text>
                   </Flex>
                 </Button>
+                {/* TODO needs design */}
+                <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text>More than {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR in wallet:</Text>
+                    <Text>{hasMkrRequired ? 'true' : 'false'}</Text>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text>Has not used gasless voting in last x minutes:</Text>
+                    <Text>{recentlyUsedGaslessVoting ? 'false' : 'true'}</Text>
+                  </Flex>
+                </Flex>
               </Box>
             </Box>
           )}
