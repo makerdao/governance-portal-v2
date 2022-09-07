@@ -171,9 +171,9 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
           <Box>
             <Stack gap={3}>
               <InternalLink href={'/polling'} title="View polling page">
-                <Button variant="smallOutline" sx={{ width: 'max-content' }}>
+                <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
-                  Back To All Polls
+                  Back to All Polls
                 </Button>
               </InternalLink>
               <Stack gap={3}>

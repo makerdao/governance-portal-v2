@@ -149,7 +149,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
       { title: 'Twitter', url: 'https://twitter.com/MakerDUX', icon: 'twitter' },
       { title: 'GitHub', url: 'https://github.com/makerdao/governance-portal-v2', icon: 'github' },
       { title: 'Canny', url: 'https://makergovernance.canny.io/', icon: 'canny' },
-      { title: 'Immunifi', url: 'https://immunefi.com/bounty/makerdao/', icon: 'immunifi' }
+      { title: 'Immunefi', url: 'https://immunefi.com/bounty/makerdao/', icon: 'immunefi' }
     ]
   };
 
