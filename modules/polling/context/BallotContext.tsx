@@ -104,14 +104,14 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
     useAccount();
 
-  // Import the hook with the current user votes to mutate after voting.
-  const { mutate: mutatePreviousVotes } = useAllUserVotes(account);
-
   const accountToUse = voteDelegateContractAddress
     ? voteDelegateContractAddress
     : voteProxyContractAddress
     ? voteProxyContractAddress
     : account;
+
+  // Import the hook with the current user votes to mutate after voting.
+  const { mutate: mutatePreviousVotes } = useAllUserVotes(accountToUse);
 
   const clearBallot = () => {
     setCommentSignature('');
