@@ -67,9 +67,10 @@ describe('MKRInput', () => {
 
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
-    userEvent.type(input, '3.2');
-    expect(props.onChange).toHaveBeenCalledWith(parseUnits('3.2'));
-    expect(input).toHaveValue(3.2);
+    userEvent.type(input, '3');
+    const expectedValue = parseUnits('3');
+    expect(props.onChange).toHaveBeenCalledWith(expectedValue);
+    expect(input).toHaveValue(3);
   });
 
   test('Should show error if default value is negative amount', async () => {
