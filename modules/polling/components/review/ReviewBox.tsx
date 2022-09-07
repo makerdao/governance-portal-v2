@@ -275,15 +275,52 @@ export default function ReviewBox({
                     <Text>Switch to gasless voting</Text>
                   </Flex>
                 </Button>
-                {/* TODO needs design */}
                 <Flex sx={{ flexDirection: 'column', mt: 3 }}>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text>More than {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR in wallet:</Text>
-                    <Text>{hasMkrRequired ? 'true' : 'false'}</Text>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text as="p" variant="caps">
+                      Eligibility Criteria
+                    </Text>
+                    <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
+                      Learn more
+                      <Icon ml={2} name="arrowTopRight" size={2} />
+                    </Text>
                   </Flex>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text>Has not used gasless voting in last x minutes:</Text>
-                    <Text>{recentlyUsedGaslessVoting ? 'false' : 'true'}</Text>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Address has at least {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR of polling weight
+                    </Text>
+                    <Text>
+                      {hasMkrRequired ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Address has not used the relayer in last 10 minutes
+                    </Text>
+                    <Text>
+                      {!recentlyUsedGaslessVoting ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Address has voted more than once in any included poll
+                    </Text>
+                    <Text>
+                      {/* TODO add this logic */}
+                      {false ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
                   </Flex>
                 </Flex>
               </Box>
