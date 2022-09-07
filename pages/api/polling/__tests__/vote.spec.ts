@@ -13,6 +13,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { parseUnits } from 'ethers/lib/utils';
 import { recoverTypedSignature } from '@metamask/eth-sig-util';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
+import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 
 jest.mock('modules/polling/helpers/getArbitrumPollingContract');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
@@ -20,6 +21,8 @@ jest.mock('modules/cache/cache');
 jest.mock('modules/polling/api/fetchPolls');
 jest.mock('@metamask/eth-sig-util');
 jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
+jest.mock('modules/polling/api/fetchAddressPollVoteHistory');
+jest.mock('modules/db/helpers/connectToDatabase');
 
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
@@ -29,6 +32,7 @@ describe('/api/polling/vote API Endpoint', () => {
       'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
     });
     (cacheSet as jest.Mock).mockImplementation(() => null);
+    (fetchAddressPollVoteHistory as jest.Mock).mockImplementation(() => Promise.resolve([]));
   });
   function mockRequestResponse(method: RequestMethod = 'POST', body) {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method });
