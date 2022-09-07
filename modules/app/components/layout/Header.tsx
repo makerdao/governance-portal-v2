@@ -30,6 +30,7 @@ import { Proposal } from 'modules/executive/types';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
+import { ClientRenderOnly } from '../ClientRenderOnly';
 
 const MenuItemContent = ({ label, icon }) => {
   return (
@@ -298,11 +299,12 @@ const Header = (): JSX.Element => {
             <NetworkSelect />
           </Flex>
         )}
-        {typeof window !== 'undefined' && (
+
+        <ClientRenderOnly>
           <ErrorBoundary componentName="Account Select">
             <AccountSelect />
           </ErrorBoundary>
-        )}
+        </ClientRenderOnly>
 
         <IconButton
           aria-label="Show menu"
