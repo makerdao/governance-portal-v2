@@ -13,7 +13,7 @@
     "start": "next start",
     "export": "next export",
     "test": "jest --config=jest.config.js --runInBand --watch",
-    "test:ci": "jest --runInBand --ci --coverage --detectOpenHandles",
+    "test:ci": "jest --runInBand --ci --coverage --detectOpenHandles --forceExit",
     "e2e": "npm run fund && start-server-and-test dev http://localhost:3000 cypress",
     "e2e:headless": "npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
