@@ -7,7 +7,7 @@ import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
-import { cacheGet } from 'modules/cache/cache';
+import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { parseUnits } from 'ethers/lib/utils';
@@ -24,8 +24,11 @@ jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
     (getArbitrumPollingContract as jest.Mock).mockReturnValue({
-      nonces: () => Promise.resolve(BigNumber.from('3'))
+      nonces: () => Promise.resolve(BigNumber.from('3')),
+      vote: () => Promise.resolve(null),
+      'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
     });
+    (cacheSet as jest.Mock).mockImplementation(() => null);
   });
   function mockRequestResponse(method: RequestMethod = 'POST', body) {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method });

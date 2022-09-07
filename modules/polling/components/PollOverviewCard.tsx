@@ -256,19 +256,21 @@ export default function PollOverviewCard({
                     <SkeletonThemed width={'265px'} height={'30px'} />
                   )}
                   {errorTally && !isValidating && (
-                    <Badge
-                      variant="warning"
-                      sx={{
-                        color: 'warning',
-                        borderColor: 'warning',
-                        textTransform: 'uppercase',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        m: 1
-                      }}
-                    >
-                      Error loading votes
-                    </Badge>
+                    <Flex sx={{ justifyContent: ['center', 'flex-end'] }}>
+                      <Badge
+                        variant="warning"
+                        sx={{
+                          color: 'warning',
+                          borderColor: 'warning',
+                          textTransform: 'uppercase',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          m: 1
+                        }}
+                      >
+                        Error loading votes
+                      </Badge>
+                    </Flex>
                   )}
                 </Box>
               </Flex>
