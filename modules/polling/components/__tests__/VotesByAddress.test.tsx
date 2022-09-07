@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { render, screen } from '@testing-library/react';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import mockPolls from 'modules/polling/api/mocks/polls.json';

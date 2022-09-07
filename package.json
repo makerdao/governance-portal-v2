@@ -2,9 +2,6 @@
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
   "version": "0.8.1",
-  "jest": {
-    "testTimeout": 7000
-  },
   "engines": {
     "node": ">=14.0.0"
   },
@@ -16,7 +13,7 @@
     "start": "next start",
     "export": "next export",
     "test": "jest --config=jest.config.js --runInBand --watch",
-    "test:ci": "jest --runInBand --ci --coverage",
+    "test:ci": "jest --runInBand --ci --coverage --detectOpenHandles --forceExit",
     "e2e": "npm run fund && start-server-and-test dev http://localhost:3000 cypress",
     "e2e:headless": "npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
@@ -140,9 +137,11 @@
     "graphql": "^16.2.0",
     "hardhat": "^2.10.2",
     "husky": "^6.0.0",
-    "jest": "^26.0.1",
-    "jest-canvas-mock": "^2.3.1",
+    "jest": "^29.0.2",
+    "jest-canvas-mock": "^2.4.0",
+    "jest-environment-jsdom": "^29.0.2",
     "node-fetch": "^3.2.4",
+    "node-mocks-http": "^1.11.0",
     "prettier": "^2.0.5",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",

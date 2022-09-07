@@ -20,6 +20,13 @@ jest.mock('remark-rehype', () => () => null);
 jest.mock('unified', () => () => null);
 jest.mock('rehype-stringify', () => () => null);
 jest.mock('rehype-sanitize', () => () => null);
+jest.mock('lib/useInterval', () => () => null);
+
+jest.mock('uuid', () => {
+  return {
+    v4: () => Math.round(Math.random() * 10000).toString()
+  };
+});
 
 jest.mock('modules/address/components/AddressIcon', () => {
   return {
@@ -39,20 +46,22 @@ beforeAll(async () => {
     activate: () => null
   });
 
-  // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: jest.fn(), // deprecated
-      removeListener: jest.fn(), // deprecated
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn()
-    }))
-  });
+  if (typeof window !== 'undefined') {
+    // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // deprecated
+        removeListener: jest.fn(), // deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn()
+      }))
+    });
+  }
   global.IntersectionObserver = mockIntersectionObserver;
 
   config.REDIS_URL = '';

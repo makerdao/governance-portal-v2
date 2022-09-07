@@ -25,14 +25,15 @@ import { GaslessNetworks, getGaslessNetwork, getGaslessProvider } from 'modules/
 type BallotSteps =
   | 'initial'
   | 'method-select'
-  | 'confirm'
   | 'submitting'
+  | 'signing-comments'
   | 'awaiting-relayer'
   | 'tx-pending'
   | 'tx-error';
 type BallotSubmissionMethod = 'standard' | 'gasless';
-import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
-import { invalidateCache } from 'modules/cache/invalidateCache';
+
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
+import { useAllUserVotes } from '../hooks/useAllUserVotes';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -102,6 +103,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Determines which address will be use to save the comments
   const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
     useAccount();
+
+  // Import the hook with the current user votes to mutate after voting.
+  const { mutate: mutatePreviousVotes } = useAllUserVotes(account);
 
   const accountToUse = voteDelegateContractAddress
     ? voteDelegateContractAddress
@@ -218,7 +222,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const signature = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
     setCommentSignature(signature);
-    setStep('confirm');
+    setStep('initial');
   };
 
   // Ballot submission
@@ -262,14 +266,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               logger.error('POST Polling Comments: failed to add comment');
               toast.error('Unable to store comments');
             });
-
-            //todo: have this happen after tx is mined? and also including when there's no comments
-            // Invalidate tally cache for each voted poll
-            Object.keys(ballot).forEach(pollId => {
-              setTimeout(() => {
-                invalidateCache(getPollTallyCacheKey(parseInt(pollId)), network);
-              }, 60000);
-            });
           }
         },
         mined: (txId, txHash) => {
@@ -285,6 +281,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             ...votes
           });
           clearBallot();
+          mutatePreviousVotes();
           transactionsApi
             .getState()
             .setMessage(
@@ -359,7 +356,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       pollIds,
       optionIds,
       nonce: nonce.toNumber(),
-      expiry: Math.trunc((Date.now() + 28800 * 1000) / 1000) //8 hour expiry
+      expiry: Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000) //8 hour expiry
     };
     const signature = await signTypedBallotData(signatureValues, provider, network);
     if (signature) {

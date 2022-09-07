@@ -9,9 +9,6 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
 import { markdownToHtml } from 'lib/markdown';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
-import { ethers } from 'ethers';
 import { getCommentTransaction } from './getCommentTransaction';
 
 export async function getCommentsByAddress(
