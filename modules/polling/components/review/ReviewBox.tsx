@@ -124,7 +124,7 @@ export default function ReviewBox({
           sx={{ borderColor: 'primary', color: 'primary', width: '100%' }}
           onClick={clearTransaction}
         >
-          Back To All Polls
+          Back to All Polls
         </Button>
       </InternalLink>
     </ReviewBoxCard>
