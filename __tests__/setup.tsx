@@ -20,6 +20,11 @@ jest.mock('remark-rehype', () => () => null);
 jest.mock('unified', () => () => null);
 jest.mock('rehype-stringify', () => () => null);
 jest.mock('rehype-sanitize', () => () => null);
+jest.mock('uuid', () => {
+  return {
+    v4: () => Math.round(Math.random() * 10000).toString()
+  }
+})
 
 jest.mock('modules/address/components/AddressIcon', () => {
   return {

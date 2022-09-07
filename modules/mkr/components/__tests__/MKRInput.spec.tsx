@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { render, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseUnits } from 'ethers/lib/utils';

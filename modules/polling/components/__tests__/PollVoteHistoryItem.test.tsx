@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { render, screen } from '@testing-library/react';
 import mockVote from 'modules/polling/api/mocks/vote.json';
 import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryItem';
