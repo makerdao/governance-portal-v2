@@ -125,7 +125,7 @@ export default withApiHandler(
       const pollsResponse = await getPolls(filters, network);
       const areAllPollsActive = pollIds
         .map(pollId => {
-          const poll = pollsResponse.polls.find(p => p.pollId === pollId);
+          const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
           if (!poll || !isActivePoll(poll)) {
             return false;
           }
