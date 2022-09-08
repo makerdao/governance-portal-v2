@@ -29,6 +29,7 @@ import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegate
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
+import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -87,7 +88,9 @@ const AccountPage = (): React.ReactElement => {
           </Box>
           {!account ? (
             <Box>
-              <AccountSelect />
+              <ClientRenderOnly>
+                <AccountSelect />
+              </ClientRenderOnly>
             </Box>
           ) : (
             <Box sx={{ mt: 4 }}>

@@ -1,3 +1,4 @@
+import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { Box, Flex, Text } from 'theme-ui';
 
@@ -19,7 +20,9 @@ export default function AccountNotConnected({
       </Text>
 
       <Flex sx={{ justifyContent: 'center', justifyItems: 'center' }}>
-        <AccountSelect />
+        <ClientRenderOnly>
+          <AccountSelect />
+        </ClientRenderOnly>
       </Flex>
     </Box>
   );
