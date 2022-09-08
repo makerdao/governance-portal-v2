@@ -43,9 +43,7 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }} {...props}>
       <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
         {voted
-          ? `You voted on ${ballotLength} of ${availablePollsLength} available poll${
-              availablePollsLength > 1 ? 's' : ''
-            }`
+          ? `You voted on ${ballotLength} poll${ballotLength > 1 ? 's' : ''}`
           : `${ballotLength - edits} of ${availablePollsLength} available poll${
               availablePollsLength > 1 ? 's' : ''
             } added to ballot`}
@@ -80,8 +78,11 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
       </Flex>
       {edits > 0 && !voted && (
         <Box mt={2} mb={-2}>
-          <Text sx={{ color: 'textSecondary', fontWeight: 'semiBold' }}>
-            <strong sx={{ color: 'text', fontWeight: 'bold' }}>and {edits}</strong> vote edit
+          <Text sx={{ color: 'textSecondary' }}>
+            <Text as="span" sx={{ color: 'text', fontWeight: 'bold' }}>
+              and {edits}
+            </Text>{' '}
+            vote edit
             {edits > 1 && 's'} added to ballot.
           </Text>
         </Box>
