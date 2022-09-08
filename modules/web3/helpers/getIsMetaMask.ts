@@ -1,3 +1,3 @@
 export function getIsMetaMask(): boolean {
-  return window.ethereum?.isMetaMask ?? false;
+  return window?.ethereum?.isMetaMask ?? false;
 }
