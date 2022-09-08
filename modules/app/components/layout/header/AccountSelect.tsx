@@ -134,11 +134,7 @@ const AccountSelect = (): React.ReactElement => {
         sx={{ minWidth: '120px' }}
         variant="mutedOutline"
         key={connectionName}
-        onClick={
-          (isAndroid || isIOS) && SUPPORTED_WALLETS[connectionName].deeplinkUri
-            ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri || '')
-            : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)
-        }
+        onClick={() => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)}
       >
         {loadingConnectors[connectionName] ? 'Loading...' : 'Select'}
       </Button>
