@@ -28,11 +28,9 @@ import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { Proposal } from 'modules/executive/types';
 import { fetchJson } from 'lib/fetchJson';
-import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
-import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import { Poll } from 'modules/polling/types';
-import TooltipComponent from '../Tooltip';
+import { ClientRenderOnly } from '../ClientRenderOnly';
 
 const MenuItemContent = ({ label, icon }) => {
   return (
@@ -134,7 +132,7 @@ const Header = (): JSX.Element => {
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
-  const { account, voteDelegateContractAddress } = useAccount();
+  const { account } = useAccount();
   const { network } = useWeb3();
   const { data: gas } = useGasPrice({ network });
   const { cache } = useSWRConfig();
@@ -153,18 +151,6 @@ const Header = (): JSX.Element => {
     revalidateOnMount: !cache.get(dataKeyPolls)
   });
   const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
-
-  const { data: allUserVotes } = useAllUserVotes(
-    voteDelegateContractAddress ? voteDelegateContractAddress : account
-  );
-  const allUserPolls: Poll[] = allUserVotes
-    ? allUserVotes
-        .map(vote => findPollById(pollsData?.polls || [], vote.pollId.toString()))
-        .filter((vote): vote is Poll => Boolean(vote))
-    : [];
-
-  const allUserVotesActive = allUserPolls.filter(poll => isActivePoll(poll));
-  const availablePollsLength = activePolls ? activePolls.length - allUserVotesActive.length : 0;
 
   const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
   const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
@@ -208,21 +194,19 @@ const Header = (): JSX.Element => {
             </NavLink>
             {bpi > 1 && activePolls && activePolls.length > 0 && (
               <NavLink href={'/polling'} title="View polling page" p={0}>
-                <TooltipComponent label={`${availablePollsLength} unvoted polls available`}>
-                  <Badge
-                    variant="solidCircle"
-                    sx={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      display: 'flex',
-                      p: 2,
-                      mt: '-1rem',
-                      ml: -10
-                    }}
-                  >
-                    {availablePollsLength}
-                  </Badge>
-                </TooltipComponent>
+                <Badge
+                  variant="solidCircle"
+                  sx={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                    p: 2,
+                    mt: '-1rem',
+                    ml: -10
+                  }}
+                >
+                  {activePolls?.length}
+                </Badge>
               </NavLink>
             )}
           </Flex>
@@ -315,11 +299,12 @@ const Header = (): JSX.Element => {
             <NetworkSelect />
           </Flex>
         )}
-        {typeof window !== 'undefined' && (
+
+        <ClientRenderOnly>
           <ErrorBoundary componentName="Account Select">
             <AccountSelect />
           </ErrorBoundary>
-        )}
+        </ClientRenderOnly>
 
         <IconButton
           aria-label="Show menu"
