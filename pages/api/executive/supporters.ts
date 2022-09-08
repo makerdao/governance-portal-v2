@@ -20,7 +20,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
 
   if (cached) {
-    res.status(200).json(cached);
+    res.status(200).json(JSON.parse(cached));
     return;
   }
 
