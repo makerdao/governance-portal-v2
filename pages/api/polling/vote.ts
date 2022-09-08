@@ -100,66 +100,66 @@ export default withApiHandler(
         });
       }
 
-      //verify address has a poll weight > 0.1 MKR
-      const hasMkrRequired = await hasMkrRequiredVotingWeight(
-        voter,
-        network,
-        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
-      );
+      //verify that signature and address correspond
+      const recovered = recoverTypedSignature({
+        data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
+        signature,
+        version: SignTypedDataVersion.V4
+      });
 
-      if (!hasMkrRequired) {
-        //ether's bignumber library doesnt handle decimals
+      if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
         return res.status(400).json({
-          error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED
-        });
-      }
-
-      // Verify that all the polls are active
-      const filters = {
-        startDate: new Date(),
-        endDate: null,
-        tags: null
-      };
-
-      const pollsResponse = await getPolls(filters, network);
-      const areAllPollsActive = pollIds
-        .map(pollId => {
-          const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
-          if (!poll || !isActivePoll(poll)) {
-            return false;
-          }
-          return true;
-        })
-        .reduce((prev, next) => {
-          return prev && next;
-        });
-
-      if (!areAllPollsActive) {
-        return res.status(400).json({
-          error: API_VOTE_ERRORS.EXPIRED_POLLS
+          error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER
         });
       }
 
       //run eligibility checks unless backdoor secret provided
       if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
+        //verify address has a poll weight > 0.1 MKR
+        const hasMkrRequired = await hasMkrRequiredVotingWeight(
+          voter,
+          network,
+          MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
+        );
+
+        if (!hasMkrRequired) {
+          //ether's bignumber library doesnt handle decimals
+          return res.status(400).json({
+            error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED
+          });
+        }
+
+        // Verify that all the polls are active
+        const filters = {
+          startDate: new Date(),
+          endDate: null,
+          tags: null
+        };
+
+        const pollsResponse = await getPolls(filters, network);
+        const areAllPollsActive = pollIds
+          .map(pollId => {
+            const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
+            if (!poll || !isActivePoll(poll)) {
+              return false;
+            }
+            return true;
+          })
+          .reduce((prev, next) => {
+            return prev && next;
+          });
+
+        if (!areAllPollsActive) {
+          return res.status(400).json({
+            error: API_VOTE_ERRORS.EXPIRED_POLLS
+          });
+        }
+
         //check that address hasn't used gasless service recently
         const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
         if (recentlyUsedGaslessVoting) {
           return res.status(400).json({
             error: API_VOTE_ERRORS.RATE_LIMITED
-          });
-        }
-
-        //verify that signature and address correspond
-        const recovered = recoverTypedSignature({
-          data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
-          signature,
-          version: SignTypedDataVersion.V4
-        });
-
-        if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
-          return res.status(400).json({
-            error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER
           });
         }
 
