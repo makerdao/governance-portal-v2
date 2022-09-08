@@ -34,6 +34,11 @@ const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
   const router = useRouter();
 
+  // TODO move this
+  function getIsMetaMask(): boolean {
+    return window.ethereum?.isMetaMask ?? false;
+  }
+
   const { account: address, connector, chainId } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
@@ -134,7 +139,11 @@ const AccountSelect = (): React.ReactElement => {
         sx={{ minWidth: '120px' }}
         variant="mutedOutline"
         key={connectionName}
-        onClick={() => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)}
+        onClick={
+          (isAndroid || isIOS) && !getIsMetaMask() && SUPPORTED_WALLETS[connectionName].deeplinkUri
+            ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri || '')
+            : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)
+        }
       >
         {loadingConnectors[connectionName] ? 'Loading...' : 'Select'}
       </Button>
