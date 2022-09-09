@@ -18,6 +18,7 @@ import { SUPPORTED_WALLETS, WalletName, ConnectionType } from 'modules/web3/cons
 import { connectorToWalletName, getConnection } from 'modules/web3/connections';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
+import { getIsMetaMask } from 'modules/web3/helpers/getIsMetaMask';
 import logger from 'lib/logger';
 import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 
@@ -33,7 +34,6 @@ const closeButtonStyle: ThemeUICSSObject = {
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
   const router = useRouter();
-
   const { account: address, connector, chainId } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
@@ -111,6 +111,7 @@ const AccountSelect = (): React.ReactElement => {
   }, [chainId]);
 
   const bpi = useBreakpointIndex();
+  const isMetaMask = getIsMetaMask();
 
   const disconnect = () => {
     setError(null);
@@ -135,7 +136,7 @@ const AccountSelect = (): React.ReactElement => {
         variant="mutedOutline"
         key={connectionName}
         onClick={
-          (isAndroid || isIOS) && SUPPORTED_WALLETS[connectionName].deeplinkUri
+          (isAndroid || isIOS) && !isMetaMask && SUPPORTED_WALLETS[connectionName].deeplinkUri
             ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri || '')
             : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)
         }

@@ -244,7 +244,7 @@ export default function DefaultVoteModalView({
           </Text>
           {lockedMkr ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {formatValue(lockedMkr)} MKR
+              {formatValue(lockedMkr, 'wad', 6)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>

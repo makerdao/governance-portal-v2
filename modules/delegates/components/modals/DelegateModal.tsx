@@ -102,9 +102,11 @@ export const DelegateModal = ({
                   setTxId={resetTx}
                   onDismiss={onClose}
                   title={`Delegating to ${delegate.name}`}
-                  description={`Congratulations, you delegated ${formatValue(mkrToDeposit)} MKR to ${
-                    delegate.name
-                  }.`}
+                  description={`Congratulations, you delegated ${formatValue(
+                    mkrToDeposit,
+                    'wad',
+                    6
+                  )} MKR to ${delegate.name}.`}
                 >
                   <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
                     <DelegateAvatarName delegate={delegate} />
