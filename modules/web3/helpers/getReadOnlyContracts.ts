@@ -9,37 +9,22 @@ const sdkGenerators: SdkGenerators = {
   goerli: getGoerliSdk
 };
 
-export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
-  `${rpcUrl.substring(0, rpcUrl.lastIndexOf('/'))}/${newKey}`;
-
 let currentNetwork: string | undefined;
 
-const readOnlyContracts: Record<string, EthSdk | null> = {
-  default: null
-};
+let readOnlyContracts: EthSdk | null = null;
 
 export const getReadOnlyContracts = (
   rpcUrl: string,
-  network: SupportedNetworks.MAINNET | SupportedNetworks.GOERLI,
-  apiKey?: string
+  network: SupportedNetworks.MAINNET | SupportedNetworks.GOERLI
 ): EthSdk => {
-  let contractsKey = 'default';
-
-  if (apiKey) {
-    contractsKey = apiKey;
-
-    // If a custom API key is provided, replace it in the URL
-    rpcUrl = replaceApiKey(rpcUrl, apiKey);
-  }
-
   const changeNetwork = network !== currentNetwork;
 
-  if (!readOnlyContracts[contractsKey] || changeNetwork) {
+  if (!readOnlyContracts || changeNetwork) {
     const batchProvider = new providers.JsonRpcBatchProvider(rpcUrl);
 
     if (changeNetwork) currentNetwork = network;
-    readOnlyContracts[contractsKey] = sdkGenerators[network](batchProvider);
+    readOnlyContracts = sdkGenerators[network](batchProvider);
   }
 
-  return readOnlyContracts[contractsKey] as EthSdk;
+  return readOnlyContracts as EthSdk;
 };

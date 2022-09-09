@@ -51,9 +51,6 @@ const moduleExports = {
   env: {
     INFURA_KEY: process.env.INFURA_KEY || '84842078b09946638c03157f83405213', // ethers default infura key
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
-    ALCHEMY_KEY_DELEGATES:
-      // if ALCHEMY_KEY_DELEGATES is not set, fall back to ALCHEMY_KEY
-      process.env.ALCHEMY_KEY_DELEGATES || process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC',
     POCKET_KEY: process.env.POCKET_KEY,
     ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
     GITHUB_TOKEN: process.env.GITHUB_TOKEN
