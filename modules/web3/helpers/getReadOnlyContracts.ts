@@ -6,7 +6,8 @@ import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
-  goerli: getGoerliSdk
+  goerli: getGoerliSdk,
+  goerlifork: getGoerliSdk
 };
 
 let currentNetwork: string | undefined;
@@ -15,7 +16,7 @@ let readOnlyContracts: EthSdk | null = null;
 
 export const getReadOnlyContracts = (
   rpcUrl: string,
-  network: SupportedNetworks.MAINNET | SupportedNetworks.GOERLI
+  network: SupportedNetworks.MAINNET | SupportedNetworks.GOERLI | SupportedNetworks.GOERLIFORK
 ): EthSdk => {
   const changeNetwork = network !== currentNetwork;
 
