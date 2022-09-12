@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
@@ -17,7 +17,7 @@ const ModalContent = ({
   thresholdAmount?: BigNumber;
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { shutdown, tx } = useEsmShutdown();
 
   const close = () => {

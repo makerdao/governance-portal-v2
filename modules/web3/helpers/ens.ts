@@ -1,17 +1,17 @@
 import { SupportedNetworks } from '../constants/networks';
 import { getDefaultProvider } from './getDefaultProvider';
-import { Web3Provider } from '@ethersproject/providers';
+import { providers } from 'ethers';
 import logger from 'lib/logger';
 
 export async function getENS({
   address,
-  library
+  provider
 }: {
   address: string;
-  library: Web3Provider;
+  provider: providers.Web3Provider;
 }): Promise<string | null> {
   try {
-    const name = await library.lookupAddress(address);
+    const name = await provider.lookupAddress(address);
     return name;
   } catch (err) {
     logger.error(`getENS: ${address}. Unable to get ENS.`, err);

@@ -3,7 +3,7 @@ import { Box, Card, Flex, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 import { STEPS } from 'modules/migration/steps';
@@ -16,7 +16,7 @@ import { sign } from 'modules/web3/helpers/sign';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const { account, library } = useActiveWeb3React();
+  const { account, provider } = useWeb3();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
   const { isDelegateContractExpiring, isDelegateContractExpired } = useMigrationStatus();
@@ -94,9 +94,11 @@ export default function DelegateMigrationPage(): React.ReactElement {
   ]);
 
   const handleSubmitNewAddress = async (newAddress: string) => {
+    if (!provider) return Promise.reject();
+
     const msg = `This is a request to link ${account} to ${newAddress} for the purposes of delegation history.`;
 
-    const sig = await sign(account as string, msg, library);
+    const sig = await sign(account as string, msg, provider);
 
     const payload = { address: account, msg, sig };
 

@@ -19,7 +19,7 @@ import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
@@ -183,9 +183,9 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
           <Box>
             <Stack gap={3}>
               <InternalLink href={'/polling'} title="View polling page">
-                <Button variant="smallOutline" sx={{ width: 'max-content' }}>
+                <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
-                  Back To All Polls
+                  Back to All Polls
                 </Button>
               </InternalLink>
               <Stack gap={3}>
@@ -342,7 +342,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 };
 
 export default function PollingReviewPage({ polls: prefetchedPolls }: PollingReviewPageData): JSX.Element {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

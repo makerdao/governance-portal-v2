@@ -1,6 +1,6 @@
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { fetchGitHubPage } from 'lib/github';
+import { fetchGithubGraphQL } from 'lib/github';
 import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
@@ -12,6 +12,7 @@ import { BigNumber } from 'ethers';
 import logger from 'lib/logger';
 import { githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
+import { allGithubExecutives } from 'modules/gql/queries/allGithubExecutives';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cachedProposals = await cacheGet(githubExecutivesCacheKey, network);
@@ -21,29 +22,29 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
-  const owner = 'makerdao';
-  const repo = 'community';
-  const path = 'governance/votes';
+  const githubRepo = {
+    owner: 'makerdao',
+    repo: 'community',
+    page: 'governance/votes'
+  };
 
-  const githubResponse = await fetchGitHubPage(owner, repo, path);
-  const proposalUrls = githubResponse
-    .filter(x => x.type === 'file')
-    .map(x => x.download_url)
-    .filter(x => !!x);
-
-  const proposals = await Promise.all(
-    proposalUrls.map(async (proposalLink): Promise<CMSProposal | null> => {
+  const githubResponse = await fetchGithubGraphQL(githubRepo, allGithubExecutives);
+  const proposals = githubResponse.repository.object.entries
+    .filter(entry => entry.type === 'blob')
+    .map(file => {
       try {
-        const proposalDoc = await (await fetch(proposalLink)).text();
-
-        return parseExecutive(proposalDoc, proposalIndex, proposalLink, network);
+        const pathParts = file.path.split('/');
+        const last = pathParts.pop();
+        const path = `https://raw.githubusercontent.com/${githubRepo.owner}/${
+          githubRepo.repo
+        }/master/${pathParts.join('/')}/${encodeURIComponent(last)}`;
+        return parseExecutive(file.object.text, proposalIndex, path, network);
       } catch (e) {
         logger.error(`getGithubExecutives: network ${network}`, e);
         // Catch error and return null if failed fetching one proposal
         return null;
       }
-    })
-  );
+    });
 
   const filteredProposals: CMSProposal[] = proposals
     .filter(x => !!x)

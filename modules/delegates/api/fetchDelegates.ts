@@ -202,13 +202,7 @@ export async function fetchDelegates(
   // This contains all the delegates including info merged with recognized delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(
-    networkNameToChainId(currentNetwork),
-    undefined,
-    undefined,
-    true,
-    config.ALCHEMY_KEY_DELEGATES
-  );
+  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());

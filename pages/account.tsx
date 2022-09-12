@@ -18,7 +18,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
@@ -29,10 +29,11 @@ import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegate
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
+import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const {
     account,
     mutate: mutateAccount,
@@ -87,7 +88,9 @@ const AccountPage = (): React.ReactElement => {
           </Box>
           {!account ? (
             <Box>
-              <AccountSelect />
+              <ClientRenderOnly>
+                <AccountSelect />
+              </ClientRenderOnly>
             </Box>
           ) : (
             <Box sx={{ mt: 4 }}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Text, Box } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatDateWithTime } from 'lib/datetime';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ParsedExecutiveComments, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
@@ -19,7 +19,7 @@ export default function CommentItem({
   comment: PollCommentsAPIResponseItemWithWeight | ParsedExecutiveComments;
   votedOption?: React.ReactNode;
 }): React.ReactElement {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Box>

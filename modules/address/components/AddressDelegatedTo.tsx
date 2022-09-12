@@ -2,7 +2,7 @@ import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'lib/bigNumberJs';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
@@ -179,7 +179,7 @@ type AddressDelegatedToProps = {
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   return (
     <Box>

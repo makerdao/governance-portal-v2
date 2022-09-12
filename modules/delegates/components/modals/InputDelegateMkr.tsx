@@ -7,6 +7,7 @@ import Withdraw from 'modules/mkr/components/Withdraw';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   title: string;
@@ -52,7 +53,7 @@ export function InputDelegateMkr({
           {buttonLabel}
         </Button>
       </Box>
-      {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.gt(0) && (
+      {showAlert && lockedMkr && lockedMkr.gte(parseUnits('0.1')) && balance && balance.gt(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {`You have ${formatValue(lockedMkr)} additional MKR locked in the voting contract. `}
@@ -61,7 +62,7 @@ export function InputDelegateMkr({
           </Text>
         </Alert>
       )}
-      {showAlert && lockedMkr && lockedMkr.gt(0.0) && balance && balance.eq(0) && (
+      {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.eq(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {'You must '}

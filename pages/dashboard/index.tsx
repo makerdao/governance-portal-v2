@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, Card, Flex, Heading, Text, Input } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchJson } from 'lib/fetchJson';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import {
@@ -16,18 +16,33 @@ import {
 } from 'modules/cache/constants/cache-keys';
 import { invalidateCache } from 'modules/cache/invalidateCache';
 import { toast } from 'react-toastify';
+import { getCacheInfo } from 'modules/cache/getCacheInfo';
 
 const DashboardPage = (): React.ReactElement => {
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const [loading, setLoading] = useState(false);
   const [pollId, setPollId] = useState('');
   const [password, setPassword] = useState('');
   const [signedIn, setSignedIn] = useState(false);
+  const [cacheInfo, setCacheInfo] = useState({});
+
+  const fetchCacheInfo = async () => {
+    const info = await getCacheInfo(githubExecutivesCacheKey, network);
+
+    setCacheInfo(info);
+  };
+
+  useEffect(() => {
+    if (signedIn) {
+      fetchCacheInfo();
+    }
+  }, [signedIn]);
 
   const invalidate = async (cacheKey: string) => {
     setLoading(true);
     try {
       await invalidateCache(cacheKey, password, network);
+      await fetchCacheInfo();
       setLoading(false);
       toast.success(`Cache ${cacheKey} cleared`);
     } catch (e) {
@@ -82,56 +97,102 @@ const DashboardPage = (): React.ReactElement => {
           </Card>
         )}
         {signedIn && (
-          <Card>
-            <ErrorBoundary componentName="Cache invalidation">
-              <Text as="h3">Invalidate cache</Text>
-              {loading && <Box>Clearing selected cache...</Box>}
-              <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
-                <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidate(getAllPollsCacheKey())} disabled={loading}>
-                    All polls
-                  </Button>
-                </Box>
-                <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidate(executiveSupportersCacheKey)} disabled={loading}>
-                    Executive supporters
-                  </Button>
-                </Box>
-                <Box sx={{ m: 3 }}>
-                  <Button onClick={() => invalidate(githubExecutivesCacheKey)} disabled={loading}>
-                    Executives from GitHub
-                  </Button>
-                </Box>
-                <Box sx={{ m: 3 }}>
-                  <Button
-                    onClick={() => {
-                      invalidate(delegatesGithubCacheKey);
-                      invalidate(allDelegatesCacheKey);
-                    }}
-                    disabled={loading}
-                  >
-                    Delegates
-                  </Button>
-                </Box>
-                <Flex sx={{ m: 3 }}>
-                  <Input
-                    type="text"
-                    value={pollId}
-                    onChange={e => setPollId(e.target.value)}
-                    placeholder="poll-id (ex: 242)"
-                    sx={{ mr: 2 }}
-                  />
-                  <Button
-                    onClick={() => invalidate(getPollTallyCacheKey(parseInt(pollId)))}
-                    disabled={loading}
-                    sx={{ minWidth: 150 }}
-                  >
-                    Tally by poll ID
+          <Box>
+            <Card>
+              <ErrorBoundary componentName="Cache invalidation">
+                <Text as="h3">Invalidate cache</Text>
+                {loading && <Box>Clearing selected cache...</Box>}
+                <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
+                  <Box sx={{ m: 3 }}>
+                    <Button onClick={() => invalidate(getAllPollsCacheKey())} disabled={loading}>
+                      All polls
+                    </Button>
+                  </Box>
+                  <Box sx={{ m: 3 }}>
+                    <Button onClick={() => invalidate(executiveSupportersCacheKey)} disabled={loading}>
+                      Executive supporters
+                    </Button>
+                  </Box>
+                  <Box sx={{ m: 3 }}>
+                    <Button onClick={() => invalidate(githubExecutivesCacheKey)} disabled={loading}>
+                      Executives from GitHub
+                    </Button>
+                  </Box>
+                  <Box sx={{ m: 3 }}>
+                    <Button
+                      onClick={() => {
+                        invalidate(delegatesGithubCacheKey);
+                        invalidate(allDelegatesCacheKey);
+                      }}
+                      disabled={loading}
+                    >
+                      Delegates
+                    </Button>
+                  </Box>
+                  <Flex sx={{ m: 3 }}>
+                    <Input
+                      type="text"
+                      value={pollId}
+                      onChange={e => setPollId(e.target.value)}
+                      placeholder="poll-id (ex: 242)"
+                      sx={{ mr: 2 }}
+                    />
+                    <Button
+                      onClick={() => invalidate(getPollTallyCacheKey(parseInt(pollId)))}
+                      disabled={loading}
+                      sx={{ minWidth: 150 }}
+                    >
+                      Tally by poll ID
+                    </Button>
+                  </Flex>
+                </Flex>
+              </ErrorBoundary>
+            </Card>
+            <Card sx={{ mt: 4 }}>
+              <ErrorBoundary componentName="Cache info">
+                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text as="h3">Cache TTL info</Text>
+                  <Button variant="outline" onClick={fetchCacheInfo}>
+                    Refresh
                   </Button>
                 </Flex>
-              </Flex>
-            </ErrorBoundary>
-          </Card>
+                <Flex sx={{ mt: 2 }}>
+                  <Text sx={{ fontWeight: 'semiBold' }}>All polls:</Text>
+                  {cacheInfo[getAllPollsCacheKey()] > 0 ? (
+                    <Text sx={{ ml: 2 }}>{`Expires in ${cacheInfo[getAllPollsCacheKey()]} seconds`}</Text>
+                  ) : (
+                    <Text sx={{ ml: 2 }}>No cache found</Text>
+                  )}
+                </Flex>
+                <Flex sx={{ mt: 2 }}>
+                  <Text sx={{ fontWeight: 'semiBold' }}>Executive supporters:</Text>
+                  {cacheInfo[executiveSupportersCacheKey] > 0 ? (
+                    <Text
+                      sx={{ ml: 2 }}
+                    >{`Expires in ${cacheInfo[executiveSupportersCacheKey]} seconds`}</Text>
+                  ) : (
+                    <Text sx={{ ml: 2 }}>No cache found</Text>
+                  )}
+                </Flex>
+                <Flex sx={{ mt: 2 }}>
+                  <Text sx={{ fontWeight: 'semiBold' }}>Executives from GitHub:</Text>
+                  {cacheInfo[githubExecutivesCacheKey] > 0 ? (
+                    <Text sx={{ ml: 2 }}>{`Expires in ${cacheInfo[githubExecutivesCacheKey]} seconds`}</Text>
+                  ) : (
+                    <Text sx={{ ml: 2 }}>No cache found</Text>
+                  )}
+                </Flex>
+                <Flex sx={{ mt: 2 }}>
+                  <Text sx={{ fontWeight: 'semiBold' }}>Delegates:</Text>
+                  {cacheInfo[delegatesGithubCacheKey] > 0 ? (
+                    <Text sx={{ ml: 2 }}>{`Expires in ${cacheInfo[delegatesGithubCacheKey]} seconds`}</Text>
+                  ) : (
+                    <Text sx={{ ml: 2 }}>No cache found</Text>
+                  )}
+                </Flex>
+              </ErrorBoundary>
+            </Card>
+          </Box>
         )}
       </Stack>
     </PrimaryLayout>

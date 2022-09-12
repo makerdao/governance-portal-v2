@@ -4,6 +4,7 @@ import { Poll, PartialPoll } from 'modules/polling/types';
 import { parsePollMetadata } from './parsePollMetadata';
 import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
 import { validatePollParameters } from './validatePollParameters';
+import { getPollTagsMapping } from '../api/getPollTags';
 
 type ValidationResult = {
   valid: boolean;
@@ -16,9 +17,10 @@ export async function validatePollFromRawURL(url: string, poll?: PartialPoll): P
   const resp = await fetch(url);
   const text = await resp.text();
   const result = validatePollMarkdown(text);
+  const tagsMapping = await getPollTagsMapping();
   if (result.valid && poll) {
     result.wholeDoc = text;
-    result.parsedData = await parsePollMetadata(poll, text);
+    result.parsedData = await parsePollMetadata(poll, text, tagsMapping);
   }
   return result;
 }

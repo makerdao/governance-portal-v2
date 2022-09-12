@@ -130,7 +130,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
-              MKR Amount
+              MKR
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} ml={1} />

@@ -3,7 +3,7 @@ import { Card, Box, Flex, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Poll } from 'modules/polling/types';
 import { TXMined } from 'modules/web3/types/transaction';
 import TxIndicators from 'modules/app/components/TxIndicators';
@@ -33,7 +33,7 @@ export default function ReviewBox({
 
   const { transaction, clearTransaction, ballot, commentsSignature } = useContext(BallotContext);
 
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   const bpi = useBreakpointIndex();
 
@@ -124,7 +124,7 @@ export default function ReviewBox({
           sx={{ borderColor: 'primary', color: 'primary', width: '100%' }}
           onClick={clearTransaction}
         >
-          Back To All Polls
+          Back to All Polls
         </Button>
       </InternalLink>
     </ReviewBoxCard>

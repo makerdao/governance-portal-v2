@@ -3,19 +3,22 @@ import Banner from 'modules/app/components/layout/header/Banner';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getMigrationBannerContent } from 'modules/migration/helpers/getMigrationBannerContent';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
-export function DelegatationMigrationStatusBanner({
-  isDelegatedToExpiredContract,
-  isDelegateContractExpired,
-  isDelegatedToExpiringContract,
-  isDelegateContractExpiring
-}: {
-  isDelegatedToExpiredContract: boolean;
-  isDelegatedToExpiringContract: boolean;
-  isDelegateContractExpired: boolean;
-  isDelegateContractExpiring: boolean;
-}): React.ReactElement {
+export function MigrationBanner(): React.ReactElement | null {
   const link = <Icon name="chevron_right" size={2} ml={2} />;
+
+  const {
+    isDelegatedToExpiringContract,
+    isDelegatedToExpiredContract,
+    isDelegateContractExpired,
+    isDelegateContractExpiring
+  } = useMigrationStatus();
+  const showDelegationMigrationBanner =
+    isDelegateContractExpired ||
+    isDelegateContractExpiring ||
+    isDelegatedToExpiringContract ||
+    isDelegatedToExpiredContract;
 
   const { variant, href, copy } = getMigrationBannerContent({
     isDelegatedToExpiredContract,
@@ -24,7 +27,7 @@ export function DelegatationMigrationStatusBanner({
     isDelegateContractExpiring
   });
 
-  return (
+  return showDelegationMigrationBanner ? (
     <Banner
       variant={variant}
       content={
@@ -37,5 +40,5 @@ export function DelegatationMigrationStatusBanner({
         </InternalLink>
       }
     />
-  );
+  ) : null;
 }

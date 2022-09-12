@@ -1,35 +1,29 @@
-import { useWeb3React } from '@web3-react/core';
 import { Wallet } from 'ethers';
 import { useEffect } from 'react';
 import { SupportedChainId } from '../constants/chainID';
-import { JsonRpcProvider } from '@ethersproject/providers';
-import { InjectedConnector } from '@web3-react/injected-connector';
-import { CustomizedBridge } from '../connectors/CustomizedBridge';
+import { providers } from 'ethers';
+import { injectedConnection } from 'modules/web3/connections';
+import { CustomizedBridge } from '../connections/CustomizedBridge';
 import logger from 'lib/logger';
 
 export function useGoerliForkWindowBindings(): void {
-  const context = useWeb3React();
+  // TODO this should only run in non-prod environments
   // Define a window function that changes the account for testing purposes
   useEffect(() => {
     if (typeof window !== 'undefined') {
       (window as any).setAccount = (address: string, key: string) => {
         if (address && key) {
-          const rpcUrl = 'http://localhost:8545';
-          const provider = new JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
-          const signer = new Wallet(key, provider);
-
-          const bridge = new CustomizedBridge(signer, provider);
-          bridge.setAddress(address);
-          (window as any).ethereum = bridge;
-
-          context.activate(
-            new InjectedConnector({
-              supportedChainIds: [SupportedChainId.GOERLIFORK]
-            }),
-            err => {
-              logger.error('useGoerliForkWindowBindings: error activating web3 connector', err);
-            }
-          );
+          try {
+            const rpcUrl = 'http://localhost:8545';
+            const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
+            const signer = new Wallet(key, provider);
+            const bridge = new CustomizedBridge(signer, provider);
+            bridge.setAddress(address);
+            (window as any).ethereum = bridge;
+            injectedConnection.connector.activate();
+          } catch (err) {
+            logger.error(err);
+          }
         }
       };
     }

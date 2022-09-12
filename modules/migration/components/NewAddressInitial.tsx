@@ -35,7 +35,7 @@ export function NewAddressInitial({
         <Flex sx={{ width: '40%' }}>
           <Flex sx={{ bg: 'onSurfaceAlt', p: 3 }}>
             <Flex sx={{ mt: '5px', mr: 3, m1: 1, alignContent: 'flex-start', width: '100px' }}>
-              <Icon name="gnosis" />
+              <Icon name="Gnosis Safe" />
             </Flex>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text>Are you a Gnosis Safe user?</Text>

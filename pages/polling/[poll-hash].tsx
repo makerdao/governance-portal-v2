@@ -31,7 +31,7 @@ import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -90,7 +90,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               <Button variant="mutedOutline">
                 <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
-                  Back to all polls
+                  Back to All Polls
                 </Flex>
                 <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
                   Back to all
@@ -221,7 +221,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         Voting Stats
                       </Text>
                       <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
-                        <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
+                        <Text sx={{ color: 'textSecondary' }}>Total Voting Power</Text>
                         {tally ? (
                           <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(3)} MKR</Text>
                         ) : (
@@ -232,7 +232,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       </Flex>
 
                       <Flex sx={{ justifyContent: 'space-between' }}>
-                        <Text sx={{ color: 'textSecondary' }}>Unique Voters</Text>
+                        <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
                         {tally ? (
                           <Text>{tally.numVoters}</Text>
                         ) : (
@@ -342,7 +342,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
@@ -404,11 +404,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const pollsResponse = await getPolls();
-  const MAX = 10;
+  const MAX = 5;
   const paths = pollsResponse.polls.slice(0, MAX).map(p => `/polling/${p.slug}`);
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: true
   };
 };

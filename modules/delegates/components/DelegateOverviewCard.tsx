@@ -43,6 +43,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
     account,
     delegate.voteDelegateAddress
   );
+  const hasMkrDelegated = account && mkrDelegated?.gt(0);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -93,10 +94,9 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
         >
           <Flex
             sx={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: ['wrap', 'nowrap']
+              flexDirection: ['column', 'row'],
+              alignItems: ['flex-start', 'center'],
+              justifyContent: 'space-between'
             }}
           >
             <Box sx={{ mr: 2, my: 2 }}>
@@ -112,18 +112,20 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 justifyContent: 'right'
               }}
             >
-              <Button
-                variant="primaryOutline"
-                disabled={!account || mkrDelegated?.lte(0)}
-                onClick={() => {
-                  trackButtonClick('openUndelegateModal');
-                  setShowUndelegateModal(true);
-                }}
-                sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
-                data-testid="button-undelegate"
-              >
-                Undelegate
-              </Button>
+              {hasMkrDelegated && (
+                <Button
+                  variant="primaryOutline"
+                  disabled={!hasMkrDelegated}
+                  onClick={() => {
+                    trackButtonClick('openUndelegateModal');
+                    setShowUndelegateModal(true);
+                  }}
+                  sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
+                  data-testid="button-undelegate"
+                >
+                  Undelegate
+                </Button>
+              )}
               <Button
                 variant="primaryLarge"
                 data-testid="button-delegate"
@@ -132,7 +134,12 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
-                sx={{ width: '135px', maxWidth: '135px', height: '45px', ml: 3 }}
+                sx={{
+                  width: '135px',
+                  maxWidth: '135px',
+                  height: '45px',
+                  ml: hasMkrDelegated ? 3 : 0
+                }}
               >
                 Delegate
               </Button>
@@ -220,7 +227,12 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                     >
                       {mkrDelegated ? formatValue(mkrDelegated) : '0'}
                     </Text>
-                    <Text as="p" variant="secondary" color="onSecondary" sx={{ textAlign: 'right' }}>
+                    <Text
+                      as="p"
+                      variant="secondary"
+                      color="onSecondary"
+                      sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
+                    >
                       MKR delegated by you
                     </Text>
                   </Box>
@@ -234,7 +246,12 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   >
                     {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0'}
                   </Text>
-                  <Text as="p" variant="secondary" color="onSecondary" sx={{ textAlign: 'right' }}>
+                  <Text
+                    as="p"
+                    variant="secondary"
+                    color="onSecondary"
+                    sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
+                  >
                     Total MKR delegated
                   </Text>
                 </Box>

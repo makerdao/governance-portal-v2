@@ -35,7 +35,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
@@ -81,7 +81,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { account } = useAccount();
 
   const bpi = useBreakpointIndex();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
@@ -155,7 +155,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                 <Icon name="chevron_left" size="2" mr={2} />
-                Back to {bpi === 0 ? 'all' : 'executive'} proposals
+                Back to {bpi === 0 ? 'All' : 'Executive'} Proposals
               </Flex>
             </Button>
           </InternalLink>
@@ -163,20 +163,24 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {proposal.title ? proposal.title : proposal.address}
             </Heading>
-            {isHat && proposal.address !== ZERO_ADDRESS ? (
-              <Badge
-                variant="primary"
-                sx={{
-                  my: 2,
-                  ml: [3, 4],
-                  borderColor: 'primaryAlt',
-                  color: 'primaryAlt',
-                  textTransform: 'uppercase'
-                }}
-              >
-                Governing proposal
-              </Badge>
-            ) : null}
+            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', mx: [3, 4] }}>
+              {isHat && proposal.address !== ZERO_ADDRESS ? (
+                // TODO this should be made the primary badge component in our theme
+                <Box
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '4px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: 'tagColorThree',
+                    backgroundColor: 'tagColorThreeBg',
+                    my: 2
+                  }}
+                >
+                  <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
+                </Box>
+              ) : null}
+            </Flex>
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
@@ -391,7 +395,7 @@ export default function ProposalPage({
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
-  const { network } = useActiveWeb3React();
+  const { network } = useWeb3();
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
   // const spellAddress = prefetchedProposal?.address;
@@ -470,12 +474,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
-  const MAX = 10;
+  const MAX = 5;
 
   const paths = proposals.slice(0, MAX).map(proposal => `/executive/${proposal.key}`);
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: true
   };
 };

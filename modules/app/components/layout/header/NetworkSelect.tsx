@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-
 import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
-import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { isSupportedChain } from 'modules/web3/helpers/chain';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -40,7 +39,33 @@ const closeButtonStyle: ThemeUICSSObject = {
 };
 
 const NetworkSelect = (): React.ReactElement => {
-  const { library, chainId, account } = useActiveWeb3React();
+  const { chainId, account, connector } = useWeb3();
+  const [error, setError] = useState<any>(undefined);
+
+  const switchChain = useCallback(
+    async (desiredChainId: number) => {
+      // if we're already connected to the desired chain, return
+      if (desiredChainId === chainId) {
+        setError(undefined);
+        return;
+      }
+
+      // if they want to connect to the default chain and we're already connected, return
+      if (desiredChainId === -1 && chainId !== undefined) {
+        setError(undefined);
+        return;
+      }
+
+      try {
+        await connector.activate(desiredChainId === -1 ? undefined : desiredChainId);
+        setError(undefined);
+      } catch (err) {
+        setError(err);
+      }
+    },
+    [connector, chainId, setError]
+  );
+
   // We can only switch MM network if injected connector is active
   const disabled = !account;
 
@@ -56,7 +81,7 @@ const NetworkSelect = (): React.ReactElement => {
         sx={walletButtonStyle}
         key={CHAIN_INFO[chainKey].label}
         onClick={() => {
-          switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library });
+          switchChain(CHAIN_INFO[chainKey].chainId);
           setShowDialog(false);
         }}
       >
@@ -70,9 +95,10 @@ const NetworkSelect = (): React.ReactElement => {
       {chainId && (
         <ConnectNetworkButton
           onClickConnect={() => {
+            setError(undefined);
             setShowDialog(true);
           }}
-          activeNetwork={CHAIN_INFO[chainId].label}
+          activeNetwork={isSupportedChain(chainId) ? CHAIN_INFO[chainId].label : 'Unsupported Network'}
           disabled={disabled}
         />
       )}
@@ -93,6 +119,11 @@ const NetworkSelect = (): React.ReactElement => {
             <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
           </Flex>
           {chainId && networkOptions}
+          {error && (
+            <Text sx={{ mt: 2 }} variant="error">
+              An error has occured.
+            </Text>
+          )}
         </DialogContent>
       </DialogOverlay>
     </Box>

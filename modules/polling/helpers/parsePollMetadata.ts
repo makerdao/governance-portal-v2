@@ -1,9 +1,9 @@
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
-import { Poll, PartialPoll, PollVoteType, PollParameters } from 'modules/polling/types';
+import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
-import { getPollTags, getPollTagsMapping } from '../api/getPollTags';
+import { getPollTags } from '../api/getPollTags';
 import { Tag } from 'modules/app/types/tag';
 import { oldVoteTypeToNewParameters, validatePollParameters } from './validatePollParameters';
 
@@ -17,7 +17,13 @@ export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   return formatted;
 }
 
-export async function parsePollMetadata(poll: PartialPoll, document: string): Promise<Poll> {
+export async function parsePollMetadata(
+  poll: PartialPoll,
+  document: string,
+  tagsMapping: {
+    [key: number]: string[];
+  }
+): Promise<Poll> {
   const { data: pollMeta, content } = matter(document);
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
@@ -40,9 +46,8 @@ export async function parsePollMetadata(poll: PartialPoll, document: string): Pr
   }
 
   const tags = getPollTags();
-  const mapping = await getPollTagsMapping();
 
-  const pollTags = mapping[poll.pollId] || [];
+  const pollTags = tagsMapping[poll.pollId] || [];
 
   let startDate, endDate;
   //poll coming from poll create page
