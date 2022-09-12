@@ -106,7 +106,6 @@ export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find(connection => connection.connector === c);
     if (!connection) {
-      console.log('unsuported');
       throw Error('unsupported connector');
     }
     return connection;
