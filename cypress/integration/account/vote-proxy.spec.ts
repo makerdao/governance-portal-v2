@@ -91,7 +91,7 @@ describe('Vote Proxy', () => {
       cy.get('[data-testid="locked-mkr"]').should('have.text', '3.0 MKR');
 
       // Check the value of the MKR supporting on the exec we're not yet voting for
-      cy.get('[data-testid="MKR Supporting-stat-box"]').eq(1).should('have.text', '423.38');
+      cy.get('[data-testid="MKR Supporting-stat-box"]').eq(1).should('have.text', '870.68');
       cy.get('[data-testid="proposal-status"]')
         .eq(1)
         .should('have.text', '99,577 additional MKR support needed to pass. Expires at .');
