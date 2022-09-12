@@ -1,6 +1,7 @@
 import { initializeConnector } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { Network } from '@web3-react/network';
+import { EIP1193 } from '@web3-react/eip1193';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
@@ -17,7 +18,8 @@ const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
       actions,
       urlMap: {
         [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
-        [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
+        [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI),
+        [SupportedChainId.GOERLIFORK]: getRPCFromChainID(SupportedChainId.GOERLIFORK)
       },
       defaultChainId: 1
     })
@@ -29,11 +31,11 @@ export const networkConnection: Connection = {
 };
 
 // metamask
-const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>(actions => new MetaMask({ actions }));
-export const injectedConnection: Connection = {
-  connector: web3Injected,
-  hooks: web3InjectedHooks,
-  type: ConnectionType.INJECTED
+const [metamask, metamaskHooks] = initializeConnector<MetaMask>(actions => new MetaMask({ actions }));
+export const metamaskConnection: Connection = {
+  connector: metamask,
+  hooks: metamaskHooks,
+  type: ConnectionType.METAMASK
 };
 
 // walletconnect
@@ -88,7 +90,7 @@ export const orderedConnectionTypes = [
   gnosisSafeConnection.type,
   coinbaseWalletConnection.type,
   walletConnectConnection.type,
-  injectedConnection.type,
+  metamaskConnection.type,
   networkConnection.type
 ];
 
@@ -96,21 +98,22 @@ const CONNECTIONS = [
   gnosisSafeConnection,
   coinbaseWalletConnection,
   walletConnectConnection,
-  injectedConnection,
+  metamaskConnection,
   networkConnection
 ];
 
-export function getConnection(c: Connector | ConnectionType) {
+export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
     const connection = CONNECTIONS.find(connection => connection.connector === c);
     if (!connection) {
+      console.log('unsuported');
       throw Error('unsupported connector');
     }
     return connection;
   } else {
     switch (c) {
-      case ConnectionType.INJECTED:
-        return injectedConnection;
+      case ConnectionType.METAMASK:
+        return metamaskConnection;
       case ConnectionType.COINBASE_WALLET:
         return coinbaseWalletConnection;
       case ConnectionType.WALLET_CONNECT:
@@ -119,6 +122,8 @@ export function getConnection(c: Connector | ConnectionType) {
         return networkConnection;
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection;
+      default:
+        return networkConnection;
     }
   }
 }
@@ -127,7 +132,7 @@ export function connectorToWalletName(connector: Connector) {
   const connection = CONNECTIONS.find(connection => connection.connector === connector);
 
   switch (connection?.type) {
-    case ConnectionType.INJECTED:
+    case ConnectionType.METAMASK:
       return SUPPORTED_WALLETS.MetaMask.name;
     case ConnectionType.COINBASE_WALLET:
       return SUPPORTED_WALLETS['Coinbase Wallet'].name;

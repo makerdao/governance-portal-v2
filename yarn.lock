@@ -4664,6 +4664,13 @@
   optionalDependencies:
     "@ethersproject/providers" "^5"
 
+"@web3-react/eip1193@^8.0.26-beta.0":
+  version "8.0.26-beta.0"
+  resolved "https://registry.yarnpkg.com/@web3-react/eip1193/-/eip1193-8.0.26-beta.0.tgz#2e36423bab637a1fbc57b36d4f0f38ac531fd541"
+  integrity sha512-n/2ajjABcP8DktZfXxSHrxtPIxeSRJ9tsgfmd9XPEIW9FO7xLzLrF+nloTSghtZ8H+ZKKcswlKjYq4rbX/oqHg==
+  dependencies:
+    "@web3-react/types" "^8.0.20-beta.0"
+
 "@web3-react/metamask@^8.0.28-beta.0":
   version "8.0.28-beta.0"
   resolved "https://registry.yarnpkg.com/@web3-react/metamask/-/metamask-8.0.28-beta.0.tgz#f7e9e0de446727a961745cbec75c8cbf6c961388"
