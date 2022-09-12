@@ -22,9 +22,8 @@ export function Web3Provider({ children }: { children: ReactNode }): React.React
   ]);
 
   const [manuallyAddedConnectors, setManuallyAddedConnectors] = useState<[Connector, Web3ReactHooks][]>([]);
-  const [date, setDate] = useState(Date.now());
   const key = useMemo(
-    () => connections.map(({ type }: Connection) => type).join('-') + date,
+    () => [...connections, ...manuallyAddedConnectors].map(({ type }: Connection) => type).join('-'),
     [connections, manuallyAddedConnectors]
   );
 
@@ -32,7 +31,6 @@ export function Web3Provider({ children }: { children: ReactNode }): React.React
     <Web3ProviderContext.Provider
       value={{
         addConnector: (a: [Connector, Web3ReactHooks]) => {
-          setDate(Date.now());
           setManuallyAddedConnectors([a]);
           connect(a[0]);
         }
