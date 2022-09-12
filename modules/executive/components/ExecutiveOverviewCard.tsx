@@ -123,7 +123,7 @@ export default function ExecutiveOverviewCard({
               sx={{
                 flexDirection: ['column-reverse', 'row'],
                 flexWrap: 'wrap-reverse',
-                width: ['auto', 'auto', 'auto', 'auto'],
+                width: 'auto',
                 gap: [0, 3]
               }}
             >
