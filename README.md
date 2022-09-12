@@ -185,4 +185,4 @@ The command `npm run start:ci` launches a detached process with hardhat, execute
 
 ### Contributing
 
-See our [contributing guide](./CONTRIBUTING.md).
+See our [contributing guide](./CONTRIBUTING.md). 
