@@ -12,18 +12,12 @@ type Props = {
   account?: string | null;
 };
 
-export const useContracts = (apiKey?: string): EthSdk => {
+export const useContracts = (): EthSdk => {
   const { chainId, provider, account }: Props = useWeb3();
 
   const sdk = useMemo(
     () =>
-      getContracts(
-        isSupportedChain(chainId) ? chainId : SupportedChainId.MAINNET,
-        provider,
-        account,
-        false,
-        apiKey
-      ),
+      getContracts(isSupportedChain(chainId) ? chainId : SupportedChainId.MAINNET, provider, account, false),
     [chainId, provider, account]
   );
 
