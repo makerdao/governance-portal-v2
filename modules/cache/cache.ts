@@ -51,7 +51,7 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
   try {
     const currentNetwork = network || DEFAULT_NETWORK.network;
     const path = getFilePath(name, currentNetwork);
-    console.log(path);
+
     if (isRedisCache && redis) {
       const ttl = await redis?.ttl(path);
       return ttl;
