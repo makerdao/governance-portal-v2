@@ -32,7 +32,7 @@ describe('Fetch tally approval', () => {
 
   it('gives first option as winner if it has most mkr', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '258',
@@ -117,7 +117,7 @@ describe('Fetch tally approval', () => {
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '258',
@@ -198,7 +198,7 @@ describe('Fetch tally approval', () => {
 
   it('Ignores abstain', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '0',

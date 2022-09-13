@@ -34,7 +34,7 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
     if (existingVote) {
       return existingVote.ballot
         ? !isEqual(existingVote.ballot, ballotToPick[pollId].option)
-        : !isEqual(existingVote.optionId, ballotToPick[pollId].option);
+        : !isEqual(existingVote.optionIdRaw, ballotToPick[pollId].option);
     }
     return false;
   }).length;

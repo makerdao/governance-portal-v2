@@ -59,7 +59,7 @@ describe('Fetch tally ranked', () => {
 
   it('gives expected results for a tally with majority', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '60.025000000000000000',
@@ -141,7 +141,7 @@ describe('Fetch tally ranked', () => {
   });
   it('gives expected results for a tally with no  majority', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '60.025000000000000000',
@@ -226,7 +226,7 @@ describe('Fetch tally ranked', () => {
 
   it('gives expected results for a tally with multiple rounds', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '60.025000000000000000',
@@ -316,7 +316,7 @@ describe('Fetch tally ranked', () => {
 
   it('ranked choice tally verify eliminated options cant get votes', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '60.025000000000000000',
@@ -417,7 +417,7 @@ describe('Fetch tally ranked', () => {
   // winner: option 1
   it('ranked choice tally stop when 1 remains', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '101',

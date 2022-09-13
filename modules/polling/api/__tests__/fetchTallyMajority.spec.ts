@@ -32,7 +32,7 @@ describe('Fetch tally majority', () => {
 
   it('Does not find winner if it doesnt pass the majority percent', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -101,7 +101,7 @@ describe('Fetch tally majority', () => {
 
   it('Does find a winner if it pass the majority percent', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',

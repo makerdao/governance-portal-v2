@@ -32,7 +32,7 @@ describe('Fetch tally plurality', () => {
 
   it('gives expected results', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -117,7 +117,7 @@ describe('Fetch tally plurality', () => {
 
   it('gives expected results for adjusted data', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -210,7 +210,7 @@ describe('Fetch tally plurality', () => {
 
   it('parses correctly a plurality with no votes', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: []
       }
     });
@@ -275,7 +275,7 @@ describe('Fetch tally plurality', () => {
 
   it('gives expected results for tally with abstain majority', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',

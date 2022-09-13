@@ -3,7 +3,7 @@ import { Poll, PollTally, PollTallyOption, VictoryCondition } from 'modules/poll
 import { extractWinnerPlurality } from './victory_conditions/plurality';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
+import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
 import { PollVictoryConditions } from '../polling.constants';
 import { ParsedSpockVote, SpockVote } from '../types/tallyVotes';
 import BigNumber from 'lib/bigNumberJs';
@@ -60,14 +60,14 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   // TODO: Important: Make sure we return the voter address, tx hash and timestamp
   const data = await gqlRequest({
     chainId: networkNameToChainId(network),
-    query: voteMkrWeightsAtTimeRankedChoice,
+    query: voteAddressMkrWeightsAtTime,
     variables: {
       argPollId: poll.pollId,
       argUnix: new Date(poll.endDate).getTime() / 1000
     }
   });
 
-  const spockVotes: SpockVote[] = data.voteMkrWeightsAtTimeRankedChoice.nodes;
+  const spockVotes: SpockVote[] = data.voteAddressMkrWeightsAtTime.nodes;
 
   // Transform the votes
   // extract the ballot or single votes based on the poll input format:
@@ -78,6 +78,8 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       ballot: parseRawOptionId(vote.optionIdRaw.toString())
     };
   });
+
+  console.log(votes)
 
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];

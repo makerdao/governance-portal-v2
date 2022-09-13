@@ -5,7 +5,6 @@ export const allCurrentVotes = gql`
     allCurrentVotes(argAddress: $argAddress) {
       nodes {
         pollId
-        optionId
         optionIdRaw
         blockTimestamp
         chainId

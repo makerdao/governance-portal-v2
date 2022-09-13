@@ -9,11 +9,11 @@ import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
 import { THIRTY_SECONDS_IN_MS, ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
-  const cacheKey = getPollTallyCacheKey(poll.pollId);
-  const cachedTally = await cacheGet(cacheKey, network);
-  if (cachedTally) {
-    return JSON.parse(cachedTally);
-  }
+  // const cacheKey = getPollTallyCacheKey(poll.pollId);
+  // const cachedTally = await cacheGet(cacheKey, network);
+  // if (cachedTally) {
+  //   return JSON.parse(cachedTally);
+  // }
 
   // Builds poll tally
   const tally: PollTally = await backoffRetry(3, () => fetchPollTally(poll, network));
@@ -28,7 +28,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
 
   const pollEnded = pollHasEnded(poll);
 
-  cacheSet(cacheKey, JSON.stringify(tallyObject), network, pollEnded ? ONE_DAY_IN_MS : THIRTY_SECONDS_IN_MS);
+  // cacheSet(cacheKey, JSON.stringify(tallyObject), network, pollEnded ? ONE_DAY_IN_MS : THIRTY_SECONDS_IN_MS);
 
   return tallyObject;
 }
