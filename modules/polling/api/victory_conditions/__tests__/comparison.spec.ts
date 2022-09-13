@@ -1,6 +1,5 @@
 import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
-import { extractSatisfiesComparison, extractWinnerComparison } from '../comparison';
-import { extractWinnerPlurality } from '../plurality';
+import { extractSatisfiesComparison } from '../comparison';
 
 describe('Find options that satisfy condition comparison', () => {
   it('gives no options if no comparison is passed', async () => {
