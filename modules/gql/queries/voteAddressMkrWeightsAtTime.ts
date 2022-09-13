@@ -8,6 +8,8 @@ export const voteAddressMkrWeightsAtTime = gql`
         optionIdRaw
         mkrSupport
         chainId
+        blockTimestamp
+        hash
       }
     }
   }
