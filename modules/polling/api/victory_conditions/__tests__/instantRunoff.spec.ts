@@ -303,4 +303,24 @@ describe('Instant runoff calculation', () => {
 
     expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
   });
+
+  it('Does not break with only 1 vote without mkr', () => {
+    const votes: ParsedSpockVote[] = [{ optionIdRaw: '1', mkrSupport: '0', ballot: [1] }];
+
+    const winner = extractWinnerInstantRunoff(votes);
+    const expectedResult = {
+      rounds: 1,
+      winner: null,
+      options: {
+        '1': {
+          mkrSupport: '0',
+          transfer: '0',
+          winner: false,
+          eliminated: false
+        }
+      }
+    };
+
+    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+  });
 });

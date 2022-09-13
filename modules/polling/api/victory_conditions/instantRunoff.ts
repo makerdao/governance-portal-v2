@@ -9,6 +9,7 @@ import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 const MAX_ROUNDS = 32;
 
 export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): InstantRunoffResults | null {
+  console.log(currentVotes);
   let totalMKR = new BigNumber(0);
   let winner;
   let rounds = 1;
@@ -49,6 +50,15 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
 
     return newVote;
   });
+
+  // No MKR, return no winner
+  if (totalMKR.eq(0)) {
+    return {
+      options,
+      winner: null,
+      rounds
+    };
+  }
 
   // does any candidate have the majority after the first round?
   Object.entries(options).forEach(([option, { mkrSupport }]) => {

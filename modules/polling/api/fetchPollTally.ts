@@ -57,6 +57,7 @@ export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[]
 
 export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   // Fetch spock votes for the poll
+  // TODO: Important: Make sure we return the voter address, tx hash and timestamp
   const data = await gqlRequest({
     chainId: networkNameToChainId(network),
     query: voteMkrWeightsAtTimeRankedChoice,
