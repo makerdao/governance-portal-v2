@@ -186,7 +186,11 @@ export default withApiHandler(
       return res.status(200).json(tx);
     } catch (err) {
       if (config.GASLESS_WEBHOOK_URL) {
-        await postRequestToDiscord(config.GASLESS_WEBHOOK_URL, JSON.stringify(err));
+        await postRequestToDiscord({
+          url: config.GASLESS_WEBHOOK_URL,
+          content: JSON.stringify(err),
+          notify: true
+        });
       }
       logger.error(err);
       return res.status(400).json(`Error: ${err.message}`);

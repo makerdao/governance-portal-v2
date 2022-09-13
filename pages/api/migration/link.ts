@@ -16,7 +16,11 @@ export default withApiHandler(
     }
 
     try {
-      const data = await postRequestToDiscord(config.MIGRATION_WEBHOOK_URL, JSON.stringify(body));
+      const data = await postRequestToDiscord({
+        url: config.MIGRATION_WEBHOOK_URL,
+        content: JSON.stringify(body),
+        notify: true
+      });
       res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
       res.status(200).json({ data });
     } catch (err) {
