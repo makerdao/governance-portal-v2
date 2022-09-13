@@ -42,7 +42,7 @@ async function postError(error: string) {
       await postRequestToDiscord({
         url: config.GASLESS_WEBHOOK_URL,
         content: error,
-        notify: true
+        notify: false
       });
     }
   } catch (err) {
