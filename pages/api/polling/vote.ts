@@ -32,7 +32,8 @@ export const API_VOTE_ERRORS = {
   EXPIRED_POLLS: 'Can only vote in active polls',
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature',
-  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`
+  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`,
+  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll'
 };
 
 async function postError(error: string) {
@@ -205,7 +206,11 @@ export default withApiHandler(
         const voteHistory = await fetchAddressPollVoteHistory(voter, network);
         const votedPollIds = voteHistory.map(v => v.pollId);
         const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));
-        if (areUnvoted.includes(false)) return res.status(400).json('Already voted in poll');
+        if (areUnvoted.includes(false)) {
+          const error = { error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL };
+          postError(JSON.stringify(error));
+          return res.status(400).json(error);
+        }
       }
 
       const r = signature.slice(0, 66);
