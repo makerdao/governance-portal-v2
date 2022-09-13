@@ -58,35 +58,35 @@ export default withApiHandler(
 
       if (typeof voter !== 'string' || !voter) {
         const error = { error: API_VOTE_ERRORS.VOTER_MUST_BE_STRING };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
       if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e)))) {
         const error = {
           error: API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
       if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e)))) {
         const error = {
           error: API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
       if (typeof nonce !== 'number') {
         const error = {
           error: API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
       if (typeof expiry !== 'number') {
         const error = {
           error: API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
 
@@ -94,7 +94,7 @@ export default withApiHandler(
         const error = {
           error: API_VOTE_ERRORS.EXPIRED_VOTES
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
 
@@ -102,7 +102,7 @@ export default withApiHandler(
         const error = {
           error: API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
 
@@ -110,7 +110,7 @@ export default withApiHandler(
         const error = {
           error: API_VOTE_ERRORS.INVALID_NETWORK
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
 
@@ -118,7 +118,7 @@ export default withApiHandler(
         const error = {
           error: API_VOTE_ERRORS.WRONG_SECRET
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
 
@@ -130,7 +130,7 @@ export default withApiHandler(
         const error = {
           error: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS
         };
-        postError(JSON.stringify(error));
+        postError(JSON.stringify({ ...error, ...req.body }));
         return res.status(400).json(error);
       }
 
@@ -159,7 +159,7 @@ export default withApiHandler(
         if (!hasMkrRequired) {
           //ether's bignumber library doesnt handle decimals
           const error = { error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED };
-          postError(JSON.stringify(error));
+          postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);
         }
 
@@ -187,7 +187,7 @@ export default withApiHandler(
           const error = {
             error: API_VOTE_ERRORS.EXPIRED_POLLS
           };
-          postError(JSON.stringify(error));
+          postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);
         }
 
@@ -197,7 +197,7 @@ export default withApiHandler(
           const error = {
             error: API_VOTE_ERRORS.RATE_LIMITED
           };
-          postError(JSON.stringify(error));
+          postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);
         }
 
@@ -208,7 +208,7 @@ export default withApiHandler(
         const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));
         if (areUnvoted.includes(false)) {
           const error = { error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL };
-          postError(JSON.stringify(error));
+          postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);
         }
       }
