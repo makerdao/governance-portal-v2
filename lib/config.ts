@@ -1,7 +1,6 @@
 type SystemConfig = {
   USE_CACHE: string;
   ALCHEMY_KEY: string;
-  ALCHEMY_KEY_DELEGATES: string;
   INFURA_KEY: string;
   ETHERSCAN_KEY: string;
   POCKET_KEY: string;
@@ -27,7 +26,6 @@ type SystemConfig = {
 export const config: SystemConfig = {
   USE_CACHE: process.env.USE_CACHE || '',
   ALCHEMY_KEY: process.env.ALCHEMY_KEY || '',
-  ALCHEMY_KEY_DELEGATES: process.env.ALCHEMY_KEY_DELEGATES || '',
   INFURA_KEY: process.env.INFURA_KEY || '',
   ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
   POCKET_KEY: process.env.POCKET_KEY || '',

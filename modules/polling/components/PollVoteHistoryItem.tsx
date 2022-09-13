@@ -41,7 +41,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
           as="p"
         >
-          Voted {voteDate}
+          Voted {voteDate} | Poll ID {vote.pollId}
         </Text>
 
         <InternalLink href={`/polling/${vote.poll.slug}`} title="View poll details">

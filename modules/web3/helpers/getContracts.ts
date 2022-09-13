@@ -13,15 +13,10 @@ const sdkGenerators: SdkGenerators = {
   goerli: getGoerliSdk
 };
 
-export const replaceApiKey = (rpcUrl: string, newKey: string): string =>
-  `${rpcUrl.substring(0, rpcUrl.lastIndexOf('/'))}/${newKey}`;
-
 let connectedAccount: string | undefined;
 let currentNetwork: string | undefined;
 
-const contracts: Record<string, EthSdk | null> = {
-  default: null
-};
+let contracts: EthSdk | null = null;
 
 // Check the SDK contracts for a signer, this assumes there is at least one contract
 // and all contracts in the SDK use the signer.
@@ -33,26 +28,16 @@ export const getContracts = (
   chainId?: SupportedChainId,
   provider?: providers.Web3Provider,
   account?: string | null,
-  readOnly?: boolean,
-  apiKey?: string
+  readOnly?: boolean
 ): EthSdk => {
   const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
-  let rpcUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
+  const rpcUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
 
   // Map goerlifork to goerli contracts
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
 
   if (readOnly) {
     return getReadOnlyContracts(rpcUrl, sdkNetwork);
-  }
-
-  // Use the default API key, unless a custom API key is provided
-  let contractsKey = 'default';
-
-  if (apiKey) {
-    contractsKey = apiKey;
-    // If a custom API key is provided, replace it in the URL
-    rpcUrl = replaceApiKey(rpcUrl, apiKey);
   }
 
   // If we have an account and provider then we'll use a signer
@@ -62,12 +47,7 @@ export const getContracts = (
   const changeNetwork = network !== currentNetwork;
 
   // If our account or network changes, recreate the contracts SDK
-  if (
-    changeAccount ||
-    changeNetwork ||
-    !contracts[contractsKey] ||
-    (needsSigner && !hasSigner(contracts[contractsKey]))
-  ) {
+  if (changeAccount || changeNetwork || !contracts || (needsSigner && !hasSigner(contracts))) {
     const providerToUse = provider ?? getDefaultProvider(rpcUrl);
 
     const signerOrProvider = needsSigner
@@ -78,8 +58,8 @@ export const getContracts = (
     if (needsSigner && changeAccount) connectedAccount = account;
     if (changeNetwork) currentNetwork = network;
 
-    contracts[contractsKey] = sdkGenerators[sdkNetwork](signerOrProvider);
+    contracts = sdkGenerators[sdkNetwork](signerOrProvider);
   }
 
-  return contracts[contractsKey] as EthSdk;
+  return contracts as EthSdk;
 };

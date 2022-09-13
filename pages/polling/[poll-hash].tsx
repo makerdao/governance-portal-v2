@@ -90,7 +90,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               <Button variant="mutedOutline">
                 <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
-                  Back to all polls
+                  Back to All Polls
                 </Flex>
                 <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
                   Back to all

@@ -87,8 +87,10 @@ export default function ReviewBox({
   const handleCommentsStep = async () => {
     setCommentsLoading(true);
     try {
+      setStep('signing-comments');
       await signComments();
     } catch (err) {
+      setStep('initial');
       toast.error('Something went wrong signing your comments. Please try again.');
       logger.error(`signComments: ${err}`);
     }
@@ -352,6 +354,34 @@ export default function ReviewBox({
               sx={{ color: 'secondaryEmphasis', textAlign: 'center', fontSize: 12 }}
             >
               Cancel vote submission
+            </Button>
+          </Flex>
+        </Card>
+      )}
+
+      {ballotStep === 'signing-comments' && (
+        <Card variant="compact" p={3}>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+            <TxIndicators.Pending sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            mt={3}
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
+          >
+            Please use your wallet to sign your {commentsCount > 0 ? 'comments' : 'comment'}
+          </Text>
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Button
+              mt={3}
+              mb={4}
+              onClick={() => {
+                setStep('initial');
+              }}
+              variant="textual"
+              sx={{ color: 'secondaryEmphasis', textAlign: 'center', fontSize: 12 }}
+            >
+              Cancel signing comments
             </Button>
           </Flex>
         </Card>

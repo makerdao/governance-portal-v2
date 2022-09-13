@@ -90,7 +90,9 @@ export const UndelegateModal = ({
                   setTxId={resetTx}
                   onDismiss={onClose}
                   title={'Undelegating MKR'}
-                  description={`You undelegated ${formatValue(mkrToWithdraw)} from ${delegate.name}`}
+                  description={`You undelegated ${formatValue(mkrToWithdraw, 'wad', 6)} from ${
+                    delegate.name
+                  }`}
                 >
                   <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
                     <DelegateAvatarName delegate={delegate} />

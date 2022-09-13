@@ -17,70 +17,104 @@ import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recently
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 
+export const API_VOTE_ERRORS = {
+  VOTER_MUST_BE_STRING: 'voter must be a string',
+  POLLIDS_MUST_BE_ARRAY_NUMBERS: 'pollIds must be an array of numbers',
+  OPTIONIDS_MUST_BE_ARRAY_NUMBERS: 'optionIds must be an array of numbers',
+  NONCE_MUST_BE_NUMBER: 'nonce must be a number',
+  EXPIRY_MUST_BE_NUMBER: 'expiry must be a number',
+  SIGNATURE_MUST_BE_STRING: 'signature must be a string',
+  INVALID_NETWORK: 'invalid network',
+  WRONG_SECRET: 'Wrong secret',
+  INVALID_NONCE_FOR_ADDRESS: 'Invalid nonce for address',
+  EXPIRED_VOTES: 'Expiration date already passed',
+  EXPIRED_POLLS: 'Can only vote in active polls',
+  RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes',
+  VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature',
+  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`
+};
+
 //TODO: add swagger documentation
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
 
-      if (typeof voter !== 'string') {
-        return res.status(401).json('voter must be a string');
+      if (typeof voter !== 'string' || !voter) {
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.VOTER_MUST_BE_STRING
+        });
       }
       if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e)))) {
-        return res.status(401).json('pollIds must be an array of numbers');
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS
+        });
       }
       if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e)))) {
-        return res.status(401).json('optionIds must be an array of numbers');
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS
+        });
       }
       if (typeof nonce !== 'number') {
-        return res.status(401).json('nonce must be a number');
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER
+        });
       }
       if (typeof expiry !== 'number') {
-        return res.status(401).json('expiry must be a number');
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER
+        });
       }
-      if (typeof signature !== 'string') {
-        return res.status(401).json('signature must be a string');
+
+      if (expiry <= Date.now() / 1000) {
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.EXPIRED_VOTES
+        });
+      }
+
+      if (typeof signature !== 'string' || !signature) {
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING
+        });
       }
 
       if (!Object.values(SupportedNetworks).includes(network)) {
-        return res.status(401).json('invalid network');
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.INVALID_NETWORK
+        });
       }
 
       if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) {
-        return res.status(401).json('Wrong secret');
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.WRONG_SECRET
+        });
       }
 
       const pollingContract = getArbitrumPollingContract();
 
+      //verify valid nonce and expiry date
+      const nonceFromContract = await pollingContract.nonces(voter);
+      if (nonceFromContract.toNumber() !== nonce) {
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS
+        });
+      }
+
+      //verify that signature and address correspond
+      const recovered = recoverTypedSignature({
+        data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
+        signature,
+        version: SignTypedDataVersion.V4
+      });
+
+      if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
+        return res.status(400).json({
+          error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER
+        });
+      }
+
       //run eligibility checks unless backdoor secret provided
       if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
-        //check that address hasn't used gasless service recently
-        const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
-        if (recentlyUsedGaslessVoting) {
-          return res.status(401).json('Address cannot use gasless service more than once per 10 minutes');
-        }
-
-        //verify that signature and address correspond
-        const recovered = recoverTypedSignature({
-          data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
-          signature,
-          version: SignTypedDataVersion.V4
-        });
-
-        if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
-          return res.status(400).json('Voter address could not be recovered from signature');
-        }
-
-        //verify valid nonce and expiry date
-        const nonceFromContract = await pollingContract.nonces(voter);
-        if (nonceFromContract.toNumber() !== nonce) {
-          return res.status(400).json('Invalid nonce for address');
-        }
-
-        if (expiry >= Date.now()) {
-          return res.status(400).json('Expiration date already passed');
-        }
-
         //verify address has a poll weight > 0.1 MKR
         const hasMkrRequired = await hasMkrRequiredVotingWeight(
           voter,
@@ -90,15 +124,12 @@ export default withApiHandler(
 
         if (!hasMkrRequired) {
           //ether's bignumber library doesnt handle decimals
-          return res
-            .status(400)
-            .json(
-              `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING}`
-            );
+          return res.status(400).json({
+            error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED
+          });
         }
 
-        //verify address hasn't already voted in any of the polls
-
+        // Verify that all the polls are active
         const filters = {
           startDate: new Date(),
           endDate: null,
@@ -108,7 +139,7 @@ export default withApiHandler(
         const pollsResponse = await getPolls(filters, network);
         const areAllPollsActive = pollIds
           .map(pollId => {
-            const poll = pollsResponse.polls.find(p => p.pollId === pollId);
+            const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
             if (!poll || !isActivePoll(poll)) {
               return false;
             }
@@ -119,10 +150,21 @@ export default withApiHandler(
           });
 
         if (!areAllPollsActive) {
-          return res.status(400).json('Can only vote in active polls');
+          return res.status(400).json({
+            error: API_VOTE_ERRORS.EXPIRED_POLLS
+          });
+        }
+
+        //check that address hasn't used gasless service recently
+        const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
+        if (recentlyUsedGaslessVoting) {
+          return res.status(400).json({
+            error: API_VOTE_ERRORS.RATE_LIMITED
+          });
         }
 
         //can't use gasless service to vote in a poll you've already voted on
+        // TODO: Consider if we really want this check. We should allow users to vote multiple times on a poll ( edit votes )
         const voteHistory = await fetchAddressPollVoteHistory(voter, network);
         const votedPollIds = voteHistory.map(v => v.pollId);
         const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));

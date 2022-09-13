@@ -84,6 +84,7 @@ export default function ExecutiveOverviewCard({
               </InternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                 {isHat && proposal.address !== ZERO_ADDRESS ? (
+                  // TODO this should be made the primary badge component in our theme
                   <Box
                     sx={{
                       borderRadius: '12px',
@@ -122,7 +123,7 @@ export default function ExecutiveOverviewCard({
               sx={{
                 flexDirection: ['column-reverse', 'row'],
                 flexWrap: 'wrap-reverse',
-                width: ['auto', 'auto', 'auto', 'auto'],
+                width: 'auto',
                 gap: [0, 3]
               }}
             >

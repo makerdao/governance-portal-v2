@@ -19,11 +19,13 @@ export default function VotingWeight(): JSX.Element {
         <Text variant="caps" as="h4">
           polling voting weight
         </Text>
-        <Tooltip label={getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}>
-          <Box>
-            <Icon name="question" color="textSecondary" />
-          </Box>
-        </Tooltip>
+        {votingWeight && (
+          <Tooltip label={getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}>
+            <Box>
+              <Icon name="question" color="textSecondary" />
+            </Box>
+          </Tooltip>
+        )}
       </Flex>
       <Flex>
         <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
