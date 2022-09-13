@@ -26,7 +26,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
     votesByAddress
   };
 
-  const pollEnded = pollHasEnded(poll);
+  //const pollEnded = pollHasEnded(poll);
 
   // cacheSet(cacheKey, JSON.stringify(tallyObject), network, pollEnded ? ONE_DAY_IN_MS : THIRTY_SECONDS_IN_MS);
 

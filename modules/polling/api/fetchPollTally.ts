@@ -79,8 +79,6 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     };
   });
 
-  console.log(votes)
-
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
 

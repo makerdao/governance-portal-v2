@@ -9,7 +9,6 @@ import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 const MAX_ROUNDS = 32;
 
 export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): InstantRunoffResults | null {
-  console.log(currentVotes);
   let totalMKR = new BigNumber(0);
   let winner;
   let rounds = 1;

@@ -24,7 +24,7 @@ export const delegateAddressLinks = {
 };
 
 export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
-  const networkData = delegateAddressLinks[network];
+  const networkData = delegateAddressLinks[network] || {};
 
   const newToPrevMap = Object.keys(networkData).reduce((acc, cur) => {
     return {
@@ -37,7 +37,7 @@ export const getPreviousOwnerFromNew = (address: string, network: SupportedNetwo
 };
 
 export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
-  const networkData = delegateAddressLinks[network];
+  const networkData = delegateAddressLinks[network] || {};
 
   const prevToNewMap = Object.keys(networkData).reduce((acc, cur) => {
     return {
