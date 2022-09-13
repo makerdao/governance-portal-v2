@@ -42,6 +42,7 @@ async function postError(error: string) {
       await postRequestToDiscord({
         url: config.GASLESS_WEBHOOK_URL,
         content: error,
+        // TODO turn this to true when ready to deploy
         notify: false
       });
     }
