@@ -26,7 +26,7 @@ jobs:
       POCKET_KEY: ${{ secrets.POCKET_KEY }}
       ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
-      USE_CACHE: true
+      USE_CACHE: false
 
     steps:
       - name: Checkout
