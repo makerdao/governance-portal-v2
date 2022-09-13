@@ -163,20 +163,24 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {proposal.title ? proposal.title : proposal.address}
             </Heading>
-            {isHat && proposal.address !== ZERO_ADDRESS ? (
-              <Badge
-                variant="primary"
-                sx={{
-                  my: 2,
-                  ml: [3, 4],
-                  borderColor: 'primaryAlt',
-                  color: 'primaryAlt',
-                  textTransform: 'uppercase'
-                }}
-              >
-                Governing proposal
-              </Badge>
-            ) : null}
+            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', mx: [3, 4] }}>
+              {isHat && proposal.address !== ZERO_ADDRESS ? (
+                // TODO this should be made the primary badge component in our theme
+                <Box
+                  sx={{
+                    borderRadius: '12px',
+                    padding: '4px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: 'tagColorThree',
+                    backgroundColor: 'tagColorThreeBg',
+                    my: 2
+                  }}
+                >
+                  <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
+                </Box>
+              ) : null}
+            </Flex>
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
