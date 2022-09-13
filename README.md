@@ -108,6 +108,8 @@ The following configuration values can be added to the `.env` file:
 
 - Set `MIGRATION_WEBHOOK_URL` for sending migration requests to discord
 
+- Set `GASLESS_WEBHOOK_URL` for sending gasless vote requests to discord
+
 16. **Optional** Set `DEFENDER_API_KEY` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
 17. **Optional** Set `DEFENDER_API_SECRET` to a valid OpenZeppelin Defender Relay secret
 18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network

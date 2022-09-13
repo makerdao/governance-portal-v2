@@ -16,6 +16,7 @@ import { isActivePoll } from 'modules/polling/helpers/utils';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
+import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -184,6 +185,9 @@ export default withApiHandler(
 
       return res.status(200).json(tx);
     } catch (err) {
+      if (config.GASLESS_WEBHOOK_URL) {
+        await postRequestToDiscord(config.GASLESS_WEBHOOK_URL, JSON.stringify(err));
+      }
       logger.error(err);
       return res.status(400).json(`Error: ${err.message}`);
     }
