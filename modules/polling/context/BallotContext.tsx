@@ -16,8 +16,7 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
 import logger from 'lib/logger';
-
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 interface ContextProps {
   ballot: Ballot;
@@ -72,6 +71,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
     useAccount();
 
+  const { network, provider } = useWeb3();
+
   const accountToUse = voteDelegateContractAddress
     ? voteDelegateContractAddress
     : voteProxyContractAddress
@@ -80,27 +81,31 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const clearBallot = () => {
     setCommentSignature('');
-    setBallot({});
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}), ONE_DAY_MS);
+    updateBallot({});
   };
 
-  const loadBallotFromStorage = () => {
+  const updateBallot = (val: Ballot) => {
+    setBallot(val);
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(val), ONE_DAY_IN_MS);
+  };
+
+  const loadBallotFromStorage = async () => {
     const prevBallot = localStorage.get(`ballot-${network}-${account}`);
     if (prevBallot) {
       try {
         const parsed = JSON.parse(prevBallot);
         const votes = {};
-        Object.keys(parsed).forEach(pollId => {
+        Object.keys(parsed).forEach(async pollId => {
           const vote = parsed[pollId] as BallotVote;
-          const isExpired = !vote.timestamp || Date.now() - vote.timestamp > ONE_DAY_MS;
-          const hasTXHash = !!vote.transactionHash;
-          // If the ballot has a transaction hash, remove those votes from the ballot
-          if (!hasTXHash && !isExpired) {
+
+          const tx = vote.transactionHash ? await provider?.getTransaction(vote.transactionHash) : null;
+          // If the vote has a confirmed transaction, do not add it to the ballot
+          if (!tx || tx.confirmations === 0) {
             votes[pollId] = parsed[pollId];
           }
         });
 
-        setBallot(parsed);
+        setBallot(votes);
       } catch (e) {
         logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
@@ -111,7 +116,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     }
   };
 
-  const { network, provider } = useWeb3();
   // Reset ballot on network change
   useEffect(() => {
     setPreviousBallot({});
@@ -130,9 +134,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         timestamp: Date.now()
       } as BallotVote
     };
-    setBallot(newBallot);
-
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
+    updateBallot(newBallot);
   };
 
   const removeVoteFromBallot = (pollId: number) => {
@@ -140,9 +142,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setCommentSignature('');
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
-    setBallot(rest);
-
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(rest), ONE_DAY_MS);
+    updateBallot(rest);
   };
 
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
@@ -156,8 +156,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         timestamp: Date.now()
       }
     };
-    setBallot(newBallot);
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
+    updateBallot(newBallot);
   };
 
   // Helpers
@@ -228,6 +227,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
+        // Update ballot to include the txHash
+        const votes = {};
+        Object.keys(ballot).forEach(pollId => {
+          votes[pollId] = ballot[pollId];
+          votes[pollId].transactionHash = txHash;
+        });
+
+        updateBallot({
+          ...votes
+        });
+
         const comments = getComments();
         // if comment included, add to comments db
         if (comments.length > 0) {
@@ -250,17 +260,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             toast.error('Unable to store comments');
           });
         }
-
-        // Update ballot to include the txHash
-        const votes = {};
-        Object.keys(ballot).forEach(pollId => {
-          votes[pollId] = ballot[pollId];
-          votes[pollId].transactionHash = txHash;
-        });
-
-        setBallot({
-          ...votes
-        });
       },
       mined: (txId, txHash) => {
         // Set previous ballot
