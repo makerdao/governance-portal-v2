@@ -135,8 +135,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const newBallot = {
       ...ballot,
       [pollId]: {
-        ...ballotVote,
-        timestamp: Date.now()
+        ...ballotVote
       } as BallotVote
     };
     updateBallot(newBallot);
@@ -157,8 +156,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       ...ballot,
       [pollId]: {
         ...ballot[pollId],
-        ...ballotVote,
-        timestamp: Date.now()
+        ...ballotVote
       }
     };
     updateBallot(newBallot);
