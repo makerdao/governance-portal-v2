@@ -1,7 +1,7 @@
 import BigNumber from 'lib/bigNumberJs';
-import { ParsedSpockVote } from '../../types/tallyVotes';
+import { PollTallyVote } from 'modules/polling/types';
 
-export function extractWinnerPlurality(currentVotes: ParsedSpockVote[]): number | null {
+export function extractWinnerPlurality(currentVotes: PollTallyVote[]): number | null {
   const votes: { [key: number]: BigNumber } = {};
 
   currentVotes.forEach(vote => {

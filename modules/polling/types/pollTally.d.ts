@@ -1,10 +1,22 @@
 import { PollParameters } from './poll';
 
+export type SpockVote = {
+  optionIdRaw: number;
+  mkrSupport: number;
+  voter: string;
+  chainId: number;
+  blockTimestamp: number;
+  hash: string;
+};
+
 export type PollTallyVote = {
   voter: string;
   ballot: number[];
-  mkrSupport: number;
+  mkrSupport: number | string;
   chainId: number;
+  blockTimestamp: number;
+  hash: string;
+  optionIdRaw: string | number;
 };
 
 export type PollTallyOption = {

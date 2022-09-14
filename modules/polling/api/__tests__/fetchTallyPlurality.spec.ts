@@ -112,7 +112,7 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives expected results for adjusted data', async () => {
@@ -205,7 +205,7 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('parses correctly a plurality with no votes', async () => {
@@ -270,7 +270,7 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives expected results for tally with abstain majority', async () => {
@@ -363,6 +363,6 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

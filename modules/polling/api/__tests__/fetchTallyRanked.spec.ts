@@ -137,7 +137,7 @@ describe('Fetch tally ranked', () => {
       numVoters: 3
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
   it('gives expected results for a tally with no  majority', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
@@ -221,7 +221,7 @@ describe('Fetch tally ranked', () => {
       numVoters: 3
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives expected results for a tally with multiple rounds', async () => {
@@ -311,7 +311,7 @@ describe('Fetch tally ranked', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('ranked choice tally verify eliminated options cant get votes', async () => {
@@ -403,7 +403,7 @@ describe('Fetch tally ranked', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   // round 1
@@ -504,6 +504,6 @@ describe('Fetch tally ranked', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

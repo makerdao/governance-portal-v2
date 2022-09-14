@@ -96,7 +96,7 @@ describe('Fetch tally majority', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('Does find a winner if it pass the majority percent', async () => {
@@ -165,6 +165,6 @@ describe('Fetch tally majority', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

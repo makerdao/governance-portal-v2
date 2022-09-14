@@ -1,14 +1,14 @@
 import BigNumber from 'lib/bigNumberJs';
+import { PollTallyVote } from 'modules/polling/types';
 import {
   InstantRunoffOption,
   InstantRunoffOptions,
   InstantRunoffResults
 } from 'modules/polling/types/instantRunoff';
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 
 const MAX_ROUNDS = 32;
 
-export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): InstantRunoffResults | null {
+export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): InstantRunoffResults | null {
   let totalMKR = new BigNumber(0);
   let winner;
   let rounds = 1;

@@ -112,7 +112,7 @@ describe('Fetch tally approval', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
@@ -193,7 +193,7 @@ describe('Fetch tally approval', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('Ignores abstain', async () => {
@@ -263,6 +263,6 @@ describe('Fetch tally approval', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

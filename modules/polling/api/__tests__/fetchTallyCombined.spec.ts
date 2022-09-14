@@ -135,7 +135,7 @@ describe('Fetch tally combined with other options', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('Does find a winner if it pass the majority percent', async () => {
@@ -204,7 +204,7 @@ describe('Fetch tally combined with other options', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   const mockPollRanked: Poll = {
@@ -324,7 +324,7 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('ranked choice + majority when majority is  met', async () => {
@@ -416,7 +416,7 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   const mockPollRankedComparison: Poll = {
@@ -541,7 +541,7 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('ranked choice + majority when majority is met + comparison met', async () => {
@@ -633,6 +633,6 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });
