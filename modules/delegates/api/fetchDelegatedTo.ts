@@ -31,8 +31,8 @@ export async function fetchDelegatedTo(
 
     const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedTo.nodes;
 
-    const delegatedTo = res.reduce((acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
-      const existing = acc.find(({ address }) => address === immediateCaller) as
+    const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
+      const existing = acc.find(({ address }) => address === delegateContractAddress) as
         | DelegationHistoryWithExpirationDate
         | undefined;
 
@@ -44,7 +44,7 @@ export async function fetchDelegatedTo(
         existing.events.push({ lockAmount, blockTimestamp, hash });
       } else {
         const delegatingTo = delegates.find(
-          i => i?.voteDelegate?.toLowerCase() === immediateCaller.toLowerCase()
+          i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
         );
 
         const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
@@ -63,7 +63,7 @@ export async function fetchDelegatedTo(
           : null;
 
         acc.push({
-          address: immediateCaller,
+          address: delegateContractAddress,
           expirationDate,
           isExpired,
           isAboutToExpire: !isExpired && isAboutToExpire,

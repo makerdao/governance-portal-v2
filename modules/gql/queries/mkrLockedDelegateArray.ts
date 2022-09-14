@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
 export const mkrLockedDelegateArrayTotals = gql`
-  query mkrLockedDelegateArrayTotals($argAddress: [String]!, $argUnixTimeStart: Int!, $argUnixTimeEnd: Int!) {
+  query mkrLockedDelegateArrayTotalsV2($argAddress: [String]!, $argUnixTimeStart: Int!, $argUnixTimeEnd: Int!) {
     mkrLockedDelegateArrayTotals(
       argAddress: $argAddress
       unixtimeStart: $argUnixTimeStart
@@ -10,6 +10,7 @@ export const mkrLockedDelegateArrayTotals = gql`
       nodes {
         fromAddress
         immediateCaller
+        delegateContractAddress
         lockAmount
         blockNumber
         blockTimestamp

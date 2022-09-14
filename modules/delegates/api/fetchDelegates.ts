@@ -222,7 +222,7 @@ export async function fetchDelegates(
 
       // Filter the lock events to get only the ones for this delegate address
       const mkrLockedDelegate = lockEvents.filter(
-        ({ immediateCaller }) => immediateCaller.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
+        ({ delegateContractAddress }) => delegateContractAddress.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
       );
 
       const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
