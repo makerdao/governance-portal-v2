@@ -91,12 +91,12 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         const parsed = JSON.parse(prevBallot);
         const votes = {};
         Object.keys(parsed).forEach(pollId => {
-          const vote = ballot[pollId] as BallotVote;
+          const vote = parsed[pollId] as BallotVote;
           const isExpired = !vote.timestamp || Date.now() - vote.timestamp > ONE_DAY_MS;
           const hasTXHash = !!vote.transactionHash;
           // If the ballot has a transaction hash, remove those votes from the ballot
           if (!hasTXHash && !isExpired) {
-            votes[pollId] = ballot[pollId];
+            votes[pollId] = parsed[pollId];
           }
         });
 
