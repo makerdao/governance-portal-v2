@@ -98,18 +98,23 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         Object.keys(parsed).forEach(async pollId => {
           const vote = parsed[pollId] as BallotVote;
 
-          const tx = vote.transactionHash ? await provider?.getTransaction(vote.transactionHash) : null;
-          // If the vote has a confirmed transaction, do not add it to the ballot
+          // https://docs.ethers.io/v5/api/providers/provider/#Provider-getTransactionReceipt
+          const tx = vote.transactionHash
+            ? await provider?.getTransactionReceipt(vote.transactionHash)
+            : null;
+
+          // If the vote has a confirmed transaction, do not add it to the ballot. If the transactionReceipt is null it means it has not been mined.
           if (!tx || tx.confirmations === 0) {
             votes[pollId] = parsed[pollId];
           }
         });
 
-        setBallot(votes);
+        // Update the filtered ballot
+        updateBallot(votes);
       } catch (e) {
         logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
-        setBallot({});
+        updateBallot({});
       }
     } else {
       setBallot({});
