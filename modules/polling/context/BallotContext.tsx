@@ -25,7 +25,7 @@ interface ContextProps {
   previousBallot: Ballot;
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   removeVoteFromBallot: (pollId: number) => void;
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => void;
+  addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   submitBallot: () => void;
   clearBallot: () => void;
   clearTransaction: () => void;
@@ -40,7 +40,7 @@ export const BallotContext = React.createContext<ContextProps>({
   ballot: {},
   previousBallot: {},
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => null,
+  addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
   clearBallot: () => null,
   clearTransaction: () => null,
   removeVoteFromBallot: (pollId: number) => null,
@@ -89,6 +89,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     if (prevBallot) {
       try {
         const parsed = JSON.parse(prevBallot);
+        const votes = {};
+        Object.keys(parsed).forEach(pollId => {
+          const vote = ballot[pollId] as BallotVote;
+          const isExpired = !vote.timestamp || Date.now() - vote.timestamp > ONE_DAY_MS;
+          const hasTXHash = !!vote.transactionHash;
+          // If the ballot has a transaction hash, remove those votes from the ballot
+          if (!hasTXHash && !isExpired) {
+            votes[pollId] = ballot[pollId];
+          }
+        });
+
         setBallot(parsed);
       } catch (e) {
         logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
@@ -109,12 +120,15 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   // add vote to ballot
 
-  const addVoteToBallot = (pollId: number, ballotVote: BallotVote) => {
+  const addVoteToBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
     const newBallot = {
       ...ballot,
-      [pollId]: ballotVote
+      [pollId]: {
+        ...ballotVote,
+        timestamp: Date.now()
+      } as BallotVote
     };
     setBallot(newBallot);
 
@@ -138,7 +152,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       ...ballot,
       [pollId]: {
         ...ballot[pollId],
-        ...ballotVote
+        ...ballotVote,
+        timestamp: Date.now()
       }
     };
     setBallot(newBallot);
@@ -235,18 +250,23 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             toast.error('Unable to store comments');
           });
         }
-      },
-      mined: (txId, txHash) => {
-        // Set votes
+
+        // Update ballot to include the txHash
         const votes = {};
         Object.keys(ballot).forEach(pollId => {
           votes[pollId] = ballot[pollId];
           votes[pollId].transactionHash = txHash;
         });
 
+        setBallot({
+          ...votes
+        });
+      },
+      mined: (txId, txHash) => {
+        // Set previous ballot
         setPreviousBallot({
           ...previousBallot,
-          ...votes
+          ...ballot
         });
         clearBallot();
         transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
@@ -255,6 +275,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         toast.error('Error submitting ballot');
       }
     });
+
     setTxId(txId);
   };
 
