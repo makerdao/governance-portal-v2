@@ -4,7 +4,7 @@ import logger from 'lib/logger';
 import { Query } from 'modules/gql/generated/graphql';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/allDelegates';
-import { mkrDelegatedTo } from 'modules/gql/queries/mkrDelegatedTo';
+import { mkrDelegatedToV2 } from 'modules/gql/queries/mkrDelegatedTo';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
@@ -19,18 +19,18 @@ export async function fetchDelegatedTo(
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrDelegatedTo,
+      query: mkrDelegatedToV2,
       variables: { argAddress: address.toLowerCase() }
     });
-
+    console.log('data', data);
     // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
     const chainId = networkNameToChainId(network);
     const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
     const delegates = delegatesData.allDelegates.nodes;
 
-    const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedTo.nodes;
-
+    const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedToV2.nodes;
+    console.log('res', res);
     const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === delegateContractAddress) as
         | DelegationHistoryWithExpirationDate

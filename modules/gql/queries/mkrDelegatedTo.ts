@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
-export const mkrDelegatedTo = gql`
+export const mkrDelegatedToV2 = gql`
   query mkrDelegatedToV2($argAddress: String!) {
-    mkrDelegatedTo(argAddress: $argAddress) {
+    mkrDelegatedToV2(argAddress: $argAddress) {
       nodes {
         fromAddress
         immediateCaller

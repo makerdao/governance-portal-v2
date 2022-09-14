@@ -1,6 +1,6 @@
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { mkrLockedDelegateArrayTotals } from 'modules/gql/queries/mkrLockedDelegateArray';
+import { mkrLockedDelegateArrayTotalsV2 } from 'modules/gql/queries/mkrLockedDelegateArray';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
@@ -10,18 +10,19 @@ export async function fetchDelegationEventsByAddresses(
   network: SupportedNetworks
 ): Promise<MKRLockedDelegateAPIResponse[]> {
   try {
+    console.log('about to call mkrLockedDelegateArrayTotalsV2!');
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrLockedDelegateArrayTotals,
+      query: mkrLockedDelegateArrayTotalsV2,
       variables: {
         argAddress: addresses,
         argUnixTimeStart: 0,
         argUnixTimeEnd: Math.floor(Date.now() / 1000)
       }
     });
-
-    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArrayTotals.nodes;
-
+    console.log('data', data);
+    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArrayTotalsV2.nodes;
+    console.log('addressData', addressData);
     return addressData;
   } catch (e) {
     logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);

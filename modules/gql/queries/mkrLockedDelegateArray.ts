@@ -1,8 +1,12 @@
 import { gql } from 'graphql-request';
 
-export const mkrLockedDelegateArrayTotals = gql`
-  query mkrLockedDelegateArrayTotalsV2($argAddress: [String]!, $argUnixTimeStart: Int!, $argUnixTimeEnd: Int!) {
-    mkrLockedDelegateArrayTotals(
+export const mkrLockedDelegateArrayTotalsV2 = gql`
+  query mkrLockedDelegateArrayTotalsV2(
+    $argAddress: [String]!
+    $argUnixTimeStart: Int!
+    $argUnixTimeEnd: Int!
+  ) {
+    mkrLockedDelegateArrayTotalsV2(
       argAddress: $argAddress
       unixtimeStart: $argUnixTimeStart
       unixtimeEnd: $argUnixTimeEnd
