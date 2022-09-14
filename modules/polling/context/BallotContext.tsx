@@ -16,6 +16,8 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from '../helpers/parsePollOptions';
 import logger from 'lib/logger';
+import { useAllUserVotes } from '../hooks/useAllUserVotes';
+import { PollVote } from '../types';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -78,10 +80,38 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     ? voteProxyContractAddress
     : account;
 
+  const { data: allUserVotes } = useAllUserVotes(accountToUse);
+
+  console.log({ allUserVotes });
+
   const clearBallot = () => {
     setCommentSignature('');
     setBallot({});
     localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}), ONE_DAY_MS);
+  };
+
+  const validateStoredBallot = ({ parsed, allUserVotes }: { parsed: Ballot; allUserVotes?: PollVote[] }) => {
+    if (!allUserVotes) {
+      return parsed;
+    }
+    const pollIds = Object.keys(parsed);
+    const validPollIds = pollIds.filter(pollId => {
+      const pollVote = allUserVotes.find(vote => vote.pollId === Number(pollId));
+      if (!pollVote) {
+        return true;
+      }
+      // needs to handle ranked choice
+      if (pollVote.optionIdRaw == parsed[pollId].optionRaw) {
+        return false;
+      }
+
+      return true;
+    });
+
+    return validPollIds.reduce((acc, pollId) => {
+      acc[pollId] = { option: parsed[pollId] };
+      return acc;
+    }, {});
   };
 
   const loadBallotFromStorage = () => {
@@ -89,7 +119,10 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     if (prevBallot) {
       try {
         const parsed = JSON.parse(prevBallot);
-        setBallot(parsed);
+        const validated = validateStoredBallot({ parsed, allUserVotes });
+        console.log({ parsed });
+        console.log({ allUserVotes });
+        setBallot(validated);
       } catch (e) {
         logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
@@ -105,7 +138,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   useEffect(() => {
     setPreviousBallot({});
     loadBallotFromStorage();
-  }, [network, account]);
+  }, [network, account, allUserVotes]);
 
   // add vote to ballot
 
