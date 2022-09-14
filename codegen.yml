@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'https://polling-db-staging.makerdux.com/api/v1'
+schema: 'https://polling-db-prod.makerdux.com/api/v1'
 # documents: 'src/**/*.graphql'
 generates:
   modules/gql/generated/graphql.tsx:

@@ -10,7 +10,6 @@ export async function fetchDelegationEventsByAddresses(
   network: SupportedNetworks
 ): Promise<MKRLockedDelegateAPIResponse[]> {
   try {
-    console.log('about to call mkrLockedDelegateArrayTotalsV2!');
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
       query: mkrLockedDelegateArrayTotalsV2,
@@ -20,9 +19,7 @@ export async function fetchDelegationEventsByAddresses(
         argUnixTimeEnd: Math.floor(Date.now() / 1000)
       }
     });
-    console.log('data', data);
     const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArrayTotalsV2.nodes;
-    console.log('addressData', addressData);
     return addressData;
   } catch (e) {
     logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);

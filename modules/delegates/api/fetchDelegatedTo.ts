@@ -22,7 +22,6 @@ export async function fetchDelegatedTo(
       query: mkrDelegatedToV2,
       variables: { argAddress: address.toLowerCase() }
     });
-    console.log('data', data);
     // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
     const chainId = networkNameToChainId(network);
@@ -30,7 +29,6 @@ export async function fetchDelegatedTo(
     const delegates = delegatesData.allDelegates.nodes;
 
     const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedToV2.nodes;
-    console.log('res', res);
     const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === delegateContractAddress) as
         | DelegationHistoryWithExpirationDate
