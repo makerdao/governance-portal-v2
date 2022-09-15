@@ -1,4 +1,4 @@
-import { Box, Text } from 'theme-ui';
+import { Box, Flex, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'lib/bigNumberJs';
 import { PollTally, Poll } from 'modules/polling/types';
@@ -14,6 +14,10 @@ import {
   isInputFormatRankFree,
   isResultDisplayApprovalBreakdown
 } from '../helpers/utils';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { CHAIN_INFO, GASLESS_CHAIN_INFO } from 'modules/web3/constants/networks';
 
 type Props = {
   tally: PollTally;
@@ -109,7 +113,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '15%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '10%' }}
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
@@ -126,7 +130,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: '15%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '15%' }}
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
@@ -140,6 +144,10 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               ) : (
                 ''
               )}
+            </Text>
+
+            <Text as="th" sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: '10%' }} variant="caps">
+              Verify
             </Text>
           </tr>
         </thead>
@@ -204,11 +212,32 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
+                    sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}
                   >
                     {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
                       bpi > 0 ? ' MKR' : ''
                     }`}
+                  </Text>
+                  <Text
+                    as="td"
+                    data-testid={`vote-mkr-${v.hash}`}
+                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
+                  >
+                    <ExternalLink
+                      title="See transaction details"
+                      href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
+                    >
+                      <Flex sx={{ alignItems: 'center' }}>
+                        <Text sx={{ mr: 1 }}>
+                          {CHAIN_INFO[v.chainId]
+                            ? CHAIN_INFO[v.chainId].blockExplorerName
+                            : GASLESS_CHAIN_INFO[v.chainId]
+                            ? GASLESS_CHAIN_INFO[v.chainId].blockExplorerName
+                            : 'Unknown'}{' '}
+                        </Text>
+                        <Icon name="arrowTopRight" size={2} color="accentBlue" />
+                      </Flex>
+                    </ExternalLink>
                   </Text>
                 </tr>
               ))}
