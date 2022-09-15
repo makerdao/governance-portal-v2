@@ -2,7 +2,6 @@ import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
-import { useRouter } from 'next/router';
 
 jest.mock('next/router', () => ({
   useRouter() {
