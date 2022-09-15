@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { Text, Flex, Button, Box } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-
 import { Poll } from 'modules/polling/types';
 import {
   extractCurrentPollVote,

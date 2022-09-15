@@ -11,12 +11,12 @@ export class ErrorBoundary extends React.Component<{ componentName: string }> {
     this.componentName = props.componentName || this.componentName;
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch() {
     // You can also log the error to an error reporting service
     toast.error(`Error loading ${this.componentName}`);
   }

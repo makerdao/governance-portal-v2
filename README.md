@@ -59,6 +59,12 @@ yarn dev
 
 At this point, you should be able to access the application by going to the address `http://localhost:3000` in your browser.
 
+### Releasing
+
+To do releases of the governance portal, please use `npm version minor`  or `npm version patch` to bump the version in the package.json and create a tag. 
+
+The tag and versioning should be done on develop, and then merged to master through a PR.  To push your local tag use the command `git push origin develop --follow-tags`.
+
 ### Additional configuration overview:
 
 #### Content
