@@ -317,7 +317,7 @@ export default function ReviewBox({
                     </Text>
                     <Text>
                       {/* TODO add this logic */}
-                      {false ? (
+                      {true ? (
                         <Icon name="checkmark" color="bull" size={'13px'} />
                       ) : (
                         <Icon name="close" color="bear" size={'13px'} />
