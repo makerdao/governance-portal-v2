@@ -8,7 +8,6 @@ import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -17,6 +16,7 @@ import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recently
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -107,7 +107,7 @@ export default withApiHandler(
         return res.status(400).json(error);
       }
 
-      if (!Object.values(SupportedNetworks).includes(network)) {
+      if (!isSupportedNetwork(network)) {
         const error = {
           error: API_VOTE_ERRORS.INVALID_NETWORK
         };

@@ -232,6 +232,10 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
                     >
                       <Flex sx={{ alignItems: 'center' }}>
+                        {CHAIN_INFO[v.chainId].type === 'gasless' && (
+                          <Icon name="lightningBolt" color="onSecondary" size={3} />
+                        )}
+
                         <Text sx={{ mr: 1, display: ['none', 'block'] }}>
                           {CHAIN_INFO[v.chainId] ? CHAIN_INFO[v.chainId].blockExplorerName : 'Unknown'}
                         </Text>

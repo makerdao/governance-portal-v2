@@ -18,7 +18,7 @@ export const networkNameToChainId = (networkName: string): number => {
 
 export const isSupportedChain = (chainId?: number): boolean => {
   if (!chainId) return false;
-  return !!CHAIN_INFO[chainId];
+  return CHAIN_INFO[chainId] && CHAIN_INFO[chainId].type === 'normal';
 };
 
 export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks => {
