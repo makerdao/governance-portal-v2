@@ -8,8 +8,8 @@ type Props = {
 export const CardSummary = ({ text, styles }: Props): JSX.Element => (
   <Text
     as="p"
+    variant="secondary"
     sx={{
-      color: 'onSecondary',
       ...styles
     }}
   >

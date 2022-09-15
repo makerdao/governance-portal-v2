@@ -16,6 +16,7 @@ import { isActivePoll } from 'modules/polling/helpers/utils';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
+import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -31,8 +32,24 @@ export const API_VOTE_ERRORS = {
   EXPIRED_POLLS: 'Can only vote in active polls',
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature',
-  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`
+  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`,
+  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll'
 };
+
+async function postError(error: string) {
+  try {
+    if (config.GASLESS_WEBHOOK_URL) {
+      await postRequestToDiscord({
+        url: config.GASLESS_WEBHOOK_URL,
+        content: error,
+        // TODO turn this to true when ready to deploy
+        notify: false
+      });
+    }
+  } catch (err) {
+    logger.error(err);
+  }
+}
 
 //TODO: add swagger documentation
 export default withApiHandler(
@@ -41,53 +58,69 @@ export default withApiHandler(
       const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
 
       if (typeof voter !== 'string' || !voter) {
-        return res.status(400).json({
-          error: API_VOTE_ERRORS.VOTER_MUST_BE_STRING
-        });
+        const error = { error: API_VOTE_ERRORS.VOTER_MUST_BE_STRING };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
       if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e)))) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
       if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e)))) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
       if (typeof nonce !== 'number') {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
       if (typeof expiry !== 'number') {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
 
       if (expiry <= Date.now() / 1000) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.EXPIRED_VOTES
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
 
       if (typeof signature !== 'string' || !signature) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
 
       if (!Object.values(SupportedNetworks).includes(network)) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.INVALID_NETWORK
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
 
       if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.WRONG_SECRET
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
 
       const pollingContract = getArbitrumPollingContract();
@@ -95,9 +128,11 @@ export default withApiHandler(
       //verify valid nonce and expiry date
       const nonceFromContract = await pollingContract.nonces(voter);
       if (nonceFromContract.toNumber() !== nonce) {
-        return res.status(400).json({
+        const error = {
           error: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS
-        });
+        };
+        postError(JSON.stringify({ ...error, ...req.body }));
+        return res.status(400).json(error);
       }
 
       //verify that signature and address correspond
@@ -124,9 +159,9 @@ export default withApiHandler(
 
         if (!hasMkrRequired) {
           //ether's bignumber library doesnt handle decimals
-          return res.status(400).json({
-            error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED
-          });
+          const error = { error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED };
+          postError(JSON.stringify({ ...error, ...req.body }));
+          return res.status(400).json(error);
         }
 
         // Verify that all the polls are active
@@ -150,17 +185,21 @@ export default withApiHandler(
           });
 
         if (!areAllPollsActive) {
-          return res.status(400).json({
+          const error = {
             error: API_VOTE_ERRORS.EXPIRED_POLLS
-          });
+          };
+          postError(JSON.stringify({ ...error, ...req.body }));
+          return res.status(400).json(error);
         }
 
         //check that address hasn't used gasless service recently
         const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
         if (recentlyUsedGaslessVoting) {
-          return res.status(400).json({
+          const error = {
             error: API_VOTE_ERRORS.RATE_LIMITED
-          });
+          };
+          postError(JSON.stringify({ ...error, ...req.body }));
+          return res.status(400).json(error);
         }
 
         //can't use gasless service to vote in a poll you've already voted on
@@ -168,7 +207,11 @@ export default withApiHandler(
         const voteHistory = await fetchAddressPollVoteHistory(voter, network);
         const votedPollIds = voteHistory.map(v => v.pollId);
         const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));
-        if (areUnvoted.includes(false)) return res.status(400).json('Already voted in poll');
+        if (areUnvoted.includes(false)) {
+          const error = { error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL };
+          postError(JSON.stringify({ ...error, ...req.body }));
+          return res.status(400).json(error);
+        }
       }
 
       const r = signature.slice(0, 66);
@@ -184,6 +227,7 @@ export default withApiHandler(
 
       return res.status(200).json(tx);
     } catch (err) {
+      postError(JSON.stringify(err));
       logger.error(err);
       return res.status(400).json(`Error: ${err.message}`);
     }

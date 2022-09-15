@@ -14,6 +14,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { recoverTypedSignature } from '@metamask/eth-sig-util';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
+import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 
 jest.mock('modules/polling/helpers/getArbitrumPollingContract');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
@@ -23,6 +24,7 @@ jest.mock('@metamask/eth-sig-util');
 jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 jest.mock('modules/polling/api/fetchAddressPollVoteHistory');
 jest.mock('modules/db/helpers/connectToDatabase');
+jest.mock('modules/app/api/postRequestToDiscord');
 
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
@@ -33,6 +35,7 @@ describe('/api/polling/vote API Endpoint', () => {
     });
     (cacheSet as jest.Mock).mockImplementation(() => null);
     (fetchAddressPollVoteHistory as jest.Mock).mockImplementation(() => Promise.resolve([]));
+    (postRequestToDiscord as jest.Mock).mockImplementation(() => Promise.resolve());
   });
   function mockRequestResponse(method: RequestMethod = 'POST', body) {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method });
@@ -174,7 +177,7 @@ describe('/api/polling/vote API Endpoint', () => {
       })
     );
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
+      voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 3,
@@ -183,6 +186,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
+    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -208,7 +212,7 @@ describe('/api/polling/vote API Endpoint', () => {
       })
     );
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
+      voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
       pollIds: [1],
       optionIds: [1],
       nonce: 3,
@@ -217,6 +221,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
+    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -244,7 +249,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (recentlyUsedGaslessVotingCheck as jest.Mock).mockReturnValue(Promise.resolve(true));
 
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
+      voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
       pollIds: [1],
       optionIds: [1],
       nonce: 3,
@@ -252,6 +257,8 @@ describe('/api/polling/vote API Endpoint', () => {
       signature: '2',
       network: SupportedNetworks.MAINNET
     });
+
+    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
 
     await voteAPIHandler(req, res);
 
