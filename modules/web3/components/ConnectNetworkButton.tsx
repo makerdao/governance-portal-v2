@@ -29,7 +29,7 @@ export default function ConnectNetworkButton({
           backgroundColor: 'surface'
         },
         '&:disabled': {
-          color: 'textMuted',
+          color: 'textSecondary',
           borderColor: 'muted',
           backgroundColor: 'surface'
         }
