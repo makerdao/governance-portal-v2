@@ -1,24 +1,35 @@
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
-import { extractSatisfiesComparison, extractWinnerComparison } from '../comparison';
-import { extractWinnerPlurality } from '../plurality';
+import { PollTallyVote } from 'modules/polling/types';
+import { extractSatisfiesComparison } from '../comparison';
 
 describe('Find options that satisfy condition comparison', () => {
   it('gives no options if no comparison is passed', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 10,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 20,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 
@@ -27,21 +38,33 @@ describe('Find options that satisfy condition comparison', () => {
     expect(winner).toEqual([]);
   });
   it('gives all options with > 1000 mkr', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 1230,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 1000,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 
@@ -51,21 +74,33 @@ describe('Find options that satisfy condition comparison', () => {
   });
 
   it('gives all options with >= 1000 mkr', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 1230,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 1000,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 
@@ -75,21 +110,33 @@ describe('Find options that satisfy condition comparison', () => {
   });
 
   it('gives all options with = 1000 mkr', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 1230,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 1000,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 
@@ -99,21 +146,33 @@ describe('Find options that satisfy condition comparison', () => {
   });
 
   it('gives all options with < 1000 mkr', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 1230,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 1000,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 
@@ -123,21 +182,33 @@ describe('Find options that satisfy condition comparison', () => {
   });
 
   it('gives all options with <= 1000 mkr', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 1230,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 1000,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 

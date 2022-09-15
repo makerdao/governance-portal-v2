@@ -1,9 +1,9 @@
 // Receives the currentVotes and the percentage required to be determined winner
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 import BigNumber from 'lib/bigNumberJs';
+import { PollTallyVote } from 'modules/polling/types';
 
 // Determines the winner of a majority algorithm. The percent is a number between 0-100 and it determines that the winner has to have more than "percent" of the MKR.
-export function extractWinnerMajority(currentVotes: ParsedSpockVote[], percent: number): number | null {
+export function extractWinnerMajority(currentVotes: PollTallyVote[], percent: number): number | null {
   // Group votes by MKR support, remember that each vote has a ballot with possible many multiple options
   const votes: { [key: number]: BigNumber } = {};
   let totalMKR = new BigNumber(0);

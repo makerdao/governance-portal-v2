@@ -108,19 +108,9 @@ export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
   return parameters.inputFormat.type === PollInputFormat.singleChoice;
 }
 
-export function extractCurrentPollVote(
-  poll: Poll,
-  allUserVotes: PollVote[] | undefined
-): number[] | number | null {
+export function extractCurrentPollVote(poll: Poll, allUserVotes: PollVote[] | undefined): number[] | null {
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
-
-  if (isInputFormatRankFree(poll.parameters) || isInputFormatChooseFree(poll.parameters)) {
-    return currentVote?.ballot !== undefined ? currentVote.ballot : null;
-  } else if (isInputFormatSingleChoice(poll.parameters)) {
-    return currentVote?.optionId !== undefined ? currentVote.optionId : null;
-  }
-
-  return null;
+  return currentVote?.ballot || null;
 }
 
 export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {

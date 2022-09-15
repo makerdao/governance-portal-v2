@@ -1,24 +1,20 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { Poll, PollTally, PollTallyOption, VictoryCondition } from 'modules/polling/types';
+import { Poll, PollTally, PollTallyOption, PollTallyVote, VictoryCondition } from 'modules/polling/types';
 import { extractWinnerPlurality } from './victory_conditions/plurality';
-import { gqlRequest } from 'modules/gql/gqlRequest';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
 import { PollVictoryConditions } from '../polling.constants';
-import { ParsedSpockVote, SpockVote } from '../types/tallyVotes';
 import BigNumber from 'lib/bigNumberJs';
 import { extractWinnerApproval } from './victory_conditions/approval';
 import { extractWinnerMajority } from './victory_conditions/majority';
 import { extractWinnerInstantRunoff } from './victory_conditions/instantRunoff';
 import { extractWinnerDefault } from './victory_conditions/default';
 import { InstantRunoffResults } from '../types/instantRunoff';
-import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
+import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
-export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[], poll: Poll): WinnerOption {
+export function findWinner(condition: VictoryCondition, votes: PollTallyVote[], poll: Poll): WinnerOption {
   let results: InstantRunoffResults | null = null;
 
   switch (condition.type) {
@@ -57,27 +53,9 @@ export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[]
 
 export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   // Fetch spock votes for the poll
-  // TODO: Important: Make sure we return the voter address, tx hash and timestamp
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: voteMkrWeightsAtTimeRankedChoice,
-    variables: {
-      argPollId: poll.pollId,
-      argUnix: new Date(poll.endDate).getTime() / 1000
-    }
-  });
+  const endUnix = new Date(poll.endDate).getTime() / 1000;
 
-  const spockVotes: SpockVote[] = data.voteMkrWeightsAtTimeRankedChoice.nodes;
-
-  // Transform the votes
-  // extract the ballot or single votes based on the poll input format:
-  const votes: ParsedSpockVote[] = spockVotes.map(vote => {
-    return {
-      ...vote,
-      optionIdRaw: vote.optionIdRaw.toString(),
-      ballot: parseRawOptionId(vote.optionIdRaw.toString())
-    };
-  });
+  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
 
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
@@ -86,7 +64,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   let totalMkrActiveParticipation = new BigNumber(0);
 
   // Remove all the votes that voted "Abstain" in any option. (It should only be 1 abstain option)
-  const filteredVotes = votes.filter(vote => {
+  const filteredVotes = votesByAddress.filter(vote => {
     // Store the total MKR
     totalMkrParticipation = totalMkrParticipation.plus(vote.mkrSupport);
     if (vote.ballot.filter(i => abstain.indexOf(i) !== -1).length > 0) {
@@ -180,7 +158,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   const isIrv = hasVictoryConditionInstantRunOff(poll.parameters.victoryConditions);
 
   // Aggregate the MKR support
-  votes.forEach(vote => {
+  votesByAddress.forEach(vote => {
     // if IRV and no winner, only consider weight from first ballot option
     if (isIrv && !winnerOption.results) {
       if (votesInfo[vote.ballot[0]]) {
@@ -244,12 +222,13 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     parameters: poll.parameters,
     winner: winnerOption.winner ? winnerOption.winner : null,
     victoryConditionMatched,
-    numVoters: spockVotes.length,
+    numVoters: votesByAddress.length,
     totalMkrParticipation: totalMkrParticipation.toString(),
     totalMkrActiveParticipation: totalMkrActiveParticipation.toString(),
     winningOptionName: winnerOption.winner ? poll.options[winnerOption.winner] : 'None found',
     results,
-    rounds: winnerOption.results?.rounds
+    rounds: winnerOption.results?.rounds,
+    votesByAddress
   };
 
   return tally;

@@ -32,7 +32,7 @@ describe('Fetch tally approval', () => {
 
   it('gives first option as winner if it has most mkr', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '258',
@@ -112,12 +112,12 @@ describe('Fetch tally approval', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '258',
@@ -193,12 +193,12 @@ describe('Fetch tally approval', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('Ignores abstain', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '0',
@@ -263,6 +263,6 @@ describe('Fetch tally approval', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

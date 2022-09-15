@@ -71,7 +71,7 @@ describe('Fetch tally combined with other options', () => {
 
   it('Does not find winner if it doesnt pass the majority percent, and it defaults to 3', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -135,12 +135,12 @@ describe('Fetch tally combined with other options', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('Does find a winner if it pass the majority percent', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -204,7 +204,7 @@ describe('Fetch tally combined with other options', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   const mockPollRanked: Poll = {
@@ -246,7 +246,7 @@ describe('Fetch tally combined with other options', () => {
 
   it('ranked choice + majority when majority is not met', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '101',
@@ -324,12 +324,12 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('ranked choice + majority when majority is  met', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '301',
@@ -416,7 +416,7 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   const mockPollRankedComparison: Poll = {
@@ -459,7 +459,7 @@ describe('Fetch tally combined with other options', () => {
 
   it('ranked choice + majority when majority is  met + comparison not met', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '301',
@@ -541,12 +541,12 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('ranked choice + majority when majority is met + comparison met', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             mkrSupport: '3001',
@@ -633,6 +633,6 @@ describe('Fetch tally combined with other options', () => {
       numVoters: 4
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

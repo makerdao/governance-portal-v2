@@ -5,10 +5,11 @@ export const voteAddressMkrWeightsAtTime = gql`
     voteAddressMkrWeightsAtTime(argPollId: $argPollId, argUnix: $argUnix) {
       nodes {
         voter
-        optionId
         optionIdRaw
         mkrSupport
         chainId
+        blockTimestamp
+        hash
       }
     }
   }

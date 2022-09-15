@@ -3,7 +3,6 @@ import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
 import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
-import { isInputFormatRankFree } from '../helpers/utils';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -21,16 +20,10 @@ export async function fetchAddressPollVoteHistory(
       }
 
       const optionValue: string[] = [];
-      if (isInputFormatRankFree(poll.parameters)) {
-        if (pollVote.ballot && pollVote.ballot.length > 0) {
-          pollVote.ballot.forEach(option => {
-            optionValue.push(poll.options[option]);
-          });
-        }
-      } else {
-        if (typeof pollVote.optionId !== 'undefined') {
-          optionValue.push(poll.options[pollVote.optionId as number]);
-        }
+      if (pollVote.ballot && pollVote.ballot.length > 0) {
+        pollVote.ballot.forEach(option => {
+          optionValue.push(poll.options[option]);
+        });
       }
 
       return {
