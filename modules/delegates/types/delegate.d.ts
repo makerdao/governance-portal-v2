@@ -33,7 +33,7 @@ export type Delegate = {
   description: string;
   picture: string;
   status: DelegateStatus;
-  lastVoteDate: string | null;
+  lastVoteDate: number | null;
   expired: boolean;
   isAboutToExpire: boolean;
   expirationDate: Date;

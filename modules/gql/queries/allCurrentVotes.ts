@@ -8,6 +8,8 @@ export const allCurrentVotes = gql`
         optionIdRaw
         blockTimestamp
         chainId
+        mkrSupport
+        hash
       }
     }
   }

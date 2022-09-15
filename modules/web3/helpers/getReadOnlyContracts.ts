@@ -13,10 +13,7 @@ let currentNetwork: string | undefined;
 
 let readOnlyContracts: EthSdk | null = null;
 
-export const getReadOnlyContracts = (
-  rpcUrl: string,
-  network: SupportedNetworks.MAINNET | SupportedNetworks.GOERLI
-): EthSdk => {
+export const getReadOnlyContracts = (rpcUrl: string, network: SupportedNetworks): EthSdk => {
   const changeNetwork = network !== currentNetwork;
 
   if (!readOnlyContracts || changeNetwork) {

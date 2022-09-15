@@ -10,6 +10,7 @@ export type SpockVote = {
 };
 
 export type PollTallyVote = {
+  pollId: number;
   voter: string;
   ballot: number[];
   mkrSupport: number | string;

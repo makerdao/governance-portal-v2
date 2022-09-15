@@ -11,7 +11,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 20,
@@ -20,7 +21,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -29,7 +31,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -46,7 +49,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 1000,
@@ -55,7 +59,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -64,7 +69,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -82,7 +88,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 1000,
@@ -91,7 +98,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -100,7 +108,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -118,7 +127,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 1000,
@@ -127,7 +137,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -136,7 +147,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -154,7 +166,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 1000,
@@ -163,7 +176,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -172,7 +186,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -190,7 +205,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 1000,
@@ -199,7 +215,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -208,7 +225,8 @@ describe('Find options that satisfy condition comparison', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 

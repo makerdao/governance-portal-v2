@@ -17,7 +17,7 @@ import {
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
-import { CHAIN_INFO, GASLESS_CHAIN_INFO } from 'modules/web3/constants/networks';
+import { CHAIN_INFO } from 'modules/web3/constants/networks';
 
 type Props = {
   tally: PollTally;
@@ -113,11 +113,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '10%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: ['15%', '10%'] }}
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
-              Vote %
+              Vote{bpi > 0 ? ' %' : ''}
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} ml={1} />
@@ -146,7 +146,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               )}
             </Text>
 
-            <Text as="th" sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: '10%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: ['5%', '10%'] }}
+              variant="caps"
+            >
               Verify
             </Text>
           </tr>
@@ -228,12 +232,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
                     >
                       <Flex sx={{ alignItems: 'center' }}>
-                        <Text sx={{ mr: 1 }}>
-                          {CHAIN_INFO[v.chainId]
-                            ? CHAIN_INFO[v.chainId].blockExplorerName
-                            : GASLESS_CHAIN_INFO[v.chainId]
-                            ? GASLESS_CHAIN_INFO[v.chainId].blockExplorerName
-                            : 'Unknown'}{' '}
+                        <Text sx={{ mr: 1, display: ['none', 'block'] }}>
+                          {CHAIN_INFO[v.chainId] ? CHAIN_INFO[v.chainId].blockExplorerName : 'Unknown'}
                         </Text>
                         <Icon name="arrowTopRight" size={2} color="accentBlue" />
                       </Flex>

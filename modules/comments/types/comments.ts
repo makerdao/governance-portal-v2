@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import { GaslessNetworks, SupportedNetworks } from 'modules/web3/constants/networks';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type PollCommentsAPIResponseItem = {
   comment: PollComment;
@@ -76,7 +76,7 @@ export type PollComment = {
   date: Date;
   commentType: 'poll';
   pollId: number;
-  network: SupportedNetworks | GaslessNetworks;
+  network: SupportedNetworks;
   txHash?: string;
 };
 
@@ -91,7 +91,6 @@ export type PollsCommentsRequestBody = {
   comments: Partial<PollComment>[];
   signedMessage: string;
   txHash: string;
-  gaslessNetwork?: GaslessNetworks;
 };
 
 export type PollCommentWithWeight = PollComment & {

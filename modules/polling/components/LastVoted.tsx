@@ -11,7 +11,7 @@ export default function LastVoted({
   styles
 }: {
   expired: boolean;
-  date?: string | null;
+  date?: number | string | null;
   left?: boolean;
   styles?: ThemeUIStyleObject;
 }): React.ReactElement {

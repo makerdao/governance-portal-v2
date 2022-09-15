@@ -15,7 +15,7 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
-import { GaslessNetworks, SupportedNetworks } from 'modules/web3/constants/networks';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type StatField =
   | 'chief contract'
@@ -102,7 +102,9 @@ export default function SystemStatsSidebar({
     'arbitrum polling contract': key => {
       const pollingAddress = ArbitrumPollingAddressMap[network];
       const arbitrumNetwork =
-        network === SupportedNetworks.MAINNET ? GaslessNetworks.ARBITRUM : GaslessNetworks.ARBITRUMTESTNET;
+        network === SupportedNetworks.MAINNET
+          ? SupportedNetworks.ARBITRUM
+          : SupportedNetworks.ARBITRUMTESTNET;
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>

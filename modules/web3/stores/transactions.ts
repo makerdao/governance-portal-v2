@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
-import { GaslessNetworks } from '../constants/networks';
+import { SupportedNetworks } from '../constants/networks';
 
 export type TxCallbacks = {
   initialized?: (txId: string) => void;
@@ -15,7 +15,7 @@ export type TxCallbacks = {
 
 type Store = {
   transactions: Transaction[];
-  initTx: (txId: string, from: string, message: string | null, gaslessNetwork?: GaslessNetworks) => void;
+  initTx: (txId: string, from: string, message: string | null, gaslessNetwork?: SupportedNetworks) => void;
   setMessage: (txId: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
@@ -25,7 +25,7 @@ type Store = {
     account?: string,
     message?: string,
     callbacks?: TxCallbacks,
-    gaslessNetwork?: GaslessNetworks
+    gaslessNetwork?: SupportedNetworks
   ) => string | null;
   listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: TxCallbacks) => void;
 };

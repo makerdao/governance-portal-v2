@@ -28,7 +28,8 @@ export async function fetchVotesByAddressForPoll(
     return {
       ...vote,
       optionIdRaw: vote.optionIdRaw.toString(),
-      ballot
+      ballot,
+      pollId
     };
   });
 

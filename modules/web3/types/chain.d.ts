@@ -1,5 +1,5 @@
-import { GaslessChainId, SupportedChainId } from '../constants/chainID';
-import { GaslessNetworks, SupportedNetworks } from '../constants/networks';
+import { SupportedChainId } from '../constants/chainID';
+import { SupportedNetworks } from '../constants/networks';
 
 export type BlockExplorer = 'Etherscan' | 'Arbiscan' | 'block explorer';
 
@@ -10,19 +10,8 @@ export type SupportedChain = {
   label: string;
   network: SupportedNetworks;
   defaultRpc: string;
-  spockUrl: string;
-  rpcs: {
-    [key: string]: string;
-  };
-};
-
-export type GaslessChain = {
-  blockExplorerUrl: string;
-  blockExplorerName: BlockExplorer;
-  chainId: GaslessChainId;
-  label: string;
-  network: GaslessNetworks;
-  defaultRpc: string;
+  spockUrl?: string;
+  type: 'gasless' | 'normal';
   rpcs: {
     [key: string]: string;
   };

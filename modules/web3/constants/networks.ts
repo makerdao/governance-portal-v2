@@ -1,9 +1,6 @@
 import { config } from 'lib/config';
-import { SupportedChain, GaslessChain, BlockExplorer } from '../types/chain';
-import { GaslessChainId, SupportedChainId } from './chainID';
-import { ethers } from 'ethers';
-import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { SupportedChain } from '../types/chain';
+import { SupportedChainId } from './chainID';
 
 export const NetworkContextName = 'NETWORK';
 
@@ -25,9 +22,7 @@ export enum SupportedConnectors {
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',
-  GOERLIFORK = 'goerlifork'
-}
-export enum GaslessNetworks {
+  GOERLIFORK = 'goerlifork',
   ARBITRUMTESTNET = 'arbitrumTestnet',
   ARBITRUM = 'arbitrum'
 }
@@ -42,10 +37,6 @@ type ChainInfo = {
   [key in SupportedChainId]: SupportedChain;
 };
 
-type GaslessChainInfo = {
-  [key in GaslessChainId]: GaslessChain;
-};
-
 //todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
   [SupportedChainId.MAINNET]: {
@@ -53,6 +44,7 @@ export const CHAIN_INFO: ChainInfo = {
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
+    type: 'normal',
     network: SupportedNetworks.MAINNET,
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl: process.env.NODE_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
@@ -66,6 +58,7 @@ export const CHAIN_INFO: ChainInfo = {
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
+    type: 'normal',
     network: SupportedNetworks.GOERLI,
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl: GOERLI_SPOCK_URL,
@@ -79,67 +72,38 @@ export const CHAIN_INFO: ChainInfo = {
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.GOERLIFORK,
     label: 'GoerliFork',
+    type: 'normal',
     network: SupportedNetworks.GOERLIFORK,
     defaultRpc: NodeProviders.LOCAL,
     spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://localhost:8545'
     }
-  }
-};
-
-export const GASLESS_CHAIN_INFO: GaslessChainInfo = {
-  [GaslessChainId.ARBITRUMTESTNET]: {
+  },
+  [SupportedChainId.ARBITRUMTESTNET]: {
     blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
     blockExplorerName: 'Arbiscan',
-    chainId: GaslessChainId.ARBITRUMTESTNET,
+    chainId: SupportedChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
-    network: GaslessNetworks.ARBITRUMTESTNET,
+    type: 'gasless',
+    network: SupportedNetworks.ARBITRUMTESTNET,
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
     }
   },
-  [GaslessChainId.ARBITRUM]: {
+  [SupportedChainId.ARBITRUM]: {
     blockExplorerUrl: 'arbiscan.io',
     blockExplorerName: 'Arbiscan',
-    chainId: GaslessChainId.ARBITRUM,
+    chainId: SupportedChainId.ARBITRUM,
     label: 'Arbitrum',
-    network: GaslessNetworks.ARBITRUM,
+    type: 'gasless',
+    network: SupportedNetworks.ARBITRUM,
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
     }
   }
-};
-
-//todo: move these functions below to a different file
-export const getGaslessNetwork = (network: SupportedNetworks): GaslessNetworks => {
-  if (network === SupportedNetworks.MAINNET) {
-    return GaslessNetworks.ARBITRUM;
-  } else {
-    return GaslessNetworks.ARBITRUMTESTNET;
-  }
-};
-
-export const getProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
-  const chainId = networkNameToChainId(network);
-  const url = getRPCFromChainID(chainId);
-  return new ethers.providers.JsonRpcProvider(url);
-};
-
-export const getGaslessProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
-  const gaslessNetwork = getGaslessNetwork(network);
-  const chainId = networkNameToChainId(gaslessNetwork);
-  const url = getRPCFromChainID(chainId);
-  return new ethers.providers.JsonRpcProvider(url);
-};
-
-export const getBlockExplorerName = (network: SupportedNetworks | GaslessNetworks): BlockExplorer => {
-  const chainId = networkNameToChainId(network);
-  const networksMapping = { ...CHAIN_INFO, ...GASLESS_CHAIN_INFO };
-  if (!networksMapping) return 'block explorer';
-  return networksMapping[chainId].blockExplorerName;
 };
 
 export const DEFAULT_NETWORK = CHAIN_INFO[SupportedChainId.MAINNET];
