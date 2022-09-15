@@ -60,7 +60,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if pollIds is not an array of integers', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: '123'
     });
     await voteAPIHandler(req, res);
@@ -71,7 +71,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if optionIds is not an array of integers', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: '123'
     });
@@ -83,7 +83,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if nonce is not a number', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 'ab'
@@ -96,7 +96,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if expiry is not a number', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 1,
@@ -110,7 +110,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if expired', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 1,
@@ -124,7 +124,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if signature is not a string', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 1,
@@ -139,7 +139,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if network is not valid', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 1,
@@ -154,7 +154,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if nonce is not valid', async () => {
     const { req, res } = mockRequestResponse('POST', {
-      voter: '0x2',
+      voter: '0xf6c28eC4f4f8E6C712d9242a1Ff7F9e82BeC964F',
       pollIds: [1, 2],
       optionIds: [1, 2, 3],
       nonce: 1,

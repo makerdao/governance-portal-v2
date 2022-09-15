@@ -32,7 +32,7 @@ describe('Fetch tally plurality', () => {
 
   it('gives expected results', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -112,12 +112,12 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives expected results for adjusted data', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -205,12 +205,12 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('parses correctly a plurality with no votes', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: []
       }
     });
@@ -270,12 +270,12 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
   it('gives expected results for tally with abstain majority', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
-      voteMkrWeightsAtTimeRankedChoice: {
+      voteAddressMkrWeightsAtTime: {
         nodes: [
           {
             optionIdRaw: '1',
@@ -363,6 +363,6 @@ describe('Fetch tally plurality', () => {
       ]
     };
 
-    expect(JSON.parse(JSON.stringify(result))).toEqual(expectedResult);
+    expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 });

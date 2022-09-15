@@ -1,6 +1,6 @@
 // Receives the currentVotes and the percentage required to be determined winner
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 import BigNumber from 'lib/bigNumberJs';
+import { PollTallyVote } from 'modules/polling/types';
 
 function passComparator(value: BigNumber, comparator: string, threshold: number) {
   switch (comparator) {
@@ -20,7 +20,7 @@ function passComparator(value: BigNumber, comparator: string, threshold: number)
 
 // Determines all the options that pass the comparison threshold
 export function extractSatisfiesComparison(
-  currentVotes: ParsedSpockVote[],
+  currentVotes: PollTallyVote[],
   comparator: string,
   value: number
 ): number[] {
