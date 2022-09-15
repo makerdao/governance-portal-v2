@@ -23,7 +23,6 @@ import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
 import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
-import { config } from 'lib/config';
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
@@ -222,7 +221,8 @@ export async function fetchDelegates(
 
       // Filter the lock events to get only the ones for this delegate address
       const mkrLockedDelegate = lockEvents.filter(
-        ({ immediateCaller }) => immediateCaller.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
+        ({ delegateContractAddress }) =>
+          delegateContractAddress.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
       );
 
       const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);

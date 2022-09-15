@@ -6,7 +6,8 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { Proposal } from 'modules/executive/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 /**
  * @swagger
@@ -66,19 +67,40 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *                   $ref: '#/definitions/ArrayOfExecutives'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<Proposal[]>) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
-  const start = req.query.start ? parseInt(req.query.start as string, 10) : 0;
-  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
-  const sortBy = req.query.sortBy || 'date';
-  const startDate = req.query.startDate ? parseInt(req.query.startDate as string, 10) : 0;
-  const endDate = req.query.endDate ? parseInt(req.query.endDate as string, 10) : 0;
+  const network = validateQueryParam(req.query.network, 'string', {
+    defaultValue: DEFAULT_NETWORK.network,
+    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+  }) as string;
+
+  const start = validateQueryParam(req.query.start, 'number', {
+    defaultValue: 0,
+    minValue: 0
+  }) as number;
+
+  const limit = validateQueryParam(req.query.limit, 'number', {
+    defaultValue: 0,
+    minValue: 1,
+    maxValue: 30
+  }) as number;
+
+  const sortBy = validateQueryParam(req.query.sortBy, 'string', {
+    defaultValue: 'date',
+    validValues: ['date', 'mkr', 'active']
+  });
+
+  const startDate = validateQueryParam(req.query.startDate, 'number', {
+    defaultValue: 0
+  }) as number;
+
+  const endDate = validateQueryParam(req.query.endDate, 'number', {
+    defaultValue: 0
+  }) as number;
 
   const response = await getExecutiveProposals(
     start,
     limit,
     sortBy as 'date' | 'mkr',
-    network,
+    network as SupportedNetworks,
     startDate,
     endDate
   );

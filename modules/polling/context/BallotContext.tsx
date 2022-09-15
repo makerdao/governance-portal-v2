@@ -36,7 +36,7 @@ import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 import { useAllUserVotes } from '../hooks/useAllUserVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 interface ContextProps {
   ballot: Ballot;
@@ -44,7 +44,7 @@ interface ContextProps {
   previousBallot: Ballot;
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   removeVoteFromBallot: (pollId: number) => void;
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => void;
+  addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   submitBallot: () => void;
   submitBallotGasless: () => void;
   clearBallot: () => void;
@@ -64,7 +64,7 @@ export const BallotContext = React.createContext<ContextProps>({
   ballot: {},
   previousBallot: {},
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => null,
+  addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
   clearBallot: () => null,
   removeVoteFromBallot: (pollId: number) => null,
   submitBallot: () => null,
@@ -105,6 +105,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
     useAccount();
 
+  const { network, provider } = useWeb3();
+
   const accountToUse = voteDelegateContractAddress
     ? voteDelegateContractAddress
     : voteProxyContractAddress
@@ -116,27 +118,46 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const clearBallot = () => {
     setCommentSignature('');
-    setBallot({});
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}), ONE_DAY_MS);
+    updateBallot({});
   };
 
-  const loadBallotFromStorage = () => {
+  const updateBallot = (val: Ballot) => {
+    setBallot(val);
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(val), ONE_DAY_IN_MS);
+  };
+
+  const loadBallotFromStorage = async () => {
     const prevBallot = localStorage.get(`ballot-${network}-${account}`);
     if (prevBallot) {
       try {
         const parsed = JSON.parse(prevBallot);
-        setBallot(parsed);
+        const votes = {};
+        Object.keys(parsed).forEach(async pollId => {
+          const vote = parsed[pollId] as BallotVote;
+
+          // https://docs.ethers.io/v5/api/providers/provider/#Provider-getTransactionReceipt
+          const tx = vote.transactionHash
+            ? await provider?.getTransactionReceipt(vote.transactionHash)
+            : null;
+
+          // If the vote has a confirmed transaction, do not add it to the ballot. If the transactionReceipt is null it means it has not been mined.
+          if (!tx || tx.confirmations === 0) {
+            votes[pollId] = parsed[pollId];
+          }
+        });
+
+        // Update the filtered ballot
+        updateBallot(votes);
       } catch (e) {
         logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
-        setBallot({});
+        updateBallot({});
       }
     } else {
       setBallot({});
     }
   };
 
-  const { network, provider } = useWeb3();
   // Reset ballot on network change
   useEffect(() => {
     setPreviousBallot({});
@@ -145,17 +166,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   // add vote to ballot
 
-  const addVoteToBallot = (pollId: number, ballotVote: BallotVote) => {
+  const addVoteToBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
     setStep('initial');
     const newBallot = {
       ...ballot,
-      [pollId]: ballotVote
+      [pollId]: {
+        ...ballotVote
+      } as BallotVote
     };
-    setBallot(newBallot);
-
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
+    updateBallot(newBallot);
   };
 
   const removeVoteFromBallot = (pollId: number) => {
@@ -164,9 +185,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setStep('initial');
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
-    setBallot(rest);
-
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(rest), ONE_DAY_MS);
+    updateBallot(rest);
   };
 
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
@@ -180,8 +199,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ...ballotVote
       }
     };
-    setBallot(newBallot);
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
+    updateBallot(newBallot);
   };
 
   // Helpers
@@ -245,6 +263,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       {
         pending: txHash => {
           setStep('tx-pending');
+          // Update ballot to include the txHash
+          const votes = {};
+          Object.keys(ballot).forEach(pollId => {
+            votes[pollId] = ballot[pollId];
+            votes[pollId].transactionHash = txHash;
+          });
+
+          updateBallot({
+            ...votes
+          });
+
           const comments = getComments();
           // if comment included, add to comments db
           if (comments.length > 0) {
@@ -274,17 +303,12 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
           }
         },
         mined: (txId, txHash) => {
-          // Set votes
-          const votes = {};
-          Object.keys(ballot).forEach(pollId => {
-            votes[pollId] = ballot[pollId];
-            votes[pollId].transactionHash = txHash;
-          });
-
+          // Set previous ballot
           setPreviousBallot({
             ...previousBallot,
-            ...votes
+            ...ballot
           });
+
           clearBallot();
           mutatePreviousVotes();
           transactionsApi

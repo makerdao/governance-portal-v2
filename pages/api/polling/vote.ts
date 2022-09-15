@@ -7,7 +7,6 @@ import { cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
-import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -17,6 +16,7 @@ import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequir
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -203,11 +203,8 @@ export default withApiHandler(
         }
 
         //can't use gasless service to vote in a poll you've already voted on
-        // TODO: Consider if we really want this check. We should allow users to vote multiple times on a poll ( edit votes )
-        const voteHistory = await fetchAddressPollVoteHistory(voter, network);
-        const votedPollIds = voteHistory.map(v => v.pollId);
-        const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));
-        if (areUnvoted.includes(false)) {
+        const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(voter, network, pollIds);
+        if (ballotHasVotedPolls) {
           const error = { error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL };
           postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);

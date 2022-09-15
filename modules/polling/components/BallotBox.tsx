@@ -17,7 +17,7 @@ type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function BallotBox({ activePolls, network, polls }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const { transaction, ballotCount } = useContext(BallotContext);
+  const { transaction, ballotCount, clearBallot } = useContext(BallotContext);
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -69,6 +69,16 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
                 Review & Submit Your Ballot
               </Button>
             </InternalLink>
+
+            {ballotCount > 0 && (
+              <Button
+                variant="mutedOutline"
+                sx={{ width: '100%', cursor: 'pointer', mt: 2 }}
+                onClick={clearBallot}
+              >
+                Clear Ballot
+              </Button>
+            )}
           </Flex>
         </Card>
       )}
