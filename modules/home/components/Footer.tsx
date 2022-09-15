@@ -11,7 +11,6 @@ const ContactSection = ({ heading, logos, icon }) => {
       <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
         {heading}
       </Text>
-      {/* <Text sx={{ fontSize: 3, fontWeight: 'semiBold', color: 'footerText' }}>{title}</Text> */}
       <Flex
         sx={{
           alignItems: 'center',
@@ -207,7 +206,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
                 {group.list.map(({ url, title }) => {
                   return (
                     <ExternalLink key={title} href={url} title={title} styles={{ fontSize: [1, 2] }}>
-                      <Text sx={{ fontSize: 3, color: 'footerText' }}>{title}</Text>
+                      <Text>{title}</Text>
                     </ExternalLink>
                   );
                 })}
