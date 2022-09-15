@@ -38,7 +38,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '200.598801867883985831',
@@ -47,7 +48,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '64.068823529411764706',
@@ -56,7 +58,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -99,7 +102,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '102.598801867883985831',
@@ -108,7 +112,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '64.068823529411764706',
@@ -117,7 +122,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -160,7 +166,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '102.598801867883985831',
@@ -169,7 +176,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '64.068823529411764706',
@@ -178,7 +186,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 4,
@@ -187,7 +196,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -235,7 +245,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '102.598801867883985831',
@@ -244,7 +255,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '54.068823529411764706',
@@ -253,7 +265,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 4,
@@ -262,7 +275,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -310,7 +324,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '100',
@@ -319,7 +334,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '50',
@@ -328,7 +344,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 49,
@@ -337,7 +354,8 @@ describe('Instant runoff calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -378,7 +396,16 @@ describe('Instant runoff calculation', () => {
 
   it('Does not break with only 1 vote without mkr', () => {
     const votes: PollTallyVote[] = [
-      { optionIdRaw: '1', mkrSupport: '0', ballot: [1], blockTimestamp: 1, chainId: 1, hash: '', voter: '' }
+      {
+        optionIdRaw: '1',
+        mkrSupport: '0',
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
+      }
     ];
 
     const winner = extractWinnerInstantRunoff(votes);

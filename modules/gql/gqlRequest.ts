@@ -16,6 +16,9 @@ export const gqlRequest = async <TQuery = any>({
 }: GqlRequestProps): Promise<TQuery> => {
   const id = chainId ?? SupportedChainId.MAINNET;
   const url = CHAIN_INFO[id].spockUrl;
+  if (!url) {
+    return Promise.reject('missing spock url');
+  }
 
   return await request(url, query, variables);
 };

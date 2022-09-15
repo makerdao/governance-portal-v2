@@ -1,5 +1,5 @@
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
-import { Poll, PollParameters, PollVictoryConditionAND, PollVote, VictoryCondition } from '../types';
+import { Poll, PollParameters, PollVictoryConditionAND, PollTallyVote, VictoryCondition } from '../types';
 
 export function pollHasEnded(poll: Poll): boolean {
   const now = Date.now();
@@ -108,7 +108,10 @@ export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
   return parameters.inputFormat.type === PollInputFormat.singleChoice;
 }
 
-export function extractCurrentPollVote(poll: Poll, allUserVotes: PollVote[] | undefined): number[] | null {
+export function extractCurrentPollVote(
+  poll: Poll,
+  allUserVotes: PollTallyVote[] | undefined
+): number[] | null {
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
   return currentVote?.ballot || null;
 }

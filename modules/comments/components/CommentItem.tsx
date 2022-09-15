@@ -10,7 +10,7 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatValue } from 'lib/string';
-import { getBlockExplorerName } from 'modules/web3/constants/networks';
+import { getBlockExplorerName } from 'modules/web3/helpers/chain';
 
 export default function CommentItem({
   comment,

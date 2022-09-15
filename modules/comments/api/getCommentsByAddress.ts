@@ -1,15 +1,11 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import {
-  SupportedNetworks,
-  getGaslessNetwork,
-  getGaslessProvider,
-  getProvider
-} from 'modules/web3/constants/networks';
+import { getGaslessNetwork, getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
 import { markdownToHtml } from 'lib/markdown';
 import { getCommentTransaction } from './getCommentTransaction';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export async function getCommentsByAddress(
   address: string,

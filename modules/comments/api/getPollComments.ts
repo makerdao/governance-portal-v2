@@ -1,19 +1,12 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import {
-  getGaslessNetwork,
-  SupportedNetworks,
-  getGaslessProvider,
-  getProvider
-} from 'modules/web3/constants/networks';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../types/comments';
 import uniqBy from 'lodash/uniqBy';
 import { markdownToHtml } from 'lib/markdown';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
-import { ethers } from 'ethers';
 import { getCommentTransaction } from './getCommentTransaction';
+import { getGaslessNetwork, getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
 export async function getPollComments(
   pollId: number,
   network: SupportedNetworks

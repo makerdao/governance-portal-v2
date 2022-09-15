@@ -1,15 +1,14 @@
-import { CHAIN_INFO, GASLESS_CHAIN_INFO, GaslessNetworks, SupportedNetworks } from '../constants/networks';
+import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from './chain';
 
 //todo: change name to getBlockExplorerLink
 export function getEtherscanLink(
-  network: SupportedNetworks | GaslessNetworks,
+  network: SupportedNetworks,
   data: string,
   type: 'transaction' | 'address'
 ): string {
   const chainId = networkNameToChainId(network);
-  const ALL_CHAINS = { ...CHAIN_INFO, ...GASLESS_CHAIN_INFO };
-  const prefix = `https://${ALL_CHAINS[chainId].blockExplorerUrl}`;
+  const prefix = `https://${CHAIN_INFO[chainId].blockExplorerUrl}`;
 
   switch (type) {
     case 'transaction':

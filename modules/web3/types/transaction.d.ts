@@ -1,5 +1,5 @@
 export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
-import { GaslessNetworks } from '../constants/networks';
+import { SupportedNetworks } from '../constants/networks';
 
 export type TXInitialized = {
   from: string;
@@ -10,7 +10,7 @@ export type TXInitialized = {
   hash: null;
   error: null;
   errorType: null;
-  gaslessNetwork?: GaslessNetworks;
+  gaslessNetwork?: SupportedNetworks;
 };
 
 export type TXPending = {
@@ -22,7 +22,7 @@ export type TXPending = {
   hash: string;
   error: null;
   errorType: null;
-  gaslessNetwork?: GaslessNetworks;
+  gaslessNetwork?: SupportedNetworks;
 };
 
 export type TXMined = Omit<TXPending, 'status'> & {
@@ -38,7 +38,7 @@ export type TXError = {
   hash: null | string;
   error: null | string;
   errorType: string;
-  gaslessNetwork?: GaslessNetworks;
+  gaslessNetwork?: SupportedNetworks;
 };
 
 export type Transaction = TXInitialized | TXPending | TXMined | TXError;

@@ -11,7 +11,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 20,
@@ -20,7 +21,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -29,7 +31,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -47,7 +50,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 20,
@@ -56,7 +60,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 25,
@@ -65,7 +70,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -83,7 +89,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -92,7 +99,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -101,7 +109,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -119,7 +128,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 35,
@@ -128,7 +138,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
@@ -137,7 +148,8 @@ describe('Majority calculation', () => {
         blockTimestamp: 1,
         chainId: 1,
         hash: '',
-        voter: ''
+        voter: '',
+        pollId: 1
       }
     ];
 

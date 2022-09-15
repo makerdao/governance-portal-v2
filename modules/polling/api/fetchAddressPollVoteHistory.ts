@@ -1,8 +1,8 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
 import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
+import { PollTallyVote } from '../types';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -12,7 +12,7 @@ export async function fetchAddressPollVoteHistory(
   const pollsData = await getPolls({}, network);
   const voteHistory = await fetchAllCurrentVotes(address, network);
   const items = await Promise.all(
-    voteHistory.map(async (pollVote: PollVote): Promise<PollVoteHistory | null> => {
+    voteHistory.map(async (pollVote: PollTallyVote): Promise<PollVoteHistory | null> => {
       const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
       // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
       if (!poll) {

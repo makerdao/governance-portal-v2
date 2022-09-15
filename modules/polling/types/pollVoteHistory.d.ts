@@ -1,7 +1,7 @@
 import { Poll } from './poll';
-import { PollVote } from './pollVote';
+import { PollTallyVote } from './pollTally';
 
-export type PollVoteHistory = PollVote & {
+export type PollVoteHistory = PollTallyVote & {
   poll: Poll;
   optionValue: string[];
 };

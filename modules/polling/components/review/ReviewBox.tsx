@@ -10,7 +10,7 @@ import LocalIcon from 'modules/app/components/Icon';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { getBlockExplorerName } from 'modules/web3/constants/networks';
+import { getBlockExplorerName } from 'modules/web3/helpers/chain';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';

@@ -53,7 +53,7 @@ describe('Polling votes by address', () => {
     // look for columns
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
-    await screen.findByText(/Vote %/);
+    await screen.findByText(/Vote/);
     await screen.findByText(/MKR/);
 
     // look for yes votes
@@ -67,7 +67,12 @@ describe('Polling votes by address', () => {
         {
           voter: '0xad2fda5f6ce305d2ced380fdfa791b6a26e7f281',
           ballot: [0, 1, 2],
-          mkrSupport: 28312.074392254362747305
+          mkrSupport: 28312.074392254362747305,
+          chainId: 1,
+          hash: '0x021',
+          blockTimestamp: 1,
+          optionIdRaw: '012',
+          pollId: 1
         }
       ]
     };
@@ -99,7 +104,7 @@ describe('Polling votes by address', () => {
     // look for columns
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
-    await screen.findByText(/Vote %/);
+    await screen.findByText(/Vote/);
     await screen.findByText(/MKR/);
 
     // check first choice is displayed with number

@@ -1,26 +1,19 @@
 import { Box, Text } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
-import { PluralityVoteSummary } from './vote-summary/PluralityVoteSummary';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
-import { usePollTally } from '../hooks/usePollTally';
-import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
-import {
-  isInputFormatRankFree,
-  hasVictoryConditionPlurality,
-  isResultDisplaySingleVoteBreakdown
-} from '../helpers/utils';
+import { isInputFormatRankFree, isResultDisplaySingleVoteBreakdown } from '../helpers/utils';
 import { ListVoteSummary } from './vote-summary/ListVoteSummary';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { formatValue } from 'lib/string';
+import { parseUnits } from 'ethers/lib/utils';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
-  const { tally } = usePollTally(vote.pollId);
-  const isPluralityVote = hasVictoryConditionPlurality(vote.poll.parameters.victoryConditions);
   return (
     <Box
       sx={{
@@ -64,19 +57,9 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
 
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: isPluralityVote ? 'space-between' : ['flex-start', 'flex-end'],
-          flex: 1,
           mt: [2, 0]
         }}
       >
-        {isPluralityVote && (
-          <Box mr={0} ml={0}>
-            {tally && <PluralityVoteSummary tally={tally} />}
-            {!tally && <SkeletonThemed width={'130px'} height={'30px'} />}
-          </Box>
-        )}
-
         <Box>
           <Text
             variant="secondary"
@@ -85,7 +68,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               textTransform: 'uppercase',
               fontSize: 1,
               fontWeight: 'bold',
-              textAlign: [isPluralityVote ? 'right' : 'left', 'right']
+              textAlign: ['left', 'right']
             }}
             as="p"
           >
@@ -94,7 +77,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           <Text
             as="p"
             sx={{
-              textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
+              textAlign: ['left', 'right'],
               color: getVoteColor(vote.ballot[0], vote.poll.parameters),
               fontWeight: 'semiBold'
             }}
@@ -108,6 +91,30 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
                 align={bpi < 1 ? 'left' : 'right'}
               />
             )}
+          </Text>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Text
+            variant="secondary"
+            color="onSecondary"
+            sx={{
+              textTransform: 'uppercase',
+              fontSize: 1,
+              fontWeight: 'bold',
+              textAlign: ['left', 'right']
+            }}
+            as="p"
+          >
+            Voting Weight
+          </Text>
+          <Text
+            as="p"
+            sx={{
+              textAlign: ['left', 'right'],
+              fontWeight: 'semiBold'
+            }}
+          >
+            {formatValue(parseUnits(vote.mkrSupport.toString()), undefined, undefined, true, true)} MKR
           </Text>
         </Box>
       </Box>

@@ -15,6 +15,9 @@ export default withApiHandler(
         throw new Error('Unsupported parameters');
       }
 
+      // TODO: Read gasless network parameter and insert that in the comment correctly / matching the right network
+      // TODO: Validate network and gasless network parameters using new validation method
+      const gaslessNetwork = req.query.gasless ? (req.query.gasless as SupportedNetworks) : null;
       const network = req.query.network as SupportedNetworks;
 
       // Verifies the data
@@ -30,7 +33,7 @@ export default withApiHandler(
       // console.log(transaction);
 
       //if L2 vote, store the L2 network as the network
-      const txNetwork = body.gaslessNetwork ?? network;
+      const txNetwork = gaslessNetwork ?? network;
 
       const commentsToInsert: PollComment[] = body.comments.map(comment => ({
         pollId: comment.pollId as number,

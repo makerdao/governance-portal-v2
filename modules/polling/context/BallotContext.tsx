@@ -20,7 +20,7 @@ import logger from 'lib/logger';
 import { ethers } from 'ethers';
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { ContractTransaction } from 'ethers';
-import { GaslessNetworks, getGaslessNetwork, getGaslessProvider } from 'modules/web3/constants/networks';
+import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 
 type BallotSteps =
   | 'initial'
@@ -34,6 +34,7 @@ type BallotSubmissionMethod = 'standard' | 'gasless';
 
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 import { useAllUserVotes } from '../hooks/useAllUserVotes';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
@@ -253,7 +254,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const trackPollVote = (
     voteTxCreator: () => Promise<ContractTransaction>,
-    gaslessNetwork?: GaslessNetworks
+    gaslessNetwork?: SupportedNetworks
   ) => {
     const txId = track(
       voteTxCreator,
@@ -284,13 +285,18 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               txHash
             };
 
-            fetchJson(`/api/comments/polling/add?network=${network}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(commentsRequest)
-            }).catch(() => {
+            fetchJson(
+              `/api/comments/polling/add?network=${network}${
+                gaslessNetwork ? `&gasless=${gaslessNetwork}` : ''
+              }`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(commentsRequest)
+              }
+            ).catch(() => {
               logger.error('POST Polling Comments: failed to add comment');
               toast.error('Unable to store comments');
             });

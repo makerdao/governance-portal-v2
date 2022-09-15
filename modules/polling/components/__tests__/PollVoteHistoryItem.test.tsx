@@ -62,11 +62,6 @@ describe('Poll vote history item', () => {
 
     // look for discussion link
     await screen.findByText(/Discussion/);
-
-    // look for vote graphic text
-    await screen.findAllByText(/Yes/);
-    await screen.findAllByText(/No/);
-    await screen.findAllByText(/Abstain/);
   });
 
   test('renders ranked choice vote type correctly', async () => {

@@ -75,7 +75,9 @@ const NetworkSelect = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
 
   const networkOptions = Object.keys(CHAIN_INFO)
-    .filter(k => ![SupportedChainId.GOERLIFORK].includes(CHAIN_INFO[k].chainId))
+    .filter(
+      k => ![SupportedChainId.GOERLIFORK].includes(CHAIN_INFO[k].chainId) && CHAIN_INFO[k].type === 'normal'
+    )
     .map(chainKey => (
       <Flex
         sx={walletButtonStyle}
