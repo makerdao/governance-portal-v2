@@ -224,8 +224,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                   >
                     <ExternalLink
+                      title="See transaction details"
                       href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
-                      target="_blank"
                     >
                       <Flex sx={{ alignItems: 'center' }}>
                         <Text sx={{ mr: 1 }}>
