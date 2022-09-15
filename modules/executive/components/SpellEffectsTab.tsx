@@ -151,7 +151,7 @@ export function SpellEffectsTab({
                   href="https://makerdao.world/en/learn/governance/audit-exec-spells"
                   title="Learn more about auditing executive spells"
                 >
-                  <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                  <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                     Learn more about auditing Executive Spells
                     <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                   </Text>
@@ -174,7 +174,7 @@ export function SpellEffectsTab({
             </Text>
             <Box>
               <ExternalLink href={proposal.proposalLink} title="View in GitHub">
-                <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                   View in GitHub
                   <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                 </Text>

@@ -47,8 +47,8 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
             borderColor: 'accentBlue',
             borderRadius: 'small',
             '&:hover': {
-              color: 'blueLinkHover',
-              borderColor: 'blueLinkHover'
+              color: 'accentBlueEmphasis',
+              borderColor: 'accentBlueEmphasis'
             }
           }}
         >
