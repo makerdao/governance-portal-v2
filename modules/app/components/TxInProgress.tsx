@@ -17,9 +17,7 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
-      <Text variant="microHeading" color="onBackgroundAlt">
-        {txPending ? 'Transaction Pending' : 'Confirm Transaction'}
-      </Text>
+      <Text variant="microHeading">{txPending ? 'Transaction Pending' : 'Confirm Transaction'}</Text>
 
       <Flex sx={{ justifyContent: 'center', mt: 4 }}>
         <TxIndicators.Pending sx={{ width: 6 }} />

@@ -56,7 +56,7 @@ const ModalContent = ({ close, ...props }) => {
       <Box>
         {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
-            <Text variant="microHeading" color="onBackgroundAlt">
+            <Text variant="microHeading">
               {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
@@ -82,9 +82,7 @@ const ModalContent = ({ close, ...props }) => {
         {!transaction && allowanceOk && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
-              <Text variant="microHeading" color="onBackgroundAlt">
-                Withdraw MKR from Chief
-              </Text>
+              <Text variant="microHeading">Withdraw MKR from Chief</Text>
               <Text sx={{ color: '#333333', fontSize: 3, mt: 3 }}>
                 You are withdrawing <b>{lockedMkr ? formatValue(lockedMkr) : '---'} MKR</b> from the old Chief
                 contract back to your wallet.
@@ -113,7 +111,7 @@ const ModalContent = ({ close, ...props }) => {
         {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
-              <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
+              <Text variant="microHeading" mb={2}>
                 Approve voting contract
               </Text>
               <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>

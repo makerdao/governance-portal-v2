@@ -113,9 +113,7 @@ const NetworkSelect = (): React.ReactElement => {
           }
         >
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Text variant="microHeading" color="onBackgroundAlt">
-              Switch Network
-            </Text>
+            <Text variant="microHeading">Switch Network</Text>
             <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
           </Flex>
           {chainId && networkOptions}

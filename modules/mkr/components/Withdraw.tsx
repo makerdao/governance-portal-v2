@@ -49,7 +49,7 @@ const ModalContent = ({ close, ...props }) => {
       <Box>
         {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
-            <Text as="p" variant="microHeading" color="onBackgroundAlt">
+            <Text as="p" variant="microHeading">
               {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
@@ -76,7 +76,7 @@ const ModalContent = ({ close, ...props }) => {
         {!transaction && allowanceOk && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
-              <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
+              <Text as="p" variant="microHeading" mb={2}>
                 Withdraw from voting contract
               </Text>
               <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
@@ -121,7 +121,7 @@ const ModalContent = ({ close, ...props }) => {
         {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
-              <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
+              <Text as="p" variant="microHeading" mb={2}>
                 Approve voting contract
               </Text>
               <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
