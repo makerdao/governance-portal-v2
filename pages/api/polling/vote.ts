@@ -17,6 +17,7 @@ import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recently
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
+import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -203,11 +204,8 @@ export default withApiHandler(
         }
 
         //can't use gasless service to vote in a poll you've already voted on
-        // TODO: Consider if we really want this check. We should allow users to vote multiple times on a poll ( edit votes )
-        const voteHistory = await fetchAddressPollVoteHistory(voter, network);
-        const votedPollIds = voteHistory.map(v => v.pollId);
-        const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));
-        if (areUnvoted.includes(false)) {
+        const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(voter, network, pollIds);
+        if (ballotHasVotedPolls) {
           const error = { error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL };
           postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);

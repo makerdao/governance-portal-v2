@@ -20,15 +20,18 @@ import logger from 'lib/logger';
 import { toast } from 'react-toastify';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export default function ReviewBox({
   account,
   activePolls,
-  polls
+  polls,
+  ballotPollIds
 }: {
   account: string;
   activePolls: Poll[];
   polls: Poll[];
+  ballotPollIds: string[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const {
@@ -47,13 +50,17 @@ export default function ReviewBox({
   const { network } = useWeb3();
 
   const { data: precheckData } = useSWR(
-    account ? `/api/polling/precheck?network=${network}&voter=${account}` : null,
+    account && ballotPollIds && network
+      ? `/api/polling/precheck?network=${network}&voter=${account}&pollIds=${ballotPollIds.join(',')}`
+      : null,
     fetchJson
   );
 
   const hasMkrRequired = precheckData?.hasMkrRequired;
   const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
-  const validationPassed = precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting;
+  const alreadyVoted = precheckData?.alreadyVoted;
+  const validationPassed =
+    precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting && !precheckData?.alreadyVoted;
 
   // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = false;
@@ -277,15 +284,57 @@ export default function ReviewBox({
                     <Text>Switch to gasless voting</Text>
                   </Flex>
                 </Button>
-                {/* TODO needs design */}
                 <Flex sx={{ flexDirection: 'column', mt: 3 }}>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text>More than {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR in wallet:</Text>
-                    <Text>{hasMkrRequired ? 'true' : 'false'}</Text>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text as="p" variant="caps">
+                      Eligibility Criteria
+                    </Text>
+                    <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
+                      Learn more
+                      <Icon ml={2} name="arrowTopRight" size={2} />
+                    </Text>
                   </Flex>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text>Has not used gasless voting in last x minutes:</Text>
-                    <Text>{recentlyUsedGaslessVoting ? 'false' : 'true'}</Text>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Address has at least {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR of polling weight
+                    </Text>
+                    <Text>
+                      {!precheckData ? (
+                        <SkeletonThemed width="30px" height="18px" />
+                      ) : hasMkrRequired ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Address has not used the relayer in last 10 minutes
+                    </Text>
+                    <Text>
+                      {!precheckData ? (
+                        <SkeletonThemed width="30px" height="18px" />
+                      ) : !recentlyUsedGaslessVoting ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Address has voted more than once in any included poll
+                    </Text>
+                    <Text>
+                      {!precheckData ? (
+                        <SkeletonThemed width="30px" height="18px" />
+                      ) : !alreadyVoted ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
                   </Flex>
                 </Flex>
               </Box>
