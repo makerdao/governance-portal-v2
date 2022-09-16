@@ -343,7 +343,7 @@ export default function ReviewBox({
 
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Is not using Gnosis Safe
+                      Is not using a multisig
                     </Text>
                     <Text>
                       {!isGnosisSafe ? (
