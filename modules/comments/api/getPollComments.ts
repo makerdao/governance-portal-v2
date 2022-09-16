@@ -6,7 +6,7 @@ import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../
 import uniqBy from 'lodash/uniqBy';
 import { markdownToHtml } from 'lib/markdown';
 import { getCommentTransaction } from './getCommentTransaction';
-import { getGaslessNetwork, getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
+import { getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
 export async function getPollComments(
   pollId: number,
   network: SupportedNetworks
@@ -14,17 +14,15 @@ export async function getPollComments(
   const { db, client } = await connectToDatabase;
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
-  const gaslessNetwork = getGaslessNetwork(network);
   const collection = db.collection('comments');
   // decending sort
   const commentsFromDB: PollCommentFromDB[] = await collection
-    .find({ pollId, network: { $in: [network, gaslessNetwork] }, commentType: 'poll' })
+    .find({ pollId, network, commentType: 'poll' })
     .sort({ date: -1 })
     .toArray();
 
   const provider = await getProvider(network);
   const gaslessProvider = await getGaslessProvider(network);
-  const providers = { [network]: provider, [gaslessNetwork]: gaslessProvider };
 
   const comments: PollComment[] = await Promise.all(
     commentsFromDB.map(async comment => {
@@ -46,7 +44,7 @@ export async function getPollComments(
     // verify tx ownership
     const { transaction, isValid } = await getCommentTransaction(
       network,
-      providers[comment.network],
+      comment.gaslessNetwork ? gaslessProvider : provider,
       comment
     );
 
