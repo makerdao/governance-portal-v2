@@ -21,6 +21,8 @@ import { toast } from 'react-toastify';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { getConnection } from 'modules/web3/connections';
+import { ConnectionType } from 'modules/web3/constants/wallets';
 
 export default function ReviewBox({
   account,
@@ -47,7 +49,7 @@ export default function ReviewBox({
     submitBallot,
     submitBallotGasless
   } = useContext(BallotContext);
-  const { network } = useWeb3();
+  const { network, connector } = useWeb3();
 
   const { data: precheckData } = useSWR(
     account && ballotPollIds && network
@@ -62,8 +64,8 @@ export default function ReviewBox({
   const validationPassed =
     precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting && !precheckData?.alreadyVoted;
 
-  // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
-  const isGnosisSafe = false;
+  // Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
+  const isGnosisSafe = getConnection(connector).type === ConnectionType.GNOSIS_SAFE;
 
   const canUseGasless = !isGnosisSafe && validationPassed;
   const canUseComments = !isGnosisSafe;
@@ -148,12 +150,14 @@ export default function ReviewBox({
               </Button>
             </Flex>
           )}
-          <Box>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-              <LocalIcon name="sparkles" color="primary" size={3} />{' '}
-              <Text sx={{ ml: 2 }}>Poll voting is now free!</Text>
-            </Flex>
-          </Box>
+          {canUseGasless && (
+            <Box>
+              <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+                <LocalIcon name="sparkles" color="primary" size={3} />{' '}
+                <Text sx={{ ml: 2 }}>Poll voting is now free!</Text>
+              </Flex>
+            </Box>
+          )}
         </ActivePollsBox>
       )}
 
@@ -330,6 +334,19 @@ export default function ReviewBox({
                       {!precheckData ? (
                         <SkeletonThemed width="30px" height="18px" />
                       ) : !alreadyVoted ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Is not using Gnosis Safe
+                    </Text>
+                    <Text>
+                      {!isGnosisSafe ? (
                         <Icon name="checkmark" color="bull" size={'13px'} />
                       ) : (
                         <Icon name="close" color="bear" size={'13px'} />
