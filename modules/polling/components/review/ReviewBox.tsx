@@ -222,7 +222,7 @@ export default function ReviewBox({
                   sx={{ width: '100%' }}
                 >
                   <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>Switch to standard voting</Text>
+                    <Text>Switch to legacy voting</Text>
                   </Flex>
                 </Button>
               </Box>
@@ -232,11 +232,11 @@ export default function ReviewBox({
             <Box>
               <Box p={3}>
                 <Text sx={{ fontWeight: 'semiBold' }} as="p">
-                  Standard voting on Mainnet
+                  Legacy voting on Mainnet
                 </Text>
                 <Text sx={{ mt: 2 }}>
-                  Submit your vote as a standard transaction and sending it to the polling contract on
-                  Mainnet.
+                  Submit your vote by creating a transaction and sending it to the polling contract on
+                  Ethereum Mainnet.
                 </Text>
 
                 <Flex sx={{ alignItems: 'center', mt: 3 }}>
@@ -244,7 +244,7 @@ export default function ReviewBox({
                     <Icon name="info" color="textSecondary" size={14} />
                   </Box>
                   <Text sx={{ fontSize: 1, color: 'textSecondary' }}>
-                    This has been the standard way of voting.
+                    This used to be the default method for voting.
                   </Text>
                 </Flex>
                 <Button
@@ -255,11 +255,11 @@ export default function ReviewBox({
                   disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
                   sx={{ mt: 3, width: '100%' }}
                 >
-                  Proceed with Standard submission
+                  Proceed with legacy voting
                 </Button>
                 <Box>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 3 }}>
-                    <Text>You pay the gas fee.</Text>
+                    <Text>You pay the transaction fee.</Text>
                   </Flex>
                   <Box>
                     <ExternalLink title="View on etherscan" href={'vote.makerdao.com'}>
