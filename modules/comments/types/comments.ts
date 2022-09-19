@@ -77,6 +77,7 @@ export type PollComment = {
   commentType: 'poll';
   pollId: number;
   network: SupportedNetworks;
+  gaslessNetwork?: SupportedNetworks;
   txHash?: string;
 };
 
