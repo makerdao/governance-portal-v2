@@ -37,6 +37,7 @@ export const getProvider = (network: SupportedNetworks): ethers.providers.JsonRp
 
 export const getGaslessProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
   const gaslessNetwork = getGaslessNetwork(network);
+
   const chainId = networkNameToChainId(gaslessNetwork);
   const url = getRPCFromChainID(chainId);
   return new ethers.providers.JsonRpcProvider(url);

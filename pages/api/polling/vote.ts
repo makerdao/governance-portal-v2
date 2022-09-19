@@ -17,6 +17,10 @@ import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.con
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
+import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getContracts } from 'modules/web3/helpers/getContracts';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -125,6 +129,21 @@ export default withApiHandler(
 
       const pollingContract = getArbitrumPollingContract();
 
+      // Extract the real address that will be used for voting (delegate contract, proxy contract or normal address)
+      const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+
+      // Find the voty proxy for the address (in case there's one)
+      const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, voter, network);
+
+      // Find the delegate contract address if the address is a normal wallet
+      const voteDelegateAdress = await getDelegateContractAddress(contracts, voter);
+
+      const addressDisplayedAsVoter = voteDelegateAdress
+        ? voteDelegateAdress
+        : voteProxyAddress?.hotAddress
+        ? voteProxyAddress.hotAddress
+        : voter;
+
       //verify valid nonce and expiry date
       const nonceFromContract = await pollingContract.nonces(voter);
       if (nonceFromContract.toNumber() !== nonce) {
@@ -193,7 +212,11 @@ export default withApiHandler(
         }
 
         //check that address hasn't used gasless service recently
-        const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(voter, network);
+        // use the "addressDisplayedAsVoter" in case the user created a delegate contract, so it does not use the user's wallet
+        const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(
+          addressDisplayedAsVoter,
+          network
+        );
         if (recentlyUsedGaslessVoting) {
           const error = {
             error: API_VOTE_ERRORS.RATE_LIMITED
@@ -203,7 +226,12 @@ export default withApiHandler(
         }
 
         //can't use gasless service to vote in a poll you've already voted on
-        const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(voter, network, pollIds);
+        // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
+        const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(
+          addressDisplayedAsVoter,
+          network,
+          pollIds
+        );
         if (ballotHasVotedPolls) {
           const error = { error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL };
           postError(JSON.stringify({ ...error, ...req.body }));
@@ -215,7 +243,7 @@ export default withApiHandler(
       const s = '0x' + signature.slice(66, 130);
       const v = Number('0x' + signature.slice(130, 132));
 
-      const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
+      const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
       cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
 
       const tx = await pollingContract[

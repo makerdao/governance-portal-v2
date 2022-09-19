@@ -5,6 +5,7 @@ import { getNonce, removeNonces } from './nonce';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 
 export async function verifyCommentParameters(
   hotAddress: string,
@@ -49,7 +50,7 @@ export async function verifyCommentParameters(
     voteProxyAddress = proxyAddressHot;
   }
 
-  const vdAddress = await contracts.voteDelegateFactory.delegates(hotAddress);
+  const vdAddress = await getDelegateContractAddress(contracts, hotAddress);
 
   const voterAddressIsNotRelatedToHotAddress =
     voterAddress.toLowerCase() !== voteProxyAddress.toLowerCase() &&

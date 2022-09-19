@@ -35,7 +35,10 @@ export type CommentsAPIResponseItem = {
 };
 
 export type ParsedExecutiveComments = {
-  comment: Omit<ExecutiveComment, 'voterWeight'> & { voterWeight: BigNumber };
+  comment: Omit<ExecutiveComment, 'voterWeight'> & {
+    voterWeight: BigNumber;
+    gaslessNetwork?: SupportedNetworks;
+  };
   isValid: boolean;
   completed: boolean;
   address: AddressApiResponse;
