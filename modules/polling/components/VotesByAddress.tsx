@@ -239,7 +239,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                         <Text sx={{ mr: 1, display: ['none', 'block'] }}>
                           {CHAIN_INFO[v.chainId] ? CHAIN_INFO[v.chainId].blockExplorerName : 'Unknown'}
                         </Text>
-                        <Icon name="arrowTopRight" size={2} color="accentBlue" />
+                        <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
                       </Flex>
                     </ExternalLink>
                   </Text>
