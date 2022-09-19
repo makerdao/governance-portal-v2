@@ -7,7 +7,6 @@ import { cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
-import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -17,6 +16,10 @@ import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.con
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
+import { Contract } from 'ethers';
+import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { arbitrumSdkGenerators, relayerCredentials } from 'modules/polling/helpers/getArbitrumPollingContract';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -50,6 +53,18 @@ async function postError(error: string) {
     logger.error(err);
   }
 }
+
+//we get an error if we try to run this defender relay code on the frontend
+const getArbitrumPollingContract = (network: SupportedNetworks): Contract => {
+  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const provider = new DefenderRelayProvider(relayerCredentials[sdkNetwork]);
+  const signer = new DefenderRelaySigner(relayerCredentials[sdkNetwork], provider, {
+    speed: 'fast'
+  });
+  const { polling } = arbitrumSdkGenerators[sdkNetwork](signer);
+
+  return polling;
+};
 
 //TODO: add swagger documentation
 export default withApiHandler(
@@ -123,7 +138,8 @@ export default withApiHandler(
         return res.status(400).json(error);
       }
 
-      const pollingContract = getArbitrumPollingContract();
+      //get arbitrum polling contract with relayer's signer
+      const pollingContract = getArbitrumPollingContract(network);
 
       //verify valid nonce and expiry date
       const nonceFromContract = await pollingContract.nonces(voter);
