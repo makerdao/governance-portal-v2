@@ -48,14 +48,9 @@ export default function DefaultVoteModalView({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
-  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
+  const { account, voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
   const { network, provider } = useWeb3();
-  const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
-  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
-    addressLockedMKR,
-    voteProxyContractAddress,
-    voteDelegateContractAddress
-  );
+  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
 
   const spellAddress = proposal ? proposal.address : address ? address : '';
 
@@ -133,12 +128,12 @@ export default function DefaultVoteModalView({
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: addressLockedMKR || '',
+            voterAddress: votingAccount || '',
             hotAddress: account || '',
             comment: comment,
             signedMessage: signedMessage,
             txHash,
-            addressLockedMKR: addressLockedMKR || ''
+            addressLockedMKR: votingAccount || ''
           };
           fetchJson(`/api/comments/executive/add/${spellAddress}?network=${network}`, {
             method: 'POST',

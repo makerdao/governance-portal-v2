@@ -20,7 +20,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     });
   }
 
-  if (!pollIds || pollIdsArray.length < 1) {
+  if (!pollIds || pollIdsArray.length === 0) {
     return res.status(400).json({
       error: 'no poll ids provided'
     });
