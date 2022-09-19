@@ -21,15 +21,14 @@ type Props = {
 export default function CustomSpellAddress({ spellAddress, spellDetails }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
   const { network } = useWeb3();
-  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+  const { account, votingAccount } = useAccount();
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
-  }, [address]);
+  }, [votingAccount]);
 
   const hasVotedFor =
     votedProposals &&

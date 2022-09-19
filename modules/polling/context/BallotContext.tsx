@@ -103,19 +103,12 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
   // Determines which address will be use to save the comments
-  const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
-    useAccount();
+  const { account, voteDelegateContract, votingAccount } = useAccount();
 
   const { network, provider } = useWeb3();
 
-  const accountToUse = voteDelegateContractAddress
-    ? voteDelegateContractAddress
-    : voteProxyContractAddress
-    ? voteProxyContractAddress
-    : account;
-
   // Import the hook with the current user votes to mutate after voting.
-  const { mutate: mutatePreviousVotes } = useAllUserVotes(accountToUse);
+  const { mutate: mutatePreviousVotes } = useAllUserVotes(votingAccount);
 
   const clearBallot = () => {
     setCommentSignature('');
@@ -279,7 +272,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
           // if comment included, add to comments db
           if (comments.length > 0) {
             const commentsRequest: PollsCommentsRequestBody = {
-              voterAddress: accountToUse || '',
+              voterAddress: votingAccount || '',
               hotAddress: account || '',
               comments: comments,
               signedMessage: commentsSignature,

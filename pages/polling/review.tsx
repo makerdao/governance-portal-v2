@@ -52,7 +52,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
     setTransactionStatus(transaction?.status || 'default');
   }, [transaction]);
 
-  const { account } = useAccount();
+  const { account, votingAccount } = useAccount();
 
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
@@ -189,11 +189,11 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   </Text>
                 )}
 
-                {bpi <= 2 && !!account && (
+                {bpi <= 2 && !!votingAccount && (
                   <Box>
                     {!hasVoted && (
                       <ReviewBox
-                        account={account}
+                        account={votingAccount}
                         polls={polls}
                         activePolls={activePolls}
                         ballotPollIds={ballotPollIds}
@@ -293,7 +293,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
             </Stack>
           </Box>
 
-          {bpi >= 3 && !!account && (
+          {bpi >= 3 && !!votingAccount && (
             <Box sx={{ pt: 3 }}>
               {!hasVoted && (
                 <Box>
@@ -301,7 +301,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                     Submit Ballot
                   </Heading>
                   <ReviewBox
-                    account={account}
+                    account={votingAccount}
                     polls={polls}
                     activePolls={activePolls}
                     ballotPollIds={ballotPollIds}

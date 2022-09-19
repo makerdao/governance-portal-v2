@@ -61,8 +61,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   }, [mode]);
 
   // account
-  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+  const { account, votingAccount } = useAccount();
 
   // polls
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
@@ -87,7 +86,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
-  }, [address]);
+  }, [votingAccount]);
 
   // Use intersection observers to change the hash on scroll
   const [activeTab, setActiveTab] = useState('#vote');
