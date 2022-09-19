@@ -21,6 +21,7 @@ import { ethers } from 'ethers';
 import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { ContractTransaction } from 'ethers';
 import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
+import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
 
 type BallotSteps =
   | 'initial'
@@ -401,7 +402,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       body: JSON.stringify({ ...signatureValues, signature, network })
     })
       .then(res => {
-        const voteTxCreator = () => gaslessProvider.getTransaction(res.hash);
+        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, res.hash);
         trackPollVote(voteTxCreator, getGaslessNetwork(network));
       })
       .catch(error => {
