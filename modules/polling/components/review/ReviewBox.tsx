@@ -21,6 +21,8 @@ import { toast } from 'react-toastify';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { getConnection } from 'modules/web3/connections';
+import { ConnectionType } from 'modules/web3/constants/wallets';
 
 export default function ReviewBox({
   account,
@@ -47,7 +49,7 @@ export default function ReviewBox({
     submitBallot,
     submitBallotGasless
   } = useContext(BallotContext);
-  const { network } = useWeb3();
+  const { network, connector } = useWeb3();
 
   const { data: precheckData } = useSWR(
     account && ballotPollIds && network
@@ -62,8 +64,8 @@ export default function ReviewBox({
   const validationPassed =
     precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting && !precheckData?.alreadyVoted;
 
-  // TODO: Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
-  const isGnosisSafe = false;
+  // Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
+  const isGnosisSafe = getConnection(connector).type === ConnectionType.GNOSIS_SAFE;
 
   const canUseGasless = !isGnosisSafe && validationPassed;
   const canUseComments = !isGnosisSafe;
@@ -148,12 +150,14 @@ export default function ReviewBox({
               </Button>
             </Flex>
           )}
-          <Box>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-              <LocalIcon name="sparkles" color="primary" size={3} />{' '}
-              <Text sx={{ ml: 2 }}>Poll voting is now free!</Text>
-            </Flex>
-          </Box>
+          {canUseGasless && (
+            <Box>
+              <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+                <LocalIcon name="sparkles" color="primary" size={3} />{' '}
+                <Text sx={{ ml: 2 }}>Poll voting is now free!</Text>
+              </Flex>
+            </Box>
+          )}
         </ActivePollsBox>
       )}
 
@@ -218,7 +222,7 @@ export default function ReviewBox({
                   sx={{ width: '100%' }}
                 >
                   <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>Switch to standard voting</Text>
+                    <Text>Switch to legacy voting</Text>
                   </Flex>
                 </Button>
               </Box>
@@ -228,11 +232,11 @@ export default function ReviewBox({
             <Box>
               <Box p={3}>
                 <Text sx={{ fontWeight: 'semiBold' }} as="p">
-                  Standard voting on Mainnet
+                  Legacy voting on Mainnet
                 </Text>
                 <Text sx={{ mt: 2 }}>
-                  Submit your vote as a standard transaction and sending it to the polling contract on
-                  Mainnet.
+                  Submit your vote by creating a transaction and sending it to the polling contract on
+                  Ethereum Mainnet.
                 </Text>
 
                 <Flex sx={{ alignItems: 'center', mt: 3 }}>
@@ -240,7 +244,7 @@ export default function ReviewBox({
                     <Icon name="info" color="textSecondary" size={14} />
                   </Box>
                   <Text sx={{ fontSize: 1, color: 'textSecondary' }}>
-                    This has been the standard way of voting.
+                    This used to be the default method for voting.
                   </Text>
                 </Flex>
                 <Button
@@ -251,11 +255,11 @@ export default function ReviewBox({
                   disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
                   sx={{ mt: 3, width: '100%' }}
                 >
-                  Proceed with Standard submission
+                  Proceed with legacy voting
                 </Button>
                 <Box>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 3 }}>
-                    <Text>You pay the gas fee.</Text>
+                    <Text>You pay the transaction fee.</Text>
                   </Flex>
                   <Box>
                     <ExternalLink title="View on etherscan" href={'vote.makerdao.com'}>
@@ -330,6 +334,19 @@ export default function ReviewBox({
                       {!precheckData ? (
                         <SkeletonThemed width="30px" height="18px" />
                       ) : !alreadyVoted ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                      Is not using a multisig
+                    </Text>
+                    <Text>
+                      {!isGnosisSafe ? (
                         <Icon name="checkmark" color="bull" size={'13px'} />
                       ) : (
                         <Icon name="close" color="bear" size={'13px'} />
