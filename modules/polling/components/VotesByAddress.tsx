@@ -130,6 +130,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               as="th"
               sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '15%' }}
               variant="caps"
+              data-testid="mkr-header"
               onClick={() => changeSort('mkr')}
             >
               MKR
