@@ -3,21 +3,17 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'lib/bigNumberJs';
 import { PollTally, Poll } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
-import {
-  isInputFormatChooseFree,
-  isInputFormatRankFree,
-  isResultDisplayApprovalBreakdown
-} from '../helpers/utils';
+import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
+import VotedOption from './VotedOption';
 
 type Props = {
   tally: PollTally;
@@ -111,26 +107,28 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                 ''
               )}
             </Text>
-            <Text
-              as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: ['15%', '10%'] }}
-              variant="caps"
-              onClick={() => changeSort('mkr')}
-            >
-              Vote{bpi > 0 ? ' %' : ''}
-              {sortBy.type === 'mkr' ? (
-                sortBy.order === 1 ? (
-                  <Icon name="chevron_down" size={2} ml={1} />
+            {bpi > 3 && (
+              <Text
+                as="th"
+                sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '10%' }}
+                variant="caps"
+                onClick={() => changeSort('mkr')}
+              >
+                Vote %
+                {sortBy.type === 'mkr' ? (
+                  sortBy.order === 1 ? (
+                    <Icon name="chevron_down" size={2} ml={1} />
+                  ) : (
+                    <Icon name="chevron_up" size={2} ml={1} />
+                  )
                 ) : (
-                  <Icon name="chevron_up" size={2} ml={1} />
-                )
-              ) : (
-                ''
-              )}
-            </Text>
+                  ''
+                )}
+              </Text>
+            )}
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '15%' }}
+              sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '15%' }}
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
@@ -146,13 +144,15 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               )}
             </Text>
 
-            <Text
-              as="th"
-              sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: ['5%', '10%'] }}
-              variant="caps"
-            >
-              Verify
-            </Text>
+            {bpi > 1 && (
+              <Text
+                as="th"
+                sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: ['10%'] }}
+                variant="caps"
+              >
+                Verify
+              </Text>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -175,74 +175,52 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Box
                     as="td"
                     sx={{
-                      color: getVoteColor(v.ballot[0], poll.parameters),
                       pb: 2
                     }}
                   >
-                    {v.ballot.length > 1 ? (
-                      v.ballot.map((choice, index) => (
-                        <Box
-                          key={`voter-${v.voter}-option-${choice}`}
-                          sx={{
-                            lineHeight: '1.7',
-                            color:
-                              index === 0 || isInputFormatChooseFree(poll.parameters) ? 'inherit' : '#708390',
-                            fontSize:
-                              bpi < 1
-                                ? 1
-                                : isResultDisplayApprovalBreakdown(poll.parameters)
-                                ? 3
-                                : index === 0
-                                ? 3
-                                : 2,
-                            mb: 1
-                          }}
-                        >
-                          {isInputFormatRankFree(poll.parameters) ? `${index + 1} - ` : ''}
-                          {poll.options[choice]}
-                        </Box>
-                      ))
-                    ) : (
-                      <Text sx={{ fontSize: [1, 3] }}>{poll.options[v.ballot[0]]}</Text>
-                    )}
+                    <VotedOption vote={v} poll={poll} />
                   </Box>
-                  <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
-                    {`${
-                      new BigNumber(v.mkrSupport).isGreaterThan(0)
-                        ? new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)
-                        : 0
-                    }%`}
-                  </Text>
+                  {bpi > 3 && (
+                    <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
+                      {`${
+                        new BigNumber(v.mkrSupport).isGreaterThan(0)
+                          ? new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)
+                          : 0
+                      }%`}
+                    </Text>
+                  )}
                   <Text
                     as="td"
                     data-testid={`vote-mkr-${v.voter}`}
-                    sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}
+                    sx={{ textAlign: ['right', 'right', 'left'], pb: 2, fontSize: [1, 3] }}
                   >
                     {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
-                      bpi > 0 ? ' MKR' : ''
+                      bpi > 3 ? ' MKR' : ''
                     }`}
                   </Text>
-                  <Text
-                    as="td"
-                    data-testid={`vote-mkr-${v.hash}`}
-                    sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
-                  >
-                    <ExternalLink
-                      title="See transaction details"
-                      href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
+                  {bpi > 1 && (
+                    <Text
+                      as="td"
+                      data-testid={`vote-mkr-${v.hash}`}
+                      sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                     >
-                      <Flex sx={{ alignItems: 'center' }}>
-                        {CHAIN_INFO[v.chainId].type === 'gasless' && (
-                          <Icon name="lightningBolt" color="onSecondary" size={3} />
-                        )}
+                      <ExternalLink
+                        title="See transaction details"
+                        href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
+                      >
+                        <Flex sx={{ alignItems: 'center' }}>
+                          {CHAIN_INFO[v.chainId].type === 'gasless' && (
+                            <Icon name="lightningBolt" color="primary" size={3} />
+                          )}
 
-                        <Text sx={{ mr: 1, display: ['none', 'block'] }}>
-                          {CHAIN_INFO[v.chainId] ? CHAIN_INFO[v.chainId].blockExplorerName : 'Unknown'}
-                        </Text>
-                        <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
-                      </Flex>
-                    </ExternalLink>
-                  </Text>
+                          <Text sx={{ mr: 1, display: 'block' }}>
+                            {CHAIN_INFO[v.chainId] ? CHAIN_INFO[v.chainId].blockExplorerName : 'Unknown'}
+                          </Text>
+                          <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
+                        </Flex>
+                      </ExternalLink>
+                    </Text>
+                  )}
                 </tr>
               ))}
             </>

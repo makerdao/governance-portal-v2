@@ -1,15 +1,15 @@
-import { Box, Text } from 'theme-ui';
+import { Box, Flex, Text } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
-import { getVoteColor } from '../helpers/getVoteColor';
-import { isInputFormatRankFree, isResultDisplaySingleVoteBreakdown } from '../helpers/utils';
-import { ListVoteSummary } from './vote-summary/ListVoteSummary';
+import { isInputFormatRankFree } from '../helpers/utils';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+import VotedOption from './VotedOption';
+import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const bpi = useBreakpointIndex();
@@ -28,15 +28,20 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           mr: [0, 2]
         }}
       >
-        <Text
-          variant="secondary"
-          color="onSecondary"
-          sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
-          as="p"
-        >
-          Voted {voteDate} | Poll ID {vote.pollId}
-        </Text>
+        <Flex sx={{ flexDirection: ['column', 'row'] }}>
+          <Text
+            variant="secondary"
+            color="onSecondary"
+            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
+            as="p"
+          >
+            Voted {voteDate} | Poll ID {vote.pollId}
+          </Text>
 
+          <Box sx={{ ml: [0, 2] }}>
+            <PollVoteTypeIndicator poll={vote.poll} />
+          </Box>
+        </Flex>
         <InternalLink href={`/polling/${vote.poll.slug}`} title="View poll details">
           <Text as="p" sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}>
             {vote.poll.title}
@@ -74,24 +79,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {isInputFormatRankFree(vote.poll.parameters) ? 'VOTED CHOICES' : 'VOTED OPTION'}
           </Text>
-          <Text
-            as="p"
-            sx={{
-              textAlign: ['left', 'right'],
-              color: getVoteColor(vote.ballot[0], vote.poll.parameters),
-              fontWeight: 'semiBold'
-            }}
-          >
-            {isResultDisplaySingleVoteBreakdown(vote.poll.parameters) ? (
-              vote.optionValue[0]
-            ) : (
-              <ListVoteSummary
-                choices={vote.ballot || []}
-                poll={vote.poll}
-                align={bpi < 1 ? 'left' : 'right'}
-              />
-            )}
-          </Text>
+          <VotedOption vote={vote} poll={vote.poll} align={bpi === 0 ? 'left' : 'right'} />
         </Box>
         <Box sx={{ mt: 2 }}>
           <Text

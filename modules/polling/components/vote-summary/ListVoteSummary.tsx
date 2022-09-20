@@ -1,4 +1,6 @@
 import { limitString } from 'lib/string';
+import { getNumberWithOrdinal } from 'lib/utils';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { isResultDisplayApprovalBreakdown } from 'modules/polling/helpers/utils';
 import { Box } from 'theme-ui';
 import { Poll } from '../../types';
@@ -34,15 +36,21 @@ export function ListVoteSummary({
               key={`voter-${poll.pollId}-option-${choice}-${index}`}
               sx={{
                 fontSize: isApproval ? 2 : index === 0 ? 2 : 1,
-                fontWeight: isApproval ? 'semiBold' : index === 0 ? 'semiBold' : 'normal',
-                color: isApproval ? 'text' : index === 0 ? 'text' : '#708390',
+                fontWeight: 'normal',
+                color: getVoteColor(choice, poll.parameters, index === 0),
                 textAlign: align
               }}
               title={choiceText}
             >
               {align === 'right'
-                ? `${limitString(choiceText, 30, '...')}${showOrdinal ? ` - ${index + 1}` : ''}`
-                : `${showOrdinal ? ` - ${index + 1}` : ''}${limitString(choiceText, 30, '...')}`}
+                ? `${limitString(choiceText, 30, '...')}${
+                    showOrdinal ? ` - ${getNumberWithOrdinal(index + 1)}` : ''
+                  }`
+                : `${showOrdinal ? `${getNumberWithOrdinal(index + 1)} - ` : ''}${limitString(
+                    choiceText,
+                    30,
+                    '...'
+                  )}`}
             </Box>
           );
         })}
