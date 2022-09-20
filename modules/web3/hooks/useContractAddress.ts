@@ -4,5 +4,5 @@ import { ContractName } from 'modules/web3/types/contracts';
 export const useContractAddress = (contractName: ContractName): string => {
   const contracts = useContracts();
 
-  return contracts[contractName].address;
+  return contracts[contractName]?.address;
 };
