@@ -5,7 +5,6 @@ import { useWeb3React } from '@web3-react/core';
 import { formatAddress } from 'lib/utils';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useRouter } from 'next/router';
 
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');

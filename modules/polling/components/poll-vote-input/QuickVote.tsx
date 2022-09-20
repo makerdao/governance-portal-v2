@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { Text, Flex, Button } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-
 import { Poll } from 'modules/polling/types';
 import {
   extractCurrentPollVote,
@@ -30,17 +29,6 @@ type Props = {
   onSubmit?: () => void;
   buttonVariant?: string;
 };
-
-const rankedChoiceBlurb = (
-  <>
-    Voters can rank options in order of preference. <br />
-    If no option receives more than 50% of the vote <br />
-    based on first choices, the option with the fewest <br />
-    votes is eliminated and its votes are redistributed <br />
-    to their voters&apos; second choices until one option <br />
-    achieves a majority.
-  </>
-);
 
 const QuickVote = ({
   poll,
