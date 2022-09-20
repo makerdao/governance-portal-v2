@@ -12,7 +12,7 @@ export const relayerCredentials = {
 
 export const arbitrumSdkGenerators: SdkGenerators = {
   mainnet: getArbitrumOneSdk,
-  goerli: getArbitrumGoerliTestnetSdk,
+  goerli: getArbitrumGoerliTestnetSdk
 };
 
 export const getArbitrumPollingContractReadOnly = (network: SupportedNetworks): Contract => {

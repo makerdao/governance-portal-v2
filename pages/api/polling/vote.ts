@@ -19,7 +19,10 @@ import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotInclud
 import { Contract } from 'ethers';
 import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { arbitrumSdkGenerators, relayerCredentials } from 'modules/polling/helpers/getArbitrumPollingContract';
+import {
+  arbitrumSdkGenerators,
+  relayerCredentials
+} from 'modules/polling/helpers/getArbitrumPollingContract';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',

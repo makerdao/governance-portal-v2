@@ -56,7 +56,8 @@ const config: EthSdkConfig = {
   },
   etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY || '' },
   etherscanURLs: {
-    arbitrumGoerliTestnet: 'https://goerli-rollup-explorer.arbitrum.io/api'
+    arbitrumGoerliTestnet: 'https://goerli-rollup-explorer.arbitrum.io/api',
+    arbitrumOne: 'https://api.arbiscan.io/api'
   }
 };
 
