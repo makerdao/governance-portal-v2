@@ -57,7 +57,7 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
     await screen.findByText(/Vote %/);
-    expect( screen.getByTestId('mkr-header')).toBeVisible();
+    expect(screen.getByTestId('mkr-header')).toBeVisible();
     // look for yes votes
     await screen.findAllByText(/Yes/);
   });
@@ -107,8 +107,8 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
     await screen.findByText(/Vote %/);
-    
-    expect( screen.getByTestId('mkr-header')).toBeVisible();
+
+    expect(screen.getByTestId('mkr-header')).toBeVisible();
 
     // check first choice is displayed with number
     await screen.findByText(/1st - test1/);
