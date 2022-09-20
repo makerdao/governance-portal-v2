@@ -24,7 +24,6 @@ type StatField =
   | 'polling contract v2'
   | 'arbitrum polling contract'
   | 'mkr in chief'
-  | 'polling contract'
   | 'mkr needed to pass'
   | 'savings rate'
   | 'total dai'
