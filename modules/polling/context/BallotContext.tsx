@@ -20,7 +20,7 @@ import logger from 'lib/logger';
 import { ContractTransaction } from 'ethers';
 import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
-import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContract';
+import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContractReadOnly';
 
 type BallotSteps =
   | 'initial'
