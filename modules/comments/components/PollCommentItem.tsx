@@ -7,6 +7,7 @@ import CommentItem from './CommentItem';
 import { formatValue } from 'lib/string';
 
 import VotedOption from 'modules/polling/components/VotedOption';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 export default function PollCommentItem({
   comment,
@@ -17,6 +18,8 @@ export default function PollCommentItem({
   commentVote: PollTallyVote | undefined;
   poll: Poll;
 }): React.ReactElement {
+  const bpi = useBreakpointIndex();
+
   const getVotedOption = () => {
     if (!commentVote) {
       // This should not happen but in case the tally is missing
@@ -25,8 +28,8 @@ export default function PollCommentItem({
 
     return (
       <Text>
-        Voted {<VotedOption vote={commentVote} poll={poll} />} with{' '}
-        {formatValue(comment.comment.voterWeight, undefined, undefined, true, true)} MKR
+        Voted {<VotedOption vote={commentVote} poll={poll} align={bpi > 0 ? 'right': 'left'} />}
+        with {' '} {formatValue(comment.comment.voterWeight, undefined, undefined, true, true)} MKR
       </Text>
     );
   };
