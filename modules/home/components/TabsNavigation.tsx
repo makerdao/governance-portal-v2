@@ -32,7 +32,7 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
           justifyContent: 'center',
           alignItems: 'center',
           borderBottom: '1px solid',
-          borderColor: 'muted'
+          borderColor: 'secondary'
         }}
       >
         {links.map(link => {

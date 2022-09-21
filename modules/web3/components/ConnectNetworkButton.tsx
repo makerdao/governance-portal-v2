@@ -30,7 +30,7 @@ export default function ConnectNetworkButton({
         },
         '&:disabled': {
           color: 'textSecondary',
-          borderColor: 'muted',
+          borderColor: 'secondary',
           backgroundColor: 'surface'
         }
       }}

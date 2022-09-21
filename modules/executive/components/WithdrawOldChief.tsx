@@ -70,7 +70,7 @@ const ModalContent = ({ close, ...props }) => {
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
-                  sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+                  sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
                   onClick={() => resetTransaction(null)}
                 >
                   Cancel

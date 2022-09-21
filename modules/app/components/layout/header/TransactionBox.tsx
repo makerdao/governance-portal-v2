@@ -31,7 +31,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
           <Spinner
             size={'16px'}
             sx={{
-              color: 'orange',
+              color: 'orangeAttention',
               alignSelf: 'center'
             }}
           />

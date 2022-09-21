@@ -71,7 +71,7 @@ const ModalContent = ({
                 </Text>
                 <Text
                   as="p"
-                  sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+                  sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
                   onClick={() => resetTx(null)}
                 >
                   Cancel
