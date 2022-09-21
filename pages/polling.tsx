@@ -333,7 +333,8 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
                 fields={[
-                  'polling contract',
+                  'polling contract v2',
+                  'polling contract v1',
                   'arbitrum polling contract',
                   'savings rate',
                   'total dai',
