@@ -195,9 +195,7 @@ const AccountSelect = (): React.ReactElement => {
           ) : (
             <>
               <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3, mt: 1 }}>
-                <Text variant="microHeading" color="onBackgroundAlt">
-                  {address ? 'Account' : 'Select a Wallet'}
-                </Text>
+                <Text variant="microHeading">{address ? 'Account' : 'Select a Wallet'}</Text>
                 <Close aria-label="close" sx={closeButtonStyle} onClick={close} />
               </Flex>
               {address ? (

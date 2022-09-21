@@ -45,7 +45,7 @@ export default function CommentTextBox({
       <Text
         as="p"
         variant="textSecondary"
-        sx={{ fontSize: 1, color: value.length > 1500 ? 'error' : 'textMuted', mt: 1 }}
+        sx={{ fontSize: 1, color: value.length > 1500 ? 'error' : 'textSecondary', mt: 1 }}
       >
         {1500 - value.length} characters remaining
       </Text>

@@ -42,7 +42,7 @@ export function PollVoteHistoryList({ votes }: { votes: PollVoteHistory[] }): Re
           {!showAllVotes && (
             <Box sx={{ cursor: 'pointer' }} onClick={() => setShowAllVotes(true)}>
               <Divider />
-              <Text as="p" sx={{ textAlign: 'center', color: 'badgeGrey', p: [2] }}>
+              <Text as="p" sx={{ textAlign: 'center', color: 'textSecondary', p: [2] }}>
                 View more polling proposals ({votes.length - votesToShow.length})
               </Text>
               <Divider />

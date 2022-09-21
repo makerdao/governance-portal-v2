@@ -57,7 +57,7 @@ export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }:
       />
       {!hasSearchTerm && (
         <Box sx={{ position: 'absolute', top: 11, right: 16 }}>
-          <Icon name="magnifying_glass" sx={{ color: 'onBackgroundAlt', size: 3 }} />
+          <Icon name="magnifying_glass" sx={{ color: 'text', size: 3 }} />
         </Box>
       )}
     </Box>

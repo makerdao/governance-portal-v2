@@ -132,7 +132,7 @@ export function SpellEffectsTab({
               sx={{ cursor: 'pointer', mt: [2, 0], ml: [0, 2], minWidth: '99px' }}
               onClick={() => setExpanded(!expanded)}
             >
-              <Text color={'textMuted'}>
+              <Text variant="secondary">
                 What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
               </Text>
             </Box>
@@ -140,7 +140,7 @@ export function SpellEffectsTab({
 
           {expanded && (
             <Box sx={{ mt: 3 }}>
-              <Text as="p" color="textMuted">
+              <Text as="p" variant="secondary">
                 This hash allows for manually verifying that the spell belongs to the correct Executive
                 Proposal. It can be reproduced by hashing the raw markdown text of this Executive Proposal.
                 The hash, the URL to the raw markdown text, and the correct hashing algorithm are all
@@ -151,7 +151,7 @@ export function SpellEffectsTab({
                   href="https://makerdao.world/en/learn/governance/audit-exec-spells"
                   title="Learn more about auditing executive spells"
                 >
-                  <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                  <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                     Learn more about auditing Executive Spells
                     <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                   </Text>
@@ -174,7 +174,7 @@ export function SpellEffectsTab({
             </Text>
             <Box>
               <ExternalLink href={proposal.proposalLink} title="View in GitHub">
-                <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                   View in GitHub
                   <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                 </Text>
@@ -195,7 +195,7 @@ export function SpellEffectsTab({
                 >
                   Expiration
                 </Text>
-                <Text as="p" color="textMuted">
+                <Text as="p" variant="secondary">
                   {formatDateWithoutTime(spellData?.expiration)}
                 </Text>
               </Box>
@@ -213,7 +213,7 @@ export function SpellEffectsTab({
                 >
                   Office Hours Only
                 </Text>
-                <Text as="p" color="textMuted">
+                <Text as="p" variant="secondary">
                   Spell will only be executed Monday through Friday between 14:00 and 21:00 UTC
                 </Text>
               </Box>

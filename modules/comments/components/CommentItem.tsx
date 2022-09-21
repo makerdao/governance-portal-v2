@@ -55,7 +55,7 @@ export default function CommentItem({
             textAlign: ['left', 'right']
           }}
         >
-          <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
+          <Text as="p" variant="caps" sx={{ lineHeight: '22px' }}>
             {formatDateWithTime(comment.comment.date)}
           </Text>
           <Text variant="smallCaps">

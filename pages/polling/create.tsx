@@ -39,7 +39,8 @@ const CreateText = ({ children }) => {
       mb={3}
       sx={{
         width: '100%',
-        border: '1px solid #d5d9e0',
+        border: '1px solid',
+        borderColor: 'secondary',
         borderRadius: 'small',
         minHeight: '42px',
         padding: 2

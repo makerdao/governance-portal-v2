@@ -34,12 +34,12 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
             <Spinner
               size={16}
               sx={{
-                color: 'mutedOrange',
+                color: 'orangeAttention',
                 alignSelf: 'center',
                 mr: 2
               }}
             />
-            <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
+            <Text sx={{ color: 'orangeAttention' }}>TX Pending</Text>
           </Flex>
         ) : (
           <Flex sx={{ alignItems: 'center', mr: 2 }}>
