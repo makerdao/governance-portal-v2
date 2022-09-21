@@ -23,7 +23,6 @@ export async function getPollComments(
 
   const provider = await getProvider(network);
   const gaslessProvider = await getGaslessProvider(network);
-
   const comments: PollComment[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, voterAddress, ...rest } = comment;

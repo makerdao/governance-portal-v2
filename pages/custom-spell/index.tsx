@@ -18,15 +18,14 @@ export default function CustomSpell(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [voting, setVoting] = useState(false);
   const { network } = useWeb3();
-  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+  const { account, votingAccount } = useAccount();
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
-  }, [address]);
+  }, [votingAccount]);
 
   const hasVotedFor =
     votedProposals &&

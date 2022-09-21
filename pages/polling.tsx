@@ -155,14 +155,13 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
-  const { account, voteDelegateContractAddress } = useAccount();
-  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
-  const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
+  const { account, votingAccount } = useAccount();
+  const { mutate: mutateAllUserVotes } = useAllUserVotes(votingAccount);
 
   // revalidate user votes if connected address changes
   useEffect(() => {
     mutateAllUserVotes();
-  }, [addressToCheck]);
+  }, [votingAccount]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>

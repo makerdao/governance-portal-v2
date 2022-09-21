@@ -35,7 +35,7 @@ const ModalContent = ({
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const { data: mkrBalance } = useMkrBalance(account);
 
-  const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
+  const { mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
   const { chief } = useContracts();
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(

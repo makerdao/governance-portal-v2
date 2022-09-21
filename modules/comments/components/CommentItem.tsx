@@ -74,7 +74,9 @@ export default function CommentItem({
             <Box>
               <ExternalLink
                 href={getEtherscanLink(
-                  comment.comment.network ?? network,
+                  comment.comment.gaslessNetwork
+                    ? comment.comment.gaslessNetwork
+                    : comment.comment.network || network,
                   comment.comment.txHash,
                   'transaction'
                 )}
@@ -82,7 +84,10 @@ export default function CommentItem({
                 title="View on etherscan"
               >
                 <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                  View on {getBlockExplorerName(comment.comment.network)}{' '}
+                  View on{' '}
+                  {getBlockExplorerName(
+                    comment.comment.gaslessNetwork ? comment.comment.gaslessNetwork : comment.comment.network
+                  )}{' '}
                   {!comment.completed ? '(Pending)' : ''}
                   <Icon name="arrowTopRight" pt={2} color="accentBlue" />
                 </Text>

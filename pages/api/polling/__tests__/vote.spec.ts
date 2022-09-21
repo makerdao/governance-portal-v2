@@ -15,6 +15,8 @@ import { recoverTypedSignature } from '@metamask/eth-sig-util';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
+import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
+import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 jest.mock('modules/polling/helpers/getArbitrumPollingContractRelayProvider');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
@@ -25,6 +27,8 @@ jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 jest.mock('modules/polling/api/fetchAddressPollVoteHistory');
 jest.mock('modules/db/helpers/connectToDatabase');
 jest.mock('modules/app/api/postRequestToDiscord');
+jest.mock('modules/app/helpers/getVoteProxyAddresses');
+jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
@@ -36,6 +40,8 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheSet as jest.Mock).mockImplementation(() => null);
     (fetchAddressPollVoteHistory as jest.Mock).mockImplementation(() => Promise.resolve([]));
     (postRequestToDiscord as jest.Mock).mockImplementation(() => Promise.resolve());
+    (getDelegateContractAddress as jest.Mock).mockImplementation(() => Promise.resolve(undefined));
+    (getVoteProxyAddresses as jest.Mock).mockImplementation(() => Promise.resolve(null));
   });
   function mockRequestResponse(method: RequestMethod = 'POST', body) {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method });

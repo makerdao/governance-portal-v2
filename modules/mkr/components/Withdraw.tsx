@@ -38,7 +38,7 @@ const ModalContent = ({ close, ...props }) => {
 
   const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
 
-  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
+  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
 
   const { free, tx: freeTx, setTxId: resetFree } = useFree();
 
