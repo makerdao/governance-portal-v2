@@ -1,18 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { config } from 'lib/config';
-
-async function postRequestToDiscord(content: string) {
-  const resp = await fetch(config.MIGRATION_WEBHOOK_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ content })
-  });
-
-  return resp;
-}
+import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -27,7 +16,11 @@ export default withApiHandler(
     }
 
     try {
-      const data = await postRequestToDiscord(JSON.stringify(body));
+      const data = await postRequestToDiscord({
+        url: config.MIGRATION_WEBHOOK_URL,
+        content: JSON.stringify(body),
+        notify: true
+      });
       res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
       res.status(200).json({ data });
     } catch (err) {

@@ -56,7 +56,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Active Polls</Text>
-              <Text sx={{ color: 'mutedAlt', ml: 3 }}>
+              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
                 {filteredPollsOnlyCategories.filter(p => isActivePoll(p)).length}
               </Text>
             </Flex>
@@ -74,7 +74,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Ended Polls</Text>
-              <Text sx={{ color: 'mutedAlt', ml: 3 }}>
+              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
                 {filteredPollsOnlyCategories.filter(p => !isActivePoll(p)).length}
               </Text>
             </Flex>

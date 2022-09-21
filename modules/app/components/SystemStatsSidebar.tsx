@@ -14,11 +14,16 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import TooltipComponent from './Tooltip';
 
 type StatField =
   | 'chief contract'
+  | 'polling contract v1'
+  | 'polling contract v2'
+  | 'arbitrum polling contract'
   | 'mkr in chief'
-  | 'polling contract'
   | 'mkr needed to pass'
   | 'savings rate'
   | 'total dai'
@@ -75,15 +80,86 @@ export default function SystemStatsSidebar({
       );
     },
 
-    'polling contract': key => {
+    'polling contract v2': key => {
       const pollingAddress = useContractAddress('polling');
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract v2</Text>
+            <TooltipComponent
+              label={
+                <Text sx={{ whiteSpace: 'normal' }}>
+                  The latest version of the polling contract was deployed to enable batch voting, so users can
+                  vote on multiple polls in one transaction.
+                </Text>
+              }
+            >
+              <Flex>
+                <Icon name="question" ml={2} color={'textSecondary'} />
+              </Flex>
+            </TooltipComponent>
+          </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
               <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
+                <Text>{formatAddress(pollingAddress)}</Text>
+              </ExternalLink>
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'polling contract v1': key => {
+      const pollingAddress = useContractAddress('pollingOld');
+
+      return pollingAddress ? (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract v1</Text>
+            <TooltipComponent
+              label={
+                <Text>
+                  The first version of the polling contract is still used for creating polls on-chain, but it
+                  only allows for voting on a single poll per transaction, so an upgrade was deployed.
+                </Text>
+              }
+            >
+              <Flex>
+                <Icon name="question" ml={2} color={'textSecondary'} />
+              </Flex>
+            </TooltipComponent>
+          </Flex>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
+              <Text>{formatAddress(pollingAddress)}</Text>
+            </ExternalLink>
+          </Text>
+        </Flex>
+      ) : null;
+    },
+
+    'arbitrum polling contract': key => {
+      const pollingAddress = ArbitrumPollingAddressMap[network];
+      const arbitrumNetwork =
+        network === SupportedNetworks.MAINNET
+          ? SupportedNetworks.ARBITRUM
+          : SupportedNetworks.ARBITRUMTESTNET;
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Arbitrum Polling Contract</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {pollingAddress ? (
+              <ExternalLink
+                href={getEtherscanLink(arbitrumNetwork, pollingAddress, 'address')}
+                target="_blank"
+              >
                 <Text>{formatAddress(pollingAddress)}</Text>
               </ExternalLink>
             ) : (
@@ -201,7 +277,7 @@ export default function SystemStatsSidebar({
         <ExternalLink
           href="https://daistats.com/"
           target="_blank"
-          sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+          sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'accentBlueEmphasis' } }}
         >
           <Flex sx={{ alignItems: 'center' }}>
             <Text>

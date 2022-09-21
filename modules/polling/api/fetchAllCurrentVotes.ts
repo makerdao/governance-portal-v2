@@ -3,9 +3,12 @@ import { allCurrentVotes } from 'modules/gql/queries/allCurrentVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
-import { PollVote } from '../types';
+import { PollTallyVote } from '../types';
 
-export async function fetchAllCurrentVotes(address: string, network: SupportedNetworks): Promise<PollVote[]> {
+export async function fetchAllCurrentVotes(
+  address: string,
+  network: SupportedNetworks
+): Promise<PollTallyVote[]> {
   const data = await gqlRequest({
     chainId: networkNameToChainId(network),
     query: allCurrentVotes,
@@ -13,11 +16,12 @@ export async function fetchAllCurrentVotes(address: string, network: SupportedNe
   });
 
   // Parse the rankedChoice option
-  const res: PollVote[] = data.allCurrentVotes.nodes.map(o => {
+  const res: PollTallyVote[] = data.allCurrentVotes.nodes.map(o => {
     const ballot = parseRawOptionId(o.optionIdRaw);
     return {
       ...o,
-      ballot
+      ballot,
+      voter: address
     };
   });
 

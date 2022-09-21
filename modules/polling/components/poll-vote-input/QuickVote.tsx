@@ -1,8 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
-import { Text, Flex, Button } from 'theme-ui';
+import { Text, Flex, Button, Box } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-
 import { Poll } from 'modules/polling/types';
 import {
   extractCurrentPollVote,
@@ -31,17 +30,6 @@ type Props = {
   buttonVariant?: string;
 };
 
-const rankedChoiceBlurb = (
-  <>
-    Voters can rank options in order of preference. <br />
-    If no option receives more than 50% of the vote <br />
-    based on first choices, the option with the fewest <br />
-    votes is eliminated and its votes are redistributed <br />
-    to their voters&apos; second choices until one option <br />
-    achieves a majority.
-  </>
-);
-
 const QuickVote = ({
   poll,
   showStatus,
@@ -56,20 +44,19 @@ const QuickVote = ({
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
 
-  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction, updateVoteFromBallot } =
-    useContext(BallotContext);
+  const { ballot, previousBallot, transaction, updateVoteFromBallot } = useContext(BallotContext);
 
   const addedChoice = ballot[poll.pollId];
 
   const [choice, setChoice] = useState<number | number[] | null>(addedChoice?.option ?? null);
+
   const [editing, setEditing] = useState(false);
+
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const voteIsPending = !!transaction;
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
-
-  useEffect(() => {
-    if (!choice) setChoice(currentVote);
-  }, [allUserVotes]);
+  const previousVote = previousBallot[poll.pollId] ? previousBallot[poll.pollId].option : null;
+  const hasVotedOnThisPollBefore = currentVote !== null || previousVote !== null;
 
   useEffect(() => {
     setChoice(null);
@@ -78,18 +65,16 @@ const QuickVote = ({
   useEffect(() => {
     if (addedChoice) {
       setChoice(addedChoice?.option);
+    } else {
+      // If it's removed from ballot, update UI
+      setChoice(null);
+      setEditing(!hasVotedOnThisPollBefore);
     }
   }, [addedChoice]);
 
   const submit = () => {
     invariant(isChoiceValid);
-    if (currentVote && isEqual(currentVote, choice)) {
-      removeVoteFromBallot(poll.pollId);
-    } else {
-      editing
-        ? updateVoteFromBallot(poll.pollId, { option: choice as number | number[] })
-        : addVoteToBallot(poll.pollId, { option: choice as number | number[] });
-    }
+    updateVoteFromBallot(poll.pollId, { option: choice as number | number[] });
     setEditing(false);
     if (onSubmit) {
       onSubmit();
@@ -108,15 +93,27 @@ const QuickVote = ({
         <Text variant="caps">Your vote</Text>
         {showStatus && <VotingStatus poll={poll} />}
       </Flex>
-      {(!!addedChoice || currentVote !== null) && !editing ? (
+
+      {choice !== null && !editing && (
         <ChoiceSummary
           voteIsPending={voteIsPending}
           poll={poll}
-          choice={addedChoice?.option ?? currentVote}
+          choice={choice}
           edit={() => setEditing(true)}
           showReviewButton={showReviewButton}
         />
-      ) : (
+      )}
+      {choice === null && hasVotedOnThisPollBefore && !editing && (
+        <ChoiceSummary
+          voteIsPending={voteIsPending}
+          poll={poll}
+          choice={previousVote !== null ? previousVote : (currentVote as number | number[])}
+          edit={() => setEditing(true)}
+          showReviewButton={showReviewButton}
+        />
+      )}
+
+      {editing && (
         <div>
           {isInputFormatRankFree(poll.parameters) && (
             <RankedChoiceSelect poll={poll} setChoice={setChoice} choice={choice as number[] | null} />
@@ -140,7 +137,7 @@ const QuickVote = ({
           >
             {!votingWeight || !votingWeight.total.gt(0)
               ? 'Deposit MKR to vote'
-              : editing
+              : addedChoice
               ? 'Update vote'
               : 'Add vote to ballot'}
           </Button>

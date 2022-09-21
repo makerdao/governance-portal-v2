@@ -3,6 +3,7 @@ import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import { sign } from 'modules/web3/helpers/sign';
+import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import useTransactionsStore, {
@@ -14,10 +15,29 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
-import { parsePollOptions } from '../helpers/parsePollOptions';
+import { parsePollOptions } from 'modules/polling/helpers/parsePollOptions';
 import logger from 'lib/logger';
+import { ethers } from 'ethers';
+import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
+import { ContractTransaction } from 'ethers';
+import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
+import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
 
-const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+type BallotSteps =
+  | 'initial'
+  | 'method-select'
+  | 'submitting'
+  | 'signing-comments'
+  | 'awaiting-relayer'
+  | 'tx-pending'
+  | 'tx-error';
+type BallotSubmissionMethod = 'standard' | 'gasless';
+
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
+import { useAllUserVotes } from '../hooks/useAllUserVotes';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+
+import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 
 interface ContextProps {
   ballot: Ballot;
@@ -25,31 +45,41 @@ interface ContextProps {
   previousBallot: Ballot;
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   removeVoteFromBallot: (pollId: number) => void;
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => void;
+  addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   submitBallot: () => void;
+  submitBallotGasless: () => void;
   clearBallot: () => void;
-  clearTransaction: () => void;
   isPollOnBallot: (pollId: number) => boolean;
   ballotCount: number;
   signComments: () => void;
   commentsSignature: string;
   commentsCount: number;
+  setStep: (step: BallotSteps) => void;
+  ballotStep: BallotSteps;
+  submissionMethod: BallotSubmissionMethod | null;
+  setSubmissionMethod: (method: BallotSubmissionMethod) => void;
+  close: () => void;
 }
 
 export const BallotContext = React.createContext<ContextProps>({
   ballot: {},
   previousBallot: {},
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
-  addVoteToBallot: (pollId: number, ballotVote: BallotVote) => null,
+  addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
   clearBallot: () => null,
-  clearTransaction: () => null,
   removeVoteFromBallot: (pollId: number) => null,
   submitBallot: () => null,
+  submitBallotGasless: () => null,
   isPollOnBallot: (pollId: number) => false,
   ballotCount: 0,
   signComments: () => null,
   commentsSignature: '',
-  commentsCount: 0
+  commentsCount: 0,
+  setStep: (step: BallotSteps) => null,
+  ballotStep: 'initial',
+  submissionMethod: null,
+  setSubmissionMethod: (method: BallotSubmissionMethod) => null,
+  close: () => null
 });
 
 type PropTypes = {
@@ -65,42 +95,63 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Used to track the signature of the comments API call
   const [commentsSignature, setCommentSignature] = useState('');
 
+  const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
+
+  const [submissionMethod, setSubmissionMethod] = useState<BallotSubmissionMethod | null>(null);
+
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
   // Determines which address will be use to save the comments
-  const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
-    useAccount();
+  const { account, voteDelegateContract, votingAccount } = useAccount();
 
-  const accountToUse = voteDelegateContractAddress
-    ? voteDelegateContractAddress
-    : voteProxyContractAddress
-    ? voteProxyContractAddress
-    : account;
+  const { network, provider } = useWeb3();
+
+  // Import the hook with the current user votes to mutate after voting.
+  const { mutate: mutatePreviousVotes } = useAllUserVotes(votingAccount);
 
   const clearBallot = () => {
     setCommentSignature('');
-    setBallot({});
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}), ONE_DAY_MS);
+    updateBallot({});
   };
 
-  const loadBallotFromStorage = () => {
+  const updateBallot = (val: Ballot) => {
+    setBallot(val);
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(val), ONE_DAY_IN_MS);
+  };
+
+  const loadBallotFromStorage = async () => {
     const prevBallot = localStorage.get(`ballot-${network}-${account}`);
     if (prevBallot) {
       try {
         const parsed = JSON.parse(prevBallot);
-        setBallot(parsed);
+        const votes = {};
+        Object.keys(parsed).forEach(async pollId => {
+          const vote = parsed[pollId] as BallotVote;
+
+          // https://docs.ethers.io/v5/api/providers/provider/#Provider-getTransactionReceipt
+          const tx = vote.transactionHash
+            ? await provider?.getTransactionReceipt(vote.transactionHash)
+            : null;
+
+          // If the vote has a confirmed transaction, do not add it to the ballot. If the transactionReceipt is null it means it has not been mined.
+          if (!tx || tx.confirmations === 0) {
+            votes[pollId] = parsed[pollId];
+          }
+        });
+
+        // Update the filtered ballot
+        updateBallot(votes);
       } catch (e) {
         logger.error('loadBallotFromStorage: unable to load ballot from storage', e);
         // Do nothing
-        setBallot({});
+        updateBallot({});
       }
     } else {
       setBallot({});
     }
   };
 
-  const { network, provider } = useWeb3();
   // Reset ballot on network change
   useEffect(() => {
     setPreviousBallot({});
@@ -109,31 +160,32 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   // add vote to ballot
 
-  const addVoteToBallot = (pollId: number, ballotVote: BallotVote) => {
+  const addVoteToBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
     const newBallot = {
       ...ballot,
-      [pollId]: ballotVote
+      [pollId]: {
+        ...ballotVote
+      } as BallotVote
     };
-    setBallot(newBallot);
-
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
+    updateBallot(newBallot);
   };
 
   const removeVoteFromBallot = (pollId: number) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
-    setBallot(rest);
-
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(rest), ONE_DAY_MS);
+    updateBallot(rest);
   };
 
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
+    setStep('initial');
     const newBallot = {
       ...ballot,
       [pollId]: {
@@ -141,8 +193,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ...ballotVote
       }
     };
-    setBallot(newBallot);
-    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot), ONE_DAY_MS);
+    updateBallot(newBallot);
   };
 
   // Helpers
@@ -164,11 +215,12 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       .filter(c => !!c.comment);
   };
 
+  const commentsCount = getComments().length;
+
   const signComments = async () => {
     if (!account || !provider) {
       return;
     }
-
     const comments = getComments();
 
     const data = await fetchJson('/api/comments/nonce', {
@@ -183,6 +235,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const signature = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
     setCommentSignature(signature);
+    setStep('initial');
   };
 
   // Ballot submission
@@ -193,9 +246,87 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const { polling } = useContracts();
 
+  const trackPollVote = (
+    voteTxCreator: () => Promise<ContractTransaction>,
+    gaslessNetwork?: SupportedNetworks
+  ) => {
+    const txId = track(
+      voteTxCreator,
+      account,
+      `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`,
+      {
+        pending: txHash => {
+          setStep('tx-pending');
+          // Update ballot to include the txHash
+          const votes = {};
+          Object.keys(ballot).forEach(pollId => {
+            votes[pollId] = ballot[pollId];
+            votes[pollId].transactionHash = txHash;
+          });
+
+          updateBallot({
+            ...votes
+          });
+
+          const comments = getComments();
+          // if comment included, add to comments db
+          if (comments.length > 0) {
+            const commentsRequest: PollsCommentsRequestBody = {
+              voterAddress: votingAccount || '',
+              hotAddress: account || '',
+              comments: comments,
+              signedMessage: commentsSignature,
+              txHash
+            };
+
+            fetchJson(
+              `/api/comments/polling/add?network=${network}${
+                gaslessNetwork ? `&gasless=${gaslessNetwork}` : ''
+              }`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(commentsRequest)
+              }
+            ).catch(() => {
+              logger.error('POST Polling Comments: failed to add comment');
+              toast.error('Unable to store comments');
+            });
+          }
+        },
+        mined: (txId, txHash) => {
+          // Set previous ballot
+          setPreviousBallot({
+            ...previousBallot,
+            ...ballot
+          });
+
+          clearBallot();
+          mutatePreviousVotes();
+          transactionsApi
+            .getState()
+            .setMessage(
+              txId,
+              `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`
+            );
+        },
+        error: () => {
+          setStep('tx-error');
+          toast.error('Error submitting ballot');
+        }
+      },
+      gaslessNetwork
+    );
+    setTxId(txId);
+  };
+
   const submitBallot = () => {
     const pollIds: string[] = [];
     const pollOptions: string[] = [];
+
+    setStep('submitting');
 
     Object.keys(ballot).forEach((key: string) => {
       if (isPollOnBallot(parseInt(key, 10))) {
@@ -211,51 +342,77 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       : // vote with array arguments can be used for single vote and multiple vote
         () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
 
-    const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
-      pending: txHash => {
-        const comments = getComments();
-        // if comment included, add to comments db
-        if (comments.length > 0) {
-          const commentsRequest: PollsCommentsRequestBody = {
-            voterAddress: accountToUse || '',
-            hotAddress: account || '',
-            comments: comments,
-            signedMessage: commentsSignature,
-            txHash
-          };
+    trackPollVote(voteTxCreator);
+  };
 
-          fetchJson(`/api/comments/polling/add?network=${network}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(commentsRequest)
-          }).catch(() => {
-            logger.error('POST Polling Comments: failed to add comment');
-            toast.error('Unable to store comments');
-          });
-        }
-      },
-      mined: (txId, txHash) => {
-        // Set votes
-        const votes = {};
-        Object.keys(ballot).forEach(pollId => {
-          votes[pollId] = ballot[pollId];
-          votes[pollId].transactionHash = txHash;
-        });
+  const submitBallotGasless = async () => {
+    if (!account || !provider) {
+      return;
+    }
 
-        setPreviousBallot({
-          ...previousBallot,
-          ...votes
-        });
-        clearBallot();
-        transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
-      },
-      error: () => {
-        toast.error('Error submitting ballot');
+    const pollIds: string[] = [];
+    const pollOptions: string[] = [];
+
+    setStep('submitting');
+
+    Object.keys(ballot).forEach((key: string) => {
+      if (isPollOnBallot(parseInt(key, 10))) {
+        pollIds.push(key);
+        pollOptions.push(ballot[key].option);
       }
     });
-    setTxId(txId);
+
+    const optionIds = parsePollOptions(pollOptions);
+
+    const gaslessProvider = getGaslessProvider(network);
+    const pollingContract = new ethers.Contract(
+      // arbitrum testnet polling address,
+      // maybe we should use eth-sdk for this if it's supported
+      '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050',
+      PollingContractAbi,
+      gaslessProvider
+    );
+
+    const nonce = await pollingContract.nonces(account);
+    const signatureValues = {
+      voter: account.toLowerCase(),
+      pollIds,
+      optionIds,
+      nonce: nonce.toNumber(),
+      expiry: Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000) //8 hour expiry
+    };
+    const signature = await signTypedBallotData(signatureValues, provider, network);
+    if (signature) {
+      setStep('awaiting-relayer');
+    } else {
+      setStep('tx-error');
+    }
+    fetchJson(`/api/polling/vote?network=${network}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ...signatureValues, signature, network })
+    })
+      .then(res => {
+        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, res.hash);
+        trackPollVote(voteTxCreator, getGaslessNetwork(network));
+      })
+      .catch(error => {
+        toast.error(error);
+        setStep('tx-error');
+      });
+  };
+
+  const setStep = (step: BallotSteps) => {
+    setBallotStep(step);
+  };
+
+  const close = () => {
+    setCommentSignature('');
+    setTxId(null);
+    setStep('initial');
+    setSubmissionMethod(null);
   };
 
   useEffect(() => {
@@ -268,17 +425,22 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballot,
         previousBallot,
         clearBallot,
-        clearTransaction: () => setTxId(null),
         addVoteToBallot,
         removeVoteFromBallot,
         updateVoteFromBallot,
         submitBallot,
+        submitBallotGasless,
         transaction,
         isPollOnBallot,
         ballotCount: Object.keys(ballot).length,
         signComments,
         commentsSignature,
-        commentsCount: getComments().length
+        commentsCount,
+        setStep,
+        ballotStep,
+        submissionMethod,
+        setSubmissionMethod,
+        close
       }}
     >
       {children}

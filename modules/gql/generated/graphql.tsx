@@ -10,13 +10,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: any;
-  /** A signed eight-byte integer. The upper big integer values are greater than the max value for a JavaScript number. Therefore all big integers will be output as strings and not numbers. */
   BigInt: any;
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
-  /** A point in time as described by the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone. */
   Datetime: any;
 };
 
@@ -986,6 +982,60 @@ export type MkrDelegatedToRecordFilter = {
   or?: InputMaybe<Array<MkrDelegatedToRecordFilter>>;
 };
 
+/** A connection to a list of `MkrDelegatedToV2Record` values. */
+export type MkrDelegatedToV2Connection = {
+  __typename?: 'MkrDelegatedToV2Connection';
+  /** A list of edges which contains the `MkrDelegatedToV2Record` and cursor to aid in pagination. */
+  edges: Array<MkrDelegatedToV2Edge>;
+  /** A list of `MkrDelegatedToV2Record` objects. */
+  nodes: Array<Maybe<MkrDelegatedToV2Record>>;
+};
+
+/** A `MkrDelegatedToV2Record` edge in the connection. */
+export type MkrDelegatedToV2Edge = {
+  __typename?: 'MkrDelegatedToV2Edge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MkrDelegatedToV2Record` at the end of the edge. */
+  node?: Maybe<MkrDelegatedToV2Record>;
+};
+
+/** The return type of our `mkrDelegatedToV2` query. */
+export type MkrDelegatedToV2Record = {
+  __typename?: 'MkrDelegatedToV2Record';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  delegateContractAddress?: Maybe<Scalars['String']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `MkrDelegatedToV2Record` object types. All fields are combined with a logical ‘and.’ */
+export type MkrDelegatedToV2RecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MkrDelegatedToV2RecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `delegateContractAddress` field. */
+  delegateContractAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MkrDelegatedToV2RecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MkrDelegatedToV2RecordFilter>>;
+};
+
 /** A connection to a list of `MkrLockedDelegateArrayRecord` values. */
 export type MkrLockedDelegateArrayConnection = {
   __typename?: 'MkrLockedDelegateArrayConnection';
@@ -1097,6 +1147,66 @@ export type MkrLockedDelegateArrayTotalsRecordFilter = {
   or?: InputMaybe<Array<MkrLockedDelegateArrayTotalsRecordFilter>>;
 };
 
+/** A connection to a list of `MkrLockedDelegateArrayTotalsV2Record` values. */
+export type MkrLockedDelegateArrayTotalsV2Connection = {
+  __typename?: 'MkrLockedDelegateArrayTotalsV2Connection';
+  /** A list of edges which contains the `MkrLockedDelegateArrayTotalsV2Record` and cursor to aid in pagination. */
+  edges: Array<MkrLockedDelegateArrayTotalsV2Edge>;
+  /** A list of `MkrLockedDelegateArrayTotalsV2Record` objects. */
+  nodes: Array<Maybe<MkrLockedDelegateArrayTotalsV2Record>>;
+};
+
+/** A `MkrLockedDelegateArrayTotalsV2Record` edge in the connection. */
+export type MkrLockedDelegateArrayTotalsV2Edge = {
+  __typename?: 'MkrLockedDelegateArrayTotalsV2Edge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MkrLockedDelegateArrayTotalsV2Record` at the end of the edge. */
+  node?: Maybe<MkrLockedDelegateArrayTotalsV2Record>;
+};
+
+/** The return type of our `mkrLockedDelegateArrayTotalsV2` query. */
+export type MkrLockedDelegateArrayTotalsV2Record = {
+  __typename?: 'MkrLockedDelegateArrayTotalsV2Record';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  callerLockTotal?: Maybe<Scalars['BigFloat']>;
+  delegateContractAddress?: Maybe<Scalars['String']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+  lockTotal?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `MkrLockedDelegateArrayTotalsV2Record` object types. All fields are combined with a logical ‘and.’ */
+export type MkrLockedDelegateArrayTotalsV2RecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MkrLockedDelegateArrayTotalsV2RecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `callerLockTotal` field. */
+  callerLockTotal?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `delegateContractAddress` field. */
+  delegateContractAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `lockTotal` field. */
+  lockTotal?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MkrLockedDelegateArrayTotalsV2RecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MkrLockedDelegateArrayTotalsV2RecordFilter>>;
+};
+
 /** A connection to a list of `MkrLockedDelegateRecord` values. */
 export type MkrLockedDelegateConnection = {
   __typename?: 'MkrLockedDelegateConnection';
@@ -1180,9 +1290,11 @@ export type Query = Node & {
   hotOrColdWeightAtTime: HotOrColdWeightAtTimeConnection;
   hotOrColdWeightCurrently: HotOrColdWeightCurrentlyConnection;
   mkrDelegatedTo: MkrDelegatedToConnection;
+  mkrDelegatedToV2: MkrDelegatedToV2Connection;
   mkrLockedDelegate: MkrLockedDelegateConnection;
   mkrLockedDelegateArray: MkrLockedDelegateArrayConnection;
   mkrLockedDelegateArrayTotals: MkrLockedDelegateArrayTotalsConnection;
+  mkrLockedDelegateArrayTotalsV2: MkrLockedDelegateArrayTotalsV2Connection;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
@@ -1421,6 +1533,17 @@ export type QueryMkrDelegatedToArgs = {
 };
 
 /** The root query type which gives access points into the data universe. */
+export type QueryMkrDelegatedToV2Args = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argAddress: Scalars['String'];
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<MkrDelegatedToV2RecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+};
+
+/** The root query type which gives access points into the data universe. */
 export type QueryMkrLockedDelegateArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   argAddress: Scalars['String'];
@@ -1452,6 +1575,19 @@ export type QueryMkrLockedDelegateArrayTotalsArgs = {
   argAddress: Array<InputMaybe<Scalars['String']>>;
   before?: InputMaybe<Scalars['Cursor']>;
   filter?: InputMaybe<MkrLockedDelegateArrayTotalsRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  unixtimeEnd: Scalars['Int'];
+  unixtimeStart: Scalars['Int'];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMkrLockedDelegateArrayTotalsV2Args = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argAddress: Array<InputMaybe<Scalars['String']>>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<MkrLockedDelegateArrayTotalsV2RecordFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4037,6 +4173,133 @@ export default {
       },
       {
         kind: 'OBJECT',
+        name: 'MkrDelegatedToV2Connection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MkrDelegatedToV2Edge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'MkrDelegatedToV2Record',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrDelegatedToV2Edge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'MkrDelegatedToV2Record',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrDelegatedToV2Record',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'delegateContractAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
         name: 'MkrLockedDelegateArrayConnection',
         fields: [
           {
@@ -4248,6 +4511,149 @@ export default {
           },
           {
             name: 'callerLockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayTotalsV2Connection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MkrLockedDelegateArrayTotalsV2Edge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'MkrLockedDelegateArrayTotalsV2Record',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayTotalsV2Edge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'MkrLockedDelegateArrayTotalsV2Record',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayTotalsV2Record',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'callerLockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'delegateContractAddress',
             type: {
               kind: 'SCALAR',
               name: 'Any'
@@ -5746,6 +6152,71 @@ export default {
             ]
           },
           {
+            name: 'mkrDelegatedToV2',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MkrDelegatedToV2Connection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              }
+            ]
+          },
+          {
             name: 'mkrLockedDelegate',
             type: {
               kind: 'NON_NULL',
@@ -5925,6 +6396,94 @@ export default {
               ofType: {
                 kind: 'OBJECT',
                 name: 'MkrLockedDelegateArrayTotalsConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'LIST',
+                    ofType: {
+                      kind: 'SCALAR',
+                      name: 'Any'
+                    }
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'unixtimeEnd',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'unixtimeStart',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            name: 'mkrLockedDelegateArrayTotalsV2',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MkrLockedDelegateArrayTotalsV2Connection',
                 ofType: null
               }
             },

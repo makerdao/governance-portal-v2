@@ -59,6 +59,12 @@ yarn dev
 
 At this point, you should be able to access the application by going to the address `http://localhost:3000` in your browser.
 
+### Releasing
+
+To do releases of the governance portal, please use `npm version minor`  or `npm version patch` to bump the version in the package.json and create a tag. 
+
+The tag and versioning should be done on develop, and then merged to master through a PR.  To push your local tag use the command `git push origin develop --follow-tags`.
+
 ### Additional configuration overview:
 
 #### Content
@@ -107,6 +113,14 @@ The following configuration values can be added to the `.env` file:
 - Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
 
 - Set `MIGRATION_WEBHOOK_URL` for sending migration requests to discord
+
+- Set `GASLESS_WEBHOOK_URL` for sending gasless vote requests to discord
+
+16. **Optional** Set `DEFENDER_API_KEY` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
+17. **Optional** Set `DEFENDER_API_SECRET` to a valid OpenZeppelin Defender Relay secret
+18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
+19. **Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
+20. **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibilty checks by anyone with the password
 
 - Set `DASHBOARD_PASSWORD` for adding protection to the `/dashboard` route
 

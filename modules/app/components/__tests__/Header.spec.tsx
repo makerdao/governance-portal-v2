@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { screen } from '@testing-library/react';
 import Header from '../layout/Header';
 import { renderWithTheme as render } from '../../../../__tests__/helpers';

@@ -1,9 +1,8 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
 import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
-import { isInputFormatRankFree } from '../helpers/utils';
+import { PollTallyVote } from '../types';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -13,7 +12,7 @@ export async function fetchAddressPollVoteHistory(
   const pollsData = await getPolls({}, network);
   const voteHistory = await fetchAllCurrentVotes(address, network);
   const items = await Promise.all(
-    voteHistory.map(async (pollVote: PollVote): Promise<PollVoteHistory | null> => {
+    voteHistory.map(async (pollVote: PollTallyVote): Promise<PollVoteHistory | null> => {
       const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
       // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
       if (!poll) {
@@ -21,16 +20,10 @@ export async function fetchAddressPollVoteHistory(
       }
 
       const optionValue: string[] = [];
-      if (isInputFormatRankFree(poll.parameters)) {
-        if (pollVote.ballot && pollVote.ballot.length > 0) {
-          pollVote.ballot.forEach(option => {
-            optionValue.push(poll.options[option]);
-          });
-        }
-      } else {
-        if (typeof pollVote.optionId !== 'undefined') {
-          optionValue.push(poll.options[pollVote.optionId as number]);
-        }
+      if (pollVote.ballot && pollVote.ballot.length > 0) {
+        pollVote.ballot.forEach(option => {
+          optionValue.push(poll.options[option]);
+        });
       }
 
       return {

@@ -33,7 +33,7 @@ export type Delegate = {
   description: string;
   picture: string;
   status: DelegateStatus;
-  lastVoteDate: string | null;
+  lastVoteDate: number | null;
   expired: boolean;
   isAboutToExpire: boolean;
   expirationDate: Date;
@@ -81,6 +81,7 @@ export type DelegationHistoryEvent = {
 export type MKRLockedDelegateAPIResponse = {
   fromAddress: string;
   immediateCaller: string;
+  delegateContractAddress: string;
   lockAmount: string;
   blockNumber: number;
   blockTimestamp: string;

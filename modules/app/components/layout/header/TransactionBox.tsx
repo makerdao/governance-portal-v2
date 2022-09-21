@@ -31,7 +31,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
           <Spinner
             size={'16px'}
             sx={{
-              color: 'mutedOrange',
+              color: 'orangeAttention',
               alignSelf: 'center'
             }}
           />
@@ -39,7 +39,14 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink href={getEtherscanLink(network, (tx as TXPending).hash, 'transaction')} target="_blank">
+      <ExternalLink
+        href={getEtherscanLink(
+          tx.gaslessNetwork ? tx.gaslessNetwork : network,
+          (tx as TXPending).hash,
+          'transaction'
+        )}
+        target="_blank"
+      >
         <Button
           variant="smallOutline"
           sx={{
@@ -47,8 +54,8 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
             borderColor: 'accentBlue',
             borderRadius: 'small',
             '&:hover': {
-              color: 'blueLinkHover',
-              borderColor: 'blueLinkHover'
+              color: 'accentBlueEmphasis',
+              borderColor: 'accentBlueEmphasis'
             }
           }}
         >

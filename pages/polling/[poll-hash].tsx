@@ -39,6 +39,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import usePollsStore from 'modules/polling/stores/polls';
+import { PollVoteTypeIndicator } from 'modules/polling/components/PollOverviewCard/PollVoteTypeIndicator';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -139,13 +140,19 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
                   </Text>
 
-                  <CountdownTimer
-                    key={poll.multiHash}
-                    endText="Poll ended"
-                    endDate={poll.endDate}
-                    sx={{ ml: [0, 'auto'] }}
-                  />
+                  <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                    <CountdownTimer
+                      key={poll.multiHash}
+                      endText="Poll ended"
+                      endDate={poll.endDate}
+                      sx={{ ml: [0, 'auto'] }}
+                    />
+                    <Box sx={{ ml: 2 }}>
+                      <PollVoteTypeIndicator poll={poll} />
+                    </Box>
+                  </Flex>
                 </Flex>
+
                 <Flex sx={{ mb: 2, flexDirection: 'column' }}>
                   <Heading mt="2" sx={{ fontSize: [5, 6] }}>
                     {poll.title}
@@ -327,7 +334,14 @@ const PollView = ({ poll }: { poll: Poll }) => {
           )}
           <ErrorBoundary componentName="System Info">
             <SystemStatsSidebar
-              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              fields={[
+                'polling contract v2',
+                'polling contract v1',
+                'savings rate',
+                'total dai',
+                'debt ceiling',
+                'system surplus'
+              ]}
             />
           </ErrorBoundary>
           <ResourceBox type={'polling'} />

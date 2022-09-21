@@ -1,13 +1,17 @@
 import { SupportedChainId } from '../constants/chainID';
 import { SupportedNetworks } from '../constants/networks';
 
-export type Chain = {
-  etherscanPrefix: string;
+export type BlockExplorer = 'Etherscan' | 'Arbiscan' | 'block explorer';
+
+export type SupportedChain = {
+  blockExplorerUrl: string;
+  blockExplorerName: BlockExplorer;
   chainId: SupportedChainId;
   label: string;
   network: SupportedNetworks;
   defaultRpc: string;
-  spockUrl: string;
+  spockUrl?: string;
+  type: 'gasless' | 'normal';
   rpcs: {
     [key: string]: string;
   };

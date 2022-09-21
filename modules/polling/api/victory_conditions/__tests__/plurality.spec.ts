@@ -1,23 +1,35 @@
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
+import { PollTallyVote } from 'modules/polling/types';
 import { extractWinnerPlurality } from '../plurality';
 
 describe('Extract winner condition plurality', () => {
   it('gets the one with most mkr', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 10,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 20,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 
@@ -26,16 +38,24 @@ describe('Extract winner condition plurality', () => {
     expect(winner).toEqual(3);
   });
   it('doesnt find winner if two votes have the same MKR amount', async () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 10,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       },
       {
         mkrSupport: 10,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: ''
       }
     ];
 

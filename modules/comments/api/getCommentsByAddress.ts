@@ -1,13 +1,11 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { getGaslessNetwork, getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
 import { markdownToHtml } from 'lib/markdown';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
-import { ethers } from 'ethers';
-import { getCommentTransaction } from './getCommentTransaction';
+import { getCommentTransactionStatus } from './getCommentTransaction';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export async function getCommentsByAddress(
   address: string,
@@ -25,39 +23,41 @@ export async function getCommentsByAddress(
   if (addressInfo.delegateInfo?.previous?.address) {
     addresses.push(addressInfo.delegateInfo?.previous?.voteDelegateAddress.toLowerCase());
   }
-
+  const gaslessNetwork = getGaslessNetwork(network);
   // decending sort
   const commentsFromDB: CommentFromDB[] = await db
     .collection('comments')
-    .find({ voterAddress: { $in: addresses }, network })
+    .find({ voterAddress: { $in: addresses }, network: { $in: [network, gaslessNetwork] } })
     .sort({ date: -1 })
     .toArray();
 
-  const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
-
-  const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
+  const provider = await getProvider(network);
+  const gaslessProvider = await getGaslessProvider(network);
+  const providers = { [network]: provider, [gaslessNetwork]: gaslessProvider };
 
   const comments: CommentsAPIResponseItem[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
-      const transaction = await getCommentTransaction(network, provider, comment.txHash);
+      const { completed, isValid } = await getCommentTransactionStatus(
+        network,
+        providers[comment.network],
+        comment
+      );
 
-      const isValid =
-        transaction &&
-        ethers.utils.getAddress(transaction.from).toLowerCase() ===
-          ethers.utils.getAddress(comment.hotAddress).toLowerCase();
-      return {
+      const item: CommentsAPIResponseItem = {
         comment: {
           ...rest,
           comment: commentBody
         },
         isValid,
-        completed: transaction && transaction.confirmations > 10,
+        completed,
 
         address: addressInfo
       };
+
+      return item;
     })
   );
 

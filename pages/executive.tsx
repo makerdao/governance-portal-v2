@@ -65,15 +65,19 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 );
 
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
-  const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
-    useAccount();
+  const {
+    account,
+    voteDelegateContractAddress,
+    voteProxyContractAddress,
+    voteProxyOldContractAddress,
+    votingAccount
+  } = useAccount();
   const { network } = useWeb3();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
+  const { data: lockedMkr } = useLockedMkr(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { chiefOld } = useContracts() as MainnetSdk;
@@ -135,7 +139,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
-  }, [address]);
+  }, [votingAccount]);
 
   useEffect(() => {
     setSize(1);
@@ -212,8 +216,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       fontSize: '10px',
                       borderColor: 'accentBlue',
                       color: 'accentBlue',
-                      ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
-                      ':hover svg': { color: 'blueLinkHover' }
+                      ':hover': { color: 'accentBlueEmphasis', borderColor: 'accentBlueEmphasis' },
+                      ':hover svg': { color: 'accentBlueEmphasis' }
                     }}
                     onClick={() => {
                       trackButtonClick('chiefMigrationForumPostButton');

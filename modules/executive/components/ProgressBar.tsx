@@ -10,7 +10,7 @@ function CircleNumber({ selected = false, num }: { selected?: boolean; num: numb
         borderRadius: '50%',
         textAlign: 'center',
         fontSize: '1',
-        backgroundColor: selected ? 'primary' : 'badgeGrey',
+        backgroundColor: selected ? 'primary' : 'textSecondary',
         color: 'white',
         fontWeight: 'bold',
         mr: 1

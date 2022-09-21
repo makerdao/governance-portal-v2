@@ -155,14 +155,13 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
-  const { account, voteDelegateContractAddress } = useAccount();
-  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
-  const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
+  const { account, votingAccount } = useAccount();
+  const { mutate: mutateAllUserVotes } = useAllUserVotes(votingAccount);
 
   // revalidate user votes if connected address changes
   useEffect(() => {
     mutateAllUserVotes();
-  }, [addressToCheck]);
+  }, [votingAccount]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -300,7 +299,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                 <Flex
                   sx={{
                     borderRadius: '50%',
-                    backgroundColor: 'muted',
+                    backgroundColor: 'secondary',
                     p: 2,
                     width: '111px',
                     height: '111px',
@@ -333,7 +332,15 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
 
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
-                fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+                fields={[
+                  'polling contract v2',
+                  'polling contract v1',
+                  'arbitrum polling contract',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling',
+                  'system surplus'
+                ]}
               />
             </ErrorBoundary>
             <ResourceBox type={'polling'} />

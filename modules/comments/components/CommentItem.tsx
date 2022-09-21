@@ -10,7 +10,7 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
+import { getBlockExplorerName } from 'modules/web3/helpers/chain';
 
 export default function CommentItem({
   comment,
@@ -55,7 +55,7 @@ export default function CommentItem({
             textAlign: ['left', 'right']
           }}
         >
-          <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
+          <Text as="p" variant="caps" sx={{ lineHeight: '22px' }}>
             {formatDateWithTime(comment.comment.date)}
           </Text>
           <Text variant="smallCaps">
@@ -73,12 +73,22 @@ export default function CommentItem({
           {comment.comment.txHash && (
             <Box>
               <ExternalLink
-                href={getEtherscanLink(network, comment.comment.txHash, 'transaction')}
+                href={getEtherscanLink(
+                  comment.comment.gaslessNetwork
+                    ? comment.comment.gaslessNetwork
+                    : comment.comment.network || network,
+                  comment.comment.txHash,
+                  'transaction'
+                )}
                 styles={{ my: 3 }}
                 title="View on etherscan"
               >
                 <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                  View on Etherscan {!comment.completed ? '(Pending)' : ''}
+                  View on{' '}
+                  {getBlockExplorerName(
+                    comment.comment.gaslessNetwork ? comment.comment.gaslessNetwork : comment.comment.network
+                  )}{' '}
+                  {!comment.completed ? '(Pending)' : ''}
                   <Icon name="arrowTopRight" pt={2} color="accentBlue" />
                 </Text>
               </ExternalLink>

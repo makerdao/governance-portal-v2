@@ -34,7 +34,8 @@
     }
   },
   "rules": {
-    "@typescript-eslint/ban-ts-comment": ["warn"],
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "no-console": "off",
     "linebreak-style": ["error", "unix"],
     "semi": ["error", "always"],
@@ -50,7 +51,7 @@
     "jest-dom/prefer-enabled-disabled": "error",
     "jest-dom/prefer-required": "error",
     "jest-dom/prefer-to-have-attribute": "error",
-    "no-debugger":"off"
+    "no-debugger": "off"
   },
   "settings": {
     "react": {

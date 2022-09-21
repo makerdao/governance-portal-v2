@@ -78,7 +78,7 @@ const ModalContent = ({
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
           Please use your wallet to sign this transaction.
         </Text>
-        <Button onClick={close} variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
+        <Button onClick={close} variant="textual" sx={{ mt: 3, color: 'secondary', fontSize: 2 }}>
           Cancel shutdown submission
         </Button>
       </Flex>

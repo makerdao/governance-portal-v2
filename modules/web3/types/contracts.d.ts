@@ -13,6 +13,7 @@ export type ContractName =
   | 'pause'
   | 'pauseProxy'
   | 'polling'
+  | 'pollingOld'
   | 'pot'
   | 'vat'
   | 'voteDelegateFactory'

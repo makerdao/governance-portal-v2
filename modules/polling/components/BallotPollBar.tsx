@@ -34,7 +34,7 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
     if (existingVote) {
       return existingVote.ballot
         ? !isEqual(existingVote.ballot, ballotToPick[pollId].option)
-        : !isEqual(existingVote.optionId, ballotToPick[pollId].option);
+        : !isEqual(existingVote.optionIdRaw, ballotToPick[pollId].option);
     }
     return false;
   }).length;
@@ -52,7 +52,7 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
         sx={{
           width: '100%',
           height: 2,
-          backgroundColor: 'muted',
+          backgroundColor: 'secondary',
           mt: 2,
           flexDirection: 'row',
           borderRadius: 'small'
@@ -63,7 +63,7 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
           .map((_, index) => (
             <Box
               key={index}
-              backgroundColor="muted"
+              backgroundColor="secondary"
               sx={{
                 flex: 1,
                 borderLeft: index === 0 ? undefined : '1px solid white',

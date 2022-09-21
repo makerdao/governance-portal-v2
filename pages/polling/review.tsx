@@ -16,7 +16,6 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
-import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -39,7 +38,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
-
   const toggleShareModal = (pollId?: number) => {
     setModalPollId(pollId);
     setShowMarkdownModal(!showMarkdownModal);
@@ -54,7 +52,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
     setTransactionStatus(transaction?.status || 'default');
   }, [transaction]);
 
-  const { account } = useAccount();
+  const { account, votingAccount } = useAccount();
 
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
@@ -76,16 +74,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
       return findPollById(polls, pollId);
     })
     .filter(p => !!p) as Poll[];
-
-  const SubmitButton = props => (
-    <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <SubmitBallotsButtons
-        onSubmit={() => {
-          trackButtonClick('submitBallot');
-        }}
-      />
-    </Flex>
-  );
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
@@ -153,6 +141,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
     return markdown;
   };
 
+  const ballotPollIds = Object.keys(ballot);
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
   return (
@@ -200,9 +189,16 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   </Text>
                 )}
 
-                {bpi <= 2 && !!account && (
+                {bpi <= 2 && !!votingAccount && (
                   <Box>
-                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} />}
+                    {!hasVoted && (
+                      <ReviewBox
+                        account={votingAccount}
+                        polls={polls}
+                        activePolls={activePolls}
+                        ballotPollIds={ballotPollIds}
+                      />
+                    )}
                     {hasVoted && (
                       <Box>
                         <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
@@ -279,7 +275,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 )}
                 {bpi <= 2 && (
                   <Box>
-                    {!hasVoted && <SubmitButton />}
                     {hasVoted && (
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -298,14 +293,19 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
             </Stack>
           </Box>
 
-          {bpi >= 3 && !!account && (
+          {bpi >= 3 && !!votingAccount && (
             <Box sx={{ pt: 3 }}>
               {!hasVoted && (
                 <Box>
                   <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                     Submit Ballot
                   </Heading>
-                  <ReviewBox polls={polls} activePolls={activePolls} />
+                  <ReviewBox
+                    account={votingAccount}
+                    polls={polls}
+                    activePolls={activePolls}
+                    ballotPollIds={ballotPollIds}
+                  />
                 </Box>
               )}
               {hasVoted && (
@@ -326,7 +326,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
               )}
             </Box>
           )}
-
           {showMarkdownModal && (
             <ShareVotesModal
               isOpen={showMarkdownModal}

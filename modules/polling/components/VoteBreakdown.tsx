@@ -78,7 +78,7 @@ export default function VoteBreakdown({
                   <Box my={2}>
                     <Progress
                       sx={{
-                        backgroundColor: 'muted',
+                        backgroundColor: 'secondary',
                         mb: '3',
                         height: 2,
                         color: getVoteColor(tallyResult.optionId, poll.parameters)
@@ -150,7 +150,7 @@ export default function VoteBreakdown({
                         <Box>
                           <Progress
                             sx={{
-                              backgroundColor: 'muted',
+                              backgroundColor: 'secondary',
                               height: 2,
                               color: `${transfer.lt(0) ? '#f57350' : 'darkPrimary'}`,
                               position: 'absolute'
@@ -228,7 +228,7 @@ export default function VoteBreakdown({
                   <Box my={2}>
                     <Progress
                       sx={{
-                        backgroundColor: 'muted',
+                        backgroundColor: 'secondary',
                         mb: '3',
                         height: 2,
                         color: getVoteColor(tallyResult.optionId, poll.parameters)

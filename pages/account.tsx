@@ -38,18 +38,14 @@ const AccountPage = (): React.ReactElement => {
     account,
     mutate: mutateAccount,
     voteDelegateContractAddress,
-    voteProxyContractAddress
+    voteProxyContractAddress,
+    votingAccount
   } = useAccount();
-  const addressToCheck = voteDelegateContractAddress
-    ? voteDelegateContractAddress
-    : voteProxyContractAddress
-    ? voteProxyContractAddress
-    : account;
 
   const { newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress } = useLinkedDelegateInfo();
-  const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(addressToCheck, network);
+  const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
   const { data: previousOwnerContractAddress } = useVoteDelegateAddress(previousOwnerAddress);
-  const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
+  const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
@@ -252,7 +248,14 @@ const AccountPage = (): React.ReactElement => {
           )}
           <ErrorBoundary componentName="System Info">
             <SystemStatsSidebar
-              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              fields={[
+                'polling contract v2',
+                'polling contract v1',
+                'savings rate',
+                'total dai',
+                'debt ceiling',
+                'system surplus'
+              ]}
             />
           </ErrorBoundary>
           <ResourceBox type={'delegates'} />

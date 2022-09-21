@@ -2,8 +2,9 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 /**
  * @swagger
@@ -60,12 +61,22 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
  *                   $ref: '#/definitions/PollStats'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  const network = validateQueryParam(req.query.network, 'string', {
+    defaultValue: DEFAULT_NETWORK.network,
+    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+  }) as SupportedNetworks;
+
+  const startDate = validateQueryParam(req.query.startDate, 'date', {
+    defaultValue: null
+  }) as Date | null;
+
+  const endDate = validateQueryParam(req.query.endDate, 'date', {
+    defaultValue: null
+  }) as Date | null;
 
   const filters = {
-    startDate: req.query.startDate ? new Date(req.query.startDate as string) : null,
-    endDate: req.query.endDate ? new Date(req.query.endDate as string) : null,
+    startDate,
+    endDate,
     tags: req.query.tags ? (typeof req.query.tags === 'string' ? [req.query.tags] : req.query.tags) : null
   };
 

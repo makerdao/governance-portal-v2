@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import { Badge, Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -353,7 +353,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                               sx={{
                                 color: 'accentBlue',
                                 fontSize: 2,
-                                ':hover': { color: 'blueLinkHover' }
+                                ':hover': { color: 'accentBlueEmphasis' }
                               }}
                             >
                               <AddressIconBox

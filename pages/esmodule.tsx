@@ -62,7 +62,7 @@ const ESModule = (): React.ReactElement => {
           sx={{
             borderRadius: 'medium',
             minHeight: 20,
-            backgroundColor: 'muted',
+            backgroundColor: 'secondary',
             height: '20px',
             my: 3
           }}

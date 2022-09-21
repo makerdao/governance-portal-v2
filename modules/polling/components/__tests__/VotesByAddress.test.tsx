@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { render, screen } from '@testing-library/react';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
@@ -5,7 +8,9 @@ import mockTally from 'modules/polling/api/mocks/tally.json';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { Poll, PollTally } from 'modules/polling/types';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
+jest.mock('@theme-ui/match-media');
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
@@ -43,6 +48,7 @@ describe('Polling votes by address', () => {
     (useDelegateAddressMap as jest.Mock).mockReturnValue({
       data: []
     });
+    (useBreakpointIndex as jest.Mock).mockReturnValue(4);
   });
 
   test('renders plurality vote type correctly', async () => {
@@ -51,8 +57,7 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
     await screen.findByText(/Vote %/);
-    await screen.findByText(/MKR/);
-
+    expect(screen.getByTestId('mkr-header')).toBeVisible();
     // look for yes votes
     await screen.findAllByText(/Yes/);
   });
@@ -64,7 +69,12 @@ describe('Polling votes by address', () => {
         {
           voter: '0xad2fda5f6ce305d2ced380fdfa791b6a26e7f281',
           ballot: [0, 1, 2],
-          mkrSupport: 28312.074392254362747305
+          mkrSupport: 28312.074392254362747305,
+          chainId: 1,
+          hash: '0x021',
+          blockTimestamp: 1,
+          optionIdRaw: '012',
+          pollId: 1
         }
       ]
     };
@@ -97,11 +107,12 @@ describe('Polling votes by address', () => {
     await screen.findByText(/Address/);
     await screen.findByText(/Option/);
     await screen.findByText(/Vote %/);
-    await screen.findByText(/MKR/);
+
+    expect(screen.getByTestId('mkr-header')).toBeVisible();
 
     // check first choice is displayed with number
-    await screen.findByText(/1 - test1/);
-    await screen.findByText(/2 - test2/);
-    await screen.findByText(/3 - test3/);
+    await screen.findByText(/1st - test1/);
+    await screen.findByText(/2nd - test2/);
+    await screen.findByText(/3rd - test3/);
   });
 });
