@@ -7,6 +7,7 @@ import { cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
+import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -16,7 +17,6 @@ import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.con
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
-import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'voter must be a string',
@@ -124,7 +124,7 @@ export default withApiHandler(
       }
 
       //get arbitrum polling contract with relayer's signer
-      const pollingContract = getArbitrumPollingContract(network);
+      const pollingContract = getArbitrumPollingContractRelayProvider(network);
 
       //verify valid nonce and expiry date
       const nonceFromContract = await pollingContract.nonces(voter);
