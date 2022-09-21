@@ -83,7 +83,7 @@ const ModalContent = ({ close, ...props }) => {
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading">Withdraw MKR from Chief</Text>
-              <Text sx={{ color: '#333333', fontSize: 3, mt: 3 }}>
+              <Text sx={{ color: 'text', fontSize: 3, mt: 3 }}>
                 You are withdrawing <b>{lockedMkr ? formatValue(lockedMkr) : '---'} MKR</b> from the old Chief
                 contract back to your wallet.
               </Text>
