@@ -48,7 +48,7 @@ export async function getExecutiveComments(
 
   const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
     // verify tx ownership
-    const transaction = await getCommentTransaction(network, provider, comment);
+    const { transaction } = await getCommentTransaction(network, provider, comment);
 
     const isValid =
       transaction &&
@@ -59,7 +59,7 @@ export async function getExecutiveComments(
       comment,
       address: await getAddressInfo(comment.voterAddress, network),
       isValid,
-      completed: transaction && transaction.confirmations > 10
+      completed: !!transaction && transaction.confirmations > 10
     };
   });
 

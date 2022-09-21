@@ -52,7 +52,7 @@ export async function getCommentsByAddress(
           comment: commentBody
         },
         isValid,
-        completed: transaction && transaction.confirmations > 10,
+        completed: !!transaction && transaction.confirmations > 10,
 
         address: addressInfo
       };
