@@ -1,5 +1,5 @@
 import { PollParameters } from '../types';
-import { isInputFormatChooseFree, isInputFormatRankFree } from './utils';
+import { isInputFormatChooseFree, isInputFormatRankFree, isResultDisplayApprovalBreakdown } from './utils';
 
 export const getVoteColor = (optionId: number, pollParameters: PollParameters, text = true): string => {
   const abstainOption = '#708390';
@@ -8,6 +8,10 @@ export const getVoteColor = (optionId: number, pollParameters: PollParameters, t
 
   if (pollParameters.inputFormat.abstain.indexOf(optionId) !== -1) {
     return abstainOption;
+  }
+
+  if (isResultDisplayApprovalBreakdown(pollParameters)) {
+    return 'text';
   }
 
   if (isInputFormatRankFree(pollParameters)) {
