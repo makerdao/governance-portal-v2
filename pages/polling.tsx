@@ -299,7 +299,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                 <Flex
                   sx={{
                     borderRadius: '50%',
-                    backgroundColor: 'muted',
+                    backgroundColor: 'secondary',
                     p: 2,
                     width: '111px',
                     height: '111px',

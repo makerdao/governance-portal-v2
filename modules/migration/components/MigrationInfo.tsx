@@ -46,7 +46,7 @@ export function MigrationInfo({
         <Flex sx={{ flexDirection: 'column', maxWidth: '620px', alignSelf: 'center' }}>
           <Flex>
             <Box sx={{ width: '30%' }}>
-              <CircleIcon name="hourglass" iconColor="onSurface" borderColor="muted" />
+              <CircleIcon name="hourglass" iconColor="onSurface" borderColor="secondary" />
             </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text as="h3" variant="microHeading">
@@ -60,7 +60,7 @@ export function MigrationInfo({
           </Flex>
           <Flex sx={{ mt: 3 }}>
             <Box sx={{ width: '30%' }}>
-              <CircleIcon name="wallet" iconColor="onSurface" borderColor="muted" iconSize={15} />
+              <CircleIcon name="wallet" iconColor="onSurface" borderColor="secondary" iconSize={15} />
             </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text as="h3" variant="microHeading">

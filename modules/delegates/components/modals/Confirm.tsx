@@ -66,7 +66,7 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
       <Button onClick={onClick} sx={{ mt: 4 }}>
         Confirm Transaction
       </Button>
-      <Button onClick={onBack} variant="textual" sx={{ color: 'muted', fontSize: 2, mt: 1 }}>
+      <Button onClick={onBack} variant="textual" sx={{ color: 'secondary', fontSize: 2, mt: 1 }}>
         Back
       </Button>
     </Flex>
