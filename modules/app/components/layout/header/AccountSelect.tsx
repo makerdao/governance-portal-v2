@@ -69,9 +69,10 @@ const AccountSelect = (): React.ReactElement => {
 
   // Handles the logic when clicking on a connector
   const onClickConnection = async (connectionType: ConnectionType, name: WalletName) => {
-    const connection = getConnection(connectionType);
     setError(null);
     try {
+      const connection = getConnection(connectionType);
+
       setLoadingConnectors({
         [name]: true
       });

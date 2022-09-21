@@ -10,7 +10,10 @@ import { closeModal, forkNetwork, setAccount, visitPage } from '../../support/co
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
-  it('connects wallet and clicks on delegate', { defaultCommandTimeout: 90000 }, () => {
+  // this remains in effect for the remainder of the tests in the same spec file.
+  Cypress.config({ defaultCommandTimeout: 90000 });
+
+  it('connects wallet and clicks on delegate', () => {
     // Start from the index page
     visitPage('/delegates');
 

@@ -1,7 +1,7 @@
 import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { providers } from 'ethers';
-import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
+import { CHAIN_INFO, DEFAULT_NETWORK } from '../constants/networks';
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
 import { getDefaultProvider } from './getDefaultProvider';
@@ -10,7 +10,8 @@ import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
-  goerli: getGoerliSdk
+  goerli: getGoerliSdk,
+  goerlifork: getGoerliSdk
 };
 
 let connectedAccount: string | undefined;
@@ -32,11 +33,9 @@ export const getContracts = (
 ): EthSdk => {
   const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
   const rpcUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
-  // Map goerlifork to goerli contracts
-  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
 
   if (readOnly) {
-    return getReadOnlyContracts(rpcUrl, sdkNetwork);
+    return getReadOnlyContracts(rpcUrl, network);
   }
 
   // If we have an account and provider then we'll use a signer
@@ -57,7 +56,7 @@ export const getContracts = (
     if (needsSigner && changeAccount) connectedAccount = account;
     if (changeNetwork) currentNetwork = network;
 
-    contracts = sdkGenerators[sdkNetwork](signerOrProvider);
+    contracts = sdkGenerators[network](signerOrProvider);
   }
 
   return contracts as EthSdk;

@@ -176,7 +176,7 @@ Please refer to: https://docs.cypress.io/guides/references/best-practices and ch
 
 **Windows support**
 
-If you are using Windows and WSL you will need to install XLaunch to be able to launch a client for the UI.
+If you are using Windows and WSL you will need to install XLaunch to be able to launch a client for the UI, remember to disable access control.
 
 ### CI/CD
 
@@ -196,6 +196,7 @@ npm run start:ci
 
 The command `npm run start:ci` launches a detached process with hardhat, executes e2e in a headless mode and kills the hardhat process.
 
+
 ### Contributing
 
-See our [contributing guide](./CONTRIBUTING.md).
+See our [contributing guide](./CONTRIBUTING.md). 
