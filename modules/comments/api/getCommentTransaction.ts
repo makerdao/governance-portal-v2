@@ -23,8 +23,8 @@ export async function getCommentTransaction(
 
     const isValid =
       transaction &&
-      (ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase());
+      ethers.utils.getAddress(transaction.from).toLowerCase() ===
+        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
 
     const response = { transaction, isValid: !!isValid };
     cacheSet(cacheKey, JSON.stringify(response), network, FIVE_MINUTES_IN_MS);

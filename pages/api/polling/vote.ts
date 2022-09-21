@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
-import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
@@ -245,7 +245,7 @@ export default withApiHandler(
       const v = Number('0x' + signature.slice(130, 132));
 
       const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
-      cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
+      cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
 
       const tx = await pollingContract[
         'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'
