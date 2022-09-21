@@ -24,15 +24,7 @@ export async function getCommentTransaction(
     const isValid =
       transaction &&
       (ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase() ||
-        ethers.utils.getAddress(transaction.from).toLowerCase() ===
-          //TODO: get this programatically at the very least
-          //For now just hardcoding the relayer address
-          '0xccdd98cea0896355ea5082a5f3eb41e8f4761e17' ||
-        ethers.utils.getAddress(transaction.from).toLowerCase() ===
-          //TODO: get this programatically at the very least
-          //For now just hardcoding the relayer address
-          '0x51b5cb36a29869713c4e5583dd008abde3baa146');
+        ethers.utils.getAddress(comment.hotAddress).toLowerCase());
 
     const response = { transaction, isValid: !!isValid };
     cacheSet(cacheKey, JSON.stringify(response), network, FIVE_MINUTES_IN_MS);
