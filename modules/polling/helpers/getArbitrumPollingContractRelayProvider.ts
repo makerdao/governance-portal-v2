@@ -6,8 +6,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
 
 export const relayerCredentials = {
-  mainnet: { apiKey: config.DEFENDER_API_KEY_PROD, apiSecret: config.DEFENDER_API_SECRET_PROD },
-  goerli: { apiKey: config.DEFENDER_API_KEY, apiSecret: config.DEFENDER_API_SECRET }
+  mainnet: { apiKey: config.DEFENDER_API_KEY_MAINNET, apiSecret: config.DEFENDER_API_SECRET_MAINNET },
+  goerli: { apiKey: config.DEFENDER_API_SECRET_TESTNET, apiSecret: config.DEFENDER_API_SECRET_TESTNET }
 };
 
 export const arbitrumSdkGenerators: ArbitrumSdkGenerators = {

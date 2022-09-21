@@ -116,8 +116,8 @@ The following configuration values can be added to the `.env` file:
 
 - Set `GASLESS_WEBHOOK_URL` for sending gasless vote requests to discord
 
-16. **Optional** Set `DEFENDER_API_KEY_PROD` (mainnet) and/or `DEFENDER_API_KEY` (goerli) to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
-17. **Optional** Set `DEFENDER_API_SECRET_PROD` (mainnet) and/or`DEFENDER_API_SECRET` (goerli) to a valid OpenZeppelin Defender Relay secret
+16. **Optional** Set `DEFENDER_API_KEY_MAINNET` and/or `DEFENDER_API_KEY_TESTNET` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
+17. **Optional** Set `DEFENDER_API_SECRET_MAINNET` and/or`DEFENDER_API_SECRET_TESTNET` to a valid OpenZeppelin Defender Relay secret
 18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
 19. **Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
 20. **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibilty checks by anyone with the password
