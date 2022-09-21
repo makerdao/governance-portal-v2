@@ -66,7 +66,7 @@ const ModalContent = ({ close, ...props }) => {
 
             {transaction.status !== 'pending' && (
               <Box>
-                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
@@ -114,7 +114,7 @@ const ModalContent = ({ close, ...props }) => {
               <Text variant="microHeading" mb={2}>
                 Approve voting contract
               </Text>
-              <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                 Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
               </Text>
             </Box>

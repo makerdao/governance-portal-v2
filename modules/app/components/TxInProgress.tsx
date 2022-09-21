@@ -38,7 +38,7 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
 
       {!txPending && (
         <Box sx={{ mt: 4 }}>
-          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
             Please use your wallet to confirm this transaction.
           </Text>
           <Text

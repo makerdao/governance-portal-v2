@@ -66,7 +66,7 @@ const ModalContent = ({
 
             {tx.status !== 'pending' && (
               <Box>
-                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
@@ -86,7 +86,7 @@ const ModalContent = ({
               <Text as="p" variant="microHeading">
                 Deposit into voting contract
               </Text>
-              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
+              <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3, mt: 3 }}>
                 Input the amount of MKR to deposit into the voting contract.
               </Text>
             </Box>
@@ -121,7 +121,7 @@ const ModalContent = ({
               <Text as="p" variant="microHeading">
                 Approve voting contract
               </Text>
-              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
+              <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3, mt: 3 }}>
                 Approve the transfer of MKR to the voting contract.
               </Text>
             </Box>
