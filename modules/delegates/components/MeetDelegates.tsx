@@ -164,7 +164,7 @@ export default function MeetYourDelegates({
               </InternalLink>
             </Flex>
           </Flex>
-          <Text variant="smallText" sx={{ color: 'textMuted', width: ['100%', '100%', '50%'] }}>
+          <Text variant="secondary" sx={{ width: ['100%', '100%', '50%'] }}>
             Vote delegation allows for MKR holders to delegate their voting power to delegates, which
             increases the effectiveness and efficiency of the governance process.
           </Text>

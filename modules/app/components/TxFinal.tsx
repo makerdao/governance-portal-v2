@@ -27,9 +27,7 @@ export const TxFinal = ({
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
-      <Text variant="microHeading" color="onBackgroundAlt">
-        {title}
-      </Text>
+      <Text variant="microHeading">{title}</Text>
       {success ? (
         <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
           <TxIndicators.Success sx={{ width: 6 }} />

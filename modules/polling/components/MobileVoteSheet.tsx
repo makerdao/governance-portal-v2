@@ -164,7 +164,7 @@ export default function MobileVoteSheet({
                       borderBottomLeftRadius: i === 0 ? 'small' : undefined,
                       borderTopRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
                       borderBottomRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
-                      backgroundColor: i < ballotCount ? 'primary' : 'muted'
+                      backgroundColor: i < ballotCount ? 'primary' : 'secondary'
                     }}
                   />
                 ))}

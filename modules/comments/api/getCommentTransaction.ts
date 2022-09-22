@@ -5,11 +5,11 @@ import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { CommentFromDB, Comment } from '../types/comments';
 
-export async function getCommentTransaction(
+export async function getCommentTransactionStatus(
   network: SupportedNetworks,
   provider: ethers.providers.JsonRpcProvider,
   comment: CommentFromDB | Comment
-): Promise<{ transaction: ethers.providers.TransactionResponse | null; isValid: boolean }> {
+): Promise<{ completed: boolean; isValid: boolean }> {
   const txHash = comment.txHash;
   const cacheKey = `transaction-comment-${txHash}`;
 
@@ -26,13 +26,15 @@ export async function getCommentTransaction(
       ethers.utils.getAddress(transaction.from).toLowerCase() ===
         ethers.utils.getAddress(comment.hotAddress).toLowerCase();
 
-    const response = { transaction, isValid: !!isValid };
+    const completed = transaction && transaction.confirmations > 10;
+    const response = { completed: !!completed, isValid: !!isValid };
+
     cacheSet(cacheKey, JSON.stringify(response), network, FIVE_MINUTES_IN_MS);
     return response;
   } catch (e) {
     logger.error(`Error fetching comment transcation: ${txHash}`);
     return {
-      transaction: null,
+      completed: false,
       isValid: false
     };
   }

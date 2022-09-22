@@ -156,14 +156,13 @@ export default function ReviewBox({
               </Button>
             </Flex>
           )}
-          {canUseGasless && (
-            <Box>
-              <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-                <LocalIcon name="sparkles" color="primary" size={3} />{' '}
-                <Text sx={{ ml: 2 }}>Poll voting is now free!</Text>
-              </Flex>
-            </Box>
-          )}
+
+          <Box>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+              <LocalIcon name="sparkles" color="primary" size={3} />{' '}
+              <Text sx={{ ml: 2 }}>Poll voting is now free!</Text>
+            </Flex>
+          </Box>
         </ActivePollsBox>
       )}
 

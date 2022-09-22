@@ -32,7 +32,7 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
           justifyContent: 'center',
           alignItems: 'center',
           borderBottom: '1px solid',
-          borderColor: 'muted'
+          borderColor: 'secondary'
         }}
       >
         {links.map(link => {
@@ -58,7 +58,7 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
                 <Box
                   sx={{
                     borderBottom: activeTab === link.href ? '1px solid' : 'none',
-                    borderColor: activeTab === link.href ? 'primary' : 'onBackground',
+                    borderColor: activeTab === link.href ? 'primary' : 'textSecondary',
                     pb: 2,
                     pt: 1,
                     '&:hover': {

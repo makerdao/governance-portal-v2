@@ -12,7 +12,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { ethers } from 'ethers';
-import { getCommentTransaction } from './getCommentTransaction';
+import { getCommentTransactionStatus } from './getCommentTransaction';
 export async function getExecutiveComments(
   spellAddress: string,
   network: SupportedNetworks
@@ -48,18 +48,13 @@ export async function getExecutiveComments(
 
   const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
     // verify tx ownership
-    const { transaction } = await getCommentTransaction(network, provider, comment);
-
-    const isValid =
-      transaction &&
-      ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
+    const { completed, isValid } = await getCommentTransactionStatus(network, provider, comment);
 
     return {
       comment,
       address: await getAddressInfo(comment.voterAddress, network),
       isValid,
-      completed: !!transaction && transaction.confirmations > 10
+      completed
     };
   });
 

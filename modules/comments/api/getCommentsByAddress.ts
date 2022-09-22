@@ -4,7 +4,7 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
 import { markdownToHtml } from 'lib/markdown';
-import { getCommentTransaction } from './getCommentTransaction';
+import { getCommentTransactionStatus } from './getCommentTransaction';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export async function getCommentsByAddress(
@@ -40,22 +40,24 @@ export async function getCommentsByAddress(
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
-      const { transaction, isValid } = await getCommentTransaction(
+      const { completed, isValid } = await getCommentTransactionStatus(
         network,
         providers[comment.network],
         comment
       );
 
-      return {
+      const item: CommentsAPIResponseItem = {
         comment: {
           ...rest,
           comment: commentBody
         },
         isValid,
-        completed: !!transaction && transaction.confirmations > 10,
+        completed,
 
         address: addressInfo
       };
+
+      return item;
     })
   );
 

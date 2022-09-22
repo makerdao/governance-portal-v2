@@ -2,7 +2,7 @@ import { WalletInfo } from '../types/wallets';
 import { SupportedConnectors } from './networks';
 
 export enum ConnectionType {
-  INJECTED = 'INJECTED',
+  METAMASK = 'METAMASK',
   COINBASE_WALLET = 'COINBASE_WALLET',
   WALLET_CONNECT = 'WALLET_CONNECT',
   NETWORK = 'NETWORK',
@@ -15,7 +15,7 @@ export const SUPPORTED_WALLETS: {
 } = {
   [SupportedConnectors.METAMASK]: {
     name: SupportedConnectors.METAMASK,
-    connectionType: ConnectionType.INJECTED,
+    connectionType: ConnectionType.METAMASK,
     deeplinkUri: 'https://metamask.app.link/dapp/vote.makerdao.com/'
   },
   [SupportedConnectors.WALLET_CONNECT]: {

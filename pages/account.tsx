@@ -248,7 +248,14 @@ const AccountPage = (): React.ReactElement => {
           )}
           <ErrorBoundary componentName="System Info">
             <SystemStatsSidebar
-              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              fields={[
+                'polling contract v2',
+                'polling contract v1',
+                'savings rate',
+                'total dai',
+                'debt ceiling',
+                'system surplus'
+              ]}
             />
           </ErrorBoundary>
           <ResourceBox type={'delegates'} />

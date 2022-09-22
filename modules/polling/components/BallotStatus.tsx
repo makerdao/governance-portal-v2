@@ -42,7 +42,7 @@ const BallotStatus = (props: any): JSX.Element => {
           color:
             ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
               ? 'onPrimary'
-              : 'textMuted',
+              : 'textSecondary',
           mr: 2
         }}
       />
@@ -63,7 +63,7 @@ const StatusText = ({
   const color =
     ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
       ? DEFAULT_COLOR
-      : 'textMuted';
+      : 'textSecondary';
 
   return (
     <Text

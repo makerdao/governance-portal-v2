@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../types/comments';
 import uniqBy from 'lodash/uniqBy';
 import { markdownToHtml } from 'lib/markdown';
-import { getCommentTransaction } from './getCommentTransaction';
+import { getCommentTransactionStatus } from './getCommentTransaction';
 import { getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
 export async function getPollComments(
   pollId: number,
@@ -41,7 +41,7 @@ export async function getPollComments(
 
   const promises = uniqueComments.map(async (comment: PollComment) => {
     // verify tx ownership
-    const { transaction, isValid } = await getCommentTransaction(
+    const { completed, isValid } = await getCommentTransactionStatus(
       network,
       comment.gaslessNetwork ? gaslessProvider : provider,
       comment
@@ -50,7 +50,7 @@ export async function getPollComments(
     return {
       comment,
       isValid,
-      completed: transaction && transaction.confirmations > 10,
+      completed,
       address: await getAddressInfo(comment.voterAddress, network)
     };
   });

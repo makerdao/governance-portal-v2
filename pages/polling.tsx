@@ -299,7 +299,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                 <Flex
                   sx={{
                     borderRadius: '50%',
-                    backgroundColor: 'muted',
+                    backgroundColor: 'secondary',
                     p: 2,
                     width: '111px',
                     height: '111px',
@@ -333,7 +333,8 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
                 fields={[
-                  'polling contract',
+                  'polling contract v2',
+                  'polling contract v1',
                   'arbitrum polling contract',
                   'savings rate',
                   'total dai',

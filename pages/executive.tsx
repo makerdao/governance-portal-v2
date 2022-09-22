@@ -216,8 +216,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       fontSize: '10px',
                       borderColor: 'accentBlue',
                       color: 'accentBlue',
-                      ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
-                      ':hover svg': { color: 'blueLinkHover' }
+                      ':hover': { color: 'accentBlueEmphasis', borderColor: 'accentBlueEmphasis' },
+                      ':hover svg': { color: 'accentBlueEmphasis' }
                     }}
                     onClick={() => {
                       trackButtonClick('chiefMigrationForumPostButton');

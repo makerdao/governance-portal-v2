@@ -148,10 +148,10 @@ export default function Participation({
               }}
             >
               <Flex sx={{ justifyContent: 'space-between' }}>
-                <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                <Text variant="caps" sx={{ color: 'secondaryEmphasis' }}>
                   Address
                 </Text>
-                <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                <Text variant="caps" sx={{ color: 'secondaryEmphasis' }}>
                   Participation
                 </Text>
               </Flex>

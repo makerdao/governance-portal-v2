@@ -353,7 +353,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                               sx={{
                                 color: 'accentBlue',
                                 fontSize: 2,
-                                ':hover': { color: 'blueLinkHover' }
+                                ':hover': { color: 'accentBlueEmphasis' }
                               }}
                             >
                               <AddressIconBox

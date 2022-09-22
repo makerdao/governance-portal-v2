@@ -60,22 +60,22 @@ export default function TopDelegates({
           }}
         >
           <Box sx={{ width: '40%' }}>
-            <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
+            <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
               Address
             </Text>
           </Box>
           <Box sx={{ width: '15%', display: ['none', 'block'] }}>
-            <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
+            <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
               Delegators
             </Text>
           </Box>
           <Box sx={{ width: ['50%', '15%'], textAlign: ['right', 'left'] }}>
-            <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
+            <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
               Voting Power
             </Text>
           </Box>
           <Box sx={{ width: '30%', textAlign: 'left', display: ['none', 'block'] }}>
-            <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
+            <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
               MKR
             </Text>
           </Box>
@@ -171,7 +171,7 @@ export default function TopDelegates({
                     }}
                   >
                     <Box sx={{ width: '50%' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
+                      <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
                         Delegators
                       </Text>
                       <Text>
@@ -179,7 +179,7 @@ export default function TopDelegates({
                       </Text>
                     </Box>
                     <Box sx={{ width: '50%', textAlign: 'right' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
+                      <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
                         MKR
                       </Text>
                       <Text as="p">{formatValue(parseUnits(delegate.mkrDelegated))} MKR </Text>

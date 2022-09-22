@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
-  const color = hasVoted || onBallot ? 'greenLinkHover' : 'textMuted';
+  const color = hasVoted || onBallot ? 'primary' : 'textSecondary';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
     ? 'You voted'

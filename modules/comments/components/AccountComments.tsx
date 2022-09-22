@@ -55,7 +55,7 @@ export default function AccountComments({ address }: { address: string }): React
               sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
               key={comment.address.address}
             >
-              <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
+              <Text as="p" variant="caps" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}
               </Text>
               <Text

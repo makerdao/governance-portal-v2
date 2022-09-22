@@ -17,9 +17,7 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
-      <Text variant="microHeading" color="onBackgroundAlt">
-        {txPending ? 'Transaction Pending' : 'Confirm Transaction'}
-      </Text>
+      <Text variant="microHeading">{txPending ? 'Transaction Pending' : 'Confirm Transaction'}</Text>
 
       <Flex sx={{ justifyContent: 'center', mt: 4 }}>
         <TxIndicators.Pending sx={{ width: 6 }} />
@@ -40,12 +38,12 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
 
       {!txPending && (
         <Box sx={{ mt: 4 }}>
-          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
             Please use your wallet to confirm this transaction.
           </Text>
           <Text
             as="p"
-            sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+            sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
             onClick={() => setTxId(null)}
           >
             Cancel
