@@ -4,10 +4,10 @@ import { ethers } from 'ethers';
 import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
-import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
-import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
+import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -127,7 +127,8 @@ export default withApiHandler(
         return res.status(400).json(error);
       }
 
-      const pollingContract = getArbitrumPollingContract();
+      //get arbitrum polling contract with relayer's signer
+      const pollingContract = getArbitrumPollingContractRelayProvider(network);
 
       // Extract the real address that will be used for voting (delegate contract, proxy contract or normal address)
       const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
@@ -244,7 +245,7 @@ export default withApiHandler(
       const v = Number('0x' + signature.slice(130, 132));
 
       const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
-      cacheSet(cacheKey, JSON.stringify(Date.now()), network, TEN_MINUTES_IN_MS);
+      cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
 
       const tx = await pollingContract[
         'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'

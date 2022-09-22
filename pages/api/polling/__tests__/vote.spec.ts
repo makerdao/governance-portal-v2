@@ -5,7 +5,7 @@ import { createMocks, RequestMethod } from 'node-mocks-http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getArbitrumPollingContract } from 'modules/polling/helpers/getArbitrumPollingContract';
+import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';
@@ -18,7 +18,7 @@ import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
-jest.mock('modules/polling/helpers/getArbitrumPollingContract');
+jest.mock('modules/polling/helpers/getArbitrumPollingContractRelayProvider');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
 jest.mock('modules/cache/cache');
 jest.mock('modules/polling/api/fetchPolls');
@@ -32,7 +32,7 @@ jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
-    (getArbitrumPollingContract as jest.Mock).mockReturnValue({
+    (getArbitrumPollingContractRelayProvider as jest.Mock).mockReturnValue({
       nonces: () => Promise.resolve(BigNumber.from('3')),
       vote: () => Promise.resolve(null),
       'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
