@@ -30,8 +30,16 @@ import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { getBlockExplorerName } from 'modules/web3/helpers/chain';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
-const PollingReview = ({ polls }: PollingReviewPageData) => {
+type PollingReviewProps = {
+  polls: Poll[];
+  network: SupportedNetworks;
+};
+
+const PollingReview = ({ polls, network }: PollingReviewProps) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
@@ -160,11 +168,30 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
             <Text as="p" sx={{ mt: 2 }}>
               Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes
             </Text>
-            <Flex sx={{ alignItems: 'center', mt: 1 }}>
-              <Icon name="info" color="textSecondary" />
-              <Text as="p" variant="secondary" sx={{ ml: 1 }}>
-                Your vote and comment may take a few minutes to appear in the Voting Portal
-              </Text>
+            <Flex sx={{ alignItems: 'center', mt: 1, gap: 1, flexWrap: 'wrap' }}>
+              <Flex sx={{ alignItems: 'center', gap: 1 }}>
+                <Icon name="info" color="textSecondary" />
+                <Text as="p" variant="secondary">
+                  Your vote and comment may take a few minutes to appear in the Voting Portal.
+                </Text>
+              </Flex>
+              {transaction?.hash && (
+                <ExternalLink
+                  title="See transaction details"
+                  href={getEtherscanLink(
+                    transaction.gaslessNetwork ?? network,
+                    transaction.hash,
+                    'transaction'
+                  )}
+                >
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Text sx={{ mr: 1, color: 'accentBlue' }} variant="secondary">
+                      View on {getBlockExplorerName(transaction.gaslessNetwork ?? network)}
+                    </Text>
+                    <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
+                  </Flex>
+                </ExternalLink>
+              )}
             </Flex>
           </Box>
         )}
@@ -369,7 +396,8 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: PollingRev
   }
 
   const props = {
-    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || []
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    network
   };
 
   return (
