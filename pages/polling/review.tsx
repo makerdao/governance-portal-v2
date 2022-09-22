@@ -168,7 +168,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
             <Text as="p" sx={{ mt: 2 }}>
               Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes
             </Text>
-            <Flex sx={{ alignItems: 'center', mt: 1, gap: 1 }}>
+            <Flex sx={{ alignItems: 'center', mt: 1, gap: 1, flexWrap: 'wrap' }}>
               <Flex sx={{ alignItems: 'center', gap: 1 }}>
                 <Icon name="info" color="textSecondary" />
                 <Text as="p" variant="secondary">
