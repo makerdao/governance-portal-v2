@@ -89,9 +89,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                         styles={{ color: 'inherit' }}
                       >
                         <Text sx={{ display: 'flex', alignItems: 'center' }}>
-                          {' '}
-                          The governance portal now supports gasless voting on L2{' '}
-                          <Icon name="lightningBolt" size={3} />. Learn more{' '}
+                          <Icon name="lightningBolt" size={3} /> Poll voting is now gasless. <b>Learn more</b>
                           <Icon name="chevron_right" size={2} ml={2} />
                         </Text>
                       </ExternalLink>
