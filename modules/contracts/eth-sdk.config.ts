@@ -1,5 +1,6 @@
 import type { EthSdkConfig } from '@dethcrypto/eth-sdk';
 import 'dotenv/config';
+import { ArbitrumPollingAddressMap } from '../web3/constants/addresses';
 
 declare let process: any;
 
@@ -47,12 +48,16 @@ const config: EthSdkConfig = {
       vow: '0x23f78612769b9013b3145E43896Fa1578cAa2c2a'
     },
     arbitrumGoerliTestnet: {
-      polling: '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050'
+      polling: ArbitrumPollingAddressMap['goerli']
+    },
+    arbitrumOne: {
+      polling: ArbitrumPollingAddressMap['mainnet']
     }
   },
   etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY || '' },
   etherscanURLs: {
-    arbitrumGoerliTestnet: 'https://goerli-rollup-explorer.arbitrum.io/api'
+    arbitrumGoerliTestnet: 'https://goerli-rollup-explorer.arbitrum.io/api',
+    arbitrumOne: 'https://api.arbiscan.io/api'
   }
 };
 

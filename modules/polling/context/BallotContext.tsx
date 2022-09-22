@@ -17,11 +17,10 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from 'modules/polling/helpers/parsePollOptions';
 import logger from 'lib/logger';
-import { ethers } from 'ethers';
-import PollingContractAbi from 'modules/contracts/abis/arbitrumTestnet/polling.json';
 import { ContractTransaction } from 'ethers';
 import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
+import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContractReadOnly';
 import { parseError } from '../helpers/handleErrors';
 
 type BallotSteps =
@@ -369,14 +368,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const optionIds = parsePollOptions(pollOptions);
 
-    const gaslessProvider = getGaslessProvider(network);
-    const pollingContract = new ethers.Contract(
-      // arbitrum testnet polling address,
-      // maybe we should use eth-sdk for this if it's supported
-      '0x4d196378e636D22766d6A9C6C6f4F32AD3ECB050',
-      PollingContractAbi,
-      gaslessProvider
-    );
+    const pollingContract = getArbitrumPollingContractReadOnly(network);
 
     const nonce = await pollingContract.nonces(account);
     const signatureValues = {
@@ -397,6 +389,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         },
         body: JSON.stringify({ ...signatureValues, signature, network })
       });
+
+      const gaslessProvider = getGaslessProvider(network);
 
       const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
       trackPollVote(voteTxCreator, getGaslessNetwork(network));

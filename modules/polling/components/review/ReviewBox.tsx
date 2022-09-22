@@ -23,6 +23,7 @@ import useSWR from 'swr';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';
+import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
 
 export default function ReviewBox({
   account,
@@ -62,8 +63,13 @@ export default function ReviewBox({
   const hasMkrRequired = precheckData?.hasMkrRequired;
   const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
   const alreadyVoted = precheckData?.alreadyVoted;
+  const cacheExpired =
+    precheckData?.recentlyUsedGaslessVoting &&
+    Date.now() - parseInt(precheckData?.recentlyUsedGaslessVoting) > GASLESS_RATE_LIMIT_IN_MS;
   const validationPassed =
-    precheckData?.hasMkrRequired && !precheckData?.recentlyUsedGaslessVoting && !precheckData?.alreadyVoted;
+    precheckData?.hasMkrRequired &&
+    (!precheckData?.recentlyUsedGaslessVoting || cacheExpired) &&
+    !precheckData?.alreadyVoted;
 
   // Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = getConnection(connector).type === ConnectionType.GNOSIS_SAFE;
