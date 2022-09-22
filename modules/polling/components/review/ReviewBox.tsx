@@ -47,7 +47,8 @@ export default function ReviewBox({
     submissionMethod,
     setSubmissionMethod,
     submitBallot,
-    submitBallotGasless
+    submitBallotGasless,
+    submissionError
   } = useContext(BallotContext);
   const { network, connector } = useWeb3();
 
@@ -105,6 +106,8 @@ export default function ReviewBox({
     }
     setCommentsLoading(false);
   };
+
+  const displayError = submissionError || 'Something went wrong with your transaction.';
 
   return (
     <Box>
@@ -471,7 +474,7 @@ export default function ReviewBox({
             Transaction Failed.
           </Text>
           <Text mt={3} as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-            Something went wrong with your transaction. Please try again.
+            {displayError} Please try again.
           </Text>
           <Flex sx={{ justifyContent: 'center' }}>
             <InternalLink href={'/polling/review'} title="Back">

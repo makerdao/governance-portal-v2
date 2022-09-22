@@ -71,13 +71,8 @@ export async function signTypedBallotData(
   message: BallotDataValues,
   provider: JsonRpcProvider | Web3Provider,
   network: SupportedNetworks
-): Promise<string | null> {
+): Promise<string> {
   const typedData = JSON.stringify(getTypedBallotData(message, network));
 
-  try {
-    return provider.send('eth_signTypedData_v4', [message.voter, typedData]);
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    return null;
-  }
+  return provider.send('eth_signTypedData_v4', [message.voter, typedData]);
 }
