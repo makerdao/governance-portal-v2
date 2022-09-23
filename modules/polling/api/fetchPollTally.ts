@@ -15,6 +15,7 @@ import { InstantRunoffResults } from '../types/instantRunoff';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
+import { isExponential } from 'lib/utils';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -216,6 +217,27 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
           ? instantRunoffOption?.mkrSupport || new BigNumber(0)
           : votesInfo[optionId] || new BigNumber(0);
 
+      let firstPct: string | number = 0;
+      let transferPct: string | number = 0;
+
+      if (totalMkrParticipation.gt(0)) {
+        const firstPctBn = new BigNumber(mkrSupport).div(totalMkrParticipation).times(100);
+
+        // If firstPct has too many decimal places it will be cast as an exponential number, in which case we instead cast as a string
+        firstPct = isExponential(firstPctBn.toNumber()) ? firstPctBn.toFixed(18) : firstPctBn.toNumber();
+
+        if (instantRunoffOption?.transfer) {
+          const transferPctBn = new BigNumber(instantRunoffOption?.transfer)
+            .div(totalMkrParticipation)
+            .times(100);
+
+          // Same situation for transferPct, cast as a string with regular notation if necessary
+          transferPct = isExponential(transferPctBn.toNumber())
+            ? transferPctBn.toFixed(18)
+            : transferPctBn.toNumber();
+        }
+      }
+
       return {
         optionId,
         winner: winnerOption.winner === optionId,
@@ -223,13 +245,8 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
         optionName: poll.options[optionId],
         eliminated: instantRunoffOption?.eliminated,
         transfer: instantRunoffOption?.transfer?.toString(),
-        firstPct: totalMkrParticipation.gt(0)
-          ? new BigNumber(mkrSupport).div(totalMkrParticipation).times(100).toNumber()
-          : 0,
-        transferPct:
-          totalMkrParticipation.gt(0) && instantRunoffOption?.transfer
-            ? new BigNumber(instantRunoffOption?.transfer).div(totalMkrParticipation).times(100).toNumber()
-            : 0
+        firstPct,
+        transferPct
       };
     })
     .sort((a, b) => {
