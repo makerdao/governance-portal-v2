@@ -51,7 +51,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
     setShowMarkdownModal(!showMarkdownModal);
   };
 
-  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
+  const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount, txId } =
     useContext(BallotContext);
 
   const [transactionStatus, setTransactionStatus] = useState('default');
@@ -290,7 +290,10 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                                 }}
                                 value={ballot[poll.pollId].comment || ''}
                                 disabled={
-                                  transactionStatus === 'pending' || transactionStatus === 'initialized'
+                                  ballotStep === 'submitting' ||
+                                  ballotStep === 'awaiting-relayer' ||
+                                  transactionStatus === 'pending' ||
+                                  transactionStatus === 'initialized'
                                 }
                               />
                             </Box>
