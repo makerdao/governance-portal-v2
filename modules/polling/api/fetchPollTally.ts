@@ -224,11 +224,11 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
         eliminated: instantRunoffOption?.eliminated,
         transfer: instantRunoffOption?.transfer?.toString(),
         firstPct: totalMkrParticipation.gt(0)
-          ? new BigNumber(mkrSupport).div(totalMkrParticipation).times(100).toNumber()
+          ? new BigNumber(mkrSupport).div(totalMkrParticipation).times(100).toFixed()
           : 0,
         transferPct:
           totalMkrParticipation.gt(0) && instantRunoffOption?.transfer
-            ? new BigNumber(instantRunoffOption?.transfer).div(totalMkrParticipation).times(100).toNumber()
+            ? new BigNumber(instantRunoffOption?.transfer).div(totalMkrParticipation).times(100).toFixed()
             : 0
       };
     })
