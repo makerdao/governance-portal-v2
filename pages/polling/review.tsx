@@ -51,7 +51,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
     setShowMarkdownModal(!showMarkdownModal);
   };
 
-  const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount, txId } =
+  const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
 
   const [transactionStatus, setTransactionStatus] = useState('default');
