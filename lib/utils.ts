@@ -236,3 +236,7 @@ export function openWindowWithUrl(url: string): void {
 
   windowOpen(url, windowConfig);
 }
+
+export function isExponential(numberToCheck: number): boolean {
+  return numberToCheck.toString().includes('e');
+}
