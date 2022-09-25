@@ -7,7 +7,7 @@ import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-clien
 
 export const relayerCredentials = {
   mainnet: { apiKey: config.DEFENDER_API_KEY_MAINNET, apiSecret: config.DEFENDER_API_SECRET_MAINNET },
-  goerli: { apiKey: config.DEFENDER_API_SECRET_TESTNET, apiSecret: config.DEFENDER_API_SECRET_TESTNET }
+  goerli: { apiKey: config.DEFENDER_API_KEY_TESTNET, apiSecret: config.DEFENDER_API_SECRET_TESTNET }
 };
 
 export const arbitrumSdkGenerators: ArbitrumSdkGenerators = {
