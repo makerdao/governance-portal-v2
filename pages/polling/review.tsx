@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -51,14 +51,8 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
     setShowMarkdownModal(!showMarkdownModal);
   };
 
-  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
+  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount, ballotStep } =
     useContext(BallotContext);
-
-  const [transactionStatus, setTransactionStatus] = useState('default');
-
-  useEffect(() => {
-    setTransactionStatus(transaction?.status || 'default');
-  }, [transaction]);
 
   const { account, votingAccount } = useAccount();
 
@@ -290,7 +284,9 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                                 }}
                                 value={ballot[poll.pollId].comment || ''}
                                 disabled={
-                                  transactionStatus === 'pending' || transactionStatus === 'initialized'
+                                  transaction?.status === 'pending' ||
+                                  transaction?.status === 'initialized' ||
+                                  ballotStep === 'awaiting-relayer'
                                 }
                               />
                             </Box>
