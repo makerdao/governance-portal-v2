@@ -21,7 +21,6 @@ import { ContractTransaction } from 'ethers';
 import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
 import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContractReadOnly';
-import { parseError } from '../helpers/handleErrors';
 
 type BallotSteps =
   | 'initial'
@@ -38,6 +37,7 @@ import { useAllUserVotes } from '../hooks/useAllUserVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
+import { parseTxError } from 'modules/web3/helpers/errors';
 
 interface ContextProps {
   ballot: Ballot;
@@ -316,7 +316,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`
             );
         },
-        error: () => {
+        error: (txId, error) => {
+          setSubmissionError(error);
           setStep('tx-error');
           toast.error('Error submitting ballot');
         }
@@ -378,26 +379,37 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000) //8 hour expiry
     };
+
+    let signature;
     try {
-      const signature = await signTypedBallotData(signatureValues, provider, network);
+      signature = await signTypedBallotData(signatureValues, provider, network);
       setStep('awaiting-relayer');
-
-      const gaslessTx = await fetchJson(`/api/polling/vote?network=${network}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ...signatureValues, signature, network })
-      });
-
-      const gaslessProvider = getGaslessProvider(network);
-
-      const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
-      trackPollVote(voteTxCreator, getGaslessNetwork(network));
     } catch (error) {
       toast.error(error);
-      setSubmissionError(parseError(error));
+      setSubmissionError(parseTxError(error));
       setStep('tx-error');
+    }
+
+    if (signature) {
+      try {
+        const gaslessTx = await fetchJson(`/api/polling/vote?network=${network}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ ...signatureValues, signature, network })
+        });
+
+        const gaslessProvider = getGaslessProvider(network);
+
+        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
+        trackPollVote(voteTxCreator, getGaslessNetwork(network));
+      } catch (error) {
+        const errorMessage = error.message ? error.message : error;
+        toast.error(errorMessage);
+        setSubmissionError(errorMessage);
+        setStep('tx-error');
+      }
     }
   };
 
