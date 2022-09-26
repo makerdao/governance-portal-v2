@@ -1,9 +1,27 @@
-export const TX_NOT_ENOUGH_FUNDS = "sender doesn't have enough funds to send tx";
+import { getMessageFromCode } from 'eth-rpc-errors';
 
-export function parseTxError(_error): string {
-  const error = _error.message ? _error.message : _error;
-  if (error.includes("sender doesn't have enough funds to send tx")) {
+export const TX_NOT_ENOUGH_FUNDS = "Sender doesn't have enough funds to send the transaction";
+export const USER_REJECTED = 'User rejected the transaction';
+
+export function parseTxError(error: Error): string {
+  const defaultError = 'Something went wrong with your transaction.';
+
+  const message = error.message ? error.message : defaultError;
+  if (message.includes("sender doesn't have enough funds to send tx")) {
     return TX_NOT_ENOUGH_FUNDS;
   }
-  return error;
+
+  if (message.includes('user rejected transaction')) {
+    return USER_REJECTED;
+  }
+
+  // First check if it's a Metamask error
+  if (error['code']) {
+    const extracted = getMessageFromCode(error['code']);
+    if (extracted) {
+      return extracted;
+    }
+  }
+
+  return message;
 }

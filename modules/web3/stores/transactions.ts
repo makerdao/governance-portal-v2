@@ -5,6 +5,7 @@ import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
 import { SupportedNetworks } from '../constants/networks';
+import { parseError } from 'modules/polling/helpers/handleErrors';
 
 export type TxCallbacks = {
   initialized?: (txId: string) => void;
@@ -19,7 +20,7 @@ type Store = {
   setMessage: (txId: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
-  setError: (txId: string, error?: { message: string }) => void;
+  setError: (txId: string, error?: Error) => void;
   track: (
     txCreator: () => Promise<ContractTransaction>,
     account?: string,
@@ -107,7 +108,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       const nextState: TXError = {
         ...prevState,
         status,
-        error: error?.message ? parseTxError(error.message) : null,
+        error: error ? parseTxError(error) : null,
         errorType: transactions[transactionIndex].hash ? 'failed' : 'not sent'
       };
 
@@ -138,7 +139,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       tx = await txPromise;
     } catch (e) {
       get().setError(txId, e);
-      if (typeof callbacks?.error === 'function') callbacks.error(txId, e);
+      if (typeof callbacks?.error === 'function') callbacks.error(txId, parseTxError(e));
       return;
     }
     // We are in "pending" state because the txn has now been been sent
@@ -153,7 +154,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       })
       .catch(e => {
         get().setError(txId, e);
-        if (typeof callbacks?.error === 'function') callbacks.error(txId, e);
+        if (typeof callbacks?.error === 'function') callbacks.error(txId, parseTxError(e));
       });
   }
 }));
