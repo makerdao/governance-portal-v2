@@ -37,7 +37,7 @@ export function ListVoteSummary({
               sx={{
                 fontSize: isApproval ? 2 : index === 0 ? 2 : 1,
                 fontWeight: 'normal',
-                color: getVoteColor(choice, poll.parameters, index === 0),
+                color: getVoteColor(choice, poll.parameters),
                 textAlign: align
               }}
               title={choiceText}

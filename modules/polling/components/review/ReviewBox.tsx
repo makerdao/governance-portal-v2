@@ -184,7 +184,7 @@ export default function ReviewBox({
                     <Icon name="info" color="textSecondary" size={14} />
                   </Box>
                   <Text sx={{ fontSize: 1, color: 'textSecondary' }}>
-                    You don&apos;t need to change network.
+                    You won&apos;t need to switch network.
                   </Text>
                 </Flex>
                 <Button
@@ -202,10 +202,10 @@ export default function ReviewBox({
                 <Box>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 3 }}>
                     <LocalIcon name="sparkles" color="primary" size={3} />
-                    <Text sx={{ ml: 2 }}>The gas fee is covered by Maker.</Text>
+                    <Text sx={{ ml: 2 }}>The transaction fee is covered by Maker.</Text>
                   </Flex>
                   <Box>
-                    <ExternalLink title="View on etherscan" href={'vote.makerdao.com'}>
+                    <ExternalLink title="Learn more" href={'https://manual.makerdao.com/'}>
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
                         <Icon ml={2} name="arrowTopRight" size={2} />
@@ -298,10 +298,12 @@ export default function ReviewBox({
                     <Text as="p" variant="caps">
                       Eligibility Criteria
                     </Text>
-                    <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
-                      Learn more
-                      <Icon ml={2} name="arrowTopRight" size={2} />
-                    </Text>
+                    <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
+                      <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
+                        Learn more
+                        <Icon ml={2} name="arrowTopRight" size={2} />
+                      </Text>
+                    </ExternalLink>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>

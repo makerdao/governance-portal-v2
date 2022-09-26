@@ -1,22 +1,26 @@
 import { PollParameters } from '../types';
 import { isInputFormatChooseFree, isInputFormatRankFree, isResultDisplayApprovalBreakdown } from './utils';
 
-export const getVoteColor = (optionId: number, pollParameters: PollParameters, text = true): string => {
-  const abstainOption = '#708390';
-  const noOption = '#F75524';
-  const yesOption = '#1AAB9B';
+export const getVoteColor = (optionId: number, pollParameters: PollParameters, hex = false): string => {
+  const abstainOptionHex = '#708390';
+  const abstainOption = 'onSurface';
+
+  const noOptionHex = '#F75524';
+  const noOption = 'warning';
+
+  const yesOptionHex = '#1AAB9B';
+  const yesOption = 'primary';
 
   if (pollParameters.inputFormat.abstain.indexOf(optionId) !== -1) {
-    return abstainOption;
+    return hex ? abstainOptionHex : abstainOption;
   }
 
   if (isResultDisplayApprovalBreakdown(pollParameters)) {
-    return 'text';
+    return hex ? '#231536' : 'text';
   }
 
   if (isInputFormatRankFree(pollParameters)) {
-    if (text) return 'text';
-    return abstainOption;
+    return hex ? abstainOptionHex : abstainOption;
   }
 
   if (isInputFormatChooseFree(pollParameters)) {
@@ -29,5 +33,11 @@ export const getVoteColor = (optionId: number, pollParameters: PollParameters, t
     2: noOption
   };
 
-  return colors[optionId];
+  const colorsHex = {
+    0: abstainOptionHex,
+    1: yesOptionHex,
+    2: noOptionHex
+  };
+
+  return hex ? colorsHex[optionId] : colors[optionId];
 };

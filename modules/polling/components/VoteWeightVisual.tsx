@@ -18,6 +18,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
   if (!poll || !tally || !diameter) return <Box>Loading</Box>;
   const ref = useRef<SVGSVGElement>(null);
   const router = useRouter();
+
   const { data: delegateAddresses } = useDelegateAddressMap();
 
   const data = {
@@ -72,7 +73,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
         return d.r;
       })
       .style('fill', d => {
-        return getVoteColor(d.data.ballot[0], poll.parameters, false);
+        return getVoteColor(d.data.ballot[0], poll.parameters, true);
       })
       .style('cursor', 'pointer')
       .on('click', handleVoterClick);
