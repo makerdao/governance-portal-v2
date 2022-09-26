@@ -1,6 +1,6 @@
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
-import { ThemeProvider, Flex } from 'theme-ui';
+import { ThemeProvider, Flex, Text } from 'theme-ui';
 import { Global } from '@emotion/core';
 import { ethers } from 'ethers';
 import '@reach/dialog/styles.css';
@@ -26,6 +26,8 @@ import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
 import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
 import { Web3Provider } from 'modules/web3/components/Web3Provider';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -78,6 +80,21 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   />
                   {activeBannerContent && <Banner content={activeBannerContent.content} />}
                   <MigrationBanner />
+                  <Banner
+                    variant={'primary'}
+                    content={
+                      <ExternalLink
+                        href="https://makerdao.com"
+                        title="Learn more about gasless voting"
+                        styles={{ color: 'inherit' }}
+                      >
+                        <Text sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Icon name="lightningBolt" size={3} /> Poll voting is now gasless. <b>Learn more</b>
+                          <Icon name="chevron_right" size={2} ml={2} />
+                        </Text>
+                      </ExternalLink>
+                    }
+                  />
                   <Flex
                     sx={{
                       flexDirection: 'column',
