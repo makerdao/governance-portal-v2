@@ -400,8 +400,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
           body: JSON.stringify({ ...signatureValues, signature, network })
         });
 
-        console.log('TAGASS', gaslessTx);
-
         const gaslessProvider = getGaslessProvider(network);
 
         const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
