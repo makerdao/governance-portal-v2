@@ -5,7 +5,6 @@ import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
 import { SupportedNetworks } from '../constants/networks';
-import { parseError } from 'modules/polling/helpers/handleErrors';
 
 export type TxCallbacks = {
   initialized?: (txId: string) => void;
