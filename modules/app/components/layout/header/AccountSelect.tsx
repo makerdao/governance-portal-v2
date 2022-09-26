@@ -129,7 +129,7 @@ const AccountSelect = (): React.ReactElement => {
       sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}
     >
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={SUPPORTED_WALLETS[connectionName].name} />
+        <Icon name={SUPPORTED_WALLETS[connectionName].name} color="text" />
         <Text sx={{ ml: 3 }}>{SUPPORTED_WALLETS[connectionName].name}</Text>
       </Flex>
       <Button

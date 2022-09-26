@@ -26,6 +26,7 @@ import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
 import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
 import { Web3Provider } from 'modules/web3/components/Web3Provider';
+import GaslessBanner from 'modules/polling/components/GaslessBanner';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -78,6 +79,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   />
                   {activeBannerContent && <Banner content={activeBannerContent.content} />}
                   <MigrationBanner />
+                  <GaslessBanner />
                   <Flex
                     sx={{
                       flexDirection: 'column',
