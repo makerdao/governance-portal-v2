@@ -206,6 +206,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       <EtherScanLink
                         hash={v.hash}
                         type="transaction"
+                        styles={{ justifyContent: 'flex-end' }}
                         network={chainIdToNetworkName(v.chainId)}
                         prefix=""
                       />

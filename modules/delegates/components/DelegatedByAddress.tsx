@@ -148,16 +148,11 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   sx={{
                     justifyContent: 'flex-end',
                     lineHeight: '20px',
+                    fontSize: 1,
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <EtherScanLink
-                    showBlockExplorerName={false}
-                    type="transaction"
-                    network={network}
-                    hash={hash as string}
-                    prefix=""
-                  />
+                  <EtherScanLink type="transaction" network={network} hash={hash as string} prefix="" />
                 </Flex>
               );
             })}

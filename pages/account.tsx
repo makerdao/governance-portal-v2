@@ -112,7 +112,12 @@ const AccountPage = (): React.ReactElement => {
                   <Box sx={{ mb: 2 }}>
                     <Label>Previous delegate contract address:</Label>
 
-                    <EtherScanLink type="address" showAddress hash={previousOwnerAddress} network={network} />
+                    <EtherScanLink
+                      type="address"
+                      showAddress
+                      hash={previousOwnerContractAddress}
+                      network={network}
+                    />
                   </Box>
                 )}
                 {voteDelegateContractAddress && !modalOpen && (

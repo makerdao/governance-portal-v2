@@ -66,7 +66,7 @@ export default function AddressIconBox({
         }}
       >
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
-          <Flex>
+          <Flex sx={{ alignItems: 'center' }}>
             {delegateAddresses[address] ? (
               <Text>
                 {limitTextLength
@@ -79,15 +79,13 @@ export default function AddressIconBox({
               </Text>
             )}
             {showExternalLink && (
-              <Box sx={{ fontSize: [1, 3] }}>
-                <EtherScanLink
-                  showBlockExplorerName={false}
-                  prefix=""
-                  type="address"
-                  network={network}
-                  hash={address}
-                />
-              </Box>
+              <EtherScanLink
+                showBlockExplorerName={false}
+                prefix=""
+                type="address"
+                network={network}
+                hash={address}
+              />
             )}
           </Flex>
           {isOwner && (

@@ -1,5 +1,5 @@
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { Box, Button, Text } from 'theme-ui';
+import { Box, Button, Text, ThemeUIStyleObject } from 'theme-ui';
 import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
 import { getBlockExplorerName, networkNameToChainId } from '../helpers/chain';
 import { getEtherscanLink } from '../helpers/getEtherscanLink';
@@ -15,7 +15,8 @@ export default function EtherScanLink({
   showBlockExplorerName = true,
   prefix = 'View on ',
   suffix = '',
-  variant = 'box'
+  variant = 'box',
+  styles
 }: {
   network: SupportedNetworks;
   hash: string;
@@ -25,6 +26,7 @@ export default function EtherScanLink({
   prefix?: string;
   suffix?: string;
   variant?: 'box' | 'button';
+  styles?: ThemeUIStyleObject;
 }): React.ReactElement {
   const blockExplorerName = getBlockExplorerName(network);
   const chainId = networkNameToChainId(network);
@@ -32,7 +34,9 @@ export default function EtherScanLink({
 
   const content = (
     <ExternalLink href={getEtherscanLink(network, hash, type)} title={`View on ${blockExplorerName}`}>
-      <Text sx={{ textAlign: 'center', fontSize: 14, color: 'inherit' }}>
+      <Text
+        sx={{ color: 'inherit', display: 'flex', alignItems: 'center', width: '100%', ...(styles || {}) }}
+      >
         {showAddress && formatAddress(hash)}
         {!showAddress && (
           <React.Fragment>
