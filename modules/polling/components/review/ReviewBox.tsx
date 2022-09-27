@@ -24,6 +24,8 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
+import { formatValue } from 'lib/string';
+import { parseEther } from 'ethers/lib/utils';
 
 export default function ReviewBox({
   account,
@@ -66,10 +68,13 @@ export default function ReviewBox({
   const cacheExpired =
     precheckData?.recentlyUsedGaslessVoting &&
     Date.now() - parseInt(precheckData?.recentlyUsedGaslessVoting) > GASLESS_RATE_LIMIT_IN_MS;
+  const relayFunded = parseEther(precheckData?.relayBalance || '0').gt(0);
+
   const validationPassed =
     precheckData?.hasMkrRequired &&
     (!precheckData?.recentlyUsedGaslessVoting || cacheExpired) &&
-    !precheckData?.alreadyVoted;
+    !precheckData?.alreadyVoted &&
+    relayFunded;
 
   // Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
   const isGnosisSafe = getConnection(connector).type === ConnectionType.GNOSIS_SAFE;
@@ -357,6 +362,33 @@ export default function ReviewBox({
                     </Text>
                     <Text>
                       {!isGnosisSafe ? (
+                        <Icon name="checkmark" color="bull" size={'13px'} />
+                      ) : (
+                        <Icon name="close" color="bear" size={'13px'} />
+                      )}
+                    </Text>
+                  </Flex>
+                </Flex>
+                <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text as="p" variant="caps">
+                      RELAYER BALANCE
+                    </Text>
+                    <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
+                      <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
+                        Learn more
+                        <Icon ml={2} name="arrowTopRight" size={2} />
+                      </Text>
+                    </ExternalLink>
+                  </Flex>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                    {precheckData?.relayBalance && (
+                      <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                        {formatValue(parseEther(precheckData.relayBalance), 'wad', 4)} ETH
+                      </Text>
+                    )}
+                    <Text>
+                      {relayFunded ? (
                         <Icon name="checkmark" color="bull" size={'13px'} />
                       ) : (
                         <Icon name="close" color="bear" size={'13px'} />
