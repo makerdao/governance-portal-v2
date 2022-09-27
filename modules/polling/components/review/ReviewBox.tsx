@@ -10,8 +10,6 @@ import LocalIcon from 'modules/app/components/Icon';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { getBlockExplorerName } from 'modules/web3/helpers/chain';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
@@ -24,6 +22,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 export default function ReviewBox({
   account,
@@ -321,7 +320,7 @@ export default function ReviewBox({
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Address has not used the relayer in last 10 minutes
+                      Address has not used the relayer in the last 10 minutes
                     </Text>
                     <Text>
                       {!precheckData ? (
@@ -335,7 +334,7 @@ export default function ReviewBox({
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Address has voted more than once in any included poll
+                      Address has not voted more than once in any included poll
                     </Text>
                     <Text>
                       {!precheckData ? (
@@ -449,20 +448,11 @@ export default function ReviewBox({
             Transaction Pending
           </Text>
 
-          <ExternalLink
-            href={getEtherscanLink(
-              transaction?.gaslessNetwork ?? network,
-              (transaction as TXMined).hash,
-              'transaction'
-            )}
-            styles={{ p: 0, mt: 3 }}
-            title="View on block explorer"
-          >
-            <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-              View on {getBlockExplorerName(transaction?.gaslessNetwork ?? network)}
-              <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-            </Text>
-          </ExternalLink>
+          <EtherScanLink
+            type="transaction"
+            hash={(transaction as TXMined).hash}
+            network={transaction?.gaslessNetwork ?? network}
+          />
         </Card>
       )}
 

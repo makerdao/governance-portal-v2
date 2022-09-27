@@ -4,10 +4,8 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
-import { cutMiddle } from 'lib/string';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;
@@ -94,15 +92,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                         </Text>
                       </td>
                       <td>
-                        <ExternalLink
-                          href={getEtherscanLink(network, action.txFrom, 'address')}
-                          styles={{ color: 'accentBlue' }}
-                          title="View on etherscan"
-                        >
-                          <Text as="p" color="accentBlue" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
-                            {cutMiddle(action.txFrom, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
-                          </Text>
-                        </ExternalLink>
+                        <EtherScanLink type="address" showAddress hash={action.txFrom} network={network} />
                       </td>
                     </tr>
                   );

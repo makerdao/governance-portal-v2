@@ -1,8 +1,6 @@
 import { Box, Flex, Text } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
 import { isInputFormatRankFree } from '../helpers/utils';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -12,9 +10,8 @@ import VotedOption from './VotedOption';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
-import { CHAIN_INFO } from 'modules/web3/constants/networks';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const bpi = useBreakpointIndex();
@@ -112,21 +109,12 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
         </Flex>
 
         <Box>
-          <ExternalLink
-            title="See transaction details"
-            href={getEtherscanLink(chainIdToNetworkName(vote.chainId), vote.hash, 'transaction')}
-          >
-            <Flex sx={{ alignItems: 'center' }}>
-              {CHAIN_INFO[vote.chainId].type === 'gasless' && (
-                <Icon name="lightningBolt" color="primary" size={3} />
-              )}
-
-              <Text sx={{ mr: 1, display: 'block' }}>
-                {CHAIN_INFO[vote.chainId] ? CHAIN_INFO[vote.chainId].blockExplorerName : 'Unknown'}
-              </Text>
-              <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
-            </Flex>
-          </ExternalLink>
+          <EtherScanLink
+            hash={vote.hash}
+            type="transaction"
+            network={chainIdToNetworkName(vote.chainId)}
+            prefix=""
+          />
         </Box>
       </Flex>
     </Box>

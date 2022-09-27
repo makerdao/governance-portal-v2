@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'lib/bigNumberJs';
 import { PollTally, Poll } from 'modules/polling/types';
@@ -9,11 +9,9 @@ import { parseUnits } from 'ethers/lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
 import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
-import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import VotedOption from './VotedOption';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type Props = {
   tally: PollTally;
@@ -205,21 +203,12 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       data-testid={`vote-mkr-${v.hash}`}
                       sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                     >
-                      <ExternalLink
-                        title="See transaction details"
-                        href={getEtherscanLink(chainIdToNetworkName(v.chainId), v.hash, 'transaction')}
-                      >
-                        <Flex sx={{ alignItems: 'center' }}>
-                          {CHAIN_INFO[v.chainId].type === 'gasless' && (
-                            <Icon name="lightningBolt" color="primary" size={3} />
-                          )}
-
-                          <Text sx={{ mr: 1, display: 'block' }}>
-                            {CHAIN_INFO[v.chainId] ? CHAIN_INFO[v.chainId].blockExplorerName : 'Unknown'}
-                          </Text>
-                          <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
-                        </Flex>
-                      </ExternalLink>
+                      <EtherScanLink
+                        hash={v.hash}
+                        type="transaction"
+                        network={chainIdToNetworkName(v.chainId)}
+                        prefix=""
+                      />
                     </Text>
                   )}
                 </tr>

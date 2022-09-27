@@ -11,12 +11,12 @@ import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import TooltipComponent from './Tooltip';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type StatField =
   | 'chief contract'
@@ -48,9 +48,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {chiefAddress ? (
-              <ExternalLink href={getEtherscanLink(network, chiefAddress, 'address')} target="_blank">
-                <Text>{formatAddress(chiefAddress)}</Text>
-              </ExternalLink>
+              <EtherScanLink hash={chiefAddress} type="address" network={network} showAddress />
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -102,9 +100,7 @@ export default function SystemStatsSidebar({
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
-              <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
-                <Text>{formatAddress(pollingAddress)}</Text>
-              </ExternalLink>
+              <EtherScanLink hash={pollingAddress} type="address" network={network} showAddress />
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -136,9 +132,7 @@ export default function SystemStatsSidebar({
             </TooltipComponent>
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
-              <Text>{formatAddress(pollingAddress)}</Text>
-            </ExternalLink>
+            <EtherScanLink hash={pollingAddress} type="address" network={network} showAddress />
           </Text>
         </Flex>
       ) : null;
@@ -156,12 +150,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Arbitrum Polling Contract</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
-              <ExternalLink
-                href={getEtherscanLink(arbitrumNetwork, pollingAddress, 'address')}
-                target="_blank"
-              >
-                <Text>{formatAddress(pollingAddress)}</Text>
-              </ExternalLink>
+              <EtherScanLink showAddress type="address" network={arbitrumNetwork} hash={pollingAddress} />
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />

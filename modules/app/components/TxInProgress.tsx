@@ -1,10 +1,8 @@
 import { Flex, Text, Box } from '@theme-ui/components';
-import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type Props = {
   tx: any;
@@ -23,18 +21,7 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
         <TxIndicators.Pending sx={{ width: 6 }} />
       </Flex>
 
-      {txPending && (
-        <ExternalLink
-          href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
-          styles={{ my: 3 }}
-          title="View on etherscan"
-        >
-          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-            View on Etherscan
-            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-          </Text>
-        </ExternalLink>
-      )}
+      {txPending && <EtherScanLink hash={(tx as TXMined).hash} type="transaction" network={network} />}
 
       {!txPending && (
         <Box sx={{ mt: 4 }}>

@@ -1,16 +1,14 @@
 import BigNumber from 'lib/bigNumberJs';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { formatAddress } from 'lib/utils';
 import { Box, Card, Flex, Heading, Text } from 'theme-ui';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { DelegatesAPIStats } from '../types';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 export function DelegatesSystemInfo({
   stats,
@@ -74,12 +72,7 @@ export function DelegatesSystemInfo({
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
             {delegateFactoryAddress ? (
-              <ExternalLink
-                href={getEtherscanLink(network, delegateFactoryAddress, 'address')}
-                title="View address on Etherscan"
-              >
-                <Text>{formatAddress(delegateFactoryAddress)}</Text>
-              </ExternalLink>
+              <EtherScanLink type="address" showAddress hash={delegateFactoryAddress} network={network} />
             ) : (
               <Box sx={{ width: 6 }}>
                 <SkeletonThemed />

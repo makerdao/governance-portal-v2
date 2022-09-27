@@ -46,5 +46,5 @@ export const getGaslessProvider = (network: SupportedNetworks): ethers.providers
 export const getBlockExplorerName = (network: SupportedNetworks): BlockExplorer => {
   const chainId = networkNameToChainId(network);
   if (!CHAIN_INFO) return 'block explorer';
-  return CHAIN_INFO[chainId].blockExplorerName;
+  return CHAIN_INFO[chainId]?.blockExplorerName || 'block explorer';
 };

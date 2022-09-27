@@ -2,12 +2,11 @@ import { Flex, Button, Text, Grid, Close, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 const ModalContent = ({
   setShowDialog,
@@ -101,16 +100,9 @@ const ModalContent = ({
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
           Shutdown will update once the transaction has been confirmed.
         </Text>
-        <ExternalLink
-          href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
-          styles={{ p: 0 }}
-          title="View on etherscan"
-        >
-          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-            View on Etherscan
-            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-          </Text>
-        </ExternalLink>
+
+        <EtherScanLink hash={(tx as TXMined).hash} type="transaction" network={network} />
+
         <Button
           onClick={close}
           sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}

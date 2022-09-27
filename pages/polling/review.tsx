@@ -30,9 +30,7 @@ import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { getBlockExplorerName } from 'modules/web3/helpers/chain';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type PollingReviewProps = {
   polls: Poll[];
@@ -170,21 +168,11 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                 </Text>
               </Flex>
               {transaction?.hash && (
-                <ExternalLink
-                  title="See transaction details"
-                  href={getEtherscanLink(
-                    transaction.gaslessNetwork ?? network,
-                    transaction.hash,
-                    'transaction'
-                  )}
-                >
-                  <Flex sx={{ alignItems: 'center' }}>
-                    <Text sx={{ mr: 1, color: 'accentBlue' }} variant="secondary">
-                      View on {getBlockExplorerName(transaction.gaslessNetwork ?? network)}
-                    </Text>
-                    <Icon sx={{ ml: 'auto' }} name="arrowTopRight" size={2} color="accentBlue" />
-                  </Flex>
-                </ExternalLink>
+                <EtherScanLink
+                  hash={transaction.hash}
+                  type="transaction"
+                  network={transaction.gaslessNetwork ?? network}
+                />
               )}
             </Flex>
           </Box>

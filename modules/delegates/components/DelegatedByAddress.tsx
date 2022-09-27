@@ -2,12 +2,10 @@ import { useMemo, useState } from 'react';
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -16,6 +14,7 @@ import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -152,15 +151,13 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <ExternalLink
-                    href={getEtherscanLink(network, hash as string, 'transaction')}
-                    title="View on Etherscan"
-                    styles={{
-                      textAlign: 'right'
-                    }}
-                  >
-                    <Icon name="arrowTopRight" size={2} />
-                  </ExternalLink>
+                  <EtherScanLink
+                    showBlockExplorerName={false}
+                    type="transaction"
+                    network={network}
+                    hash={hash as string}
+                    prefix=""
+                  />
                 </Flex>
               );
             })}

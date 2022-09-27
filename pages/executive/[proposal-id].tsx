@@ -16,7 +16,6 @@ import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -27,7 +26,6 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
@@ -41,6 +39,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type Props = {
   proposal: Proposal;
@@ -184,14 +183,9 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
-                  <ExternalLink
-                    title="View on etherescan"
-                    href={getEtherscanLink(network, proposal.address, 'address')}
-                  >
-                    <Text sx={{ fontSize: [2, 5] }}>
-                      {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
-                    </Text>
-                  </ExternalLink>
+                  <Box sx={{ fontSize: [2, 5] }}>
+                    <EtherScanLink hash={proposal.address} type="address" network={network} showAddress />
+                  </Box>
                 }
                 label="Spell Address"
               />

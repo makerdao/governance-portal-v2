@@ -20,7 +20,6 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountComments from 'modules/comments/components/AccountComments';
@@ -29,9 +28,9 @@ import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import DelegateTags from './DelegateTags';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type PropTypes = {
   delegate: Delegate;
@@ -159,14 +158,17 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                       </Flex>
                     )}
                   </Flex>
-                  <ExternalLink
-                    href={getEtherscanLink(network, voteDelegateAddress, 'address')}
-                    title="View on etherescan"
-                  >
-                    <Text as="p" sx={{ fontSize: [1, 3], mt: [1, 0], fontWeight: 'semiBold' }}>
-                      Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
-                    </Text>
-                  </ExternalLink>
+
+                  <Box sx={{ fontSize: [1, 3], mt: [1, 0], fontWeight: 'semiBold' }}>
+                    <EtherScanLink
+                      showBlockExplorerName={false}
+                      type="address"
+                      prefix="Delegate contract"
+                      hash={voteDelegateAddress}
+                      network={network}
+                    />
+                  </Box>
+
                   <InternalLink href={`/address/${delegate.address}`} title="View address">
                     <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
                       Deployed by: <Address address={delegate.address} />

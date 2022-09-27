@@ -1,15 +1,15 @@
 import { useState, useMemo } from 'react';
-import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink } from 'theme-ui';
+import { Button, Flex, Close, Text, Box, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { usePollCreate } from '../hooks/usePollCreate';
+import EtherScanLink from 'modules/web3/components/EtherScanLink';
 
 type Props = {
   close: () => void;
@@ -148,16 +148,9 @@ const Pending = ({ tx, close }) => {
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
           Poll will be created once the transaction has been confirmed.
         </Text>
-        <ExternalLink
-          target="_blank"
-          href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
-          sx={{ p: 0 }}
-        >
-          <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-            View on Etherscan
-            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-          </Text>
-        </ExternalLink>
+
+        <EtherScanLink type="transaction" hash={(tx as TXMined).hash} network={network} />
+
         <Button
           onClick={close}
           sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
