@@ -180,12 +180,14 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <InternalLink href={'/polling'} title="View polling page">
-                <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
-                  <Icon name="chevron_left" size="2" mr={2} />
-                  Back to All Polls
-                </Button>
-              </InternalLink>
+              <Box>
+                <InternalLink href={'/polling'} title="View polling page">
+                  <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
+                    <Icon name="chevron_left" size="2" mr={2} />
+                    Back to All Polls
+                  </Button>
+                </InternalLink>
+              </Box>
               <Stack gap={3}>
                 {!account && (
                   <Text as="p" sx={{ mt: 3 }}>
