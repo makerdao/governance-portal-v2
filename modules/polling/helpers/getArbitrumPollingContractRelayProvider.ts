@@ -1,6 +1,7 @@
 import { Contract } from 'ethers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { arbitrumSdkGenerators, getArbitrumRelaySigner } from './getArbitrumRelaySigner';
+import { getArbitrumRelaySigner } from './getArbitrumRelaySigner';
+import { arbitrumSdkGenerators } from './utils';
 
 //Note that we'll get an error if we try to run this defender relay code on the frontend
 //So we should only import this function on the backend

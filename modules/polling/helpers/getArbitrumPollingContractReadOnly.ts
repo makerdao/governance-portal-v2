@@ -1,7 +1,7 @@
 import { Contract } from 'ethers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getGaslessProvider } from 'modules/web3/helpers/chain';
-import { arbitrumSdkGenerators } from './getArbitrumRelaySigner';
+import { arbitrumSdkGenerators } from './utils';
 
 export const getArbitrumPollingContractReadOnly = (network: SupportedNetworks): Contract => {
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
