@@ -452,6 +452,7 @@ export default function ReviewBox({
             type="transaction"
             hash={(transaction as TXMined).hash}
             network={transaction?.gaslessNetwork ?? network}
+            styles={{ justifyContent: 'center', width: '100%' }}
           />
         </Card>
       )}

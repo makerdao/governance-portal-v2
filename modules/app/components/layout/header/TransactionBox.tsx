@@ -43,7 +43,6 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         hash={tx.hash as string}
         type="transaction"
         network={tx.gaslessNetwork ? tx.gaslessNetwork : network}
-        variant="button"
       />
     </Flex>
   );

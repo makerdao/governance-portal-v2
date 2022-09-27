@@ -41,7 +41,12 @@ export const TxFinal = ({
       {children}
 
       <Box my={3}>
-        <EtherScanLink hash={(tx as TXMined).hash} type="transaction" network={network} />
+        <EtherScanLink
+          hash={(tx as TXMined).hash}
+          type="transaction"
+          network={network}
+          styles={{ justifyContent: 'center' }}
+        />
       </Box>
 
       <Button data-testid="txfinal-btn" onClick={onClick} sx={{ width: '100%', mt: 3 }}>

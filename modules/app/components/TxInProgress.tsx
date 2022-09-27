@@ -21,7 +21,14 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
         <TxIndicators.Pending sx={{ width: 6 }} />
       </Flex>
 
-      {txPending && <EtherScanLink hash={(tx as TXMined).hash} type="transaction" network={network} />}
+      {txPending && (
+        <EtherScanLink
+          hash={(tx as TXMined).hash}
+          type="transaction"
+          network={network}
+          styles={{ justifyContent: 'center' }}
+        />
+      )}
 
       {!txPending && (
         <Box sx={{ mt: 4 }}>
