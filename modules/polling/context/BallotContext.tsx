@@ -37,6 +37,7 @@ import { useAllUserVotes } from '../hooks/useAllUserVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
+import { parseTxError } from 'modules/web3/helpers/errors';
 
 interface ContextProps {
   ballot: Ballot;
@@ -55,6 +56,7 @@ interface ContextProps {
   commentsCount: number;
   setStep: (step: BallotSteps) => void;
   ballotStep: BallotSteps;
+  submissionError?: string;
   submissionMethod: BallotSubmissionMethod | null;
   setSubmissionMethod: (method: BallotSubmissionMethod) => void;
   close: () => void;
@@ -75,6 +77,7 @@ export const BallotContext = React.createContext<ContextProps>({
   commentsSignature: '',
   commentsCount: 0,
   setStep: (step: BallotSteps) => null,
+  submissionError: undefined,
   ballotStep: 'initial',
   submissionMethod: null,
   setSubmissionMethod: (method: BallotSubmissionMethod) => null,
@@ -95,6 +98,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const [commentsSignature, setCommentSignature] = useState('');
 
   const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
+
+  const [submissionError, setSubmissionError] = useState<string | undefined>();
 
   const [submissionMethod, setSubmissionMethod] = useState<BallotSubmissionMethod | null>(null);
 
@@ -311,7 +316,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`
             );
         },
-        error: () => {
+        error: (txId, error) => {
+          setSubmissionError(error);
           setStep('tx-error');
           toast.error('Error submitting ballot');
         }
@@ -373,28 +379,38 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000) //8 hour expiry
     };
-    const signature = await signTypedBallotData(signatureValues, provider, network);
-    if (signature) {
+
+    let signature;
+    try {
+      signature = await signTypedBallotData(signatureValues, provider, network);
       setStep('awaiting-relayer');
-    } else {
+    } catch (error) {
+      toast.error(error);
+      setSubmissionError(parseTxError(error));
       setStep('tx-error');
     }
-    fetchJson(`/api/polling/vote?network=${network}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ...signatureValues, signature, network })
-    })
-      .then(res => {
+
+    if (signature) {
+      try {
+        const gaslessTx = await fetchJson(`/api/polling/vote?network=${network}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ ...signatureValues, signature, network })
+        });
+
         const gaslessProvider = getGaslessProvider(network);
-        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, res.hash);
+
+        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
         trackPollVote(voteTxCreator, getGaslessNetwork(network));
-      })
-      .catch(error => {
-        toast.error(error);
+      } catch (error) {
+        const errorMessage = error.message ? error.message : error;
+        toast.error(errorMessage);
+        setSubmissionError(errorMessage);
         setStep('tx-error');
-      });
+      }
+    }
   };
 
   const setStep = (step: BallotSteps) => {
@@ -431,6 +447,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         commentsCount,
         setStep,
         ballotStep,
+        submissionError,
         submissionMethod,
         setSubmissionMethod,
         close

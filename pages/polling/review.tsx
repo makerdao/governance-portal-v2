@@ -49,7 +49,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
     setShowMarkdownModal(!showMarkdownModal);
   };
 
-  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount, ballotStep } =
+  const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
 
   const { account, votingAccount } = useAccount();
@@ -276,6 +276,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                                 disabled={
                                   transaction?.status === 'pending' ||
                                   transaction?.status === 'initialized' ||
+                                  ballotStep === 'submitting' ||
                                   ballotStep === 'awaiting-relayer'
                                 }
                               />

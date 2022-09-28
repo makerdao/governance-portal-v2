@@ -841,5 +841,7 @@
   "868": ["high-impact", "misc-funding", "ratification", "mips"],
   "869": ["high-impact", "ratification", "mips", "budget"],
   "870": ["high-impact", "ratification", "mips", "core-unit-offboard"],
-  "871": ["medium-impact", "greenlight"]
+  "871": ["medium-impact", "greenlight"],
+  "872": ["high-impact", "collateral-onboard", "risk-parameter", "auctions"],
+  "873": ["high-impact", "risk-parameter", "auctions"]
 }

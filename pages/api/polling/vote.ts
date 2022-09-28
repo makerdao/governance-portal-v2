@@ -7,7 +7,7 @@ import { cacheSet } from 'modules/cache/cache';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
 import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
-import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
+import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import logger from 'lib/logger';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -23,22 +23,24 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 
 export const API_VOTE_ERRORS = {
-  VOTER_MUST_BE_STRING: 'voter must be a string',
-  POLLIDS_MUST_BE_ARRAY_NUMBERS: 'pollIds must be an array of numbers',
-  OPTIONIDS_MUST_BE_ARRAY_NUMBERS: 'optionIds must be an array of numbers',
-  NONCE_MUST_BE_NUMBER: 'nonce must be a number',
-  EXPIRY_MUST_BE_NUMBER: 'expiry must be a number',
-  SIGNATURE_MUST_BE_STRING: 'signature must be a string',
-  INVALID_NETWORK: 'invalid network',
-  WRONG_SECRET: 'Wrong secret',
-  INVALID_NONCE_FOR_ADDRESS: 'Invalid nonce for address',
-  EXPIRED_VOTES: 'Expiration date already passed',
-  EXPIRED_POLLS: 'Can only vote in active polls',
-  RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes',
-  VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature',
-  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}`,
-  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll'
+  VOTER_MUST_BE_STRING: 'Voter must be a string.',
+  POLLIDS_MUST_BE_ARRAY_NUMBERS: 'PollIds must be an array of numbers.',
+  OPTIONIDS_MUST_BE_ARRAY_NUMBERS: 'OptionIds must be an array of numbers.',
+  NONCE_MUST_BE_NUMBER: 'Nonce must be a number.',
+  EXPIRY_MUST_BE_NUMBER: 'Expiry must be a number.',
+  SIGNATURE_MUST_BE_STRING: 'Signature must be a string.',
+  INVALID_NETWORK: 'Invalid network.',
+  WRONG_SECRET: 'Wrong secret.',
+  INVALID_NONCE_FOR_ADDRESS: 'Invalid nonce for address.',
+  EXPIRED_VOTES: 'Expiration date already passed.',
+  EXPIRED_POLLS: 'Can only vote in active polls.',
+  RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes.',
+  VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature.',
+  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
+  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.'
 };
+
+import { getMessageFromCode, ERROR_CODES } from 'eth-rpc-errors';
 
 async function postError(error: string) {
   try {
@@ -253,9 +255,16 @@ export default withApiHandler(
 
       return res.status(200).json(tx);
     } catch (err) {
+      const errorMessage =
+        'code' in err &&
+        [...Object.values(ERROR_CODES.provider), ...Object.values(ERROR_CODES.rpc)].includes(err['code'])
+          ? getMessageFromCode(err['code'])
+          : err.message;
       postError(JSON.stringify(err));
-      logger.error(err);
-      return res.status(400).json(`Error: ${err.message}`);
+      logger.error(errorMessage);
+      return res.status(400).json({
+        error: errorMessage
+      });
     }
   },
   { allowPost: true }
