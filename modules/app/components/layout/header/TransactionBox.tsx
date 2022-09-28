@@ -1,9 +1,9 @@
-import { Flex, Text, Spinner, Button, Link as ExternalLink } from 'theme-ui';
+import { Flex, Text, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { Transaction, TXPending } from 'modules/web3/types/transaction';
+import { Transaction } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   tx: Transaction;
@@ -39,34 +39,11 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink
-        href={getEtherscanLink(
-          tx.gaslessNetwork ? tx.gaslessNetwork : network,
-          (tx as TXPending).hash,
-          'transaction'
-        )}
-        target="_blank"
-      >
-        <Button
-          variant="smallOutline"
-          sx={{
-            color: 'accentBlue',
-            borderColor: 'accentBlue',
-            borderRadius: 'small',
-            '&:hover': {
-              color: 'accentBlueEmphasis',
-              borderColor: 'accentBlueEmphasis'
-            }
-          }}
-        >
-          View
-          <Icon
-            name="arrowTopRight"
-            color="inherit"
-            sx={{ ml: 1, width: 2, height: 2, alignSelf: 'center', justifyContent: 'center' }}
-          />
-        </Button>
-      </ExternalLink>
+      <EtherscanLink
+        hash={tx.hash as string}
+        type="transaction"
+        network={tx.gaslessNetwork ? tx.gaslessNetwork : network}
+      />
     </Flex>
   );
 };

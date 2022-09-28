@@ -24,9 +24,8 @@ import { BigNumber, utils } from 'ethers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { sign } from 'modules/web3/helpers/sign';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import logger from 'lib/logger';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -213,11 +212,7 @@ export default function DefaultVoteModalView({
         <Text as="p" sx={{ fontSize: [3, 4], fontWeight: 'bold' }}>
           {proposal ? proposal.title : 'Unknown Spell'}
         </Text>
-        <ExternalLink href={getEtherscanLink(network, spellAddress, 'address')} title="View on Etherscan">
-          <Text as="p" sx={{ fontSize: [1, 4] }}>
-            {spellAddress}
-          </Text>
-        </ExternalLink>
+        <EtherscanLink hash={spellAddress} type="address" network={network} showAddress />
       </Box>
       <Grid
         columns={[1, 3, 3, 3]}

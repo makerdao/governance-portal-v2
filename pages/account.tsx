@@ -3,7 +3,7 @@ import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from '
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { cutMiddle, formatValue } from 'lib/string';
+import { formatValue } from 'lib/string';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -16,7 +16,6 @@ import { DelegateDetail, TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
@@ -30,6 +29,7 @@ import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateA
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -99,31 +99,25 @@ const AccountPage = (): React.ReactElement => {
                 {voteDelegateContractAddress && !modalOpen && (
                   <Box sx={{ mb: 2 }}>
                     <Label>Your delegate contract address:</Label>
-                    <ExternalLink
-                      title="View on etherescan"
-                      href={getEtherscanLink(network, voteDelegateContractAddress, 'address')}
-                    >
-                      <Text as="p" data-testid="vote-delegate-address">
-                        {bpi > 0 ? voteDelegateContractAddress : cutMiddle(voteDelegateContractAddress, 8, 8)}{' '}
-                        <Icon name="arrowTopRight" size={2} ml={2} />
-                      </Text>
-                    </ExternalLink>
+
+                    <EtherscanLink
+                      type="address"
+                      showAddress
+                      hash={voteDelegateContractAddress}
+                      network={network}
+                    />
                   </Box>
                 )}
                 {newOwnerConnected && previousOwnerContractAddress && (
                   <Box sx={{ mb: 2 }}>
                     <Label>Previous delegate contract address:</Label>
-                    <ExternalLink
-                      title="View on etherescan"
-                      href={getEtherscanLink(network, previousOwnerContractAddress, 'address')}
-                    >
-                      <Text as="p" data-testid="vote-delegate-address">
-                        {bpi > 0
-                          ? previousOwnerContractAddress
-                          : cutMiddle(previousOwnerContractAddress, 8, 8)}{' '}
-                        <Icon name="arrowTopRight" size={2} ml={2} />
-                      </Text>
-                    </ExternalLink>
+
+                    <EtherscanLink
+                      type="address"
+                      showAddress
+                      hash={previousOwnerContractAddress}
+                      network={network}
+                    />
                   </Box>
                 )}
                 {voteDelegateContractAddress && !modalOpen && (

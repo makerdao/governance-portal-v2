@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Card, Flex, Text, Heading } from 'theme-ui';
+import { Button, Card, Flex, Text, Heading, Box } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { useState } from 'react';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -9,9 +9,8 @@ import VoteModal from 'modules/executive/components/VoteModal';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { SpellData } from 'modules/executive/types';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   spellAddress: string;
@@ -50,11 +49,9 @@ export default function CustomSpellAddress({ spellAddress, spellDetails }: Props
       <Heading sx={{ mt: 4, mb: 3 }}>Spell address</Heading>
       <Card>
         {spellAddress && (
-          <ExternalLink href={getEtherscanLink(network, spellAddress, 'address')} title="View on Etherscan">
-            <Text as="p" sx={{ fontSize: [1, 4], mb: 3 }}>
-              {spellAddress}
-            </Text>
-          </ExternalLink>
+          <Box sx={{ fontSize: [1, 4], mb: 3 }}>
+            <EtherscanLink showAddress type="address" hash={spellAddress} network={network} />
+          </Box>
         )}
         <Flex sx={{ alignItems: 'center' }}>
           <Button disabled={!spellAddress || !account} onClick={handleVote} sx={{ mr: 3 }}>
