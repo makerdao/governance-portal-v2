@@ -6,7 +6,7 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { WalletName } from 'modules/web3/constants/wallets';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   address: string;
@@ -65,7 +65,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
           alignItems: 'center'
         }}
       >
-        <EtherScanLink hash={address} type="address" network={network} />
+        <EtherscanLink hash={address} type="address" network={network} />
         <Button variant="mutedOutline" onClick={disconnect}>
           Disconnect
         </Button>

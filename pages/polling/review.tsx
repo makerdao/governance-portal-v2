@@ -30,7 +30,7 @@ import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type PollingReviewProps = {
   polls: Poll[];
@@ -168,7 +168,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                 </Text>
               </Flex>
               {transaction?.hash && (
-                <EtherScanLink
+                <EtherscanLink
                   hash={transaction.hash}
                   type="transaction"
                   network={transaction.gaslessNetwork ?? network}

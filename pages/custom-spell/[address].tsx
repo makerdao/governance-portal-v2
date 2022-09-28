@@ -10,7 +10,7 @@ import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { SpellData } from 'modules/executive/types';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   spellAddress: string;
@@ -50,7 +50,7 @@ export default function CustomSpellAddress({ spellAddress, spellDetails }: Props
       <Card>
         {spellAddress && (
           <Box sx={{ fontSize: [1, 4], mb: 3 }}>
-            <EtherScanLink showAddress type="address" hash={spellAddress} network={network} />
+            <EtherscanLink showAddress type="address" hash={spellAddress} network={network} />
           </Box>
         )}
         <Flex sx={{ alignItems: 'center' }}>

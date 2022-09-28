@@ -11,7 +11,7 @@ import { formatValue } from 'lib/string';
 import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import VotedOption from './VotedOption';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   tally: PollTally;
@@ -203,7 +203,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       data-testid={`vote-mkr-${v.hash}`}
                       sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                     >
-                      <EtherScanLink
+                      <EtherscanLink
                         hash={v.hash}
                         type="transaction"
                         styles={{ justifyContent: 'flex-end' }}

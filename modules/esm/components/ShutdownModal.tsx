@@ -6,7 +6,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 const ModalContent = ({
   setShowDialog,
@@ -101,7 +101,7 @@ const ModalContent = ({
           Shutdown will update once the transaction has been confirmed.
         </Text>
 
-        <EtherScanLink hash={(tx as TXMined).hash} type="transaction" network={network} />
+        <EtherscanLink hash={(tx as TXMined).hash} type="transaction" network={network} />
 
         <Button
           onClick={close}

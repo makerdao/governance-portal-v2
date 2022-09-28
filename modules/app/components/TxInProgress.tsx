@@ -2,7 +2,7 @@ import { Flex, Text, Box } from '@theme-ui/components';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   tx: any;
@@ -22,7 +22,7 @@ export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => 
       </Flex>
 
       {txPending && (
-        <EtherScanLink
+        <EtherscanLink
           hash={(tx as TXMined).hash}
           type="transaction"
           network={network}

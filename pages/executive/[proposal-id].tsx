@@ -39,7 +39,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   proposal: Proposal;
@@ -184,7 +184,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
               <StatBox
                 value={
                   <Box sx={{ fontSize: [2, 5] }}>
-                    <EtherScanLink hash={proposal.address} type="address" network={network} showAddress />
+                    <EtherscanLink hash={proposal.address} type="address" network={network} showAddress />
                   </Box>
                 }
                 label="Spell Address"

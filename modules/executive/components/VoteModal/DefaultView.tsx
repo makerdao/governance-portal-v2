@@ -25,7 +25,7 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { sign } from 'modules/web3/helpers/sign';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import logger from 'lib/logger';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -212,7 +212,7 @@ export default function DefaultVoteModalView({
         <Text as="p" sx={{ fontSize: [3, 4], fontWeight: 'bold' }}>
           {proposal ? proposal.title : 'Unknown Spell'}
         </Text>
-        <EtherScanLink hash={spellAddress} type="address" network={network} showAddress />
+        <EtherscanLink hash={spellAddress} type="address" network={network} showAddress />
       </Box>
       <Grid
         columns={[1, 3, 3, 3]}

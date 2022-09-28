@@ -30,7 +30,7 @@ import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import DelegateTags from './DelegateTags';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type PropTypes = {
   delegate: Delegate;
@@ -160,7 +160,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                   </Flex>
 
                   <Box sx={{ fontSize: [1, 3], mt: [1, 0], fontWeight: 'semiBold' }}>
-                    <EtherScanLink
+                    <EtherscanLink
                       showBlockExplorerName={false}
                       type="address"
                       prefix="Delegate contract"

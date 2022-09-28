@@ -14,7 +14,7 @@ import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -152,7 +152,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <EtherScanLink type="transaction" network={network} hash={hash as string} prefix="" />
+                  <EtherscanLink type="transaction" network={network} hash={hash as string} prefix="" />
                 </Flex>
               );
             })}

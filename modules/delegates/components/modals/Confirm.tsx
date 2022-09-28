@@ -3,7 +3,7 @@ import { Delegate } from '../../types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   mkrToDeposit: BigNumber;
@@ -25,11 +25,11 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
         You are delegating{' '}
         <Text sx={{ fontWeight: 'bold', display: 'inline' }}>{formatValue(mkrToDeposit, 'wad', 6)} MKR</Text>{' '}
         to delegate contract{' '}
-        <EtherScanLink type="address" showAddress hash={voteDelegateAddress} network={network} />
+        <EtherscanLink type="address" showAddress hash={voteDelegateAddress} network={network} />
       </Text>
       <Text sx={{ color: 'secondaryEmphasis', mt: 4 }}>
         This delegate contract was created by{' '}
-        <EtherScanLink type="address" showAddress hash={address} network={network} />
+        <EtherscanLink type="address" showAddress hash={address} network={network} />
       </Text>
       <Button onClick={onClick} sx={{ mt: 4 }}>
         Confirm Transaction

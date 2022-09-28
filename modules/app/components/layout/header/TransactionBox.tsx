@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { Transaction } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   tx: Transaction;
@@ -39,7 +39,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <EtherScanLink
+      <EtherscanLink
         hash={tx.hash as string}
         type="transaction"
         network={tx.gaslessNetwork ? tx.gaslessNetwork : network}

@@ -8,7 +8,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 
@@ -34,7 +34,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
               Transaction Sent. Vote{ballotCount === 1 ? '' : 's'} pending.
             </Text>
 
-            <EtherScanLink hash={transaction.hash} type="transaction" network={network} />
+            <EtherscanLink hash={transaction.hash} type="transaction" network={network} />
           </Flex>
         </Card>
       ) : (

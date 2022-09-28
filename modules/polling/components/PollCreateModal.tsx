@@ -9,7 +9,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { usePollCreate } from '../hooks/usePollCreate';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   close: () => void;
@@ -149,7 +149,7 @@ const Pending = ({ tx, close }) => {
           Poll will be created once the transaction has been confirmed.
         </Text>
 
-        <EtherScanLink type="transaction" hash={(tx as TXMined).hash} network={network} />
+        <EtherscanLink type="transaction" hash={(tx as TXMined).hash} network={network} />
 
         <Button
           onClick={close}

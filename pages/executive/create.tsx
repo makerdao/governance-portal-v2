@@ -7,7 +7,7 @@ import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/markdown';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 // Regexp to check if is an URL
 const expr =
@@ -185,7 +185,7 @@ const ExecutiveCreate = (): JSX.Element => {
                     <tr key={'Mainnet Address'}>
                       <TD>Mainnet Address</TD>
                       <TD>
-                        <EtherScanLink
+                        <EtherscanLink
                           hash={mainnetAddress}
                           type="address"
                           network={SupportedNetworks.MAINNET}

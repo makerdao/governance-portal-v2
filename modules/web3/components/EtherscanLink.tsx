@@ -7,7 +7,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { formatAddress } from 'lib/utils';
 import React from 'react';
 
-export default function EtherScanLink({
+export default function EtherscanLink({
   network,
   hash,
   type,

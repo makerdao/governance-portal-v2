@@ -2,7 +2,7 @@ import { Box, Button, Flex, Text } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { Transaction, TXMined } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export const TxFinal = ({
   title,
@@ -41,7 +41,7 @@ export const TxFinal = ({
       {children}
 
       <Box my={3}>
-        <EtherScanLink
+        <EtherscanLink
           hash={(tx as TXMined).hash}
           type="transaction"
           network={network}

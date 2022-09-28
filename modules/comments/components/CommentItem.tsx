@@ -7,7 +7,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ParsedExecutiveComments, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { formatValue } from 'lib/string';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function CommentItem({
   comment,
@@ -69,7 +69,7 @@ export default function CommentItem({
 
           {comment.comment.txHash && (
             <Box>
-              <EtherScanLink
+              <EtherscanLink
                 hash={comment.comment.txHash}
                 type="transaction"
                 network={

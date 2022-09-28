@@ -29,7 +29,7 @@ import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateA
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -100,7 +100,7 @@ const AccountPage = (): React.ReactElement => {
                   <Box sx={{ mb: 2 }}>
                     <Label>Your delegate contract address:</Label>
 
-                    <EtherScanLink
+                    <EtherscanLink
                       type="address"
                       showAddress
                       hash={voteDelegateContractAddress}
@@ -112,7 +112,7 @@ const AccountPage = (): React.ReactElement => {
                   <Box sx={{ mb: 2 }}>
                     <Label>Previous delegate contract address:</Label>
 
-                    <EtherScanLink
+                    <EtherscanLink
                       type="address"
                       showAddress
                       hash={previousOwnerContractAddress}

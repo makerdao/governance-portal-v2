@@ -14,7 +14,7 @@ import AddressIconBox from './AddressIconBox';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -152,7 +152,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <EtherScanLink
+                  <EtherscanLink
                     showBlockExplorerName={false}
                     prefix=""
                     type="transaction"

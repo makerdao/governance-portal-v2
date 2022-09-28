@@ -11,7 +11,7 @@ import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator'
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const bpi = useBreakpointIndex();
@@ -109,7 +109,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
         </Flex>
 
         <Box>
-          <EtherScanLink
+          <EtherscanLink
             hash={vote.hash}
             type="transaction"
             network={chainIdToNetworkName(vote.chainId)}

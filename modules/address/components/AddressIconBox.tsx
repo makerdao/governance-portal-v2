@@ -9,7 +9,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 import { limitString } from 'lib/string';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type PropTypes = {
   address: string;
@@ -79,7 +79,7 @@ export default function AddressIconBox({
               </Text>
             )}
             {showExternalLink && (
-              <EtherScanLink
+              <EtherscanLink
                 showBlockExplorerName={false}
                 prefix=""
                 type="address"

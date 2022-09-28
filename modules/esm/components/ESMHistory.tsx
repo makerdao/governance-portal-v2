@@ -5,7 +5,7 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;
@@ -92,7 +92,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                         </Text>
                       </td>
                       <td>
-                        <EtherScanLink type="address" showAddress hash={action.txFrom} network={network} />
+                        <EtherscanLink type="address" showAddress hash={action.txFrom} network={network} />
                       </td>
                     </tr>
                   );

@@ -8,7 +8,7 @@ import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export function DelegatesSystemInfo({
   stats,
@@ -72,7 +72,7 @@ export function DelegatesSystemInfo({
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
             {delegateFactoryAddress ? (
-              <EtherScanLink type="address" showAddress hash={delegateFactoryAddress} network={network} />
+              <EtherscanLink type="address" showAddress hash={delegateFactoryAddress} network={network} />
             ) : (
               <Box sx={{ width: 6 }}>
                 <SkeletonThemed />

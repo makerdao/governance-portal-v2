@@ -22,7 +22,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function ReviewBox({
   account,
@@ -448,7 +448,7 @@ export default function ReviewBox({
             Transaction Pending
           </Text>
 
-          <EtherScanLink
+          <EtherscanLink
             type="transaction"
             hash={(transaction as TXMined).hash}
             network={transaction?.gaslessNetwork ?? network}

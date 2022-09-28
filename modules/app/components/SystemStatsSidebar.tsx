@@ -16,7 +16,7 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import TooltipComponent from './Tooltip';
-import EtherScanLink from 'modules/web3/components/EtherScanLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type StatField =
   | 'chief contract'
@@ -48,7 +48,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {chiefAddress ? (
-              <EtherScanLink hash={chiefAddress} type="address" network={network} showAddress />
+              <EtherscanLink hash={chiefAddress} type="address" network={network} showAddress />
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -100,7 +100,7 @@ export default function SystemStatsSidebar({
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
-              <EtherScanLink hash={pollingAddress} type="address" network={network} showAddress />
+              <EtherscanLink hash={pollingAddress} type="address" network={network} showAddress />
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -132,7 +132,7 @@ export default function SystemStatsSidebar({
             </TooltipComponent>
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            <EtherScanLink hash={pollingAddress} type="address" network={network} showAddress />
+            <EtherscanLink hash={pollingAddress} type="address" network={network} showAddress />
           </Text>
         </Flex>
       ) : null;
@@ -150,7 +150,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Arbitrum Polling Contract</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
-              <EtherScanLink showAddress type="address" network={arbitrumNetwork} hash={pollingAddress} />
+              <EtherscanLink showAddress type="address" network={arbitrumNetwork} hash={pollingAddress} />
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
