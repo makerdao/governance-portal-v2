@@ -38,7 +38,8 @@ export default function GaslessBanner(): React.ReactElement {
                   styles={{ color: 'inherit' }}
                 >
                   <Text sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Icon name="lightningBolt" size={3} /> Poll voting is now gasless. <b>Learn more</b>
+                    <Icon name="lightningBolt" size={3} mr={1} /> Poll voting is now gasless!&nbsp;
+                    <b>Learn more</b>
                     <Icon name="chevron_right" size={2} ml={2} />
                   </Text>
                 </ExternalLink>
