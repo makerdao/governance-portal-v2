@@ -7,10 +7,9 @@ import packageJSON from '../../package.json';
 import logger from 'lib/logger';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
-const isRedisCache = !!config.REDIS_URL;
 let isConnected = true;
 
-const redis = isRedisCache
+const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
       connectTimeout: 10000
     })
@@ -25,6 +24,8 @@ if (redis) {
 }
 
 const redisCacheEnabled = () => {
+  const isRedisCache = !!config.REDIS_URL;
+
   return isRedisCache && redis && isConnected;
 };
 

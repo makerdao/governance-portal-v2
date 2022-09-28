@@ -1,23 +1,14 @@
-import { getPolls, sortPolls } from '../fetchPolls';
-import fs from 'fs';
-import { config } from '../../../../lib/config';
-import os from 'os';
+import { sortPolls } from '../fetchPolls';
+
 import { Poll } from '../../types';
-import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
-import packageJSON from '../../../../package.json';
+import { gqlRequest } from 'modules/gql/gqlRequest';
 
 jest.mock('modules/gql/gqlRequest');
 
-const cacheFile = `/${os.tmpdir()}/gov-portal-version-${packageJSON.version}-mainnet-polls-all-${new Date()
-  .toISOString()
-  .substring(0, 10)}`;
-
-describe('Fetch poll', () => {
+describe('Sort Polls', () => {
   beforeAll(() => {
-    config.USE_CACHE = 'true';
-    config.REDIS_URL = '';
     (gqlRequest as jest.Mock).mockResolvedValue({
       activePolls: {
         nodes: [],
@@ -26,19 +17,8 @@ describe('Fetch poll', () => {
     });
   });
 
-  afterAll(() => {
-    config.USE_CACHE = '';
-    if (fs.existsSync(cacheFile)) fs.unlinkSync(cacheFile);
-  });
+  // TODO: Introduce getPOllsTest
 
-  test('getPolls with filesystem caching', async () => {
-    jest.setTimeout(25000);
-    await getPolls({}, SupportedNetworks.MAINNET);
-    expect(fs.existsSync(cacheFile)).toBeTruthy();
-  });
-});
-
-describe('Sort Polls', () => {
   const polls: Poll[] = [
     {
       tags: [

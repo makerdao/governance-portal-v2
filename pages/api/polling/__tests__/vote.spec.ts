@@ -5,7 +5,7 @@ import { createMocks, RequestMethod } from 'node-mocks-http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
+import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';
@@ -18,7 +18,7 @@ import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
-jest.mock('modules/polling/helpers/getArbitrumPollingContractRelayProvider');
+jest.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
 jest.mock('modules/cache/cache');
 jest.mock('modules/polling/api/fetchPolls');
