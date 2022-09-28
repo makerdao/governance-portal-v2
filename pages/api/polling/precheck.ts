@@ -6,7 +6,7 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
-import { getRelayerBalance } from 'modules/polling/helpers/getRelayerBalance';
+import { getRelayerBalance } from 'modules/polling/api/getRelayerBalance';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;

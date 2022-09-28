@@ -5,7 +5,7 @@ import { createMocks, RequestMethod } from 'node-mocks-http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getArbitrumPollingContractRelayProvider } from 'modules/polling/helpers/getArbitrumPollingContractRelayProvider';
+import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';

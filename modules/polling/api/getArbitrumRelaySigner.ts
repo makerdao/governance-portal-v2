@@ -1,6 +1,6 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
-import { relayerCredentials } from './utils';
+import { relayerCredentials } from '../helpers/relayerCredentials';
 
 //Note that we'll get an error if we try to run this defender relay code on the frontend
 //So we should only import this function on the backend

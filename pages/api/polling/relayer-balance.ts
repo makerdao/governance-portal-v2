@@ -3,7 +3,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import logger from 'lib/logger';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { getMessageFromCode, ERROR_CODES } from 'eth-rpc-errors';
-import { getRelayerBalance } from 'modules/polling/helpers/getRelayerBalance';
+import { getRelayerBalance } from 'modules/polling/api/getRelayerBalance';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import invariant from 'tiny-invariant';
 
