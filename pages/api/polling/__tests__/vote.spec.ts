@@ -18,7 +18,7 @@ import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
-jest.mock('modules/polling/helpers/getArbitrumPollingContractRelayProvider');
+jest.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
 jest.mock('modules/cache/cache');
 jest.mock('modules/polling/api/fetchPolls');
