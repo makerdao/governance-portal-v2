@@ -6,8 +6,6 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -16,6 +14,7 @@ import AddressIconBox from './AddressIconBox';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -153,15 +152,13 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <ExternalLink
-                    href={getEtherscanLink(network, hash as string, 'transaction')}
-                    title="View on Etherscan"
-                    styles={{
-                      textAlign: 'right'
-                    }}
-                  >
-                    <Icon name="arrowTopRight" size={2} />
-                  </ExternalLink>
+                  <EtherscanLink
+                    showBlockExplorerName={false}
+                    prefix=""
+                    type="transaction"
+                    network={network}
+                    hash={hash as string}
+                  />
                 </Flex>
               );
             })}
