@@ -60,8 +60,6 @@ export default function ReviewBox({
     fetchJson
   );
 
-  console.log(precheckData);
-
   const hasMkrRequired = precheckData?.hasMkrRequired;
   const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
   const alreadyVoted = precheckData?.alreadyVoted;
