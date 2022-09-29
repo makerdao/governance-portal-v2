@@ -96,14 +96,14 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
     defaultValue: 0
   }) as number;
 
-  const response = await getExecutiveProposals(
+  const response = await getExecutiveProposals({
     start,
     limit,
-    sortBy as 'date' | 'mkr',
-    network as SupportedNetworks,
     startDate,
-    endDate
-  );
+    endDate,
+    network: network as SupportedNetworks,
+    ...(sortBy !== null && { sortBy: sortBy as 'date' | 'mkr' | 'active' })
+  });
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);
