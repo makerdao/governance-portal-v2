@@ -368,33 +368,33 @@ export default function ReviewBox({
                     </Text>
                   </Flex>
                 </Flex>
-                <Flex sx={{ flexDirection: 'column', mt: 3 }}>
-                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text as="p" variant="caps">
-                      RELAYER BALANCE
-                    </Text>
-                    <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
-                      <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
-                        Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                {!precheckData?.relayBalance && (
+                  <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+                    <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text as="p" variant="caps">
+                        RELAYER
                       </Text>
-                    </ExternalLink>
-                  </Flex>
-                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                    {precheckData?.relayBalance && (
+                      <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
+                        <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
+                          Learn more
+                          <Icon ml={2} name="arrowTopRight" size={2} />
+                        </Text>
+                      </ExternalLink>
+                    </Flex>
+                    <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                       <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                        {formatValue(parseEther(precheckData.relayBalance), 'wad', 4)} ETH
+                        Status
                       </Text>
-                    )}
-                    <Text>
-                      {relayFunded ? (
-                        <Icon name="checkmark" color="bull" size={'13px'} />
-                      ) : (
-                        <Icon name="close" color="bear" size={'13px'} />
-                      )}
-                    </Text>
+                      <Text>
+                        {relayFunded ? (
+                          <Icon name="checkmark" color="bull" size={'13px'} />
+                        ) : (
+                          <Icon name="close" color="bear" size={'13px'} />
+                        )}
+                      </Text>
+                    </Flex>
                   </Flex>
-                </Flex>
+                )}
               </Box>
             </Box>
           )}
