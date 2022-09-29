@@ -240,6 +240,8 @@ export default withApiHandler(
           postError(JSON.stringify({ ...error, ...req.body }));
           return res.status(400).json(error);
         }
+      } else {
+        postError(JSON.stringify({ 'notice': 'bypassing eligibilty requirements', ...req.body }));
       }
 
       const r = signature.slice(0, 66);
