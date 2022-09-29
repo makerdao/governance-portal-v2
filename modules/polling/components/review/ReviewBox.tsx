@@ -22,7 +22,6 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
-import { formatValue } from 'lib/string';
 import { parseEther } from 'ethers/lib/utils';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
@@ -55,11 +54,13 @@ export default function ReviewBox({
   const { network, connector } = useWeb3();
 
   const { data: precheckData } = useSWR(
-    account && ballotPollIds && network
+    account && ballotPollIds && ballotPollIds.length > 0 && network
       ? `/api/polling/precheck?network=${network}&voter=${account}&pollIds=${ballotPollIds.join(',')}`
       : null,
     fetchJson
   );
+
+  console.log(precheckData);
 
   const hasMkrRequired = precheckData?.hasMkrRequired;
   const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
@@ -368,22 +369,14 @@ export default function ReviewBox({
                     </Text>
                   </Flex>
                 </Flex>
-                {!precheckData?.relayBalance && (
-                  <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+              </Box>
+              {!relayFunded && (
+                <>
+                  <Divider />
+                  <Flex sx={{ flexDirection: 'column', p: 3, pt: 1 }}>
                     <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Text as="p" variant="caps">
-                        RELAYER
-                      </Text>
-                      <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
-                        <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
-                          Learn more
-                          <Icon ml={2} name="arrowTopRight" size={2} />
-                        </Text>
-                      </ExternalLink>
-                    </Flex>
-                    <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                       <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                        Status
+                        Relayer Status
                       </Text>
                       <Text>
                         {relayFunded ? (
@@ -394,8 +387,8 @@ export default function ReviewBox({
                       </Text>
                     </Flex>
                   </Flex>
-                )}
-              </Box>
+                </>
+              )}
             </Box>
           )}
         </Card>
