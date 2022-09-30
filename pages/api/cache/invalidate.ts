@@ -10,6 +10,7 @@ import {
   githubExecutivesCacheKey
 } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
+import { ApiError } from 'modules/app/api/ApiError';
 
 // Deletes cache for a tally
 export default withApiHandler(
@@ -31,19 +32,15 @@ export default withApiHandler(
       const { cacheKey } = req.body;
 
       if (!req.body?.password || req.body?.password !== config.DASHBOARD_PASSWORD) {
-        logger.error('invalidate-cache: invalid password');
-        return res.status(401).json({
-          invalidated: false
-        });
+        throw new ApiError('Invalidate cache, invalid password', 401, 'Unauthorized');
       }
+
       const isAllowed = allowedCacheKeys.reduce((prev, next) => {
         return prev || cacheKey.indexOf(next) !== -1;
       }, false);
 
       if (!isAllowed || !cacheKey) {
-        return res.status(401).json({
-          error: 'Unauthorized'
-        });
+        throw new ApiError('Invalidate cache, invalid request', 400, 'Invalid request');
       }
 
       logger.debug(`invalidate-cache request: ${cacheKey}`);
@@ -55,10 +52,7 @@ export default withApiHandler(
         cacheKey
       });
     } catch (e) {
-      logger.error(`invalidate-cache: ${e.message}`);
-      return res.status(200).json({
-        invalidated: false
-      });
+      throw new ApiError(`Invalidate cache, ${e.messaage}`, 500);
     }
   },
   {

@@ -7,7 +7,7 @@ export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<a
       status: response.status,
       statusText: response.statusText,
       json,
-      message: json?.error ? json.error : 'Request failed'
+      message: json?.error && json.error.message ? json.error.message : 'Request failed'
     });
   }
   return json;

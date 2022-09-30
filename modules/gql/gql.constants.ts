@@ -5,7 +5,7 @@ export const GOERLI_SPOCK_URL = 'https://pollingdb2-goerli-staging.makerdux.com/
 
 //TODO: switch both back to actual deployment
 // export const STAGING_MAINNET_SPOCK_URL = 'https://polling-db-staging.makerdux.com/api/v1';
-export const STAGING_MAINNET_SPOCK_URL = 'https://pollingdb2-mainnet-staging.makerdux.com/';
+export const STAGING_MAINNET_SPOCK_URL = 'https://pollingdb2-mainnet-staging.makerdux.com/api/v1';
 // export const MAINNET_SPOCK_URL = 'https://polling-db-prod.makerdux.com/api/v1';
 export const MAINNET_SPOCK_URL = 'https://b0f9-3-69-177-22.eu.ngrok.io/v1';
 

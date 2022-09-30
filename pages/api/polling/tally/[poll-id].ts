@@ -5,6 +5,7 @@ import { getPollTally } from 'modules/polling/helpers/getPollTally';
 import { fetchPollById } from 'modules/polling/api/fetchPollBy';
 import { pollHasStarted } from 'modules/polling/helpers/utils';
 import { PollTally } from 'modules/polling/types';
+import { ApiError } from 'modules/app/api/ApiError';
 
 // Returns a PollTally given a pollID
 
@@ -125,11 +126,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const poll = await fetchPollById(parseInt(req.query['poll-id'] as string, 10), network);
 
   if (!poll) {
-    res.status(404).json({
-      error: 'Not found'
-    });
-
-    return;
+    throw new ApiError('Poll not found', 404, 'Poll not found');
   }
 
   if (!pollHasStarted(poll)) {

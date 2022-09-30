@@ -7,6 +7,7 @@ import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequir
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
 import { getRelayerBalance } from 'modules/polling/api/getRelayerBalance';
+import { ApiError } from 'modules/app/api/ApiError';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
@@ -16,15 +17,11 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const pollIdsArray = pollIds.split(',');
 
   if (!voter) {
-    return res.status(400).json({
-      error: 'no voter provided'
-    });
+    throw new ApiError('Gasless precheck: Missing parameters', 400, 'No voter provided');
   }
 
   if (!pollIds || pollIdsArray.length === 0) {
-    return res.status(400).json({
-      error: 'no poll ids provided'
-    });
+    throw new ApiError('Gasless precheck: Missing parameters', 400, 'No poll ids provided');
   }
 
   const cacheKey = getRecentlyUsedGaslessVotingKey(voter);

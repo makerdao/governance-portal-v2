@@ -7,6 +7,8 @@ import { insertPollComments } from 'modules/comments/api/insertPollingComments';
 import logger from 'lib/logger';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getGaslessNetwork } from 'modules/web3/helpers/chain';
+import { ApiError } from 'modules/app/api/ApiError';
+import { API_ERROR_CODES } from 'modules/app/constants/apiErrors';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -31,9 +33,7 @@ export default withApiHandler(
       const gaslessNetworkMatches = gaslessNetwork && getGaslessNetwork(network) === gaslessNetwork;
 
       if (gaslessNetwork && !gaslessNetworkMatches) {
-        return res.status(400).json({
-          error: 'Invalid Gasless Network'
-        });
+        throw new ApiError('Invalid Gasless Network', 400, 'Invalid Gasless Network');
       }
 
       // Verifies the data
@@ -67,8 +67,7 @@ export default withApiHandler(
 
       res.status(200).json({ success: 'Added Successfully' });
     } catch (err) {
-      logger.error(`POST /api/comments/polling/add: ${err}`);
-      return res.status(500).json({});
+      throw new ApiError(`POST /api/comments/polling/add: ${err}`, 500, 'Error adding poll comments');
     }
   },
   { allowPost: true }
