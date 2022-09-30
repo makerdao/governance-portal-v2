@@ -178,7 +178,7 @@ export default function ReviewBox({
             <Box>
               <Box p={3}>
                 <Text sx={{ fontWeight: 'semiBold' }} as="p">
-                  Gasless voting on Arbitrum
+                  Gasless voting via Arbitrum
                 </Text>
                 <Text sx={{ mt: 2 }}>
                   Submit your vote by signing your ballot and sending it to the polling contract on Arbitrum
@@ -190,7 +190,7 @@ export default function ReviewBox({
                     <Icon name="info" color="textSecondary" size={14} />
                   </Box>
                   <Text sx={{ fontSize: 1, color: 'textSecondary' }}>
-                    You won&apos;t need to switch network.
+                    You don&apos;t need to switch networks.
                   </Text>
                 </Flex>
                 <Button
@@ -356,7 +356,7 @@ export default function ReviewBox({
 
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Is not using a multisig
+                      Address is not a multisig wallet
                     </Text>
                     <Text>
                       {!isGnosisSafe ? (
