@@ -377,7 +377,9 @@ export default function ReviewBox({
                         Relayer Status
                       </Text>
                       <Text>
-                        {relayFunded ? (
+                        {!precheckData ? (
+                          <SkeletonThemed width="30px" height="18px" />
+                        ) : relayFunded ? (
                           <Icon name="checkmark" color="bull" size={'13px'} />
                         ) : (
                           <Icon name="close" color="bear" size={'13px'} />
