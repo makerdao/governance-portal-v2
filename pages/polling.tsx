@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
@@ -381,7 +381,11 @@ export default function PollingOverviewPage({
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />;
+      </PrimaryLayout>
+    );
   }
 
   const props = {

@@ -1,8 +1,11 @@
 import ErrorPage from 'modules/app/components/ErrorPage';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 
 function Error({ statusCode }): React.ReactElement {
   return (
-    <ErrorPage statusCode={statusCode} title={statusCode === 404 ? 'Page not found' : 'Unexpected error'} />
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+      <ErrorPage statusCode={statusCode} title={statusCode === 404 ? 'Page not found' : 'Unexpected error'} />
+    </PrimaryLayout>
   );
 }
 

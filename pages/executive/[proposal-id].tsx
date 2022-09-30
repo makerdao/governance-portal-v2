@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';

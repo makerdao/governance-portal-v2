@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 import { useContext, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR, { useSWRConfig } from 'swr';
 import { isActivePoll, findPollById, isInputFormatRankFree } from 'modules/polling/helpers/utils';
@@ -379,9 +379,12 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: PollingRev
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />;
+      </PrimaryLayout>
+    );
   }
-
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     network

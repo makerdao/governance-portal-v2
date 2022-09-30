@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -318,7 +318,11 @@ export default function Index({
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />;
+      </PrimaryLayout>
+    );
   }
 
   const props = {

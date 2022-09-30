@@ -112,9 +112,17 @@ export default function AddressPage(): JSX.Element {
   console.log('SSR', error);
 
   if (error && error.status === 404) {
-    return <ErrorPage statusCode={404} title="This address does not exist" />;
+    return (
+      <PrimaryLayout>
+        <ErrorPage statusCode={404} title="This address does not exist" />
+      </PrimaryLayout>
+    );
   } else if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching address information" />;
+    return (
+      <PrimaryLayout>
+        <ErrorPage statusCode={500} title="Error fetching address information" />
+      </PrimaryLayout>
+    );
   }
 
   if (!data) {

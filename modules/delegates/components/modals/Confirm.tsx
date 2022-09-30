@@ -25,11 +25,23 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
         You are delegating{' '}
         <Text sx={{ fontWeight: 'bold', display: 'inline' }}>{formatValue(mkrToDeposit, 'wad', 6)} MKR</Text>{' '}
         to delegate contract{' '}
-        <EtherscanLink type="address" showAddress hash={voteDelegateAddress} network={network} />
+        <EtherscanLink
+          type="address"
+          showAddress
+          hash={voteDelegateAddress}
+          network={network}
+          styles={{ justifyContent: 'center' }}
+        />
       </Text>
       <Text sx={{ color: 'secondaryEmphasis', mt: 4 }}>
         This delegate contract was created by{' '}
-        <EtherscanLink type="address" showAddress hash={address} network={network} />
+        <EtherscanLink
+          type="address"
+          showAddress
+          hash={address}
+          network={network}
+          styles={{ justifyContent: 'center' }}
+        />
       </Text>
       <Button onClick={onClick} sx={{ mt: 4 }}>
         Confirm Transaction

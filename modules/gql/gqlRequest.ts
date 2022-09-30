@@ -23,8 +23,6 @@ export const gqlRequest = async <TQuery = any>({
       return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
     }
 
-    throw { message: 'ee' };
-
     const resp = await request(url, query, variables);
     return resp;
   } catch (e) {
