@@ -109,7 +109,6 @@ export default function AddressPage(): JSX.Element {
     revalidateOnMount: !cache.get(dataKeyAccount),
     revalidateOnReconnect: false
   });
-  console.log('SSR', error);
 
   if (error && error.status === 404) {
     return (
