@@ -22,7 +22,6 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
-import { formatValue } from 'lib/string';
 import { parseEther } from 'ethers/lib/utils';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
@@ -55,7 +54,7 @@ export default function ReviewBox({
   const { network, connector } = useWeb3();
 
   const { data: precheckData } = useSWR(
-    account && ballotPollIds && network
+    account && ballotPollIds && ballotPollIds.length > 0 && network
       ? `/api/polling/precheck?network=${network}&voter=${account}&pollIds=${ballotPollIds.join(',')}`
       : null,
     fetchJson
@@ -179,7 +178,7 @@ export default function ReviewBox({
             <Box>
               <Box p={3}>
                 <Text sx={{ fontWeight: 'semiBold' }} as="p">
-                  Gasless voting on Arbitrum
+                  Gasless voting via Arbitrum
                 </Text>
                 <Text sx={{ mt: 2 }}>
                   Submit your vote by signing your ballot and sending it to the polling contract on Arbitrum
@@ -191,7 +190,7 @@ export default function ReviewBox({
                     <Icon name="info" color="textSecondary" size={14} />
                   </Box>
                   <Text sx={{ fontSize: 1, color: 'textSecondary' }}>
-                    You won&apos;t need to switch network.
+                    You don&apos;t need to switch networks.
                   </Text>
                 </Flex>
                 <Button
@@ -357,7 +356,7 @@ export default function ReviewBox({
 
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Is not using a multisig
+                      Address is not a multisig wallet
                     </Text>
                     <Text>
                       {!isGnosisSafe ? (
@@ -368,34 +367,26 @@ export default function ReviewBox({
                     </Text>
                   </Flex>
                 </Flex>
-                <Flex sx={{ flexDirection: 'column', mt: 3 }}>
-                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text as="p" variant="caps">
-                      RELAYER BALANCE
-                    </Text>
-                    <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
-                      <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
-                        Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
-                      </Text>
-                    </ExternalLink>
-                  </Flex>
-                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                    {precheckData?.relayBalance && (
-                      <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                        {formatValue(parseEther(precheckData.relayBalance), 'wad', 4)} ETH
-                      </Text>
-                    )}
-                    <Text>
-                      {relayFunded ? (
-                        <Icon name="checkmark" color="bull" size={'13px'} />
-                      ) : (
-                        <Icon name="close" color="bear" size={'13px'} />
-                      )}
-                    </Text>
-                  </Flex>
-                </Flex>
               </Box>
+              {!relayFunded && (
+                <>
+                  <Divider />
+                  <Flex sx={{ flexDirection: 'column', p: 3, pt: 1 }}>
+                    <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
+                        Relayer Status
+                      </Text>
+                      <Text>
+                        {relayFunded ? (
+                          <Icon name="checkmark" color="bull" size={'13px'} />
+                        ) : (
+                          <Icon name="close" color="bear" size={'13px'} />
+                        )}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                </>
+              )}
             </Box>
           )}
         </Card>

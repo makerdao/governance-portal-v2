@@ -17,7 +17,7 @@ describe('Sort Polls', () => {
     });
   });
 
-  // TODO: Introduce getPOllsTest
+  // TODO: Introduce getPollsTest
 
   const polls: Poll[] = [
     {

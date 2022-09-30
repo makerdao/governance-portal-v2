@@ -42,14 +42,14 @@ export const API_VOTE_ERRORS = {
 
 import { ApiError } from 'modules/app/api/ApiError';
 
-async function throwError(error: string, body: any, code = 400) {
+async function postErrorInDiscord(error: string, body: any, type = 'error') {
   // Post on discord
   try {
     if (config.GASLESS_WEBHOOK_URL) {
       await postRequestToDiscord({
         url: config.GASLESS_WEBHOOK_URL,
         content: JSON.stringify({
-          error,
+          [type]: error,
           ...body
         }),
         // TODO turn this to true when ready to deploy
@@ -59,6 +59,11 @@ async function throwError(error: string, body: any, code = 400) {
   } catch (err) {
     logger.error('API Vote: Unable to post error to discord', err.message);
   }
+}
+
+async function throwError(error: string, body: any, code = 400) {
+  // Post on discord
+  postErrorInDiscord(error, body);
 
   // Return api error
   throw new ApiError(`Poll Gasless Vote: ${error}`, code, error);
@@ -182,13 +187,14 @@ export default withApiHandler(
       if (recentlyUsedGaslessVoting) {
         await throwError(API_VOTE_ERRORS.RATE_LIMITED, req.body);
       }
-
       //can't use gasless service to vote in a poll you've already voted on
       // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
       const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(addressDisplayedAsVoter, network, pollIds);
       if (ballotHasVotedPolls) {
         await throwError(API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, req.body);
       }
+    } else {
+      await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
     }
 
     const r = signature.slice(0, 66);
