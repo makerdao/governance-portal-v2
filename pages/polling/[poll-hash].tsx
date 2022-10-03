@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
@@ -374,7 +374,12 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
   if (!poll && (error || (isDefaultNetwork(network) && !isFallback && !prefetchedPoll?.multiHash))) {
     return (
-      <ErrorPage statusCode={404} title="Poll either does not exist, or could not be fetched at this time" />
+      <PrimaryLayout>
+        <ErrorPage
+          statusCode={404}
+          title="Poll either does not exist, or could not be fetched at this time"
+        />
+      </PrimaryLayout>
     );
   }
 

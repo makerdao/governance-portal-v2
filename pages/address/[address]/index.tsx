@@ -1,6 +1,6 @@
 import { Heading, Box, Flex, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -110,8 +110,18 @@ export default function AddressPage(): JSX.Element {
     revalidateOnReconnect: false
   });
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching address information" />;
+  if (error && error.status === 404) {
+    return (
+      <PrimaryLayout>
+        <ErrorPage statusCode={404} title="This address does not exist" />
+      </PrimaryLayout>
+    );
+  } else if (error) {
+    return (
+      <PrimaryLayout>
+        <ErrorPage statusCode={error.status} title="Error fetching address information" />
+      </PrimaryLayout>
+    );
   }
 
   if (!data) {

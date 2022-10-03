@@ -70,7 +70,6 @@ export async function getMKRVotingWeight(
   // otherwise, not proxy or delegate, get connected wallet balances
   const walletBalanceHot = await contracts.mkr.balanceOf(address);
   const chiefBalanceHot = await contracts.chief.deposits(address);
-
   return {
     walletBalanceHot,
     chiefBalanceHot,

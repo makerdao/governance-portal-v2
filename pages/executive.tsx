@@ -3,7 +3,7 @@ import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner, Card }
 import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -470,8 +470,18 @@ export default function ExecutiveOverviewPage({
     return <PageLoadingPlaceholder />;
   }
 
-  if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  if (error && error.status === 404) {
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={404} title="Executive not found" />;
+      </PrimaryLayout>
+    );
+  } else if (error) {
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />;
+      </PrimaryLayout>
+    );
   }
 
   const props = {

@@ -1,3 +1,4 @@
+import { ApiError } from 'modules/app/api/ApiError';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
@@ -108,9 +109,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   }
 
   if (!poll) {
-    return res.status(404).json({
-      error: 'Not found'
-    });
+    throw new ApiError('Poll not found', 404, 'Poll not found');
   }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

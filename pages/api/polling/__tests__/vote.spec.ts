@@ -59,7 +59,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.VOTER_MUST_BE_STRING });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.VOTER_MUST_BE_STRING }
+    });
     // expect(res.getHeaders()).toEqual({ 'content-type': 'application/json' });
     expect(res.statusMessage).toEqual('OK');
   });
@@ -72,7 +74,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS }
+    });
   });
 
   it('return 400 if optionIds is not an array of integers', async () => {
@@ -84,7 +88,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS }
+    });
   });
 
   it('return 400 if nonce is not a number', async () => {
@@ -97,7 +103,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER }
+    });
   });
 
   it('return 400 if expiry is not a number', async () => {
@@ -111,7 +119,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER }
+    });
   });
 
   it('return 400 if expired', async () => {
@@ -125,7 +135,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.EXPIRED_VOTES });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.EXPIRED_VOTES }
+    });
   });
 
   it('return 400 if signature is not a string', async () => {
@@ -140,7 +152,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING }
+    });
   });
 
   it('return 400 if network is not valid', async () => {
@@ -155,7 +169,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.INVALID_NETWORK });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.INVALID_NETWORK }
+    });
   });
 
   it('return 400 if nonce is not valid', async () => {
@@ -172,7 +188,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS }
+    });
   });
 
   it('return 400 if MKR amount is not valid', async () => {
@@ -196,7 +214,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED }
+    });
   });
 
   it('return 400 if any poll is expired', async () => {
@@ -231,7 +251,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.EXPIRED_POLLS });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.EXPIRED_POLLS }
+    });
   });
 
   it('return 400 if it used gasless voting recently', async () => {
@@ -269,7 +291,9 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.RATE_LIMITED });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.RATE_LIMITED }
+    });
   });
 
   it('return 400 if voter and signer do not match', async () => {
@@ -310,6 +334,8 @@ describe('/api/polling/vote API Endpoint', () => {
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
-    expect(res._getJSONData()).toEqual({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER });
+    expect(res._getJSONData()).toEqual({
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER }
+    });
   });
 });
