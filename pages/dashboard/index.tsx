@@ -12,7 +12,8 @@ import {
   executiveSupportersCacheKey,
   getAllPollsCacheKey,
   getPollTallyCacheKey,
-  githubExecutivesCacheKey
+  githubExecutivesCacheKey,
+  getExecutiveProposalsCacheKey
 } from 'modules/cache/constants/cache-keys';
 import { invalidateCache } from 'modules/cache/invalidateCache';
 import { toast } from 'react-toastify';
@@ -27,7 +28,7 @@ const DashboardPage = (): React.ReactElement => {
   const [cacheInfo, setCacheInfo] = useState({});
 
   const fetchCacheInfo = async () => {
-    const info = await getCacheInfo(githubExecutivesCacheKey, network);
+    const info = await getCacheInfo(network);
 
     setCacheInfo(info);
   };
@@ -87,13 +88,21 @@ const DashboardPage = (): React.ReactElement => {
         <Heading>Dashboard</Heading>
         {!signedIn && (
           <Card>
-            <Text as="h3">Enter Password</Text>
-            <Flex sx={{ mt: 3 }}>
-              <Box sx={{ mr: 2 }}>
-                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-              </Box>
-              <Button onClick={logIn}>Submit</Button>
-            </Flex>
+            <Box
+              as="form"
+              onSubmit={e => {
+                e.preventDefault();
+                logIn();
+              }}
+            >
+              <Text as="h3">Enter Password</Text>
+              <Flex sx={{ mt: 3 }}>
+                <Box sx={{ mr: 2 }}>
+                  <Input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                </Box>
+                <Button type="submit">Submit</Button>
+              </Flex>
+            </Box>
           </Card>
         )}
         {signedIn && (
@@ -109,15 +118,22 @@ const DashboardPage = (): React.ReactElement => {
                     </Button>
                   </Box>
                   <Box sx={{ m: 3 }}>
+                    <Button
+                      onClick={() => {
+                        invalidate(githubExecutivesCacheKey);
+                        invalidate(getExecutiveProposalsCacheKey());
+                      }}
+                      disabled={loading}
+                    >
+                      Executive proposals
+                    </Button>
+                  </Box>
+                  <Box sx={{ m: 3 }}>
                     <Button onClick={() => invalidate(executiveSupportersCacheKey)} disabled={loading}>
                       Executive supporters
                     </Button>
                   </Box>
-                  <Box sx={{ m: 3 }}>
-                    <Button onClick={() => invalidate(githubExecutivesCacheKey)} disabled={loading}>
-                      Executives from GitHub
-                    </Button>
-                  </Box>
+
                   <Box sx={{ m: 3 }}>
                     <Button
                       onClick={() => {
@@ -165,19 +181,21 @@ const DashboardPage = (): React.ReactElement => {
                   )}
                 </Flex>
                 <Flex sx={{ mt: 2 }}>
-                  <Text sx={{ fontWeight: 'semiBold' }}>Executive supporters:</Text>
-                  {cacheInfo[executiveSupportersCacheKey] > 0 ? (
-                    <Text
-                      sx={{ ml: 2 }}
-                    >{`Expires in ${cacheInfo[executiveSupportersCacheKey]} seconds`}</Text>
+                  <Text sx={{ fontWeight: 'semiBold' }}>Executives proposals:</Text>
+                  {cacheInfo[getExecutiveProposalsCacheKey()] > 0 ? (
+                    <Text sx={{ ml: 2 }}>{`Expires in ${
+                      cacheInfo[getExecutiveProposalsCacheKey()]
+                    } seconds`}</Text>
                   ) : (
                     <Text sx={{ ml: 2 }}>No cache found</Text>
                   )}
                 </Flex>
                 <Flex sx={{ mt: 2 }}>
-                  <Text sx={{ fontWeight: 'semiBold' }}>Executives from GitHub:</Text>
-                  {cacheInfo[githubExecutivesCacheKey] > 0 ? (
-                    <Text sx={{ ml: 2 }}>{`Expires in ${cacheInfo[githubExecutivesCacheKey]} seconds`}</Text>
+                  <Text sx={{ fontWeight: 'semiBold' }}>Executive supporters:</Text>
+                  {cacheInfo[executiveSupportersCacheKey] > 0 ? (
+                    <Text
+                      sx={{ ml: 2 }}
+                    >{`Expires in ${cacheInfo[executiveSupportersCacheKey]} seconds`}</Text>
                   ) : (
                     <Text sx={{ ml: 2 }}>No cache found</Text>
                   )}
