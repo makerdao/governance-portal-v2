@@ -26,7 +26,7 @@ export default function ErrorPage({
         <Box pt={3}>{children}</Box>
         <Box pt={3}>
           <Text sx={{ textAlign: 'center' }}>
-            For more information or help contact the Development and UX core unit at{' '}
+            For more information or help, please contact the Development &amp; UX core unit on{' '}
             <ExternalLink href="https://discord.gg/GHcFMdKden" title="Discord">
               <Text>Discord</Text>
             </ExternalLink>

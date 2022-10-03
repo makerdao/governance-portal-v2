@@ -85,7 +85,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       : (req.query.address as string[]);
 
   if (!req.query.address) {
-    throw new ApiError('Address stats, missing address', 401, 'Missing address');
+    throw new ApiError('Address stats, missing address', 400, 'Missing address');
   }
 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);

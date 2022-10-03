@@ -119,7 +119,7 @@ export default function AddressPage(): JSX.Element {
   } else if (error) {
     return (
       <PrimaryLayout>
-        <ErrorPage statusCode={500} title="Error fetching address information" />
+        <ErrorPage statusCode={error.status} title="Error fetching address information" />
       </PrimaryLayout>
     );
   }
