@@ -1,7 +1,6 @@
 import { initializeConnector } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { Network } from '@web3-react/network';
-import { EIP1193 } from '@web3-react/eip1193';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
@@ -9,7 +8,7 @@ import { GnosisSafe } from '@makerdao-dux/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
-import { Connection } from '../types/connection';
+import { Connection, EIP1193Provider } from '../types/connection';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -104,6 +103,11 @@ const CONNECTIONS = [
 
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
+    // Return the shimmed metamask connection if on goerlifork
+    if ((c.provider as EIP1193Provider)?.chainId === SupportedChainId.GOERLIFORK) {
+      return metamaskConnection;
+    }
+
     const connection = CONNECTIONS.find(connection => connection.connector === c);
     if (!connection) {
       throw Error('unsupported connector');
