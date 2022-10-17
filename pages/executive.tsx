@@ -473,13 +473,13 @@ export default function ExecutiveOverviewPage({
   if (error && error.status === 404) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
-        <ErrorPage statusCode={404} title="Executive not found" />;
+        <ErrorPage statusCode={404} title="Executive not found" />
       </PrimaryLayout>
     );
   } else if (error) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
-        <ErrorPage statusCode={500} title="Error fetching data" />;
+        <ErrorPage statusCode={500} title="Error fetching data" />
       </PrimaryLayout>
     );
   }

@@ -320,7 +320,7 @@ export default function Index({
   if (error) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
-        <ErrorPage statusCode={500} title="Error fetching data" />;
+        <ErrorPage statusCode={500} title="Error fetching data" />
       </PrimaryLayout>
     );
   }
