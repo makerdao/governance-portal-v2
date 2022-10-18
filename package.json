@@ -27,7 +27,8 @@
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/",
     "gql-generate": "graphql-codegen --config codegen.yml",
     "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
-    "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\""
+    "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\"",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.3.0",
@@ -143,6 +144,8 @@
     "jest-environment-jsdom": "^29.0.2",
     "node-fetch": "^3.2.4",
     "node-mocks-http": "^1.11.0",
+    "patch-package": "^6.4.7",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.0.5",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",

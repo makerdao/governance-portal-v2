@@ -7,9 +7,9 @@ import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/
 import { visitPage, setAccount, forkNetwork } from '../../support/commons';
 
 describe('/polling/review page', async () => {
-  before(() => {
-    forkNetwork(INIT_BLOCK);
-  });
+  // before(() => {
+  //   forkNetwork(INIT_BLOCK);
+  // });
 
   it('Renders correct information about the missing connection', () => {
     visitPage('/polling/review');
@@ -17,7 +17,7 @@ describe('/polling/review page', async () => {
     cy.contains('Connect your wallet to review your ballot').should('be.visible');
   });
 
-  it('Adds polls to review and navigates to review page', () => {
+  it.only('Adds polls to review and navigates to review page', () => {
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
