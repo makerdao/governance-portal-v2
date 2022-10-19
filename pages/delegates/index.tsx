@@ -30,6 +30,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
+import logger from 'lib/logger';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
@@ -247,7 +248,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
-  tags: prefetchedTags
+  tags: prefetchedTags,
+  error: errorFetch
 }: DelegatesPageData): JSX.Element {
   const { network } = useWeb3();
 
@@ -273,10 +275,10 @@ export default function DelegatesPage({
     return <PageLoadingPlaceholder />;
   }
 
-  if (error) {
+  if (error || errorFetch) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
-        <ErrorPage statusCode={500} title="Error fetching data" />
+        <ErrorPage statusCode={500} title="Error fetching data. Please, try again later." />
       </PrimaryLayout>
     );
   }
@@ -295,15 +297,28 @@ export default function DelegatesPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { delegates, stats, tags } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
+  try {
+    const { delegates, stats, tags } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
 
-  return {
-    revalidate: 60 * 30, // allow revalidation every 30 minutes
-    props: {
-      // Shuffle in the backend, this will be changed depending on the sorting order.
-      delegates,
-      tags,
-      stats
-    }
-  };
+    return {
+      revalidate: 60 * 30, // allow revalidation every 30 minutes
+      props: {
+        // Shuffle in the backend, this will be changed depending on the sorting order.
+        delegates,
+        tags,
+        stats
+      }
+    };
+  } catch (e) {
+    logger.critical('Error loading page data for delegates.', e.message);
+
+    return {
+      revalidate: 60,
+      props: {
+        error: e,
+        delegates: [],
+        tags: []
+      }
+    };
+  }
 };

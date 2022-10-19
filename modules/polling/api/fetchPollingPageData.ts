@@ -11,6 +11,7 @@ export type PollingReviewPageData = {
 export type PollingPageData = {
   polls: Poll[];
   tags: TagCount[];
+  error?: Error;
 };
 
 export async function fetchPollingPageData(

@@ -51,7 +51,7 @@ export function backoffRetry(
   return fn().catch(err => {
     logFn(`backOffRetry: ${retries}`);
     return retries > 1
-      ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2))
+      ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2, logFn))
       : Promise.reject(err);
   });
 }
