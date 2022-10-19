@@ -78,13 +78,13 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   }) as number;
 
   const limit = validateQueryParam(req.query.limit, 'number', {
-    defaultValue: 0,
+    defaultValue: 5,
     minValue: 1,
     maxValue: 30
   }) as number;
 
   const sortBy = validateQueryParam(req.query.sortBy, 'string', {
-    defaultValue: 'date',
+    defaultValue: 'active',
     validValues: ['date', 'mkr', 'active']
   });
 
