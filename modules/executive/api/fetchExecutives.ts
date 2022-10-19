@@ -98,6 +98,8 @@ export async function getExecutiveProposals({
 
   const cacheKey = getExecutiveProposalsCacheKey(start, limit, sortBy, startDate, endDate);
 
+  logger.debug('Getting executives with key: ', cacheKey);
+
   const cachedProposals = await cacheGet(cacheKey, currentNetwork);
   if (cachedProposals) {
     return JSON.parse(cachedProposals);
