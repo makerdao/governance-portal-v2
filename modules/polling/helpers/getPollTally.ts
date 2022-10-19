@@ -1,5 +1,4 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { backoffRetry } from 'lib/utils';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchPollTally } from 'modules/polling/api/fetchPollTally';
 import { Poll, PollTally } from 'modules/polling/types';
@@ -15,7 +14,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   }
 
   // Builds poll tally
-  const tally: PollTally = await backoffRetry(3, () => fetchPollTally(poll, network));
+  const tally: PollTally = await fetchPollTally(poll, network);
 
   const pollEnded = pollHasEnded(poll);
 
