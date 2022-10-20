@@ -1,5 +1,6 @@
 import { request, Variables, RequestDocument } from 'graphql-request';
 import logger from 'lib/logger';
+import { backoffRetry } from 'lib/utils';
 import { ApiError } from 'modules/app/api/ApiError';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
@@ -22,12 +23,19 @@ export const gqlRequest = async <TQuery = any>({
     if (!url) {
       return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
     }
-
-    const resp = await request(url, query, variables);
+    const resp = await backoffRetry(
+      3,
+      () => request(url, query, variables),
+      500,
+      (message: string) => {
+        logger.debug(`GQL Request: ${message}. --- ${query}`);
+      }
+    );
     return resp;
   } catch (e) {
-    const message = `Error on GraphQL query, Chain ID: ${chainId}, query: ${query}, message: ${e.message}`;
-    logger.error(message);
-    throw new ApiError(message);
+    const status = e.response ? e.response.status : 500;
+    const errorMessage = status === 403 ? 'Rate limited on gov polling' : e.message;
+    const message = `Error on GraphQL query, Chain ID: ${chainId}, query: ${query}, message: ${errorMessage}`;
+    throw new ApiError(message, status, 'Error fetching gov polling data');
   }
 };
