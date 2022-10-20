@@ -27,19 +27,29 @@ task('fork', 'Forks network at the specified block')
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  // networks: {
-  //   // localhost: {
-  //   //   url: 'http://127.0.0.1:8545',
-  //   //   timeout: 2000000,
-  //   //   chainId: 31337
-  //   // }
-  //   // hardhat: {
-  //   //   // forking: {
-  //   //   //   // url: process.env.GOERLI_FORK_API_KEY,
-  //   //   //   // blockNumber: 734148
-  //   //   //   // chainId: 31337
-  //   //   // },
-  //   //   timeout: 2000000
-  //   // }
-  // }
+  networks: {
+    localhost: {
+      url: 'http://127.0.0.1:8545',
+      timeout: 2000000,
+      chainId: 31337
+    },
+    goerli: {
+      url: 'http://127.0.0.1:8545',
+      timeout: 2000000,
+      chainId: 31337
+    },
+    arbTestnet: {
+      url: 'http://127.0.0.1:8546',
+      timeout: 2000000,
+      chainId: 31337
+    },
+    hardhat: {
+      // forking: {
+      //   url: process.env.GOERLI_FORK_API_KEY,
+      //   blockNumber: 734148,
+      //   chainId: 31337
+      // },
+      timeout: 2000000
+    }
+  }
 };
