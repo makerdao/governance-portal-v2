@@ -8,7 +8,6 @@ export type DelegatesPageData = {
   delegates: Delegate[];
   stats?: DelegatesAPIStats;
   tags: TagCount[];
-  error?: Error;
 };
 
 export async function fetchDelegatesPageData(

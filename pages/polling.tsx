@@ -42,7 +42,6 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
-import logger from 'lib/logger';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;
@@ -355,8 +354,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  tags: prefetchedCategories,
-  error: errorFetch
+  tags: prefetchedCategories
 }: PollingPageData): JSX.Element {
   const { network } = useWeb3();
 
@@ -382,7 +380,7 @@ export default function PollingOverviewPage({
     return <PageLoadingPlaceholder />;
   }
 
-  if (error || errorFetch) {
+  if (error) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
         <ErrorPage statusCode={500} title="Error fetching data, please try again later." />;
@@ -403,26 +401,13 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  try {
-    const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
+  const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
-    return {
-      revalidate: 60, // revalidate every 60 seconds
-      props: {
-        polls,
-        tags
-      }
-    };
-  } catch (e) {
-    logger.critical('Error loading page data for polling.', e.message);
-
-    return {
-      revalidate: 60,
-      props: {
-        error: e,
-        polls: [],
-        tags: []
-      }
-    };
-  }
+  return {
+    revalidate: 60, // revalidate every 60 seconds
+    props: {
+      polls,
+      tags
+    }
+  };
 };
