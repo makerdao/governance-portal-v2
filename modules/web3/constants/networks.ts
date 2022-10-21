@@ -7,8 +7,8 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  GOERLI_SPOCK_URL
-  // LOCAL_SPOCK_URL,
+  GOERLI_SPOCK_URL,
+  LOCAL_SPOCK_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -75,7 +75,7 @@ export const CHAIN_INFO: ChainInfo = {
     type: 'normal',
     network: SupportedNetworks.GOERLIFORK,
     defaultRpc: NodeProviders.LOCAL,
-    spockUrl: GOERLI_SPOCK_URL,
+    spockUrl: LOCAL_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://localhost:8545'
     }

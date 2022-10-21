@@ -59,10 +59,22 @@ describe('/polling/review page', async () => {
       // Clicks on update vote
       cy.contains('Update vote').click();
 
-      // Submit ballot
+      // Move to submit ballot screen
       cy.get('[data-testid="submit-ballot-button"]').click();
 
-      cy.contains('Please use your wallet to sign this transaction.').should('be.visible');
+      cy.contains('Gasless voting via Arbitrum').should('be.visible');
+
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="switch-to-legacy-voting-button"]').click();
+
+      cy.contains(
+        'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      ).should('be.visible');
+
+      // Click legacy voting submit button
+      cy.get('[data-testid="submit-ballot-legacy-button"]').click();
+
+      cy.contains('Please use your wallet to sign').should('be.visible');
 
       cy.contains('Transaction Pending').should('be.visible');
 
@@ -70,7 +82,7 @@ describe('/polling/review page', async () => {
 
       // After finishing voting, there should be a message with the sharing info
       cy.contains(
-        'Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.'
+        'Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
       ).should('be.visible');
 
       // And the same ammount of poll cards

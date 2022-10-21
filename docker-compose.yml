@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   postgres:
-    image: makerdaodux/govpolldb-postgres
+    image: makerdaodux/govpolldb-postgres:latest
     container_name: postgres-vulcan2x-arbitrum
     command: ['postgres', '-c', 'log_min_duration_statement=1000']
     environment:
@@ -17,7 +17,7 @@ services:
     healthcheck:
       test: pg_isready -p 5432 -h localhost -U user -d database
   spock:
-    image: makerdaodux/govpolldb-app
+    image: makerdaodux/govpolldb-app:latest
     container_name: spock-test-container
     command: ['yarn', 'start-all']
     depends_on:
