@@ -175,7 +175,6 @@ const WithdrawOldChief = (props): JSX.Element => {
           py: 0,
           mx: 1,
           textTransform: 'uppercase',
-          borderRadius: 'small',
           fontWeight: 'bold',
           fontSize: '10px'
         }}

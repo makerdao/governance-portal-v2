@@ -113,19 +113,14 @@ export default function MobileVoteSheet({
               display: 'flex',
               flexDirection: 'row',
               flexWrap: 'nowrap',
-              alignItems: 'center',
-              borderRadius: 'small'
+              alignItems: 'center'
             }}
           >
             <Icon name="edit" size={3} mr={2} />
             Edit Choices
           </Button>
         ) : (
-          <Button
-            sx={{ width: '110px', borderRadius: 'small' }}
-            variant="primary"
-            onClick={() => setViewState(ViewState.INPUT)}
-          >
+          <Button sx={{ width: '110px' }} variant="primary" onClick={() => setViewState(ViewState.INPUT)}>
             Vote
           </Button>
         )}
@@ -170,17 +165,13 @@ export default function MobileVoteSheet({
                 ))}
               </Flex>
               {pollsData && ballotCount < activePolls.length && (
-                <Button
-                  variant="outline"
-                  sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                  onClick={goToNextPoll}
-                >
+                <Button variant="outline" sx={{ py: 3, fontSize: 2 }} onClick={goToNextPoll}>
                   Next Poll
                 </Button>
               )}
               <Button
                 variant="primaryLarge"
-                sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
+                sx={{ py: 3, fontSize: 2 }}
                 onClick={() => router.push({ pathname: '/polling/review' })}
               >
                 Review &amp; Submit Ballot

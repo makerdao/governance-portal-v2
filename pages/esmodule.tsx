@@ -222,7 +222,7 @@ const ESModule = (): React.ReactElement => {
             <Button
               onClick={() => setShowDialog(true)}
               variant="outline"
-              sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+              sx={{ color: 'onNotice', borderColor: 'notice' }}
             >
               {esmThresholdMet ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>

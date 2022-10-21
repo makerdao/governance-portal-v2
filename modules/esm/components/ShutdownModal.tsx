@@ -36,11 +36,7 @@ const ModalContent = ({
         Dai Credit System.
       </Text>
       <Grid columns={2} mt={4}>
-        <Button
-          onClick={close}
-          variant="outline"
-          sx={{ color: '#9FAFB9', borderColor: '#9FAFB9', borderRadius: 'small' }}
-        >
+        <Button onClick={close} variant="outline" sx={{ color: '#9FAFB9', borderColor: '#9FAFB9' }}>
           Cancel
         </Button>
         <Button
@@ -53,7 +49,7 @@ const ModalContent = ({
             });
           }}
           variant="outline"
-          sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+          sx={{ color: 'onNotice', borderColor: 'notice' }}
         >
           Continue
         </Button>
