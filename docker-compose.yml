@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   postgres:
-    image: makerdaodux/govpolldb-postgres:latest
+    image: postgres:10.6
     container_name: postgres-vulcan2x-arbitrum
     command: ['postgres', '-c', 'log_min_duration_statement=1000']
     environment:

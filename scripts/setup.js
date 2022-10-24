@@ -4,10 +4,14 @@ const { ethers } = hre;
 const keyPairs = require('../cypress/support/constants/keypairs.json');
 const ERC20_ABI = require('../cypress/fixtures/erc20_abi.json');
 const VOTEDELEGATE_ABI = require('../cypress/fixtures/votedelegatefactoryabi.json');
+const POLLING_ABI = require('../cypress/fixtures/polling.json');
+
 async function main() {
   const accounts = await hre.ethers.getSigners();
   const testAccount = '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B';
   const mkrAddress = '0xc5E4eaB513A7CD12b2335e8a0D57273e13D499f7';
+  const pollingAddress = '0xdbE5d00b2D8C13a77Fb03Ee50C87317dbC1B15fb';
+
   // Impersonate accounts
   await hre.network.provider.request({
     method: 'hardhat_impersonateAccount',
@@ -36,9 +40,9 @@ async function main() {
 
   console.log('All addresses have now 0.5 ETH');
 
-  // const signer = await ethers.getSigner(testAccount);
+  const signer = await ethers.getSigner(testAccount);
 
-  // const mkrToken = new ethers.Contract(mkrAddress, ERC20_ABI, signer);
+  const mkrToken = new ethers.Contract(mkrAddress, ERC20_ABI, signer);
 
   // // Send 0.01 MKR to all addresses
   // for (let i = 0; i < 50; i++) {
@@ -64,8 +68,8 @@ async function main() {
 
   await setStorageAt(mkrAddress, index.toString(), toBytes32(ethers.utils.parseUnits('250000')).toString());
 
-  //const mkrBalance = await mkrToken.balanceOf(testAccount);
-  //console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
+  const mkrBalance = await mkrToken.balanceOf(testAccount);
+  console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
 
   // Create delegate contract
   // const delegateAddress = '0x81431b69b1e0e334d4161a13c2955e0f3599381e'
@@ -77,6 +81,15 @@ async function main() {
   // const delegateSigner = await ethers.getSigner(delegateAddress);
   // const voteDelegateFactory = new ethers.Contract('0xE2d249AE3c156b132C40D07bd4d34e73c1712947', VOTEDELEGATE_ABI, delegateSigner);
   // await voteDelegateFactory.create();
+
+  // Create a poll
+  const pollingContract = new ethers.Contract(pollingAddress, POLLING_ABI, signer);
+  const p = await pollingContract.createPoll(
+    1666281600,
+    1701532800,
+    'QmWnL3US4WhNKqunND2s5KQwP1qNeekZAZzHWSVTLkaS6j',
+    'https://raw.githubusercontent.com/makerdao-dux/community/20bc3cd5e85155d08cb54c760562738e0853134e/governance/polls/Add%20CASTLEDAO-A%20as%20a%20new%20Vault%20Type%20-%20October%2021%2C%202022.md'
+  );
 }
 
 main().catch(error => {

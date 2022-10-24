@@ -44,6 +44,14 @@ module.exports = {
       chainId: 31337
     },
     hardhat: {
+      // mining: {
+      //   auto: false,
+      //   interval: 0
+      // },
+      mining: {
+        auto: false,
+        interval: 3000
+      },
       // forking: {
       //   url: process.env.GOERLI_FORK_API_KEY,
       //   blockNumber: 734148,

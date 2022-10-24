@@ -4,12 +4,13 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { visitPage, setAccount, forkNetwork } from '../../support/commons';
+import { visitPage, setAccount, forkNetwork, fundAccounts } from '../../support/commons';
 
 describe('/polling/review page', async () => {
-  // before(() => {
-  //   forkNetwork(INIT_BLOCK);
-  // });
+  before(() => {
+    // forkNetwork(INIT_BLOCK);
+    fundAccounts();
+  });
 
   it('Renders correct information about the missing connection', () => {
     visitPage('/polling/review');
