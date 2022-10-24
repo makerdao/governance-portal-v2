@@ -26,6 +26,7 @@ type Props = {
   poll: Poll;
   showStatus?: boolean;
   showReviewButton?: boolean;
+  disabled?: boolean;
   onSubmit?: () => void;
   buttonVariant?: string;
 };
@@ -34,6 +35,7 @@ const QuickVote = ({
   poll,
   showStatus,
   showReviewButton,
+  disabled = false,
   onSubmit,
   buttonVariant
 }: Props): React.ReactElement => {
@@ -53,7 +55,7 @@ const QuickVote = ({
   const [editing, setEditing] = useState(false);
 
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
-  const voteIsPending = !!transaction;
+  const voteIsPending = transaction && transaction.status !== 'mined' ? true : false;
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
   const previousVote = previousBallot[poll.pollId] ? previousBallot[poll.pollId].option : null;
   const hasVotedOnThisPollBefore = currentVote !== null || previousVote !== null;
@@ -96,7 +98,7 @@ const QuickVote = ({
 
       {choice !== null && !editing && (
         <ChoiceSummary
-          voteIsPending={voteIsPending}
+          showActions={!voteIsPending && !disabled}
           poll={poll}
           choice={choice}
           edit={() => setEditing(true)}
@@ -105,7 +107,7 @@ const QuickVote = ({
       )}
       {choice === null && hasVotedOnThisPollBefore && !editing && (
         <ChoiceSummary
-          voteIsPending={voteIsPending}
+          showActions={!voteIsPending && !disabled}
           poll={poll}
           choice={previousVote !== null ? previousVote : (currentVote as number | number[])}
           edit={() => setEditing(true)}
