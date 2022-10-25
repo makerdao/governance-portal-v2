@@ -23,7 +23,7 @@ module.exports = {
       // },
       forking: {
         url: 'https://arb-goerli.g.alchemy.com/v2/rN1vSB6tSdjfWGno6SSZdjOB8m8LvM_0',
-        blockNumber: 734148,
+        blockNumber: 793616,
         chainId: 421613
       },
       timeout: 2000000

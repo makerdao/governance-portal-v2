@@ -81,15 +81,6 @@ async function main() {
   // const delegateSigner = await ethers.getSigner(delegateAddress);
   // const voteDelegateFactory = new ethers.Contract('0xE2d249AE3c156b132C40D07bd4d34e73c1712947', VOTEDELEGATE_ABI, delegateSigner);
   // await voteDelegateFactory.create();
-
-  // Create a poll
-  const pollingContract = new ethers.Contract(pollingAddress, POLLING_ABI, signer);
-  const p = await pollingContract.createPoll(
-    1666281600,
-    1701532800,
-    'QmWnL3US4WhNKqunND2s5KQwP1qNeekZAZzHWSVTLkaS6j',
-    'https://raw.githubusercontent.com/makerdao-dux/community/20bc3cd5e85155d08cb54c760562738e0853134e/governance/polls/Add%20CASTLEDAO-A%20as%20a%20new%20Vault%20Type%20-%20October%2021%2C%202022.md'
-  );
 }
 
 main().catch(error => {
