@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { Button, Flex, Close, Text } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Proposal } from 'modules/executive/types';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 import DefaultVoteModalView from './DefaultView';
 import useTransactionsStore from 'modules/web3/stores/transactions';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 type Props = {
   close: () => void;
@@ -21,8 +19,6 @@ type Props = {
 type ModalStep = 'confirm' | 'signing' | 'pending' | 'mined' | 'failed';
 
 const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
-  const bpi = useBreakpointIndex();
-
   const [step, setStep] = useState<ModalStep>('confirm');
 
   const [txId, setTxId] = useState('');
@@ -33,15 +29,8 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
   );
 
   return (
-    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
-      <DialogContent
-        aria-label="Executive Vote"
-        sx={
-          bpi === 0
-            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-            : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
-        }
-      >
+    <DialogOverlay isOpen={true} onDismiss={close}>
+      <DialogContent aria-label="Executive Vote">
         {step === 'confirm' && (
           <DefaultVoteModalView
             proposal={proposal}

@@ -2,13 +2,12 @@ import React, { useState, useCallback } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
+import { DialogContent, DialogOverlay } from '../../Dialog';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -105,15 +104,8 @@ const NetworkSelect = (): React.ReactElement => {
         />
       )}
 
-      <DialogOverlay isOpen={showDialog} onDismiss={close} sx={{ zIndex: 1001 }}>
-        <DialogContent
-          aria-label="Change Network"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
-          }
-        >
+      <DialogOverlay isOpen={showDialog} onDismiss={close}>
+        <DialogContent aria-label="Change Network" widthDesktop="400px">
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
             <Text variant="microHeading">Switch Network</Text>
             <Close sx={closeButtonStyle} aria-label="close" onClick={close} />

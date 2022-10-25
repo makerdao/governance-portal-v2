@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Box, Flex, Heading, Text, Button } from 'theme-ui';
-import { DialogContent, DialogOverlay } from '@reach/dialog';
 import { Icon } from '@makerdao/dai-ui-icons';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { slideUp, fadeIn } from 'lib/keyframes';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { markdownToHtml } from 'lib/markdown';
 import InternalIcon from 'modules/app/components/Icon';
 import { openWindowWithUrl } from 'lib/utils';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 type Props = {
   isOpen: boolean;
@@ -22,7 +20,6 @@ export const ShareVotesModal = ({
   markdownContent,
   twitterContent
 }: Props): JSX.Element => {
-  const bpi = useBreakpointIndex();
   const [html, setHtml] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -43,19 +40,7 @@ export const ShareVotesModal = ({
 
   return (
     <DialogOverlay isOpen={isOpen} onDismiss={onDismiss}>
-      <DialogContent
-        sx={
-          bpi === 0
-            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-            : {
-                variant: 'dialog.desktop',
-                animation: `${fadeIn} 350ms ease`,
-                width: '720px',
-                px: 5,
-                py: 4
-              }
-        }
-      >
+      <DialogContent widthDesktop="720px">
         <BoxWithClose close={onDismiss}>
           <Flex sx={{ flexDirection: 'column' }}>
             <Heading sx={{ textAlign: 'center', mb: 3 }}>Share your votes</Heading>

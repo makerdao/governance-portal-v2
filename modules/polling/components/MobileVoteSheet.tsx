@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Button, Box, Flex } from 'theme-ui';
 import invariant from 'tiny-invariant';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
 import lottie from 'lottie-web';
@@ -18,6 +17,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import QuickVote from './poll-vote-input/QuickVote';
 import { BallotContext } from '../context/BallotContext';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 enum ViewState {
   START,
@@ -128,14 +128,8 @@ export default function MobileVoteSheet({
     );
   else
     return (
-      <DialogOverlay
-        sx={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        onDismiss={close ? close : () => setViewState(ViewState.START)}
-      >
-        <DialogContent
-          sx={{ variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }}
-          aria-label="Vote Form"
-        >
+      <DialogOverlay isOpen onDismiss={close ? close : () => setViewState(ViewState.START)}>
+        <DialogContent aria-label="Vote Form">
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">
