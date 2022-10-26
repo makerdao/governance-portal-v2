@@ -21,6 +21,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 type Props = {
   poll: Poll;
@@ -45,6 +46,8 @@ const QuickVote = ({
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
+
+  const { isDelegateContractExpired } = useMigrationStatus();
 
   const { ballot, previousBallot, transaction, updateVoteFromBallot } = useContext(BallotContext);
 
@@ -135,10 +138,14 @@ const QuickVote = ({
               submit();
             }}
             mt={2}
-            disabled={!isChoiceValid || !votingWeight || !votingWeight.total.gt(0)}
+            disabled={
+              !isChoiceValid || !votingWeight || !votingWeight.total.gt(0) || isDelegateContractExpired
+            }
           >
             {!votingWeight || !votingWeight.total.gt(0)
               ? 'Deposit MKR to vote'
+              : isDelegateContractExpired
+              ? 'Delegate contract expired'
               : addedChoice
               ? 'Update vote'
               : 'Add vote to ballot'}
