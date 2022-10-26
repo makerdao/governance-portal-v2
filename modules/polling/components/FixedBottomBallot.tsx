@@ -21,10 +21,11 @@ export default function FixedBottomBallot() {
         background: 'background',
         width: '100%',
         borderTop: '1px solid',
-        borderColor: 'secondary'
+        borderColor: 'secondary',
+        
       }}
     >
-      <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end', p: 2, flexDirection: ['column', 'row'] }}>
+      <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end', p: 2, flexDirection: ['column', 'row'] , maxWidth: 'dashboard', margin: '0 auto'}}>
         <Text variant="smallCaps" sx={{ mr: [0, 2], mb: [2, 0] }}>
           {ballotCount} poll{ballotCount === 1 ? '' : 's'} added to your ballot{' '}
         </Text>
