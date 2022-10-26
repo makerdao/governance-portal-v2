@@ -42,6 +42,7 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
+import FixedBottomBallot from 'modules/polling/components/FixedBottomBallot';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;
@@ -348,6 +349,8 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
           </Stack>
         </SidebarLayout>
       </Stack>
+
+      <FixedBottomBallot />
     </PrimaryLayout>
   );
 };
