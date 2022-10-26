@@ -29,7 +29,7 @@ async function main() {
   // for (let i = 0; i < 50; i++) {
   await ethSender.sendTransaction({
     to: '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B',
-    value: ethers.utils.parseEther('0.5')
+    value: ethers.utils.parseEther('5')
   });
   // }
 
@@ -38,7 +38,7 @@ async function main() {
     value: ethers.utils.parseEther('2.5')
   });
 
-  console.log('All addresses have now 0.5 ETH');
+  console.log('All addresses have now 5 ETH');
 
   const signer = await ethers.getSigner(testAccount);
 

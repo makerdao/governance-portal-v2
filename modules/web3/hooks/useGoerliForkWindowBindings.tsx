@@ -19,7 +19,7 @@ export function useGoerliForkWindowBindings(): void {
       (window as any).setAccount = (address: string, key: string) => {
         if (address && key) {
           try {
-            const rpcUrl = 'http://localhost:8545';
+            const rpcUrl = 'http://127.0.0.1:8545/';
             const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
             const signer = new Wallet(key, provider);
             const bridge = new CustomizedBridge(signer, provider);

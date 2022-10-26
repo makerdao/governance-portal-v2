@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   postgres:
-    image: postgres:10.6
+    image: makerdaodux/govpolldb-postgres:latest
     container_name: postgres-vulcan2x-arbitrum
     command: ['postgres', '-c', 'log_min_duration_statement=1000']
     environment:
@@ -12,8 +12,6 @@ services:
       - POSTGRES_DB=database
     ports:
       - '5432:5432'
-    expose:
-      - '5432'
     healthcheck:
       test: pg_isready -p 5432 -h localhost -U user -d database
   spock:

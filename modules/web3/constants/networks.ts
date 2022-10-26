@@ -77,7 +77,7 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.LOCAL,
     spockUrl: LOCAL_SPOCK_URL,
     rpcs: {
-      [NodeProviders.LOCAL]: 'http://localhost:8545'
+      [NodeProviders.LOCAL]: 'http://127.0.0.1:8545/'
     }
   },
   [SupportedChainId.ARBITRUMTESTNET]: {
