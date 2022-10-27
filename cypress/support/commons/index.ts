@@ -54,7 +54,7 @@ export function fundAccounts(): void {
 }
 
 export function resetDatabase(): void {
-  cy.exec('docker exec postgres-vulcan2x-arbitrum pg_restore -U user -d database gpdb.tar -c')
-    .exec('docker restart spock-test-container')
-    .exec('yarn fund');
+  cy.exec('docker exec postgres-vulcan2x-arbitrum pg_restore -U user -d database gpdb.tar -c').exec(
+    'docker restart spock-test-container'
+  );
 }

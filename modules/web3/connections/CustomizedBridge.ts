@@ -75,6 +75,12 @@ export class CustomizedBridge extends Eip1193Bridge {
         // mock provider doesn't handle 'personal_sign' properly. Do not use 'eth_sign' in production.
         // first argument is 'address', second is 'message'
         return await super.send('eth_sign', [params[1], params[0]]);
+
+        // TODO: would be better if we didn't have to do this, and can call the method on our fork
+      } else if (params && params.length && method === 'eth_signTypedData_v4') {
+        // Same issue as above, but for 'eth_signTypedData_v4' and the args are reversed
+        const message = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(params[1]));
+        return await super.send('eth_sign', [params[0], message]);
       } else {
         // All other transactions the base class works for
         result = await super.send(method, params);

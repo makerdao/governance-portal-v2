@@ -19,7 +19,7 @@ describe('/polling/review page', async () => {
     cy.contains('Connect your wallet to review your ballot').should('be.visible');
   });
 
-  it.only('Adds polls to review and navigates to review page', () => {
+  it('Adds polls to review and navigates to review page and votes with the legacy system', () => {
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
@@ -89,6 +89,79 @@ describe('/polling/review page', async () => {
 
       // And the same ammount of poll cards
       cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 1);
+    });
+  });
+
+  it.only('Adds polls to review and navigates to review page and votes with the gasless system', () => {
+    visitPage('/polling');
+
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      const selectedPollId = 4;
+      const selectChoice = cy.get('[data-testid="single-select"]');
+
+      selectChoice.first().click();
+
+      // click on option
+      cy.get('[data-testid="single-select-option-Yes"]').first().click();
+
+      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
+
+      // Click the button
+      buttonsVote.first().should('not.be.disabled');
+
+      buttonsVote.first().click();
+
+      // Check the ballot count has increased
+      cy.contains(/(1 of 1 available poll added to ballot)/).should('be.visible');
+
+      // Click on the navigate
+      cy.contains('Review & Submit Your Ballot').click();
+
+      cy.location('pathname').should('eq', '/polling/review');
+
+      // Poll card should display poll IDs
+      cy.contains(`Poll ID ${selectedPollId}`).should('be.visible');
+
+      // It can edit a choice
+      cy.get('[data-testid="edit-poll-choice"]').click();
+
+      // Opens the select
+      cy.get('[data-testid="single-select"]').first().click();
+
+      // Clicks on "No"
+      cy.get('[data-testid="single-select-option-No"]').click({ force: true });
+
+      // Clicks on update vote
+      cy.contains('Update vote').click();
+
+      // Move to submit ballot screen
+      cy.get('[data-testid="submit-ballot-button"]').click();
+
+      cy.contains('Gasless voting via Arbitrum').should('be.visible');
+
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="submit-ballot-gasless-button"]').click();
+
+      // cy.contains(
+      //   'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      // ).should('be.visible');
+
+      // // Click legacy voting submit button
+      // cy.get('[data-testid="submit-ballot-legacy-button"]').click();
+
+      // cy.contains('Please use your wallet to sign').should('be.visible');
+
+      // cy.contains('Transaction Pending').should('be.visible');
+
+      // cy.contains('Share all your votes').should('be.visible');
+
+      // // After finishing voting, there should be a message with the sharing info
+      // cy.contains(
+      //   'Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
+      // ).should('be.visible');
+
+      // // And the same ammount of poll cards
+      // cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 1);
     });
   });
 
