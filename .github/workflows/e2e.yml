@@ -32,12 +32,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Install node packages
-        run: yarn
         
       - name: Docker compose
         uses: isbang/compose-action@v1.3.2
+
+      - name: Install node packages
+        run: yarn
 
       ## Download prebuilt next data
       # - name: Download the build folders
