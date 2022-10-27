@@ -42,7 +42,7 @@ const QuickVote = ({
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight } = useMKRVotingWeight(account);
+  const { data: votingWeight, loading } = useMKRVotingWeight(account);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
@@ -142,7 +142,8 @@ const QuickVote = ({
               !isChoiceValid || !votingWeight || !votingWeight.total.gt(0) || isDelegateContractExpired
             }
           >
-            {!votingWeight || !votingWeight.total.gt(0)
+            {loading ? 'Loading MKR balance...' : 
+            !votingWeight || !votingWeight.total.gt(0)
               ? 'Deposit MKR to vote'
               : isDelegateContractExpired
               ? 'Delegate contract expired'
