@@ -27,11 +27,13 @@ export enum PollVictoryConditions {
   plurality = 'plurality',
   instantRunoff = 'instant-runoff',
   default = 'default',
-  comparison = 'comparison'
+  comparison = 'comparison',
+  approvalPriority = 'approval-priority'
 }
 
 export enum PollResultDisplay {
   singleVoteBreakdown = 'single-vote-breakdown',
   instantRunoffBreakdown = 'instant-runoff-breakdown',
-  approvalBreakdown = 'approval-breakdown'
+  approvalBreakdown = 'approval-breakdown',
+  approvalPriorityBreakdown = 'approval-priority-breakdown'
 }

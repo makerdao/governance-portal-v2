@@ -51,7 +51,8 @@ describe('Parse poll metadata', () => {
           inputFormat: {
             type: PollInputFormat.singleChoice,
             abstain: [0],
-            options: []
+            options: [],
+            maxOptions: 1
           },
           resultDisplay: PollResultDisplay.singleVoteBreakdown,
           victoryConditions: [{ type: PollVictoryConditions.plurality }]
@@ -94,7 +95,8 @@ describe('Parse poll metadata', () => {
           inputFormat: {
             type: PollInputFormat.singleChoice,
             abstain: [0],
-            options: []
+            options: [],
+            maxOptions: 1
           },
           resultDisplay: PollResultDisplay.singleVoteBreakdown,
           victoryConditions: [{ type: PollVictoryConditions.plurality }]

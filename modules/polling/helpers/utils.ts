@@ -48,6 +48,11 @@ export function hasVictoryConditionInstantRunOff(
 ): boolean {
   return findVictoryCondition(victoryConditions, PollVictoryConditions.instantRunoff).length > 0;
 }
+export function hasVictoryConditionApprovalPriority(
+  victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
+): boolean {
+  return findVictoryCondition(victoryConditions, PollVictoryConditions.approvalPriority).length > 0;
+}
 export function hasVictoryConditionPlurality(
   victoryConditions: (PollVictoryConditionAND | VictoryCondition)[]
 ): boolean {

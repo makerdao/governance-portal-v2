@@ -55,6 +55,7 @@ type PollParameters = {
     type: PollInputFormat;
     abstain: number[];
     options: number[];
+    maxOptions: number;
   };
   victoryConditions: (PollVictoryConditionAND | VictoryCondition)[];
   resultDisplay: PollResultDisplay;

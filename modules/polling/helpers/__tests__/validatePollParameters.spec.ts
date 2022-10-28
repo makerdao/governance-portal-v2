@@ -23,7 +23,7 @@ parameters:
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.missingInputFormat);
   });
 
-  it('should error if it invalid input_format', () => {
+  it('should error if it has invalid input_format', () => {
     const parameters = `---
 parameters:
     input_format: test
@@ -221,7 +221,8 @@ parameters:
       inputFormat: {
         type: 'single-choice',
         abstain: [0],
-        options: []
+        options: [],
+        maxOptions: 1
       },
       victoryConditions: [{ type: 'plurality' }],
       resultDisplay: 'single-vote-breakdown'
@@ -246,7 +247,7 @@ parameters:
     expect(parsed).toBe(null);
     expect(errors.length).toBeGreaterThan(0);
 
-    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeRequiresInstantRunoffBreakdownDisplay);
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeInputRequiresCorrectDisplay);
   });
 
   it('should be ok for rank-free', () => {
@@ -267,7 +268,8 @@ parameters:
       inputFormat: {
         type: 'rank-free',
         abstain: [0],
-        options: []
+        options: [],
+        maxOptions: 0
       },
       victoryConditions: [{ type: 'instant-runoff' }],
       resultDisplay: 'instant-runoff-breakdown'
@@ -354,10 +356,41 @@ parameters:
       inputFormat: {
         type: 'choose-free',
         abstain: [0],
-        options: [1, 2]
+        options: [1, 2],
+        maxOptions: 0
       },
       victoryConditions: [{ type: 'approval' }],
       resultDisplay: 'approval-breakdown'
+    });
+    expect(errors.length).toBe(0);
+  });
+
+  it('extracts correctly the options for a rank-free with 9 max options', () => {
+    const parameters = `---
+parameters:
+    input_format:
+      type: rank-free
+      options: [1,2]
+      maxOptions: 9
+    victory_conditions:
+      - { type : 'approval-priority' }
+    result_display: 'approval-priority-breakdown'
+---
+# hello
+    
+        `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toEqual({
+      inputFormat: {
+        type: 'rank-free',
+        abstain: [0],
+        options: [1, 2],
+        maxOptions: 9
+      },
+      victoryConditions: [{ type: 'approval-priority' }],
+      resultDisplay: 'approval-priority-breakdown'
     });
     expect(errors.length).toBe(0);
   });
@@ -383,7 +416,8 @@ parameters:
       inputFormat: {
         type: 'choose-free',
         abstain: [0, 4],
-        options: [1, 2]
+        options: [1, 2],
+        maxOptions: 0
       },
       victoryConditions: [{ type: 'approval' }],
       resultDisplay: 'approval-breakdown'
@@ -524,6 +558,93 @@ parameters:
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionANDRequiresConditions);
   });
 
+  // Approval priority
+  it('should error if victory_conditions approval-priority does not have a rank-free input format', () => {
+    const parameters = `---
+parameters:
+    input_format: single-choice
+    victory_conditions:
+      - { type : 'approval-priority' }
+
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.approvalPriorityRequiresRankFree);
+  });
+
+  it('should error if victory_condition approval-priority does not have result_display approval-priority-breakdown', () => {
+    const parameters = `---
+parameters:
+    input_format: rank-free
+    victory_conditions:
+      - { type : 'approval-priority' }
+    result_display: 'other'
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeInputRequiresCorrectDisplay);
+  });
+
+  it('should error if victory_conditions combine approval-priority and plurality', () => {
+    const parameters = `---
+parameters:
+    input_format: single-choice
+    victory_conditions:
+      - { type : 'plurality' }
+      - { type: 'approval-priority'}
+
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsApprovalPriorityAndPluralityCanNotBeCombined
+    );
+  });
+
+  it('should error if victory_conditions combine approval-priority and majority', () => {
+    const parameters = `---
+parameters:
+    input_format: single-choice
+    victory_conditions:
+      - { type : 'majority' }
+      - { type: 'approval-priority'}
+
+---
+# hello
+
+    `;
+    const parametersMarkdown = matter(parameters);
+    // Returns correct if is correct
+    const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
+    expect(parsed).toBe(null);
+    expect(errors.length).toBeGreaterThan(0);
+
+    expect(errors[0]).toEqual(
+      ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsApprovalPriorityAndMajoritynNotBeCombined
+    );
+  });
+
   // TODO: Majority support
   //   it('should return valid for a correct structure', () => {
   //     const parameters = `
@@ -548,7 +669,8 @@ describe('Transform old vote type to new parameters', () => {
       inputFormat: {
         type: 'single-choice',
         abstain: [0],
-        options: []
+        options: [],
+        maxOptions: 1
       },
       victoryConditions: [{ type: 'plurality' }],
       resultDisplay: 'single-vote-breakdown'
@@ -561,7 +683,8 @@ describe('Transform old vote type to new parameters', () => {
       inputFormat: {
         type: 'rank-free',
         abstain: [0],
-        options: []
+        options: [],
+        maxOptions: 0
       },
       victoryConditions: [{ type: 'instant-runoff' }],
       resultDisplay: 'instant-runoff-breakdown'

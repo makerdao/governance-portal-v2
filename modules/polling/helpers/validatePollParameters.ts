@@ -16,6 +16,7 @@ import {
   findVictoryCondition,
   hasVictoryConditionAND,
   hasVictoryConditionApproval,
+  hasVictoryConditionApprovalPriority,
   hasVictoryConditionComparison,
   hasVictoryConditionDefault,
   hasVictoryConditionInstantRunOff,
@@ -35,6 +36,10 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
     'victory_conditions combination not valid. instant-runoff and plurality can not be combined together.',
   victoryConditionsInstantRunOffAndMajoritynNotBeCombined:
     'victory_conditions combination not valid. instant-runoff and majority can not be combined together.',
+  victoryConditionsApprovalPriorityAndPluralityCanNotBeCombined:
+    'victory_conditions combination not valid. approval-priority and plurality can not be combined together.',
+  victoryConditionsApprovalPriorityAndMajoritynNotBeCombined:
+    'victory_conditions combination not valid. approval-priority and majority can not be combined together.',
   victoryConditionANDRequiresConditions: 'victory_condition AND requires inserting nested conditions',
   victoryConditionDefaultRequiresDefaultValue: 'victory_condition default requires a value',
   victoryConditionMajorityRequiresAPercentValue: 'victory_condition majority requires a percent',
@@ -44,13 +49,14 @@ export const ERRORS_VALIDATE_POLL_PARAMETERS = {
   instantRunoffRequiresRankFree: 'victory_condition instant-runoff requires input_format rank-free',
   pluralityRequiresSingleChoice: 'victory_condition plurality requires input_format single-choice',
   approvalRequiresChooseFree: 'victory_condition approval requires input_format choose-free',
+  approvalPriorityRequiresRankFree: 'victory_condition approval-priority requires input_format rank-free',
   // TODO: Include more result_displays when allowed
   requiredResultDisplay:
     'result_display is required. Available values are "instant-runoff-breakdown" or "single-vote-breakdown"',
   singleChoiceRequiresSingleVoteBreakdownDisplay:
     'input_format single-choice requires single-vote-breakdown result_display',
-  rankFreeRequiresInstantRunoffBreakdownDisplay:
-    'input_format rank-free requires instant-runoff-breakdown result_display',
+  rankFreeInputRequiresCorrectDisplay:
+    'input_format rank-free requires instant-runoff-breakdown or approval-priority result_display',
   approvalRequiresApprovalBreakdownDisplay:
     'victory_condition approval requires approval-breakdown result_display'
 };
@@ -108,6 +114,7 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
   let inputFormatType = '';
   let inputFormatOptions = [];
   let inputFormatAbstain = [0];
+  let inputFormatMaxOptions = 0;
 
   if (!params.input_format) {
     errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.missingInputFormat);
@@ -120,6 +127,7 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
       inputFormatType = (params.input_format as any).type;
       inputFormatOptions = (params.input_format as any).options || inputFormatOptions;
       inputFormatAbstain = (params.input_format as any).abstain || inputFormatAbstain;
+      inputFormatMaxOptions = (params.input_format as any).maxOptions || inputFormatMaxOptions;
     }
 
     if (
@@ -137,12 +145,18 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsNotArray);
   } else {
     const hasInstantRunOff = hasVictoryConditionInstantRunOff(params.victory_conditions);
+    const hasApprovalPriority = hasVictoryConditionApprovalPriority(params.victory_conditions);
     const hasPlurality = hasVictoryConditionPlurality(params.victory_conditions);
     const hasApproval = hasVictoryConditionApproval(params.victory_conditions);
     const hasMajority = hasVictoryConditionMajority(params.victory_conditions);
     const hasAND = hasVictoryConditionAND(params.victory_conditions);
     const hasDefault = hasVictoryConditionDefault(params.victory_conditions);
     const hasComparison = hasVictoryConditionComparison(params.victory_conditions);
+
+    // Plurarity allows to select only 1 option
+    if (hasPlurality) {
+      inputFormatMaxOptions = 1;
+    }
 
     params.victory_conditions.forEach(v => {
       if (!v.type) {
@@ -154,6 +168,7 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
           PollVictoryConditions.comparison,
           PollVictoryConditions.default,
           PollVictoryConditions.instantRunoff,
+          PollVictoryConditions.approvalPriority,
           PollVictoryConditions.majority,
           PollVictoryConditions.plurality
         ].indexOf(v.type) === -1
@@ -172,9 +187,26 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsInstantRunOffAndMajoritynNotBeCombined);
     }
 
-    // Rank free requires instant runoff condition
-    if (inputFormatType !== PollInputFormat.rankFree && hasInstantRunOff) {
+    // Can not combine approval-priority and plurality
+    if (hasApprovalPriority && hasPlurality) {
+      errors.push(
+        ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsApprovalPriorityAndPluralityCanNotBeCombined
+      );
+    }
+
+    // Can not combine approval-priority and majority
+    if (hasApprovalPriority && hasMajority) {
+      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.victoryConditionsApprovalPriorityAndMajoritynNotBeCombined);
+    }
+
+    // instant runoff condition reqiores rank-free
+    if (hasInstantRunOff && inputFormatType !== PollInputFormat.rankFree) {
       errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.instantRunoffRequiresRankFree);
+    }
+
+    // approval-priority condition reqiores rank-free
+    if (hasApprovalPriority && inputFormatType !== PollInputFormat.rankFree) {
+      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.approvalPriorityRequiresRankFree);
     }
 
     // plurality requires requires single_choice
@@ -260,9 +292,10 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
     // input_format rank-free requires instant-runoff-breakdown result_display
     if (
       inputFormatType === PollInputFormat.rankFree &&
-      params.result_display !== PollResultDisplay.instantRunoffBreakdown
+      params.result_display !== PollResultDisplay.instantRunoffBreakdown &&
+      params.result_display !== PollResultDisplay.approvalPriorityBreakdown
     ) {
-      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeRequiresInstantRunoffBreakdownDisplay);
+      errors.push(ERRORS_VALIDATE_POLL_PARAMETERS.rankFreeInputRequiresCorrectDisplay);
     }
 
     // Approval requires approval-breakdown result_display
@@ -284,7 +317,8 @@ export function validatePollParameters(params: Record<string, unknown>): [PollPa
         inputFormat: {
           type: inputFormatType,
           abstain: inputFormatAbstain,
-          options: inputFormatOptions
+          options: inputFormatOptions,
+          maxOptions: inputFormatMaxOptions
         },
         resultDisplay: params.result_display,
         victoryConditions: params.victory_conditions
@@ -301,7 +335,8 @@ export function oldVoteTypeToNewParameters(voteType: PollVoteType): PollParamete
       inputFormat: {
         type: PollInputFormat.singleChoice,
         abstain: [0],
-        options: []
+        options: [],
+        maxOptions: 1
       },
       resultDisplay: PollResultDisplay.singleVoteBreakdown,
       victoryConditions: [
@@ -315,7 +350,8 @@ export function oldVoteTypeToNewParameters(voteType: PollVoteType): PollParamete
       inputFormat: {
         type: PollInputFormat.rankFree,
         abstain: [0],
-        options: []
+        options: [],
+        maxOptions: 0
       },
       resultDisplay: PollResultDisplay.instantRunoffBreakdown,
       victoryConditions: [
