@@ -18,7 +18,7 @@
     "e2e:headless": "npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "fund": "npx hardhat run scripts/setup.js --network localhost",
+    "fund": "npx hardhat run scripts/setup.js --network goerli",
     "hardhat": "npx hardhat node --network hardhat ",
     "hardhat:goerli:config": "yarn hardhat --config hardhat-fork-goerli.config.js",
     "hardhat:arb-testnet:config": "yarn hardhat --config hardhat-fork-arbTestnet.config.js --port 8546",

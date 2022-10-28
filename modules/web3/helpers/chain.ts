@@ -36,6 +36,11 @@ export const getProvider = (network: SupportedNetworks): ethers.providers.JsonRp
 };
 
 export const getGaslessProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
+  // TODO: add arb-testnet fork to enums and return RPC that way
+  if (network === SupportedNetworks.GOERLIFORK) {
+    return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8546');
+  }
+
   const gaslessNetwork = getGaslessNetwork(network);
 
   const chainId = networkNameToChainId(gaslessNetwork);

@@ -65,11 +65,26 @@ async function main() {
 
   const MKR_SLOT = 3;
   const index = ethers.utils.solidityKeccak256(['uint256', 'uint256'], [testAccount, MKR_SLOT]);
+  const indexForHHAcct = ethers.utils.solidityKeccak256(
+    ['uint256', 'uint256'],
+    [accounts[1].address, MKR_SLOT]
+  );
 
   await setStorageAt(mkrAddress, index.toString(), toBytes32(ethers.utils.parseUnits('250000')).toString());
+  await setStorageAt(
+    mkrAddress,
+    indexForHHAcct.toString(),
+    toBytes32(ethers.utils.parseUnits('2.3')).toString()
+  );
 
-  const mkrBalance = await mkrToken.balanceOf(testAccount);
-  console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
+  const mkrBalanceA = await mkrToken.balanceOf(accounts[1].address);
+  const mkrBalanceB = await mkrToken.balanceOf(accounts[1].address);
+  console.log(`test account now has ${ethers.utils.formatUnits(mkrBalanceA)} MKR`);
+  console.log(
+    `hardhat account (0x70997970C51812dc3A010C7d01b50e0d17dc79C8) now has ${ethers.utils.formatUnits(
+      mkrBalanceB
+    )} MKR`
+  );
 
   // Create delegate contract
   // const delegateAddress = '0x81431b69b1e0e334d4161a13c2955e0f3599381e'

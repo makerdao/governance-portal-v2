@@ -42,12 +42,8 @@ export function forkNetwork(block) {
   cy.exec('npx hardhat run scripts/forkGoerliNetwork.js --network goerli')
     // Must refund accounts after forking
     .exec('yarn fund');
-  // cy.exec('npx hardhat run scripts/forkarbTestnetNetwork.js --network arbTestnet');
+  cy.exec('npx hardhat run scripts/forkarbTestnetNetwork.js --network arbTestnet');
 }
-// export function forkNetwork(block) {
-//   // Must refund accounts after forking
-//   cy.exec(`npx hardhat fork --network localhost --block ${block}`).exec('yarn fund');
-// }
 
 export function fundAccounts(): void {
   cy.exec('yarn fund');

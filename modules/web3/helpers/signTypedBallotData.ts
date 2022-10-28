@@ -12,7 +12,8 @@ type BallotDataValues = {
 };
 
 export function getTypedBallotData(message: BallotDataValues, network: SupportedNetworks) {
-  const chainId = networkNameToChainId(network);
+  const networkForSignature = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const chainId = networkNameToChainId(networkForSignature);
   return {
     types: {
       EIP712Domain: [

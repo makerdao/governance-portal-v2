@@ -163,12 +163,14 @@ By default, e2e tests run on a fork of Goerli. We do this because the governance
 1. First we want to spin up our networks: the forked Goerli and the forked Arbitrum Testnet (for testing gasless voting). The following command will start the two networks on ports 8545 and 8546 respectively.
 
 ```bash
-npm run hardhat:gasless
+npm run hardhat:gasless:config
 ```
 
-2. When you see the accounts & keys displayed in the terminal, you can now start the dockerized database services. In a new terminal window, type:
+2. When you see the accounts & keys displayed in the terminal, you can now start the dockerized database services. You may need to pull down the latest images from docker if you don't have them. In a new terminal window type these two commands:
 
 ```bash
+docker-compose pull
+
 docker-compose up
 ```
 

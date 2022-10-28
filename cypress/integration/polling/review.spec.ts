@@ -9,7 +9,6 @@ import { visitPage, setAccount, forkNetwork, fundAccounts, resetDatabase } from 
 describe('/polling/review page', async () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
-    // fundAccounts();
     resetDatabase();
   });
 
@@ -95,7 +94,7 @@ describe('/polling/review page', async () => {
   it.only('Adds polls to review and navigates to review page and votes with the gasless system', () => {
     visitPage('/polling');
 
-    setAccount(TEST_ACCOUNTS.normal, () => {
+    setAccount(TEST_ACCOUNTS.hardhatOwned, () => {
       const selectedPollId = 4;
       const selectChoice = cy.get('[data-testid="single-select"]');
 

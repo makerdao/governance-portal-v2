@@ -136,66 +136,68 @@ export default withApiHandler(
       version: SignTypedDataVersion.V4
     });
 
-    // if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
-    //   await throwError(API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, req.body);
-    // }
+    if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
+      await throwError(API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, req.body);
+    }
 
     //run eligibility checks unless backdoor secret provided
-    // if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
-    //   //verify address has a poll weight > 0.1 MKR
-    //   const hasMkrRequired = await hasMkrRequiredVotingWeight(
-    //     voter,
-    //     network,
-    //     MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
-    //   );
+    if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
+      //verify address has a poll weight > 0.1 MKR
+      const hasMkrRequired = await hasMkrRequiredVotingWeight(
+        voter,
+        network,
+        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
+      );
 
-    //   if (!hasMkrRequired) {
-    //     //ether's bignumber library doesnt handle decimals
-    //     await throwError(API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED, req.body);
-    //   }
+      if (!hasMkrRequired) {
+        //ether's bignumber library doesnt handle decimals
+        await throwError(API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED, req.body);
+      }
 
-    //   // Verify that all the polls are active
-    //   const filters = {
-    //     startDate: new Date(),
-    //     endDate: null,
-    //     tags: null
-    //   };
+      // Verify that all the polls are active
+      const filters = {
+        startDate: new Date(),
+        endDate: null,
+        tags: null
+      };
 
-    //   const pollsResponse = await getPolls(filters, network);
-    //   const areAllPollsActive = pollIds
-    //     .map(pollId => {
-    //       const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
-    //       if (!poll || !isActivePoll(poll)) {
-    //         return false;
-    //       }
-    //       return true;
-    //     })
-    //     .reduce((prev, next) => {
-    //       return prev && next;
-    //     });
+      const pollsResponse = await getPolls(filters, network);
+      const areAllPollsActive = pollIds
+        .map(pollId => {
+          const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
+          if (!poll || !isActivePoll(poll)) {
+            return false;
+          }
+          return true;
+        })
+        .reduce((prev, next) => {
+          return prev && next;
+        });
 
-    //   if (!areAllPollsActive) {
-    //     await throwError(API_VOTE_ERRORS.EXPIRED_POLLS, req.body);
-    //   }
+      if (!areAllPollsActive) {
+        await throwError(API_VOTE_ERRORS.EXPIRED_POLLS, req.body);
+      }
 
-    //   //check that address hasn't used gasless service recently
-    //   // use the "addressDisplayedAsVoter" in case the user created a delegate contract, so it does not use the user's wallet
-    //   const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(
-    //     addressDisplayedAsVoter,
-    //     network
-    //   );
-    //   if (recentlyUsedGaslessVoting) {
-    //     await throwError(API_VOTE_ERRORS.RATE_LIMITED, req.body);
-    //   }
-    //   //can't use gasless service to vote in a poll you've already voted on
-    //   // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
-    //   const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(addressDisplayedAsVoter, network, pollIds);
-    //   if (ballotHasVotedPolls) {
-    //     await throwError(API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, req.body);
-    //   }
-    // } else {
-    //   await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
-    // }
+      //check that address hasn't used gasless service recently
+      // use the "addressDisplayedAsVoter" in case the user created a delegate contract, so it does not use the user's wallet
+      const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(
+        addressDisplayedAsVoter,
+        network
+      );
+      if (recentlyUsedGaslessVoting) {
+        await throwError(API_VOTE_ERRORS.RATE_LIMITED, req.body);
+      }
+      //can't use gasless service to vote in a poll you've already voted on
+      // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
+      console.log('voter', voter); //0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+      console.log('addressDisplayedAsVoter', addressDisplayedAsVoter);
+      const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(addressDisplayedAsVoter, network, pollIds);
+      if (ballotHasVotedPolls) {
+        await throwError(API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, req.body);
+      }
+    } else {
+      await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
+    }
 
     const r = signature.slice(0, 66);
     const s = '0x' + signature.slice(66, 130);

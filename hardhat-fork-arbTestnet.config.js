@@ -13,14 +13,7 @@ require('@nomiclabs/hardhat-web3');
 module.exports = {
   networks: {
     hardhat: {
-      // mining: {
-      //   auto: false,
-      //   interval: 0
-      // },
-      // mining: {
-      //   auto: false,
-      //   interval: 3000
-      // },
+      chainId: 421613,
       forking: {
         url: 'https://arb-goerli.g.alchemy.com/v2/rN1vSB6tSdjfWGno6SSZdjOB8m8LvM_0',
         blockNumber: 793616,
