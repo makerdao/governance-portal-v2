@@ -495,7 +495,11 @@ export default function ReviewBox({
           >
             Transaction Failed.
           </Text>
-          <Text mt={3} as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+          <Text
+            mt={3}
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis', wordBreak: 'break-word' }}
+          >
             {displayError} Please try again.
           </Text>
           <Flex sx={{ justifyContent: 'center' }}>
