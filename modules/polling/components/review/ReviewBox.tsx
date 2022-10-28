@@ -462,6 +462,35 @@ export default function ReviewBox({
         </Card>
       )}
 
+      {ballotStep === 'in-relayer-queue' && (
+        <Card variant="compact" p={3}>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            <TxIndicators.Pending sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+          >
+            Transaction in Relayer Queue
+          </Text>
+        </Card>
+      )}
+
+      {ballotStep === 'stuck-in-queue' && (
+        <Card variant="compact" p={3}>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            <TxIndicators.Pending sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+          >
+            Transaction is taking longer than expected. Please reach out on Discord for support or try again
+            later.
+          </Text>
+        </Card>
+      )}
+
       {ballotStep === 'tx-pending' && (
         <Card variant="compact" p={3}>
           <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
