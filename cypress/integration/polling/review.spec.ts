@@ -91,7 +91,7 @@ describe('/polling/review page', async () => {
     });
   });
 
-  it.only('Adds polls to review and navigates to review page and votes with the gasless system', () => {
+  it('Adds polls to review and navigates to review page and votes with the gasless system', () => {
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.hardhatOwned, () => {
@@ -141,26 +141,22 @@ describe('/polling/review page', async () => {
       // Switch to legacy voting for this test
       cy.get('[data-testid="submit-ballot-gasless-button"]').click();
 
-      // cy.contains(
-      //   'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
-      // ).should('be.visible');
+      cy.contains('Please use your wallet to sign').should('be.visible');
 
-      // // Click legacy voting submit button
-      // cy.get('[data-testid="submit-ballot-legacy-button"]').click();
+      cy.contains('Transaction Pending').should('be.visible');
 
-      // cy.contains('Please use your wallet to sign').should('be.visible');
+      cy.contains('Share all your votes').should('be.visible');
 
-      // cy.contains('Transaction Pending').should('be.visible');
+      // After finishing voting, there should be a message with the sharing info
+      cy.contains(
+        'Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
+      ).should('be.visible');
 
-      // cy.contains('Share all your votes').should('be.visible');
+      // Since this is a gasless vote, it should link to arbiscan
+      cy.contains('View on Arbiscan').should('be.visible');
 
-      // // After finishing voting, there should be a message with the sharing info
-      // cy.contains(
-      //   'Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
-      // ).should('be.visible');
-
-      // // And the same ammount of poll cards
-      // cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 1);
+      // And the same ammount of poll cards
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 1);
     });
   });
 
