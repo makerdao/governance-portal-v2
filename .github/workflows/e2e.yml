@@ -34,7 +34,9 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Docker compose
-        run: docker-compose -f "docker-compose.yml" up
+        uses: isbang/compose-action@v1.4.0
+        with:
+          compose-file: 'docker-compose.yml'
 
       - name: Install node packages
         run: yarn
