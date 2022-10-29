@@ -32,6 +32,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Install Compose
+        uses: ndeloof/install-compose-action@v0.0.1
         
       - name: docker compose
         run: docker-compose up
