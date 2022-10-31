@@ -37,7 +37,11 @@ jobs:
         uses: ndeloof/install-compose-action@v0.0.1
         
       - name: docker compose
-        run: docker-compose up
+        run: |
+          LATEST_VERSION=$(wget -q -O- https://api.github.com/repos/docker/compose/releases/latest | jq -r '.name' | sed 's/v//')
+          curl -L "https://github.com/docker/compose/releases/download/$LATEST_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          docker-compose up
 
       - name: Install node packages
         run: yarn
