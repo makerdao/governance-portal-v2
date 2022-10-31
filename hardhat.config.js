@@ -41,7 +41,7 @@ module.exports = {
     arbTestnet: {
       url: 'http://127.0.0.1:8546',
       timeout: 2000000,
-      chainId: 421613
+      chainId: 521613
     },
     hardhat: {
       mining: {

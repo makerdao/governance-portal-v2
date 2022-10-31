@@ -24,8 +24,10 @@ export const isSupportedChain = (chainId?: number): boolean => {
 export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks => {
   if (network === SupportedNetworks.MAINNET) {
     return SupportedNetworks.ARBITRUM;
-  } else {
+  } else if (network === SupportedNetworks.GOERLI) {
     return SupportedNetworks.ARBITRUMTESTNET;
+  } else {
+    return SupportedNetworks.ARBITRUMTESTNETFORK;
   }
 };
 
@@ -36,11 +38,6 @@ export const getProvider = (network: SupportedNetworks): ethers.providers.JsonRp
 };
 
 export const getGaslessProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
-  // TODO: add arb-testnet fork to enums and return RPC that way
-  if (network === SupportedNetworks.GOERLIFORK) {
-    return new ethers.providers.JsonRpcProvider('http://127.0.0.1:8546');
-  }
-
   const gaslessNetwork = getGaslessNetwork(network);
 
   const chainId = networkNameToChainId(gaslessNetwork);
