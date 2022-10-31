@@ -12,7 +12,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     const network = (req.query.network as string) || DEFAULT_NETWORK.network;
     const txId = req.query.txId as string;
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
-    invariant(txId !== null && txId !== '', `missing txId`);
+    invariant(txId !== null && txId !== '', 'missing txId');
 
     const tx = await getRelayerTx(txId, network);
 
