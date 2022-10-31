@@ -38,6 +38,7 @@ jobs:
           LATEST_VERSION=2.12.2
           sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
+          sudo docker-compose up
 
       - name: Install node packages
         run: yarn
