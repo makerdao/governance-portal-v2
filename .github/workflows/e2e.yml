@@ -38,9 +38,7 @@ jobs:
         
       - name: docker compose
         run: |
-          sudo apt-get update
-          sudo apt-get install jq
-          LATEST_VERSION=$(wget -q -O- https://api.github.com/repos/docker/compose/releases/latest | jq -r '.name' | sed 's/v//')
+          LATEST_VERSION=2.12.2
           curl -L "https://github.com/docker/compose/releases/download/$LATEST_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           chmod +x /usr/local/bin/docker-compose
           docker-compose up
