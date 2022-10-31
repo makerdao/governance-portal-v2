@@ -189,8 +189,6 @@ export default withApiHandler(
       }
       //can't use gasless service to vote in a poll you've already voted on
       // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
-      console.log('voter', voter); //0x70997970C51812dc3A010C7d01b50e0d17dc79C8
-      console.log('addressDisplayedAsVoter', addressDisplayedAsVoter);
       const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(addressDisplayedAsVoter, network, pollIds);
       if (ballotHasVotedPolls) {
         await throwError(API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, req.body);

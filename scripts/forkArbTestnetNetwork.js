@@ -7,7 +7,7 @@ async function main() {
     params: [
       {
         forking: {
-          jsonRpcUrl: 'https://arb-goerli.g.alchemy.com/v2/rN1vSB6tSdjfWGno6SSZdjOB8m8LvM_0',
+          jsonRpcUrl: `https://arb-goerli.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY}`,
           blockNumber: 793616,
           chainId: 521613
         }

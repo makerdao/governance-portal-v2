@@ -6,6 +6,13 @@ import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { visitPage, setAccount, forkNetwork, fundAccounts, resetDatabase } from '../../support/commons';
 
+const mockRelayRes = {
+  recentlyUsedGaslessVoting: null,
+  hasMkrRequired: true,
+  alreadyVoted: false,
+  relayBalance: '0.99766447864494'
+};
+
 describe('/polling/review page', async () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
@@ -92,6 +99,11 @@ describe('/polling/review page', async () => {
   });
 
   it('Adds polls to review and navigates to review page and votes with the gasless system', () => {
+    // Ensure the relay balance is always funded for the purpose of this test
+    cy.intercept('api/polling/precheck*', {
+      statusCode: 201,
+      body: mockRelayRes
+    });
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.hardhatOwned, () => {
