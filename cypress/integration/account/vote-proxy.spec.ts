@@ -5,7 +5,13 @@
 
 import { modalAddressEquals, modalPollingWeightEquals } from '../../support/commons/account.e2e.helpers';
 import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
-import { elementContainsText, forkNetwork, setAccount, visitPage } from '../../support/commons';
+import {
+  elementContainsText,
+  forkNetwork,
+  resetDatabase,
+  setAccount,
+  visitPage
+} from '../../support/commons';
 import { formatAddress } from '../../../lib/utils';
 import { INIT_BLOCK, VOTE_PROXY_BLOCK } from 'cypress/support/constants/blockNumbers';
 
@@ -14,7 +20,8 @@ describe('Vote Proxy', () => {
   const coldAddress = TEST_ACCOUNTS.voteProxyCold.address;
 
   before(() => {
-    forkNetwork(VOTE_PROXY_BLOCK);
+    forkNetwork();
+    resetDatabase();
   });
 
   it('should navigate to the address page and see the correct address', () => {
@@ -63,7 +70,7 @@ describe('Vote Proxy', () => {
       method: 'GET',
       url: '/api/executive?network=goerlifork&start=0&limit=10&sortBy=active'
     }).as('getGoerliProposals');
-    visitPage(`executive`);
+    visitPage(`executive`, true);
 
     setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
       // Wait until we've fetched the goerli proposals since mainnet proposals are fetched first
@@ -102,24 +109,23 @@ describe('Vote Proxy', () => {
         .first()
         .should('have.text', '98,944 additional MKR support needed to pass. Expires at .');
 
-      // TODO: Restore this comprobation once the MKR support refreshes on the client side.
-      // // Vote on the new exec
-      // cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();
-      // cy.get('[data-testid="vote-modal-vote-btn"]').click();
-      // cy.get('[data-testid="txfinal-btn"]').click();
+      // Vote on the new exec
+      cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();
+      cy.get('[data-testid="vote-modal-vote-btn"]').click();
+      cy.get('[data-testid="txfinal-btn"]').click();
 
-      // // Check that all the data changed by the correct amount after voting
-      // // Old vote
-      // cy.get('[data-testid="MKR Supporting-stat-box"]').eq(1).should('have.text', `421.38`);
-      // cy.get('[data-testid="proposal-status"]')
-      //   .eq(1)
-      //   .should('have.text', '99,600 additional MKR support needed to pass. Expires at .');
+      // Check that all the data changed by the correct amount after voting
+      // Old vote
+      cy.get('[data-testid="MKR Supporting-stat-box"]').eq(1).should('have.text', `421.38`);
+      cy.get('[data-testid="proposal-status"]')
+        .eq(1)
+        .should('have.text', '99,600 additional MKR support needed to pass. Expires at .');
 
-      // // New vote
-      // cy.get('[data-testid="MKR Supporting-stat-box"]').first().should('have.text', `1,059`);
-      // cy.get('[data-testid="proposal-status"]')
-      //   .first()
-      //   .should('have.text', '98,941 additional MKR support needed to pass. Expires at .');
+      // New vote
+      cy.get('[data-testid="MKR Supporting-stat-box"]').first().should('have.text', `1,059`);
+      cy.get('[data-testid="proposal-status"]')
+        .first()
+        .should('have.text', '98,941 additional MKR support needed to pass. Expires at .');
     });
   });
 });

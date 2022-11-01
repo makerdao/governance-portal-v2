@@ -15,7 +15,7 @@ const mockRelayRes = {
 
 describe('/polling/review page', async () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
+    forkNetwork();
     resetDatabase();
   });
 
@@ -212,15 +212,15 @@ describe('/polling/review page', async () => {
       const selectChoice = cy.get('[data-testid="single-select"]');
 
       // Use 2nd element because the first is unreliable due to a hash/slug clash with another poll
-      selectChoice.eq(1).click();
+      selectChoice.eq(0).click();
 
       // click on option
-      cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
+      cy.get('[data-testid="single-select-option-Yes"]').eq(0).click();
 
       const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
 
       // Click the button
-      buttonsVote.eq(1).should('not.be.disabled');
+      buttonsVote.eq(0).should('not.be.disabled');
 
       buttonsVote.first().click();
 
@@ -247,6 +247,16 @@ describe('/polling/review page', async () => {
 
       cy.get('[data-testid="submit-ballot-button"]').click();
 
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="switch-to-legacy-voting-button"]').click();
+
+      cy.contains(
+        'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      ).should('be.visible');
+
+      // Click legacy voting submit button
+      cy.get('[data-testid="submit-ballot-legacy-button"]').click();
+
       // Expect to see the previously voted polls
       cy.get('[data-testid="previously-voted-on"]')
         .eq(0)
@@ -267,7 +277,8 @@ describe('/polling/review page', async () => {
     });
   });
 
-  it('Adds multiple comments', () => {
+  // TODO: this test will fail because we only have one poll in the docker image, re-enable after adding a 2nd poll
+  xit('Adds multiple comments', () => {
     const comment1Text = `Multiple comments #1 - e2e suite - ${Date.now()}`;
     const comment2Text = `Multiple comments #2 - e2e suite - ${Date.now()}`;
     const comment3Text = `Multiple comments #3 - e2e suite - ${Date.now()}`;
@@ -319,6 +330,16 @@ describe('/polling/review page', async () => {
       cy.get('[data-testid="submit-ballot-button"]').should('be.enabled');
 
       cy.get('[data-testid="submit-ballot-button"]').click();
+
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="switch-to-legacy-voting-button"]').click();
+
+      cy.contains(
+        'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      ).should('be.visible');
+
+      // Click legacy voting submit button
+      cy.get('[data-testid="submit-ballot-legacy-button"]').click();
 
       // Expect to see the previously voted polls
       cy.get('[data-testid="previously-voted-on"]').should('be.visible');

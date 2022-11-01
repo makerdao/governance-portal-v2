@@ -38,7 +38,7 @@ export function closeModal() {
 }
 
 // Fork to a new block
-export function forkNetwork(block) {
+export function forkNetwork() {
   cy.exec('npx hardhat run scripts/forkGoerliNetwork.js --network goerli')
     // Must refund accounts after forking
     .exec('yarn fund');
