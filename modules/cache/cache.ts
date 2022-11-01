@@ -24,12 +24,22 @@ function getFilePath(name: string, network: string): string {
 
 export const cacheDel = (name: string, network: SupportedNetworks): void => {
   const path = getFilePath(name, network);
-
   const isRedisCache = !!config.REDIS_URL;
 
   if (isRedisCache && redis) {
-    logger.debug('cacheDel redis: ', path);
-    redis?.del(path);
+    // if clearing proposals, we need to find all of them first
+    if (name === 'proposals') {
+      redis?.keys('*proposals*').then(keys => {
+        keys.forEach(key => {
+          logger.debug('cacheDel key: ', key);
+          redis?.del(key);
+        });
+      });
+    } else {
+      // otherwise just delete the file based on path
+      logger.debug('cacheDel redis: ', path);
+      redis?.del(path);
+    }
   } else {
     try {
       logger.debug('cacheDel: ', path);
@@ -53,8 +63,15 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
     const path = getFilePath(name, currentNetwork);
 
     if (isRedisCache && redis) {
-      const ttl = await redis?.ttl(path);
-      return ttl;
+      // if proposals, there are probably multiple keys, get the ttl for first one
+      if (name === 'proposals') {
+        const keys = await redis?.keys('*proposals*');
+        const ttl = await redis?.ttl(keys[0]);
+        return ttl;
+      } else {
+        const ttl = await redis?.ttl(path);
+        return ttl;
+      }
     }
   } catch (e) {
     logger.error(e);

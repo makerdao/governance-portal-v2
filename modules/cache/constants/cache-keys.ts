@@ -8,6 +8,8 @@ export const delegatesGithubCacheKey = 'delegates-github';
 
 export const allDelegatesCacheKey = 'all-delegates';
 
+export const executiveProposalsCacheKey = 'proposals';
+
 export const getDelegateGithubCacheKey = (address: string) => `delegate-github-${address}`;
 
 export const getAddressDetailCacheKey = (address: string): string => `address-${address}`;
