@@ -6,6 +6,7 @@ import Redis from 'ioredis';
 import packageJSON from '../../package.json';
 import logger from 'lib/logger';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
+import { executiveProposalsCacheKey } from './constants/cache-keys';
 
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
@@ -64,7 +65,7 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
 
     if (isRedisCache && redis) {
       // if proposals, there are probably multiple keys, get the ttl for first one
-      if (name === 'proposals') {
+      if (name === executiveProposalsCacheKey) {
         const keys = await redis?.keys('*proposals*');
         const ttl = await redis?.ttl(keys[0]);
         return ttl;
