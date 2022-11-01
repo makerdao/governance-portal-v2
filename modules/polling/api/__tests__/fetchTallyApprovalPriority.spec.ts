@@ -62,22 +62,71 @@ describe('Fetch tally Approval Priority', () => {
     }
   } as any as Poll;
 
-  it('gives expected results for a tally with majority', async () => {
+  it('gives expected results ', async () => {
     (gqlRequest as jest.Mock).mockResolvedValueOnce({
       voteMkrWeightsAtTimeRankedChoice: {
         nodes: [
           {
-            mkrSupport: '60.025000000000000000',
-            optionIdRaw: fromBuffer([1, 3].reverse()) // [1st choice, 2nd choice, ...]
+            mkrSupport: '29361.000000000000000',
+            // A C B H
+            optionIdRaw: fromBuffer([1,3,2,8].reverse()) // [1st choice, 2nd choice, ...]
           },
           {
-            mkrSupport: '200.598801867883985831',
-            optionIdRaw: fromBuffer([3, 1].reverse())
+            mkrSupport: '73796.0',
+            // B D A C H
+            optionIdRaw: fromBuffer([2,4,1,3,8].reverse())
           },
           {
-            mkrSupport: '64.068823529411764706',
-            optionIdRaw: fromBuffer([2, 3].reverse())
+            mkrSupport: '71255',
+            // B A C G
+            optionIdRaw: fromBuffer([2,1,3,7].reverse())
+          },
+          {
+            mkrSupport: '16943',
+            // C D E G F A
+            optionIdRaw: fromBuffer([3,4,5,7, 6, 1].reverse())
+          },
+          {
+            mkrSupport: '29823',
+            // C B A
+            optionIdRaw: fromBuffer([3,2,1].reverse())
+          },
+          {
+            mkrSupport: '29699',
+            // C D E F G A
+            optionIdRaw: fromBuffer([3,4, 5, 6, 7 ,1].reverse())
+          },
+          {
+            mkrSupport: '3035',
+            // D E A F
+            optionIdRaw: fromBuffer([4, 5, 1, 6].reverse())
+          },
+          {
+            mkrSupport: '929',
+            // D E A B F
+            optionIdRaw: fromBuffer([4, 5, 1, 2, 6].reverse())
+          },
+          {
+            mkrSupport: '2374',
+            // D A B
+            optionIdRaw: fromBuffer([4, 1, 2].reverse())
+          },
+          {
+            mkrSupport: '11234',
+            // C A E G
+            optionIdRaw: fromBuffer([3, 1, 5, 7].reverse())
+          },
+          {
+            mkrSupport: '6123',
+            // C B D A G
+            optionIdRaw: fromBuffer([3, 2, 4, 1, 7].reverse())
+          },
+          {
+            mkrSupport: '18636',
+            // C A D E H
+            optionIdRaw: fromBuffer([3, 1, 4, 5, 8].reverse())
           }
+
         ]
       }
     });

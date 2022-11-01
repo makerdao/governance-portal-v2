@@ -36,6 +36,11 @@ export type PollVictoryConditionApproval = {
   type: PollVictoryConditions.approval;
 };
 
+// { type : 'approval-priority' }
+export type PollVictoryConditionApprovalPriority = {
+  type: PollVictoryConditions.approvalPriority;
+};
+
 // { type : 'and', conditions: conditions[] }
 export type PollVictoryConditionAND = {
   type: PollVictoryConditions.and;
@@ -48,7 +53,8 @@ export type VictoryCondition =
   | PollVictoryConditionMajority
   | PollVictoryConditionApproval
   | PollVictoryConditionInstantRunoff
-  | PollVictoryConditionPlurality;
+  | PollVictoryConditionPlurality
+  | PollVictoryConditionApprovalPriority;
 
 type PollParameters = {
   inputFormat: {

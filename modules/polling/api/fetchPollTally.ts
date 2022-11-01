@@ -16,11 +16,13 @@ import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 import { isExponential } from 'lib/utils';
+import { extractWinnerApprovalPriority } from './victory_conditions/approvalPriority';
+import { ApprovalPriorityResults } from '../types/approvalPriority';
 
-type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
+type WinnerOption = { winner: number | null; results: InstantRunoffResults | ApprovalPriorityResults | null };
 
 export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[], poll: Poll): WinnerOption {
-  let results: InstantRunoffResults | null = null;
+  let results: InstantRunoffResults | ApprovalPriorityResults | null = null;
 
   switch (condition.type) {
     case PollVictoryConditions.approval:
@@ -28,6 +30,9 @@ export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[]
         winner: extractWinnerApproval(votes),
         results
       };
+    case PollVictoryConditions.approvalPriority:
+      results = extractWinnerApprovalPriority(votes);
+      return { winner: results ? results.winner : null, results };
     case PollVictoryConditions.majority:
       return { winner: extractWinnerMajority(votes, condition.percent), results };
     case PollVictoryConditions.plurality:
@@ -89,6 +94,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   const filteredVotes = votes.filter(vote => {
     // Store the total MKR
     totalMkrParticipation = totalMkrParticipation.plus(vote.mkrSupport);
+
     if (vote.ballot.filter(i => abstain.indexOf(i) !== -1).length > 0) {
       return false;
     }
