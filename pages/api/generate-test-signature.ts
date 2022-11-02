@@ -13,11 +13,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   if (typeof network !== 'string' || !network || !isSupportedNetwork(network)) {
     throw new ApiError('Invalid network');
   }
-//   const contract = getArbitrumPollingContractReadOnly(network);
-//   const nonce = await contract.nonces(address);
+  const contract = getArbitrumPollingContractReadOnly(network);
+  const nonce = await contract.nonces(voter);
   const pollIds = ['1'];
   const optionIds = ['0'];
-  const nonce = 0;
   const expiry = Math.trunc((Date.now() + 8 * 60 * 60 * 1000) / 1000); //8 hour expiry
   const signatureValues = { 
     voter: voter.toLowerCase(),
