@@ -3,6 +3,7 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
+import { TESTING_ACTIVE_POLLS_COUNT } from 'cypress/support/constants/polling';
 import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { forkNetwork, setAccount, visitPage } from '../support/commons';
 
@@ -14,7 +15,7 @@ describe('/polling page', async () => {
     // Polls keep growing and the num polls check keeps failing
     // We should have an API method that returns number of active polls we can compare here
     // Or we just mock the polls since the DB calls should be tested elsewhere anyway.
-    const activePolls = 1;
+    const activePolls = TESTING_ACTIVE_POLLS_COUNT;
     // const endedPolls = 0;
     visitPage('/polling');
 
