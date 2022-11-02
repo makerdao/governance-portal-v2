@@ -5,6 +5,7 @@ import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { ApiError } from 'modules/app/api/ApiError';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ethers } from 'ethers';
+import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
 const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
@@ -20,8 +21,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const pollIds = ['1'];
   const optionIds = ['0'];
   const nonce = 0;
-  const expiry = Math.trunc((Date.now() + 8 * 60 * 60 * 1000) / 1000); //8 hour expiry
-  const signatureValues = { 
+  const expiry = Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000); //8 hour expiry
+  const signatureValues = {
     voter: voter.toLowerCase(),
     pollIds,
     optionIds,
@@ -30,7 +31,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   };
   const data = getTypedBallotData(signatureValues, network);
   const version = SignTypedDataVersion.V4;
-  const signature = await signTypedData({privateKey, data, version});
-  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
-  res.status(200).json({signature, voter, nonce, expiry, pollIds, optionIds, network });
+  const signature = await signTypedData({ privateKey, data, version });
+  res.status(200).json({ signature, voter, nonce, expiry, pollIds, optionIds, network });
 });
