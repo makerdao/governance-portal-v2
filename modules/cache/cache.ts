@@ -6,6 +6,7 @@ import Redis from 'ioredis';
 import packageJSON from '../../package.json';
 import logger from 'lib/logger';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
+import { executiveProposalsCacheKey } from './constants/cache-keys';
 
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
@@ -24,12 +25,22 @@ function getFilePath(name: string, network: string): string {
 
 export const cacheDel = (name: string, network: SupportedNetworks): void => {
   const path = getFilePath(name, network);
-
   const isRedisCache = !!config.REDIS_URL;
 
   if (isRedisCache && redis) {
-    logger.debug('cacheDel redis: ', path);
-    redis?.del(path);
+    // if clearing proposals, we need to find all of them first
+    if (name === 'proposals') {
+      redis?.keys('*proposals*').then(keys => {
+        keys.forEach(key => {
+          logger.debug('cacheDel key: ', key);
+          redis?.del(key);
+        });
+      });
+    } else {
+      // otherwise just delete the file based on path
+      logger.debug('cacheDel redis: ', path);
+      redis?.del(path);
+    }
   } else {
     try {
       logger.debug('cacheDel: ', path);
@@ -53,8 +64,16 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
     const path = getFilePath(name, currentNetwork);
 
     if (isRedisCache && redis) {
-      const ttl = await redis?.ttl(path);
-      return ttl;
+      // if fetching proposals cache info, there are likely multiple keys cached due to different query params
+      // we'll return the ttl for first proposals key we find
+      if (name === executiveProposalsCacheKey) {
+        const keys = await redis?.keys('*proposals*');
+        const ttl = await redis?.ttl(keys[0]);
+        return ttl;
+      } else {
+        const ttl = await redis?.ttl(path);
+        return ttl;
+      }
     }
   } catch (e) {
     logger.error(e);

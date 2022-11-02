@@ -24,7 +24,7 @@ const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.E
     </Box>
   ) : (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <HeadComponent title="Account" />
+      <HeadComponent title="API Docs" />
       <Box
         sx={{
           '.swagger-ui': {
