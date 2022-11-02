@@ -14,14 +14,14 @@ describe('/polling page', async () => {
     // Polls keep growing and the num polls check keeps failing
     // We should have an API method that returns number of active polls we can compare here
     // Or we just mock the polls since the DB calls should be tested elsewhere anyway.
-    const activePolls = 21;
-    const endedPolls = 24;
+    const activePolls = 1;
+    // const endedPolls = 0;
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.contains('Active Polls').should('be.visible');
 
-      cy.contains(/2 POLLS - ENDING NOV 04 2022 16:00 UTC/, {
+      cy.contains(/1 POLL - ENDING DEC 02 2023 16:00 UTC/, {
         matchCase: false
       }).should('be.visible');
 
@@ -31,10 +31,12 @@ describe('/polling page', async () => {
       cy.contains('Poll ID 4').should('be.visible');
 
       // Show ended polls
-      cy.get('[data-testid="button-view-ended-polls"]').click();
+      // TODO uncomment when ended polls added
+      //cy.get('[data-testid="button-view-ended-polls"]').click();
 
       // Check that now only shows 2 polls
-      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', endedPolls);
+      // TODO uncomment when ended polls added
+      // cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', endedPolls);
     });
   });
 
@@ -53,7 +55,8 @@ describe('/polling page', async () => {
     cy.get('[data-testid="your-ballot-title"]').should('not.exist');
   });
 
-  it('Filters by ended polls', () => {
+  // TODO: uncomment when we have ended polls
+  xit('Filters by ended polls', () => {
     visitPage('/polling');
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.get('[data-testid="poll-filters-status"]').click();
