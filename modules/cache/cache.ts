@@ -64,7 +64,8 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
     const path = getFilePath(name, currentNetwork);
 
     if (isRedisCache && redis) {
-      // if proposals, there are probably multiple keys, get the ttl for first one
+      // if fetching proposals cache info, there are likely multiple keys cached due to different query params
+      // we'll return the ttl for first proposals key we find
       if (name === executiveProposalsCacheKey) {
         const keys = await redis?.keys('*proposals*');
         const ttl = await redis?.ttl(keys[0]);
