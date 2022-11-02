@@ -45,7 +45,7 @@ describe('/polling/review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains(/(1 of 1 available poll added to ballot)/).should('be.visible');
+      cy.contains(/(1 of 2 available poll added to ballot)/).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
@@ -107,7 +107,7 @@ describe('/polling/review page', async () => {
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.hardhatOwned, () => {
-      const selectedPollId = 4;
+      const selectedPollId = 48;
       const selectChoice = cy.get('[data-testid="single-select"]');
 
       selectChoice.first().click();
@@ -123,7 +123,7 @@ describe('/polling/review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains(/(1 of 1 available poll added to ballot)/).should('be.visible');
+      cy.contains(/(1 of 2 available poll added to ballot)/).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
@@ -278,38 +278,34 @@ describe('/polling/review page', async () => {
   });
 
   // TODO: this test will fail because we only have one poll in the docker image, re-enable after adding a 2nd poll
-  xit('Adds multiple comments', () => {
+  it('Adds multiple comments', () => {
     const comment1Text = `Multiple comments #1 - e2e suite - ${Date.now()}`;
     const comment2Text = `Multiple comments #2 - e2e suite - ${Date.now()}`;
     const comment3Text = `Multiple comments #3 - e2e suite - ${Date.now()}`;
 
     visitPage('/polling');
 
-    setAccount(getTestAccountByIndex(1), () => {
+    setAccount(TEST_ACCOUNTS.normal, () => {
       // Vote on first (use 2nd element because the first is unreliable due to a hash/slug clash with another poll)
-      cy.get('[data-testid="single-select"]').eq(1).click();
-      cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
+      cy.get('[data-testid="single-select"]').eq(0).click();
+      cy.get('[data-testid="single-select-option-Yes"]').eq(0).click();
 
       // Vote on second (use 3rd element)
-      cy.get('[data-testid="single-select"]').eq(2).click();
-      cy.get('[data-testid="single-select-option-No"]').eq(2).click();
-
-      cy.wait(500);
+      cy.get('[data-testid="single-select"]').eq(1).click();
+      cy.get('[data-testid="single-select-option-No"]').eq(1).click();
 
       // Add votes to ballot
       // Each time we click one, it dissapears, so we need to click the second element again
-      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(1).click();
+      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(0).click();
 
-      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(1).click();
+      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(0).click();
 
       // Check ballot votes added to ballot
-      cy.contains(/2 of \d\d available polls added to ballot/).should('be.visible');
+      cy.contains(/2 of 2 available polls added to ballot/).should('be.visible');
 
       // Goes to the review page
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
-
-      cy.wait(3000);
 
       cy.location('pathname').should('eq', '/polling/review');
 
