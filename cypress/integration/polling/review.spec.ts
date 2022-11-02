@@ -45,7 +45,7 @@ describe('/polling/review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains(/(1 of 2 available poll added to ballot)/).should('be.visible');
+      cy.contains(/(1 of 2 available polls added to ballot)/).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
@@ -123,7 +123,7 @@ describe('/polling/review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains(/(1 of 2 available poll added to ballot)/).should('be.visible');
+      cy.contains(/(1 of 2 available polls added to ballot)/).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
