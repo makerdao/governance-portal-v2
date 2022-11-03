@@ -39,13 +39,21 @@ export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> 
 }
 
 export function wait(duration: number): Promise<void> {
-  return new Promise(res => setTimeout(res, duration));
+  return new Promise(resolve => setTimeout(resolve, duration));
 }
 
-export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 500): Promise<any> {
-  return fn().catch(err =>
-    retries > 1 ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2)) : Promise.reject(err)
-  );
+export function backoffRetry(
+  retries: number,
+  fn: () => Promise<any>,
+  delay = 500,
+  logFn: any = (message: string) => null
+): Promise<any> {
+  return fn().catch(err => {
+    logFn(`backOffRetry: ${retries}`);
+    return retries > 1
+      ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2, logFn))
+      : Promise.reject(err);
+  });
 }
 
 /* eslint-disable no-useless-escape */

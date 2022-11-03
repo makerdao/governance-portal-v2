@@ -35,7 +35,7 @@ export default function withApiHandler(handler: NextApiHandler, { allowPost = fa
       logger.error(
         `API: ${req.method} ${req.url} `,
         error.message,
-        `RPC Error: ${rpcMessage ? rpcMessage : 'None'}`
+        `${rpcMessage ? `RPC Errpr: ${rpcMessage}` : ''}`
       );
       const status = error.status || 500;
       const code = error.code || API_ERROR_CODES.UNEXPECTED_ERROR;

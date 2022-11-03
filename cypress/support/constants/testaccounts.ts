@@ -5,7 +5,8 @@ enum TestAccountsEnum {
   normal = 'normal',
   delegate = 'delegate',
   voteProxyHot = 'voteProxyHot',
-  voteProxyCold = 'voteProxyCold'
+  voteProxyCold = 'voteProxyCold',
+  hardhatOwned = 'hardhatOwned'
 }
 
 interface TestAccounts {
@@ -14,11 +15,6 @@ interface TestAccounts {
 
 export const TEST_ACCOUNTS: TestAccounts = {
   // TODO: Create the delegate , voteproxy and other setups on the Goerli fork
-  // [TestAccountsEnum.normal]: {
-  //   name: 'MakerDAO address 100MKR/5ETH',
-  //   address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-  //   key: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-  // },
   [TestAccountsEnum.normal]: {
     name: 'MakerDAO address 100MKR/5ETH',
     address: '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B',
@@ -38,6 +34,11 @@ export const TEST_ACCOUNTS: TestAccounts = {
     name: 'Cold address for vote proxy',
     address: '0x7E8e41CB87EEe353b3eF4eE5C8b770459EE11F0b',
     key: '20bc6ff8d800c8c024a7397796f1f3da45c55146a5306dcd6511cf41dbc99b04'
+  },
+  [TestAccountsEnum.hardhatOwned]: {
+    name: 'Hardhat Owned at Index 1',
+    address: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+    key: '59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d'
   }
 };
 

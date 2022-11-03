@@ -1,10 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Button, Flex, Close, Text, Box, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { useBreakpointIndex } from '@theme-ui/match-media';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
+import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
-import { fadeIn, slideUp } from 'lib/keyframes';
 import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -18,8 +16,6 @@ type Props = {
 };
 
 const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
-  const bpi = useBreakpointIndex();
-
   const { createPoll, tx } = usePollCreate();
 
   const [step, setStep] = useState('confirm');
@@ -94,17 +90,8 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
   }, [step, tx]);
 
   return (
-    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
-      <DialogContent
-        aria-label="Executive Vote"
-        sx={
-          bpi === 0
-            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-            : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
-        }
-      >
-        {view}
-      </DialogContent>
+    <DialogOverlay isOpen onDismiss={close}>
+      <DialogContent aria-label="Executive Vote">{view}</DialogContent>
     </DialogOverlay>
   );
 };

@@ -18,6 +18,8 @@ services:
     image: makerdaodux/govpolldb-app:latest
     container_name: spock-test-container
     command: ['yarn', 'start-all']
+    environment:
+      - SEED_BLOCKS=5815619,6495082
     depends_on:
       postgres:
         condition: service_healthy

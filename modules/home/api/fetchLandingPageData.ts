@@ -26,7 +26,7 @@ export async function fetchLandingPageData(
   network: SupportedNetworks,
   useApi = false
 ): Promise<Partial<LandingPageData>> {
-  const EXEC_FETCH_SIZE = 3;
+  const EXEC_FETCH_SIZE = 5;
   const EXEC_SORT_BY = 'active';
 
   const responses = useApi
@@ -39,7 +39,7 @@ export async function fetchLandingPageData(
         fetchMkrInChief(network)
       ])
     : await Promise.allSettled([
-        getExecutiveProposals(0, EXEC_FETCH_SIZE, EXEC_SORT_BY, network),
+        getExecutiveProposals({ start: 0, limit: EXEC_FETCH_SIZE, sortBy: EXEC_SORT_BY, network }),
         getPolls(undefined, network),
         fetchMkrOnHat(network),
         fetchMkrInChief(network)

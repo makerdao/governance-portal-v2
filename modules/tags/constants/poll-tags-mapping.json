@@ -860,5 +860,9 @@
   "887": ["high-impact", "collateral-onboard", "ratification", "mips", "psm"],
   "888": ["medium-impact", "real-world-assets", "misc-funding", "ratification", "mips"],
   "889": ["high-impact", "misc-governance", "ratification", "mips"],
-  "890": ["high-impact", "ratification", "mips"]
+  "890": ["high-impact", "ratification", "mips"],
+  "891": ["high-impact", "real-world-assets", "collateral-onboard"],
+  "892": ["high-impact", "auctions"],
+  "893": ["high-impact", "budget"],
+  "894": ["high-impact", "risk-parameter", "momc", "d3m"]
 }

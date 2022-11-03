@@ -3,12 +3,10 @@ import React, { useState } from 'react';
 import LocalIcon from 'modules/app/components/Icon';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 import { Delegate } from 'modules/delegates/types';
-import { DialogContent, DialogOverlay } from '@reach/dialog';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 export default function DelegateExpiryDate({
   delegate,
@@ -18,7 +16,6 @@ export default function DelegateExpiryDate({
   reverse?: boolean;
 }): React.ReactElement {
   const [modalOpen, setModalOpen] = useState(false);
-  const bpi = useBreakpointIndex();
 
   const openModal = () => {
     if (!delegate.isAboutToExpire && !delegate.expired) {
@@ -71,19 +68,7 @@ export default function DelegateExpiryDate({
       </Flex>
       {modalOpen && (
         <DialogOverlay isOpen={modalOpen} onDismiss={() => setModalOpen(false)}>
-          <DialogContent
-            sx={
-              bpi === 0
-                ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-                : {
-                    variant: 'dialog.desktop',
-                    animation: `${fadeIn} 350ms ease`,
-                    width: '580px',
-                    px: 5,
-                    py: 4
-                  }
-            }
-          >
+          <DialogContent widthDesktop="580px">
             <BoxWithClose close={() => setModalOpen(false)}>
               <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Icon

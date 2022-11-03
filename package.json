@@ -1,7 +1,10 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.9.2-gasless",
+  "version": "0.9.3-gasless",
+  "jest": {
+    "testTimeout": 7000
+  },
   "engines": {
     "node": ">=14.0.0"
   },
@@ -18,13 +21,10 @@
     "e2e:headless": "npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "fund": "npx hardhat run scripts/setup.js --network localhost",
+    "fund": "npx hardhat run scripts/setup.js --network goerli",
     "hardhat": "npx hardhat node --network hardhat ",
-    "hardhat:goerli": "npx hardhat node --fork https://eth-goerli.g.alchemy.com/v2/brtgDkZIuFslh0fy3-opouzt8uLNQEdB --fork-block-number 7810464 --fork-ignore-unknown-tx-type true",
-    "hardhat:arb-testnet": "npx hardhat node --fork https://arb-goerli.g.alchemy.com/v2/rN1vSB6tSdjfWGno6SSZdjOB8m8LvM_0 --fork-block-number 793616 --fork-ignore-unknown-tx-type true --port 8546",
     "hardhat:goerli:config": "yarn hardhat --config hardhat-fork-goerli.config.js",
     "hardhat:arb-testnet:config": "yarn hardhat --config hardhat-fork-arbTestnet.config.js --port 8546",
-    "hardhat:gasless": "yarn hardhat:goerli & yarn hardhat:arb-testnet",
     "hardhat:gasless:config": "yarn hardhat:goerli:config & yarn hardhat:arb-testnet:config",
     "hardhat:detached": "npm run hardhat & TASKHARDHAT_PID=$! ",
     "start:detached": "sleep 5 && npm run fund && yarn dev && kill $TASKHARDHAT_PID",

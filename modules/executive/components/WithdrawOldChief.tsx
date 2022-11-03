@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert } from 'theme-ui';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
@@ -20,6 +17,7 @@ import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 // Note this only works on mainnet
 // TODO: Check that the amounts for allowance are correct
@@ -140,29 +138,11 @@ const ModalContent = ({ close, ...props }) => {
 
 const WithdrawOldChief = (props): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
-  const bpi = useBreakpointIndex();
 
   return (
     <>
-      <DialogOverlay
-        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        isOpen={showDialog}
-        onDismiss={() => setShowDialog(false)}
-      >
-        <DialogContent
-          aria-label="Executive Vote"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : {
-                  variant: 'dialog.desktop',
-                  animation: `${fadeIn} 350ms ease`,
-                  width: '520px',
-                  px: 5,
-                  py: 4
-                }
-          }
-        >
+      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+        <DialogContent aria-label="Executive Vote" widthDesktop="520px">
           <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
@@ -175,7 +155,6 @@ const WithdrawOldChief = (props): JSX.Element => {
           py: 0,
           mx: 1,
           textTransform: 'uppercase',
-          borderRadius: 'small',
           fontWeight: 'bold',
           fontSize: '10px'
         }}

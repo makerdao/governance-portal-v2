@@ -8,5 +8,6 @@ export default {
   info: logger('info', 'info'),
   debug: logger('debug', 'log'),
   warn: logger('warn', 'warn'),
-  error: logger('error', 'error')
+  error: logger('error', 'error'),
+  critical: logger('critical', 'error')
 };
