@@ -15,6 +15,8 @@ export class ApiError extends Error {
         ? API_ERROR_CODES.NOT_FOUND
         : status === 401
         ? API_ERROR_CODES.UNAUTHORIZED
+        : status === 403
+        ? API_ERROR_CODES.FORBIDDEN
         : API_ERROR_CODES.UNEXPECTED_ERROR;
     this.clientMessage = clientMessage;
     // Set the prototype explicitly.

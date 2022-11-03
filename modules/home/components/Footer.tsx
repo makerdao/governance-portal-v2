@@ -205,7 +205,12 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
                 </Text>
                 {group.list.map(({ url, title }) => {
                   return (
-                    <ExternalLink key={title} href={url} title={title} styles={{ fontSize: [1, 2] }}>
+                    <ExternalLink
+                      key={title}
+                      href={url}
+                      title={title}
+                      styles={{ fontSize: [1, 2], color: 'text' }}
+                    >
                       <Text>{title}</Text>
                     </ExternalLink>
                   );

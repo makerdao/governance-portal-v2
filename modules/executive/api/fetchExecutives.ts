@@ -10,7 +10,7 @@ import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
 import logger from 'lib/logger';
-import { githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
+import { getExecutiveProposalsCacheKey, githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 import { allGithubExecutives } from 'modules/gql/queries/allGithubExecutives';
 
@@ -78,20 +78,27 @@ async function getGithubExecutivesWithMKR(network: SupportedNetworks): Promise<C
   return mkrSupports;
 }
 
-export async function getExecutiveProposals(
-  start: number,
-  limit: number,
-  sortBy: 'date' | 'mkr' | 'active',
-  network?: SupportedNetworks,
+export async function getExecutiveProposals({
+  start = 0,
+  limit = 5,
+  sortBy = 'active',
   startDate = 0,
-  endDate = 0
-): Promise<Proposal[]> {
-  const net = network ? network : DEFAULT_NETWORK.network;
-
+  endDate = 0,
+  network = DEFAULT_NETWORK.network
+}: {
+  start?: number;
+  limit?: number;
+  sortBy?: 'date' | 'mkr' | 'active';
+  startDate?: number;
+  endDate?: number;
+  network?: SupportedNetworks;
+}): Promise<Proposal[]> {
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
-  const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
+  const currentNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
 
-  const cacheKey = `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
+  const cacheKey = getExecutiveProposalsCacheKey(start, limit, sortBy, startDate, endDate);
+
+  logger.debug('Getting executives with key: ', cacheKey);
 
   const cachedProposals = await cacheGet(cacheKey, currentNetwork);
   if (cachedProposals) {

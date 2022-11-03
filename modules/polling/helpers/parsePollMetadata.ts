@@ -24,7 +24,7 @@ export async function parsePollMetadata(
     [key: number]: string[];
   }
 ): Promise<Poll> {
-  const { data: pollMeta, content } = matter(document);
+  const { data: pollMeta, content } = matter(document || '');
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
   const options = pollMeta.options;

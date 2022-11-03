@@ -238,7 +238,12 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
+                          <PollOverviewCard
+                            poll={poll}
+                            reviewPage={true}
+                            showVoting={true}
+                            disableVoting={true}
+                          >
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
                                 <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>

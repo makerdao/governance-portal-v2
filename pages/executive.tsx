@@ -211,7 +211,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       px: 2,
                       ml: 1,
                       textTransform: 'uppercase',
-                      borderRadius: 'small',
                       fontWeight: 'bold',
                       fontSize: '10px',
                       borderColor: 'accentBlue',

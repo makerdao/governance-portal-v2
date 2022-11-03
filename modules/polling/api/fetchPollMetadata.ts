@@ -6,16 +6,22 @@ import { parsePollMetadata } from '../helpers/parsePollMetadata';
 import logger from 'lib/logger';
 
 async function fetchPollGithubDocument(url: string): Promise<string> {
-  const document = await timeoutPromise(
-    5000, // reject if it takes longer than this to fetch
-    backoffRetry(3, () => fetch(url))
-  ).then(resp => resp?.text());
+  try {
+    const document = await timeoutPromise(
+      5000, // reject if it takes longer than this to fetch
+      backoffRetry(3, () => fetch(url))
+    ).then(resp => {
+      return resp?.text();
+    });
 
-  if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0)) {
+    if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0)) {
+      throw new Error('Invalid poll document');
+    }
+
+    return document;
+  } catch (e) {
     throw new Error('Invalid poll document');
   }
-
-  return document;
 }
 
 // Fetches poll metadata and returns null if it's invalid
@@ -27,7 +33,6 @@ export async function fetchPollMetadata(
 ): Promise<Poll | null> {
   const document = await fetchPollGithubDocument(p.url);
   const poll = await parsePollMetadata(p, document, tagsMapping);
-
   // If incorrect data, return null
   if (!poll || !poll.summary || !poll.options) {
     logger.error(`fetchPollMetadata: Poll ${p.pollId} incorrect data `);

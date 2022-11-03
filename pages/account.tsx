@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import { formatValue } from 'lib/string';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -30,6 +28,7 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -144,27 +143,13 @@ const AccountPage = (): React.ReactElement => {
                     </Label>
                     {tx && (
                       <DialogOverlay
-                        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
                         isOpen={modalOpen}
                         onDismiss={() => {
                           setModalOpen(false);
                           trackButtonClick('closeCreateDelegateModal');
                         }}
                       >
-                        <DialogContent
-                          aria-label="Delegate modal"
-                          sx={
-                            bpi === 0
-                              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-                              : {
-                                  variant: 'dialog.desktop',
-                                  animation: `${fadeIn} 350ms ease`,
-                                  width: '580px',
-                                  px: 5,
-                                  py: 4
-                                }
-                          }
-                        >
+                        <DialogContent aria-label="Delegate modal" widthDesktop="580px">
                           <TxDisplay
                             tx={tx}
                             setTxId={setTxId}

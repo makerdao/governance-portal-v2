@@ -70,7 +70,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
     validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-  }) as string;
+  }) as SupportedNetworks;
 
   const start = validateQueryParam(req.query.start, 'number', {
     defaultValue: 0,
@@ -78,13 +78,13 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   }) as number;
 
   const limit = validateQueryParam(req.query.limit, 'number', {
-    defaultValue: 0,
+    defaultValue: 5,
     minValue: 1,
     maxValue: 30
   }) as number;
 
   const sortBy = validateQueryParam(req.query.sortBy, 'string', {
-    defaultValue: 'date',
+    defaultValue: 'active',
     validValues: ['date', 'mkr', 'active']
   });
 
@@ -96,14 +96,14 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
     defaultValue: 0
   }) as number;
 
-  const response = await getExecutiveProposals(
+  const response = await getExecutiveProposals({
     start,
     limit,
-    sortBy as 'date' | 'mkr',
-    network as SupportedNetworks,
     startDate,
-    endDate
-  );
+    endDate,
+    network: network as SupportedNetworks,
+    ...(sortBy !== null && { sortBy: sortBy as 'date' | 'mkr' | 'active' })
+  });
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);
