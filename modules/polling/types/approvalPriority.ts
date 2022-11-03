@@ -4,13 +4,12 @@ export type ApprovalPriorityOption = {
   mkrSupport: BigNumber;
   priorityScore: BigNumber;
   approvalPercentage: BigNumber;
-  priorityScoreNumber: number;
+  priorityScorePercentage: BigNumber;
 };
 
 export type ApprovalPriorityOptions = { [key: number]: ApprovalPriorityOption };
 
 export type ApprovalPriorityResults = {
-  rounds: number;
   winner: number | null;
   options: ApprovalPriorityOptions;
 };

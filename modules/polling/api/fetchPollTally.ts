@@ -31,7 +31,7 @@ export function findWinner(condition: VictoryCondition, votes: ParsedSpockVote[]
         results
       };
     case PollVictoryConditions.approvalPriority:
-      results = extractWinnerApprovalPriority(votes);
+      results = extractWinnerApprovalPriority(votes, poll.parameters.inputFormat.maxOptions);
       return { winner: results ? results.winner : null, results };
     case PollVictoryConditions.majority:
       return { winner: extractWinnerMajority(votes, condition.percent), results };

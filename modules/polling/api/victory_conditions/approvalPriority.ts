@@ -3,7 +3,8 @@ import BigNumber from 'lib/bigNumberJs';
 import { ApprovalPriorityOptions, ApprovalPriorityResults } from 'modules/polling/types/approvalPriority';
 
 export function extractWinnerApprovalPriority(
-  currentVotes: ParsedSpockVote[]
+  currentVotes: ParsedSpockVote[],
+  maxOptions: number
 ): ApprovalPriorityResults | null {
   if (currentVotes.length === 0) {
     return null;
@@ -12,23 +13,40 @@ export function extractWinnerApprovalPriority(
   // Each ranking position has a weight that is calculated using a normalised harmonic progression
   const optionsWeights = [1, 0.5, 0.3333333333, 0.25, 0.2, 0.1666666667, 0.1428571429, 0.125];
 
+  // Weight sum is the sum of all the weights for the amount of options
+  let weightSum = 0;
+
+  for (let i = 0; i < maxOptions; i++) {
+    weightSum += optionsWeights[i];
+  }
+
+  // Normalized harmonic weights is the weight divided by the weight sum
+  const normalizedOptionWeights = optionsWeights.map(i => i / weightSum);
+
   const votes: ApprovalPriorityOptions = {};
+
+  let totalMKR = new BigNumber(0);
 
   currentVotes.forEach(vote => {
     vote.ballot.forEach((votedOption, index) => {
-      const optionWeight = optionsWeights[index];
-      const mkrWeighted = new BigNumber(vote.mkrSupport).multipliedBy(optionWeight);
       // The Priority Score of each option equals the aggregate of the MKR Weight of each voter multiplied by the weight of the position in which they ranked the option.
+      const optionWeight = normalizedOptionWeights[index];
+      const priorityScore = new BigNumber(vote.mkrSupport).multipliedBy(optionWeight);
 
+      // Increase total MRK count
+      totalMKR = totalMKR.plus(vote.mkrSupport);
+
+      // If voted option exists, increase it's mkrSupport and priorityScore
       if (votes[votedOption]) {
         votes[votedOption].mkrSupport = votes[votedOption].mkrSupport.plus(vote.mkrSupport);
-        votes[votedOption].priorityScore = votes[votedOption].priorityScore.plus(mkrWeighted);
+        votes[votedOption].priorityScore = votes[votedOption].priorityScore.plus(priorityScore);
       } else {
+        // If voted option does not exist, initialize it
         votes[votedOption] = {
           mkrSupport: new BigNumber(vote.mkrSupport),
           approvalPercentage: new BigNumber(0),
-          priorityScore: mkrWeighted,
-          priorityScoreNumber: 0
+          priorityScore: priorityScore,
+          priorityScorePercentage: new BigNumber(0)
         };
       }
     });
@@ -65,15 +83,20 @@ export function extractWinnerApprovalPriority(
     }
   });
 
-  // Calculate now priority percentage
+  // Calculate now priority percentage. The priority percentage is calculated with the formula : PRIORITY_PERCENTAGE = PRIORITY_SCORE_OPTION * WEIGHT_SUM / TOTAL_MKR
+  sortedOptionsByMkrSupport.forEach(option => {
+    votes[option.option].priorityScorePercentage = votes[option.option].priorityScore
+      .multipliedBy(weightSum)
+      .dividedBy(totalMKR);
+  });
 
-  // if the 2 first options share the same MKR amount, return null
-  if (sortedOptions.length >= 2) {
-    if (sortedOptions[0].mkrSupport.isEqualTo(sortedOptions[1].mkrSupport)) {
-      return null;
-    }
+  // If there is no option with approvalPercentage equal to 100% return null winner
+  if (sortedOptionsByMkrSupport.length === 0) {
+    return null;
   }
 
-  const winner = sortedOptions.length > 0 ? sortedOptions[0].option : null;
-  return winner;
+  return {
+    winner: sortedOptionsByMkrSupport[0].option,
+    options: votes
+  };
 }
