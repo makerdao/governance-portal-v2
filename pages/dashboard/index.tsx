@@ -13,7 +13,7 @@ import {
   getAllPollsCacheKey,
   getPollTallyCacheKey,
   githubExecutivesCacheKey,
-  getExecutiveProposalsCacheKey
+  executiveProposalsCacheKey
 } from 'modules/cache/constants/cache-keys';
 import { invalidateCache } from 'modules/cache/invalidateCache';
 import { toast } from 'react-toastify';
@@ -121,7 +121,7 @@ const DashboardPage = (): React.ReactElement => {
                     <Button
                       onClick={() => {
                         invalidate(githubExecutivesCacheKey);
-                        invalidate(getExecutiveProposalsCacheKey());
+                        invalidate(executiveProposalsCacheKey);
                       }}
                       disabled={loading}
                     >
@@ -182,10 +182,10 @@ const DashboardPage = (): React.ReactElement => {
                 </Flex>
                 <Flex sx={{ mt: 2 }}>
                   <Text sx={{ fontWeight: 'semiBold' }}>Executives proposals:</Text>
-                  {cacheInfo[getExecutiveProposalsCacheKey()] > 0 ? (
-                    <Text sx={{ ml: 2 }}>{`Expires in ${
-                      cacheInfo[getExecutiveProposalsCacheKey()]
-                    } seconds`}</Text>
+                  {cacheInfo[executiveProposalsCacheKey] > 0 ? (
+                    <Text
+                      sx={{ ml: 2 }}
+                    >{`Expires in ${cacheInfo[executiveProposalsCacheKey]} seconds`}</Text>
                   ) : (
                     <Text sx={{ ml: 2 }}>No cache found</Text>
                   )}
