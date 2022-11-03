@@ -14,14 +14,14 @@ export function extractWinnerApprovalPriority(
   const optionsWeights = [1, 0.5, 0.3333333333, 0.25, 0.2, 0.1666666667, 0.1428571429, 0.125];
 
   // Weight sum is the sum of all the weights for the amount of options
-  let weightSum = 0;
+  let weightSum = new BigNumber(0);
 
   for (let i = 0; i < maxOptions; i++) {
-    weightSum += optionsWeights[i];
+    weightSum = weightSum.plus(optionsWeights[i]);
   }
 
   // Normalized harmonic weights is the weight divided by the weight sum
-  const normalizedOptionWeights = optionsWeights.map(i => i / weightSum);
+  const normalizedOptionWeights = optionsWeights.map(i => new BigNumber(i).dividedBy(weightSum));
 
   const votes: ApprovalPriorityOptions = {};
 
@@ -87,7 +87,7 @@ export function extractWinnerApprovalPriority(
   sortedOptionsByMkrSupport.forEach(option => {
     votes[option.option].priorityScorePercentage = votes[option.option].priorityScore
       .multipliedBy(weightSum)
-      .dividedBy(totalMKR);
+      .dividedBy(votes[option.option].mkrSupport);
   });
 
   // If there is no option with approvalPercentage equal to 100% return null winner
