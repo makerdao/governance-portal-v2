@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   postgres:
-    image: makerdaodux/govpolldb-postgres:latest
+    image: tylerya/govpolldb-postgres:latest
     container_name: postgres-vulcan2x-arbitrum
     command: ['postgres', '-c', 'log_min_duration_statement=1000']
     environment:
@@ -18,6 +18,8 @@ services:
     image: makerdaodux/govpolldb-app:latest
     container_name: spock-test-container
     command: ['yarn', 'start-all']
+    environment:
+      - SEED_BLOCKS=5815619,6495082
     depends_on:
       postgres:
         condition: service_healthy

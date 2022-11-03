@@ -6,10 +6,16 @@ import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { visitPage, setAccount, forkNetwork, fundAccounts, resetDatabase } from '../../support/commons';
 
+const mockRelayRes = {
+  recentlyUsedGaslessVoting: null,
+  hasMkrRequired: true,
+  alreadyVoted: false,
+  relayBalance: '0.99766447864494'
+};
+
 describe('/polling/review page', async () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
-    // fundAccounts();
+    forkNetwork();
     resetDatabase();
   });
 
@@ -19,7 +25,7 @@ describe('/polling/review page', async () => {
     cy.contains('Connect your wallet to review your ballot').should('be.visible');
   });
 
-  it.only('Adds polls to review and navigates to review page', () => {
+  it('Adds polls to review and navigates to review page and votes with the legacy system', () => {
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
@@ -39,7 +45,7 @@ describe('/polling/review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains(/(1 of 1 available poll added to ballot)/).should('be.visible');
+      cy.contains(/(1 of 2 available polls added to ballot)/).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
@@ -92,6 +98,80 @@ describe('/polling/review page', async () => {
     });
   });
 
+  it('Adds polls to review and navigates to review page and votes with the gasless system', () => {
+    // Ensure the relay balance is always funded for the purpose of this test
+    cy.intercept('api/polling/precheck*', {
+      statusCode: 201,
+      body: mockRelayRes
+    });
+    visitPage('/polling');
+
+    setAccount(TEST_ACCOUNTS.hardhatOwned, () => {
+      const selectedPollId = 48;
+      const selectChoice = cy.get('[data-testid="single-select"]');
+
+      selectChoice.first().click();
+
+      // click on option
+      cy.get('[data-testid="single-select-option-Yes"]').first().click();
+
+      const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
+
+      // Click the button
+      buttonsVote.first().should('not.be.disabled');
+
+      buttonsVote.first().click();
+
+      // Check the ballot count has increased
+      cy.contains(/(1 of 2 available polls added to ballot)/).should('be.visible');
+
+      // Click on the navigate
+      cy.contains('Review & Submit Your Ballot').click();
+
+      cy.location('pathname').should('eq', '/polling/review');
+
+      // Poll card should display poll IDs
+      cy.contains(`Poll ID ${selectedPollId}`).should('be.visible');
+
+      // It can edit a choice
+      cy.get('[data-testid="edit-poll-choice"]').click();
+
+      // Opens the select
+      cy.get('[data-testid="single-select"]').first().click();
+
+      // Clicks on "No"
+      cy.get('[data-testid="single-select-option-No"]').click({ force: true });
+
+      // Clicks on update vote
+      cy.contains('Update vote').click();
+
+      // Move to submit ballot screen
+      cy.get('[data-testid="submit-ballot-button"]').click();
+
+      cy.contains('Gasless voting via Arbitrum').should('be.visible');
+
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="submit-ballot-gasless-button"]').click();
+
+      cy.contains('Please use your wallet to sign').should('be.visible');
+
+      cy.contains('Transaction Pending').should('be.visible');
+
+      cy.contains('Share all your votes').should('be.visible');
+
+      // After finishing voting, there should be a message with the sharing info
+      cy.contains(
+        'Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
+      ).should('be.visible');
+
+      // Since this is a gasless vote, it should link to arbiscan
+      cy.contains('View on Arbiscan').should('be.visible');
+
+      // And the same ammount of poll cards
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 1);
+    });
+  });
+
   it('Can remove votes from ballot on the review page', () => {
     visitPage('/polling');
 
@@ -132,15 +212,15 @@ describe('/polling/review page', async () => {
       const selectChoice = cy.get('[data-testid="single-select"]');
 
       // Use 2nd element because the first is unreliable due to a hash/slug clash with another poll
-      selectChoice.eq(1).click();
+      selectChoice.eq(0).click();
 
       // click on option
-      cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
+      cy.get('[data-testid="single-select-option-Yes"]').eq(0).click();
 
       const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot"]');
 
       // Click the button
-      buttonsVote.eq(1).should('not.be.disabled');
+      buttonsVote.eq(0).should('not.be.disabled');
 
       buttonsVote.first().click();
 
@@ -167,6 +247,16 @@ describe('/polling/review page', async () => {
 
       cy.get('[data-testid="submit-ballot-button"]').click();
 
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="switch-to-legacy-voting-button"]').click();
+
+      cy.contains(
+        'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      ).should('be.visible');
+
+      // Click legacy voting submit button
+      cy.get('[data-testid="submit-ballot-legacy-button"]').click();
+
       // Expect to see the previously voted polls
       cy.get('[data-testid="previously-voted-on"]')
         .eq(0)
@@ -187,6 +277,7 @@ describe('/polling/review page', async () => {
     });
   });
 
+  // TODO: this test will fail because we only have one poll in the docker image, re-enable after adding a 2nd poll
   it('Adds multiple comments', () => {
     const comment1Text = `Multiple comments #1 - e2e suite - ${Date.now()}`;
     const comment2Text = `Multiple comments #2 - e2e suite - ${Date.now()}`;
@@ -194,31 +285,27 @@ describe('/polling/review page', async () => {
 
     visitPage('/polling');
 
-    setAccount(getTestAccountByIndex(1), () => {
+    setAccount(TEST_ACCOUNTS.normal, () => {
       // Vote on first (use 2nd element because the first is unreliable due to a hash/slug clash with another poll)
-      cy.get('[data-testid="single-select"]').eq(1).click();
-      cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
+      cy.get('[data-testid="single-select"]').eq(0).click();
+      cy.get('[data-testid="single-select-option-Yes"]').eq(0).click();
 
       // Vote on second (use 3rd element)
-      cy.get('[data-testid="single-select"]').eq(2).click();
-      cy.get('[data-testid="single-select-option-No"]').eq(2).click();
-
-      cy.wait(500);
+      cy.get('[data-testid="single-select"]').eq(1).click();
+      cy.get('[data-testid="single-select-option-No"]').eq(1).click();
 
       // Add votes to ballot
       // Each time we click one, it dissapears, so we need to click the second element again
-      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(1).click();
+      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(0).click();
 
-      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(1).click();
+      cy.get('[data-testid="button-add-vote-to-ballot"]').eq(0).click();
 
       // Check ballot votes added to ballot
-      cy.contains(/2 of \d\d available polls added to ballot/).should('be.visible');
+      cy.contains(/2 of 2 available polls added to ballot/).should('be.visible');
 
       // Goes to the review page
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
-
-      cy.wait(3000);
 
       cy.location('pathname').should('eq', '/polling/review');
 
@@ -239,6 +326,16 @@ describe('/polling/review page', async () => {
       cy.get('[data-testid="submit-ballot-button"]').should('be.enabled');
 
       cy.get('[data-testid="submit-ballot-button"]').click();
+
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="switch-to-legacy-voting-button"]').click();
+
+      cy.contains(
+        'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      ).should('be.visible');
+
+      // Click legacy voting submit button
+      cy.get('[data-testid="submit-ballot-legacy-button"]').click();
 
       // Expect to see the previously voted polls
       cy.get('[data-testid="previously-voted-on"]').should('be.visible');

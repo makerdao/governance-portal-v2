@@ -7,7 +7,7 @@ async function main() {
     params: [
       {
         forking: {
-          jsonRpcUrl: 'https://eth-goerli.g.alchemy.com/v2/brtgDkZIuFslh0fy3-opouzt8uLNQEdB',
+          jsonRpcUrl: `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_GOERLI_API_KEY_HH}`,
           blockNumber: 7810464, // One block after a particular poll was created
           chainId: 31337
         }

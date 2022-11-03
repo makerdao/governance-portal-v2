@@ -7,7 +7,8 @@ import {
   delegatesGithubCacheKey,
   allDelegatesCacheKey,
   executiveSupportersCacheKey,
-  githubExecutivesCacheKey
+  githubExecutivesCacheKey,
+  executiveProposalsCacheKey
 } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
 import { ApiError } from 'modules/app/api/ApiError';
@@ -20,7 +21,7 @@ export default withApiHandler(
     // Allowed cache keys to be deleted, they can be partial since we just check that the key is on the requested path.
     const allowedCacheKeys = [
       'parsed-tally-',
-      'proposals-',
+      executiveProposalsCacheKey,
       executiveSupportersCacheKey,
       githubExecutivesCacheKey,
       'polls-',

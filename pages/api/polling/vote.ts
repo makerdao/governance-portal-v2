@@ -106,7 +106,7 @@ export default withApiHandler(
     }
 
     //get arbitrum polling contract with relayer's signer
-    const pollingContract = getArbitrumPollingContractRelayProvider(network);
+    const pollingContract = await getArbitrumPollingContractRelayProvider(network);
 
     // Extract the real address that will be used for voting (delegate contract, proxy contract or normal address)
     const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);

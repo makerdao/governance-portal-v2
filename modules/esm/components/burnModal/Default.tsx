@@ -21,14 +21,14 @@ const DefaultScreen = ({ setShowDialog, setStep }: Props): JSX.Element => (
       <Button
         onClick={() => setShowDialog(false)}
         variant="outline"
-        sx={{ color: '#9FAFB9', borderColor: '#9FAFB9', borderRadius: 'small' }}
+        sx={{ color: '#9FAFB9', borderColor: '#9FAFB9' }}
       >
         Cancel
       </Button>
       <Button
         onClick={() => setStep('amount')}
         variant="outline"
-        sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+        sx={{ color: 'onNotice', borderColor: 'notice' }}
       >
         Continue
       </Button>

@@ -41,22 +41,13 @@ module.exports = {
     arbTestnet: {
       url: 'http://127.0.0.1:8546',
       timeout: 2000000,
-      chainId: 421613
+      chainId: 521613
     },
     hardhat: {
-      // mining: {
-      //   auto: false,
-      //   interval: 0
-      // },
       mining: {
         auto: false,
         interval: 3000
       },
-      // forking: {
-      //   url: process.env.GOERLI_FORK_API_KEY,
-      //   blockNumber: 734148,
-      //   chainId: 31337
-      // },
       timeout: 2000000
     }
   }

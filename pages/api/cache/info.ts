@@ -7,8 +7,8 @@ import {
   delegatesGithubCacheKey,
   allDelegatesCacheKey,
   executiveSupportersCacheKey,
-  githubExecutivesCacheKey,
-  getAllPollsCacheKey
+  getAllPollsCacheKey,
+  executiveProposalsCacheKey
 } from 'modules/cache/constants/cache-keys';
 
 // fetches cache info for constant keys
@@ -18,8 +18,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   // keys to check
   const allowedCacheKeys = [
     getAllPollsCacheKey(),
+    executiveProposalsCacheKey,
     executiveSupportersCacheKey,
-    githubExecutivesCacheKey,
     delegatesGithubCacheKey,
     allDelegatesCacheKey
   ];
