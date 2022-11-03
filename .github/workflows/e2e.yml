@@ -33,6 +33,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
+      - name: Install node packages
+        run: yarn
+        
+      - name: start testchains
+        run: yarn hardhat:gasless:config &
+        
       - name: docker compose
         run: |
           LATEST_VERSION=v2.12.2
@@ -40,8 +46,6 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           sudo docker-compose up &
 
-      - name: Install node packages
-        run: yarn
 
       ## Download prebuilt next data
       # - name: Download the build folders
