@@ -25,9 +25,9 @@ export const MEET_DELEGATE_URLS = {
   '0xa149694b5b67e2078576a6f225de6b138efba043':
     'https://www.youtube-nocookie.com/embed/PbdUe4diPjg?start=1710',
   // GFX
-  '0xf60d7a62c98f65480725255e831de531efe3fe14': 'https://www.youtube-nocookie.com/embed/SoiTAghnWFE',
+  '0x869147940842bb1aa4c40e60c5e583f4911f2e02': 'https://www.youtube-nocookie.com/embed/SoiTAghnWFE',
   // JustinCase
-  '0xcdb792c14391f7115ba77a7cd27f724fc9ea2091': 'https://www.youtube-nocookie.com/embed/brNkBB33H84',
+  '0x4e324f2327fa3e567d802ddcf655f7188eb62754': 'https://www.youtube-nocookie.com/embed/brNkBB33H84',
   // Acre
   '0x4d3ac33ab1dd7b0f352b8e590fe8b62c4c39ead5': 'https://www.youtube-nocookie.com/embed/9z96VWDC_Eo',
   // Hasu

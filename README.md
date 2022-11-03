@@ -6,7 +6,7 @@
 
 </h1>
 
-This is the repo containing the code for the [Maker Governance Portal](https://vote.makerdao.com). The Maker Governance Portal is an open-source interface for governance of the Maker protocol.
+This is the repo containing the code for the [Maker Governance Portal](https://vote.makerdao.com). The Maker Governance Portal is an open-source interface for governance of the Maker protocol. </br>Copyright [Dai Foundation](https://daifoundation.org/) 2022.
 
 ### To run locally:
 
@@ -61,9 +61,9 @@ At this point, you should be able to access the application by going to the addr
 
 ### Releasing
 
-To do releases of the governance portal, please use `npm version minor`  or `npm version patch` to bump the version in the package.json and create a tag. 
+To do releases of the governance portal, please use `npm version minor` or `npm version patch` to bump the version in the package.json and create a tag.
 
-The tag and versioning should be done on develop, and then merged to master through a PR.  To push your local tag use the command `git push origin develop --follow-tags`.
+The tag and versioning should be done on develop, and then merged to master through a PR. To push your local tag use the command `git push origin develop --follow-tags`.
 
 ### Additional configuration overview:
 
