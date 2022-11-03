@@ -33,12 +33,20 @@ module.exports = {
       timeout: 2000000,
       chainId: 31337
     },
-
+    goerli: {
+      url: 'http://127.0.0.1:8545',
+      timeout: 2000000,
+      chainId: 31337
+    },
+    arbTestnet: {
+      url: 'http://127.0.0.1:8546',
+      timeout: 2000000,
+      chainId: 521613
+    },
     hardhat: {
-      forking: {
-        url: process.env.GOERLI_FORK_API_KEY,
-        blockNumber: 6840228,
-        chainId: 31337
+      mining: {
+        auto: false,
+        interval: 3000
       },
       timeout: 2000000
     }

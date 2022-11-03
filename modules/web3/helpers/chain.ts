@@ -24,8 +24,10 @@ export const isSupportedChain = (chainId?: number): boolean => {
 export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks => {
   if (network === SupportedNetworks.MAINNET) {
     return SupportedNetworks.ARBITRUM;
-  } else {
+  } else if (network === SupportedNetworks.GOERLI) {
     return SupportedNetworks.ARBITRUMTESTNET;
+  } else {
+    return SupportedNetworks.ARBITRUMTESTNETFORK;
   }
 };
 
