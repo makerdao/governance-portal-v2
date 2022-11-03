@@ -285,7 +285,7 @@ describe('/polling/review page', async () => {
 
     visitPage('/polling');
 
-    setAccount(TEST_ACCOUNTS.normal, () => {
+    setAccount(getTestAccountByIndex(3), () => {
       // Vote on first (use 2nd element because the first is unreliable due to a hash/slug clash with another poll)
       cy.get('[data-testid="single-select"]').eq(0).click();
       cy.get('[data-testid="single-select-option-Yes"]').eq(0).click();

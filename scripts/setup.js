@@ -45,12 +45,13 @@ async function main() {
 
   const mkrToken = new ethers.Contract(mkrAddress, ERC20_ABI, signer);
 
-  // Send 0.01 MKR to all addresses
+  // Send MKR to all addresses
+  const mkrFundAmount = '1';
   for (let i = 0; i < 10; i++) {
-    await mkrToken.transfer(keyPairs.addresses[i], ethers.utils.parseEther('0.01'));
+    await mkrToken.transfer(keyPairs.addresses[i], ethers.utils.parseEther(mkrFundAmount));
   }
 
-  console.log('Imported accounts have been sent 0.01 MKR');
+  console.log(`Imported accounts have been sent ${mkrFundAmount} MKR`);
 
   //manipulate mkr contract, give test address 250K MKR
   //https://kndrck.co/posts/local_erc20_bal_mani_w_hh/
