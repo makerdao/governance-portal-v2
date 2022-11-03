@@ -18,7 +18,7 @@ export async function fetchExecutivePageData(
     ? await fetchJson(
         `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
       )
-    : await getExecutiveProposals(0, EXEC_FETCH_SIZE, EXEC_SORT_BY, network);
+    : await getExecutiveProposals({ start: 0, limit: EXEC_FETCH_SIZE, sortBy: EXEC_SORT_BY, network });
 
   return {
     proposals: proposals as Proposal[]

@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Link } from 'theme-ui';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
+import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
-import { slideUp } from 'lib/keyframes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { fadeIn } from 'lib/keyframes';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -167,7 +164,6 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
   const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
-  const bpi = useBreakpointIndex();
 
   const open = () => {
     if (account && voteProxyContractAddress && account === voteProxyHotAddress) {
@@ -183,25 +179,8 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
 
   return (
     <>
-      <DialogOverlay
-        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        isOpen={showDialog}
-        onDismiss={() => setShowDialog(false)}
-      >
-        <DialogContent
-          aria-label="Executive Vote"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : {
-                  variant: 'dialog.desktop',
-                  animation: `${fadeIn} 350ms ease`,
-                  width: '520px',
-                  px: 5,
-                  py: 4
-                }
-          }
-        >
+      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+        <DialogContent aria-label="Executive Vote" widthDesktop="520px">
           <ModalContent close={() => setShowDialog(false)} showProxyInfo={showProxyInfo} />
         </DialogContent>
       </DialogOverlay>
