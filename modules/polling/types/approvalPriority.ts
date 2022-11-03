@@ -3,7 +3,7 @@ import BigNumber from 'lib/bigNumberJs';
 export type ApprovalPriorityOption = {
   mkrSupport: BigNumber;
   priorityScore: BigNumber;
-  approvalPercentage: number;
+  approvalPercentage: BigNumber;
   priorityScoreNumber: number;
 };
 

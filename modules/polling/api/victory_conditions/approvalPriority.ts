@@ -17,33 +17,55 @@ export function extractWinnerApprovalPriority(
   currentVotes.forEach(vote => {
     vote.ballot.forEach((votedOption, index) => {
       const optionWeight = optionsWeights[index];
-
+      const mkrWeighted = new BigNumber(vote.mkrSupport).multipliedBy(optionWeight);
       // The Priority Score of each option equals the aggregate of the MKR Weight of each voter multiplied by the weight of the position in which they ranked the option.
-      // 
+
       if (votes[votedOption]) {
-        votes[votedOption] = votes[votedOption].plus(vote.mkrSupport);
+        votes[votedOption].mkrSupport = votes[votedOption].mkrSupport.plus(vote.mkrSupport);
+        votes[votedOption].priorityScore = votes[votedOption].priorityScore.plus(mkrWeighted);
       } else {
         votes[votedOption] = {
           mkrSupport: new BigNumber(vote.mkrSupport),
-          approvalPercentage: 0,
-          priorityScore: new BigNumber(vote.mkrSupport).multipliedBy(optionWeight),
+          approvalPercentage: new BigNumber(0),
+          priorityScore: mkrWeighted,
           priorityScoreNumber: 0
         };
       }
     });
   });
 
+  // Calculate approval percentage
+  // Approval percentage is calculated based on the MKR Support
   // Sort options by MKR support
-  const sortedOptions = Object.keys(votes)
+  const sortedOptionsByMkrSupport = Object.keys(votes)
     .map(option => {
       return {
         option: parseInt(option),
-        mkrSupport: votes[parseInt(option)]
+        mkrSupport: votes[parseInt(option)].mkrSupport
       };
     })
     .sort((prev, next) => {
       return prev.mkrSupport.isGreaterThan(next.mkrSupport) ? -1 : 1;
     });
+
+  // The approval percentage is 1 (100%) for the first option, and for the rest is calculated divided by the first option
+  sortedOptionsByMkrSupport.forEach((option, index) => {
+    const isWinner = index === 0;
+    const isGreaterThanZero = option.mkrSupport.isGreaterThan(0);
+    if (isWinner) {
+      votes[option.option].approvalPercentage = new BigNumber(1);
+    } else {
+      if (isGreaterThanZero) {
+        votes[option.option].approvalPercentage = option.mkrSupport.dividedBy(
+          sortedOptionsByMkrSupport[0].mkrSupport
+        );
+      } else {
+        votes[option.option].approvalPercentage = new BigNumber(0);
+      }
+    }
+  });
+
+  // Calculate now priority percentage
 
   // if the 2 first options share the same MKR amount, return null
   if (sortedOptions.length >= 2) {
