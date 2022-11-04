@@ -6,7 +6,7 @@
 
 </h1>
 
-This is the repo containing the code for the [Maker Governance Portal](https://vote.makerdao.com). The Maker Governance Portal is an open-source interface for governance of the Maker protocol.
+This is the repo containing the code for the [Maker Governance Portal](https://vote.makerdao.com). The Maker Governance Portal is an open-source interface for governance of the Maker protocol. </br>Copyright [Dai Foundation](https://daifoundation.org/) 2022.
 
 ### To run locally:
 
@@ -61,9 +61,9 @@ At this point, you should be able to access the application by going to the addr
 
 ### Releasing
 
-To do releases of the governance portal, please use `npm version minor`  or `npm version patch` to bump the version in the package.json and create a tag. 
+To do releases of the governance portal, please use `npm version minor` or `npm version patch` to bump the version in the package.json and create a tag.
 
-The tag and versioning should be done on develop, and then merged to master through a PR.  To push your local tag use the command `git push origin develop --follow-tags`.
+The tag and versioning should be done on develop, and then merged to master through a PR. To push your local tag use the command `git push origin develop --follow-tags`.
 
 ### Additional configuration overview:
 
@@ -158,13 +158,35 @@ npm run e2e:headless
 
 #### Goerli fork
 
-By default, e2e tests run on a fork of Goerli. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
+By default, e2e tests run on a fork of Goerli. We do this because the governance contracts are deployed in Goerli for testing purposes. We also need to start the governance polling database services in a docker container so that the database and the forked chains are in sync. Please follow these steps:
+
+1. First we want to spin up our networks: the forked Goerli and the forked Arbitrum Testnet (for testing gasless voting). The following command will start the two networks on ports 8545 and 8546 respectively.
 
 ```bash
-npm run hardhat
+npm run hardhat:gasless:config
 ```
 
-Note: Make sure to fill in the `GOERLI_FORK_API_KEY` environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
+2. When you see the accounts & keys displayed in the terminal, you can now start the dockerized database services. You may need to pull down the latest images from docker if you don't have them. In a new terminal window type these two commands:
+
+```bash
+docker-compose pull
+
+docker-compose up
+```
+
+This will download two images, the first is a pre-seeded postgres database containing all the data you need to get started. The second one contains the API and ETL services required to work with our tests. This allows the test database to listen for events on the testchain, and return the requested data to the frontend, just as it is done in production. Wait a few minutes for the images to download and the services to start. When you see the following message displayed it means the services are ready and you can proceed to the next step:
+
+`"Running a GraphQL API server at http://localhost:3001"`
+
+Note: when you're finished running tests, you can remove the docker images by running `docker-compose down`. This will reset the database to its original state the next time you run the tests.
+
+3. Now that our testchains and our database services are running, we can start the e2e tests. Run the following command in yet another new terminal window to start cypress:
+
+```
+npm run e2e
+```
+
+Note: Make sure to fill in the `GOERLI_FORK_API_KEY` environment variable.
 
 You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`.
 
@@ -196,7 +218,6 @@ npm run start:ci
 
 The command `npm run start:ci` launches a detached process with hardhat, executes e2e in a headless mode and kills the hardhat process.
 
-
 ### Contributing
 
-See our [contributing guide](./CONTRIBUTING.md). 
+See our [contributing guide](./CONTRIBUTING.md).

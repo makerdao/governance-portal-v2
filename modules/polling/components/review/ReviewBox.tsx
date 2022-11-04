@@ -198,6 +198,7 @@ export default function ReviewBox({
                     submitBallotGasless();
                   }}
                   variant="primaryLarge"
+                  data-testid="submit-ballot-gasless-button"
                   disabled={
                     !ballotCount || !!(transaction && transaction?.status !== 'error') || !canUseGasless
                   }
@@ -229,7 +230,7 @@ export default function ReviewBox({
                     setSubmissionMethod('standard');
                   }}
                   variant="primaryOutline"
-                  data-testid="switch-to-standar-votting-button"
+                  data-testid="switch-to-legacy-voting-button"
                   sx={{ width: '100%' }}
                 >
                   <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -262,6 +263,7 @@ export default function ReviewBox({
                   onClick={() => {
                     submitBallot();
                   }}
+                  data-testid="submit-ballot-legacy-button"
                   variant="primaryLarge"
                   disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
                   sx={{ mt: 3, width: '100%' }}

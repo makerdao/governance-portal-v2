@@ -7,8 +7,8 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  GOERLI_SPOCK_URL
-  // LOCAL_SPOCK_URL,
+  GOERLI_SPOCK_URL,
+  LOCAL_SPOCK_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -24,7 +24,8 @@ export enum SupportedNetworks {
   GOERLI = 'goerli',
   GOERLIFORK = 'goerlifork',
   ARBITRUMTESTNET = 'arbitrumTestnet',
-  ARBITRUM = 'arbitrum'
+  ARBITRUM = 'arbitrum',
+  ARBITRUMTESTNETFORK = 'arbitrumTestnetFork'
 }
 
 export enum NodeProviders {
@@ -75,9 +76,9 @@ export const CHAIN_INFO: ChainInfo = {
     type: 'normal',
     network: SupportedNetworks.GOERLIFORK,
     defaultRpc: NodeProviders.LOCAL,
-    spockUrl: GOERLI_SPOCK_URL,
+    spockUrl: LOCAL_SPOCK_URL,
     rpcs: {
-      [NodeProviders.LOCAL]: 'http://localhost:8545'
+      [NodeProviders.LOCAL]: 'http://127.0.0.1:8545/'
     }
   },
   [SupportedChainId.ARBITRUMTESTNET]: {
@@ -90,6 +91,19 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+    }
+  },
+  [SupportedChainId.ARBITRUMTESTNETFORK]: {
+    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
+    blockExplorerName: 'Arbiscan',
+    chainId: SupportedChainId.ARBITRUMTESTNETFORK,
+    label: 'ArbitrumTestnetFork',
+    type: 'gasless',
+    network: SupportedNetworks.ARBITRUMTESTNETFORK,
+    defaultRpc: NodeProviders.LOCAL,
+    spockUrl: LOCAL_SPOCK_URL,
+    rpcs: {
+      [NodeProviders.LOCAL]: 'http://127.0.0.1:8546/'
     }
   },
   [SupportedChainId.ARBITRUM]: {
