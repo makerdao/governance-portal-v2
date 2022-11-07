@@ -2,11 +2,8 @@
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
   "version": "0.9.3-gasless",
-  "jest": {
-    "testTimeout": 7000
-  },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "prepare": "husky install",
