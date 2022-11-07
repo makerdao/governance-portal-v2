@@ -348,6 +348,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
           </Stack>
         </SidebarLayout>
       </Stack>
+
     </PrimaryLayout>
   );
 };

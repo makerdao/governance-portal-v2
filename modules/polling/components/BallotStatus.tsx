@@ -4,12 +4,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 const BallotStatus = (props: any): JSX.Element => {
   const { transaction, ballotCount } = useContext(BallotContext);
 
   const router = useRouter();
-
+  const bpi = useBreakpointIndex();
   return (
     <Button
       variant={
@@ -35,7 +36,7 @@ const BallotStatus = (props: any): JSX.Element => {
         ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined' ? false : true
       }
     >
-      <Icon
+      {bpi > 1 && <Icon
         name="ballot"
         size={3}
         sx={{
@@ -45,7 +46,7 @@ const BallotStatus = (props: any): JSX.Element => {
               : 'textSecondary',
           mr: 2
         }}
-      />
+      />}
       <StatusText {...{ transaction }} ballotCount={transaction?.status === 'pending' ? 0 : ballotCount} />
     </Button>
   );
