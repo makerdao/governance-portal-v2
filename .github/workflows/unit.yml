@@ -5,7 +5,7 @@ on: [push]
 jobs:
   unit:
     runs-on: ubuntu-latest
-    container: makerdaodux/cypress-dapptools-node-14:latest
+    container: cypress/browsers:node16.18.0-chrome107-ff106-edge
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
