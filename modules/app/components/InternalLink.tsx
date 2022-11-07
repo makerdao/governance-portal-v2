@@ -20,9 +20,12 @@ export const InternalLink = ({
   hash,
   scroll = true
 }: Props): JSX.Element => (
-  <Link href={{ pathname: href, query: queryParams, hash }} scroll={scroll} passHref>
-    <ThemeUILink variant="nostyle" title={title} sx={{ ...styles }}>
-      {children}
-    </ThemeUILink>
+  <Link
+    href={{ pathname: href, query: queryParams, hash }}
+    scroll={scroll}
+    title={title}
+    sx={{ textDecoration: 'none', color: 'inherit', ...styles }}
+  >
+    {children}
   </Link>
 );
