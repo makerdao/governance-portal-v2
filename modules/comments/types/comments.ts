@@ -55,6 +55,7 @@ export type ExecutiveComment = {
   spellAddress: string;
   network: SupportedNetworks;
   txHash?: string;
+  gaslessNetwork?: SupportedNetworks;
 };
 
 export type ExecutiveCommentFromDB = ExecutiveComment & {

@@ -419,9 +419,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             () =>
               fetchJson(url).then(tx => {
                 // gaslessTx.status can be: 'pending' | 'sent' | 'submitted' | 'inmempool' | 'mined' | 'confirmed' | 'failed'
-                if (tx.status === 'mined') {
-                  // check if mined, if so, do nothing ????
-                } else if (tx.status === 'failed') {
+                if (tx.status === 'failed') {
                   // check if failed
                   setStep('tx-error');
                 } else if (isBefore(new Date(gaslessTx.sentAt), sub(new Date(), { seconds: 30 }))) {
