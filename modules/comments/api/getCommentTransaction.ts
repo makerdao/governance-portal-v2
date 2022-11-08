@@ -20,11 +20,7 @@ export async function getCommentTransactionStatus(
 
   try {
     const transaction = txHash ? await provider.getTransaction(txHash as string) : null;
-
-    const isValid =
-      transaction &&
-      ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
+    const isValid = !!transaction;
 
     const completed = transaction && transaction.confirmations > 10;
     const response = { completed: !!completed, isValid: !!isValid };
