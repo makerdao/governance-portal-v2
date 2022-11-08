@@ -36,17 +36,19 @@ const BallotStatus = (props: any): JSX.Element => {
         ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined' ? false : true
       }
     >
-      {bpi > 1 && <Icon
-        name="ballot"
-        size={3}
-        sx={{
-          color:
-            ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
-              ? 'onPrimary'
-              : 'textSecondary',
-          mr: 2
-        }}
-      />}
+      {bpi > 1 && (
+        <Icon
+          name="ballot"
+          size={3}
+          sx={{
+            color:
+              ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+                ? 'onPrimary'
+                : 'textSecondary',
+            mr: 2
+          }}
+        />
+      )}
       <StatusText {...{ transaction }} ballotCount={transaction?.status === 'pending' ? 0 : ballotCount} />
     </Button>
   );
