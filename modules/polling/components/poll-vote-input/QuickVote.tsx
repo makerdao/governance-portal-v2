@@ -142,8 +142,9 @@ const QuickVote = ({
               !isChoiceValid || !votingWeight || !votingWeight.total.gt(0) || isDelegateContractExpired
             }
           >
-            {loading ? 'Loading MKR balance...' : 
-            !votingWeight || !votingWeight.total.gt(0)
+            {loading
+              ? 'Loading MKR balance...'
+              : !votingWeight || !votingWeight.total.gt(0)
               ? 'Deposit MKR to vote'
               : isDelegateContractExpired
               ? 'Delegate contract expired'
