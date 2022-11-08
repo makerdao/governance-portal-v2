@@ -66,7 +66,9 @@ export default function ReviewBox({
   const cacheExpired =
     precheckData?.recentlyUsedGaslessVoting &&
     Date.now() - parseInt(precheckData?.recentlyUsedGaslessVoting) > GASLESS_RATE_LIMIT_IN_MS;
-  const relayFunded = parseEther(precheckData?.relayBalance || '0').gt(0);
+  const relayFunded =
+    parseEther(precheckData?.relayBalance || '0').gt(0) &&
+    !(precheckData?.gaslessDisabled?.toString().toLowerCase() === 'true');
 
   const validationPassed =
     precheckData?.hasMkrRequired &&
