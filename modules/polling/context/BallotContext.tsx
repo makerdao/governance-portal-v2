@@ -409,6 +409,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
         const gaslessProvider = getGaslessProvider(network);
 
+        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
+        trackPollVote(voteTxCreator, getGaslessNetwork(network));
+
         if (gaslessTx.status !== 'mined') {
           const url = `/api/polling/relayer-tx?network=${network}&txId=${gaslessTx.transactionId}`;
           backoffRetry(
@@ -416,11 +419,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             () =>
               fetchJson(url).then(tx => {
                 // gaslessTx.status can be: 'pending' | 'sent' | 'submitted' | 'inmempool' | 'mined' | 'confirmed' | 'failed'
-                if (gaslessTx.status === 'mined') {
-                  // check if mined, if so, track the tx
-                  const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
-                  trackPollVote(voteTxCreator, getGaslessNetwork(network));
-                } else if (gaslessTx.status === 'failed') {
+                if (tx.status === 'mined') {
+                  // check if mined, if so, do nothing ????
+                } else if (tx.status === 'failed') {
                   // check if failed
                   setStep('tx-error');
                 } else if (isBefore(new Date(gaslessTx.sentAt), sub(new Date(), { seconds: 30 }))) {
