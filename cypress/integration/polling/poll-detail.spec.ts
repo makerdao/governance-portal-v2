@@ -25,7 +25,8 @@ describe('/polling detail page', async () => {
     cy.get('[data-testid="poll-vote-box"]').should('not.exist');
   });
 
-  it('Sees the vote box if connected', () => {
+  // TODO: requires an active poll to be added to goerlifork
+  xit('Sees the vote box if connected', () => {
     // Goerli-fork Poll
     visitPage('/polling/QmNSjvej');
 
@@ -37,11 +38,16 @@ describe('/polling detail page', async () => {
 
   it('Can navigate on different tabs', () => {
     // Goerli-fork Poll
-    visitPage('/polling/QmNSjvej');
+    visitPage('/polling/QmPcQ5vn');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
-      // Checks that the leading option is visible
-      cy.contains(/Leading option: No with/).should('be.visible');
+      // Should show vote breakdown
+      cy.contains(/Vote Breakdown/).should('be.visible');
+
+      // Should show vote options
+      cy.contains(/Yes/).should('be.visible');
+      cy.contains(/No/).should('be.visible');
+      cy.contains(/Abstain/).should('be.visible');
 
       // Clicks on the vote breakdown tab
       cy.get('[data-testid="tab-Vote Breakdown"]').click();
@@ -53,10 +59,7 @@ describe('/polling detail page', async () => {
       cy.contains(/Voting By Address/).should('be.visible');
 
       // Checks that are different votes by address
-      cy.get('[data-testid="vote-by-address"]').its('length').should('be.greaterThan', 13);
-
-      // Checks that there is a vote with 799.00 MKR
-      cy.contains(/799.00 MKR/).should('be.visible');
+      cy.get('[data-testid="vote-by-address"]').should('be.visible');
 
       // Checks that the voting weight module is visible
       cy.contains(/Voting Weight/).should('be.visible');

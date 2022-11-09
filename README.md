@@ -198,6 +198,15 @@ For more information about the fund process, take a look at `/scripts/setup.js`
 
 Please refer to: https://docs.cypress.io/guides/references/best-practices and check current test examples under the cypress folder.
 
+At the beginning of each test or describe-block, we run two commands to fork the hardhat networks & reset the database. This ensures that the tests are run from a clean slate and using the same blockchain and database state beforehand. Add the functions into a `before` or `beforeEach` block like this:
+
+```js
+before(() => {
+  forkNetwork(); // Restarts the blockchain & re-funds all the accounts
+  resetDatabase(); // Wipes the db and starts over from its initial state
+});
+```
+
 **Windows support**
 
 If you are using Windows and WSL you will need to install XLaunch to be able to launch a client for the UI, remember to disable access control.
