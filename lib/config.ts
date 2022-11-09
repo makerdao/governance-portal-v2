@@ -24,6 +24,7 @@ type SystemConfig = {
   GASLESS_WEBHOOK_URL: string;
   DASHBOARD_PASSWORD: string;
   GASLESS_BACKDOOR_SECRET: string;
+  GASLESS_DISABLED: string;
 };
 
 export const config: SystemConfig = {
@@ -51,5 +52,6 @@ export const config: SystemConfig = {
   MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || '',
   GASLESS_WEBHOOK_URL: process.env.GASLESS_WEBHOOK_URL || '',
   DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || '',
-  GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || ''
+  GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || '',
+  GASLESS_DISABLED: process.env.GASLESS_DISABLED || ''
 };
