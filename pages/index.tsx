@@ -224,7 +224,8 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
                       ...style,
                       zIndex: 100,
                       width: isSticky ? '100%' : 'auto',
-                      left: 0
+                      left: 0,
+                      top: 66
                     }}
                   >
                     <TabsNavigation activeTab={activeTab} />
