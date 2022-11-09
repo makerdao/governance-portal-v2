@@ -23,7 +23,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
     <Flex sx={{ flexDirection: 'column' }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Flex>
-          <Icon name="MetaMask" size={'24px'} />
+          <Icon name={accountName} size={'24px'} />
           <Text variant="secondary" sx={{ ml: 2 }}>
             Connected with {accountName}
           </Text>
