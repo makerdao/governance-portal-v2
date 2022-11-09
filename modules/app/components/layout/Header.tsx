@@ -170,6 +170,7 @@ const Header = (): JSX.Element => {
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
+        zIndex: '100',
         position: 'fixed',
         top: 0,
         left: 0,
