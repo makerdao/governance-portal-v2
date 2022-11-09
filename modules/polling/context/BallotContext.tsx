@@ -21,7 +21,7 @@ import { ContractTransaction } from 'ethers';
 import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
 import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContractReadOnly';
-import { add, isBefore, sub } from 'date-fns';
+import { isBefore, sub } from 'date-fns';
 
 type BallotSteps =
   | 'initial'
@@ -420,6 +420,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               fetchJson(url).then(tx => {
                 // gaslessTx.status can be: 'pending' | 'sent' | 'submitted' | 'inmempool' | 'mined' | 'confirmed' | 'failed'
                 if (tx.status === 'failed') {
+                  logger.error('Gasless vote failed', tx);
                   // check if failed
                   setStep('tx-error');
                 } else if (isBefore(new Date(gaslessTx.sentAt), sub(new Date(), { seconds: 30 }))) {
