@@ -156,7 +156,8 @@ export default withApiHandler(
       const hasMkrRequired = await hasMkrRequiredVotingWeight(
         voter,
         network,
-        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
+        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING,
+        true
       );
 
       if (!hasMkrRequired) {
