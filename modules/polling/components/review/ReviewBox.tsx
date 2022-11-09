@@ -166,10 +166,16 @@ export default function ReviewBox({
           )}
 
           <Box>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-              <LocalIcon name="sparkles" color="primary" size={3} />{' '}
-              <Text sx={{ ml: 2 }}>Poll voting is now gasless!</Text>
-            </Flex>
+            <ExternalLink
+              href="https://manual.makerdao.com/governance/gasless-poll-voting"
+              title="Learn more about gasless voting"
+              styles={{ color: 'text' }}
+            >
+              <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+                <LocalIcon name="sparkles" color="primary" size={3} />{' '}
+                <Text sx={{ ml: 2 }}>Poll voting is now gasless!</Text>
+              </Flex>
+            </ExternalLink>
           </Box>
         </ActivePollsBox>
       )}
@@ -214,7 +220,10 @@ export default function ReviewBox({
                     <Text sx={{ ml: 2 }}>The transaction fee is covered by Maker.</Text>
                   </Flex>
                   <Box>
-                    <ExternalLink title="Learn more" href={'https://manual.makerdao.com/'}>
+                    <ExternalLink
+                      title="Learn more"
+                      href={'https://manual.makerdao.com/governance/gasless-poll-voting'}
+                    >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
                         <Icon ml={2} name="arrowTopRight" size={2} />
