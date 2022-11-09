@@ -33,7 +33,7 @@ export default function GaslessBanner(): React.ReactElement {
             <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
               <Flex sx={{ justifyContent: 'center', width: '100%' }}>
                 <ExternalLink
-                  href="https://makerdao.com"
+                  href="https://manual.makerdao.com/governance/gasless-poll-voting"
                   title="Learn more about gasless voting"
                   styles={{ color: 'inherit' }}
                 >
