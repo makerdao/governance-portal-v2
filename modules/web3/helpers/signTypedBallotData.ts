@@ -77,7 +77,8 @@ export async function signTypedBallotData(
   network: SupportedNetworks
 ): Promise<string> {
   const typedData = getTypedBallotData(message, network);
-  const hashTypedData = ethers.utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message);
+  const voteType = { Vote: typedData.types.Vote };
+  const hashTypedData = ethers.utils._TypedDataEncoder.hash(typedData.domain, voteType, typedData.message);
   const dataToSign = ethers.utils.arrayify(hashTypedData);
   return provider.send('eth_sign', [message.voter, dataToSign]);
 }
