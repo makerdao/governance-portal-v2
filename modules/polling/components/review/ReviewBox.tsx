@@ -167,7 +167,7 @@ export default function ReviewBox({
 
           <Box>
             <ExternalLink
-              href="https://manual.makerdao.com/governance/gasless-poll-voting"
+              href="https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting"
               title="Learn more about gasless voting"
               styles={{ color: 'text' }}
             >
@@ -222,7 +222,7 @@ export default function ReviewBox({
                   <Box>
                     <ExternalLink
                       title="Learn more"
-                      href={'https://manual.makerdao.com/governance/gasless-poll-voting'}
+                      href={'https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting'}
                     >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more

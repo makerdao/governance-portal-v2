@@ -51,7 +51,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How does gasless poll voting work?',
-        url: 'https://manual.makerdao.com/governance/gasless-poll-voting/'
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting/'
       }
     ]
   },
