@@ -6,11 +6,18 @@
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
-import { closeModal, forkNetwork, setAccount, visitPage } from '../../support/commons';
+import { closeModal, forkNetwork, resetDatabase, setAccount, visitPage } from '../../support/commons';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
-  it('connects wallet and clicks on delegate', { defaultCommandTimeout: 90000 }, () => {
+  before(() => {
+    forkNetwork();
+    resetDatabase();
+  });
+  // this remains in effect for the remainder of the tests in the same spec file.
+  Cypress.config({ defaultCommandTimeout: 90000 });
+
+  it('connects wallet and clicks on delegate', () => {
     // Start from the index page
     visitPage('/delegates');
 

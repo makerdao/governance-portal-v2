@@ -1,7 +1,7 @@
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 import BigNumber from 'lib/bigNumberJs';
+import { PollTallyVote } from 'modules/polling/types';
 
-export function extractWinnerApproval(currentVotes: ParsedSpockVote[]): number | null {
+export function extractWinnerApproval(currentVotes: PollTallyVote[]): number | null {
   if (currentVotes.length === 0) {
     return null;
   }

@@ -1,3 +1,4 @@
+import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import fetchAllLocksSummed from 'modules/home/api/fetchAllLocksSummed';
@@ -30,9 +31,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   );
 
   if (!data) {
-    return res.status(404).json({
-      error: 'Not found'
-    });
+    throw new ApiError('Not found', 404);
   }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

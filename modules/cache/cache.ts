@@ -8,11 +8,27 @@ import logger from 'lib/logger';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 import { executiveProposalsCacheKey } from './constants/cache-keys';
 
+let isConnected = true;
+
 const redis = config.REDIS_URL
   ? new Redis(config.REDIS_URL, {
       connectTimeout: 10000
     })
   : null;
+
+if (redis) {
+  redis.on('error', error => {
+    logger.error(error.message);
+    // TODO: Handle error and find better ways to manage reconnects and redis connection status (TODO: Read ioRedis docs)
+    isConnected = false;
+  });
+}
+
+const redisCacheEnabled = () => {
+  const isRedisCache = !!config.REDIS_URL;
+
+  return isRedisCache && redis && isConnected;
+};
 
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const memoryCache = {};
@@ -25,9 +41,8 @@ function getFilePath(name: string, network: string): string {
 
 export const cacheDel = (name: string, network: SupportedNetworks): void => {
   const path = getFilePath(name, network);
-  const isRedisCache = !!config.REDIS_URL;
 
-  if (isRedisCache && redis) {
+  if (redisCacheEnabled()) {
     // if clearing proposals, we need to find all of them first
     if (name === 'proposals') {
       redis?.keys('*proposals*').then(keys => {
@@ -57,19 +72,19 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
     return Promise.resolve(null);
   }
 
-  const isRedisCache = !!config.REDIS_URL;
-
   try {
     const currentNetwork = network || DEFAULT_NETWORK.network;
     const path = getFilePath(name, currentNetwork);
 
-    if (isRedisCache && redis) {
+    if (redisCacheEnabled()) {
       // if fetching proposals cache info, there are likely multiple keys cached due to different query params
       // we'll return the ttl for first proposals key we find
       if (name === executiveProposalsCacheKey) {
         const keys = await redis?.keys('*proposals*');
-        const ttl = await redis?.ttl(keys[0]);
-        return ttl;
+        if (keys && keys.length > 0) {
+          const ttl = await redis?.ttl(keys[0]);
+          return ttl;
+        }
       } else {
         const ttl = await redis?.ttl(path);
         return ttl;
@@ -89,15 +104,13 @@ export const cacheGet = async (
     return Promise.resolve(null);
   }
 
-  const isRedisCache = !!config.REDIS_URL;
-
   try {
     const currentNetwork = network || DEFAULT_NETWORK.network;
     const path = getFilePath(name, currentNetwork);
 
-    if (isRedisCache && redis) {
+    if (redisCacheEnabled()) {
       // Get redis data if it exists
-      const cachedData = await redis.get(path);
+      const cachedData = await (redis as Redis).get(path);
       logger.debug(`Redis cache get for ${path}`);
       return cachedData;
     } else {
@@ -147,18 +160,17 @@ export const cacheSet = (
     return;
   }
 
-  const isRedisCache = !!config.REDIS_URL;
   const currentNetwork = network || DEFAULT_NETWORK.network;
 
   const path = getFilePath(name, currentNetwork);
 
   try {
-    if (isRedisCache && redis) {
+    if (redisCacheEnabled()) {
       // If redis cache is enabled, store in redis, with a TTL in seconds
       const expirySeconds = Math.round(expiryMs / 1000);
       logger.debug(`Redis cache set for ${path}, with TTL ${expirySeconds} seconds`);
 
-      redis.set(path, data, 'EX', expirySeconds);
+      (redis as Redis).set(path, data, 'EX', expirySeconds);
     } else {
       // File cache
       if (Object.keys(fs).length === 0) return;

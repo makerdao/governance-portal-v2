@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { fadeIn, slideUp } from 'lib/keyframes';
-import { cutMiddle, formatValue } from 'lib/string';
+import { formatValue } from 'lib/string';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -16,7 +14,6 @@ import { DelegateDetail, TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
@@ -30,6 +27,8 @@ import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateA
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -38,18 +37,14 @@ const AccountPage = (): React.ReactElement => {
     account,
     mutate: mutateAccount,
     voteDelegateContractAddress,
-    voteProxyContractAddress
+    voteProxyContractAddress,
+    votingAccount
   } = useAccount();
-  const addressToCheck = voteDelegateContractAddress
-    ? voteDelegateContractAddress
-    : voteProxyContractAddress
-    ? voteProxyContractAddress
-    : account;
 
   const { newOwnerConnected, newOwnerHasDelegateContract, previousOwnerAddress } = useLinkedDelegateInfo();
-  const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(addressToCheck, network);
+  const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
   const { data: previousOwnerContractAddress } = useVoteDelegateAddress(previousOwnerAddress);
-  const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
+  const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
@@ -103,31 +98,25 @@ const AccountPage = (): React.ReactElement => {
                 {voteDelegateContractAddress && !modalOpen && (
                   <Box sx={{ mb: 2 }}>
                     <Label>Your delegate contract address:</Label>
-                    <ExternalLink
-                      title="View on etherescan"
-                      href={getEtherscanLink(network, voteDelegateContractAddress, 'address')}
-                    >
-                      <Text as="p" data-testid="vote-delegate-address">
-                        {bpi > 0 ? voteDelegateContractAddress : cutMiddle(voteDelegateContractAddress, 8, 8)}{' '}
-                        <Icon name="arrowTopRight" size={2} ml={2} />
-                      </Text>
-                    </ExternalLink>
+
+                    <EtherscanLink
+                      type="address"
+                      showAddress
+                      hash={voteDelegateContractAddress}
+                      network={network}
+                    />
                   </Box>
                 )}
                 {newOwnerConnected && previousOwnerContractAddress && (
                   <Box sx={{ mb: 2 }}>
                     <Label>Previous delegate contract address:</Label>
-                    <ExternalLink
-                      title="View on etherescan"
-                      href={getEtherscanLink(network, previousOwnerContractAddress, 'address')}
-                    >
-                      <Text as="p" data-testid="vote-delegate-address">
-                        {bpi > 0
-                          ? previousOwnerContractAddress
-                          : cutMiddle(previousOwnerContractAddress, 8, 8)}{' '}
-                        <Icon name="arrowTopRight" size={2} ml={2} />
-                      </Text>
-                    </ExternalLink>
+
+                    <EtherscanLink
+                      type="address"
+                      showAddress
+                      hash={previousOwnerContractAddress}
+                      network={network}
+                    />
                   </Box>
                 )}
                 {voteDelegateContractAddress && !modalOpen && (
@@ -154,27 +143,13 @@ const AccountPage = (): React.ReactElement => {
                     </Label>
                     {tx && (
                       <DialogOverlay
-                        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
                         isOpen={modalOpen}
                         onDismiss={() => {
                           setModalOpen(false);
                           trackButtonClick('closeCreateDelegateModal');
                         }}
                       >
-                        <DialogContent
-                          aria-label="Delegate modal"
-                          sx={
-                            bpi === 0
-                              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-                              : {
-                                  variant: 'dialog.desktop',
-                                  animation: `${fadeIn} 350ms ease`,
-                                  width: '580px',
-                                  px: 5,
-                                  py: 4
-                                }
-                          }
-                        >
+                        <DialogContent aria-label="Delegate modal" widthDesktop="580px">
                           <TxDisplay
                             tx={tx}
                             setTxId={setTxId}
@@ -252,7 +227,14 @@ const AccountPage = (): React.ReactElement => {
           )}
           <ErrorBoundary componentName="System Info">
             <SystemStatsSidebar
-              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              fields={[
+                'polling contract v2',
+                'polling contract v1',
+                'savings rate',
+                'total dai',
+                'debt ceiling',
+                'system surplus'
+              ]}
             />
           </ErrorBoundary>
           <ResourceBox type={'delegates'} />

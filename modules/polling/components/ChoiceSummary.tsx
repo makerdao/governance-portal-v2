@@ -14,13 +14,13 @@ const ChoiceSummary = ({
   choice,
   poll,
   edit,
-  voteIsPending,
+  showActions,
   showReviewButton,
   ...props
 }: {
   poll: Poll;
   edit: () => void;
-  voteIsPending: boolean;
+  showActions: boolean;
   showReviewButton?: boolean;
   choice: number | number[];
 }): React.ReactElement => {
@@ -61,24 +61,26 @@ const ChoiceSummary = ({
           </Flex>
         ))}
       <Flex sx={{ justifyContent: 'space-between' }}>
-        <Button
-          data-testid="edit-poll-choice"
-          onClick={() => {
-            trackButtonClick('editChoice');
-            edit();
-          }}
-          variant={'smallOutline'}
-          sx={{
-            display: voteIsPending ? 'none' : 'inline-flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            mt: 1
-          }}
-        >
-          <Icon name="edit" size={3} mr={1} />
-          Edit choice{isInputFormatSingleChoice(poll.parameters) ? '' : 's'}
-        </Button>
-        {onBallot && (
+        {showActions && (
+          <Button
+            data-testid="edit-poll-choice"
+            onClick={() => {
+              trackButtonClick('editChoice');
+              edit();
+            }}
+            variant={'smallOutline'}
+            sx={{
+              display: 'inline-flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              mt: 1
+            }}
+          >
+            <Icon name="edit" size={3} mr={1} />
+            Edit choice{isInputFormatSingleChoice(poll.parameters) ? '' : 's'}
+          </Button>
+        )}
+        {onBallot && showActions && (
           <Button
             data-testid="remove-ballot-choice"
             onClick={() => {
@@ -86,7 +88,7 @@ const ChoiceSummary = ({
             }}
             variant={'smallOutline'}
             sx={{
-              display: voteIsPending ? 'none' : 'inline-flex',
+              display: 'inline-flex',
               flexDirection: 'row',
               alignItems: 'center',
               ml: 2,

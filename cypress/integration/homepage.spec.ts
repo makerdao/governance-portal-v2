@@ -4,10 +4,22 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
-import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
+import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { elementContainsText, forkNetwork, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
+import { TESTING_ACTIVE_POLLS_COUNT } from 'cypress/support/constants/polling';
+import {
+  TESTING_RECOGNIZED_DELEGATE_COUNT,
+  TESTING_SHADOW_DELEGATE_COUNT,
+  TESTING_MKR_DELEGATED_AMOUNT
+} from 'cypress/support/constants/delegates';
+import {
+  TESTING_ACTIVE_EXECUTIVES_COUNT,
+  TESTING_MKR_ON_HAT_AMOUNT,
+  TESTING_MKR_IN_CHIEF_AMOUNT
+} from 'cypress/support/constants/executives';
+import BigNumber from 'bignumber.js';
 
 describe('Home Page', () => {
   before(() => {
@@ -15,8 +27,6 @@ describe('Home Page', () => {
   });
 
   it('should find the correct data on the landing page', () => {
-    const expectedActivePolls = 4;
-
     // Start from the index page before connecting
     visitPage('/');
 
@@ -25,25 +35,34 @@ describe('Home Page', () => {
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Check the header badges are correct
-      cy.get('a').contains('Polling').next().contains('21');
-      cy.get('a').contains('Executive').next().contains('2');
+      cy.get('a').contains('Polling').next().contains(TESTING_ACTIVE_POLLS_COUNT.toString());
+      cy.get('a').contains('Executive').next().contains(TESTING_ACTIVE_EXECUTIVES_COUNT.toString());
 
       // Find the Governance Stats block
       cy.contains('Governance Stats').should('be.visible');
 
-      elementContainsText('[data-testid="MKR on Hat"]', '100,000');
-      elementContainsText('[data-testid="Active Polls"]', '21');
-      elementContainsText('[data-testid="Recognized Delegates"]', '2');
-      elementContainsText('[data-testid="Shadow Delegates"]', '18');
-      elementContainsText('[data-testid="MKR Delegated"]', '1,279 MKR');
-      elementContainsText('[data-testid="MKR in Chief"]', '201,312 MKR');
+      elementContainsText('[data-testid="MKR on Hat"]', new BigNumber(TESTING_MKR_ON_HAT_AMOUNT).toFormat(0));
+      elementContainsText('[data-testid="Active Polls"]', TESTING_ACTIVE_POLLS_COUNT.toString());
+      elementContainsText(
+        '[data-testid="Recognized Delegates"]',
+        TESTING_RECOGNIZED_DELEGATE_COUNT.toString()
+      );
+      elementContainsText('[data-testid="Shadow Delegates"]', TESTING_SHADOW_DELEGATE_COUNT.toString());
+      elementContainsText(
+        '[data-testid="MKR Delegated"]',
+        `${new BigNumber(TESTING_MKR_DELEGATED_AMOUNT).toFormat(0)} MKR`
+      );
+      elementContainsText(
+        '[data-testid="MKR in Chief"]',
+        `${new BigNumber(TESTING_MKR_IN_CHIEF_AMOUNT).toFormat(0)} MKR`
+      );
 
       // TODO add more specific tests to below sections
 
       // Find the Active Polls block
       cy.contains('Active Polls').should('be.visible');
 
-      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', expectedActivePolls);
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', TESTING_ACTIVE_POLLS_COUNT);
 
       // Find the Meet the Delegates block
       cy.contains('Meet the Delegates').should('be.visible');
@@ -63,7 +82,10 @@ describe('Home Page', () => {
       cy.contains('Top Voters').should('be.visible');
 
       // Checks that there are enough delegates
-      cy.get('[data-testid="top-recognized-delegate"]').its('length').should('be.eq', 5);
+      // TODO enable this once we have recognized delegates in the db
+      cy.get('[data-testid="top-recognized-delegate"]')
+        .its('length')
+        .should('be.eq', TESTING_RECOGNIZED_DELEGATE_COUNT);
 
       //TODO test footer stuff
 

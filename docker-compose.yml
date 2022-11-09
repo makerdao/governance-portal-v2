@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+  postgres:
+    image: makerdaodux/govpolldb-postgres:latest
+    container_name: postgres-vulcan2x-arbitrum
+    command: ['postgres', '-c', 'log_min_duration_statement=1000']
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=database
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: pg_isready -p 5432 -h localhost -U user -d database
+  spock:
+    image: makerdaodux/govpolldb-app:latest
+    container_name: spock-test-container
+    command: ['yarn', 'start-all']
+    environment:
+      - SEED_BLOCKS=5815619,6495082,7218785,7744939
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '3001:3001'

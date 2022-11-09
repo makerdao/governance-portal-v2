@@ -1,10 +1,8 @@
 import { Flex, Text, NavLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -15,20 +13,12 @@ export const NetworkAlertModal = ({
   chainIdError: ChainIdError;
   deactivate: () => void;
 }): JSX.Element | null => {
-  const bpi = useBreakpointIndex();
   const { network } = useWeb3();
 
   if (chainIdError === 'network mismatch') {
     return (
       <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
-        <DialogContent
-          aria-label="Network Mismatch"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
-          }
-        >
+        <DialogContent aria-label="Network Mismatch">
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', mb: 3 }}>
             <Flex sx={{ alignItems: 'center' }}>
               <Text variant="microHeading" sx={{ alignItems: 'center' }}>
@@ -53,14 +43,7 @@ export const NetworkAlertModal = ({
   if (chainIdError === 'unsupported network') {
     return (
       <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
-        <DialogContent
-          aria-label="Unsupported Network"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
-          }
-        >
+        <DialogContent aria-label="Unsupported Network">
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', mb: 3 }}>
             <Flex sx={{ alignItems: 'center' }}>
               <Text variant="microHeading" sx={{ alignItems: 'center' }}>

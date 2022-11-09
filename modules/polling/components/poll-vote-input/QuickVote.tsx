@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Text, Flex, Button } from 'theme-ui';
+import { Text, Flex, Button, Box } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
 import { Poll } from 'modules/polling/types';
@@ -21,11 +21,13 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 type Props = {
   poll: Poll;
   showStatus?: boolean;
   showReviewButton?: boolean;
+  disabled?: boolean;
   onSubmit?: () => void;
   buttonVariant?: string;
 };
@@ -34,30 +36,32 @@ const QuickVote = ({
   poll,
   showStatus,
   showReviewButton,
+  disabled = false,
   onSubmit,
   buttonVariant
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight } = useMKRVotingWeight(account);
+  const { data: votingWeight, loading } = useMKRVotingWeight(account);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
 
-  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction, updateVoteFromBallot } =
-    useContext(BallotContext);
+  const { isDelegateContractExpired } = useMigrationStatus();
+
+  const { ballot, previousBallot, transaction, updateVoteFromBallot } = useContext(BallotContext);
 
   const addedChoice = ballot[poll.pollId];
 
   const [choice, setChoice] = useState<number | number[] | null>(addedChoice?.option ?? null);
-  const [editing, setEditing] = useState(false);
-  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
-  const voteIsPending = !!transaction;
-  const currentVote = extractCurrentPollVote(poll, allUserVotes);
 
-  useEffect(() => {
-    if (!choice) setChoice(currentVote);
-  }, [allUserVotes]);
+  const [editing, setEditing] = useState(false);
+
+  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
+  const voteIsPending = transaction && transaction.status !== 'mined' ? true : false;
+  const currentVote = extractCurrentPollVote(poll, allUserVotes);
+  const previousVote = previousBallot[poll.pollId] ? previousBallot[poll.pollId].option : null;
+  const hasVotedOnThisPollBefore = currentVote !== null || previousVote !== null;
 
   useEffect(() => {
     setChoice(null);
@@ -66,18 +70,16 @@ const QuickVote = ({
   useEffect(() => {
     if (addedChoice) {
       setChoice(addedChoice?.option);
+    } else {
+      // If it's removed from ballot, update UI
+      setChoice(null);
+      setEditing(!hasVotedOnThisPollBefore);
     }
   }, [addedChoice]);
 
   const submit = () => {
     invariant(isChoiceValid);
-    if (currentVote && isEqual(currentVote, choice)) {
-      removeVoteFromBallot(poll.pollId);
-    } else {
-      editing
-        ? updateVoteFromBallot(poll.pollId, { option: choice as number | number[] })
-        : addVoteToBallot(poll.pollId, { option: choice as number | number[] });
-    }
+    updateVoteFromBallot(poll.pollId, { option: choice as number | number[] });
     setEditing(false);
     if (onSubmit) {
       onSubmit();
@@ -96,15 +98,27 @@ const QuickVote = ({
         <Text variant="caps">Your vote</Text>
         {showStatus && <VotingStatus poll={poll} />}
       </Flex>
-      {(!!addedChoice || currentVote !== null) && !editing ? (
+
+      {choice !== null && !editing && (
         <ChoiceSummary
-          voteIsPending={voteIsPending}
+          showActions={!voteIsPending && !disabled}
           poll={poll}
-          choice={addedChoice?.option ?? currentVote}
+          choice={choice}
           edit={() => setEditing(true)}
           showReviewButton={showReviewButton}
         />
-      ) : (
+      )}
+      {choice === null && hasVotedOnThisPollBefore && !editing && (
+        <ChoiceSummary
+          showActions={!voteIsPending && !disabled}
+          poll={poll}
+          choice={previousVote !== null ? previousVote : (currentVote as number | number[])}
+          edit={() => setEditing(true)}
+          showReviewButton={showReviewButton}
+        />
+      )}
+
+      {editing && (
         <div>
           {isInputFormatRankFree(poll.parameters) && (
             <RankedChoiceSelect poll={poll} setChoice={setChoice} choice={choice as number[] | null} />
@@ -124,11 +138,17 @@ const QuickVote = ({
               submit();
             }}
             mt={2}
-            disabled={!isChoiceValid || !votingWeight || !votingWeight.total.gt(0)}
+            disabled={
+              !isChoiceValid || !votingWeight || !votingWeight.total.gt(0) || isDelegateContractExpired
+            }
           >
-            {!votingWeight || !votingWeight.total.gt(0)
+            {loading
+              ? 'Loading MKR balance...'
+              : !votingWeight || !votingWeight.total.gt(0)
               ? 'Deposit MKR to vote'
-              : editing
+              : isDelegateContractExpired
+              ? 'Delegate contract expired'
+              : addedChoice
               ? 'Update vote'
               : 'Add vote to ballot'}
           </Button>

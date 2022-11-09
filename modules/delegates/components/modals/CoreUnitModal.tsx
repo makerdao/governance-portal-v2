@@ -1,9 +1,7 @@
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Heading, Flex, Button, Link as ThemeUILink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 type Props = {
   isOpen: boolean;
@@ -11,23 +9,9 @@ type Props = {
 };
 
 export const CoreUnitModal = ({ isOpen, onDismiss }: Props): JSX.Element => {
-  const bpi = useBreakpointIndex();
-
   return (
     <DialogOverlay isOpen={isOpen} onDismiss={onDismiss}>
-      <DialogContent
-        sx={
-          bpi === 0
-            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-            : {
-                variant: 'dialog.desktop',
-                animation: `${fadeIn} 350ms ease`,
-                width: '580px',
-                px: 5,
-                py: 4
-              }
-        }
-      >
+      <DialogContent widthDesktop="580px">
         <BoxWithClose close={onDismiss}>
           <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <Icon

@@ -12,27 +12,14 @@ type VotedProposalsResponse = {
 };
 
 export const useVotedProposals = (passedAddress?: string): VotedProposalsResponse => {
-  let addressToUse;
   const { chief } = useContracts();
-
-  // if address is passed, fetch for that
-  if (passedAddress) {
-    addressToUse = passedAddress;
-  } else {
-    // if no address, fetch for connected account
-    const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
-
-    addressToUse = voteDelegateContractAddress
-      ? voteDelegateContractAddress
-      : voteProxyContractAddress
-      ? voteProxyContractAddress
-      : account;
-  }
+  const { votingAccount } = useAccount();
+  const addressToUse = passedAddress ? passedAddress : votingAccount;
 
   const { data, error, mutate } = useSWR<string[]>(
     addressToUse ? `${addressToUse}/executive/voted-proposals` : null,
     async () => {
-      const votedSlate = await chief.votes(addressToUse);
+      const votedSlate = await chief.votes(addressToUse as string);
       return votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(chief, votedSlate) : [];
     },
     { revalidateOnMount: true, refreshInterval: 60000, revalidateOnFocus: false }

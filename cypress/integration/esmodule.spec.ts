@@ -93,7 +93,10 @@ describe('Esmodule Page', async () => {
     });
   });
 
-  it('Should be able to initiate emergency shutdown', { defaultCommandTimeout: 60000 }, () => {
+  // this remains in effect for the remainder of the tests in the same spec file.
+  Cypress.config({ defaultCommandTimeout: 60000 });
+
+  it('Should be able to initiate emergency shutdown', () => {
     visitPage('/esmodule');
     cy.wait(2000);
     setAccount(TEST_ACCOUNTS.normal, () => {

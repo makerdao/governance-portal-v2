@@ -1,8 +1,6 @@
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Divider } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import VotingWeight from './VotingWeight';
 import PollBar from './BallotPollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -10,7 +8,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 
@@ -35,16 +33,8 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
             >
               Transaction Sent. Vote{ballotCount === 1 ? '' : 's'} pending.
             </Text>
-            <ExternalLink
-              href={getEtherscanLink(network, transaction.hash, 'transaction')}
-              styles={{ p: 0 }}
-              title="View on etherscan"
-            >
-              <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                View on Etherscan
-                <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-              </Text>
-            </ExternalLink>
+
+            <EtherscanLink hash={transaction.hash} type="transaction" network={network} />
           </Flex>
         </Card>
       ) : (

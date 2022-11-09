@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
-import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -21,9 +21,9 @@ export async function getMKRVotingWeight(
 ): Promise<MKRVotingWeightResponse> {
   const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
-  // first check if contract is a delegate and if so return that balance
-  const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);
-  if (voteDelegateAddress && voteDelegateAddress !== ZERO_ADDRESS) {
+  // first check if the address is a delegate contrac and if so return the balance locked in the delegate contract
+  const voteDelegateAddress = await getDelegateContractAddress(contracts, address);
+  if (voteDelegateAddress) {
     const mkrDelegate = await contracts.mkr.balanceOf(voteDelegateAddress);
     const mkrChiefDelegate = await contracts.chief.deposits(voteDelegateAddress);
     return {
@@ -70,7 +70,6 @@ export async function getMKRVotingWeight(
   // otherwise, not proxy or delegate, get connected wallet balances
   const walletBalanceHot = await contracts.mkr.balanceOf(address);
   const chiefBalanceHot = await contracts.chief.deposits(address);
-
   return {
     walletBalanceHot,
     chiefBalanceHot,

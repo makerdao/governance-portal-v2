@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
@@ -155,14 +155,13 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
-  const { account, voteDelegateContractAddress } = useAccount();
-  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
-  const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
+  const { account, votingAccount } = useAccount();
+  const { mutate: mutateAllUserVotes } = useAllUserVotes(votingAccount);
 
   // revalidate user votes if connected address changes
   useEffect(() => {
     mutateAllUserVotes();
-  }, [addressToCheck]);
+  }, [votingAccount]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -333,7 +332,15 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
 
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
-                fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+                fields={[
+                  'polling contract v2',
+                  'polling contract v1',
+                  'arbitrum polling contract',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling',
+                  'system surplus'
+                ]}
               />
             </ErrorBoundary>
             <ResourceBox type={'polling'} />
@@ -374,7 +381,11 @@ export default function PollingOverviewPage({
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data, please try again later." />;
+      </PrimaryLayout>
+    );
   }
 
   const props = {

@@ -1,16 +1,13 @@
 import React from 'react';
 import { Flex, Text, Box } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { formatDateWithTime } from 'lib/datetime';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ParsedExecutiveComments, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function CommentItem({
   comment,
@@ -72,16 +69,16 @@ export default function CommentItem({
 
           {comment.comment.txHash && (
             <Box>
-              <ExternalLink
-                href={getEtherscanLink(network, comment.comment.txHash, 'transaction')}
-                styles={{ my: 3 }}
-                title="View on etherscan"
-              >
-                <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                  View on Etherscan {!comment.completed ? '(Pending)' : ''}
-                  <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-                </Text>
-              </ExternalLink>
+              <EtherscanLink
+                hash={comment.comment.txHash}
+                type="transaction"
+                network={
+                  comment.comment.gaslessNetwork
+                    ? comment.comment.gaslessNetwork
+                    : comment.comment.network || network
+                }
+                suffix={!comment.completed ? '(Pending)' : ''}
+              />
             </Box>
           )}
         </Flex>

@@ -1,23 +1,38 @@
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
+import { PollTallyVote } from 'modules/polling/types';
 import { extractWinnerMajority } from '../majority';
 
 describe('Majority calculation', () => {
   it('returns the option with more MKR', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 10,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 20,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -27,21 +42,36 @@ describe('Majority calculation', () => {
   });
 
   it('returns null if we ask to be 50% of the votes', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 10,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 20,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 25,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -51,21 +81,36 @@ describe('Majority calculation', () => {
   });
 
   it('returns 1 if we ask to be 50% of the votes', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 60,
         optionIdRaw: 1,
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
         optionIdRaw: 2,
-        ballot: [2]
+        ballot: [2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -75,21 +120,36 @@ describe('Majority calculation', () => {
   });
 
   it('works for ballots with multiple votes', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: 60,
         optionIdRaw: 1,
-        ballot: [1, 2]
+        ballot: [1, 2],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 35,
         optionIdRaw: 2,
-        ballot: [3, 4]
+        ballot: [3, 4],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 30,
         optionIdRaw: 3,
-        ballot: [1, 3]
+        ballot: [1, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 

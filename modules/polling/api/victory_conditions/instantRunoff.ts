@@ -1,14 +1,14 @@
 import BigNumber from 'lib/bigNumberJs';
+import { PollTallyVote } from 'modules/polling/types';
 import {
   InstantRunoffOption,
   InstantRunoffOptions,
   InstantRunoffResults
 } from 'modules/polling/types/instantRunoff';
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 
 const MAX_ROUNDS = 32;
 
-export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): InstantRunoffResults | null {
+export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): InstantRunoffResults | null {
   let totalMKR = new BigNumber(0);
   let winner;
   let rounds = 1;
@@ -49,6 +49,15 @@ export function extractWinnerInstantRunoff(currentVotes: ParsedSpockVote[]): Ins
 
     return newVote;
   });
+
+  // No MKR, return no winner
+  if (totalMKR.eq(0)) {
+    return {
+      options,
+      winner: null,
+      rounds
+    };
+  }
 
   // does any candidate have the majority after the first round?
   Object.entries(options).forEach(([option, { mkrSupport }]) => {

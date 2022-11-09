@@ -1,5 +1,5 @@
 import { config } from 'lib/config';
-import { Chain } from '../types/chain';
+import { SupportedChain } from '../types/chain';
 import { SupportedChainId } from './chainID';
 
 export const NetworkContextName = 'NETWORK';
@@ -7,8 +7,8 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  GOERLI_SPOCK_URL
-  // LOCAL_SPOCK_URL,
+  GOERLI_SPOCK_URL,
+  LOCAL_SPOCK_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -22,7 +22,10 @@ export enum SupportedConnectors {
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',
-  GOERLIFORK = 'goerlifork'
+  GOERLIFORK = 'goerlifork',
+  ARBITRUMTESTNET = 'arbitrumTestnet',
+  ARBITRUM = 'arbitrum',
+  ARBITRUMTESTNETFORK = 'arbitrumTestnetFork'
 }
 
 export enum NodeProviders {
@@ -32,14 +35,17 @@ export enum NodeProviders {
 }
 
 type ChainInfo = {
-  [key in SupportedChainId]: Chain;
+  [key in SupportedChainId]: SupportedChain;
 };
 
+//todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
   [SupportedChainId.MAINNET]: {
-    etherscanPrefix: '',
+    blockExplorerUrl: 'etherscan.io',
+    blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
+    type: 'normal',
     network: SupportedNetworks.MAINNET,
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl: process.env.NODE_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
@@ -49,9 +55,11 @@ export const CHAIN_INFO: ChainInfo = {
     }
   },
   [SupportedChainId.GOERLI]: {
-    etherscanPrefix: 'goerli.',
+    blockExplorerUrl: 'goerli.etherscan.io',
+    blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
+    type: 'normal',
     network: SupportedNetworks.GOERLI,
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl: GOERLI_SPOCK_URL,
@@ -61,14 +69,53 @@ export const CHAIN_INFO: ChainInfo = {
     }
   },
   [SupportedChainId.GOERLIFORK]: {
-    etherscanPrefix: 'goerli.',
+    blockExplorerUrl: 'goerli.etherscan.io',
+    blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.GOERLIFORK,
     label: 'GoerliFork',
+    type: 'normal',
     network: SupportedNetworks.GOERLIFORK,
     defaultRpc: NodeProviders.LOCAL,
-    spockUrl: GOERLI_SPOCK_URL,
+    spockUrl: LOCAL_SPOCK_URL,
     rpcs: {
-      [NodeProviders.LOCAL]: 'http://localhost:8545'
+      [NodeProviders.LOCAL]: 'http://127.0.0.1:8545/'
+    }
+  },
+  [SupportedChainId.ARBITRUMTESTNET]: {
+    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
+    blockExplorerName: 'Arbiscan',
+    chainId: SupportedChainId.ARBITRUMTESTNET,
+    label: 'ArbitrumTestnet',
+    type: 'gasless',
+    network: SupportedNetworks.ARBITRUMTESTNET,
+    defaultRpc: NodeProviders.ALCHEMY,
+    rpcs: {
+      [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+    }
+  },
+  [SupportedChainId.ARBITRUMTESTNETFORK]: {
+    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
+    blockExplorerName: 'Arbiscan',
+    chainId: SupportedChainId.ARBITRUMTESTNETFORK,
+    label: 'ArbitrumTestnetFork',
+    type: 'gasless',
+    network: SupportedNetworks.ARBITRUMTESTNETFORK,
+    defaultRpc: NodeProviders.LOCAL,
+    spockUrl: LOCAL_SPOCK_URL,
+    rpcs: {
+      [NodeProviders.LOCAL]: 'http://127.0.0.1:8546/'
+    }
+  },
+  [SupportedChainId.ARBITRUM]: {
+    blockExplorerUrl: 'arbiscan.io',
+    blockExplorerName: 'Arbiscan',
+    chainId: SupportedChainId.ARBITRUM,
+    label: 'Arbitrum',
+    type: 'gasless',
+    network: SupportedNetworks.ARBITRUM,
+    defaultRpc: NodeProviders.ALCHEMY,
+    rpcs: {
+      [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
     }
   }
 };

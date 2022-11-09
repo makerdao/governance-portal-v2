@@ -1,7 +1,7 @@
+import { Contract } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteProxy.json';
-import { Contract } from '@ethersproject/contracts';
 import { VoteProxy } from '../../../types/ethers-contracts/VoteProxy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';

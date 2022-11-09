@@ -171,7 +171,7 @@ const ConfirmBurn = ({
             setShowDialog(false);
           }}
           variant="outline"
-          sx={{ color: 'secondary', borderColor: 'secondary', borderRadius: 'small' }}
+          sx={{ color: 'secondary', borderColor: 'secondary' }}
         >
           Cancel
         </Button>
@@ -180,7 +180,7 @@ const ConfirmBurn = ({
           onClick={burn}
           disabled={!allowance || !termsAccepted || passValue !== value || !account}
           variant="outline"
-          sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+          sx={{ color: 'onNotice', borderColor: 'notice' }}
         >
           Continue
         </Button>

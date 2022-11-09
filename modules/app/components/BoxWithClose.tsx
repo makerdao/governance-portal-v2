@@ -16,7 +16,7 @@ export const BoxWithClose = ({
         width: 4,
         position: 'absolute',
         top: '-17px',
-        right: '-42px',
+        right: '-17px',
         display: ['none', 'block'],
         outline: 'none'
       }}

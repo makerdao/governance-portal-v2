@@ -5,6 +5,11 @@ on:
     branches:
       - master
       - develop
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:    
+      - master
+      - develop
 jobs:
   ui-chrome-tests:
     runs-on: ubuntu-latest

@@ -3,7 +3,7 @@ import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner, Card }
 import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -65,15 +65,19 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 );
 
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
-  const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
-    useAccount();
+  const {
+    account,
+    voteDelegateContractAddress,
+    voteProxyContractAddress,
+    voteProxyOldContractAddress,
+    votingAccount
+  } = useAccount();
   const { network } = useWeb3();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
+  const { data: lockedMkr } = useLockedMkr(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { chiefOld } = useContracts() as MainnetSdk;
@@ -135,7 +139,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
-  }, [address]);
+  }, [votingAccount]);
 
   useEffect(() => {
     setSize(1);
@@ -207,7 +211,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       px: 2,
                       ml: 1,
                       textTransform: 'uppercase',
-                      borderRadius: 'small',
                       fontWeight: 'bold',
                       fontSize: '10px',
                       borderColor: 'accentBlue',
@@ -466,8 +469,18 @@ export default function ExecutiveOverviewPage({
     return <PageLoadingPlaceholder />;
   }
 
-  if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  if (error && error.status === 404) {
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={404} title="Executive not found" />
+      </PrimaryLayout>
+    );
+  } else if (error) {
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />
+      </PrimaryLayout>
+    );
   }
 
   const props = {
