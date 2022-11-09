@@ -48,6 +48,10 @@ const resources: Record<ResourceType, Resource> = {
       {
         linkTitle: 'How to set up your wallet for voting?',
         url: 'https://makerdao.world/en/learn/governance/voting-setup/'
+      },
+      {
+        linkTitle: 'How does gasless poll voting work?',
+        url: 'https://manual.makerdao.com/governance/gasless-poll-voting/'
       }
     ]
   },
