@@ -163,8 +163,8 @@ const Header = (): JSX.Element => {
       as="header"
       pt={3}
       pb={2}
-      px={[3]}
-      variant="styles.header"
+      px={3}
+      // variant="styles.header"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -173,7 +173,7 @@ const Header = (): JSX.Element => {
         position: 'fixed',
         top: 0,
         left: 0,
-        background: 'background'
+        backgroundColor: 'background'
       }}
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
