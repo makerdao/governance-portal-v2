@@ -77,5 +77,5 @@ export async function signTypedBallotData(
 ): Promise<string> {
   const typedData = JSON.stringify(getTypedBallotData(message, network));
 
-  return provider.send('eth_signTypedData_v4', [message.voter, typedData]);
+  return provider.send('eth_sign', [message.voter, typedData]);
 }
