@@ -2,6 +2,7 @@ import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ArbitrumPollingAddressMap } from '../constants/addresses';
+import { ethers } from 'ethers';
 
 type BallotDataValues = {
   voter: string;
@@ -75,7 +76,8 @@ export async function signTypedBallotData(
   provider: JsonRpcProvider | Web3Provider,
   network: SupportedNetworks
 ): Promise<string> {
-  const typedData = JSON.stringify(getTypedBallotData(message, network));
-
-  return provider.send('eth_sign', [message.voter, typedData]);
+  const typedData = getTypedBallotData(message, network);
+  const hashTypedData = ethers.utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message);
+  const dataToSign = ethers.utils.arrayify(hashTypedData);
+  return provider.send('eth_sign', [message.voter, dataToSign]);
 }
