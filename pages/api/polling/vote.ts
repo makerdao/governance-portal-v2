@@ -145,7 +145,6 @@ export default withApiHandler(
       signature,
       version: SignTypedDataVersion.V4
     });
-
     if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
       await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });
     }
@@ -217,9 +216,23 @@ export default withApiHandler(
 
     const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
-    const tx = await pollingContract[
-      'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'
-    ](voter, nonce, expiry, pollIds, optionIds, v, r, s);
+    let tx;
+    try {
+      tx = await pollingContract['vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'](
+        voter,
+        nonce,
+        expiry,
+        pollIds,
+        optionIds,
+        v,
+        r,
+        s
+      );
+    } catch (err) {
+      //don't rate limit if tx didn't succeed
+      cacheSet(cacheKey, '', network, GASLESS_RATE_LIMIT_IN_MS);
+      await throwError({ error: err, body: req.body, skipDiscord });
+    }
 
     return res.status(200).json(tx);
   },
