@@ -29,7 +29,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const [recentlyUsedGaslessVoting, hasMkrRequired, alreadyVoted, relayBalance] = await Promise.all([
     cacheGet(cacheKey, network),
-    hasMkrRequiredVotingWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING),
+    hasMkrRequiredVotingWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING, true),
     ballotIncludesAlreadyVoted(voter, network, pollIdsArray),
     getRelayerBalance(network)
   ]);
