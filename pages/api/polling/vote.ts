@@ -211,10 +211,7 @@ export default withApiHandler(
     } else {
       await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
     }
-
-    const r = signature.slice(0, 66);
-    const s = '0x' + signature.slice(66, 130);
-    const v = Number('0x1B');
+    const { r, s, v } = ethers.utils.splitSignature(signature);
 
     const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
