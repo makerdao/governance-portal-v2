@@ -142,12 +142,7 @@ export default withApiHandler(
 
     //verify that signature and address correspond
     const typedData = getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network);
-    const recovered = verifyTypedSignature(
-      typedData.domain,
-      typedData.types,
-      typedData.message,
-      signature
-    );
+    const recovered = verifyTypedSignature(typedData.domain, typedData.types, typedData.message, signature);
 
     if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
       await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });

@@ -9,6 +9,7 @@ export default function SingleSelect({ poll, choice, setChoice }: Props): JSX.El
   const [defaultValue, setDefaultValue] = useState('default');
 
   useEffect(() => {
+    console.log(choice);
     setDefaultValue(choice ? choice.toString() : 'default');
   }, [choice]);
 
@@ -24,13 +25,17 @@ export default function SingleSelect({ poll, choice, setChoice }: Props): JSX.El
         sx={{ variant: 'listboxes.default.button', fontWeight: 400 }}
         arrow={<Icon name="chevron_down" size={2} />}
       />
-      <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
+      <ListboxPopover sx={{ variant: 'listboxes.default.popover', zIndex: 200 }}>
         <ListboxList sx={{ variant: 'listboxes.default.list' }}>
           <ListboxOption value="default" sx={{ display: 'none' }}>
             Your choice
           </ListboxOption>
           {Object.values(poll.options).map((label, id) => (
-            <ListboxOption data-testid={`single-select-option-${label}`} key={id} value={id.toString()}>
+            <ListboxOption
+              data-testid={`single-select-option-${label}`}
+              key={`single-select-option-${label}`}
+              value={id.toString()}
+            >
               {label}
             </ListboxOption>
           ))}

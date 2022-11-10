@@ -439,16 +439,18 @@ export default function ProposalPage({
 
   if (error || (isDefaultNetwork(network) && !prefetchedProposal?.key)) {
     return (
-      <ErrorPage
-        statusCode={404}
-        title="Executive proposal either does not exist, or could not be fetched at this time"
-      />
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage
+          statusCode={404}
+          title="Executive proposal either does not exist, or could not be fetched at this time"
+        />
+      </PrimaryLayout>
     );
   }
 
   if (!isDefaultNetwork(network) && !_proposal)
     return (
-      <PrimaryLayout>
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
         <p>Loading…</p>
       </PrimaryLayout>
     );

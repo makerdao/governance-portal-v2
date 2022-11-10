@@ -42,7 +42,7 @@
     "@makerdao/i18n-helper": "^0.1.8",
     "@octokit/core": "^4.0.5",
     "@reach/dialog": "^0.16.2",
-    "@reach/listbox": "^0.16.2",
+    "@reach/listbox": "^0.18.0",
     "@reach/menu-button": "^0.16.2",
     "@reach/tabs": "^0.10.3",
     "@reach/tooltip": "^0.16.2",
