@@ -1,6 +1,6 @@
 import { Flex, Box, Button, Text, Card } from 'theme-ui';
 import { useState, useRef } from 'react';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
+import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { BigNumber } from 'ethers';
@@ -62,7 +62,7 @@ const ESModule = (): React.ReactElement => {
           sx={{
             borderRadius: 'medium',
             minHeight: 20,
-            backgroundColor: 'muted',
+            backgroundColor: 'secondary',
             height: '20px',
             my: 3
           }}
@@ -114,26 +114,8 @@ const ESModule = (): React.ReactElement => {
     <PrimaryLayout sx={{ maxWidth: 'container' }}>
       <HeadComponent title="Emergency Shutdown Module" />
 
-      <DialogOverlay
-        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        isOpen={showDialog}
-        onDismiss={() => setShowDialog(false)}
-      >
-        <DialogContent
-          aria-label="Executive Vote"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile' }
-              : {
-                  variant: 'dialog.desktop',
-                  boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)',
-                  borderRadius: '8px',
-                  px: 5,
-                  py: 4,
-                  my: 5
-                }
-          }
-        >
+      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+        <DialogContent aria-label="Executive Vote">
           {totalStaked ? (
             !esmThresholdMet ? (
               <BurnModal
@@ -222,7 +204,7 @@ const ESModule = (): React.ReactElement => {
             <Button
               onClick={() => setShowDialog(true)}
               variant="outline"
-              sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+              sx={{ color: 'onNotice', borderColor: 'notice' }}
             >
               {esmThresholdMet ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>

@@ -24,9 +24,8 @@ import { BigNumber, utils } from 'ethers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { sign } from 'modules/web3/helpers/sign';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import logger from 'lib/logger';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -48,14 +47,9 @@ export default function DefaultVoteModalView({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
-  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
+  const { account, voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
   const { network, provider } = useWeb3();
-  const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
-  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
-    addressLockedMKR,
-    voteProxyContractAddress,
-    voteDelegateContractAddress
-  );
+  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
 
   const spellAddress = proposal ? proposal.address : address ? address : '';
 
@@ -133,12 +127,12 @@ export default function DefaultVoteModalView({
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: addressLockedMKR || '',
+            voterAddress: votingAccount || '',
             hotAddress: account || '',
             comment: comment,
             signedMessage: signedMessage,
             txHash,
-            addressLockedMKR: addressLockedMKR || ''
+            addressLockedMKR: votingAccount || ''
           };
           fetchJson(`/api/comments/executive/add/${spellAddress}?network=${network}`, {
             method: 'POST',
@@ -218,11 +212,7 @@ export default function DefaultVoteModalView({
         <Text as="p" sx={{ fontSize: [3, 4], fontWeight: 'bold' }}>
           {proposal ? proposal.title : 'Unknown Spell'}
         </Text>
-        <ExternalLink href={getEtherscanLink(network, spellAddress, 'address')} title="View on Etherscan">
-          <Text as="p" sx={{ fontSize: [1, 4] }}>
-            {spellAddress}
-          </Text>
-        </ExternalLink>
+        <EtherscanLink hash={spellAddress} type="address" network={network} showAddress />
       </Box>
       <Grid
         columns={[1, 3, 3, 3]}

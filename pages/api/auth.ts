@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import logger from 'lib/logger';
 import { config } from 'lib/config';
+import { ApiError } from 'modules/app/api/ApiError';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,14 +20,9 @@ export default withApiHandler(
         });
       }
 
-      return res.status(401).json({
-        auth: 'Not ok'
-      });
+      throw new ApiError('Unauthorized', 401, 'Unauthorized');
     } catch (e) {
-      logger.error(`auth: ${e.message}`);
-      return res.status(401).json({
-        auth: 'Not ok'
-      });
+      throw new ApiError(`auth: ${e.message}`, 401, 'Unauthorized');
     }
   },
   {

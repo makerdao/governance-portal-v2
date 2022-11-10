@@ -8,7 +8,7 @@ export function DateWithHover({
   timeago,
   label
 }: {
-  date: Date | string;
+  date: Date | string | number;
   timeago?: boolean;
   label?: string;
 }): React.ReactElement {

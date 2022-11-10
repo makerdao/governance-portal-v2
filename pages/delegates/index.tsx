@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
@@ -30,6 +30,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
+import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
@@ -119,6 +120,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
               </Flex>
               <Button
                 variant={'outline'}
+                data-testid="delegate-reset-filters"
                 sx={{
                   m: 2,
                   color: 'textSecondary',
@@ -140,7 +142,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                   <Flex
                     sx={{
                       borderRadius: '50%',
-                      backgroundColor: 'muted',
+                      backgroundColor: 'secondary',
                       p: 2,
                       width: '111px',
                       height: '111px',
@@ -274,7 +276,11 @@ export default function DelegatesPage({
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data. Please, try again later." />
+      </PrimaryLayout>
+    );
   }
 
   const props = {
@@ -291,6 +297,17 @@ export default function DelegatesPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  // Don't fetch mainnet data while running tests since it will be refetched client-side anyway
+  if (getTestBreakout()) {
+    return {
+      props: {
+        delegates: [],
+        tags: [],
+        stats: []
+      }
+    };
+  }
+
   const { delegates, stats, tags } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
 
   return {

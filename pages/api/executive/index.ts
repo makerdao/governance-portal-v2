@@ -70,7 +70,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
     validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-  }) as string;
+  }) as SupportedNetworks;
 
   const start = validateQueryParam(req.query.start, 'number', {
     defaultValue: 0,

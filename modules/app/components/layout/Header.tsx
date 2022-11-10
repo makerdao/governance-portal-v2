@@ -162,20 +162,25 @@ const Header = (): JSX.Element => {
     <Box
       as="header"
       pt={3}
-      pb={[4, 5]}
-      px={[2, 0]}
-      variant="styles.header"
+      pb={2}
+      px={3}
+      // variant="styles.header"
       sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: '100%'
+        width: '100%',
+        zIndex: '100',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        backgroundColor: 'background'
       }}
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
         <InternalLink href={'/'} title="View homepage">
           <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
-            <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
+            <Icon name="maker" size="40px" color="text" sx={{ cursor: 'pointer' }} />
           </IconButton>
         </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
@@ -352,7 +357,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
       >
         <InternalLink href={'/'} title="View homepage">
           <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
-            <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
+            <Icon name="maker" size="40px" color="text" sx={{ cursor: 'pointer' }} />
           </IconButton>
         </InternalLink>
         <Flex sx={{ alignItems: 'center', gap: 2 }}>

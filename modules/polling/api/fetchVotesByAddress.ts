@@ -5,6 +5,7 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
+import { SpockVote } from '../types/pollTally';
 
 export async function fetchVotesByAddressForPoll(
   pollId: number,
@@ -17,16 +18,18 @@ export async function fetchVotesByAddressForPoll(
     variables: { argPollId: pollId, argUnix: endUnix }
   });
 
-  const results = data.voteAddressMkrWeightsAtTime.nodes;
+  const results: SpockVote[] = data.voteAddressMkrWeightsAtTime.nodes;
 
   if (!results) return [];
 
   const votes = results.map(vote => {
-    const ballot = parseRawOptionId(vote.optionIdRaw);
+    const ballot = parseRawOptionId(vote.optionIdRaw.toString());
 
     return {
       ...vote,
-      ballot
+      optionIdRaw: vote.optionIdRaw.toString(),
+      ballot,
+      pollId
     };
   });
 

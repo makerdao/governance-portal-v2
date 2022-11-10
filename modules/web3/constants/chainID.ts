@@ -1,9 +1,8 @@
 export enum SupportedChainId {
   MAINNET = 1,
   GOERLI = 5,
-  GOERLIFORK = 31337
+  GOERLIFORK = 31337,
+  ARBITRUM = 42161,
+  ARBITRUMTESTNET = 421613,
+  ARBITRUMTESTNETFORK = 521613
 }
-
-export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
-  id => typeof id === 'number'
-) as SupportedChainId[];

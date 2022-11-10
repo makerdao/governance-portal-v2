@@ -1,9 +1,9 @@
+import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
-import invariant from 'tiny-invariant';
 
 /**
  * @swagger
@@ -97,8 +97,11 @@ import invariant from 'tiny-invariant';
  *               $ref: '#/definitions/Poll'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  const network = validateQueryParam(req.query.network, 'string', {
+    defaultValue: DEFAULT_NETWORK.network,
+    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+  }) as SupportedNetworks;
+
   const slug = req.query.slug as string;
 
   let poll = await fetchPollBySlug(slug, network);
@@ -108,9 +111,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   }
 
   if (!poll) {
-    return res.status(404).json({
-      error: 'Not found'
-    });
+    throw new ApiError('Poll not found', 404, 'Poll not found');
   }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

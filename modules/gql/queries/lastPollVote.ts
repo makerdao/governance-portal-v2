@@ -8,6 +8,8 @@ export const lastPollVote = gql`
         optionId
         optionIdRaw
         blockTimestamp
+        mkrSupport
+        hash
       }
     }
   }

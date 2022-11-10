@@ -9,6 +9,7 @@ import { resolveENS } from 'modules/web3/helpers/ens';
 import { getAddressStatsCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { ApiError } from 'modules/app/api/ApiError';
 
 /**
  * @swagger
@@ -84,9 +85,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       : (req.query.address as string[]);
 
   if (!req.query.address) {
-    return res.status(400).json({
-      error: 'Missing address'
-    });
+    throw new ApiError('Address stats, missing address', 400, 'Missing address');
   }
 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);

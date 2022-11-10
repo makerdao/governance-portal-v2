@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/markdown';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 // Regexp to check if is an URL
 const expr =
@@ -185,13 +185,12 @@ const ExecutiveCreate = (): JSX.Element => {
                     <tr key={'Mainnet Address'}>
                       <TD>Mainnet Address</TD>
                       <TD>
-                        <Link
-                          target="_blank"
-                          href={getEtherscanLink(SupportedNetworks.MAINNET, mainnetAddress, 'address')}
-                          sx={{ p: 0 }}
-                        >
-                          {mainnetAddress}
-                        </Link>
+                        <EtherscanLink
+                          hash={mainnetAddress}
+                          type="address"
+                          network={SupportedNetworks.MAINNET}
+                          showAddress
+                        />
                       </TD>
                     </tr>
                     <tr key={'Markdown'}>

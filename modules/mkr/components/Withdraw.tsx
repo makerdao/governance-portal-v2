@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
+import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -38,7 +36,7 @@ const ModalContent = ({ close, ...props }) => {
 
   const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
 
-  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
+  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
 
   const { free, tx: freeTx, setTxId: resetFree } = useFree();
 
@@ -49,7 +47,7 @@ const ModalContent = ({ close, ...props }) => {
       <Box>
         {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
-            <Text as="p" variant="microHeading" color="onBackgroundAlt">
+            <Text as="p" variant="microHeading">
               {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
@@ -59,12 +57,12 @@ const ModalContent = ({ close, ...props }) => {
 
             {transaction.status !== 'pending' && (
               <Box>
-                <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
                   as="p"
-                  sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+                  sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
                   onClick={() => resetTransaction(null)}
                 >
                   Cancel
@@ -76,10 +74,10 @@ const ModalContent = ({ close, ...props }) => {
         {!transaction && allowanceOk && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
-              <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
+              <Text as="p" variant="microHeading" mb={2}>
                 Withdraw from voting contract
               </Text>
-              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                 Input the amount of MKR to withdraw from the voting contract.
               </Text>
             </Box>
@@ -121,10 +119,10 @@ const ModalContent = ({ close, ...props }) => {
         {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
-              <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
+              <Text as="p" variant="microHeading" mb={2}>
                 Approve voting contract
               </Text>
-              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                 Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
               </Text>
             </Box>
@@ -156,28 +154,10 @@ const ModalContent = ({ close, ...props }) => {
 
 const Withdraw = (props): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
-  const bpi = useBreakpointIndex();
   return (
     <>
-      <DialogOverlay
-        style={{ zIndex: 200, background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        isOpen={showDialog}
-        onDismiss={() => setShowDialog(false)}
-      >
-        <DialogContent
-          aria-label="Executive Vote"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : {
-                  variant: 'dialog.desktop',
-                  animation: `${fadeIn} 350ms ease`,
-                  width: '520px',
-                  px: 5,
-                  py: 4
-                }
-          }
-        >
+      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+        <DialogContent aria-label="Executive Vote" widthDesktop="520px">
           <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>

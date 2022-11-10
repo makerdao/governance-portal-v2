@@ -1,10 +1,8 @@
-import { Button, Flex, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Box, Button, Flex, Text } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { Transaction, TXMined } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export const TxFinal = ({
   title,
@@ -27,9 +25,7 @@ export const TxFinal = ({
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
-      <Text variant="microHeading" color="onBackgroundAlt">
-        {title}
-      </Text>
+      <Text variant="microHeading">{title}</Text>
       {success ? (
         <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
           <TxIndicators.Success sx={{ width: 6 }} />
@@ -43,16 +39,16 @@ export const TxFinal = ({
         <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
       </Flex>
       {children}
-      <ExternalLink
-        href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
-        styles={{ my: 3 }}
-        title="View on etherscan"
-      >
-        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-          View on Etherscan
-          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-        </Text>
-      </ExternalLink>
+
+      <Box my={3}>
+        <EtherscanLink
+          hash={(tx as TXMined).hash}
+          type="transaction"
+          network={network}
+          styles={{ justifyContent: 'center' }}
+        />
+      </Box>
+
       <Button data-testid="txfinal-btn" onClick={onClick} sx={{ width: '100%', mt: 3 }}>
         {buttonLabel}
       </Button>

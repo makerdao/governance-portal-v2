@@ -1,8 +1,8 @@
 import { GetStaticProps } from 'next';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import ErrorPage from 'next/error';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR, { useSWRConfig } from 'swr';
 import { isActivePoll, findPollById, isInputFormatRankFree } from 'modules/polling/helpers/utils';
@@ -16,7 +16,6 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
-import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -31,30 +30,29 @@ import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
-const PollingReview = ({ polls }: PollingReviewPageData) => {
+type PollingReviewProps = {
+  polls: Poll[];
+  network: SupportedNetworks;
+};
+
+const PollingReview = ({ polls, network }: PollingReviewProps) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
-
   const toggleShareModal = (pollId?: number) => {
     setModalPollId(pollId);
     setShowMarkdownModal(!showMarkdownModal);
   };
 
-  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
+  const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
 
-  const [transactionStatus, setTransactionStatus] = useState('default');
-
-  useEffect(() => {
-    setTransactionStatus(transaction?.status || 'default');
-  }, [transaction]);
-
-  const { account } = useAccount();
+  const { account, votingAccount } = useAccount();
 
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
@@ -76,16 +74,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
       return findPollById(polls, pollId);
     })
     .filter(p => !!p) as Poll[];
-
-  const SubmitButton = props => (
-    <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <SubmitBallotsButtons
-        onSubmit={() => {
-          trackButtonClick('submitBallot');
-        }}
-      />
-    </Flex>
-  );
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
@@ -153,6 +141,7 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
     return markdown;
   };
 
+  const ballotPollIds = Object.keys(ballot);
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
   return (
@@ -171,23 +160,34 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
             <Text as="p" sx={{ mt: 2 }}>
               Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes
             </Text>
-            <Flex sx={{ alignItems: 'center', mt: 1 }}>
-              <Icon name="info" color="textSecondary" />
-              <Text as="p" variant="secondary" sx={{ ml: 1 }}>
-                Your vote and comment may take a few minutes to appear in the Voting Portal
-              </Text>
+            <Flex sx={{ alignItems: 'center', mt: 1, gap: 1, flexWrap: 'wrap' }}>
+              <Flex sx={{ alignItems: 'center', gap: 1 }}>
+                <Icon name="info" color="textSecondary" />
+                <Text as="p" variant="secondary">
+                  Your vote and comment may take a few minutes to appear in the Voting Portal.
+                </Text>
+              </Flex>
+              {transaction?.hash && (
+                <EtherscanLink
+                  hash={transaction.hash}
+                  type="transaction"
+                  network={transaction.gaslessNetwork ?? network}
+                />
+              )}
             </Flex>
           </Box>
         )}
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <InternalLink href={'/polling'} title="View polling page">
-                <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
-                  <Icon name="chevron_left" size="2" mr={2} />
-                  Back to All Polls
-                </Button>
-              </InternalLink>
+              <Box>
+                <InternalLink href={'/polling'} title="View polling page">
+                  <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
+                    <Icon name="chevron_left" size="2" mr={2} />
+                    Back to All Polls
+                  </Button>
+                </InternalLink>
+              </Box>
               <Stack gap={3}>
                 {!account && (
                   <Text as="p" sx={{ mt: 3 }}>
@@ -200,9 +200,16 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                   </Text>
                 )}
 
-                {bpi <= 2 && !!account && (
+                {bpi <= 2 && !!votingAccount && (
                   <Box>
-                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} />}
+                    {!hasVoted && (
+                      <ReviewBox
+                        account={votingAccount}
+                        polls={polls}
+                        activePolls={activePolls}
+                        ballotPollIds={ballotPollIds}
+                      />
+                    )}
                     {hasVoted && (
                       <Box>
                         <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
@@ -231,7 +238,12 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
+                          <PollOverviewCard
+                            poll={poll}
+                            reviewPage={true}
+                            showVoting={true}
+                            disableVoting={true}
+                          >
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
                                 <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
@@ -267,7 +279,10 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                                 }}
                                 value={ballot[poll.pollId].comment || ''}
                                 disabled={
-                                  transactionStatus === 'pending' || transactionStatus === 'initialized'
+                                  transaction?.status === 'pending' ||
+                                  transaction?.status === 'initialized' ||
+                                  ballotStep === 'submitting' ||
+                                  ballotStep === 'awaiting-relayer'
                                 }
                               />
                             </Box>
@@ -279,7 +294,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
                 )}
                 {bpi <= 2 && (
                   <Box>
-                    {!hasVoted && <SubmitButton />}
                     {hasVoted && (
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -298,14 +312,19 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
             </Stack>
           </Box>
 
-          {bpi >= 3 && !!account && (
+          {bpi >= 3 && !!votingAccount && (
             <Box sx={{ pt: 3 }}>
               {!hasVoted && (
                 <Box>
                   <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                     Submit Ballot
                   </Heading>
-                  <ReviewBox polls={polls} activePolls={activePolls} />
+                  <ReviewBox
+                    account={votingAccount}
+                    polls={polls}
+                    activePolls={activePolls}
+                    ballotPollIds={ballotPollIds}
+                  />
                 </Box>
               )}
               {hasVoted && (
@@ -326,7 +345,6 @@ const PollingReview = ({ polls }: PollingReviewPageData) => {
               )}
             </Box>
           )}
-
           {showMarkdownModal && (
             <ShareVotesModal
               isOpen={showMarkdownModal}
@@ -366,11 +384,15 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: PollingRev
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />
+      </PrimaryLayout>
+    );
   }
-
   const props = {
-    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || []
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    network
   };
 
   return (

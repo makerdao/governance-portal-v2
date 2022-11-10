@@ -3,7 +3,7 @@ import { getConnection, orderedConnectionTypes } from 'modules/web3/connections'
 import { Connection } from 'modules/web3/types/connection';
 import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 
-export function useOrderedConnections() {
+export function useOrderedConnections(): Connection[] {
   const selectedConnection = useSelectedConnectionStore(state => state.selectedConnection);
 
   return useMemo(() => {

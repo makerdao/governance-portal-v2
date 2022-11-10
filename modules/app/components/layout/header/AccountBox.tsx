@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Flex, Text, Box, Button, Link as ExternalLink } from 'theme-ui';
+import { Flex, Text, Box, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatAddress } from 'lib/utils';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AddressIcon from 'modules/address/components/AddressIcon';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { WalletName } from 'modules/web3/constants/wallets';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   address: string;
@@ -23,7 +23,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
     <Flex sx={{ flexDirection: 'column' }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Flex>
-          <Icon name="MetaMask" size={'24px'} />
+          <Icon name={accountName} size={'24px'} />
           <Text variant="secondary" sx={{ ml: 2 }}>
             Connected with {accountName}
           </Text>
@@ -65,10 +65,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
           alignItems: 'center'
         }}
       >
-        <ExternalLink href={getEtherscanLink(network, address, 'address')} target="_blank">
-          View on Etherscan
-          <Icon name="arrowTopRight" size={2} sx={{ ml: 1 }} />
-        </ExternalLink>
+        <EtherscanLink hash={address} type="address" network={network} />
         <Button variant="mutedOutline" onClick={disconnect}>
           Disconnect
         </Button>

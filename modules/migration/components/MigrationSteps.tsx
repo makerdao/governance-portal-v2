@@ -9,7 +9,7 @@ export function MigrationSteps({ activeStep }: { activeStep: string }): JSX.Elem
         const isActiveStep = activeStep === step;
         return (
           <Flex key={step} sx={{ flexDirection: 'column' }}>
-            <Box sx={{ height: '3px', width: '185px', bg: isActiveStep ? 'primary' : 'muted' }} />
+            <Box sx={{ height: '3px', width: '185px', bg: isActiveStep ? 'primary' : 'secondary' }} />
             <Text
               as="p"
               variant="text.caps"
@@ -17,7 +17,7 @@ export function MigrationSteps({ activeStep }: { activeStep: string }): JSX.Elem
                 textAlign: 'center',
                 mt: 2,
                 fontWeight: 'bold',
-                color: isActiveStep ? 'primary' : 'muted'
+                color: isActiveStep ? 'primary' : 'secondary'
               }}
             >
               {step}

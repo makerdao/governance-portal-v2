@@ -86,7 +86,7 @@ function mergeDelegateInfo({
   };
 }
 
-// Returns info for one delegate mixing onchain and repo info
+// Returns info for one delegate mixing onchain and repo info (requires the delegate contract address as parameter)
 export async function fetchDelegate(
   voteDelegateAddress: string,
   network?: SupportedNetworks

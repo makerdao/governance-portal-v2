@@ -35,7 +35,10 @@ export type CommentsAPIResponseItem = {
 };
 
 export type ParsedExecutiveComments = {
-  comment: Omit<ExecutiveComment, 'voterWeight'> & { voterWeight: BigNumber };
+  comment: Omit<ExecutiveComment, 'voterWeight'> & {
+    voterWeight: BigNumber;
+    gaslessNetwork?: SupportedNetworks;
+  };
   isValid: boolean;
   completed: boolean;
   address: AddressApiResponse;
@@ -52,6 +55,7 @@ export type ExecutiveComment = {
   spellAddress: string;
   network: SupportedNetworks;
   txHash?: string;
+  gaslessNetwork?: SupportedNetworks;
 };
 
 export type ExecutiveCommentFromDB = ExecutiveComment & {
@@ -77,6 +81,7 @@ export type PollComment = {
   commentType: 'poll';
   pollId: number;
   network: SupportedNetworks;
+  gaslessNetwork?: SupportedNetworks;
   txHash?: string;
 };
 
@@ -98,6 +103,8 @@ export type PollCommentWithWeight = PollComment & {
 };
 
 export type CommentFromDB = PollCommentFromDB | ExecutiveCommentFromDB;
+
+export type Comment = PollComment | ExecutiveComment;
 
 export enum CommentSortOption {
   LATEST = 'latest',

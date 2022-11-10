@@ -1,4 +1,4 @@
-import { GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { GoerliSdk, MainnetSdk, ArbitrumGoerliTestnetSdk, ArbitrumOneSdk } from '@dethcrypto/eth-sdk-client';
 import { providers, Signer } from 'ethers';
 
 export type ContractName =
@@ -13,6 +13,7 @@ export type ContractName =
   | 'pause'
   | 'pauseProxy'
   | 'polling'
+  | 'pollingOld'
   | 'pot'
   | 'vat'
   | 'voteDelegateFactory'
@@ -26,4 +27,10 @@ export type SignerOrProvider = Signer | providers.Provider;
 export type SdkGenerators = {
   mainnet: (signerOrProvider: SignerOrProvider) => MainnetSdk;
   goerli: (signerOrProvider: SignerOrProvider) => GoerliSdk;
+  goerlifork: (signerOrProvider: SignerOrProvider) => GoerliSdk;
+};
+
+export type ArbitrumSdkGenerators = {
+  mainnet: (signerOrProvider: SignerOrProvider) => ArbitrumOneSdk;
+  goerli: (signerOrProvider: SignerOrProvider) => ArbitrumGoerliTestnetSdk;
 };

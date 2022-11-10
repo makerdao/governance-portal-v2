@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Button, Box, Flex } from 'theme-ui';
 import invariant from 'tiny-invariant';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
 import lottie from 'lottie-web';
@@ -18,6 +17,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import QuickVote from './poll-vote-input/QuickVote';
 import { BallotContext } from '../context/BallotContext';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 enum ViewState {
   START,
@@ -113,19 +113,14 @@ export default function MobileVoteSheet({
               display: 'flex',
               flexDirection: 'row',
               flexWrap: 'nowrap',
-              alignItems: 'center',
-              borderRadius: 'small'
+              alignItems: 'center'
             }}
           >
             <Icon name="edit" size={3} mr={2} />
             Edit Choices
           </Button>
         ) : (
-          <Button
-            sx={{ width: '110px', borderRadius: 'small' }}
-            variant="primary"
-            onClick={() => setViewState(ViewState.INPUT)}
-          >
+          <Button sx={{ width: '110px' }} variant="primary" onClick={() => setViewState(ViewState.INPUT)}>
             Vote
           </Button>
         )}
@@ -133,14 +128,8 @@ export default function MobileVoteSheet({
     );
   else
     return (
-      <DialogOverlay
-        sx={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        onDismiss={close ? close : () => setViewState(ViewState.START)}
-      >
-        <DialogContent
-          sx={{ variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }}
-          aria-label="Vote Form"
-        >
+      <DialogOverlay isOpen onDismiss={close ? close : () => setViewState(ViewState.START)}>
+        <DialogContent aria-label="Vote Form">
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">
@@ -164,23 +153,19 @@ export default function MobileVoteSheet({
                       borderBottomLeftRadius: i === 0 ? 'small' : undefined,
                       borderTopRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
                       borderBottomRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
-                      backgroundColor: i < ballotCount ? 'primary' : 'muted'
+                      backgroundColor: i < ballotCount ? 'primary' : 'secondary'
                     }}
                   />
                 ))}
               </Flex>
               {pollsData && ballotCount < activePolls.length && (
-                <Button
-                  variant="outline"
-                  sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                  onClick={goToNextPoll}
-                >
+                <Button variant="outline" sx={{ py: 3, fontSize: 2 }} onClick={goToNextPoll}>
                   Next Poll
                 </Button>
               )}
               <Button
                 variant="primaryLarge"
-                sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
+                sx={{ py: 3, fontSize: 2 }}
                 onClick={() => router.push({ pathname: '/polling/review' })}
               >
                 Review &amp; Submit Ballot

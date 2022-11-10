@@ -1,8 +1,7 @@
 import React from 'react';
 import AddressIcon from './AddressIcon';
-import { Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
+import { Box, Text, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -10,6 +9,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 import { limitString } from 'lib/string';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type PropTypes = {
   address: string;
@@ -66,7 +66,7 @@ export default function AddressIconBox({
         }}
       >
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
-          <Flex>
+          <Flex sx={{ alignItems: 'center' }}>
             {delegateAddresses[address] ? (
               <Text>
                 {limitTextLength
@@ -79,15 +79,13 @@ export default function AddressIconBox({
               </Text>
             )}
             {showExternalLink && (
-              <ExternalLink
-                title="View on etherscan"
-                href={getEtherscanLink(network, address, 'address')}
-                target="_blank"
-              >
-                <Text as="p" sx={{ fontSize: [1, 3] }}>
-                  <Icon ml={2} name="arrowTopRight" size={2} />
-                </Text>
-              </ExternalLink>
+              <EtherscanLink
+                showBlockExplorerName={false}
+                prefix=""
+                type="address"
+                network={network}
+                hash={address}
+              />
             )}
           </Flex>
           {isOwner && (

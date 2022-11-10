@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
-import ErrorPage from 'next/error';
+import { Heading, Text, Flex, useColorMode, Box, Alert } from 'theme-ui';
+import ErrorPage from 'modules/app/components/ErrorPage';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -61,8 +61,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   }, [mode]);
 
   // account
-  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+  const { account, votingAccount } = useAccount();
 
   // polls
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
@@ -87,7 +86,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
-  }, [address]);
+  }, [votingAccount]);
 
   // Use intersection observers to change the hash on scroll
   const [activeTab, setActiveTab] = useState('#vote');
@@ -139,6 +138,11 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
   return (
     <div>
+      {delegates.length === 0 && polls.length === 0 && (
+        <Alert variant="warning">
+          <Text>There is a problem loading the governance data. Please, try again later.</Text>
+        </Alert>
+      )}
       <div
         sx={{
           top: 0,
@@ -220,7 +224,8 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
                       ...style,
                       zIndex: 100,
                       width: isSticky ? '100%' : 'auto',
-                      left: 0
+                      left: 0,
+                      top: 66
                     }}
                   >
                     <TabsNavigation activeTab={activeTab} />
@@ -319,7 +324,11 @@ export default function Index({
   }
 
   if (error) {
-    return <ErrorPage statusCode={500} title="Error fetching data" />;
+    return (
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage statusCode={500} title="Error fetching data" />
+      </PrimaryLayout>
+    );
   }
 
   const props = {

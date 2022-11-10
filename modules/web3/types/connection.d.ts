@@ -1,5 +1,5 @@
 import { Web3ReactHooks } from '@web3-react/core';
-import { Connector } from '@web3-react/types';
+import { Connector, Provider } from '@web3-react/types';
 import { ConnectionType } from '../connections';
 
 export interface Connection {
@@ -7,3 +7,5 @@ export interface Connection {
   hooks: Web3ReactHooks;
   type: ConnectionType;
 }
+
+export type EIP1193Provider = Provider & { chainId: number };

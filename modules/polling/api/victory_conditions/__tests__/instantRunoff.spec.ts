@@ -1,6 +1,6 @@
-import { ParsedSpockVote } from 'modules/polling/types/tallyVotes';
 import { extractWinnerInstantRunoff } from '../instantRunoff';
 import BigNumber from 'lib/bigNumberJs';
+import { PollTallyVote } from 'modules/polling/types';
 
 const fromBuffer = (buf, opts?) => {
   if (!opts) {
@@ -30,21 +30,36 @@ const fromBuffer = (buf, opts?) => {
 
 describe('Instant runoff calculation', () => {
   it('gives expected results for a tally with majority', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [1, 3]
+        ballot: [1, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '200.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [3, 1]
+        ballot: [3, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [2, 3]
+        ballot: [2, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -79,21 +94,36 @@ describe('Instant runoff calculation', () => {
   });
 
   it('gives expected results for a tally with no majority', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [1, 3]
+        ballot: [1, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '102.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [3, 1]
+        ballot: [3, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [2, 3]
+        ballot: [2, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -128,26 +158,46 @@ describe('Instant runoff calculation', () => {
   });
 
   it('gives expected results for a tally with multiple rounds', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [1, 3]
+        ballot: [1, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '102.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [3, 1]
+        ballot: [3, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '64.068823529411764706',
         optionIdRaw: fromBuffer([2, 3].reverse()),
-        ballot: [2, 3]
+        ballot: [2, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 4,
         optionIdRaw: fromBuffer([4, 1].reverse()),
-        ballot: [4, 1]
+        ballot: [4, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -187,26 +237,46 @@ describe('Instant runoff calculation', () => {
   });
 
   it('ranked choice tally verify eliminated options cant get votes', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: '60.025',
         optionIdRaw: fromBuffer([1, 3].reverse()),
-        ballot: [1, 3]
+        ballot: [1, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '102.598801867883985831',
         optionIdRaw: fromBuffer([3, 1].reverse()),
-        ballot: [3, 1]
+        ballot: [3, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '54.068823529411764706',
         optionIdRaw: fromBuffer([2, 4].reverse()),
-        ballot: [2, 4]
+        ballot: [2, 4],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 4,
         optionIdRaw: fromBuffer([4, 1].reverse()),
-        ballot: [4, 1]
+        ballot: [4, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -246,26 +316,46 @@ describe('Instant runoff calculation', () => {
   });
 
   it('ranked choice tally stop when 1 remains', () => {
-    const votes: ParsedSpockVote[] = [
+    const votes: PollTallyVote[] = [
       {
         mkrSupport: '101',
         optionIdRaw: fromBuffer([1].reverse()),
-        ballot: [1]
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '100',
         optionIdRaw: fromBuffer([2, 1].reverse()),
-        ballot: [2, 1]
+        ballot: [2, 1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: '50',
         optionIdRaw: fromBuffer([3].reverse()),
-        ballot: [3]
+        ballot: [3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       },
       {
         mkrSupport: 49,
         optionIdRaw: fromBuffer([4, 3].reverse()),
-        ballot: [4, 3]
+        ballot: [4, 3],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
       }
     ];
 
@@ -297,6 +387,37 @@ describe('Instant runoff calculation', () => {
           transfer: '-49',
           winner: false,
           eliminated: true
+        }
+      }
+    };
+
+    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+  });
+
+  it('Does not break with only 1 vote without mkr', () => {
+    const votes: PollTallyVote[] = [
+      {
+        optionIdRaw: '1',
+        mkrSupport: '0',
+        ballot: [1],
+        blockTimestamp: 1,
+        chainId: 1,
+        hash: '',
+        voter: '',
+        pollId: 1
+      }
+    ];
+
+    const winner = extractWinnerInstantRunoff(votes);
+    const expectedResult = {
+      rounds: 1,
+      winner: null,
+      options: {
+        '1': {
+          mkrSupport: '0',
+          transfer: '0',
+          winner: false,
+          eliminated: false
         }
       }
     };

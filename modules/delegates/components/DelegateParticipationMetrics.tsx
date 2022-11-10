@@ -42,7 +42,7 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
       marginBottom: 3
     },
     text: {
-      color: 'onBackground',
+      color: 'textSecondary',
       fontWeight: 'semiBold',
       fontSize: 3,
       cursor: 'help'

@@ -1,9 +1,5 @@
 import { useState } from 'react';
 import { Box } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-
-import { fadeIn, slideUp } from 'lib/keyframes';
 import { Delegate } from '../../types';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
@@ -19,6 +15,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { formatValue } from 'lib/string';
 import DelegateAvatarName from '../DelegateAvatarName';
+import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 type Props = {
   isOpen: boolean;
@@ -35,7 +32,6 @@ export const UndelegateModal = ({
   mutateTotalStaked,
   mutateMKRDelegated
 }: Props): JSX.Element => {
-  const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
@@ -63,25 +59,8 @@ export const UndelegateModal = ({
 
   return (
     <>
-      <DialogOverlay
-        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-        isOpen={isOpen}
-        onDismiss={onClose}
-      >
-        <DialogContent
-          aria-label="Undelegate modal"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : {
-                  variant: 'dialog.desktop',
-                  animation: `${fadeIn} 350ms ease`,
-                  width: '580px',
-                  px: 5,
-                  py: 4
-                }
-          }
-        >
+      <DialogOverlay isOpen={isOpen} onDismiss={onClose}>
+        <DialogContent widthDesktop="580px" aria-label="Undelegate modal">
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (

@@ -33,6 +33,7 @@ import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator'
 type Props = {
   poll: Poll;
   reviewPage: boolean;
+  disableVoting?: boolean;
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
   children?: React.ReactNode;
@@ -42,6 +43,7 @@ export default function PollOverviewCard({
   poll,
   reviewPage,
   showVoting,
+  disableVoting = false,
   children,
   hideTally = false
 }: Props): JSX.Element {
@@ -178,7 +180,7 @@ export default function PollOverviewCard({
                 <Box sx={{ ml: 2, minWidth: '265px' }}>
                   <ErrorBoundary componentName="Vote in Poll">
                     <Box sx={{ maxWidth: 7 }}>
-                      <QuickVote poll={poll} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} disabled={disableVoting} />
                     </Box>
                   </ErrorBoundary>
                 </Box>
@@ -219,7 +221,7 @@ export default function PollOverviewCard({
                 {showQuickVote && bpi === 0 && (
                   <Box sx={{ mt: 3, width: '100%' }}>
                     <ErrorBoundary componentName="Vote in Poll">
-                      <QuickVote poll={poll} showStatus={!reviewPage} />
+                      <QuickVote poll={poll} showStatus={!reviewPage} disabled={disableVoting} />
                     </ErrorBoundary>
                   </Box>
                 )}
@@ -256,19 +258,21 @@ export default function PollOverviewCard({
                     <SkeletonThemed width={'265px'} height={'30px'} />
                   )}
                   {errorTally && !isValidating && (
-                    <Badge
-                      variant="warning"
-                      sx={{
-                        color: 'warning',
-                        borderColor: 'warning',
-                        textTransform: 'uppercase',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        m: 1
-                      }}
-                    >
-                      Error loading votes
-                    </Badge>
+                    <Flex sx={{ justifyContent: ['center', 'flex-end'] }}>
+                      <Badge
+                        variant="warning"
+                        sx={{
+                          color: 'warning',
+                          borderColor: 'warning',
+                          textTransform: 'uppercase',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          m: 1
+                        }}
+                      >
+                        Error loading votes
+                      </Badge>
+                    </Flex>
                   )}
                 </Box>
               </Flex>

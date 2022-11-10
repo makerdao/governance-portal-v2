@@ -7,6 +7,8 @@ import { CMSProposal } from 'modules/executive/types';
 import { NotFoundResponse } from 'modules/app/types/genericApiResponse';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { API_ERROR_CODES } from 'modules/app/constants/apiErrors';
+import { ApiError } from 'modules/app/api/ApiError';
 
 /**
  * @swagger
@@ -75,9 +77,7 @@ export default withApiHandler(
     const response = await getExecutiveProposal(proposalId, network);
 
     if (!response) {
-      return res.status(404).json({
-        error: 'Not found'
-      });
+      throw new ApiError(`GET /api/executive/${proposalId}`, 404, 'Proposal not found');
     }
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

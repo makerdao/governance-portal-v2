@@ -28,7 +28,7 @@ export async function setAccount(account: TestAccount, cb: () => void) {
   cy.window().then(win => {
     if (!('setAccount' in win)) return;
     (win as any).setAccount(account.address, account.key);
-    cy.get('[data-testid="active-network-name"]').contains(/goerlifork/i);
+    cy.get('[data-testid="active-network-name"]').contains(/GoerliFork/i);
     cb();
   });
 }
@@ -38,7 +38,19 @@ export function closeModal() {
 }
 
 // Fork to a new block
-export function forkNetwork(block) {
-  // Must refund accounts after forking
-  cy.exec(`npx hardhat fork --network localhost --block ${block}`).exec('yarn fund');
+export function forkNetwork() {
+  cy.exec('npx hardhat run scripts/forkGoerliNetwork.js --network goerli')
+    // Must refund accounts after forking
+    .exec('yarn fund');
+  cy.exec('npx hardhat run scripts/forkarbTestnetNetwork.js --network arbTestnet');
+}
+
+export function fundAccounts(): void {
+  cy.exec('yarn fund');
+}
+
+export function resetDatabase(): void {
+  cy.exec('docker exec postgres-vulcan2x-arbitrum pg_restore -U user -d database gpdb.tar -c').exec(
+    'docker restart spock-test-container'
+  );
 }

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import ErrorPage from 'next/error';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
+import ErrorPage from 'modules/app/components/ErrorPage';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge } from 'theme-ui';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -16,7 +16,6 @@ import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -27,7 +26,6 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
@@ -41,6 +39,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
+import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   proposal: Proposal;
@@ -163,35 +162,52 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {proposal.title ? proposal.title : proposal.address}
             </Heading>
-            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', mx: [3, 4] }}>
-              {isHat && proposal.address !== ZERO_ADDRESS ? (
-                // TODO this should be made the primary badge component in our theme
-                <Box
+            <Flex>
+              <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', ml: [3, 4] }}>
+                {isHat && proposal.address !== ZERO_ADDRESS ? (
+                  // TODO this should be made the primary badge component in our theme
+                  <Box
+                    sx={{
+                      borderRadius: '12px',
+                      padding: '4px 8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'tagColorThree',
+                      backgroundColor: 'tagColorThreeBg',
+                      my: 2
+                    }}
+                  >
+                    <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
+                  </Box>
+                ) : null}
+              </Flex>
+
+              {hasVotedFor && (
+                <Badge
+                  variant="primary"
                   sx={{
-                    borderRadius: '12px',
-                    padding: '4px 8px',
-                    display: 'flex',
+                    color: 'primary',
+                    borderColor: 'primary',
+                    textTransform: 'uppercase',
+                    display: 'inline-flex',
                     alignItems: 'center',
-                    color: 'tagColorThree',
-                    backgroundColor: 'tagColorThreeBg',
-                    my: 2
+                    m: 1,
+                    border: 'none'
                   }}
                 >
-                  <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
-                </Box>
-              ) : null}
+                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                    <Icon name="verified" size={3} />
+                  </Flex>
+                  Your Vote
+                </Badge>
+              )}
             </Flex>
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
-                  <ExternalLink
-                    title="View on etherescan"
-                    href={getEtherscanLink(network, proposal.address, 'address')}
-                  >
-                    <Text sx={{ fontSize: [2, 5] }}>
-                      {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
-                    </Text>
-                  </ExternalLink>
+                  <Box sx={{ fontSize: [2, 5] }}>
+                    <EtherscanLink hash={proposal.address} type="address" network={network} showAddress />
+                  </Box>
                 }
                 label="Spell Address"
               />
@@ -353,7 +369,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                               sx={{
                                 color: 'accentBlue',
                                 fontSize: 2,
-                                ':hover': { color: 'blueLinkHover' }
+                                ':hover': { color: 'accentBlueEmphasis' }
                               }}
                             >
                               <AddressIconBox
@@ -423,16 +439,18 @@ export default function ProposalPage({
 
   if (error || (isDefaultNetwork(network) && !prefetchedProposal?.key)) {
     return (
-      <ErrorPage
-        statusCode={404}
-        title="Executive proposal either does not exist, or could not be fetched at this time"
-      />
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage
+          statusCode={404}
+          title="Executive proposal either does not exist, or could not be fetched at this time"
+        />
+      </PrimaryLayout>
     );
   }
 
   if (!isDefaultNetwork(network) && !_proposal)
     return (
-      <PrimaryLayout>
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
         <p>Loading…</p>
       </PrimaryLayout>
     );

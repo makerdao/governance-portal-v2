@@ -27,7 +27,7 @@ describe('/polling create page', async () => {
       cy.contains('Validate').click();
 
       // Wait for the poll data to load
-      cy.get('h2').contains('Add the Aave Direct Deposit DAI Module (D3M) - October 11, 2021');
+      cy.get('div').contains('Add the Aave Direct Deposit DAI Module (D3M) - October 11, 2021');
 
       cy.get('[data-testid="button-create-poll"]').should('not.be.disabled');
     });

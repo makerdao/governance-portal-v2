@@ -19,6 +19,7 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { StatusText } from 'modules/app/components/StatusText';
+import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 type Props = {
   proposal: Proposal;
@@ -56,6 +57,8 @@ export default function ExecutiveOverviewCard({
   }
 
   const canVote = !!account;
+
+  const { isDelegateContractExpired } = useMigrationStatus();
 
   return (
     <Card
@@ -142,7 +145,10 @@ export default function ExecutiveOverviewCard({
                 <Button
                   variant="primaryOutline"
                   sx={{ width: 122 }}
-                  disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+                  disabled={
+                    (hasVotedFor && votedProposals && votedProposals.length === 1) ||
+                    isDelegateContractExpired
+                  }
                   onClick={ev => {
                     trackButtonClick('openExecVoteModal');
                     setVoting(true);
@@ -150,7 +156,7 @@ export default function ExecutiveOverviewCard({
                   }}
                   data-testid="vote-button-exec-overview-card"
                 >
-                  Vote
+                  {'Vote'}
                 </Button>
               )}
               {hasVotedFor && (

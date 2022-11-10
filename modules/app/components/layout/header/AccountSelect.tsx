@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
 import useTransactionStore from 'modules/web3/stores/transactions';
-import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
@@ -21,6 +18,7 @@ import { isSupportedChain } from 'modules/web3/helpers/chain';
 import { getIsMetaMask } from 'modules/web3/helpers/getIsMetaMask';
 import logger from 'lib/logger';
 import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
+import { DialogContent, DialogOverlay } from '../../Dialog';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -69,9 +67,10 @@ const AccountSelect = (): React.ReactElement => {
 
   // Handles the logic when clicking on a connector
   const onClickConnection = async (connectionType: ConnectionType, name: WalletName) => {
-    const connection = getConnection(connectionType);
     setError(null);
     try {
+      const connection = getConnection(connectionType);
+
       setLoadingConnectors({
         [name]: true
       });
@@ -110,7 +109,6 @@ const AccountSelect = (): React.ReactElement => {
     }
   }, [chainId]);
 
-  const bpi = useBreakpointIndex();
   const isMetaMask = getIsMetaMask();
 
   const disconnect = () => {
@@ -128,7 +126,7 @@ const AccountSelect = (): React.ReactElement => {
       sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}
     >
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={SUPPORTED_WALLETS[connectionName].name} />
+        <Icon name={SUPPORTED_WALLETS[connectionName].name} color="text" />
         <Text sx={{ ml: 3 }}>{SUPPORTED_WALLETS[connectionName].name}</Text>
       </Flex>
       <Button
@@ -174,14 +172,7 @@ const AccountSelect = (): React.ReactElement => {
       />
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
-        <DialogContent
-          aria-label="Change Wallet"
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
-          }
-        >
+        <DialogContent aria-label="Change Wallet">
           {changeWallet ? (
             <>
               <BackButton onClick={() => setChangeWallet(false)} />
@@ -195,9 +186,7 @@ const AccountSelect = (): React.ReactElement => {
           ) : (
             <>
               <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3, mt: 1 }}>
-                <Text variant="microHeading" color="onBackgroundAlt">
-                  {address ? 'Account' : 'Select a Wallet'}
-                </Text>
+                <Text variant="microHeading">{address ? 'Account' : 'Select a Wallet'}</Text>
                 <Close aria-label="close" sx={closeButtonStyle} onClick={close} />
               </Flex>
               {address ? (

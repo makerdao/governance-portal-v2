@@ -10,19 +10,13 @@ type LockedMkrData = {
   mutate: () => void;
 };
 
-export const useLockedMkr = (
-  address?: string,
-  voteProxyAddress?: string | null,
-  voteDelegateAddress?: string | null
-): LockedMkrData => {
+export const useLockedMkr = (address?: string): LockedMkrData => {
   const { chief } = useContracts();
 
-  const addressToCache = voteProxyAddress && !voteDelegateAddress ? voteProxyAddress : address;
-
   const { data, error, mutate } = useSWR(
-    addressToCache ? `${chief.address}/user/mkr-locked${addressToCache}` : null,
+    address ? `${chief.address}/user/mkr-locked${address}` : null,
     async () => {
-      return addressToCache ? await getChiefDeposits(addressToCache, chief) : undefined;
+      return address ? await getChiefDeposits(address, chief) : undefined;
     },
     {
       revalidateOnFocus: false,
