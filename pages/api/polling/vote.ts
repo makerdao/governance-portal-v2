@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { ethers } from 'ethers';
-import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
@@ -42,6 +41,7 @@ export const API_VOTE_ERRORS = {
 };
 
 import { ApiError } from 'modules/app/api/ApiError';
+import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 async function postErrorInDiscord(error: string, body: any, type = 'error') {
   // Post on discord
@@ -141,11 +141,14 @@ export default withApiHandler(
     }
 
     //verify that signature and address correspond
-    const recovered = recoverTypedSignature({
-      data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
-      signature,
-      version: SignTypedDataVersion.V4
-    });
+    const typedData = getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network);
+    const recovered = verifyTypedSignature(
+      typedData.domain,
+      typedData.types,
+      typedData.message,
+      signature
+    );
+
     if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
       await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });
     }

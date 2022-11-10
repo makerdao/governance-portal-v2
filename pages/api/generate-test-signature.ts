@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
-import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { ApiError } from 'modules/app/api/ApiError';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ethers } from 'ethers';
@@ -29,8 +28,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     nonce,
     expiry
   };
-  const data = getTypedBallotData(signatureValues, network);
-  const version = SignTypedDataVersion.V4;
-  const signature = await signTypedData({ privateKey, data, version });
+  const typedData = getTypedBallotData(signatureValues, network);
+
+  const signature = await wallet._signTypedData(typedData.domain, typedData.types, typedData.message);
   res.status(200).json({ signature, voter, nonce, expiry, pollIds, optionIds, network });
 });

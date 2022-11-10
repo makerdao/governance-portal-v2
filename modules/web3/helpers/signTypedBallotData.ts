@@ -18,24 +18,6 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
   const chainId = networkNameToChainId(networkForSignature);
   return {
     types: {
-      EIP712Domain: [
-        {
-          name: 'name',
-          type: 'string'
-        },
-        {
-          name: 'version',
-          type: 'string'
-        },
-        {
-          name: 'chainId',
-          type: 'uint256'
-        },
-        {
-          name: 'verifyingContract',
-          type: 'address'
-        }
-      ],
       Vote: [
         {
           name: 'voter',
@@ -75,7 +57,8 @@ export async function signTypedBallotData(
   provider: JsonRpcProvider | Web3Provider,
   network: SupportedNetworks
 ): Promise<string> {
-  const typedData = JSON.stringify(getTypedBallotData(message, network));
+  const signer = provider.getSigner();
+  const typedData = getTypedBallotData(message, network);
 
-  return provider.send('eth_signTypedData_v4', [message.voter, typedData]);
+  return signer._signTypedData(typedData.domain, typedData.types, typedData.message);
 }
