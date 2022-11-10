@@ -41,6 +41,7 @@ export const API_VOTE_ERRORS = {
 };
 
 import { ApiError } from 'modules/app/api/ApiError';
+import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 async function postErrorInDiscord(error: string, body: any, type = 'error') {
   // Post on discord
@@ -141,7 +142,7 @@ export default withApiHandler(
 
     //verify that signature and address correspond
     const typedData = getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network);
-    const recovered = ethers.utils.verifyTypedData(
+    const recovered = verifyTypedSignature(
       typedData.domain,
       typedData.types,
       typedData.message,
