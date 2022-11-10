@@ -59,6 +59,11 @@ yarn dev
 
 At this point, you should be able to access the application by going to the address `http://localhost:3000` in your browser.
 
+### Upgrading
+
+> **Warning**
+> The method `_signTypedData` from ethers is an experimental feature and will be renamed to `signTypedData`. Make sure to keep the version of ethers fixed or rename the method once is available.
+
 ### Releasing
 
 To do releases of the governance portal, please use `npm version minor` or `npm version patch` to bump the version in the package.json and create a tag.
