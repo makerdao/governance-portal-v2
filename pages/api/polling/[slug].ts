@@ -105,7 +105,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const slug = req.query.slug as string;
 
   let poll = await fetchPollBySlug(slug, network);
-  console.log(poll);
 
   if (!poll && !isNaN(parseInt(slug))) {
     poll = await fetchPollById(parseInt(slug), network);

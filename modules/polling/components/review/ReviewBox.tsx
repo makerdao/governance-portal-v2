@@ -451,6 +451,7 @@ export default function ReviewBox({
               mb={4}
               onClick={() => {
                 setStep('initial');
+                setCommentsLoading(false);
               }}
               variant="textual"
               sx={{ color: 'secondaryEmphasis', textAlign: 'center', fontSize: 12 }}
