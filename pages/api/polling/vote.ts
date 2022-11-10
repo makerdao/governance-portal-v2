@@ -214,7 +214,7 @@ export default withApiHandler(
 
     const r = signature.slice(0, 66);
     const s = '0x' + signature.slice(66, 130);
-    const v = Number('0x' + signature.slice(130, 132));
+    const v = Number('0x1B');
 
     const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
