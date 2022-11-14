@@ -81,6 +81,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               fields={[
                 'polling contract v2',
                 'polling contract v1',
+                'arbitrum polling contract',
                 'savings rate',
                 'total dai',
                 'debt ceiling',
