@@ -31,7 +31,15 @@ jobs:
       ALCHEMY_GOERLI_API_KEY: ${{ secrets.ALCHEMY_GOERLI_API_KEY }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY }}
-      
+        # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: tylerya/govpolldb-postgres:latest
+        ports:
+          # Opens tcp port 6379 on the host and service container
+          - 5432:5432
     steps:
       - name: Checkout
         uses: actions/checkout@v3
