@@ -3,13 +3,13 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex } from 'cypress/support/constants/testaccounts';
-import { forkNetwork, setAccount, visitPage } from '../support/commons';
+import { forkNetwork, resetDatabase, setAccount, visitPage } from '../support/commons';
 
 describe('Account Page', async () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
+    forkNetwork();
+    resetDatabase();
   });
 
   it('should navigate to the account page and be able to create a delegate contract', () => {
@@ -38,11 +38,12 @@ describe('Account Page', async () => {
       // Find the text of delegated MKR
       cy.contains('Total MKR Delegated').should('be.visible');
 
-      const text = await new Cypress.Promise<string>(resolve => {
-        cy.get('[data-testid="vote-delegate-address"]')
-          .invoke('text')
-          .then(txt => resolve(txt.toString()));
-      });
+      // This data-testid no longer exists so I'm not sure if this assertion is still relevant, prune later.
+      // const text = await new Cypress.Promise<string>(resolve => {
+      //   cy.get('[data-testid="vote-delegate-address"]')
+      //     .invoke('text')
+      //     .then(txt => resolve(txt.toString()));
+      // });
 
       // We can return "text" after creating the delegate through the ui
     });
@@ -62,7 +63,7 @@ describe('Account Page', async () => {
       cy.get('[data-testid="deposit-approve-button"]').click();
 
       // Deposit
-      cy.contains(/Deposit into voting contract/).should('be.visible');
+      cy.contains('Deposit into voting contract').should('be.visible');
 
       // Deposit
       cy.get('[data-testid="mkr-input"]').type('0.01');
