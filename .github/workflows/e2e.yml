@@ -28,7 +28,7 @@ jobs:
       ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       USE_CACHE: true
-      ALCHEMY_GOERLI_API_KEY: ${{ secrets.ALCHEMY_GOERLI_API_KEY }}
+      ALCHEMY_GOERLI_API_KEY_HH: ${{ secrets.ALCHEMY_GOERLI_API_KEY_HH }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY }}
         # Service containers to run with `runner-job`
