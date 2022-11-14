@@ -66,7 +66,9 @@ export default function ReviewBox({
   const cacheExpired =
     precheckData?.recentlyUsedGaslessVoting &&
     Date.now() - parseInt(precheckData?.recentlyUsedGaslessVoting) > GASLESS_RATE_LIMIT_IN_MS;
-  const relayFunded = parseEther(precheckData?.relayBalance || '0').gt(0);
+  const relayFunded =
+    parseEther(precheckData?.relayBalance || '0').gt(0) &&
+    !(precheckData?.gaslessDisabled?.toString().toLowerCase() === 'true');
 
   const validationPassed =
     precheckData?.hasMkrRequired &&
@@ -164,10 +166,16 @@ export default function ReviewBox({
           )}
 
           <Box>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
-              <LocalIcon name="sparkles" color="primary" size={3} />{' '}
-              <Text sx={{ ml: 2 }}>Poll voting is now gasless!</Text>
-            </Flex>
+            <ExternalLink
+              href="https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting"
+              title="Learn more about gasless voting"
+              styles={{ color: 'text' }}
+            >
+              <Flex sx={{ alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+                <LocalIcon name="sparkles" color="primary" size={3} />{' '}
+                <Text sx={{ ml: 2 }}>Poll voting is now gasless!</Text>
+              </Flex>
+            </ExternalLink>
           </Box>
         </ActivePollsBox>
       )}
@@ -212,7 +220,10 @@ export default function ReviewBox({
                     <Text sx={{ ml: 2 }}>The transaction fee is covered by Maker.</Text>
                   </Flex>
                   <Box>
-                    <ExternalLink title="Learn more" href={'https://manual.makerdao.com/'}>
+                    <ExternalLink
+                      title="Learn more"
+                      href={'https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting'}
+                    >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
                         <Icon ml={2} name="arrowTopRight" size={2} />
@@ -440,6 +451,7 @@ export default function ReviewBox({
               mb={4}
               onClick={() => {
                 setStep('initial');
+                setCommentsLoading(false);
               }}
               variant="textual"
               sx={{ color: 'secondaryEmphasis', textAlign: 'center', fontSize: 12 }}
@@ -460,6 +472,35 @@ export default function ReviewBox({
             sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
           >
             Sending Ballot to Relayer
+          </Text>
+        </Card>
+      )}
+
+      {ballotStep === 'in-relayer-queue' && (
+        <Card variant="compact" p={3}>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            <TxIndicators.Pending sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+          >
+            Transaction in Relayer Queue
+          </Text>
+        </Card>
+      )}
+
+      {ballotStep === 'stuck-in-queue' && (
+        <Card variant="compact" p={3}>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            <TxIndicators.Pending sx={{ width: 6 }} />
+          </Flex>
+          <Text
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+          >
+            Transaction is taking longer than expected. Please reach out on Discord for support or try again
+            later.
           </Text>
         </Card>
       )}
@@ -497,7 +538,11 @@ export default function ReviewBox({
           >
             Transaction Failed.
           </Text>
-          <Text mt={3} as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+          <Text
+            mt={3}
+            as="p"
+            sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis', wordBreak: 'break-word' }}
+          >
             {displayError} Please try again.
           </Text>
           <Flex sx={{ justifyContent: 'center' }}>

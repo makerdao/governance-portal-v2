@@ -21,6 +21,7 @@ import { ContractTransaction } from 'ethers';
 import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
 import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContractReadOnly';
+import { isBefore, sub } from 'date-fns';
 
 type BallotSteps =
   | 'initial'
@@ -28,6 +29,8 @@ type BallotSteps =
   | 'submitting'
   | 'signing-comments'
   | 'awaiting-relayer'
+  | 'in-relayer-queue'
+  | 'stuck-in-queue'
   | 'tx-pending'
   | 'tx-error';
 type BallotSubmissionMethod = 'standard' | 'gasless';
@@ -38,6 +41,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 import { parseTxError } from 'modules/web3/helpers/errors';
+import { backoffRetry } from 'lib/utils';
+import { isAfter } from 'date-fns';
 
 interface ContextProps {
   ballot: Ballot;
@@ -400,10 +405,34 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
           body: JSON.stringify({ ...signatureValues, signature, network })
         });
 
+        setStep('in-relayer-queue');
+
         const gaslessProvider = getGaslessProvider(network);
 
         const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
         trackPollVote(voteTxCreator, getGaslessNetwork(network));
+
+        if (gaslessTx.status !== 'mined') {
+          const url = `/api/polling/relayer-tx?network=${network}&txId=${gaslessTx.transactionId}`;
+          backoffRetry(
+            10,
+            () =>
+              fetchJson(url).then(tx => {
+                // gaslessTx.status can be: 'pending' | 'sent' | 'submitted' | 'inmempool' | 'mined' | 'confirmed' | 'failed'
+                if (tx.status === 'failed') {
+                  logger.error('Gasless vote failed', tx);
+                  // check if failed
+                  setStep('tx-error');
+                } else if (isBefore(new Date(gaslessTx.sentAt), sub(new Date(), { seconds: 30 }))) {
+                  // if 30 seconds passed, let user know it might be stuck in queue
+                  setStep('stuck-in-queue');
+                } else {
+                  throw new Error('Not mined');
+                }
+              }),
+            5000
+          );
+        }
       } catch (error) {
         const errorMessage = error.message ? error.message : error;
         toast.error(errorMessage);

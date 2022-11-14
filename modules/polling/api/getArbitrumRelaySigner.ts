@@ -8,7 +8,7 @@ export const getArbitrumRelaySigner = (network: SupportedNetworks): DefenderRela
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
   const provider = new DefenderRelayProvider(relayerCredentials[sdkNetwork]);
   const signer = new DefenderRelaySigner(relayerCredentials[sdkNetwork], provider, {
-    speed: 'fast'
+    speed: 'fastest' // 'safeLow' | 'average' | 'fast' | 'fastest'
   });
 
   return signer;

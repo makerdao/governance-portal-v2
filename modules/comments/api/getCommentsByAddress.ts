@@ -30,10 +30,8 @@ export async function getCommentsByAddress(
     .find({ voterAddress: { $in: addresses }, network: { $in: [network, gaslessNetwork] } })
     .sort({ date: -1 })
     .toArray();
-
   const provider = await getProvider(network);
   const gaslessProvider = await getGaslessProvider(network);
-  const providers = { [network]: provider, [gaslessNetwork]: gaslessProvider };
 
   const comments: CommentsAPIResponseItem[] = await Promise.all(
     commentsFromDB.map(async comment => {
@@ -42,7 +40,7 @@ export async function getCommentsByAddress(
       // verify tx ownership
       const { completed, isValid } = await getCommentTransactionStatus(
         network,
-        providers[comment.network],
+        comment.gaslessNetwork ? gaslessProvider : provider,
         comment
       );
 
@@ -62,6 +60,6 @@ export async function getCommentsByAddress(
   );
 
   return {
-    comments
+    comments: comments.filter(i => i.isValid)
   };
 }

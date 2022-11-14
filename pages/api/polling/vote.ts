@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { ethers } from 'ethers';
-import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
@@ -37,10 +36,12 @@ export const API_VOTE_ERRORS = {
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes.',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature.',
   LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
-  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.'
+  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.',
+  RELAYER_ERROR: 'Relayer transaction creation failed.'
 };
 
 import { ApiError } from 'modules/app/api/ApiError';
+import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 async function postErrorInDiscord(error: string, body: any, type = 'error') {
   // Post on discord
@@ -140,11 +141,8 @@ export default withApiHandler(
     }
 
     //verify that signature and address correspond
-    const recovered = recoverTypedSignature({
-      data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
-      signature,
-      version: SignTypedDataVersion.V4
-    });
+    const typedData = getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network);
+    const recovered = verifyTypedSignature(typedData.domain, typedData.types, typedData.message, signature);
 
     if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
       await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });
@@ -156,7 +154,8 @@ export default withApiHandler(
       const hasMkrRequired = await hasMkrRequiredVotingWeight(
         voter,
         network,
-        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
+        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING,
+        true
       );
 
       if (!hasMkrRequired) {
@@ -210,16 +209,27 @@ export default withApiHandler(
     } else {
       await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
     }
-
-    const r = signature.slice(0, 66);
-    const s = '0x' + signature.slice(66, 130);
-    const v = Number('0x' + signature.slice(130, 132));
+    const { r, s, v } = ethers.utils.splitSignature(signature);
 
     const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
-    const tx = await pollingContract[
-      'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'
-    ](voter, nonce, expiry, pollIds, optionIds, v, r, s);
+    let tx;
+    try {
+      tx = await pollingContract['vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'](
+        voter,
+        nonce,
+        expiry,
+        pollIds,
+        optionIds,
+        v,
+        r,
+        s
+      );
+    } catch (err) {
+      //don't rate limit if tx didn't succeed
+      cacheSet(cacheKey, '', network, GASLESS_RATE_LIMIT_IN_MS);
+      await throwError({ error: API_VOTE_ERRORS.RELAYER_ERROR, body: req.body, skipDiscord });
+    }
 
     return res.status(200).json(tx);
   },

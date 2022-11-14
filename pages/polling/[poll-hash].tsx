@@ -374,7 +374,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
   if (!poll && (error || (isDefaultNetwork(network) && !isFallback && !prefetchedPoll?.multiHash))) {
     return (
-      <PrimaryLayout>
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
         <ErrorPage
           statusCode={404}
           title="Poll either does not exist, or could not be fetched at this time"
@@ -385,7 +385,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
   if (isFallback || (!isDefaultNetwork(network) && !_poll))
     return (
-      <PrimaryLayout>
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
         <p>Loading…</p>
       </PrimaryLayout>
     );

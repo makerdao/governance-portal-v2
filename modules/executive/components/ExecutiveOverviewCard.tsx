@@ -156,7 +156,7 @@ export default function ExecutiveOverviewCard({
                   }}
                   data-testid="vote-button-exec-overview-card"
                 >
-                  {isDelegateContractExpired ? 'Delegate contract expired' : 'Vote'}
+                  {'Vote'}
                 </Button>
               )}
               {hasVotedFor && (

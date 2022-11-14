@@ -59,6 +59,11 @@ yarn dev
 
 At this point, you should be able to access the application by going to the address `http://localhost:3000` in your browser.
 
+### Upgrading
+
+> **Warning**
+> The method `_signTypedData` from ethers is an experimental feature and will be renamed to `signTypedData`. Make sure to keep the version of ethers fixed or rename the method once is available.
+
 ### Releasing
 
 To do releases of the governance portal, please use `npm version minor` or `npm version patch` to bump the version in the package.json and create a tag.
@@ -103,6 +108,8 @@ The following configuration values can be added to the `.env` file:
 - Set `MONGODB_COMMENTS_DB` the MongoDB db name to be used for vote comments
 
 - Set `USE_CACHE` to true if you want to use cache, if `REDIS_URL` is set it will use REDIS otherwise filesystem cache
+
+- Set `GASLESS_DISABLED` to `true` to disable gasless voting in UI (pre-check endpoint will fail)
 
 #### Optional (DUX-specific config, no performance improvements):
 
@@ -196,9 +203,49 @@ For more information about the fund process, take a look at `/scripts/setup.js`
 
 Please refer to: https://docs.cypress.io/guides/references/best-practices and check current test examples under the cypress folder.
 
+At the beginning of each test or describe-block, we run two commands to fork the hardhat networks & reset the database. This ensures that the tests are run from a clean slate and using the same blockchain and database state beforehand. Add the functions into a `before` or `beforeEach` block like this:
+
+```js
+before(() => {
+  forkNetwork(); // Restarts the blockchain & re-funds all the accounts
+  resetDatabase(); // Wipes the db and starts over from its initial state
+});
+```
+
 **Windows support**
 
 If you are using Windows and WSL you will need to install XLaunch to be able to launch a client for the UI, remember to disable access control.
+
+#### Adding Data to the DB for Tests
+
+The docker image of the gov polling db starts out with a very minimal amount of data (to conserve space), but you may require some extra data for tests. For example, you may want to add some additional polls, or add some delegates. Most of the tables in the DB have primary key constraints to other tables, which makes manually adding data via an `UPDATE` query time consuming and unstable. The easiest way to add data in a safe way is to have the gov polling db add this data on its own, the way it's done in production. The process works like this:
+
+1. Spock adds block information (number & hash) to a row in a database.
+2. Spock extracts the transactions from the block and scans these for specific events.
+3. If an event is found, the corresponding event transformer is run to handle the event data, inserting the data into tables.
+
+So, if we want to add a specific poll, first we locate the block in which the event was emitted (use Etherscan). We add the blocknumber to the list of blocknumbers in the `docker-compose.yml` file. Adding it to the `SEED_BLOCKS` environmental var (see example below).
+
+```yml
+spock:
+    image: makerdaodux/govpolldb-app:latest
+    container_name: spock-test-container
+    command: ['yarn', 'start-all']
+    environment:
+        - SEED_BLOCKS=5815619,6495082
+    depends_on:
+        postgres:
+            condition: service_healthy
+    ports: - '3001:3001'
+```
+
+Now, when the docker image is started or restarted, spock looks for the environmental variable and parses the block numbers that have been added. It then runs the process described above on each block, adding any events it finds to the respective tables.
+
+NB: This data will not be persisted in the docker image when the image is shut down using the `docker-compose stop` command, but it will be recreated every time the ETL service is restarted, as long as it remains part of the `SEED_BLOCKS` env var.
+
+**Future Enhancements:**
+
+In time, this list of blocks will grow too large to maintain in this file. We can either permanently update the image with the data from these blocks, or move this list to an external file and load it into the env var that way.
 
 ### CI/CD
 

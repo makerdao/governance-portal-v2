@@ -11,18 +11,18 @@ import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { parseUnits } from 'ethers/lib/utils';
-import { recoverTypedSignature } from '@metamask/eth-sig-util';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 jest.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
 jest.mock('modules/mkr/helpers/getMKRVotingWeight');
 jest.mock('modules/cache/cache');
 jest.mock('modules/polling/api/fetchPolls');
-jest.mock('@metamask/eth-sig-util');
+jest.mock('modules/web3/helpers/verifyTypedSignature');
 jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 jest.mock('modules/polling/api/fetchAddressPollVoteHistory');
 jest.mock('modules/db/helpers/connectToDatabase');
@@ -210,7 +210,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -247,7 +247,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -286,7 +286,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
 
     await voteAPIHandler(req, res);
 
@@ -319,7 +319,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
 
-    (recoverTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
 
     const { req, res } = mockRequestResponse('POST', {
       voter: '0xc0ffee254729296a45a3885639AC7E10F9d54979',

@@ -1,6 +1,6 @@
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
-import { ThemeProvider, Flex } from 'theme-ui';
+import { ThemeProvider, Flex, Box } from 'theme-ui';
 import { Global } from '@emotion/core';
 import { ethers } from 'ethers';
 import '@reach/dialog/styles.css';
@@ -27,6 +27,7 @@ import bannerContent from 'modules/home/data/bannerContent.json';
 import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
 import { Web3Provider } from 'modules/web3/components/Web3Provider';
 import GaslessBanner from 'modules/polling/components/GaslessBanner';
+import React, { useMemo } from 'react';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -35,7 +36,15 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
-
+  const banners = useMemo(() => {
+    return (
+      <React.Fragment>
+        {activeBannerContent && <Banner content={activeBannerContent.content} />}
+        <MigrationBanner />
+        <GaslessBanner />
+      </React.Fragment>
+    );
+  }, []);
   return (
     <Web3Provider>
       {/* @ts-ignore */}
@@ -77,19 +86,22 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                       }
                     }}
                   />
-                  {activeBannerContent && <Banner content={activeBannerContent.content} />}
-                  <MigrationBanner />
-                  <GaslessBanner />
+
                   <Flex
                     sx={{
                       flexDirection: 'column',
                       variant: 'layout.root',
-                      px: [3, 4],
+
+                      paddingTop: 5,
                       overflowX: 'hidden'
                     }}
                   >
+                    {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
+                    <Box sx={{ px: [3, 4] }}>
+                      <Component {...pageProps} />
+                    </Box>
                     <Header />
-                    <Component {...pageProps} />
+
                     <Cookies />
                   </Flex>
                 </SWRConfig>

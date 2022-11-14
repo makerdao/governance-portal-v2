@@ -1,10 +1,7 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.9.3-gasless",
-  "jest": {
-    "testTimeout": 7000
-  },
+  "version": "0.10.0",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -17,8 +14,8 @@
     "export": "next export",
     "test": "jest --config=jest.config.js --runInBand --watch",
     "test:ci": "jest --runInBand --ci --coverage --detectOpenHandles --forceExit",
-    "e2e": "npm run fund && start-server-and-test dev http://localhost:3000 cypress",
-    "e2e:headless": "npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
+    "e2e": "APP_ENV=test start-server-and-test dev http://localhost:3000 cypress",
+    "e2e:headless": "APP_ENV=test npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
     "fund": "npx hardhat run scripts/setup.js --network goerli",
@@ -43,10 +40,9 @@
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/i18n-helper": "^0.1.8",
-    "@metamask/eth-sig-util": "^4.0.1",
     "@octokit/core": "^4.0.5",
     "@reach/dialog": "^0.16.2",
-    "@reach/listbox": "^0.16.2",
+    "@reach/listbox": "^0.18.0",
     "@reach/menu-button": "^0.16.2",
     "@reach/tabs": "^0.10.3",
     "@reach/tooltip": "^0.16.2",
@@ -69,7 +65,7 @@
     "date-fns": "^2.24.0",
     "date-fns-tz": "^1.1.6",
     "defender-relay-client": "^1.23.0",
-    "ethers": "^5.7.0",
+    "ethers": "5.7.0",
     "graphql-request": "^4.0.0",
     "gray-matter": "^4.0.2",
     "ioredis": "^5.0.6",

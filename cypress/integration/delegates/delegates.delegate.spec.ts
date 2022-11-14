@@ -6,10 +6,14 @@
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
-import { closeModal, forkNetwork, setAccount, visitPage } from '../../support/commons';
+import { closeModal, forkNetwork, resetDatabase, setAccount, visitPage } from '../../support/commons';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
+  before(() => {
+    forkNetwork();
+    resetDatabase();
+  });
   // this remains in effect for the remainder of the tests in the same spec file.
   Cypress.config({ defaultCommandTimeout: 90000 });
 
