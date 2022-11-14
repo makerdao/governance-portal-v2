@@ -286,7 +286,7 @@ export default function ReviewBox({
                     <Text>You pay the transaction fee.</Text>
                   </Flex>
                   <Box>
-                    <ExternalLink title="View on etherscan" href={'vote.makerdao.com'}>
+                    <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
                         <Icon ml={2} name="arrowTopRight" size={2} />
