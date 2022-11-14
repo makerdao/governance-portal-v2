@@ -198,7 +198,7 @@ export default function DefaultVoteModalView({
       <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'onSecondary', fontSize: [3, 4] }}>
         You are voting for the following executive proposal:
       </Text>
-      <Box
+      <Flex
         sx={{
           mt: 2,
           p: 3,
@@ -206,14 +206,16 @@ export default function DefaultVoteModalView({
           mx: 3,
           backgroundColor: 'background',
           textAlign: 'center',
-          fontSize: [3, 4]
+          fontSize: [3, 4],
+          flexDirection: 'column',
+          alignItems: 'center'
         }}
       >
-        <Text as="p" sx={{ fontSize: [3, 4], fontWeight: 'bold' }}>
+        <Text as="p" sx={{ fontSize: [3, 4], fontWeight: 'bold', mb: 3 }}>
           {proposal ? proposal.title : 'Unknown Spell'}
         </Text>
         <EtherscanLink hash={spellAddress} type="address" network={network} showAddress />
-      </Box>
+      </Flex>
       <Grid
         columns={[1, 3, 3, 3]}
         gap={0}
