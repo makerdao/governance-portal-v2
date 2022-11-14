@@ -317,7 +317,10 @@ export default function ReviewBox({
                     <Text as="p" variant="caps">
                       Eligibility Criteria
                     </Text>
-                    <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
+                    <ExternalLink
+                      href="https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting/"
+                      title="Learn more"
+                    >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
                         Learn more
                         <Icon ml={2} name="arrowTopRight" size={2} />
