@@ -28,10 +28,10 @@ jobs:
       ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       USE_CACHE: true
-      ALCHEMY_GOERLI_API_KEY: ${{ secrets.ALCHEMY_GOERLI_API_KEY }}
+      ALCHEMY_GOERLI_API_KEY_HH: ${{ secrets.ALCHEMY_GOERLI_API_KEY_HH }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY }}
-      
+          
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -41,14 +41,14 @@ jobs:
         
       - name: start testchains
         run: yarn hardhat:gasless:config &
-        
+      
       - name: docker compose
         run: |
           LATEST_VERSION=v2.12.2
           sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           sudo docker-compose up &
-
+      
 
       ## Download prebuilt next data
       # - name: Download the build folders
@@ -64,7 +64,7 @@ jobs:
           install: false
           start: yarn start:ci
           ## command: yarn run e2e:ci
-          wait-on: 'http://localhost:3000, http://localhost:3001'
+          wait-on: 'http://localhost:3000, http://localhost:3001, http://localhost:8545, http://localhost:8546'
           wait-on-timeout: 120
           browser: chrome
           record: true
