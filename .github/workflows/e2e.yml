@@ -31,21 +31,6 @@ jobs:
       ALCHEMY_GOERLI_API_KEY_HH: ${{ secrets.ALCHEMY_GOERLI_API_KEY_HH }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY }}
       NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY: ${{ secrets.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY }}
-        # Service containers to run with `runner-job`
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: tylerya/govpolldb-postgres:latest
-        ports:
-          # Opens tcp port 5432 on the host and service container
-          - 5432:5432
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          POSTGRES_DB: database
           
     steps:
       - name: Checkout
@@ -53,6 +38,13 @@ jobs:
         
       - name: Install node packages
         run: yarn
+      
+      - name: docker compose
+        run: |
+          LATEST_VERSION=v2.12.2
+          sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          sudo docker-compose up &
         
       - name: start testchains
         run: yarn hardhat:gasless:config &
