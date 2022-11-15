@@ -46,12 +46,7 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: database
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready -p 5432 -h localhost -U user -d database
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          
     steps:
       - name: Checkout
         uses: actions/checkout@v3
