@@ -38,6 +38,9 @@ jobs:
         
       - name: Install node packages
         run: yarn
+        
+      - name: start testchains
+        run: yarn hardhat:gasless:config &
       
       - name: docker compose
         run: |
@@ -45,9 +48,7 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           sudo docker-compose up &
-        
-      - name: start testchains
-        run: yarn hardhat:gasless:config &
+      
 
       ## Download prebuilt next data
       # - name: Download the build folders
