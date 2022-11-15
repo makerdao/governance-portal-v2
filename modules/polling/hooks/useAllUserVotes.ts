@@ -12,10 +12,14 @@ type AllUserVotesResponse = {
 
 export const useAllUserVotes = (address?: string): AllUserVotesResponse => {
   const { network } = useWeb3();
+
+  // TODO: remove this mock pagination
+  const [first, offset] = [2, 0];
+  const queryVariables = { argAddress: address?.toLowerCase(), first, offset };
   const { data, error, mutate } = useSWR<PollTallyVote[]>(
     address ? `/user/voting-for/${address}` : null,
     () => {
-      return fetchAllCurrentVotes(address as string, network);
+      return fetchAllCurrentVotes(address as string, network, queryVariables);
     },
     { refreshInterval: 0 }
   );

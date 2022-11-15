@@ -10,7 +10,11 @@ export async function fetchAddressPollVoteHistory(
 ): Promise<PollVoteHistory[]> {
   // TODO: This is an innefective way to cross fetch titles and options. We should improve Spock DB to return the titles in the poll votes
   const pollsData = await getPolls({}, network);
-  const voteHistory = await fetchAllCurrentVotes(address, network);
+
+  // TODO: remove this mock pagination
+  const [first, offset] = [2, 0];
+  const queryVariables = { argAddress: address.toLowerCase(), first, offset };
+  const voteHistory = await fetchAllCurrentVotes(address, network, queryVariables);
   const items = await Promise.all(
     voteHistory.map(async (pollVote: PollTallyVote): Promise<PollVoteHistory | null> => {
       const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
