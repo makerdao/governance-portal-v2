@@ -14,7 +14,7 @@ export default function TooltipComponent({ children, label, ...props }): JSX.Ele
   return bpi === 0 ? (
     <Box onClick={() => setOpen(true)}>
       {children}
-      <DialogOverlay isOpen={isOpen} onDismiss={() => setOpen(false)} sx={{ zIndex: 1 }}>
+      <DialogOverlay isOpen={isOpen} onDismiss={() => setOpen(false)} sx={{ zIndex: 2 }}>
         <DialogContent sx={{ variant: 'dialog.mobile' }}>
           <Box {...props}>{label}</Box>
         </DialogContent>
