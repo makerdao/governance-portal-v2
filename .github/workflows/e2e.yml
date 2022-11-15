@@ -38,8 +38,20 @@ jobs:
         # Docker Hub image
         image: tylerya/govpolldb-postgres:latest
         ports:
-          # Opens tcp port 6379 on the host and service container
+          # Opens tcp port 5432 on the host and service container
           - 5432:5432
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: database
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready -p 5432 -h localhost -U user -d database
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v3
