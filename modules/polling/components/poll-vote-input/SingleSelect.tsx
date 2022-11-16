@@ -9,7 +9,6 @@ export default function SingleSelect({ poll, choice, setChoice }: Props): JSX.El
   const [defaultValue, setDefaultValue] = useState('default');
 
   useEffect(() => {
-    console.log(choice);
     setDefaultValue(choice ? choice.toString() : 'default');
   }, [choice]);
 
