@@ -59,7 +59,7 @@ export default function PollWinningOptionBox({
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {tally.totalMkrActiveParticipation > 0 ? (
+        {tally.totalMkrActiveParticipation > 0  || (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default)? (
           <>
             {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
 
