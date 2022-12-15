@@ -493,7 +493,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
   const MAX_PROPOSALS = 5;
-  const MAX_SLUG_LENGTH = 228;
+  const MAX_SLUG_LENGTH = 200;
 
   const paths = proposals
     .slice(0, MAX_PROPOSALS)
