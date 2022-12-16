@@ -26,6 +26,8 @@ import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migrat
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { SortDelegates } from '../types/sortDelegates';
+
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -188,7 +190,7 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
 // Returns a list of delegates, mixin onchain and repo information
 export async function fetchDelegates(
   network?: SupportedNetworks,
-  sortBy: 'mkr' | 'random' | 'delegators' | 'date' = 'random'
+  sortBy: SortDelegates = SortDelegates.random
 ): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
@@ -247,13 +249,13 @@ export async function fetchDelegates(
   );
 
   const sortedDelegates = delegates.sort((a, b) => {
-    if (sortBy === 'mkr') {
+    if (sortBy === SortDelegates.mkr) {
       const bSupport = b.mkrDelegated ? b.mkrDelegated : 0;
       const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
       return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
-    } else if (sortBy === 'date') {
+    } else if (sortBy === SortDelegates.date) {
       return a.expirationDate > b.expirationDate ? -1 : 1;
-    } else if (sortBy === 'delegators') {
+    } else if (sortBy === SortDelegates.delegators) {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
       const activeDelegatorsA = delegationHistoryA.filter(({ lockAmount }) =>
