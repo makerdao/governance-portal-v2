@@ -21,7 +21,7 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
+// import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
@@ -134,7 +134,7 @@ const Header = (): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
   const { network } = useWeb3();
-  const { data: gas } = useGasPrice({ network });
+  // const { data: gas } = useGasPrice({ network });
   const { cache } = useSWRConfig();
   const [mode, setMode] = useColorMode();
 
@@ -276,7 +276,7 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {bpi > 1 && account && network === SupportedNetworks.MAINNET && (
+        {/* {bpi > 1 && account && network === SupportedNetworks.MAINNET && (
           <ExternalLink
             title="Ethereum Gas Price"
             href={GASNOW_URL}
@@ -297,7 +297,7 @@ const Header = (): JSX.Element => {
               <Icon name="gas" size={3} />
             </Flex>
           </ExternalLink>
-        )}
+        )} */}
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {bpi > 1 && (
           <Flex mr={3}>
@@ -323,7 +323,7 @@ const Header = (): JSX.Element => {
           <MobileMenu
             hide={() => setShowMobileMenu(false)}
             router={router}
-            gas={gas}
+            // gas={gas}
             onToggleTheme={onToggleTheme}
             mode={mode}
             network={network}
@@ -339,7 +339,7 @@ const Header = (): JSX.Element => {
   );
 };
 
-const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
+const MobileMenu = ({ hide, router, /* gas, */ onToggleTheme, mode, network }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -418,7 +418,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
             <InternalLink href="/account" title="View account">
               <MenuItemContent icon="person" label="Account" />
             </InternalLink>
-            {network === SupportedNetworks.MAINNET && (
+            {/* {network === SupportedNetworks.MAINNET && (
               <ExternalLink
                 title="Ethereum Gas Price"
                 href={GASNOW_URL}
@@ -435,7 +435,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
                   }
                 />
               </ExternalLink>
-            )}
+            )} */}
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
