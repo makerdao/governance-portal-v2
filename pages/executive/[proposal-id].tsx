@@ -40,6 +40,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
 
 type Props = {
   proposal: Proposal;
@@ -469,6 +470,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
   const proposalId = (params || {})['proposal-id'] as string;
 
+  
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
@@ -492,9 +494,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
-  const MAX = 5;
+  const MAX_PROPOSALS = 5;
 
-  const paths = proposals.slice(0, MAX).map(proposal => `/executive/${proposal.key}`);
+  const paths = proposals
+    .slice(0, MAX_PROPOSALS)
+    .map(
+      proposal => `/executive/${trimProposalKey(proposal.key)}`
+    );
 
   return {
     paths,
