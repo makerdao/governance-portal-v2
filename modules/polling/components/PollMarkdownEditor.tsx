@@ -30,38 +30,32 @@ export function PollMarkdownEditor(): React.ReactElement {
     if (result.parsedData) {
       let victoryCondition = '';
       if (hasVictoryConditionApproval(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '
-Approval.';
+        victoryCondition += '\nApproval.';
       }
       if (hasVictoryConditionMajority(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += `
-Majority (${findVictoryCondition(
+        victoryCondition += `\nMajority (${findVictoryCondition(
           result.parsedData.parameters.victoryConditions,
           PollVictoryConditions.majority
         ).map(a => (a as any).percent)})`;
       }
 
       if (hasVictoryConditionPlurality(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '
-Plurality';
+        victoryCondition += victoryCondition += '\nPlurality';
       }
 
       if (hasVictoryConditionInstantRunOff(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '
-Instant Runoff';
+        victoryCondition += '\nInstant Runoff';
       }
 
       if (hasVictoryConditionComparison(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += `
-Comparison (${findVictoryCondition(
+        victoryCondition += `\nComparison (${findVictoryCondition(
           result.parsedData.parameters.victoryConditions,
           PollVictoryConditions.comparison
         ).map(a => (a as any).comparator + ' ' + (a as any).value)})`;
       }
 
       if (hasVictoryConditionDefault(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += `
-Default (${findVictoryCondition(
+        victoryCondition += `\nDefault (${findVictoryCondition(
           result.parsedData.parameters.victoryConditions,
           PollVictoryConditions.default
         ).map(a => (a as any).value)})`;
