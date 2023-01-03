@@ -142,15 +142,10 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
       const comment = previousBallot[poll.pollId]?.comment;
-      markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  
-`;
-      if (option) markdown += `Voted: ${option}  
-`;
-      markdown += comment ? `Reasoning: ${comment}  
-` : '  
-';
-      markdown += '  
-';
+      markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
+      if (option) markdown += `Voted: ${option}  \n`;
+      markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
+      markdown += '  \n';
     });
     return markdown;
   };
