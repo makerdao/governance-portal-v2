@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { GetStaticProps } from 'next';
 import { useContext, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
@@ -128,15 +136,21 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
           (id, index) =>
             `${
               isInputFormatRankFree(poll.parameters) ? `**${getNumberWithOrdinal(index + 1)} choice:**` : ''
-            } ${poll.options[id]}  \n`
+            } ${poll.options[id]}  
+`
         );
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
       const comment = previousBallot[poll.pollId]?.comment;
-      markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
-      if (option) markdown += `Voted: ${option}  \n`;
-      markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
-      markdown += '  \n';
+      markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  
+`;
+      if (option) markdown += `Voted: ${option}  
+`;
+      markdown += comment ? `Reasoning: ${comment}  
+` : '  
+';
+      markdown += '  
+';
     });
     return markdown;
   };

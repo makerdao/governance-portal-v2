@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { Poll } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';

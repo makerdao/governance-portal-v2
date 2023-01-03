@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box } from 'theme-ui';
 import { Avatar } from 'modules/address/components/Avatar';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';

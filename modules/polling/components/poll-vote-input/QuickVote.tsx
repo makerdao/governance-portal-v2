@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState, useEffect, useContext } from 'react';
 import { Text, Flex, Button, Box } from 'theme-ui';
 import invariant from 'tiny-invariant';

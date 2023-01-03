@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 // this component passes through to @reach/tooltip on desktop,
 // and on mobile, renders a button that opens a sheet
 

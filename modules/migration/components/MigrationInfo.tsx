@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Flex, Text, Label, Checkbox, Button, Box } from 'theme-ui';
 import { CircleIcon } from 'modules/app/components/CircleIcon';

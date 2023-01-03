@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Text, Image, Flex, Heading, Container, Link as ExternalLink, Card } from 'theme-ui';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from './ViewMore';

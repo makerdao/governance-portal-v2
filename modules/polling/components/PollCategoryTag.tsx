@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import TagComponent from 'modules/app/components/Tag';
 import { Tag } from 'modules/app/types/tag';
 import { Box } from 'theme-ui';

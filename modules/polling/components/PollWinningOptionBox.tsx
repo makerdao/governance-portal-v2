@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React from 'react';
 import { Poll, PollTally, PollVictoryConditionComparison } from '../types';
 import { Flex } from 'theme-ui';
@@ -59,7 +67,8 @@ export default function PollWinningOptionBox({
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {tally.totalMkrActiveParticipation > 0  || (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default)? (
+        {tally.totalMkrActiveParticipation > 0 ||
+        (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) ? (
           <>
             {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
 

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import { ThemeProvider, Flex, Box } from 'theme-ui';

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useEffect, useState } from 'react';
 import { Box, Text } from 'theme-ui';
 import {
@@ -22,32 +30,38 @@ export function PollMarkdownEditor(): React.ReactElement {
     if (result.parsedData) {
       let victoryCondition = '';
       if (hasVictoryConditionApproval(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '\nApproval.';
+        victoryCondition += '
+Approval.';
       }
       if (hasVictoryConditionMajority(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += `\nMajority (${findVictoryCondition(
+        victoryCondition += `
+Majority (${findVictoryCondition(
           result.parsedData.parameters.victoryConditions,
           PollVictoryConditions.majority
         ).map(a => (a as any).percent)})`;
       }
 
       if (hasVictoryConditionPlurality(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '\nPlurality';
+        victoryCondition += '
+Plurality';
       }
 
       if (hasVictoryConditionInstantRunOff(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '\nInstant Runoff';
+        victoryCondition += '
+Instant Runoff';
       }
 
       if (hasVictoryConditionComparison(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += `\nComparison (${findVictoryCondition(
+        victoryCondition += `
+Comparison (${findVictoryCondition(
           result.parsedData.parameters.victoryConditions,
           PollVictoryConditions.comparison
         ).map(a => (a as any).comparator + ' ' + (a as any).value)})`;
       }
 
       if (hasVictoryConditionDefault(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += `\nDefault (${findVictoryCondition(
+        victoryCondition += `
+Default (${findVictoryCondition(
           result.parsedData.parameters.victoryConditions,
           PollVictoryConditions.default
         ).map(a => (a as any).value)})`;

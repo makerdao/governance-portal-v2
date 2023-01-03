@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import matter from 'gray-matter';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { SupportedNetworks } from 'modules/web3/constants/networks';

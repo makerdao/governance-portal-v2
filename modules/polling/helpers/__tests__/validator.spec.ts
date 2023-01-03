@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { validatePollMarkdown } from '../validator';
 import fs from 'fs';
 const pollMetadata = fs.readFileSync(__dirname + '/__helpers__/poll-431.md').toString();

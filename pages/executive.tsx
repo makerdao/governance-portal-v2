@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner, Card } from 'theme-ui';
 import { useEffect, useMemo, useRef } from 'react';
