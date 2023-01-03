@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 /*
 
 SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
@@ -6,9 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-/**
- * @jest-environment jsdom
- */
 import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';

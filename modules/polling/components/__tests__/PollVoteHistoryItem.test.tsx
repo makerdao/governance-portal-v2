@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 /*
 
 SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
@@ -6,9 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-/**
- * @jest-environment jsdom
- */
 import { render, screen } from '@testing-library/react';
 import mockVote from 'modules/polling/api/mocks/vote.json';
 import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryItem';
