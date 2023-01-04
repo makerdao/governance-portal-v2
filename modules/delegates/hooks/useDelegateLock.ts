@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Dispatch, SetStateAction, useState } from 'react';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteDelegate.json';

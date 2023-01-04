@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import { getGaslessNetwork, getGaslessProvider, getProvider } from 'modules/web3/helpers/chain';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';

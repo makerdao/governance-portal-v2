@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { markdownToHtml } from 'lib/markdown';
 import { QueryFilterNames } from 'modules/gql/gql.constants';

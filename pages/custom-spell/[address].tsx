@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useEffect } from 'react';
 import { Button, Card, Flex, Text, Heading, Box } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';

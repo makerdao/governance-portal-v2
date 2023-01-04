@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import { PollVictoryConditions } from 'modules/polling/polling.constants';
 import { Poll } from 'modules/polling/types';

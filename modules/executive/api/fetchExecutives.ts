@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchGithubGraphQL } from 'lib/github';
@@ -147,7 +155,6 @@ export async function getExecutiveProposals({
   return analyzedProposals;
 }
 
-
 export async function getExecutiveProposal(
   proposalId: string,
   network?: SupportedNetworks
@@ -159,7 +166,12 @@ export async function getExecutiveProposal(
 
   const proposals = await getGithubExecutives(currentNetwork);
 
-  const proposal = proposals.find(proposal => trimProposalKey(proposal.key) === proposalId || proposal.key === proposalId || proposal.address === proposalId);
+  const proposal = proposals.find(
+    proposal =>
+      trimProposalKey(proposal.key) === proposalId ||
+      proposal.key === proposalId ||
+      proposal.address === proposalId
+  );
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
 

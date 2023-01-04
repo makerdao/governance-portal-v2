@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { Poll } from 'modules/polling/types';

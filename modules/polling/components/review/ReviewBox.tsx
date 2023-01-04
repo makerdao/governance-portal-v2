@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
 import { Poll } from 'modules/polling/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';

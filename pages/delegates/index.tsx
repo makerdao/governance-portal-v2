@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useMemo, useState } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';

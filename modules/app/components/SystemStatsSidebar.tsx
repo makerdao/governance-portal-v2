@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';

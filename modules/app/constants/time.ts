@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 export const THIRTY_SECONDS_IN_MS = 30 * 1000;
 export const ONE_MINUTE_IN_MS = 60 * 1000;
 export const FIVE_MINUTES_IN_MS = 5 * ONE_MINUTE_IN_MS;

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React, { useContext } from 'react';
 import { Box, Button, Flex, Text, Label, Checkbox } from 'theme-ui';
 import { ExternalLink } from 'modules/app/components/ExternalLink';

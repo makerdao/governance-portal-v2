@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { Box, Flex, Text } from 'theme-ui';

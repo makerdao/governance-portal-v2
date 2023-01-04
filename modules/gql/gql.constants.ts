@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 /* Spock URLs */
 export const LOCAL_SPOCK_URL = 'http://localhost:3001/v1';
 export const GOERLI_SPOCK_URL = 'https://pollingdb2-goerli-staging.makerdux.com/api/v1';

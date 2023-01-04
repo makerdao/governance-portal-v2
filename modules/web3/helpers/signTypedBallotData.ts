@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';

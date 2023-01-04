@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
@@ -470,7 +478,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
   const proposalId = (params || {})['proposal-id'] as string;
 
-  
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
@@ -498,9 +505,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   const paths = proposals
     .slice(0, MAX_PROPOSALS)
-    .map(
-      proposal => `/executive/${trimProposalKey(proposal.key)}`
-    );
+    .map(proposal => `/executive/${trimProposalKey(proposal.key)}`);
 
   return {
     paths,

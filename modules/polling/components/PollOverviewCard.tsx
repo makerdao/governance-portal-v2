@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';

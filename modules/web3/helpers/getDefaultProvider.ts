@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { SupportedNetworks } from '../constants/networks';
 import { config } from 'lib/config';
 import { ethers, providers } from 'ethers';

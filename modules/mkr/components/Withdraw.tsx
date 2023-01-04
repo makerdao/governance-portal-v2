@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';

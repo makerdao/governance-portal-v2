@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useEffect, useState } from 'react';
 import { Box, Text } from 'theme-ui';
 import {
@@ -32,7 +40,7 @@ export function PollMarkdownEditor(): React.ReactElement {
       }
 
       if (hasVictoryConditionPlurality(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += '\nPlurality';
+        victoryCondition += victoryCondition += '\nPlurality';
       }
 
       if (hasVictoryConditionInstantRunOff(result.parsedData.parameters.victoryConditions)) {

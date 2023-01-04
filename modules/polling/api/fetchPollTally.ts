@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll, PollTally, PollTallyOption, PollTallyVote, VictoryCondition } from 'modules/polling/types';
 import { extractWinnerPlurality } from './victory_conditions/plurality';

@@ -1,6 +1,15 @@
 /**
  * @jest-environment jsdom
  */
+
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { render, screen } from '@testing-library/react';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
