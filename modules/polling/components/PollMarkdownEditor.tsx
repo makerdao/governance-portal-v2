@@ -40,7 +40,7 @@ export function PollMarkdownEditor(): React.ReactElement {
       }
 
       if (hasVictoryConditionPlurality(result.parsedData.parameters.victoryConditions)) {
-        victoryCondition += victoryCondition += '\nPlurality';
+        victoryCondition += '\nPlurality';
       }
 
       if (hasVictoryConditionInstantRunOff(result.parsedData.parameters.victoryConditions)) {
