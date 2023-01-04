@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React from 'react';
 import Tooltip from 'modules/app/components/Tooltip';
 import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';

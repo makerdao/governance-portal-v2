@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fetchJson } from 'lib/fetchJson';
 import { sortBytesArray } from 'lib/utils';

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { ethers } from 'ethers';
 import logger from 'lib/logger';
 import { FIVE_MINUTES_IN_MS } from 'modules/app/constants/time';

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Card, Box, Button, Heading } from 'theme-ui';
 import React, { useState } from 'react';
 import { Delegate } from '../types';

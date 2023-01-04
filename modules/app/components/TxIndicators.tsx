@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { ThemeUIStyleObject } from 'theme-ui';
 import { useEffect } from 'react';
 import lottie from 'lottie-web';

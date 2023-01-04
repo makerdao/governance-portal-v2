@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Text, Heading, Flex, Button, Link as ThemeUILink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';

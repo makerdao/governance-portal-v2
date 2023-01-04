@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Text, Flex, Heading, Link as ThemeUILink, Button } from 'theme-ui';
 import React, { useState } from 'react';
 import LocalIcon from 'modules/app/components/Icon';

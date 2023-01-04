@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Alert, Flex, Box, Button, Text, Grid, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { BigNumber } from 'ethers';

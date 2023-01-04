@@ -1,6 +1,15 @@
 /**
  * @jest-environment jsdom
  */
+
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { screen } from '@testing-library/react';
 import Header from '../layout/Header';
 import { renderWithTheme as render } from '../../../../__tests__/helpers';

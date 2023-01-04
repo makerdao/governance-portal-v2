@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { ethers } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
 import { DECODED_SPELL_ENDPOINT, SIGNATURE_CAST, SupportedNetworks } from 'modules/web3/constants/networks';

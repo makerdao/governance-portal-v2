@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Flex, Grid, Box, Text, Link as ExternalLink, Heading } from 'theme-ui';
 import { ViewMore } from 'modules/home/components/ViewMore';
 

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Chief } from '.dethcrypto/eth-sdk-client/esm/types';
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
 import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
