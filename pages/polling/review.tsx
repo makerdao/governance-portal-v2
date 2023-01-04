@@ -136,8 +136,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
           (id, index) =>
             `${
               isInputFormatRankFree(poll.parameters) ? `**${getNumberWithOrdinal(index + 1)} choice:**` : ''
-            } ${poll.options[id]}  
-`
+            } ${poll.options[id]} \n`
         );
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
