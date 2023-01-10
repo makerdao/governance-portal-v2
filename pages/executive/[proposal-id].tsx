@@ -329,7 +329,8 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                   alignItems: 'center',
                   justifyContent: 'right',
                   py: [0, 1],
-                  color: 'textSecondary'
+                  color: 'textSecondary',
+                  cursor: 'pointer'
                 }}
               >
                 <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />

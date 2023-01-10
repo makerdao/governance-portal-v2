@@ -187,7 +187,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         </Flex>
                         {overlayOpen && (
                           <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
-                            <DialogContent>
+                            <DialogContent ariaLabel="Impact tags info">
                               <BoxWithClose close={() => setOverlayOpen(false)}>
                                 <Flex
                                   sx={{
@@ -317,7 +317,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
                               fontSize: 1,
                               alignItems: 'center',
                               color: 'textSecondary',
-                              py: 0
+                              py: 0,
+                              cursor: 'pointer'
                             }}
                           >
                             <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
