@@ -43,5 +43,5 @@ package-lock.json
 .sentryclirc
 
 # Yarn
-.yarn
+/.yarn
 .yarnrc.yml
