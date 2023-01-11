@@ -134,10 +134,6 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
         {
           url: 'https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4',
           title: t('Brand Assets')
-        },
-        {
-          url: 'https://makerdao.com/en/feeds/',
-          title: t('Oracle Feeds')
         }
       ]
     }
