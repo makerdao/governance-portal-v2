@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text } from 'theme-ui';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
@@ -227,14 +228,18 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
                 {account && (
                   <Box>
-                    <Text
-                      as="p"
-                      variant="microHeading"
-                      sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                      data-testid="mkr-delegated-by-you"
-                    >
-                      {mkrDelegated ? formatValue(mkrDelegated) : '0'}
-                    </Text>
+                    {mkrDelegated ? (
+                      <Text
+                        as="p"
+                        variant="microHeading"
+                        sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                        data-testid="mkr-delegated-by-you"
+                      >
+                        {formatValue(mkrDelegated)}
+                      </Text>
+                    ) : (
+                      <SkeletonThemed />
+                    )}
                     <Text
                       as="p"
                       variant="secondary"
@@ -246,14 +251,18 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   </Box>
                 )}
                 <Box sx={{ ml: account ? 4 : 0 }}>
-                  <Text
-                    as="p"
-                    variant="microHeading"
-                    sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                    data-testid="total-mkr-delegated"
-                  >
-                    {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0'}
-                  </Text>
+                  {totalStaked ? (
+                    <Text
+                      as="p"
+                      variant="microHeading"
+                      sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                      data-testid="total-mkr-delegated"
+                    >
+                      {formatValue(totalStaked)}
+                    </Text>
+                  ) : (
+                    <SkeletonThemed />
+                  )}
                   <Text
                     as="p"
                     variant="secondary"
