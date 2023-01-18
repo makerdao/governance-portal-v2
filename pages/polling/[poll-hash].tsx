@@ -53,7 +53,9 @@ import BoxWithClose from 'modules/app/components/BoxWithClose';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
-  return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+  return content
+    .replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '')
+    .replace(/(<img)(.*src=".*")(>)/g, '$1 width="100%"$2$3');
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
