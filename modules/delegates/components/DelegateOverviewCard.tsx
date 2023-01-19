@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Text } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Heading } from 'theme-ui';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -17,11 +17,6 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { Delegate } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
-import {
-  participationTooltipLabel,
-  communicationTooltipLabel
-} from 'modules/delegates/components/DelegateParticipationMetrics';
-import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
@@ -30,10 +25,53 @@ import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import DelegateTags from './DelegateTags';
 import Icon from 'modules/app/components/Icon';
+import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
+import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
+import BoxWithClose from 'modules/app/components/BoxWithClose';
 
 type PropTypes = {
   delegate: Delegate;
+};
+
+const DelegateVotingStatsModal = () => {
+  const [overlayOpen, setOverlayOpen] = useState(false);
+
+  return (
+    <>
+      <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer', ml: 2 }}>
+        <UIIcon name="info" color="primary" />
+      </Flex>
+      {overlayOpen && (
+        <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
+          <DialogContent ariaLabel="Delegate voting stats info">
+            <BoxWithClose close={() => setOverlayOpen(false)}>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Heading sx={{ mb: 3 }}>Delegate voting stats</Heading>
+                <Text>
+                  - Participation: The percentage of votes the delegate has participated in. It combines stats
+                  for polls and executives.
+                  <br />
+                  <br />- Communication: The percentage of votes for which the delegate has publicly
+                  communicated their reasoning in addition to voting. It combines stats for polls and
+                  executives.
+                  <br />
+                  <br />
+                  Both stats are updated weekly by the GovAlpha Core Unit.
+                </Text>
+              </Flex>
+            </BoxWithClose>
+          </DialogContent>
+        </DialogOverlay>
+      )}
+    </>
+  );
 };
 
 export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElement {
@@ -175,32 +213,31 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               }}
             >
               <Box sx={{ mr: 3, mb: 1 }}>
-                <Tooltip label={participationTooltipLabel}>
-                  <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
-                    <Icon name="participation" />
-                    <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
-                      {delegate.combinedParticipation === 'No Data'
-                        ? 'No Participation Data'
-                        : delegate.combinedParticipation
-                        ? delegate.combinedParticipation + ' Participation'
-                        : 'Untracked Participation'}
-                    </Text>
-                  </Flex>
-                </Tooltip>
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Icon name="participation" />
+                  <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
+                    {delegate.combinedParticipation === 'No Data'
+                      ? 'No Participation Data'
+                      : delegate.combinedParticipation
+                      ? delegate.combinedParticipation + ' Participation'
+                      : 'Untracked Participation'}
+                  </Text>
+                </Flex>
               </Box>
               <Box>
-                <Tooltip label={communicationTooltipLabel}>
-                  <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
-                    <Icon name="comment" />
-                    <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
-                      {delegate.communication === 'No Data'
-                        ? 'No Communication Data'
-                        : delegate.communication
-                        ? delegate.communication + ' Communication'
-                        : 'Untracked Communication'}
-                    </Text>
-                  </Flex>
-                </Tooltip>
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Icon name="comment" />
+                  <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
+                    {delegate.communication === 'No Data'
+                      ? 'No Communication Data'
+                      : delegate.communication
+                      ? delegate.communication + ' Communication'
+                      : 'Untracked Communication'}
+                  </Text>
+                </Flex>
+              </Box>
+              <Box>
+                <DelegateVotingStatsModal />
               </Box>
             </Flex>
             <Flex

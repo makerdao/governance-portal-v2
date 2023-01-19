@@ -185,7 +185,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     {poll.tags.some(tag => tag.id.includes('impact')) && (
                       <>
                         <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer' }}>
-                          <Icon name="info" color="textSecondary" mt={3} />
+                          <Icon name="info" color="primary" mt={3} />
                         </Flex>
                         {overlayOpen && (
                           <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
@@ -198,10 +198,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
                                     alignItems: 'center'
                                   }}
                                 >
+                                  <Heading sx={{ mb: 3 }}>Impact estimation tags</Heading>
                                   <Text sx={{ textAlign: 'center' }}>
                                     GovAlpha applies impact estimations to active governance items (MIPs and
                                     Signal Requests).
-                                    <br />
                                     <br />
                                     To know more about impact tags please visit the{' '}
                                     <ExternalLink
