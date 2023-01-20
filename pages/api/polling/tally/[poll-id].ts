@@ -14,6 +14,8 @@ import { fetchPollById } from 'modules/polling/api/fetchPollBy';
 import { pollHasStarted } from 'modules/polling/helpers/utils';
 import { PollTally } from 'modules/polling/types';
 import { ApiError } from 'modules/app/api/ApiError';
+import { isValidPollIdParam } from 'pages/api/isValidPollIdParam';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 // Returns a PollTally given a pollID
 
@@ -131,6 +133,18 @@ import { ApiError } from 'modules/app/api/ApiError';
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+  // validate network
+  if (!isSupportedNetwork(network)) {
+    throw new ApiError('Invalid network', 400, 'Invalid network');
+  }
+
+  // validate pollId
+  const isValidPollId = isValidPollIdParam(req.query['poll-id'] as string);
+  if (!isValidPollId) {
+    throw new ApiError('Poll not found', 404, 'Poll not found');
+  }
+
   const poll = await fetchPollById(parseInt(req.query['poll-id'] as string, 10), network);
 
   if (!poll) {

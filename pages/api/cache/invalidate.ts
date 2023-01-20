@@ -20,11 +20,17 @@ import {
 } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
 import { ApiError } from 'modules/app/api/ApiError';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 // Deletes cache for a tally
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+    // validate network
+    if (!isSupportedNetwork(network)) {
+      throw new ApiError('Invalid network', 400, 'Invalid network');
+    }
 
     // Allowed cache keys to be deleted, they can be partial since we just check that the key is on the requested path.
     const allowedCacheKeys = [

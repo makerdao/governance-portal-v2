@@ -6,14 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';
+import { ApiError } from 'modules/app/api/ApiError';
+import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 
 /**
  * @swagger
@@ -66,9 +67,22 @@ import { resolveENS } from 'modules/web3/helpers/ens';
  *               $ref: '#/definitions/Address'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressApiResponse>) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+  // validate network
+  if (!isSupportedNetwork(network)) {
+    throw new ApiError('Invalid network', 400, 'Invalid network');
+  }
+
+  // validate address
+  if (!req.query.address) {
+    throw new ApiError('Address stats, missing address', 400, 'Missing address');
+  }
+
+  if (!isValidAddressParam(req.query.address as string)) {
+    throw new ApiError('Invalid address', 400, 'Invalid address');
+  }
   const tempAddress = req.query.address as string;
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
   const response = await getAddressInfo(address ?? tempAddress, network);

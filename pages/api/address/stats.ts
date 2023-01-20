@@ -12,12 +12,13 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';
 import { getAddressStatsCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { ApiError } from 'modules/app/api/ApiError';
+import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 
 /**
  * @swagger
@@ -85,16 +86,25 @@ import { ApiError } from 'modules/app/api/ApiError';
  *
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+  // validate network
+  if (!isSupportedNetwork(network)) {
+    throw new ApiError('Invalid network', 400, 'Invalid network');
+  }
+
+  if (!req.query.address) {
+    throw new ApiError('Address stats, missing address', 400, 'Missing address');
+  }
+
+  if (!isValidAddressParam(req.query.address as string)) {
+    throw new ApiError('Invalid address', 400, 'Invalid address');
+  }
 
   const tempAddresses =
     typeof req.query.address === 'string'
       ? [req.query.address.toLowerCase()]
       : (req.query.address as string[]);
-
-  if (!req.query.address) {
-    throw new ApiError('Address stats, missing address', 400, 'Missing address');
-  }
 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 

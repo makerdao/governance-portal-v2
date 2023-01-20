@@ -6,18 +6,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { ApiError } from 'modules/app/api/ApiError';
+import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 
 export type MKRDelegatedToAPIResponse = {
   delegatedTo: DelegationHistoryWithExpirationDate[];
@@ -25,9 +26,23 @@ export type MKRDelegatedToAPIResponse = {
 };
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<MKRDelegatedToAPIResponse>) => {
-    const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+    // validate network
+    if (!isSupportedNetwork(network)) {
+      throw new ApiError('Invalid network', 400, 'Invalid network');
+    }
+
+    // validate address
+    if (!req.query.address) {
+      throw new ApiError('Address stats, missing address', 400, 'Missing address');
+    }
+
+    if (!isValidAddressParam(req.query.address as string)) {
+      throw new ApiError('Invalid address', 400, 'Invalid address');
+    }
+
     const tempAddress = req.query.address as string;
-    invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
     const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
 
