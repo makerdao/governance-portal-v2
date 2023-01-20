@@ -6,23 +6,33 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
-import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { ApiError } from 'modules/app/api/ApiError';
+import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 // In memory result cache
 const results = {};
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const spellAddress: string = req.query.address as string;
-  invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
+  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  // validate network
+  if (!isSupportedNetwork(network)) {
+    throw new ApiError('Invalid network', 400, 'Invalid network');
+  }
+
+  if (!req.query.address) {
+    throw new ApiError('Address stats, missing address', 400, 'Missing address');
+  }
+
+  if (!isValidAddressParam(req.query.address as string)) {
+    throw new ApiError('Invalid address', 400, 'Invalid address');
+  }
+
+  const spellAddress: string = req.query.address as string;
 
   let analysis;
 

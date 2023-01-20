@@ -17,9 +17,17 @@ import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotInclud
 import { getRelayerBalance } from 'modules/polling/api/getRelayerBalance';
 import { ApiError } from 'modules/app/api/ApiError';
 import { config } from 'lib/config';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+  // validate network
+  if (!isSupportedNetwork(network)) {
+    throw new ApiError('Invalid network', 400, 'Invalid network');
+  }
+
+  // validate these below
   const voter = req.query.voter as string;
   const pollIds = req.query.pollIds as string;
 

@@ -11,6 +11,9 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { PollCommentsAPIResponseItem } from 'modules/comments/types/comments';
 import { getPollComments } from 'modules/comments/api/getPollComments';
 import withApiHandler from 'modules/app/api/withApiHandler';
+import { ApiError } from 'modules/app/api/ApiError';
+import { isValidPollIdParam } from 'pages/api/isValidPollIdParam';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 /**
  * @swagger
@@ -71,6 +74,17 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<PollCommentsAPIResponseItem[]>) => {
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+
+    // validate network
+    if (!isSupportedNetwork(network)) {
+      throw new ApiError('Invalid network', 400, 'Invalid network');
+    }
+
+    // validate pollId
+    const isValidPollId = isValidPollIdParam(req.query['poll-id'] as string);
+    if (!isValidPollId) {
+      throw new ApiError('Poll not found', 404, 'Poll not found');
+    }
 
     const pollId = parseInt(req.query['poll-id'] as string, 10);
 

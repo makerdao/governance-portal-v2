@@ -6,23 +6,34 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
-
 import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressDelegationHistoryCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { ApiError } from 'modules/app/api/ApiError';
+import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-  const address = req.query.address as string;
 
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  // validate network
+  if (!isSupportedNetwork(network)) {
+    throw new ApiError('Invalid network', 400, 'Invalid network');
+  }
+
+  if (!req.query.address) {
+    throw new ApiError('Address stats, missing address', 400, 'Missing address');
+  }
+
+  if (!isValidAddressParam(req.query.address as string)) {
+    throw new ApiError('Invalid address', 400, 'Invalid address');
+  }
+
+  const address = req.query.address as string;
 
   const cacheKey = getAddressDelegationHistoryCacheKey(address);
   const cachedResponse = await cacheGet(cacheKey, network);

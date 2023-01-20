@@ -110,6 +110,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
+  // TODO what kind of validation can we apply to slug?
   const slug = req.query.slug as string;
 
   let poll = await fetchPollBySlug(slug, network);
