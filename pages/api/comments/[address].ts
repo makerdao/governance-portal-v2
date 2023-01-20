@@ -13,7 +13,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { getCommentsByAddress } from 'modules/comments/api/getCommentsByAddress';
 import { ApiError } from 'modules/app/api/ApiError';
 import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 export default withApiHandler(
   async (
@@ -22,10 +22,17 @@ export default withApiHandler(
       comments: CommentsAPIResponseItem[];
     }>
   ) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
     // validate network
-    if (!isSupportedNetwork(network)) {
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      }
+    ) as SupportedNetworks;
+
+    if (!network) {
       throw new ApiError('Invalid network', 400, 'Invalid network');
     }
 

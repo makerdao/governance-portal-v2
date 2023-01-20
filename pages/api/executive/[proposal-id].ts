@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getExecutiveProposal } from 'modules/executive/api/fetchExecutives';
 import { CMSProposal } from 'modules/executive/types';
 import { NotFoundResponse } from 'modules/app/types/genericApiResponse';
@@ -75,10 +75,17 @@ import { ApiError } from 'modules/app/api/ApiError';
  */
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<CMSProposal | NotFoundResponse>) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
     // validate network
-    if (!isSupportedNetwork(network)) {
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      }
+    ) as SupportedNetworks;
+
+    if (!network) {
       throw new ApiError('Invalid network', 400, 'Invalid network');
     }
 

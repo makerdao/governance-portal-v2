@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import withApiHandler from 'modules/app/api/withApiHandler';
@@ -15,6 +14,7 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { resolveENS } from 'modules/web3/helpers/ens';
 import { ApiError } from 'modules/app/api/ApiError';
 import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 /**
  * @swagger
@@ -67,10 +67,17 @@ import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
  *               $ref: '#/definitions/Address'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressApiResponse>) => {
-  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
   // validate network
-  if (!isSupportedNetwork(network)) {
+  const network = validateQueryParam(
+    (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+    'string',
+    {
+      defaultValue: null,
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    }
+  ) as SupportedNetworks;
+
+  if (!network) {
     throw new ApiError('Invalid network', 400, 'Invalid network');
   }
 

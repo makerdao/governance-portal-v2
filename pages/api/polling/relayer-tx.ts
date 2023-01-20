@@ -8,22 +8,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getMessageFromCode, ERROR_CODES } from 'eth-rpc-errors';
 import { getRelayerTx } from 'modules/polling/api/getRelayerTx';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import invariant from 'tiny-invariant';
 import { ApiError } from 'modules/app/api/ApiError';
-import { ethers } from 'ethers';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
     // validate network
-    if (!isSupportedNetwork(network)) {
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      }
+    ) as SupportedNetworks;
+
+    if (!network) {
       throw new ApiError('Invalid network', 400, 'Invalid network');
     }
+
     const txId = req.query.txId as string;
     // TODO validate txId
     invariant(txId !== null && txId !== '', 'missing txId');
