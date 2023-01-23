@@ -1,4 +1,4 @@
-export const isValidPollIdParam = (pollIdParam: string): Boolean => {
+export const isValidPollIdParam = (pollIdParam: string): boolean => {
   const pollId = parseInt(pollIdParam, 10);
 
   // here we could see if this poll id exists in poll-tags-mapping
