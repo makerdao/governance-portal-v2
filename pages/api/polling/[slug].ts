@@ -12,7 +12,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isValidSlugParam } from './isValidSlugParam';
+import { isValidSlugParam } from '../../../modules/polling/helpers/isValidSlugParam';
 
 /**
  * @swagger
@@ -113,18 +113,20 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     {
       defaultValue: null,
       validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    }
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
   ) as SupportedNetworks;
 
-  if (!network) {
-    throw new ApiError('Invalid network', 400, 'Invalid network');
-  }
-
-  const slug = req.query.slug as string;
-
-  if (!isValidSlugParam(slug)) {
-    throw new ApiError('Slug not found ', 400, 'Slug not found');
-  }
+  const slug = validateQueryParam(
+    req.query.slug,
+    'string',
+    {
+      defaultValue: null
+    },
+    isValidSlugParam,
+    new ApiError('Slug not found', 400, 'Slug not found')
+  ) as string;
 
   let poll = await fetchPollBySlug(slug, network);
 

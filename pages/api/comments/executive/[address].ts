@@ -11,8 +11,8 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { getExecutiveComments } from 'modules/comments/api/getExecutiveComments';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { ApiError } from 'modules/app/api/ApiError';
-import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 /**
  * @swagger
@@ -81,23 +81,18 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     {
       defaultValue: null,
       validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    }
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
   ) as SupportedNetworks;
 
-  if (!network) {
-    throw new ApiError('Invalid network', 400, 'Invalid network');
-  }
+  // validate address
+  const address = await validateAddress(
+    req.query.address as string,
+    new ApiError('Invalid address', 400, 'Invalid address')
+  );
 
-  if (!req.query.address) {
-    throw new ApiError('Address stats, missing address', 400, 'Missing address');
-  }
-
-  if (!isValidAddressParam(req.query.address as string)) {
-    throw new ApiError('Invalid address', 400, 'Invalid address');
-  }
-
-  const spellAddress = req.query.address as string;
-  const response = await getExecutiveComments(spellAddress, network);
+  const response = await getExecutiveComments(address, network);
   res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
 
   res.status(200).json(response);

@@ -13,13 +13,12 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { resolveENS } from 'modules/web3/helpers/ens';
 import { getAddressStatsCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { ApiError } from 'modules/app/api/ApiError';
-import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 /**
  * @swagger
@@ -94,49 +93,36 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     {
       defaultValue: null,
       validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    }
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
   ) as SupportedNetworks;
 
-  if (!network) {
-    throw new ApiError('Invalid network', 400, 'Invalid network');
-  }
-
-  if (!req.query.address) {
-    throw new ApiError('Address stats, missing address', 400, 'Missing address');
-  }
-
-  if (!isValidAddressParam(req.query.address as string)) {
-    throw new ApiError('Invalid address', 400, 'Invalid address');
-  }
-
-  const tempAddresses =
-    typeof req.query.address === 'string'
-      ? [req.query.address.toLowerCase()]
-      : (req.query.address as string[]);
+  // Make sure the address exists
+  const tmpAddresses = typeof req.query.address === 'string' ? [req.query.address] : req.query.address || [];
+  const addresses = await Promise.all(
+    tmpAddresses
+      ?.filter(i => !!i)
+      .map(tmpAddress =>
+        validateAddress(tmpAddress, new ApiError('Address stats, Invalid address', 400, 'Invalid address'))
+      )
+  );
 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const cacheKey = getAddressStatsCacheKey(tempAddresses);
+  const cacheKey = getAddressStatsCacheKey(addresses);
 
   const cachedResponse = await cacheGet(cacheKey, network);
   if (cachedResponse) {
     return res.status(200).json(JSON.parse(cachedResponse));
   }
 
-  const addresses = await Promise.all(
-    tempAddresses.map(async tempAddress => {
-      return tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
-    })
-  );
-
   const pollVoteHistories = await Promise.all(
-    addresses
-      .filter(a => !!a)
-      .map(async (address: string) => {
-        const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
+    addresses.map(async (address: string) => {
+      const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
 
-        return pollVoteHistory;
-      })
+      return pollVoteHistory;
+    })
   );
 
   const combinedPollVoteHistory = pollVoteHistories.flat();

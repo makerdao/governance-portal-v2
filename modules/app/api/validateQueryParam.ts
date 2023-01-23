@@ -6,14 +6,35 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { ApiError } from './ApiError';
+
 type Options = {
-  defaultValue: number | string | Date | null;
+  defaultValue: any;
   maxValue?: number;
   minValue?: number;
   validValues?: string[];
 };
 
 export default function validateQueryParam(
+  value: any,
+  type: 'number' | 'string' | 'date',
+  options: Options,
+  validationFunction = (val: any) => true,
+  validationError = new ApiError('Invalid query parameter', 400)
+): number | string | Date | null {
+  const parsedValue = getParsedValue(value, type, options);
+
+  const valid = validationFunction(parsedValue);
+
+  if (!valid) {
+    throw validationError;
+  }
+
+  return parsedValue;
+}
+
+// Returns the parsed value or the default value of a query parameter
+function getParsedValue(
   value: any,
   type: 'number' | 'string' | 'date',
   options: Options

@@ -82,12 +82,10 @@ export default withApiHandler(
       {
         defaultValue: null,
         validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-      }
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
     ) as SupportedNetworks;
-
-    if (!network) {
-      throw new ApiError('Invalid network', 400, 'Invalid network');
-    }
 
     // TODO what kind of validation can we apply on the proposal-id?
     const proposalId = req.query['proposal-id'] as string;

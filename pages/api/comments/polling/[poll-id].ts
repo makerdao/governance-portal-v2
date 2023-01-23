@@ -12,7 +12,6 @@ import { PollCommentsAPIResponseItem } from 'modules/comments/types/comments';
 import { getPollComments } from 'modules/comments/api/getPollComments';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { ApiError } from 'modules/app/api/ApiError';
-import { isValidPollIdParam } from 'pages/api/isValidPollIdParam';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 /**
@@ -80,20 +79,22 @@ export default withApiHandler(
       {
         defaultValue: null,
         validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-      }
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
     ) as SupportedNetworks;
 
-    if (!network) {
-      throw new ApiError('Invalid network', 400, 'Invalid network');
-    }
-
     // validate pollId
-    const isValidPollId = isValidPollIdParam(req.query['poll-id'] as string);
-    if (!isValidPollId) {
-      throw new ApiError('Poll not found', 404, 'Poll not found');
-    }
-
-    const pollId = parseInt(req.query['poll-id'] as string, 10);
+    const pollId = validateQueryParam(
+      req.query['poll-id'],
+      'number',
+      {
+        defaultValue: null,
+        minValue: 0
+      },
+      n => !!n,
+      new ApiError('Invalid poll id', 400, 'Invalid poll id')
+    ) as number;
 
     const response = await getPollComments(pollId, network);
 
