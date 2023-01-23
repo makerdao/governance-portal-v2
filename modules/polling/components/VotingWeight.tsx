@@ -73,10 +73,9 @@ export default function VotingWeight(): JSX.Element {
 
   const tooltipLabel = (
     <Box>
-      <Text as="p" sx={{ whiteSpace: 'normal', maxWidth: '400px' }}>
+      <Text as="p" sx={{ whiteSpace: 'normal', maxWidth: '400px', mb: 3 }}>
         {votingWeightCopy}
       </Text>
-      <br />
       {getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}
     </Box>
   );

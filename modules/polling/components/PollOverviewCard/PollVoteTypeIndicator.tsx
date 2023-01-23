@@ -39,7 +39,7 @@ const PollTypesModal = ({ iconName }) => {
                 }}
               >
                 <Heading sx={{ mb: 3 }}>Poll types</Heading>
-                <Text>
+                <Text as="p" sx={{ mb: 3 }}>
                   - Ranked-choice polls: require multiple-choice ballots in ranked order, and determine the
                   winning vote option by finding the one with an absolute majority in MKR voting weight (as in
                   &gt;50% of the total participating MKR, excluding abstains). In the first round of IRV, only
@@ -48,19 +48,22 @@ const PollTypesModal = ({ iconName }) => {
                   option are instead applied to the voters’ next ranked option. This repeats until the victory
                   conditions have been met by one vote option. If no winning option can be found, tally
                   results are shown as if no IRV rounds were run.
-                  <br />
-                  <br />- Plurality polls: require single-choice ballots and determines the winning vote
-                  option by finding the one with the highest MKR voting weight in relative terms.
-                  <br />
-                  <br />- Approval polls: require multiple-choice ballots in unranked order, and determines
-                  the winning vote option by finding the one with a relative majority in MKR voting weight.
-                  When used in situations where no winner is required, an absolute majority (ie. &gt;50% of
-                  the total participating MKR excluding abstains) victory condition may also be applied as
-                  opposed to a relative majority.
-                  <br />
-                  <br />- Majority polls: require single-choice ballots and determines the winning vote option
-                  by finding the one with an absolute majority in MKR voting weight, being &gt;50% of the
-                  total participating MKR (excluding abstains).
+                </Text>
+                <Text as="p" sx={{ mb: 3 }}>
+                  - Plurality polls: require single-choice ballots and determines the winning vote option by
+                  finding the one with the highest MKR voting weight in relative terms.
+                </Text>
+                <Text as="p" sx={{ mb: 3 }}>
+                  - Approval polls: require multiple-choice ballots in unranked order, and determines the
+                  winning vote option by finding the one with a relative majority in MKR voting weight. When
+                  used in situations where no winner is required, an absolute majority (ie. &gt;50% of the
+                  total participating MKR excluding abstains) victory condition may also be applied as opposed
+                  to a relative majority.
+                </Text>
+                <Text as="p">
+                  - Majority polls: require single-choice ballots and determines the winning vote option by
+                  finding the one with an absolute majority in MKR voting weight, being &gt;50% of the total
+                  participating MKR (excluding abstains).
                 </Text>
               </Flex>
             </BoxWithClose>

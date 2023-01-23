@@ -32,20 +32,19 @@ const ParticipationBreakdownModal = () => {
                   alignItems: 'center'
                 }}
               >
-                <Heading sx={{ mb: 3 }}>Delegate voting stats</Heading>
-                <Text>
+                <Heading sx={{ mb: 3 }}>Delegate participation</Heading>
+                <Text as="p" sx={{ mb: 3 }}>
                   - Poll participation: The percentage of polling votes the delegate has participated in.
-                  <br />
-                  <br />- Executive participation: The percentage of executive votes the delegate has
-                  participated in.
-                  <br />
-                  <br />
+                </Text>
+                <Text as="p" sx={{ mb: 3 }}>
+                  - Executive participation: The percentage of executive votes the delegate has participated
+                  in.
+                </Text>
+                <Text as="p" sx={{ mb: 3 }}>
                   - Communication: The percentage of votes for which the delegate has publicly communicated
                   their reasoning in addition to voting. It combines stats for polls and executives.
-                  <br />
-                  <br />
-                  These stats are updated weekly by the GovAlpha Core Unit.
                 </Text>
+                <Text as="p">These stats are updated weekly by the GovAlpha Core Unit.</Text>
               </Flex>
             </BoxWithClose>
           </DialogContent>

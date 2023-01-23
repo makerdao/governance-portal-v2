@@ -54,17 +54,15 @@ const DelegateVotingStatsModal = () => {
                 }}
               >
                 <Heading sx={{ mb: 3 }}>Delegate voting stats</Heading>
-                <Text>
+                <Text as="p" sx={{ mb: 3 }}>
                   - Participation: The percentage of votes the delegate has participated in. It combines stats
                   for polls and executives.
-                  <br />
-                  <br />- Communication: The percentage of votes for which the delegate has publicly
-                  communicated their reasoning in addition to voting. It combines stats for polls and
-                  executives.
-                  <br />
-                  <br />
-                  Both stats are updated weekly by the GovAlpha Core Unit.
                 </Text>
+                <Text as="p" sx={{ mb: 3 }}>
+                  - Communication: The percentage of votes for which the delegate has publicly communicated
+                  their reasoning in addition to voting. It combines stats for polls and executives.
+                </Text>
+                <Text as="p">Both stats are updated weekly by the GovAlpha Core Unit.</Text>
               </Flex>
             </BoxWithClose>
           </DialogContent>
