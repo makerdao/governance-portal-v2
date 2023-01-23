@@ -25,10 +25,6 @@ export const MEET_DELEGATE_URLS = {
   '0x92e1ca8b69a44bb17afa92838da68fc41f12250a': 'https://www.youtube-nocookie.com/embed/n4eILXWY_28',
   // Flip Flop Flap
   '0x0f4be9f208c552a6b04d9a1222f385785f95beaa': 'https://www.youtube-nocookie.com/embed/SVUm1Bz0U9A',
-  // MonetSupply
-  '0x45127ec92b58c3a89e89f63553073adcaf2f1f5f': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg',
-  // MakerMan
-  '0x22d5294a23d49294bf11d9db8beda36e104ad9b3': 'https://www.youtube-nocookie.com/embed/Cm0Qy8PTEf0',
   // Gauntlet
   '0xa149694b5b67e2078576a6f225de6b138efba043':
     'https://www.youtube-nocookie.com/embed/PbdUe4diPjg?start=1710',
@@ -37,10 +33,10 @@ export const MEET_DELEGATE_URLS = {
   // JustinCase
   '0x4e324f2327fa3e567d802ddcf655f7188eb62754': 'https://www.youtube-nocookie.com/embed/brNkBB33H84',
   // Acre
-  '0x4d3ac33ab1dd7b0f352b8e590fe8b62c4c39ead5': 'https://www.youtube-nocookie.com/embed/9z96VWDC_Eo',
+  '0x06e8dedf9e1adb1eba32f36ea9223770ba378b77': 'https://www.youtube-nocookie.com/embed/9z96VWDC_Eo',
   // Hasu
   '0xafaff1a605c373b43727136c995d21a7fcd08989': 'https://www.youtube-nocookie.com/embed/u7tT3HgAXqo',
-  // Doo
+  // StableNode
   '0x8804d391472126da56b9a560aef6c6d5aaa7607b': 'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU',
   // Flipside
   '0x84b05b0a30b6ae620f393d1037f217e607ad1b96':
@@ -60,12 +56,26 @@ export const MEET_DELEGATE_URLS = {
   // Chris Blec
   '0x2c511d932c5a6fe4071262d49bfc018cfbaaa1f5':
     'https://player.vimeo.com/video/716051719?h=3c7aa24f14&color=68FEE3&autoplay=1',
-  // Governance House
-  '0x4e314eba76c3062140ad196e4ffd34485e33c5f5': 'https://www.youtube-nocookie.com/embed/67PFalZks5I',
   // pvl
   '0xd9d00c42bed99a6d3a0f2902c640bccceecf6c29': 'https://www.youtube-nocookie.com/embed/yIHFRJDA7cM',
   // CodeKnight
   '0xe89f973a19cd76c3e5e236062668e43042176638': 'https://www.youtube-nocookie.com/embed/KZFZ1xQ6ZzU',
   // monetsupply
-  '0xb056e45fd47d962f4ef25714714abc7a79886064': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg'
+  '0xb056e45fd47d962f4ef25714714abc7a79886064': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg',
+  // CalBlockchain
+  '0x8f5b93378d59e35799573530a9860597e14b7178': 'https://www.youtube-nocookie.com/embed/axEO50fMujs',
+  // ConsenSys
+  '0x40f784b16b2d405efd4e9eb7d0663398d7d886fb':
+    'https://www.youtube-nocookie.com/embed/axEO50fMujs?start=1707',
+  // ONESTONE
+  '0x9301f3bb7a71ab4d46b17bd1f8254142fa8f26ad': 'https://www.youtube-nocookie.com/embed/MqbG43Ywr5E',
+  // RiskDAO
+  '0xd0df93fc03a7291e31947f5cc6ef526f5b67b0ea': 'https://www.youtube-nocookie.com/embed/RHYU18Svr8c',
+  // Jason Yanowitz
+  '0xd1fc89e0c3828f50b650e1309e30cb4fcf2bdbe3': 'https://www.youtube-nocookie.com/embed/nUkjsG1VUzg',
+  // Frontier Research LLC
+  '0x316090e23cc44e70245ba9846404413aca2df16f':
+    'https://www.youtube-nocookie.com/embed/nUkjsG1VUzg?start=1819',
+  // HKUST EPI Blockchain
+  '0x925016c2367802632cabdf13b5fc2c1bdc2c301a': 'https://www.youtube-nocookie.com/embed/S-ON_8Sulm8'
 };
