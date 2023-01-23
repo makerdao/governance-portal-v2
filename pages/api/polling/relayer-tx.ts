@@ -12,8 +12,8 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getMessageFromCode, ERROR_CODES } from 'eth-rpc-errors';
 import { getRelayerTx } from 'modules/polling/api/getRelayerTx';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import invariant from 'tiny-invariant';
 import { ApiError } from 'modules/app/api/ApiError';
+import { isValidRelayerTxIdParam } from './isValidRelayerTxIdParam';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -32,8 +32,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     }
 
     const txId = req.query.txId as string;
-    // TODO validate txId
-    invariant(txId !== null && txId !== '', 'missing txId');
+
+    if (!isValidRelayerTxIdParam(txId)) {
+      throw new ApiError('Invalid tx id', 400, 'Invalid tx id');
+    }
 
     const tx = await getRelayerTx(txId, network);
 
