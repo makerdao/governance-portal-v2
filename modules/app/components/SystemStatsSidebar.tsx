@@ -59,11 +59,12 @@ const PollingContractsModal = () => {
                 }}
               >
                 <Heading sx={{ mb: 3 }}>Polling contract versions</Heading>
+                <Text sx={{ textAlign: 'center', mb: 3 }}>
+                  v2 - The latest version of the polling contract was deployed to enable batch voting, so
+                  users can vote on multiple polls in one transaction.
+                </Text>
                 <Text sx={{ textAlign: 'center' }}>
-                  - The latest version of the polling contract was deployed to enable batch voting, so users
-                  can vote on multiple polls in one transaction.
-                  <br />
-                  <br />- The first version of the polling contract is still used for creating polls on-chain,
+                  v1 - The first version of the polling contract is still used for creating polls on-chain,
                   but it only allows for voting on a single poll per transaction, so an upgrade was deployed.
                 </Text>
               </Flex>

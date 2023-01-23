@@ -16,13 +16,13 @@ import {
   IconButton,
   Divider,
   Text,
-  useColorMode,
-  Badge
+  useColorMode
+  // Badge
 } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect /*, useMemo */ } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -32,11 +32,11 @@ import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import useSWR, { useSWRConfig } from 'swr';
-import { PollsResponse } from 'modules/polling/types/pollsResponse';
-import { Proposal } from 'modules/executive/types';
-import { fetchJson } from 'lib/fetchJson';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+// import { useSWR, useSWRConfig } from 'swr';
+// import { PollsResponse } from 'modules/polling/types/pollsResponse';
+// import { Proposal } from 'modules/executive/types';
+// import { fetchJson } from 'lib/fetchJson';
+// import { isActivePoll } from 'modules/polling/helpers/utils';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ClientRenderOnly } from '../ClientRenderOnly';
 
@@ -146,7 +146,7 @@ const Header = (): JSX.Element => {
   const { account } = useAccount();
   const { network } = useWeb3();
   const { data: gas } = useGasPrice({ network });
-  const { cache } = useSWRConfig();
+  // const { cache } = useSWRConfig();
   const [mode, setMode] = useColorMode();
 
   const onToggleTheme = () => {
@@ -175,7 +175,6 @@ const Header = (): JSX.Element => {
       pt={3}
       pb={2}
       px={3}
-      // variant="styles.header"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -287,7 +286,7 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {bpi > 1 && account && network === SupportedNetworks.MAINNET && (
+        {bpi > 1 && account && network === SupportedNetworks.MAINNET && gas && (
           <ExternalLink
             title="Ethereum Gas Price"
             href={GASNOW_URL}
