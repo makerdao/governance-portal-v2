@@ -32,12 +32,10 @@ export default withApiHandler(
       {
         defaultValue: null,
         validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-      }
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
     ) as SupportedNetworks;
-
-    if (!network) {
-      throw new ApiError('Invalid network', 400, 'Invalid network');
-    }
 
     // Allowed cache keys to be deleted, they can be partial since we just check that the key is on the requested path.
     const allowedCacheKeys = [

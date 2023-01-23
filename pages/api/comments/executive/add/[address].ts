@@ -17,8 +17,8 @@ import { formatValue } from 'lib/string';
 import { insertExecutiveComment } from 'modules/comments/api/insertExecutiveComment';
 import { verifyCommentParameters } from 'modules/comments/api/verifyCommentParameters';
 import { ApiError } from 'modules/app/api/ApiError';
-import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -29,22 +29,16 @@ export default withApiHandler(
       {
         defaultValue: null,
         validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-      }
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
     ) as SupportedNetworks;
 
-    if (!network) {
-      throw new ApiError('Invalid network', 400, 'Invalid network');
-    }
+    const spellAddress = await validateAddress(
+      req.query.address as string,
+      new ApiError('Invalid address', 400, 'Invalid address')
+    );
 
-    if (!req.query.address) {
-      throw new ApiError('Address stats, missing address', 400, 'Missing address');
-    }
-
-    if (!isValidAddressParam(req.query.address as string)) {
-      throw new ApiError('Invalid address', 400, 'Invalid address');
-    }
-
-    const spellAddress: string = req.query.address as string;
     const {
       voterAddress,
       hotAddress,

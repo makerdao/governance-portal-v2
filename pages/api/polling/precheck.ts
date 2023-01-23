@@ -18,6 +18,7 @@ import { getRelayerBalance } from 'modules/polling/api/getRelayerBalance';
 import { ApiError } from 'modules/app/api/ApiError';
 import { config } from 'lib/config';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   // validate network
@@ -27,22 +28,20 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     {
       defaultValue: null,
       validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    }
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
   ) as SupportedNetworks;
 
-  if (!network) {
-    throw new ApiError('Invalid network', 400, 'Invalid network');
-  }
-
   // validate these below
-  const voter = req.query.voter as string;
   const pollIds = req.query.pollIds as string;
 
   const pollIdsArray = pollIds.split(',');
 
-  if (!voter) {
-    throw new ApiError('Gasless precheck: Missing parameters', 400, 'No voter provided');
-  }
+  const voter = await validateAddress(
+    req.query.voter as string,
+    new ApiError('Gasless precheck: Invalid address', 400, 'Invalid address')
+  );
 
   if (!pollIds || pollIdsArray.length === 0) {
     throw new ApiError('Gasless precheck: Missing parameters', 400, 'No poll ids provided');

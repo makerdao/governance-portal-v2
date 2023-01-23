@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 /* eslint-disable */
 
+import { ApiError } from '../ApiError';
 import validateQueryParam from '../validateQueryParam';
 
 describe('Validate query parameters', () => {
@@ -82,5 +83,58 @@ describe('Validate query parameters', () => {
       defaultValue: date
     });
     expect(result).toEqual(date);
+  });
+
+  it('Throws specific error if validation function fails', () => {
+    const error = new ApiError('test');
+    const validationFunction = () => {
+      return false;
+    };
+
+    expect(() => {
+      validateQueryParam(
+        'asdasdasdsa',
+        'date',
+        {
+          defaultValue: new Date()
+        },
+        validationFunction,
+        error
+      );
+    }).toThrow(error);
+  });
+
+  it('Throws default error if validation function fails', () => {
+    const validationFunction = () => {
+      return false;
+    };
+
+    expect(() => {
+      validateQueryParam(
+        'asdasdasdsa',
+        'date',
+        {
+          defaultValue: new Date()
+        },
+        validationFunction
+      );
+    }).toThrow(new ApiError('Invalid query parameter', 400));
+  });
+
+  it('Does not throw error if validation function passes', () => {
+    const validationFunction = () => {
+      return true;
+    };
+
+    expect(() => {
+      validateQueryParam(
+        'asdasdasdsa',
+        'date',
+        {
+          defaultValue: new Date()
+        },
+        validationFunction
+      );
+    }).not.toThrow();
   });
 });

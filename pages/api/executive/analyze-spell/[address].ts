@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ApiError } from 'modules/app/api/ApiError';
-import { isValidAddressParam } from 'pages/api/polling/isValidAddressParam';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 // In memory result cache
 const results = {};
 
@@ -24,22 +24,16 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     {
       defaultValue: null,
       validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    }
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
   ) as SupportedNetworks;
 
-  if (!network) {
-    throw new ApiError('Invalid network', 400, 'Invalid network');
-  }
-
-  if (!req.query.address) {
-    throw new ApiError('Address stats, missing address', 400, 'Missing address');
-  }
-
-  if (!isValidAddressParam(req.query.address as string)) {
-    throw new ApiError('Invalid address', 400, 'Invalid address');
-  }
-
-  const spellAddress: string = req.query.address as string;
+  // validate address
+  const address = await validateAddress(
+    req.query.address as string,
+    new ApiError('Invalid address', 400, 'Invalid address')
+  );
 
   let analysis;
 
@@ -47,12 +41,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     results[network] = {};
   }
 
-  if (results[network][spellAddress]) {
-    analysis = results[network][spellAddress];
+  if (results[network][address]) {
+    analysis = results[network][address];
   } else {
-    analysis = await analyzeSpell(spellAddress, network);
+    analysis = await analyzeSpell(address, network);
     if (analysis.hasBeenCast) {
-      results[network][spellAddress] = analysis;
+      results[network][address] = analysis;
     }
   }
 

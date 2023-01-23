@@ -24,12 +24,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<D
     {
       defaultValue: null,
       validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    }
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
   ) as SupportedNetworks;
-
-  if (!network) {
-    throw new ApiError('Invalid network', 400, 'Invalid network');
-  }
 
   const delegates = await fetchDelegatesInformation(network);
 
