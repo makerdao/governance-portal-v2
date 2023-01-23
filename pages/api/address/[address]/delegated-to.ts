@@ -6,18 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
-import { resolveENS } from 'modules/web3/helpers/ens';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 export type MKRDelegatedToAPIResponse = {
   delegatedTo: DelegationHistoryWithExpirationDate[];
@@ -25,19 +25,26 @@ export type MKRDelegatedToAPIResponse = {
 };
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<MKRDelegatedToAPIResponse>) => {
-    const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-    const tempAddress = req.query.address as string;
-    invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+    // validate network
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
+    ) as SupportedNetworks;
 
-    const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
-
+    // validate address
+    const address = await validateAddress(
+      req.query.address as string,
+      new ApiError('Invalid address', 400, 'Invalid address')
+    );
     const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
-    const proxyInfo = await getVoteProxyAddresses(
-      contracts.voteProxyFactory,
-      address ?? tempAddress,
-      network
-    );
+    const proxyInfo = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
     // if hasProxy, we need to combine the delegation history of hot, cold, proxy
     let delegatedTo: DelegationHistoryWithExpirationDate[];
@@ -50,7 +57,7 @@ export default withApiHandler(
       ]);
       delegatedTo = coldHistory.concat(hotHistory).concat(proxyHistory);
     } else {
-      delegatedTo = await fetchDelegatedTo(address ?? tempAddress, network);
+      delegatedTo = await fetchDelegatedTo(address, network);
     }
 
     // filter out duplicate txs

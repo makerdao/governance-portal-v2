@@ -6,10 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
-import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import withApiHandler from 'modules/app/api/withApiHandler';
@@ -19,13 +16,29 @@ import { getContracts } from 'modules/web3/helpers/getContracts';
 import { formatValue } from 'lib/string';
 import { insertExecutiveComment } from 'modules/comments/api/insertExecutiveComment';
 import { verifyCommentParameters } from 'modules/comments/api/verifyCommentParameters';
+import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    const spellAddress: string = req.query.address as string;
-    invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
+    // validate network
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
+    ) as SupportedNetworks;
 
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+    const spellAddress = await validateAddress(
+      req.query.address as string,
+      new ApiError('Invalid address', 400, 'Invalid address')
+    );
+
     const {
       voterAddress,
       hotAddress,
