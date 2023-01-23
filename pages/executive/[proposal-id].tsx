@@ -287,10 +287,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
         </Box>
         <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
-            <Box>
-              <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
-                Your Vote
-              </Heading>
+            <Box sx={{ mt: 4, pt: 3 }}>
               <Card variant="compact">
                 <Text sx={{ fontSize: 5 }}>
                   {proposal.title ? proposal.title : cutMiddle(proposal.address)}

@@ -20,6 +20,6 @@ export const fetchGasPrice = async (
     return parseInt(formatUnits(jsonResponse.data[speed], 'gwei'));
   } catch (e) {
     logger.error('fetchGasPrice: Error fetching gas price', e.message);
-    return '--';
+    throw e;
   }
 };

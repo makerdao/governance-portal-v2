@@ -53,7 +53,12 @@ import BoxWithClose from 'modules/app/components/BoxWithClose';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
-  return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+  return (
+    content
+      .replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '')
+      // fixes issue with older images that are too large
+      .replace(/(<img)(.*src=".*")(>)/g, '$1 width="100%"$2$3')
+  );
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
@@ -183,7 +188,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     {poll.tags.some(tag => tag.id.includes('impact')) && (
                       <>
                         <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer' }}>
-                          <Icon name="info" color="textSecondary" mt={3} />
+                          <Icon name="info" color="primary" mt={3} />
                         </Flex>
                         {overlayOpen && (
                           <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
@@ -196,10 +201,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
                                     alignItems: 'center'
                                   }}
                                 >
+                                  <Heading sx={{ mb: 3 }}>Impact estimation tags</Heading>
                                   <Text sx={{ textAlign: 'center' }}>
                                     GovAlpha applies impact estimations to active governance items (MIPs and
                                     Signal Requests).
-                                    <br />
                                     <br />
                                     To know more about impact tags please visit the{' '}
                                     <ExternalLink

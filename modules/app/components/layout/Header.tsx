@@ -16,27 +16,27 @@ import {
   IconButton,
   Divider,
   Text,
-  useColorMode,
-  Badge
+  useColorMode
+  // Badge
 } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect /*, useMemo */ } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-// import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
+import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import useSWR, { useSWRConfig } from 'swr';
-import { PollsResponse } from 'modules/polling/types/pollsResponse';
-import { Proposal } from 'modules/executive/types';
-import { fetchJson } from 'lib/fetchJson';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+// import { useSWR, useSWRConfig } from 'swr';
+// import { PollsResponse } from 'modules/polling/types/pollsResponse';
+// import { Proposal } from 'modules/executive/types';
+// import { fetchJson } from 'lib/fetchJson';
+// import { isActivePoll } from 'modules/polling/helpers/utils';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ClientRenderOnly } from '../ClientRenderOnly';
 
@@ -129,7 +129,10 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
             variant: 'menubuttons.default.headerItem'
           }}
         >
-          <MenuItemContent icon="color_mode_sun" label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`} />
+          <MenuItemContent
+            icon={`color_mode_${mode === 'dark' ? 'sun' : 'moon'}`}
+            label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`}
+          />
         </MenuItem>
       </MenuList>
     </Menu>
@@ -142,8 +145,8 @@ const Header = (): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
   const { network } = useWeb3();
-  // const { data: gas } = useGasPrice({ network });
-  const { cache } = useSWRConfig();
+  const { data: gas } = useGasPrice({ network });
+  // const { cache } = useSWRConfig();
   const [mode, setMode] = useColorMode();
 
   const onToggleTheme = () => {
@@ -172,7 +175,6 @@ const Header = (): JSX.Element => {
       pt={3}
       pb={2}
       px={3}
-      // variant="styles.header"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -284,7 +286,7 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {/* {bpi > 1 && account && network === SupportedNetworks.MAINNET && (
+        {bpi > 1 && account && network === SupportedNetworks.MAINNET && gas && (
           <ExternalLink
             title="Ethereum Gas Price"
             href={GASNOW_URL}
@@ -305,7 +307,7 @@ const Header = (): JSX.Element => {
               <Icon name="gas" size={3} />
             </Flex>
           </ExternalLink>
-        )} */}
+        )}
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {bpi > 1 && (
           <Flex mr={3}>
@@ -331,7 +333,7 @@ const Header = (): JSX.Element => {
           <MobileMenu
             hide={() => setShowMobileMenu(false)}
             router={router}
-            // gas={gas}
+            gas={gas}
             onToggleTheme={onToggleTheme}
             mode={mode}
             network={network}
@@ -347,7 +349,7 @@ const Header = (): JSX.Element => {
   );
 };
 
-const MobileMenu = ({ hide, router, /* gas, */ onToggleTheme, mode, network }) => {
+const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -426,7 +428,7 @@ const MobileMenu = ({ hide, router, /* gas, */ onToggleTheme, mode, network }) =
             <InternalLink href="/account" title="View account">
               <MenuItemContent icon="person" label="Account" />
             </InternalLink>
-            {/* {network === SupportedNetworks.MAINNET && (
+            {network === SupportedNetworks.MAINNET && (
               <ExternalLink
                 title="Ethereum Gas Price"
                 href={GASNOW_URL}
@@ -443,7 +445,7 @@ const MobileMenu = ({ hide, router, /* gas, */ onToggleTheme, mode, network }) =
                   }
                 />
               </ExternalLink>
-            )} */}
+            )}
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
@@ -475,7 +477,10 @@ const MobileMenu = ({ hide, router, /* gas, */ onToggleTheme, mode, network }) =
               </ExternalLink>
             </Flex>
             <Flex onClick={onToggleTheme}>
-              <MenuItemContent icon="color_mode_sun" label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`} />
+              <MenuItemContent
+                icon={`color_mode_${mode === 'dark' ? 'sun' : 'moon'}`}
+                label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`}
+              />
             </Flex>
           </Flex>
         </Flex>

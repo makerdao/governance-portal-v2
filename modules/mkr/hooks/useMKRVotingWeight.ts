@@ -26,7 +26,7 @@ export const useMKRVotingWeight = (address?: string): VotingWeightResponse => {
   // Only revalidate every 60 seconds, do not revalidate on mount if it's already fetched
   const { data, error, mutate } = useSWR(
     address ? dataKey : null,
-    () => getMKRVotingWeight(address as string, network),
+    () => getMKRVotingWeight(address as string, network, false),
     {
       revalidateOnFocus: false,
       revalidateOnMount: !cache.get(dataKey),
