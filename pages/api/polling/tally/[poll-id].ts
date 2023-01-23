@@ -14,6 +14,7 @@ import { fetchPollById } from 'modules/polling/api/fetchPollBy';
 import { pollHasStarted } from 'modules/polling/helpers/utils';
 import { PollTally } from 'modules/polling/types';
 import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 // Returns a PollTally given a pollID
 
@@ -130,8 +131,31 @@ import { ApiError } from 'modules/app/api/ApiError';
  *               $ref: '#/definitions/Tally'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-  const poll = await fetchPollById(parseInt(req.query['poll-id'] as string, 10), network);
+  // validate network
+  const network = validateQueryParam(
+    (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+    'string',
+    {
+      defaultValue: null,
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
+  ) as SupportedNetworks;
+
+  // validate pollId
+  const pollId = validateQueryParam(
+    req.query['poll-id'],
+    'number',
+    {
+      defaultValue: null,
+      minValue: 0
+    },
+    n => !!n,
+    new ApiError('Invalid poll id', 400, 'Invalid poll id')
+  ) as number;
+
+  const poll = await fetchPollById(pollId, network);
 
   if (!poll) {
     throw new ApiError('Poll not found', 404, 'Poll not found');

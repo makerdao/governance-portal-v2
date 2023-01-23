@@ -6,23 +6,34 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
-
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressDelegationHistoryCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { ApiError } from 'modules/app/api/ApiError';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-  const address = req.query.address as string;
+  // validate network
+  const network = validateQueryParam(
+    (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+    'string',
+    {
+      defaultValue: null,
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
+  ) as SupportedNetworks;
 
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  const address = await validateAddress(
+    req.query.address as string,
+    new ApiError('Invalid address', 400, 'Invalid address')
+  );
 
   const cacheKey = getAddressDelegationHistoryCacheKey(address);
   const cachedResponse = await cacheGet(cacheKey, network);

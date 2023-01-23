@@ -12,11 +12,9 @@ import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/co
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { verifyCommentParameters } from 'modules/comments/api/verifyCommentParameters';
 import { insertPollComments } from 'modules/comments/api/insertPollingComments';
-import logger from 'lib/logger';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getGaslessNetwork } from 'modules/web3/helpers/chain';
 import { ApiError } from 'modules/app/api/ApiError';
-import { API_ERROR_CODES } from 'modules/app/constants/apiErrors';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {

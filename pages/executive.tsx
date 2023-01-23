@@ -509,7 +509,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds
     props: {
       proposals,
-      staticPageGenerationTimeout: 120
+      staticPageGenerationTimeout: 180
     }
   };
 };
