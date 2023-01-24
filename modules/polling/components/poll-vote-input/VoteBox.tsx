@@ -22,8 +22,8 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
   const showQuickVote = canVote && bpi > 0;
 
   return (
-    <Box {...props} data-testid="poll-vote-box">
-      <Heading mb={2} as="h3" variant="microHeading">
+    <Box {...props} data-testid="poll-vote-box" sx={{ mt: 2 }}>
+      <Heading mb={3} as="h3" variant="microHeading">
         Your Vote
       </Heading>
       <Card variant="compact">

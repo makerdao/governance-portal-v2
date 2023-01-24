@@ -180,7 +180,7 @@ const AccountSelect = (): React.ReactElement => {
       />
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
-        <DialogContent aria-label="Change Wallet">
+        <DialogContent ariaLabel="Change Wallet">
           {changeWallet ? (
             <>
               <BackButton onClick={() => setChangeWallet(false)} />

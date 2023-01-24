@@ -20,11 +20,22 @@ import {
 } from 'modules/cache/constants/cache-keys';
 import { config } from 'lib/config';
 import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 // Deletes cache for a tally
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+    // validate network
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
+    ) as SupportedNetworks;
 
     // Allowed cache keys to be deleted, they can be partial since we just check that the key is on the requested path.
     const allowedCacheKeys = [

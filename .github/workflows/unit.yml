@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.19.0-chrome100-ff99-edge
     env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

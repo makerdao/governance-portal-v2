@@ -25,12 +25,15 @@ export type MKRVotingWeightResponse = {
 // returns the voting weight for an address
 export async function getMKRVotingWeight(
   address: string,
-  network: SupportedNetworks
+  network: SupportedNetworks,
+  checkDelegate: boolean
 ): Promise<MKRVotingWeightResponse> {
   const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
   // first check if the address is a delegate contrac and if so return the balance locked in the delegate contract
-  const voteDelegateAddress = await getDelegateContractAddress(contracts, address);
+  const voteDelegateAddress = checkDelegate
+    ? await getDelegateContractAddress(contracts, address)
+    : undefined;
   if (voteDelegateAddress) {
     const mkrDelegate = await contracts.mkr.balanceOf(voteDelegateAddress);
     const mkrChiefDelegate = await contracts.chief.deposits(voteDelegateAddress);
