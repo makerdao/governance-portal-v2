@@ -18,7 +18,7 @@ import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecuti
 
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight } = useMKRVotingWeight(account);
+  const { data: votingWeight } = useMKRVotingWeight(true, account);
   const votingWeightCopy = getPollingVotingWeightCopy(!!voteDelegateContractAddress);
 
   return (

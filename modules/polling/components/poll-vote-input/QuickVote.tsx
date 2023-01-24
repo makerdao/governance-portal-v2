@@ -7,9 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState, useEffect, useContext } from 'react';
-import { Text, Flex, Button, Box } from 'theme-ui';
+import { Text, Flex, Button } from 'theme-ui';
 import invariant from 'tiny-invariant';
-import isEqual from 'lodash/isEqual';
 import { Poll } from 'modules/polling/types';
 import {
   extractCurrentPollVote,
@@ -50,7 +49,7 @@ const QuickVote = ({
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight, loading } = useMKRVotingWeight(account);
+  const { data: votingWeight, loading } = useMKRVotingWeight(true, account);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
