@@ -22,7 +22,7 @@ export function AddressMKRDelegatedStats({
   totalMKRDelegated?: number;
   address: string;
 }): React.ReactElement {
-  const { data: votingWeight } = useMKRVotingWeight(address);
+  const { data: votingWeight } = useMKRVotingWeight({ address, excludeDelegateOwnerBalance: true });
 
   return (
     <Flex

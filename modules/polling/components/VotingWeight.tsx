@@ -67,7 +67,7 @@ export const getDescription = ({
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
 
-  const { data: votingWeight } = useMKRVotingWeight(account);
+  const { data: votingWeight } = useMKRVotingWeight({ address: account });
 
   const votingWeightCopy = getPollingVotingWeightCopy(!!voteDelegateContractAddress);
 
