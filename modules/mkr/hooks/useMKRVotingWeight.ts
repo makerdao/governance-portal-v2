@@ -17,7 +17,15 @@ type VotingWeightResponse = {
   mutate: () => void;
 };
 
-export const useMKRVotingWeight = (checkDelegate: boolean, address?: string): VotingWeightResponse => {
+export const useMKRVotingWeight = ({
+  address,
+  excludeDelegateOwnerBalance = false
+}: {
+  address?: string;
+  // this needs to be "true" when displaying the MKR balance of a delegate contract
+  // they can have voting power through their delegate contract, but the balance is not theirs
+  excludeDelegateOwnerBalance?: boolean;
+}): VotingWeightResponse => {
   const { network } = useWeb3();
   const { cache } = useSWRConfig();
 
@@ -26,7 +34,7 @@ export const useMKRVotingWeight = (checkDelegate: boolean, address?: string): Vo
   // Only revalidate every 60 seconds, do not revalidate on mount if it's already fetched
   const { data, error, mutate } = useSWR(
     address ? dataKey : null,
-    () => getMKRVotingWeight(address as string, network, checkDelegate),
+    () => getMKRVotingWeight(address as string, network, excludeDelegateOwnerBalance),
     {
       revalidateOnFocus: false,
       revalidateOnMount: !cache.get(dataKey),

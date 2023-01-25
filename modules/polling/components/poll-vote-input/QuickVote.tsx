@@ -49,7 +49,7 @@ const QuickVote = ({
 }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight, loading } = useMKRVotingWeight(true, account);
+  const { data: votingWeight, loading } = useMKRVotingWeight({ address: account });
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );

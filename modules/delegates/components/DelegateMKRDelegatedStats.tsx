@@ -30,7 +30,7 @@ export function DelegateMKRDelegatedStats({
   // TODO: Fetch addresses suporting through API fetching
 
   const { data: mkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
-  const { data: votingWeight } = useMKRVotingWeight(true, delegate.voteDelegateAddress);
+  const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
 
   return (
     <Flex
