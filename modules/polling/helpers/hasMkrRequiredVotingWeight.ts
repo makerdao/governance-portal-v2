@@ -20,7 +20,7 @@ export async function hasMkrRequiredVotingWeight(
   //verify address has a poll weight > weight param
   let hasMkrRequired = false;
   try {
-    const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network, true);
+    const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network, false);
     hasMkrRequired = canBeEqual ? pollWeight.total.gte(weight) : pollWeight.total.gt(weight);
   } catch (err) {
     logger.error(err);
