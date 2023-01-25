@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatValue } from 'lib/string';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -39,7 +38,6 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 const AccountPage = (): React.ReactElement => {
-  const bpi = useBreakpointIndex();
   const { network } = useWeb3();
   const {
     account,
@@ -193,7 +191,10 @@ const AccountPage = (): React.ReactElement => {
                         trackButtonClick('createDelegate');
                         create({
                           initialized: () => setModalOpen(true),
-                          mined: () => mutateAccount && mutateAccount()
+                          mined: () => {
+                            mutateAccount && mutateAccount();
+                            setModalOpen(false);
+                          }
                         });
                       }}
                       sx={{ mt: 3, mb: 1 }}
