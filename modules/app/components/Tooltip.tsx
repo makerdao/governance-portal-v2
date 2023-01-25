@@ -30,7 +30,14 @@ export default function TooltipComponent({ children, label, ...props }): JSX.Ele
     </Box>
   ) : (
     <Tooltip
-      sx={{ bg: 'surface', borderColor: 'secondary', color: 'text', fontSize: 3, borderRadius: 'medium' }}
+      sx={{
+        bg: 'surface',
+        borderColor: 'secondary',
+        color: 'text',
+        fontSize: 3,
+        borderRadius: 'medium',
+        zIndex: 2
+      }}
       label={label}
       {...props}
     >
