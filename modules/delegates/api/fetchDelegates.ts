@@ -17,7 +17,8 @@ import {
   DelegatesAPIResponse,
   Delegate,
   DelegateContractInformation,
-  DelegateRepoInformation
+  DelegateRepoInformation,
+  DelegatesAPIQueryParams
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -30,10 +31,18 @@ import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
-import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import {
+  delegateAddressLinks,
+  getNewOwnerFromPrevious,
+  getPreviousOwnerFromNew
+} from 'modules/migration/delegateAddressLinks';
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { delegatesQuery } from 'modules/gql/queries/delegates';
+import { Query } from 'modules/gql/generated/graphql';
+import { getAddress } from 'ethers/lib/utils';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -301,4 +310,82 @@ export async function fetchDelegates(
   cacheSet(cacheKey, JSON.stringify(delegatesResponse), network, TEN_MINUTES_IN_MS);
 
   return delegatesResponse;
+}
+
+export async function fetchDelegatesPaginated(
+  queryParams: DelegatesAPIQueryParams
+): Promise</*DelegatesAPIResponse*/ any> {
+  const network = queryParams.network;
+  const { data: githubDelegates } = await fetchGithubDelegates(network);
+  const githubExecutives = await getGithubExecutives(network);
+  const tags = getDelegateTags();
+  // const ghVoteDelegateAddresses =
+  //   githubDelegates?.map(delegate => delegate.voteDelegateAddress.toLowerCase()) || null;
+  // const migratedDelegateAddresses = (
+  //   [
+  //     ...Object.keys(delegateAddressLinks[network]),
+  //     ...Object.values(delegateAddressLinks[network])
+  //   ] as string[]
+  // ).map(delegate => delegate.toLowerCase());
+
+  const chainId = networkNameToChainId(network);
+  const res = await gqlRequest<any>({
+    chainId,
+    query: delegatesQuery,
+    variables: queryParams
+  });
+
+  const contracts = getContracts(chainId, undefined, undefined, true);
+
+  const delegatesData = {
+    stats: {
+      totalCount: res.delegates.totalCount,
+      hasNextPage: res.delegates.pageInfo.hasNextPage,
+      endCursor: res.delegates.pageInfo.endCursor
+    },
+    delegates: await Promise.all(
+      res.delegates.nodes.map(async delegate => {
+        const githubDelegate = githubDelegates?.find(
+          ghDelegate => ghDelegate.voteDelegateAddress.toLowerCase() === delegate.voteDelegate.toLowerCase()
+        );
+        const votedSlate = await contracts.chief.votes(delegate.voteDelegate);
+        const votedProposals =
+          votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
+        const execSupported = githubExecutives?.find(exec =>
+          votedProposals?.find(vp => vp.toLowerCase() === exec?.address?.toLowerCase())
+        );
+
+        return {
+          voteDelegateAddress: delegate.voteDelegate,
+          address: delegate.delegate,
+          status: delegate.expired
+            ? DelegateStatusEnum.expired
+            : githubDelegate
+            ? DelegateStatusEnum.recognized
+            : DelegateStatusEnum.shadow,
+          expired: delegate.expired,
+          isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
+          blockTimestamp: new Date(delegate.creationDate),
+          expirationDate: new Date(delegate.expirationDate),
+          name: githubDelegate?.name || 'Shadow Delegate',
+          description: githubDelegate ? githubDelegate.description.substring(0, 100) + '...' : '',
+          picture: githubDelegate?.picture || '',
+          externalUrl: githubDelegate?.externalUrl,
+          communication: githubDelegate?.communication,
+          combinedParticipation: githubDelegate?.combinedParticipation,
+          pollParticipation: githubDelegate?.pollParticipation,
+          executiveParticipation: githubDelegate?.executiveParticipation,
+          cuMember: githubDelegate?.cuMember,
+          lastVoteDate: new Date(delegate.lastVoted),
+          mkrDelegated: delegate.totalMkr,
+          proposalsSupported: votedProposals?.length || 0,
+          execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
+          delegatorCount: delegate.delegatorCount,
+          tags: (githubDelegate?.tags || []).map(tag => tags.find(t => t.id === tag)?.id).filter(t => !!t)
+        };
+      })
+    )
+  };
+
+  return delegatesData;
 }

@@ -17,11 +17,11 @@ type Options = {
 
 export default function validateQueryParam(
   value: any,
-  type: 'number' | 'string' | 'date',
+  type: 'number' | 'string' | 'date' | 'boolean',
   options: Options,
   validationFunction = (val: any) => true,
   validationError = new ApiError('Invalid query parameter', 400)
-): number | string | Date | null {
+): number | string | Date | boolean | null {
   const parsedValue = getParsedValue(value, type, options);
 
   const valid = validationFunction(parsedValue);
@@ -36,9 +36,9 @@ export default function validateQueryParam(
 // Returns the parsed value or the default value of a query parameter
 function getParsedValue(
   value: any,
-  type: 'number' | 'string' | 'date',
+  type: 'number' | 'string' | 'date' | 'boolean',
   options: Options
-): number | string | Date | null {
+): number | string | Date | boolean | null {
   try {
     if (type === 'number') {
       const parsed = parseInt(value, 10);
@@ -71,6 +71,10 @@ function getParsedValue(
       }
 
       return value;
+    } else if (type === 'boolean') {
+      if (value.toLowerCase() === 'true') return true;
+      else if (value.toLowerCase() === 'false') return false;
+      else return options.defaultValue;
     } else {
       if (!value) {
         return options.defaultValue;

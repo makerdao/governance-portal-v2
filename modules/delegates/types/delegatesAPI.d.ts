@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Delegate } from './delegate';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type DelegatesAPIStats = {
   total: number;
@@ -23,4 +24,14 @@ export type DelegatesAPIResponse = {
     page: number;
     pageSize: number;
   };
+};
+
+export type DelegatesAPIQueryParams = {
+  network: SupportedNetworks;
+  first: number;
+  after: string | null;
+  includeExpired: boolean;
+  orderBy: string;
+  orderDirection: string;
+  status: string;
 };
