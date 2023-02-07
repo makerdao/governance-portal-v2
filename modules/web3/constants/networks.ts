@@ -59,7 +59,7 @@ export const CHAIN_INFO: ChainInfo = {
     spockUrl: process.env.NODE_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
-      [NodeProviders.ALCHEMY]: `https://eth-mainnet.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
+      [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`
     }
   },
   [SupportedChainId.GOERLI]: {
