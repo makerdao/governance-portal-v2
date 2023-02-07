@@ -102,3 +102,8 @@ export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
   hash: string;
   immediateCaller: string;
 };
+
+export type DelegateExecSupport = {
+  voteDelegate: string;
+  votedProposals: string[];
+};
