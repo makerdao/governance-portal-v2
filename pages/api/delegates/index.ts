@@ -28,8 +28,8 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *          description: "Network name"
  *          required: false
  *          type: "string"
- *          enum: [GOERLI, GOERLIFORK, MAINNET]
- *          default: "MAINNET"
+ *          enum: [goerli, mainnet]
+ *          default: "mainnet"
  *        - name: "sortBy"
  *          in: "query"
  *          description: "Sort by criteria"
