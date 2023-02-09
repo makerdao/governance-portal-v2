@@ -98,7 +98,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       expired:
  *         type: boolean
  *       isAboutToExpire:
-  *         type: boolean
+ *         type: boolean
  *       expirationDate:
  *         type: string
  *         format: date-time
@@ -120,7 +120,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       proposalsSupported:
  *         type: number
  *       execSupported:
- *         $ref: "#/definitions/CMSProposal"
+ *         $ref: "#/definitions/Executive"
  *       mkrLockedDelegate:
  *         type: array
  *         items:
@@ -145,6 +145,44 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *             type: string
  *           voteDelegateAddress:
  *             type: string
+ *   MKRLockedDelegateAPIResponse:
+ *     type: object
+ *     properties:
+ *       fromAddress:
+ *         type: string
+ *       immediateCaller:
+ *         type: string
+ *       delegateContractAddress:
+ *         type: string
+ *       lockAmount:
+ *         type: string
+ *       blockNumber:
+ *         type: number
+ *       blockTimestamp:
+ *         type: string
+ *       lockTotal:
+ *         type: string
+ *       callerLockTotal:
+ *         type: string
+ *       hash:
+ *         type: string
+ *   Tag:
+ *     type: object
+ *     properties:
+ *       id:
+ *         type: string
+ *       shortname:
+ *         type: string
+ *       longname:
+ *         type: string
+ *       description:
+ *         type: string
+ *       recommend_ui:
+ *         type: boolean
+ *       related_link:
+ *         type: string
+ *       precedence:
+ *         type: number
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
   const network = validateQueryParam(req.query.network, 'string', {
