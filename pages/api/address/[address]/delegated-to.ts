@@ -18,7 +18,50 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
+/**
+ * @swagger
+ * 
+ * paths:
+ * api/address/[address]/delegated-to:
+  get:
+    description: Retrieve MKR delegated to information
+    parameters:
+      - in: query
+        name: network
+        description: Network to fetch the data from
+        schema:
+          type: string
+        enum: [goerli, mainnet]
+        required: false
+      - in: query
+        name: address
+        description: Ethereum address to retrieve delegated MKR information for
+        schema:
+          type: string
+        required: true
+    responses:
+      200:
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delegatedTo:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      events:
+                        type: array
+                        items:
+                          type: object
+                      lockAmount:
+                        type: string
+                totalDelegated:
+                  type: integer
 
+ */
 export type MKRDelegatedToAPIResponse = {
   delegatedTo: DelegationHistoryWithExpirationDate[];
   totalDelegated: number;
