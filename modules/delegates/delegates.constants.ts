@@ -18,6 +18,12 @@ export enum MKRWeightTimeRanges {
   month = 'month'
 }
 
+export enum DelegateTypeEnum {
+  RECOGNIZED = 'RECOGNIZED',
+  SHADOW = 'SHADOW',
+  ALL = 'ALL'
+}
+
 export const MEET_DELEGATE_URLS = {
   // Schuppi
   '0xb4b82978fce6d26a22dea7e653bb9ce8e14f8056': 'https://www.youtube-nocookie.com/embed/3483QFS4_qQ',

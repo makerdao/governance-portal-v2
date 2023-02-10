@@ -18,13 +18,11 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
 }> {
   const cachedResponse = await cacheGet(allDelegatesExecSupportKey, network);
   if (cachedResponse) {
-    console.log('Executing cache');
     return {
       error: false,
       data: JSON.parse(cachedResponse)
     };
   }
-  console.log('Not executing cache');
 
   try {
     const chainId = networkNameToChainId(network);
