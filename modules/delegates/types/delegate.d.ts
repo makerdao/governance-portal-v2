@@ -67,6 +67,40 @@ export type Delegate = {
   };
 };
 
+export type DelegatePaginated = {
+  name: string;
+  voteDelegateAddress: string;
+  ownerAddress: string;
+  status: DelegateStatus;
+  creationDate: Date;
+  expirationDate: Date;
+  expired: boolean;
+  isAboutToExpire: boolean;
+  picture?: string;
+  communication?: string;
+  combinedParticipation?: string;
+  pollParticipation?: string;
+  executiveParticipation?: string;
+  cuMember?: boolean;
+  mkrDelegated: string;
+  delegatorCount: number;
+  lastVoteDate: Date;
+  proposalsSupported: number;
+  execSupported?: {
+    title: string;
+    address: string;
+  };
+  tags?: string[];
+  previous?: {
+    ownerAddress: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    ownerAddress: string;
+    voteDelegateAddress: string;
+  };
+};
+
 export type DelegationHistory = {
   address: string;
   lockAmount: string;
@@ -106,4 +140,10 @@ export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
 export type DelegateExecSupport = {
   voteDelegate: string;
   votedProposals: string[];
+};
+
+export type AllDelegatesEntry = {
+  blockTimestamp: Date;
+  delegate: string;
+  voteDelegate: string;
 };

@@ -6,8 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Delegate } from './delegate';
+import { Delegate, DelegatePaginated } from './delegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { DelegateTypeEnum } from '../delegates.constants';
 
 export type DelegatesAPIStats = {
   total: number;
@@ -26,12 +27,25 @@ export type DelegatesAPIResponse = {
   };
 };
 
-export type DelegatesAPIQueryParams = {
+export type DelegatesValidatedQueryParams = {
   network: SupportedNetworks;
-  first: number;
-  after: string | null;
+  pageSize: number;
+  page: number;
   includeExpired: boolean;
   orderBy: string;
   orderDirection: string;
-  status: string;
+  delegateType: DelegateTypeEnum;
+  name: string | null;
+  tags: string[] | null;
+};
+
+export type DelegatesPaginatedAPIResponse = {
+  paginationInfo: {
+    totalCount: number;
+    page: number;
+    numPages: number;
+    hasNextPage: boolean;
+  };
+  stats: DelegatesAPIStats;
+  delegates: DelegatePaginated[];
 };

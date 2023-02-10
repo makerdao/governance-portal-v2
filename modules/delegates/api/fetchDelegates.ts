@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { fetchChainDelegates } from './fetchChainDelegates';
-import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
+import { DelegateStatusEnum, DelegateTypeEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { add, isBefore } from 'date-fns';
@@ -18,7 +18,8 @@ import {
   Delegate,
   DelegateContractInformation,
   DelegateRepoInformation,
-  DelegatesAPIQueryParams
+  DelegatesValidatedQueryParams,
+  DelegatesPaginatedAPIResponse
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -31,20 +32,16 @@ import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
 import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
-import {
-  delegateAddressLinks,
-  getNewOwnerFromPrevious,
-  getPreviousOwnerFromNew
-} from 'modules/migration/delegateAddressLinks';
+import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { delegatesQuery } from 'modules/gql/queries/delegates';
-import { Query } from 'modules/gql/generated/graphql';
-import { getAddress } from 'ethers/lib/utils';
 import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
-import { delegateContractsByOwnersQuery } from 'modules/gql/queries/delegateContractsByOwners';
+import { fetchDelegateAddresses } from './fetchDelegateAddresses';
+import getDelegatesCounts from '../helpers/getDelegatesCounts';
+import { filterDelegateAddresses } from '../helpers/filterDelegates';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -314,82 +311,97 @@ export async function fetchDelegates(
   return delegatesResponse;
 }
 
-export async function fetchDelegatesPaginated(
-  queryParams: DelegatesAPIQueryParams
-): Promise</*DelegatesAPIResponse*/ any> {
-  const network = queryParams.network;
-  const { data: githubDelegates } = await fetchGithubDelegates(network);
-  const tags = getDelegateTags();
-  const ghVoteDelegateAddresses =
-    githubDelegates?.map(delegate => delegate.voteDelegateAddress.toLowerCase()) || null;
-  const migratedDelegateAddresses = (
-    [
-      ...Object.keys(delegateAddressLinks[network]),
-      ...Object.values(delegateAddressLinks[network])
-    ] as string[]
-  ).map(delegate => delegate.toLowerCase());
-
+export async function fetchDelegatesPaginated({
+  network,
+  pageSize,
+  page,
+  includeExpired,
+  orderBy,
+  orderDirection,
+  delegateType,
+  name,
+  tags
+}: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
+  const allTags = getDelegateTags();
+  const queryTags = tags?.filter(tag => allTags.some(t => t.id.toLowerCase() === tag.toLowerCase())) || null;
+
+  const [{ data: githubDelegates }, allDelegateAddresses] = await Promise.all([
+    fetchGithubDelegates(network),
+    fetchDelegateAddresses(network)
+  ]);
+
+  const filteredDelegates = filterDelegateAddresses(
+    githubDelegates,
+    allDelegateAddresses,
+    network,
+    queryTags,
+    name
+  );
 
   const delegatesQueryFilter =
-    queryParams.status === 'RECOGNIZED'
-      ? {
-          or: [
-            { voteDelegate: { in: ghVoteDelegateAddresses } },
-            { delegate: { in: migratedDelegateAddresses } }
-          ]
-        }
-      : queryParams.status === 'SHADOW'
-      ? {
-          and: [
-            { voteDelegate: { notIn: ghVoteDelegateAddresses } },
-            { delegate: { notIn: migratedDelegateAddresses } }
-          ]
-        }
+    delegateType === DelegateTypeEnum.RECOGNIZED
+      ? { voteDelegate: { in: filteredDelegates } }
+      : delegateType === DelegateTypeEnum.SHADOW
+      ? { voteDelegate: { notIn: filteredDelegates } }
       : null;
 
-  const delegatesQueryVariables = { ...queryParams };
-  if (delegatesQueryFilter) delegatesQueryVariables['filter'] = delegatesQueryFilter;
+  const delegatesQueryVariables = {
+    first: pageSize,
+    offset: (page - 1) * pageSize,
+    includeExpired,
+    orderBy,
+    orderDirection
+  };
+  if (delegatesQueryFilter) {
+    delegatesQueryVariables['filter'] = delegatesQueryFilter;
+  }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegateContractsByOwnersQueryRes] =
-    await Promise.all([
-      getGithubExecutives(network),
-      fetchDelegatesExecSupport(network),
-      gqlRequest<any>({
-        chainId,
-        query: delegatesQuery,
-        variables: delegatesQueryVariables
-      }),
-      gqlRequest<any>({
-        chainId,
-        query: delegateContractsByOwnersQuery,
-        variables: {
-          owners: migratedDelegateAddresses
-        }
-      })
-    ]);
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes] = await Promise.all([
+    getGithubExecutives(network),
+    fetchDelegatesExecSupport(network),
+    gqlRequest<any>({
+      chainId,
+      query: delegatesQuery,
+      variables: delegatesQueryVariables
+    })
+  ]);
 
-  const delegateContractsByOwners = delegateContractsByOwnersQueryRes.allDelegates.nodes;
+  const { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
+    githubDelegates,
+    allDelegateAddresses,
+    network
+  );
 
   const delegatesData = {
-    stats: {
+    paginationInfo: {
       totalCount: delegatesQueryRes.delegates.totalCount,
-      hasNextPage: delegatesQueryRes.delegates.pageInfo.hasNextPage,
-      endCursor: delegatesQueryRes.delegates.pageInfo.endCursor
+      page,
+      numPages: Math.ceil(delegatesQueryRes.delegates.totalCount / pageSize),
+      hasNextPage: delegatesQueryRes.delegates.pageInfo.hasNextPage
+    },
+    stats: {
+      total: totalDelegatesCount,
+      shadow: shadowDelegatesCount,
+      recognized: recognizedDelegatesCount,
+      totalMKRDelegated: '0',
+      totalDelegators: 0
     },
     delegates: delegatesQueryRes.delegates.nodes.map(delegate => {
       const delegateContracts = [delegate.voteDelegate];
+
       // check if delegate owner has link to a previous contract or newer contract
-      const previousOwnerAddress = getPreviousOwnerFromNew(delegate.delegate, network);
+      const previousOwnerAddress = getPreviousOwnerFromNew(delegate.delegate, network)?.toLowerCase();
+      const newOwnerAddress = getNewOwnerFromPrevious(delegate.delegate, network)?.toLowerCase();
+
       const previousDelegateContract =
         previousOwnerAddress &&
-        delegateContractsByOwners.find(i => i.delegate.toLowerCase() === previousOwnerAddress.toLowerCase())
-          ?.voteDelegate;
-      const newOwnerAddress = getNewOwnerFromPrevious(delegate.delegate, network);
+        allDelegateAddresses.find(i => i.delegate.toLowerCase() === previousOwnerAddress)?.voteDelegate;
+
       const newDelegateContract =
         newOwnerAddress &&
-        delegateContractsByOwners.find(i => i.delegate.toLowerCase() === newOwnerAddress.toLowerCase())
-          ?.voteDelegate;
+        allDelegateAddresses.find(i => i.delegate.toLowerCase() === newOwnerAddress)?.voteDelegate;
+
       previousDelegateContract && delegateContracts.push(previousDelegateContract);
       newDelegateContract && delegateContracts.push(newDelegateContract);
 
@@ -407,40 +419,38 @@ export async function fetchDelegatesPaginated(
       );
 
       return {
+        name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.voteDelegate,
-        address: delegate.delegate,
+        ownerAddress: delegate.delegate,
         status: delegate.expired
           ? DelegateStatusEnum.expired
           : githubDelegate
           ? DelegateStatusEnum.recognized
           : DelegateStatusEnum.shadow,
+        creationDate: new Date(delegate.creationDate),
+        expirationDate: new Date(delegate.expirationDate),
         expired: delegate.expired,
         isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
-        blockTimestamp: new Date(delegate.creationDate),
-        expirationDate: new Date(delegate.expirationDate),
-        name: githubDelegate?.name || 'Shadow Delegate',
-        description: githubDelegate?.description && githubDelegate.description.substring(0, 100) + '...',
         picture: githubDelegate?.picture,
-        externalUrl: githubDelegate?.externalUrl,
         communication: githubDelegate?.communication,
         combinedParticipation: githubDelegate?.combinedParticipation,
         pollParticipation: githubDelegate?.pollParticipation,
         executiveParticipation: githubDelegate?.executiveParticipation,
         cuMember: githubDelegate?.cuMember,
-        lastVoteDate: new Date(delegate.lastVoted),
         mkrDelegated: delegate.totalMkr,
+        delegatorCount: delegate.delegatorCount,
+        lastVoteDate: new Date(delegate.lastVoted),
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
-        delegatorCount: delegate.delegatorCount,
         tags:
           githubDelegate?.tags &&
-          githubDelegate.tags.map(tag => tags.find(t => t.id === tag)?.id).filter(t => !!t),
+          githubDelegate.tags.map(tag => allTags.find(t => t.id === tag)?.id).filter(t => !!t),
         previous: previousOwnerAddress && {
-          address: previousOwnerAddress,
+          ownerAddress: previousOwnerAddress,
           voteDelegateAddress: previousDelegateContract
         },
         next: newOwnerAddress && {
-          address: newOwnerAddress,
+          ownerAddress: newOwnerAddress,
           voteDelegateAddress: newDelegateContract
         }
       };
