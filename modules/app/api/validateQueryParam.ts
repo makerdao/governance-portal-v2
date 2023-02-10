@@ -17,11 +17,11 @@ type Options = {
 
 export default function validateQueryParam(
   value: any,
-  type: 'number' | 'string' | 'date' | 'boolean',
+  type: 'number' | 'string' | 'date' | 'boolean' | 'array',
   options: Options,
   validationFunction = (val: any) => true,
   validationError = new ApiError('Invalid query parameter', 400)
-): number | string | Date | boolean | null {
+): number | string | Date | boolean | string[] | null {
   const parsedValue = getParsedValue(value, type, options);
 
   const valid = validationFunction(parsedValue);
@@ -36,9 +36,9 @@ export default function validateQueryParam(
 // Returns the parsed value or the default value of a query parameter
 function getParsedValue(
   value: any,
-  type: 'number' | 'string' | 'date' | 'boolean',
+  type: 'number' | 'string' | 'date' | 'boolean' | 'array',
   options: Options
-): number | string | Date | boolean | null {
+): number | string | Date | boolean | string[] | null {
   try {
     if (type === 'number') {
       const parsed = parseInt(value, 10);
@@ -72,9 +72,22 @@ function getParsedValue(
 
       return value;
     } else if (type === 'boolean') {
-      if (value.toLowerCase() === 'true') return true;
-      else if (value.toLowerCase() === 'false') return false;
-      else return options.defaultValue;
+      if (typeof value !== 'string') {
+        return options.defaultValue;
+      }
+      if (value.toLowerCase() === 'true') {
+        return true;
+      } else if (value.toLowerCase() === 'false') {
+        return false;
+      } else {
+        return options.defaultValue;
+      }
+    } else if (type === 'array') {
+      if (typeof value !== 'string') {
+        return options.defaultValue;
+      }
+      const parsed = value.split(',');
+      return parsed;
     } else {
       if (!value) {
         return options.defaultValue;
