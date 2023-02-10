@@ -200,105 +200,105 @@ export async function fetchDelegates(
 ): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
-  const cacheKey = allDelegatesCacheKey;
-  const cachedResponse = await cacheGet(cacheKey, network);
-  if (cachedResponse) {
-    return JSON.parse(cachedResponse);
-  }
+  // const cacheKey = allDelegatesCacheKey;
+  // const cachedResponse = await cacheGet(cacheKey, network);
+  // if (cachedResponse) {
+  //   return JSON.parse(cachedResponse);
+  // }
 
   // This contains all the delegates including info merged with recognized delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
-  const executives = await getGithubExecutives(currentNetwork);
+  // const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
+  // const executives = await getGithubExecutives(currentNetwork);
 
-  const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
-  // Fetch all delegate lock events to calculate total number of delegators
-  const lockEvents = await fetchDelegationEventsByAddresses(delegateAddresses, currentNetwork);
-  const delegationHistory = formatDelegationHistory(lockEvents);
+  // const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
+  // // Fetch all delegate lock events to calculate total number of delegators
+  // const lockEvents = await fetchDelegationEventsByAddresses(delegateAddresses, currentNetwork);
+  // const delegationHistory = formatDelegationHistory(lockEvents);
 
-  const delegates = await Promise.all(
-    delegatesInfo.map(async delegate => {
-      const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
-      const votedProposals =
-        votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
-      const proposalsSupported: number = votedProposals?.length || 0;
-      const execSupported: CMSProposal | undefined = executives?.find(proposal =>
-        votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
-      );
+  // const delegates = await Promise.all(
+  //   delegatesInfo.map(async delegate => {
+  //     const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
+  //     const votedProposals =
+  //       votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
+  //     const proposalsSupported: number = votedProposals?.length || 0;
+  //     const execSupported: CMSProposal | undefined = executives?.find(proposal =>
+  //       votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
+  //     );
 
-      // Filter the lock events to get only the ones for this delegate address
-      const mkrLockedDelegate = lockEvents.filter(
-        ({ delegateContractAddress }) =>
-          delegateContractAddress.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
-      );
+  //     // Filter the lock events to get only the ones for this delegate address
+  //     const mkrLockedDelegate = lockEvents.filter(
+  //       ({ delegateContractAddress }) =>
+  //         delegateContractAddress.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
+  //     );
 
-      const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
+  //     const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
 
-      return {
-        ...delegate,
-        // Trim the description when fetching all the delegates
-        description: delegate.description.substring(0, 100) + '...',
-        proposalsSupported,
-        execSupported: execSupported
-          ? {
-              ...execSupported,
-              content: '...',
-              about: '...',
-              proposalBlurb: '...'
-            }
-          : undefined,
-        lastVoteDate: lastVote ? lastVote.blockTimestamp : null,
-        mkrLockedDelegate
-      };
-    })
-  );
+  //     return {
+  //       ...delegate,
+  //       // Trim the description when fetching all the delegates
+  //       description: delegate.description.substring(0, 100) + '...',
+  //       proposalsSupported,
+  //       execSupported: execSupported
+  //         ? {
+  //             ...execSupported,
+  //             content: '...',
+  //             about: '...',
+  //             proposalBlurb: '...'
+  //           }
+  //         : undefined,
+  //       lastVoteDate: lastVote ? lastVote.blockTimestamp : null,
+  //       mkrLockedDelegate
+  //     };
+  //   })
+  // );
 
-  const sortedDelegates = delegates.sort((a, b) => {
-    if (sortBy === 'mkr') {
-      const bSupport = b.mkrDelegated ? b.mkrDelegated : 0;
-      const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
-      return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
-    } else if (sortBy === 'date') {
-      return a.expirationDate > b.expirationDate ? -1 : 1;
-    } else if (sortBy === 'delegators') {
-      const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
-      const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
-      const activeDelegatorsA = delegationHistoryA.filter(({ lockAmount }) =>
-        new BigNumberJS(lockAmount).gt(0)
-      ).length;
-      const activeDelegatorsB = delegationHistoryB.filter(({ lockAmount }) =>
-        new BigNumberJS(lockAmount).gt(0)
-      ).length;
-      return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
-    } else {
-      // Random sorting
-      return Math.random() * 1 > 0.5 ? -1 : 1;
-    }
-  });
+  // const sortedDelegates = delegates.sort((a, b) => {
+  //   if (sortBy === 'mkr') {
+  //     const bSupport = b.mkrDelegated ? b.mkrDelegated : 0;
+  //     const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
+  //     return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
+  //   } else if (sortBy === 'date') {
+  //     return a.expirationDate > b.expirationDate ? -1 : 1;
+  //   } else if (sortBy === 'delegators') {
+  //     const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
+  //     const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
+  //     const activeDelegatorsA = delegationHistoryA.filter(({ lockAmount }) =>
+  //       new BigNumberJS(lockAmount).gt(0)
+  //     ).length;
+  //     const activeDelegatorsB = delegationHistoryB.filter(({ lockAmount }) =>
+  //       new BigNumberJS(lockAmount).gt(0)
+  //     ).length;
+  //     return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
+  //   } else {
+  //     // Random sorting
+  //     return Math.random() * 1 > 0.5 ? -1 : 1;
+  //   }
+  // });
 
-  // Exclude expired, and dedupe migrated delegates for stats purposes
-  const dedupedDelegates = sortedDelegates
-    .filter(({ status }) => status !== DelegateStatusEnum.expired)
-    .filter(({ next }) => !next);
+  // // Exclude expired, and dedupe migrated delegates for stats purposes
+  // const dedupedDelegates = sortedDelegates
+  //   .filter(({ status }) => status !== DelegateStatusEnum.expired)
+  //   .filter(({ next }) => !next);
 
-  const delegatesResponse: DelegatesAPIResponse = {
-    delegates: sortedDelegates,
-    stats: {
-      total: dedupedDelegates.length,
-      shadow: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
-      recognized: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
-      totalMKRDelegated: new BigNumberJS(
-        delegates.reduce((prev, next) => {
-          const mkrDelegated = new BigNumberJS(next.mkrDelegated);
-          return prev.plus(mkrDelegated);
-        }, new BigNumberJS(0))
-      ).toString(),
-      totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
-    }
-  };
+  // const delegatesResponse: DelegatesAPIResponse = {
+  //   delegates: sortedDelegates,
+  //   stats: {
+  //     total: dedupedDelegates.length,
+  //     shadow: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
+  //     recognized: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
+  //     totalMKRDelegated: new BigNumberJS(
+  //       delegates.reduce((prev, next) => {
+  //         const mkrDelegated = new BigNumberJS(next.mkrDelegated);
+  //         return prev.plus(mkrDelegated);
+  //       }, new BigNumberJS(0))
+  //     ).toString(),
+  //     totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
+  //   }
+  // };
 
-  cacheSet(cacheKey, JSON.stringify(delegatesResponse), network, TEN_MINUTES_IN_MS);
+  // cacheSet(cacheKey, JSON.stringify(delegatesResponse), network, TEN_MINUTES_IN_MS);
 
-  return delegatesResponse;
+  return [];
 }

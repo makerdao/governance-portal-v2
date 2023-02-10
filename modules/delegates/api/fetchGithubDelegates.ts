@@ -20,6 +20,8 @@ import logger from 'lib/logger';
 import { delegatesGithubCacheKey, getDelegateGithubCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
+
+
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
   owner: string,
@@ -134,7 +136,7 @@ async function extractGithubInformationGraphQL(
         externalUrl: external_profile_url,
         description: html,
         tags,
-        combinedParticipation: metricsData.combined_participation,
+        combinedParticipation: metricsData.fetchGithubGraphQLcombined_participation,
         pollParticipation: metricsData.poll_participation,
         executiveParticipation: metricsData.exec_participation,
         communication: metricsData.communication,
@@ -150,24 +152,32 @@ export async function fetchGithubDelegates(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
-  const existingDelegates = await cacheGet(delegatesGithubCacheKey, network, ONE_HOUR_IN_MS);
+  // const existingDelegates = await cacheGet(delegatesGithubCacheKey, network, ONE_HOUR_IN_MS);
 
-  if (existingDelegates) {
-    return Promise.resolve({
-      error: false,
-      data: JSON.parse(existingDelegates)
-    });
-  }
+  // if (existingDelegates) {
+  //   return Promise.resolve({
+  //     error: false,
+  //     data: JSON.parse(existingDelegates)
+  //   });
+  // }
 
   try {
-    const allDelegates = await fetchGithubGraphQL(delegatesRepositoryInfo, allGithubDelegates);
+    
+   
+    const folders = await fetchGitHubPage(
+      delegatesRepositoryInfo.owner,
+      delegatesRepositoryInfo.repo,
+      delegatesRepositoryInfo.page
+    );
+    console.log('EEEEEEEE', JSON.stringify(folders, null, 2))
+throw new Error('test')
     const results = await extractGithubInformationGraphQL(allDelegates, delegatesRepositoryInfo);
 
     // Filter out negatives
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
 
     // Store in cache
-    cacheSet(delegatesGithubCacheKey, JSON.stringify(data), network, ONE_HOUR_IN_MS);
+   // cacheSet(delegatesGithubCacheKey, JSON.stringify(data), network, ONE_HOUR_IN_MS);
 
     return {
       error: false,

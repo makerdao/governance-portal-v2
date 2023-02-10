@@ -16,9 +16,9 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'makerdao',
+    owner: 'makerdao-dux',
     repo: 'community',
-    page: 'governance/delegates'
+    page: 'governance/delegates/meta/delegates.json'
   };
 
   const repoTest = {
