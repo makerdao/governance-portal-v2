@@ -18,6 +18,65 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
+/**
+ * @swagger
+ * /api/address/[address]/delegated-to:
+ *   get:
+ *     tags:
+ *       - "delegates"
+ *     description: Get information about the current delegate to MKR
+ *     parameters:
+ *       - name: address
+ *         in: query
+ *         description: The Ethereum address of the account to check
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: address
+ *       - name: network
+ *         in: query
+ *         description: The Ethereum network to query for information
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [goerli, mainnet]
+ *           default: mainnet
+ *     responses:
+ *       200:
+ *         description: A response with the delegate information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 delegatedTo:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       lockAmount:
+ *                         type: number
+ *                         format: float
+ *                       owner:
+ *                         type: string
+ *                         format: address
+ *                       delegate:
+ *                         type: string
+ *                         format: address
+ *                       expirationDate:
+ *                         type: string
+ *                         format: date-time
+ *                       isAboutToExpire:
+ *                         type: boolean
+ *                       isExpired:
+ *                         type: boolean
+ *                       isRenewed:
+ *                         type: boolean
+ *                 totalDelegated:
+ *                   type: number
+ *                   format: float
+ *
+ */
 
 export type MKRDelegatedToAPIResponse = {
   delegatedTo: DelegationHistoryWithExpirationDate[];
