@@ -331,13 +331,28 @@ export async function fetchDelegatesPaginated({
     fetchDelegateAddresses(network)
   ]);
 
-  const filteredDelegates = filterDelegateAddresses(
-    githubDelegates,
-    allDelegateAddresses,
-    network,
-    queryTags,
-    name
-  );
+  const allDelegatesWithNames = allDelegateAddresses.map(delegate => {
+    const oldOwner = getPreviousOwnerFromNew(delegate.delegate, network);
+    const newOwner = getNewOwnerFromPrevious(delegate.delegate, network);
+
+    const oldContractAddress = allDelegateAddresses.find(del => del.delegate === oldOwner)?.voteDelegate;
+    const newContractAddress = allDelegateAddresses.find(del => del.delegate === newOwner)?.voteDelegate;
+
+    const ghDelegate = githubDelegates?.find(del =>
+      [delegate, oldContractAddress, newContractAddress].includes(del.voteDelegateAddress.toLowerCase())
+    );
+
+    return {
+      ...delegate,
+      expired: add(new Date(delegate.blockTimestamp), { years: 1 }) > new Date() ? false : true,
+      name: ghDelegate?.name,
+      tags: ghDelegate?.tags
+    };
+  });
+
+  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNames, queryTags, name);
+  const { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
+    getDelegatesCounts(allDelegatesWithNames);
 
   const delegatesQueryFilter =
     delegateType === DelegateTypeEnum.RECOGNIZED
@@ -366,12 +381,6 @@ export async function fetchDelegatesPaginated({
       variables: delegatesQueryVariables
     })
   ]);
-
-  const { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
-    githubDelegates,
-    allDelegateAddresses,
-    network
-  );
 
   const delegatesData = {
     paginationInfo: {
@@ -421,7 +430,7 @@ export async function fetchDelegatesPaginated({
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.voteDelegate,
-        ownerAddress: delegate.delegate,
+        address: delegate.delegate,
         status: delegate.expired
           ? DelegateStatusEnum.expired
           : githubDelegate
@@ -439,18 +448,18 @@ export async function fetchDelegatesPaginated({
         cuMember: githubDelegate?.cuMember,
         mkrDelegated: delegate.totalMkr,
         delegatorCount: delegate.delegatorCount,
-        lastVoteDate: new Date(delegate.lastVoted),
+        lastVoteDate: delegate.lastVoted && new Date(delegate.lastVoted),
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         tags:
           githubDelegate?.tags &&
           githubDelegate.tags.map(tag => allTags.find(t => t.id === tag)?.id).filter(t => !!t),
         previous: previousOwnerAddress && {
-          ownerAddress: previousOwnerAddress,
+          address: previousOwnerAddress,
           voteDelegateAddress: previousDelegateContract
         },
         next: newOwnerAddress && {
-          ownerAddress: newOwnerAddress,
+          address: newOwnerAddress,
           voteDelegateAddress: newDelegateContract
         }
       };

@@ -6,10 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { getNewOwnerFromPrevious } from 'modules/migration/delegateAddressLinks';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegateStatusEnum } from '../delegates.constants';
-import { AllDelegatesEntry, Delegate, DelegateRepoInformation } from '../types';
+import { AllDelegatesEntryWithName, Delegate } from '../types';
 
 export function filterDelegates(
   delegates: Delegate[],
@@ -63,39 +61,18 @@ export function filterDelegates(
 }
 
 export function filterDelegateAddresses(
-  githubDelegates: DelegateRepoInformation[] | undefined,
-  allDelegateAddresses: AllDelegatesEntry[],
-  network: SupportedNetworks,
+  allDelegatesWithNames: AllDelegatesEntryWithName[],
   queryTags: string[] | null,
   name: string | null
 ): string[] {
-  if (!githubDelegates) {
-    return [];
-  }
-
-  const filteredGithubDelegates = (
+  const filteredDelegates =
     !queryTags && !name
-      ? githubDelegates
-      : githubDelegates.filter(
+      ? allDelegatesWithNames.filter(delegate => delegate.name)
+      : allDelegatesWithNames.filter(
           delegate =>
-            (name ? delegate.name.toLowerCase().includes(name.toLowerCase()) : true) &&
+            (name ? delegate.name?.toLowerCase().includes(name.toLowerCase()) : true) &&
             (queryTags ? queryTags.every(qt => delegate.tags?.includes(qt)) : true)
-        )
-  ).map(delegate => delegate.voteDelegateAddress.toLowerCase());
+        );
 
-  const filteredMigratedDelegates = filteredGithubDelegates
-    .map(delegate => {
-      const delegateAddress = allDelegateAddresses.find(del => del.voteDelegate === delegate)?.delegate;
-      if (!delegateAddress) {
-        return;
-      }
-      const newDelegateOwner = getNewOwnerFromPrevious(delegateAddress, network);
-      if (!newDelegateOwner) {
-        return;
-      }
-      return allDelegateAddresses.find(del => del.delegate === newDelegateOwner)?.voteDelegate.toLowerCase();
-    })
-    .filter(delegate => delegate) as string[];
-
-  return [...filteredGithubDelegates, ...filteredMigratedDelegates];
+  return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());
 }

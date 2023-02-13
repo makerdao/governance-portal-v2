@@ -67,37 +67,24 @@ export type Delegate = {
   };
 };
 
-export type DelegatePaginated = {
-  name: string;
-  voteDelegateAddress: string;
-  ownerAddress: string;
-  status: DelegateStatus;
-  creationDate: Date;
-  expirationDate: Date;
-  expired: boolean;
-  isAboutToExpire: boolean;
+export type DelegatePaginated = Omit<
+  Delegate,
+  | 'id'
+  | 'blockTimestamp'
+  | 'picture'
+  | 'description'
+  | 'lastVoteDate'
+  | 'externalUrl'
+  | 'execSupported'
+  | 'mkrLockedDelegate'
+> & {
   picture?: string;
-  communication?: string;
-  combinedParticipation?: string;
-  pollParticipation?: string;
-  executiveParticipation?: string;
-  cuMember?: boolean;
-  mkrDelegated: string;
+  creationDate: Date;
   delegatorCount: number;
-  lastVoteDate: Date;
-  proposalsSupported: number;
+  lastVoteDate?: Date;
   execSupported?: {
     title: string;
     address: string;
-  };
-  tags?: string[];
-  previous?: {
-    ownerAddress: string;
-    voteDelegateAddress: string;
-  };
-  next?: {
-    ownerAddress: string;
-    voteDelegateAddress: string;
   };
 };
 
@@ -146,4 +133,10 @@ export type AllDelegatesEntry = {
   blockTimestamp: Date;
   delegate: string;
   voteDelegate: string;
+};
+
+export type AllDelegatesEntryWithName = AllDelegatesEntry & {
+  name?: string;
+  tags?: string[];
+  expired: boolean;
 };
