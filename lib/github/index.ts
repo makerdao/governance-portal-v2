@@ -51,14 +51,14 @@ const getNextToken = () => {
 
 export async function fetchGitHubPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
   const octokit = getNextToken();
-
   const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     mediaType: {
       format: "raw",
     },
     owner,
     repo,
-    path
+    path,
+    ref: 'action-delegates'
   });
 
   return data as GithubPage[];
