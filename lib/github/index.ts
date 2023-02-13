@@ -71,6 +71,5 @@ export async function fetchGithubGraphQL(
   const octokit = getNextToken();
   const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
 
-  console.log(data);
   return data as GraphQlQueryResponseData;
 }

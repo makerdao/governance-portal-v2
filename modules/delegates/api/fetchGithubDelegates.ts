@@ -45,7 +45,7 @@ export async function fetchGithubDelegates(
         return {
           name: d.profile ? d.profile.name : '',
           voteDelegateAddress: d.voteDelegateAddress,
-          picture: d.image,
+          picture: d.image ? `https://makerdao-dux.infura-ipfs.io/ipfs/${d.image}` : '',
           externalUrl: d.profile ? d.profile.externalProfileURL : '',
           description: htmlDescription,
           tags: d.profile ? d.profile.tags : [],
