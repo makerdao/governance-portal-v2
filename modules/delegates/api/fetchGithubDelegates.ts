@@ -16,7 +16,6 @@ import logger from 'lib/logger';
 import { delegatesGithubCacheKey, getDelegateGithubCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
-
 export async function fetchGithubDelegates(
   network: SupportedNetworks
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
@@ -40,22 +39,24 @@ export async function fetchGithubDelegates(
 
     const parsed = JSON.parse(delegatesRawData);
 
-    const allDelegates = await Promise.all(parsed.delegates.map(async d => {
-      const htmlDescription = await markdownToHtml(d.profile ? d.profile.description: '');
-      return {
-        name: d.profile ? d.profile.name : '',
-        voteDelegateAddress: d.voteDelegateAddress,
-        picture: d.image,
-        externalUrl: d.profile ? d.profile.externalProfileURL : '',
-        description: htmlDescription,
-        tags: d.profile ? d.profile.tags : [],
-        combinedParticipation: d.metrics ? d.metrics.combinedParticipation : null,
-        pollParticipation: d.metrics ? d.metrics.pollParticipation : null,
-        executiveParticipation: d.metrics ? d.metrics.executiveParticipation : null,
-        communication: d.metrics ? d.metrics.communication : null,
-        cuMember: d.cuMember
-      };
-    }));
+    const allDelegates = await Promise.all(
+      parsed.delegates.map(async d => {
+        const htmlDescription = await markdownToHtml(d.profile ? d.profile.description : '');
+        return {
+          name: d.profile ? d.profile.name : '',
+          voteDelegateAddress: d.voteDelegateAddress,
+          picture: d.image,
+          externalUrl: d.profile ? d.profile.externalProfileURL : '',
+          description: htmlDescription,
+          tags: d.profile ? d.profile.tags : [],
+          combinedParticipation: d.metrics ? d.metrics.combinedParticipation : null,
+          pollParticipation: d.metrics ? d.metrics.pollParticipation : null,
+          executiveParticipation: d.metrics ? d.metrics.executiveParticipation : null,
+          communication: d.metrics ? d.metrics.communication : null,
+          cuMember: d.cuMember
+        };
+      })
+    );
 
     // Store in cache
     cacheSet(delegatesGithubCacheKey, JSON.stringify(allDelegates), network, ONE_HOUR_IN_MS);
@@ -74,7 +75,6 @@ export async function fetchGithubDelegate(
   address: string,
   network: SupportedNetworks
 ): Promise<{ error: boolean; data?: DelegateRepoInformation }> {
-
   const cacheKey = getDelegateGithubCacheKey(address);
   const existingDelegate = await cacheGet(cacheKey, network, ONE_HOUR_IN_MS);
   if (existingDelegate) {
@@ -92,8 +92,9 @@ export async function fetchGithubDelegate(
       throw new Error('No delegates found');
     }
 
-    const delegate = allDelegates.data.find(f => f.voteDelegateAddress.toLowerCase() === address.toLowerCase());
-
+    const delegate = allDelegates.data.find(
+      f => f.voteDelegateAddress.toLowerCase() === address.toLowerCase()
+    );
 
     // Store in cache
     if (delegate) {

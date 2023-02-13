@@ -53,7 +53,7 @@ export async function fetchGitHubPage(owner: string, repo: string, path: string)
   const octokit = getNextToken();
   const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     mediaType: {
-      format: "raw",
+      format: 'raw'
     },
     owner,
     repo,
@@ -71,6 +71,6 @@ export async function fetchGithubGraphQL(
   const octokit = getNextToken();
   const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
 
-  console.log(data)
+  console.log(data);
   return data as GraphQlQueryResponseData;
 }
