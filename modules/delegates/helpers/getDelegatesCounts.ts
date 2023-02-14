@@ -8,7 +8,8 @@ export default function getDelegatesCounts(allDelegatesWithNames: AllDelegatesEn
   const rawRecognizedDelegates = allDelegatesWithNames.filter(delegate => !delegate.expired && delegate.name);
 
   const recognizedDelegatesCount = new Set(rawRecognizedDelegates.map(delegate => delegate.name)).size;
-  const shadowDelegatesCount = allDelegatesWithNames.length - rawRecognizedDelegates.length;
+  const shadowDelegatesCount =
+    allDelegatesWithNames.filter(delegate => !delegate.expired).length - rawRecognizedDelegates.length;
   const totalDelegatesCount = recognizedDelegatesCount + shadowDelegatesCount;
 
   return { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount };

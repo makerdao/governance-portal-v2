@@ -77,6 +77,7 @@ export type DelegatePaginated = Omit<
   | 'externalUrl'
   | 'execSupported'
   | 'mkrLockedDelegate'
+  | 'tags'
 > & {
   picture?: string;
   creationDate: Date;
@@ -86,6 +87,7 @@ export type DelegatePaginated = Omit<
     title: string;
     address: string;
   };
+  tags?: string[];
 };
 
 export type DelegationHistory = {
@@ -139,4 +141,12 @@ export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   name?: string;
   tags?: string[];
   expired: boolean;
+  previous?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
 };

@@ -19,7 +19,8 @@ import {
   DelegateContractInformation,
   DelegateRepoInformation,
   DelegatesValidatedQueryParams,
-  DelegatesPaginatedAPIResponse
+  DelegatesPaginatedAPIResponse,
+  DelegatePaginated
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -42,6 +43,7 @@ import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegateAddresses } from '../helpers/filterDelegates';
+import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -331,7 +333,7 @@ export async function fetchDelegatesPaginated({
     fetchDelegateAddresses(network)
   ]);
 
-  const allDelegatesWithNames = allDelegateAddresses.map(delegate => {
+  const allDelegatesWithNamesAndLinks = allDelegateAddresses.map(delegate => {
     const oldOwner = getPreviousOwnerFromNew(delegate.delegate, network);
     const newOwner = getNewOwnerFromPrevious(delegate.delegate, network);
 
@@ -339,20 +341,33 @@ export async function fetchDelegatesPaginated({
     const newContractAddress = allDelegateAddresses.find(del => del.delegate === newOwner)?.voteDelegate;
 
     const ghDelegate = githubDelegates?.find(del =>
-      [delegate, oldContractAddress, newContractAddress].includes(del.voteDelegateAddress.toLowerCase())
+      [delegate.voteDelegate, oldContractAddress, newContractAddress].includes(
+        del.voteDelegateAddress.toLowerCase()
+      )
     );
 
     return {
       ...delegate,
       expired: add(new Date(delegate.blockTimestamp), { years: 1 }) > new Date() ? false : true,
       name: ghDelegate?.name,
-      tags: ghDelegate?.tags
+      tags: ghDelegate?.tags,
+      previous:
+        oldOwner && oldContractAddress
+          ? { address: oldOwner, voteDelegateAddress: oldContractAddress }
+          : undefined,
+      next:
+        newOwner && newContractAddress
+          ? { address: newOwner, voteDelegateAddress: newContractAddress }
+          : undefined
     };
   });
 
-  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNames, queryTags, name);
-  const { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
-    getDelegatesCounts(allDelegatesWithNames);
+  console.log(allDelegatesWithNamesAndLinks.filter(d => d.name === 'Flip Flop Flap Delegate LLC'));
+
+  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, queryTags, name);
+  const { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
+    allDelegatesWithNamesAndLinks
+  );
 
   const delegatesQueryFilter =
     delegateType === DelegateTypeEnum.RECOGNIZED
@@ -372,15 +387,21 @@ export async function fetchDelegatesPaginated({
     delegatesQueryVariables['filter'] = delegatesQueryFilter;
   }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes] = await Promise.all([
-    getGithubExecutives(network),
-    fetchDelegatesExecSupport(network),
-    gqlRequest<any>({
-      chainId,
-      query: delegatesQuery,
-      variables: delegatesQueryVariables
-    })
-  ]);
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] = await Promise.all(
+    [
+      getGithubExecutives(network),
+      fetchDelegatesExecSupport(network),
+      gqlRequest<any>({
+        chainId,
+        query: delegatesQuery,
+        variables: delegatesQueryVariables
+      }),
+      gqlRequest<any>({
+        chainId,
+        query: delegationMetricsQuery
+      })
+    ]
+  );
 
   const delegatesData = {
     paginationInfo: {
@@ -393,32 +414,15 @@ export async function fetchDelegatesPaginated({
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
       recognized: recognizedDelegatesCount,
-      totalMKRDelegated: '0',
-      totalDelegators: 0
+      totalMKRDelegated: delegationMetricsRes.delegationMetrics.totalMkrDelegated || 0,
+      totalDelegators: +delegationMetricsRes.delegationMetrics.delegatorCount || 0
     },
     delegates: delegatesQueryRes.delegates.nodes.map(delegate => {
-      const delegateContracts = [delegate.voteDelegate];
-
-      // check if delegate owner has link to a previous contract or newer contract
-      const previousOwnerAddress = getPreviousOwnerFromNew(delegate.delegate, network)?.toLowerCase();
-      const newOwnerAddress = getNewOwnerFromPrevious(delegate.delegate, network)?.toLowerCase();
-
-      const previousDelegateContract =
-        previousOwnerAddress &&
-        allDelegateAddresses.find(i => i.delegate.toLowerCase() === previousOwnerAddress)?.voteDelegate;
-
-      const newDelegateContract =
-        newOwnerAddress &&
-        allDelegateAddresses.find(i => i.delegate.toLowerCase() === newOwnerAddress)?.voteDelegate;
-
-      previousDelegateContract && delegateContracts.push(previousDelegateContract);
-      newDelegateContract && delegateContracts.push(newDelegateContract);
-
-      const githubDelegate = githubDelegates?.find(ghDelegate =>
-        delegateContracts.some(
-          delegateContract => delegateContract.toLowerCase() === ghDelegate.voteDelegateAddress.toLowerCase()
-        )
+      const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(
+        del => del.voteDelegate === delegate.voteDelegate
       );
+
+      const githubDelegate = githubDelegates?.find(ghDelegate => ghDelegate.name === allDelegatesEntry?.name);
 
       const votedProposals = delegatesExecSupport.data?.find(
         del => del.voteDelegate === delegate.voteDelegate
@@ -454,16 +458,10 @@ export async function fetchDelegatesPaginated({
         tags:
           githubDelegate?.tags &&
           githubDelegate.tags.map(tag => allTags.find(t => t.id === tag)?.id).filter(t => !!t),
-        previous: previousOwnerAddress && {
-          address: previousOwnerAddress,
-          voteDelegateAddress: previousDelegateContract
-        },
-        next: newOwnerAddress && {
-          address: newOwnerAddress,
-          voteDelegateAddress: newDelegateContract
-        }
+        previous: allDelegatesEntry?.previous,
+        next: allDelegatesEntry?.next
       };
-    })
+    }) as DelegatePaginated[]
   };
 
   return delegatesData;
