@@ -149,15 +149,15 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
   }, [filteredPolls]);
 
   const loadMore = () => {
-    setNumHistoricalGroupingsLoaded(
-      numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
-        ? numHistoricalGroupingsLoaded + 2
-        : numHistoricalGroupingsLoaded
+    setNumHistoricalGroupingsLoaded(prevNumHistoricalGroupingsLoaded =>
+      prevNumHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
+        ? prevNumHistoricalGroupingsLoaded + 2
+        : prevNumHistoricalGroupingsLoaded
     );
   };
 
   // Load more on scroll
-  useIntersectionObserver(loader, loadMore);
+  useIntersectionObserver(showHistorical ? loader : null, loadMore);
 
   useEffect(() => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
