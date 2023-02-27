@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Tag } from 'modules/app/types/tag';
+import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
 
 export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
 
@@ -87,7 +88,7 @@ export type DelegatePaginated = Omit<
     title: string;
     address: string;
   };
-  tags?: string[];
+  tags: string[];
 };
 
 export type DelegationHistory = {
@@ -139,8 +140,29 @@ export type AllDelegatesEntry = {
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   name?: string;
+  delegateType: DelegateTypeEnum;
   tags?: string[];
+  blockTimestamp: Date;
+  expirationDate: Date;
   expired: boolean;
+  isAboutToExpire: boolean;
+  previous?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+};
+
+export type DelegateNameAndMetrics = Omit<DelegateRepoInformation, 'externalUrl' | 'description' | 'tags'> & {
+  address: string;
+  status: DelegateStatusEnum;
+  blockTimestamp: Date;
+  expirationDate: Date;
+  expired: boolean;
+  isAboutToExpire: boolean;
   previous?: {
     address: string;
     voteDelegateAddress: string;

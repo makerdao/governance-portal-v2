@@ -48,4 +48,5 @@ export type DelegatesPaginatedAPIResponse = {
   };
   stats: DelegatesAPIStats;
   delegates: DelegatePaginated[];
+  tags: TagCount[];
 };

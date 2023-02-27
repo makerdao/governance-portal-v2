@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { DelegateStatusEnum } from '../delegates.constants';
+import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
 import { AllDelegatesEntryWithName, Delegate } from '../types';
 
 export function filterDelegates(
@@ -67,7 +67,7 @@ export function filterDelegateAddresses(
 ): string[] {
   const filteredDelegates =
     !queryTags && !name
-      ? allDelegatesWithNames.filter(delegate => delegate.name)
+      ? allDelegatesWithNames.filter(delegate => delegate.delegateType === DelegateTypeEnum.RECOGNIZED)
       : allDelegatesWithNames.filter(
           delegate =>
             (name ? delegate.name?.toLowerCase().includes(name.toLowerCase()) : true) &&

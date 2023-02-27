@@ -20,7 +20,9 @@ import {
   DelegateRepoInformation,
   DelegatesValidatedQueryParams,
   DelegatesPaginatedAPIResponse,
-  DelegatePaginated
+  DelegatePaginated,
+  AllDelegatesEntryWithName,
+  DelegateNameAndMetrics
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -31,7 +33,7 @@ import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegat
 import { CMSProposal } from 'modules/executive/types';
 import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 import { getDelegateTags } from './getDelegateTags';
-import { Tag } from 'modules/app/types/tag';
+import { Tag, TagCount } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
 import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
@@ -313,21 +315,9 @@ export async function fetchDelegates(
   return delegatesResponse;
 }
 
-export async function fetchDelegatesPaginated({
-  network,
-  pageSize,
-  page,
-  includeExpired,
-  orderBy,
-  orderDirection,
-  delegateType,
-  name,
-  tags
-}: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
-  const chainId = networkNameToChainId(network);
-  const allTags = getDelegateTags();
-  const queryTags = tags?.filter(tag => allTags.some(t => t.id.toLowerCase() === tag.toLowerCase())) || null;
-
+export async function fetchAndMergeDelegates(
+  network: SupportedNetworks
+): Promise<[DelegateRepoInformation[] | undefined, AllDelegatesEntryWithName[]]> {
   const [{ data: githubDelegates }, allDelegateAddresses] = await Promise.all([
     fetchGithubDelegates(network),
     fetchDelegateAddresses(network)
@@ -346,9 +336,15 @@ export async function fetchDelegatesPaginated({
       )
     );
 
+    const expirationDate = add(new Date(delegate.blockTimestamp), { years: 1 });
+
     return {
       ...delegate,
-      expired: add(new Date(delegate.blockTimestamp), { years: 1 }) > new Date() ? false : true,
+      delegateType: ghDelegate ? DelegateTypeEnum.RECOGNIZED : DelegateTypeEnum.SHADOW,
+      blockTimestamp: delegate.blockTimestamp,
+      expirationDate,
+      expired: expirationDate > new Date() ? false : true,
+      isAboutToExpire: isAboutToExpireCheck(expirationDate),
       name: ghDelegate?.name,
       tags: ghDelegate?.tags,
       previous:
@@ -362,12 +358,137 @@ export async function fetchDelegatesPaginated({
     };
   });
 
-  console.log(allDelegatesWithNamesAndLinks.filter(d => d.name === 'Flip Flop Flap Delegate LLC'));
+  return [githubDelegates, allDelegatesWithNamesAndLinks];
+}
+
+export async function fetchSingleDelegateNameAndMetrics(
+  address: string,
+  network: SupportedNetworks
+): Promise<DelegateNameAndMetrics | null> {
+  const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
+
+  const foundDelegate = allDelegatesWithNamesAndLinks.find(
+    delegate => delegate.voteDelegate.toLowerCase() === address.toLowerCase()
+  );
+
+  if (!foundDelegate) {
+    return null;
+  }
+
+  const foundGithubDelegate = githubDelegates?.find(delegate => delegate.name === foundDelegate?.name);
+
+  return {
+    name: foundDelegate.name || 'Shadow Delegate',
+    picture: foundGithubDelegate?.picture,
+    address: foundDelegate.delegate,
+    voteDelegateAddress: foundDelegate.voteDelegate,
+    status: foundGithubDelegate ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
+    cuMember: foundGithubDelegate?.cuMember,
+    pollParticipation: foundGithubDelegate?.pollParticipation,
+    executiveParticipation: foundGithubDelegate?.executiveParticipation,
+    combinedParticipation: foundGithubDelegate?.combinedParticipation,
+    communication: foundGithubDelegate?.communication,
+    blockTimestamp: foundDelegate.blockTimestamp,
+    expirationDate: foundDelegate.expirationDate,
+    expired: foundDelegate.expired,
+    isAboutToExpire: foundDelegate.isAboutToExpire,
+    previous: foundDelegate.previous,
+    next: foundDelegate.next
+  };
+}
+
+export async function fetchDelegateNamesAndMetrics(
+  network: SupportedNetworks,
+  recognizedOnly: boolean,
+  includeExpired: boolean
+): Promise<DelegateNameAndMetrics[]> {
+  const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
+
+  const delegateNamesAndMetrics = allDelegatesWithNamesAndLinks
+    .filter(
+      delegate =>
+        (recognizedOnly ? delegate.delegateType === DelegateTypeEnum.RECOGNIZED : true) &&
+        (includeExpired ? true : !delegate.expired)
+    )
+    .filter((delegate, i, arr) =>
+      recognizedOnly && !includeExpired ? arr.findIndex(d => d.name === delegate.name) === i : true
+    )
+    .sort((a, b) => new Date(a.blockTimestamp).getTime() - new Date(b.blockTimestamp).getTime())
+    .map(delegate => {
+      const githubDelegate = githubDelegates?.find(d => d.name === delegate.name);
+      return {
+        name: delegate.name || 'Shadow Delegate',
+        picture: githubDelegate?.picture,
+        address: delegate.delegate,
+        voteDelegateAddress: delegate.voteDelegate,
+        status: delegate.name ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
+        cuMember: githubDelegate?.cuMember,
+        pollParticipation: githubDelegate?.pollParticipation,
+        executiveParticipation: githubDelegate?.executiveParticipation,
+        combinedParticipation: githubDelegate?.combinedParticipation,
+        communication: githubDelegate?.communication,
+        blockTimestamp: delegate.blockTimestamp,
+        expirationDate: delegate.expirationDate,
+        expired: delegate.expired,
+        isAboutToExpire: delegate.isAboutToExpire,
+        previous: delegate.previous,
+        next: delegate.next
+      };
+    });
+
+  return delegateNamesAndMetrics;
+}
+
+export async function fetchDelegatesPaginated({
+  network,
+  pageSize,
+  page,
+  includeExpired,
+  orderBy,
+  orderDirection,
+  delegateType,
+  name,
+  tags
+}: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
+  const chainId = networkNameToChainId(network);
+  const allTags = getDelegateTags();
+  const queryTags = tags?.filter(tag => allTags.some(t => t.id.toLowerCase() === tag.toLowerCase())) || null;
+
+  const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
   const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, queryTags, name);
   const { recognizedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
     allDelegatesWithNamesAndLinks
   );
+
+  const tagCounts = allDelegatesWithNamesAndLinks
+    .filter(delegate => !delegate.expired && delegate.name)
+    .filter((delegate, i, thisArr) => thisArr.findIndex(del => del.name === delegate.name) === i)
+    .reduce((acc, cur) => {
+      if (!cur.tags) return acc;
+      cur.tags.forEach(c => {
+        const prev = acc.findIndex(t => t.tag === c);
+
+        if (prev !== -1) {
+          acc[prev].count += 1;
+        } else {
+          acc.push({ tag: c, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as { tag: string; count: number }[])
+    .map(tag => {
+      const foundTag = allTags.find(t => t.id === tag.tag);
+      if (!foundTag) {
+        return;
+      }
+      return {
+        ...foundTag,
+        id: tag.tag,
+        count: tag.count
+      };
+    })
+    .filter(tag => !!tag) as TagCount[];
 
   const delegatesQueryFilter =
     delegateType === DelegateTypeEnum.RECOGNIZED
@@ -455,13 +576,14 @@ export async function fetchDelegatesPaginated({
         lastVoteDate: delegate.lastVoted && new Date(delegate.lastVoted),
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
-        tags:
-          githubDelegate?.tags &&
-          githubDelegate.tags.map(tag => allTags.find(t => t.id === tag)?.id).filter(t => !!t),
+        tags: githubDelegate?.tags
+          ? githubDelegate.tags.map(tag => allTags.find(t => t.id === tag)?.id).filter(t => !!t)
+          : [],
         previous: allDelegatesEntry?.previous,
         next: allDelegatesEntry?.next
       };
-    }) as DelegatePaginated[]
+    }) as DelegatePaginated[],
+    tags: tagCounts
   };
 
   return delegatesData;

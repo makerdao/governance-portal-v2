@@ -10,7 +10,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatesPaginated } from 'modules/delegates/api/fetchDelegates';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { DelegateTypeEnum } from 'modules/delegates/delegates.constants';
+import {
+  DelegateOrderByEnum,
+  DelegateTypeEnum,
+  OrderDirectionEnum
+} from 'modules/delegates/delegates.constants';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 
@@ -37,13 +41,13 @@ export default withApiHandler(
     }) as boolean;
 
     const orderBy = validateQueryParam(req.query.orderBy, 'string', {
-      defaultValue: 'DATE',
-      validValues: ['MKR', 'DELEGATORS', 'DATE']
+      defaultValue: DelegateOrderByEnum.DATE,
+      validValues: [DelegateOrderByEnum.MKR, DelegateOrderByEnum.DELEGATORS, DelegateOrderByEnum.DATE]
     }) as string;
 
     const orderDirection = validateQueryParam(req.query.orderDirection, 'string', {
-      defaultValue: 'DESC',
-      validValues: ['ASC', 'DESC']
+      defaultValue: OrderDirectionEnum.DESC,
+      validValues: [OrderDirectionEnum.ASC, OrderDirectionEnum.DESC]
     }) as string;
 
     const delegateType = validateQueryParam(req.query.delegateType, 'string', {
