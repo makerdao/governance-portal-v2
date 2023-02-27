@@ -58,10 +58,10 @@ export default function AccountComments({ address }: { address: string }): React
           >
             Comments
           </Text>{' '}
-          {data.comments.map(comment => (
+          {data.comments.map((comment, i) => (
             <Box
               sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
-              key={comment.address.address}
+              key={comment.address.address + '-' + i}
             >
               <Text as="p" variant="caps" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}

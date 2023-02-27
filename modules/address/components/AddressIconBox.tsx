@@ -14,7 +14,7 @@ import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import { useDelegateNameAndMetricsByAddress } from 'modules/delegates/hooks/useDelegateNameAndMetricsByAddress';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 import { limitString } from 'lib/string';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
@@ -35,16 +35,14 @@ export default function AddressIconBox({
   const { network } = useWeb3();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
-  const { data: delegateAddresses } = useDelegateAddressMap();
+  const { data: delegate } = useDelegateNameAndMetricsByAddress(address);
   const { data: voteProxyInfo } = useVoteProxyAddress(address);
   // isOwner if the delegateAddress registered in the comment is the same one from the current user
   // isOwner also if the address is equal to the current account address
   const isOwner =
     (voteProxyInfo?.voteProxyAddress &&
       voteProxyInfo?.voteProxyAddress?.toLowerCase() === voteProxyContractAddress?.toLowerCase()) ||
-    (delegateAddresses[address] &&
-      delegateAddresses[address].voteDelegateAddress?.toLowerCase() ===
-        voteDelegateContractAddress?.toLowerCase()) ||
+    (delegate && delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase()) ||
     address.toLowerCase() === account?.toLowerCase();
 
   const tooltipLabel = voteProxyInfo ? (
@@ -75,11 +73,9 @@ export default function AddressIconBox({
       >
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
           <Flex sx={{ alignItems: 'center' }}>
-            {delegateAddresses[address] ? (
+            {delegate ? (
               <Text>
-                {limitTextLength
-                  ? limitString(delegateAddresses[address].name, limitTextLength, '...')
-                  : delegateAddresses[address].name}
+                {limitTextLength ? limitString(delegate.name, limitTextLength, '...') : delegate.name}
               </Text>
             ) : (
               <Text>
