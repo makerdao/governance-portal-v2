@@ -11,7 +11,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { Delegate } from '../types';
+import { DelegatePaginated } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -19,20 +19,19 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useState } from 'react';
 import { DelegateModal } from './modals/DelegateModal';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import DelegateAvatarNameLight from './DelegateAvatarNameLight';
 
 export default function TopDelegates({
   delegates,
   totalMKRDelegated
 }: {
-  delegates: Delegate[];
+  delegates: DelegatePaginated[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.TOP_DELEGATES);
 
   const { account } = useAccount();
-  const [showDelegateModal, setShowDelegateModal] = useState<Delegate | null>(null);
+  const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
   const [toggledDelegates, setToggledDelegates] = useState({});
 
   return (
@@ -45,6 +44,7 @@ export default function TopDelegates({
           onDismiss={() => setShowDelegateModal(null)}
           mutateTotalStaked={() => null}
           mutateMKRDelegated={() => null}
+          refetchOnDelegation={true}
         />
       )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
@@ -89,7 +89,6 @@ export default function TopDelegates({
           </Box>
         </Flex>
         {delegates.map((delegate, index) => {
-          const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-recognized-delegate">
               <Flex
@@ -107,9 +106,7 @@ export default function TopDelegates({
                   <DelegateAvatarNameLight delegate={delegate} />
                 </Flex>
                 <Box sx={{ width: '15%', display: ['none', 'block'] }}>
-                  <Text>
-                    {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length} addresses
-                  </Text>
+                  <Text>{delegate.delegatorCount} addresses</Text>
                 </Box>
                 <Flex
                   sx={{
@@ -182,9 +179,7 @@ export default function TopDelegates({
                       <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
                         Delegators
                       </Text>
-                      <Text>
-                        {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length} addresses
-                      </Text>
+                      <Text>{delegate.delegatorCount} addresses</Text>
                     </Box>
                     <Box sx={{ width: '50%', textAlign: 'right' }}>
                       <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>

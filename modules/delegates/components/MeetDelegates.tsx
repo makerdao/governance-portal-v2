@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Text, Flex, Button, Heading, Card, get } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { Delegate } from '../types';
+import { DelegateNameAndMetrics } from '../types';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -24,7 +24,7 @@ const MeetDelegateCard = ({
   bpi,
   setDelegateToPlay
 }: {
-  delegate: Delegate;
+  delegate: DelegateNameAndMetrics;
   trackButtonClick: (string) => void;
   bpi: number;
   setDelegateToPlay: (boolean) => void;
@@ -71,8 +71,8 @@ const MeetDelegateCard = ({
         <Flex>
           <PlayButton
             label="Meet the Delegate"
-            onClick={() => setDelegateToPlay(delegate.id)}
-            disabled={!MEET_DELEGATE_URLS[delegate.id]}
+            onClick={() => setDelegateToPlay(delegate.voteDelegateAddress)}
+            disabled={!MEET_DELEGATE_URLS[delegate.voteDelegateAddress]}
           />
         </Flex>
       </Flex>
@@ -84,7 +84,7 @@ export const ParticipationBreakdown = ({
   delegate,
   bpi
 }: {
-  delegate: Delegate;
+  delegate: DelegateNameAndMetrics;
   bpi: number;
 }): React.ReactElement => {
   return (
@@ -128,7 +128,7 @@ export default function MeetYourDelegates({
   delegates,
   bpi
 }: {
-  delegates: Delegate[];
+  delegates: DelegateNameAndMetrics[];
   bpi: number;
 }): React.ReactElement {
   const [delegateToPlay, setDelegateToPlay] = useState();
@@ -191,7 +191,7 @@ export default function MeetYourDelegates({
         >
           {delegates.map(delegate => (
             <MeetDelegateCard
-              key={delegate.id}
+              key={delegate.voteDelegateAddress}
               delegate={delegate}
               trackButtonClick={trackButtonClick}
               bpi={bpi}

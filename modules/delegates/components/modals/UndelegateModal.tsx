@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Box } from 'theme-ui';
-import { Delegate } from '../../types';
+import { DelegatePaginated } from '../../types';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
@@ -28,9 +28,10 @@ import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
-  delegate: Delegate;
-  mutateTotalStaked: () => void;
+  delegate: DelegatePaginated;
+  mutateTotalStaked: (amount?: BigNumber) => void;
   mutateMKRDelegated: () => void;
+  refetchOnDelegation: boolean;
 };
 
 export const UndelegateModal = ({
@@ -38,7 +39,8 @@ export const UndelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMKRDelegated
+  mutateMKRDelegated,
+  refetchOnDelegation = true
 }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
@@ -97,7 +99,9 @@ export const UndelegateModal = ({
                       onClick={() => {
                         free(mkrToWithdraw, {
                           mined: () => {
-                            mutateTotalStaked();
+                            refetchOnDelegation
+                              ? mutateTotalStaked()
+                              : mutateTotalStaked(mkrToWithdraw.mul(-1));
                             mutateMKRDelegated();
                           }
                         });

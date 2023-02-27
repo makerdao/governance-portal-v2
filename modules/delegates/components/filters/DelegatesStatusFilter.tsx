@@ -9,32 +9,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Checkbox, Label, Text, Box } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
-import { Delegate } from 'modules/delegates/types';
+import { DelegatesAPIStats } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
-import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { useMemo } from 'react';
-import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
-export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showShadow, name, delegateTags, setShowRecognizedFilter, setShowShadowFilter] =
-    useDelegatesFiltersStore(
-      state => [
-        state.filters.showRecognized,
-        state.filters.showShadow,
-        state.filters.name,
-        state.filters.tags,
-        state.setShowRecognizedFilter,
-        state.setShowShadowFilter
-      ],
-      shallow
-    );
+export function DelegatesStatusFilter({ stats }: { stats: DelegatesAPIStats }): JSX.Element {
+  const [showRecognized, showShadow, setShowRecognizedFilter, setShowShadowFilter] = useDelegatesFiltersStore(
+    state => [
+      state.filters.showRecognized,
+      state.filters.showShadow,
+      state.setShowRecognizedFilter,
+      state.setShowShadowFilter
+    ],
+    shallow
+  );
 
   const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
-
-  // Use filtered delegates to show the right amount of each type of delegates (ignoring the current filter ones)
-  const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, true, true, false, name, delegateTags);
-  }, [delegates, name, delegateTags]);
 
   return (
     <FilterButton
@@ -57,9 +46,7 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Recognized Delegates</Text>
-              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
-              </Text>
+              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{stats.recognized}</Text>
             </Flex>
           </Label>
         </Flex>
@@ -76,9 +63,7 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Shadow Delegates</Text>
-              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
-              </Text>
+              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{stats.shadow}</Text>
             </Flex>
           </Label>
         </Flex>

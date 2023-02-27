@@ -9,27 +9,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import useDelegatesFiltersStore from '../../stores/delegatesFiltersStore';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { DelegateOrderByEnum } from 'modules/delegates/delegates.constants';
+import { OrderDirectionEnum } from 'modules/delegates/delegates.constants';
 
-export function DelegatesSortFilter(): JSX.Element {
-  const [sort, setSort] = useDelegatesFiltersStore(state => [state.sort, state.setSort]);
+export function DelegatesSortDirectionFilter(): JSX.Element {
+  const [sortDirection, setSortDirection] = useDelegatesFiltersStore(state => [
+    state.sortDirection,
+    state.setSortDirection
+  ]);
 
   return (
-    <ListboxInput onChange={setSort} defaultValue={sort}>
+    <ListboxInput sx={{ ml: 2 }} onChange={setSortDirection} defaultValue={sortDirection}>
       <ListboxButton
         sx={{ variant: 'listboxes.default.button', fontWeight: 'semiBold', py: [2] }}
         arrow={<Icon name="chevron_down" size={2} />}
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
         <ListboxList sx={{ variant: 'listboxes.default.list' }}>
-          <ListboxOption label="Sort by creation date" value={DelegateOrderByEnum.DATE}>
-            Creation date
+          <ListboxOption label="ASC" value={OrderDirectionEnum.ASC}>
+            Ascending
           </ListboxOption>
-          <ListboxOption label="Sort by MKR delegated" value={DelegateOrderByEnum.MKR}>
-            MKR delegated
-          </ListboxOption>
-          <ListboxOption label="Sort by delegators count" value={DelegateOrderByEnum.DELEGATORS}>
-            Delegators count
+          <ListboxOption label="DESC" value={OrderDirectionEnum.DESC}>
+            Descending
           </ListboxOption>
         </ListboxList>
       </ListboxPopover>

@@ -9,38 +9,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
-import { useMemo } from 'react';
 import { TagCount } from 'modules/app/types/tag';
-import { Delegate } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
-import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 export function DelegatesTagFilter({
   tags,
-  delegates,
   ...props
 }: {
   tags: TagCount[];
-  delegates: Delegate[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
-  const [delegateFilters, setTags, name] = useDelegatesFiltersStore(
+  const [delegateFilters, setTags] = useDelegatesFiltersStore(
     state => [state.filters, state.setTagFilter, state.filters.name],
     shallow
   );
 
   const itemsSelected = Object.values(delegateFilters.tags || {}).filter(i => !!i).length;
-
-  const filteredDelegates = useMemo(() => {
-    return filterDelegates(
-      delegates,
-      delegateFilters.showShadow,
-      delegateFilters.showRecognized,
-      delegateFilters.showExpired,
-      name,
-      delegateFilters.tags
-    );
-  }, [delegates, delegateFilters]);
 
   return (
     <FilterButton
@@ -64,9 +48,7 @@ export function DelegatesTagFilter({
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{tag.longname ? tag.longname : tag.shortname}</Text>
-                  <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                    {filteredDelegates.filter(i => i.tags.find(t => t.id === tag.id)).length}
-                  </Text>
+                  <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{tag.count}</Text>
                 </Flex>
               </Label>
             </Flex>

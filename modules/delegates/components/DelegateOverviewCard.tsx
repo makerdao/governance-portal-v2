@@ -6,16 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Card, Box, Flex, Button, Text, Heading } from 'theme-ui';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { Delegate } from '../types';
+import { DelegatePaginated } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
@@ -29,9 +28,14 @@ import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
+import { TagCount } from 'modules/app/types/tag';
+import { BigNumber } from 'ethers';
+import { formatEther, parseEther } from 'ethers/lib/utils';
 
 type PropTypes = {
-  delegate: Delegate;
+  delegate: DelegatePaginated;
+  tags: TagCount[];
+  setStateDelegates: Dispatch<SetStateAction<DelegatePaginated[]>>;
 };
 
 const DelegateVotingStatsModal = () => {
@@ -72,7 +76,7 @@ const DelegateVotingStatsModal = () => {
   );
 };
 
-export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElement {
+export function DelegateOverviewCard({ delegate, tags, setStateDelegates }: PropTypes): React.ReactElement {
   const { account, voteDelegateContractAddress } = useAccount();
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
@@ -83,12 +87,27 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
     setShowCoreUnitModal(!showCoreUnitModal);
   };
 
-  const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
     account,
     delegate.voteDelegateAddress
   );
   const hasMkrDelegated = account && mkrDelegated?.gt(0);
+
+  const mutateDelegateTotalMkr = (amount: BigNumber) => {
+    setStateDelegates(prevDelegates => {
+      const mutatedDelegateArray = prevDelegates.map(d => {
+        if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
+          return {
+            ...d,
+            mkrDelegated: formatEther(parseEther(d.mkrDelegated).add(amount))
+          };
+        }
+        return d;
+      });
+
+      return mutatedDelegateArray;
+    });
+  };
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -202,7 +221,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 mb: delegate.tags && delegate.tags.length > 0 ? 1 : 0
               }}
             >
-              <DelegateTags tags={delegate.tags.slice(0, 3)} />
+              <DelegateTags delegateTags={delegate.tags.slice(0, 3)} allTags={tags} />
             </Box>
             <Flex
               sx={{
@@ -286,18 +305,14 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   </Box>
                 )}
                 <Box sx={{ ml: account ? 4 : 0 }}>
-                  {totalStaked ? (
-                    <Text
-                      as="p"
-                      variant="microHeading"
-                      sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                      data-testid="total-mkr-delegated"
-                    >
-                      {formatValue(totalStaked)}
-                    </Text>
-                  ) : (
-                    <SkeletonThemed />
-                  )}
+                  <Text
+                    as="p"
+                    variant="microHeading"
+                    sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                    data-testid="total-mkr-delegated"
+                  >
+                    {formatValue(parseEther(delegate.mkrDelegated))}
+                  </Text>
                   <Text
                     as="p"
                     variant="secondary"
@@ -322,8 +337,9 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
           delegate={delegate}
           isOpen={showDelegateModal}
           onDismiss={() => setShowDelegateModal(false)}
-          mutateTotalStaked={mutateTotalStaked}
+          mutateTotalStaked={mutateDelegateTotalMkr}
           mutateMKRDelegated={mutateMKRDelegated}
+          refetchOnDelegation={false}
         />
       )}
       {showUndelegateModal && (
@@ -331,8 +347,9 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
           delegate={delegate}
           isOpen={showUndelegateModal}
           onDismiss={() => setShowUndelegateModal(false)}
-          mutateTotalStaked={mutateTotalStaked}
+          mutateTotalStaked={mutateDelegateTotalMkr}
           mutateMKRDelegated={mutateMKRDelegated}
+          refetchOnDelegation={false}
         />
       )}
 

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Flex, Image, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Delegate } from 'modules/delegates/types';
+import { Delegate, DelegateNameAndMetrics, DelegatePaginated } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { Address } from 'modules/address/components/Address';
@@ -18,7 +18,7 @@ export function DelegatePicture({
   delegate,
   width = 41
 }: {
-  delegate: Delegate;
+  delegate: Delegate | DelegatePaginated | DelegateNameAndMetrics;
   width?: number;
 }): React.ReactElement {
   const tooltipAvatarWidth = 68;
@@ -36,7 +36,7 @@ export function DelegatePicture({
           {delegate.picture ? (
             <Image
               src={delegate.picture}
-              key={delegate.id}
+              key={delegate.voteDelegateAddress}
               sx={{
                 objectFit: 'cover',
                 width: '100%',
@@ -142,7 +142,7 @@ export function DelegatePicture({
             {delegate.picture ? (
               <Image
                 src={delegate.picture}
-                key={delegate.id}
+                key={delegate.voteDelegateAddress}
                 sx={{
                   objectFit: 'cover',
                   width: '100%',

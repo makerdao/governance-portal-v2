@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Button, Flex, Text } from 'theme-ui';
-import { Delegate } from '../../types';
+import { DelegatePaginated } from '../../types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
@@ -15,7 +15,7 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type Props = {
   mkrToDeposit: BigNumber;
-  delegate: Delegate;
+  delegate: DelegatePaginated;
   onClick: () => void;
   onBack: () => void;
 };

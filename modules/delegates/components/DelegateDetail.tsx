@@ -185,7 +185,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                 </Box>
               </Box>
             </Flex>
-            <DelegateTags tags={delegate.tags} />
+            <DelegateTags delegateTags={delegate.tags} />
           </Box>
           <Flex sx={{ mt: [2, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
             {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
