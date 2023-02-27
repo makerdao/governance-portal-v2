@@ -7,12 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import create from 'zustand';
-
-export enum delegatesSortEnum {
-  random = 'random',
-  mkrDelegated = 'mkrDelegated',
-  creationDate = 'creationDate'
-}
+import { DelegateOrderByEnum, OrderDirectionEnum } from '../delegates.constants';
 
 type StoreDelegates = {
   filters: {
@@ -23,12 +18,14 @@ type StoreDelegates = {
     name: string | null;
     tags: { [key: string]: boolean };
   };
-  sort: delegatesSortEnum;
+  sort: DelegateOrderByEnum;
+  sortDirection: OrderDirectionEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
   setShowRecognizedFilter: (showRecognized: boolean) => void;
   setShowExpiredFilter: (showExpired: boolean) => void;
-  setSort: (sort: delegatesSortEnum) => void;
+  setSort: (sort: DelegateOrderByEnum) => void;
+  setSortDirection: (sortDirection: OrderDirectionEnum) => void;
   setTagFilter: (tag: { [key: string]: boolean }) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
@@ -37,13 +34,14 @@ type StoreDelegates = {
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
-    showShadow: false,
-    showRecognized: false,
+    showShadow: true,
+    showRecognized: true,
     showExpired: false,
     name: null,
     tags: {}
   },
-  sort: delegatesSortEnum.random,
+  sort: DelegateOrderByEnum.DATE,
+  sortDirection: OrderDirectionEnum.DESC,
 
   setName: (name: string) => {
     set({
@@ -57,6 +55,11 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   setSort: sort => {
     set({
       sort
+    });
+  },
+  setSortDirection: sortDirection => {
+    set({
+      sortDirection
     });
   },
   setCreationDateFilter: creationDate => {
@@ -118,7 +121,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
 
   resetSort: () => {
     set({
-      sort: delegatesSortEnum.random
+      sort: DelegateOrderByEnum.DATE
     });
   }
 }));
