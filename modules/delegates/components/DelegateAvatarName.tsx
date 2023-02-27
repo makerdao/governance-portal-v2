@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { DelegateNameAndMetrics, DelegatePaginated } from '../types';
+import { Delegate, DelegateNameAndMetrics, DelegatePaginated } from '../types';
 import { Box, Flex, Text } from 'theme-ui';
 import { limitString } from 'lib/string';
 import { DelegatePicture } from 'modules/delegates/components';
@@ -17,7 +17,7 @@ import { Address } from 'modules/address/components/Address';
 export default function DelegateAvatarName({
   delegate
 }: {
-  delegate: DelegatePaginated | DelegateNameAndMetrics;
+  delegate: Delegate | DelegatePaginated | DelegateNameAndMetrics;
 }): React.ReactElement {
   const { account } = useAccount();
   const isOwner = account?.toLowerCase() === delegate.address.toLowerCase();
