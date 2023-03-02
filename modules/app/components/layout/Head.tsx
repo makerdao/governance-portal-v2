@@ -54,7 +54,7 @@ export function HeadComponent({
           "style-src 'self' 'unsafe-inline';" +
           `script-src 'self' https://gc.zgo.at/count.js ${
             dev ? "'unsafe-eval'" : ''
-          } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
+          } 'sha256-ffXIVJIqwbhUsKZuw2L+l9gEWeLEqzkH/jgc2LNrgRA=';` +
           "img-src 'self' https: data:"
         }
       />
