@@ -57,8 +57,7 @@ export async function fetchGitHubPage(owner: string, repo: string, path: string)
     },
     owner,
     repo,
-    path,
-    ref: 'action-delegates'
+    path
   });
 
   return data as GithubPage[];
