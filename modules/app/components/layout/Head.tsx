@@ -47,7 +47,7 @@ export function HeadComponent({
       <meta
         httpEquiv="Content-Security-Policy"
         content={
-          "default-src 'none';" +
+          "default-src 'self';" +
           'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com;' +
           "font-src 'self';" +
           "connect-src http://localhost:8545/ http://127.0.0.1:8546/ http://127.0.0.1:8545/ http://localhost:3001/ 'self' https: wss:;" +
