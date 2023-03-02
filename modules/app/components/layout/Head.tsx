@@ -48,12 +48,14 @@ export function HeadComponent({
         httpEquiv="Content-Security-Policy"
         content={
           "default-src 'self' https://*.makerdao.com;" +
-          'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com;' +
+          'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com https://vercel.live;' +
           "font-src 'self' data:;" +
           "connect-src http://localhost:8545/ http://127.0.0.1:8546/ http://127.0.0.1:8545/ http://localhost:3001/ 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +
           "prefetch-src 'self' https://*.makerdao.com;" +
-          `script-src 'self' https://vercel.live https://gc.zgo.at/count.js ${
+          `script-src 'self' https://gc.zgo.at/count.js ${
+            dev ? "'unsafe-eval'" : ''
+          } 'sha256-ffXIVJIqwbhUsKZuw2L+l9gEWeLEqzkH/jgc2LNrgRA=' https://vercel.live ${
             dev ? "'unsafe-eval'" : ''
           } 'sha256-mPj9udBbDHxqlc6SSMYyCwgoUluvJKvwI9kYlCb3uEI=';` +
           "img-src 'self' https: data:"
