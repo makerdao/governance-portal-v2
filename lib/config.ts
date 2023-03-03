@@ -16,7 +16,6 @@ type SystemConfig = {
   MONGODB_URI: string;
   MONGODB_COMMENTS_DB: string;
   NODE_ENV: 'development' | 'production' | 'test';
-  VERCEL_ENV: string;
   GITHUB_TOKEN: string;
   GITHUB_TOKEN_2: string;
   GITHUB_TOKEN_3: string;
@@ -46,7 +45,6 @@ export const config: SystemConfig = {
   MONGODB_URI: process.env.MONGODB_URI || '',
   MONGODB_COMMENTS_DB: process.env.MONGODB_COMMENTS_DB || '',
   NODE_ENV: process.env.NODE_ENV || 'development',
-  VERCEL_ENV: process.env.VERCEL_ENV || '',
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
   GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',
   GITHUB_TOKEN_3: process.env.GITHUB_TOKEN_3 || '',
