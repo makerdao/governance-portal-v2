@@ -57,7 +57,7 @@ export function HeadComponent({
             dev ? "'unsafe-eval'" : ''
           } 'sha256-ffXIVJIqwbhUsKZuw2L+l9gEWeLEqzkH/jgc2LNrgRA=' https://vercel.live ${
             dev ? "'unsafe-eval'" : ''
-          } 'sha256-mPj9udBbDHxqlc6SSMYyCwgoUluvJKvwI9kYlCb3uEI=';` +
+          } 'sha256-5vqcrWDNTcshRWh0bt3qRbrMHzVNNqbwGeZ7W4BcEz8=';` +
           "img-src 'self' https: data:"
         }
       />
