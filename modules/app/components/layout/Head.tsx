@@ -47,7 +47,7 @@ export function HeadComponent({
           'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com https://vercel.live;' +
           "font-src 'self' data:;" +
           "connect-src http://localhost:8545/ http://127.0.0.1:8546/ http://127.0.0.1:8545/ http://localhost:3001/ 'self' https: wss:;" +
-          "style-src 'self';" +
+          "style-src 'self' 'unsafe-inline';" +
           "prefetch-src 'self' https://*.makerdao.com;" +
           "script-src 'self';" +
           "img-src 'self' https: data:"
