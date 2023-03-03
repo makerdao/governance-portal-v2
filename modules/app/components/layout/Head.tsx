@@ -55,7 +55,7 @@ export function HeadComponent({
           "prefetch-src 'self' https://*.makerdao.com;" +
           `script-src 'self' https://gc.zgo.at/count.js ${
             dev ? "'unsafe-eval'" : ''
-          } 'sha256-ffXIVJIqwbhUsKZuw2L+l9gEWeLEqzkH/jgc2LNrgRA=' https://vercel.live ${
+          } 'sha256-5vqcrWDNTcshRWh0bt3qRbrMHzVNNqbwGeZ7W4BcEz8=' https://vercel.live ${
             dev ? "'unsafe-eval'" : ''
           } 'sha256-mPj9udBbDHxqlc6SSMYyCwgoUluvJKvwI9kYlCb3uEI=';` +
           "img-src 'self' https: data:"
