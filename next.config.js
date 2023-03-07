@@ -16,6 +16,13 @@ const securityHeaders = [
   //   value: 'SAMEORIGIN'
   // },
 
+  // adds frame-ancestors which supercedes X-Frame-Options
+  // https://nextjs.org/docs/advanced-features/security-headers#x-frame-options
+  {
+    key: 'frame-ancestors',
+    value: 'https://app.safe.global'
+  },
+
   // adds x-content-type
   {
     key: 'X-Content-Type-Options',
