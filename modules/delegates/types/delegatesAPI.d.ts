@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Delegate, DelegatePaginated } from './delegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegateTypeEnum } from '../delegates.constants';
+import { TagCount } from 'modules/app/types/tag';
 
 export type DelegatesAPIStats = {
   total: number;

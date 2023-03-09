@@ -24,11 +24,133 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
 import { fetchDelegateNamesAndMetrics } from 'modules/delegates/api/fetchDelegates';
 
+/**
+ * @swagger
+ * /api/address/{address}/delegatedToWithDelegates:
+ *  get:
+ *    tags:
+ *      - "address"
+ *    description: Returns a list of delegates an address has delegated to along with the delegations for each delegate
+ *    parameters:
+ *      - in: path
+ *        name: address
+ *        description: Address to check
+ *        schema:
+ *          type: string
+ *        required: true
+ *      - in: query
+ *        name: network
+ *        description: The network for which to fetch de delegations and delegates
+ *        schema:
+ *          type: string
+ *          enum: [goerli, goerlifork, mainnet]
+ *        default: mainnet
+ *    responses:
+ *      200:
+ *        description: A list of delegates an address has delegated to along with the delegations for each delegate
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/definitions/MKRDelegatedToWithDelegateAPIResponse'
+ * definitions:
+ *  DelegateNameAndMetrics:
+ *    type: object
+ *    properties:
+ *      name:
+ *        type: string
+ *      picture:
+ *        type: string
+ *      address:
+ *        type: string
+ *      voteDelegateAddress:
+ *        type: string
+ *      status:
+ *        type: string
+ *        enum:
+ *          - recognized
+ *          - expired
+ *          - shadow
+ *      cuMember:
+ *        type: boolean
+ *      pollParticipation:
+ *        type: string
+ *      executiveParticipation:
+ *        type: string
+ *      combinedParticipation:
+ *        type: string
+ *      communication:
+ *        type: string
+ *      blockTimestamp:
+ *        type: string
+ *        format: date-time
+ *      expirationDate:
+ *        type: string
+ *        format: date-time
+ *      expired:
+ *        type: boolean
+ *      isAboutToExpire:
+ *        type: boolean
+ *      previous:
+ *        type: object
+ *        properties:
+ *          address:
+ *            type: string
+ *      next:
+ *        type: object
+ *        properties:
+ *          address:
+ *            type: string
+ *    required:
+ *      - name
+ *      - address
+ *      - voteDelegateAddress
+ *      - status
+ *      - blockTimestamp
+ *      - expirationDate
+ *      - expired
+ *      - isAboutToExpire
+ *  DelegationHistoryEvent:
+ *    type: object
+ *    properties:
+ *      lockAmount:
+ *        type: string
+ *      blockTimestamp:
+ *        type: string
+ *        format: date-time
+ *      hash:
+ *        type: string
+ *  DelegationHistory:
+ *    type: object
+ *    properties:
+ *      address:
+ *        type: string
+ *      lockAmount:
+ *        type: string
+ *      events:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/DelegationHistoryEvent'
+ *  MKRDelegatedToWithDelegateAPIResponse:
+ *    type: object
+ *    properties:
+ *      totalDelegated:
+ *        type: number
+ *      delegatedTo:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/DelegationHistory'
+ *      delegates:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/DelegateNameAndMetrics'
+ */
+
 export type MKRDelegatedToWithDelegateAPIResponse = {
   totalDelegated: number;
   delegatedTo: DelegationHistory[];
   delegates: DelegateNameAndMetrics[];
 };
+
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<MKRDelegatedToWithDelegateAPIResponse>) => {
     // validate network
