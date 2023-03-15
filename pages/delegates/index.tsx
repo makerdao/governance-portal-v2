@@ -42,12 +42,17 @@ import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserv
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
+type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
+  seed: number;
+};
+
 const Delegates = ({
   delegates: propDelegates,
   stats,
   tags,
-  paginationInfo: propPaginationInfo
-}: DelegatesPaginatedAPIResponse) => {
+  paginationInfo: propPaginationInfo,
+  seed: propSeed
+}: DelegatesPageProps) => {
   const { network } = useWeb3();
   const { voteDelegateContractAddress } = useAccount();
   const [
@@ -80,6 +85,7 @@ const Delegates = ({
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [delegates, setDelegates] = useState(propDelegates);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
+  const [seed, setSeed] = useState(propSeed);
   const [filters, setFilters] = useState({
     page: 1,
     sort,
@@ -133,6 +139,7 @@ const Delegates = ({
           delegateType: filters.delegateType,
           orderBy: filters.sort,
           orderDirection: filters.sortDirection,
+          seed,
           name: filters.name,
           queryTags,
           includeExpired: filters.showExpired
@@ -158,7 +165,8 @@ const Delegates = ({
     resetFilters();
     setDelegates(propDelegates);
     setPaginationInfo(propPaginationInfo);
-  }, [propDelegates, propPaginationInfo]);
+    setSeed(propSeed);
+  }, [propDelegates, propPaginationInfo, propSeed]);
 
   const applyFilters = () => {
     setLoading(true);
@@ -412,8 +420,9 @@ export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
   tags: prefetchedTags,
-  paginationInfo: prefetchedPaginationInfo
-}: DelegatesPaginatedAPIResponse): JSX.Element {
+  paginationInfo: prefetchedPaginationInfo,
+  seed
+}: DelegatesPageProps): JSX.Element {
   const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
@@ -429,7 +438,7 @@ export default function DelegatesPage({
   const cacheKey = `page/delegates/${network}`;
   const { data, error } = useSWR<DelegatesPaginatedAPIResponse>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    () => fetchDelegatesPageData(network, true),
+    () => fetchDelegatesPageData(network, true, { seed }),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })
@@ -467,7 +476,8 @@ export default function DelegatesPage({
           page: 0,
           numPages: 0,
           hasNextPage: false
-        }
+        },
+    seed
   };
 
   return (
@@ -485,12 +495,18 @@ export const getStaticProps: GetStaticProps = async () => {
         delegates: [],
         tags: [],
         stats: {},
-        paginationInfo: {}
+        paginationInfo: {},
+        seed: null
       }
     };
   }
 
-  const { delegates, stats, tags, paginationInfo } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
+  const seed = Math.random() * 2 - 1;
+  const { delegates, stats, tags, paginationInfo } = await fetchDelegatesPageData(
+    SupportedNetworks.MAINNET,
+    false,
+    { seed }
+  );
 
   return {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
@@ -499,7 +515,8 @@ export const getStaticProps: GetStaticProps = async () => {
       delegates,
       tags,
       stats,
-      paginationInfo
+      paginationInfo,
+      seed
     }
   };
 };

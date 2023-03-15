@@ -27,7 +27,8 @@ export enum DelegateTypeEnum {
 export enum DelegateOrderByEnum {
   DATE = 'DATE',
   MKR = 'MKR',
-  DELEGATORS = 'DELEGATORS'
+  DELEGATORS = 'DELEGATORS',
+  RANDOM = 'RANDOM'
 }
 
 export enum OrderDirectionEnum {

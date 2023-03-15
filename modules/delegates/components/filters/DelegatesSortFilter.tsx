@@ -22,6 +22,9 @@ export function DelegatesSortFilter(): JSX.Element {
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
         <ListboxList sx={{ variant: 'listboxes.default.list' }}>
+          <ListboxOption label="Sort by default" value={DelegateOrderByEnum.RANDOM}>
+            Default
+          </ListboxOption>
           <ListboxOption label="Sort by creation date" value={DelegateOrderByEnum.DATE}>
             Creation date
           </ListboxOption>

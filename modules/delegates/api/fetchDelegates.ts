@@ -446,6 +446,7 @@ export async function fetchDelegatesPaginated({
   includeExpired,
   orderBy,
   orderDirection,
+  seed,
   delegateType,
   name,
   tags
@@ -506,6 +507,9 @@ export async function fetchDelegatesPaginated({
   };
   if (delegatesQueryFilter) {
     delegatesQueryVariables['filter'] = delegatesQueryFilter;
+  }
+  if (seed) {
+    delegatesQueryVariables['seed'] = seed;
   }
 
   const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] = await Promise.all(

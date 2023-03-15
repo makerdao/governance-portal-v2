@@ -17,6 +17,7 @@ export type DelegatesQueryParams = {
   includeExpired?: boolean;
   orderBy?: DelegateOrderByEnum;
   orderDirection?: OrderDirectionEnum;
+  seed?: number;
   delegateType?: DelegateTypeEnum;
   name?: string | null;
   queryTags?: string[];
@@ -30,8 +31,9 @@ export async function fetchDelegatesPageData(
   const pageSize = 30;
   const page = queryParams?.page || 1;
   const includeExpired = queryParams?.includeExpired || false;
-  const orderBy = queryParams?.orderBy || DelegateOrderByEnum.DATE;
+  const orderBy = queryParams?.orderBy || DelegateOrderByEnum.RANDOM;
   const orderDirection = queryParams?.orderDirection || OrderDirectionEnum.DESC;
+  const seed = queryParams?.seed || null;
   const delegateType = queryParams?.delegateType || DelegateTypeEnum.RECOGNIZED;
   const name = queryParams?.name || null;
   const queryTags = queryParams?.queryTags?.length ? queryParams.queryTags : null;
@@ -40,7 +42,7 @@ export async function fetchDelegatesPageData(
     ? await fetchJson(
         `/api/delegates?network=${network}&pageSize=${pageSize}&page=${page}&includeExpired=${includeExpired}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
           name ? '&name=' + name : ''
-        }${queryTags ? '&tags=' + queryTags.join(',') : ''}`
+        }${queryTags ? '&tags=' + queryTags.join(',') : ''}${seed ? '&seed=' + seed : ''}`
       )
     : await fetchDelegatesPaginated({
         network,
@@ -49,6 +51,7 @@ export async function fetchDelegatesPageData(
         includeExpired,
         orderBy,
         orderDirection,
+        seed,
         delegateType,
         name,
         tags: queryTags

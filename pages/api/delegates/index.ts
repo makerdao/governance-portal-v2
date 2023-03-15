@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 
-*/ 
+*/
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatesPaginated } from 'modules/delegates/api/fetchDelegates';
@@ -58,26 +58,33 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *             type: boolean
  *           default: false
  *         - name: orderBy
- *           description: The field to sort the delegates by. Defaults to date.
+ *           description: The field to sort the delegates by. Defaults to DATE.
  *           in: query
  *           schema:
  *             type: string
- *             enum: [mkr, delegators, date]
- *           default: date
+ *             enum: [MKR, DELEGATORS, DATE, RANDOM]
+ *           default: DATE
  *         - name: orderDirection
- *           description: The order direction for the sorting. Defaults to desc.
+ *           description: The order direction for the sorting. Defaults to DESC.
  *           in: query
  *           schema:
  *             type: string
- *             enum: [asc, desc]
- *           default: desc
+ *             enum: [ASC, DESC]
+ *           default: DESC
+ *         - name: seed
+ *           description: The seed to use for the random ordering, only relevant when sorting delegates by RANDOM.
+ *           in: query
+ *           schema:
+ *             type: number
+ *             minimum: -1
+ *             maximum: 1
  *         - name: delegateType
- *           description: The type of delegates to return. Defaults to all.
+ *           description: The type of delegates to return. Defaults to ALL.
  *           in: query
  *           schema:
  *             type: string
- *             enum: [recognized, shadow, all]
- *           default: all
+ *             enum: [RECOGNIZED, SHADOW, ALL]
+ *           default: ALL
  *         - name: name
  *           description: The name of the recognized delegate to return. Only applicable when delegateType is recognized.
  *           in: query
@@ -278,13 +285,24 @@ export default withApiHandler(
 
     const orderBy = validateQueryParam(req.query.orderBy, 'string', {
       defaultValue: DelegateOrderByEnum.DATE,
-      validValues: [DelegateOrderByEnum.MKR, DelegateOrderByEnum.DELEGATORS, DelegateOrderByEnum.DATE]
+      validValues: [
+        DelegateOrderByEnum.MKR,
+        DelegateOrderByEnum.DELEGATORS,
+        DelegateOrderByEnum.DATE,
+        DelegateOrderByEnum.RANDOM
+      ]
     }) as string;
 
     const orderDirection = validateQueryParam(req.query.orderDirection, 'string', {
       defaultValue: OrderDirectionEnum.DESC,
       validValues: [OrderDirectionEnum.ASC, OrderDirectionEnum.DESC]
     }) as string;
+
+    const seed = validateQueryParam(req.query.seed, 'float', {
+      defaultValue: null,
+      minValue: -1,
+      maxValue: 1
+    }) as number | null;
 
     const delegateType = validateQueryParam(req.query.delegateType, 'string', {
       defaultValue: DelegateTypeEnum.ALL,
@@ -312,6 +330,7 @@ export default withApiHandler(
       includeExpired,
       orderBy,
       orderDirection,
+      seed,
       delegateType,
       name,
       tags

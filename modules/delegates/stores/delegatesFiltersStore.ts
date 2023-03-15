@@ -40,7 +40,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     name: null,
     tags: {}
   },
-  sort: DelegateOrderByEnum.DATE,
+  sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
 
   setName: (name: string) => {
@@ -121,7 +121,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
 
   resetSort: () => {
     set({
-      sort: DelegateOrderByEnum.DATE
+      sort: DelegateOrderByEnum.RANDOM
     });
   }
 }));

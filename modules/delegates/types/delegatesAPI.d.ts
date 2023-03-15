@@ -35,6 +35,7 @@ export type DelegatesValidatedQueryParams = {
   includeExpired: boolean;
   orderBy: string;
   orderDirection: string;
+  seed: number | null;
   delegateType: DelegateTypeEnum;
   name: string | null;
   tags: string[] | null;
