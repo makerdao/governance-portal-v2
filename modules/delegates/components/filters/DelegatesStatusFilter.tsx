@@ -16,13 +16,12 @@ import { useMemo } from 'react';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showShadow, name, delegateTags, setShowRecognizedFilter, setShowShadowFilter] =
+  const [showRecognized, showShadow, name, setShowRecognizedFilter, setShowShadowFilter] =
     useDelegatesFiltersStore(
       state => [
         state.filters.showRecognized,
         state.filters.showShadow,
         state.filters.name,
-        state.filters.tags,
         state.setShowRecognizedFilter,
         state.setShowShadowFilter
       ],
@@ -33,8 +32,8 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
 
   // Use filtered delegates to show the right amount of each type of delegates (ignoring the current filter ones)
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, true, true, false, name, delegateTags);
-  }, [delegates, name, delegateTags]);
+    return filterDelegates(delegates, true, true, false, name);
+  }, [delegates, name]);
 
   return (
     <FilterButton
