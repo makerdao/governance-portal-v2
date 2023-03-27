@@ -36,7 +36,6 @@ import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import DelegateTags from './DelegateTags';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
@@ -185,7 +184,6 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                 </Box>
               </Box>
             </Flex>
-            <DelegateTags tags={delegate.tags} />
           </Box>
           <Flex sx={{ mt: [2, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
             {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}

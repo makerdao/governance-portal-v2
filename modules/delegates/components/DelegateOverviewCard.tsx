@@ -23,7 +23,6 @@ import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
-import DelegateTags from './DelegateTags';
 import Icon from 'modules/app/components/Icon';
 import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
@@ -201,9 +200,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               sx={{
                 mb: delegate.tags && delegate.tags.length > 0 ? 1 : 0
               }}
-            >
-              <DelegateTags tags={delegate.tags.slice(0, 3)} />
-            </Box>
+            ></Box>
             <Flex
               sx={{
                 flexDirection: 'row',
