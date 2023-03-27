@@ -49,9 +49,9 @@ export default function TopDelegates({
       )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
-          <Heading as="h2">Top Recognized Delegates</Heading>
+          <Heading as="h2">Top Constitutional Delegates</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-            Recognized Delegates ranking by their voting power
+            Constitutional Delegates ranking by their voting power
           </Text>
         </Stack>
       </Container>

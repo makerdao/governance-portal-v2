@@ -176,7 +176,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
 
               {recognizedDelegates.length > 0 && (
                 <Stack gap={3}>
-                  <Heading as="h1">Recognized Delegates</Heading>
+                  <Heading as="h1">Constitutional Delegates</Heading>
 
                   {recognizedDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>

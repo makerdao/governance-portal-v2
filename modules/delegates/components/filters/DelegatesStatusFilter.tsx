@@ -56,7 +56,7 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
               onChange={event => setShowRecognizedFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-              <Text>Recognized Delegates</Text>
+              <Text>Constitutional Delegates</Text>
               <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
                 {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
               </Text>

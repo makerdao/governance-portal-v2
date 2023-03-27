@@ -48,7 +48,7 @@ export function MigrationInfo({
           delegate contract address.
         </Text>
         <Text as="p" variant="secondary" sx={{ mt: 3, fontWeight: 'bold' }}>
-          Migration is not supported for Shadow Delegates, only for Recognized Delegates.
+          Migration is not supported for Shadow Delegates, only for Constitutional Delegates.
         </Text>
         <Text as="h3" variant="smallHeading" sx={{ my: 4 }}>
           Before starting the flow, please consider the following notice:

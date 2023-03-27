@@ -7,10 +7,10 @@ import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { elementContainsText, forkNetwork, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
-import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
+// import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { TESTING_ACTIVE_POLLS_COUNT } from 'cypress/support/constants/polling';
 import {
-  TESTING_RECOGNIZED_DELEGATE_COUNT,
+  TESTING_CONSTITUTIONAL_DELEGATE_COUNT,
   TESTING_SHADOW_DELEGATE_COUNT,
   TESTING_MKR_DELEGATED_AMOUNT
 } from 'cypress/support/constants/delegates';
@@ -23,7 +23,7 @@ import BigNumber from 'bignumber.js';
 
 describe('Home Page', () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
+    forkNetwork(/* INIT_BLOCK */);
   });
 
   it('should find the correct data on the landing page', () => {
@@ -45,7 +45,7 @@ describe('Home Page', () => {
       elementContainsText('[data-testid="Active Polls"]', TESTING_ACTIVE_POLLS_COUNT.toString());
       elementContainsText(
         '[data-testid="Recognized Delegates"]',
-        TESTING_RECOGNIZED_DELEGATE_COUNT.toString()
+        TESTING_CONSTITUTIONAL_DELEGATE_COUNT.toString()
       );
       elementContainsText('[data-testid="Shadow Delegates"]', TESTING_SHADOW_DELEGATE_COUNT.toString());
       elementContainsText(
@@ -85,7 +85,7 @@ describe('Home Page', () => {
       // TODO enable this once we have recognized delegates in the db
       cy.get('[data-testid="top-recognized-delegate"]')
         .its('length')
-        .should('be.eq', TESTING_RECOGNIZED_DELEGATE_COUNT);
+        .should('be.eq', TESTING_CONSTITUTIONAL_DELEGATE_COUNT);
 
       //TODO test footer stuff
 
