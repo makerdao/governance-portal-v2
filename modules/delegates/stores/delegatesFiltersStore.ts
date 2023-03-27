@@ -94,7 +94,6 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetFilters: () => {
     set({
       filters: {
-        tags: {},
         name: null,
         creationDate: null,
         showShadow: true,
