@@ -7,7 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Tag } from 'modules/app/types/tag';
-import { PollResultDisplay, PollVictoryConditions } from '../polling.constants';
+import {
+  PollInputFormat,
+  PollResultDisplay,
+  PollStatusEnum,
+  PollVictoryConditions
+} from '../polling.constants';
 
 //  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
 export type PollVictoryConditionComparison = {
@@ -68,20 +73,26 @@ type PollParameters = {
   resultDisplay: PollResultDisplay;
 };
 
+export type PollOptions = {
+  [key: string]: string;
+};
+
 export type Poll = {
+  creator: string;
+  blockCreated: number;
   title: string;
   multiHash: string;
   content: string;
   pollId: number;
   summary: string;
-  options: Record<any, any>;
+  options: PollOptions;
   endDate: Date;
   startDate: Date;
   discussionLink: string | null;
   parameters: PollParameters;
-  tags: Tag[];
+  tags: Tag[] | string[];
   slug: string;
-  ctx: {
+  ctx?: {
     prev: PartialPoll | null;
     next: PartialPoll | null;
   };
@@ -95,4 +106,27 @@ export type PartialPoll = {
   startDate: Date;
   endDate: Date;
   url: string;
+};
+
+export type PollsValidatedQueryParams = {
+  network: SupportedNetworks;
+  pageSize: number;
+  page: number;
+  title: string | null;
+  orderBy: PollOrderByEnum;
+  tags: string[] | null;
+  status: PollStatusEnum | null;
+  type: PollInputFormat[] | null;
+  startDate: Date | null;
+  endDate: Date | null;
+};
+
+export type PollFilterQueryParams = Omit<PollsValidatedQueryParams, 'network'>;
+
+export type PollListItem = Pick<
+  Poll,
+  'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary' | 'options'
+> & {
+  type: PollInputFormat;
+  tags: string[];
 };

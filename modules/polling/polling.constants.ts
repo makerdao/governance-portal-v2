@@ -56,3 +56,21 @@ export enum PollResultDisplay {
   instantRunoffBreakdown = 'instant-runoff-breakdown',
   approvalBreakdown = 'approval-breakdown'
 }
+
+export enum PollOrderByEnum {
+  nearestEnd = 'NEAREST_END',
+  furthestEnd = 'FURTHEST_END',
+  nearestStart = 'NEAREST_START',
+  furthestStart = 'FURTHEST_START'
+}
+
+export enum PollStatusEnum {
+  active = 'ACTIVE',
+  ended = 'ENDED'
+}
+
+export const POLLS_HASH_FILE_URL =
+  'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/hashed-polls.json';
+
+export const AGGREGATED_POLLS_FILE_URL =
+  'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/polls.json';

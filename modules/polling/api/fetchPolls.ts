@@ -7,12 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { Poll } from 'modules/polling/types';
+import { Poll, PollFilterQueryParams, PollListItem } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
-import { PollFilters, PollsResponse } from '../types/pollsResponse';
+import { PollFilters, PollsPaginatedResponse, PollsResponse } from '../types/pollsResponse';
+import { PollsValidatedQueryParams } from 'modules/polling/types';
 import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -23,8 +24,18 @@ import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
-import { getAllPollsCacheKey } from 'modules/cache/constants/cache-keys';
-import { getPollTagsMapping } from './getPollTags';
+import {
+  getAllPollsCacheKey,
+  getIndividualPollCacheKey,
+  isPollsHashValidCacheKey,
+  pollListCacheKey,
+  pollsHashCacheKey
+} from 'modules/cache/constants/cache-keys';
+import { getPollTagsMapping, getPollTags } from './getPollTags';
+import { AGGREGATED_POLLS_FILE_URL, PollStatusEnum, POLLS_HASH_FILE_URL } from '../polling.constants';
+import { ONE_WEEK_IN_MS, THIRTY_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { sortPollsBy } from '../helpers/sortPolls';
+import { TagCount } from 'modules/app/types/tag';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -160,5 +171,207 @@ export async function getPolls(
       finished: allPolls.filter(p => !isActivePoll(p)).length,
       total: allPolls.length
     }
+  };
+}
+
+export async function checkCachedPollsValidity(
+  network: SupportedNetworks
+): Promise<{ valid: boolean; hash?: string }> {
+  const isPollsHashValid: boolean | undefined = await cacheGet(isPollsHashValidCacheKey, network);
+
+  if (isPollsHashValid) {
+    return { valid: true };
+  }
+
+  const githubPollsHashRes = await fetch(POLLS_HASH_FILE_URL);
+  const githubPollsHashFile = await githubPollsHashRes.json();
+
+  const githubPollsHash: string | undefined = githubPollsHashFile.hash;
+  const cachedPollsHash: string | undefined = await cacheGet(pollsHashCacheKey, network);
+
+  if (githubPollsHash && cachedPollsHash && githubPollsHash === cachedPollsHash) {
+    cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
+    return { valid: true };
+  } else {
+    return { valid: false, hash: githubPollsHash };
+  }
+}
+
+export async function refetchPolls(
+  network: SupportedNetworks,
+  githubHash: string
+): Promise<{ pollList: PollListItem[]; allPolls: Poll[] }> {
+  const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL);
+  const allPolls = await allPollsRes.json();
+
+  const pollList = allPolls.map(poll => {
+    const { pollId, startDate, endDate, slug, parameters, summary, title, options, tags } = poll;
+    return {
+      pollId,
+      startDate: new Date(startDate).toISOString(),
+      endDate: new Date(endDate).toISOString(),
+      slug,
+      type: parameters.inputFormat.type,
+      title,
+      summary,
+      options,
+      tags
+    };
+  });
+
+  cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
+  cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS);
+  cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
+  allPolls.forEach((poll, i) => {
+    const prevPoll = allPolls[i - 1];
+    const nextPoll = allPolls[i + 1];
+
+    const pollWithLinks = {
+      ...poll,
+      ctx: {
+        prev: prevPoll ? { slug: prevPoll.slug } : null,
+        next: nextPoll ? { slug: nextPoll.slug } : null
+      }
+    };
+
+    const pollCacheKey = getIndividualPollCacheKey(pollWithLinks.pollId);
+    cacheSet(pollCacheKey, JSON.stringify(pollWithLinks), network, ONE_WEEK_IN_MS);
+  });
+
+  return { pollList, allPolls };
+}
+
+export async function getPollList(network: SupportedNetworks): Promise<PollListItem[]> {
+  const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
+
+  if (cachedPollsAreValid) {
+    const cachedPollList = await cacheGet(pollListCacheKey, network);
+    if (cachedPollList) {
+      return JSON.parse(cachedPollList);
+    }
+  }
+
+  const { pollList } = await refetchPolls(network, githubHash as string);
+
+  return pollList;
+}
+
+export function filterPollList(
+  pollList: PollListItem[],
+  filters: PollFilterQueryParams
+): Omit<PollsPaginatedResponse, 'tags'> {
+  const {
+    pageSize,
+    page,
+    title: filterTitle,
+    orderBy,
+    tags: filterTags,
+    status,
+    type: filterTypes,
+    startDate: filterStartDate,
+    endDate: filterEndDate
+  } = filters;
+
+  const filteredPolls = pollList
+    // First, filter the poll list by the filters passed
+    .filter(({ title, tags, type, startDate, endDate }) => {
+      const paramStartDate = new Date(startDate);
+      const paramEndDate = new Date(endDate);
+
+      return (
+        (filterTitle ? title.toLowerCase().includes(filterTitle.toLowerCase()) : true) &&
+        (filterTags ? filterTags.every(tag => tags.includes(tag)) : true) &&
+        (filterStartDate ? paramStartDate >= filterStartDate : true) &&
+        (filterEndDate ? paramEndDate < filterEndDate : true) &&
+        (status
+          ? status === PollStatusEnum.active
+            ? new Date() >= paramStartDate && new Date() < paramEndDate
+            : new Date() >= paramEndDate
+          : true) &&
+        (filterTypes ? filterTypes.includes(type) : true)
+      );
+    });
+
+  const sortedPolls = filteredPolls
+    // Then, sort it by the `orderBy` parameter
+    .sort(sortPollsBy(orderBy))
+    // Finally, return the number of entries based on the `page` and `pageSize` parameters
+    .slice((page - 1) * pageSize, page * pageSize);
+
+  const activePollsCount = pollList.filter(
+    p => new Date() >= new Date(p.startDate) && new Date() < new Date(p.endDate)
+  ).length;
+  const allPollsCount = pollList.length;
+  const endedPollsCount = allPollsCount - activePollsCount;
+
+  const totalCount = filteredPolls.length;
+  const numPages = Math.ceil(filteredPolls.length / pageSize);
+  const hasNextPage = page < numPages;
+
+  return {
+    paginationInfo: {
+      totalCount,
+      page,
+      numPages,
+      hasNextPage
+    },
+    stats: {
+      total: allPollsCount,
+      active: activePollsCount,
+      finished: endedPollsCount
+    },
+    polls: sortedPolls
+  };
+}
+
+export function reducePollTags(pollList: PollListItem[]): TagCount[] {
+  const pollTags = getPollTags();
+
+  const tags = pollList.reduce((acumTags, poll) => {
+    poll.tags.forEach(tag => {
+      const addedTag = acumTags.find(t => t.id === tag);
+
+      if (addedTag) {
+        addedTag.count += 1;
+        return;
+      }
+
+      const pollTag = pollTags.find(t => t.id === tag);
+
+      if (pollTag) {
+        acumTags.push({
+          ...pollTag,
+          count: 1
+        });
+      }
+    });
+
+    return acumTags;
+  }, [] as TagCount[]);
+
+  return tags.sort((a, b) => b.count - a.count);
+}
+
+export async function getPollsPaginated({
+  network,
+  pageSize,
+  page,
+  title,
+  orderBy,
+  tags,
+  status,
+  type,
+  startDate,
+  endDate
+}: PollsValidatedQueryParams): Promise<PollsPaginatedResponse> {
+  const pollList = await getPollList(network);
+
+  const pollFilters = { pageSize, page, title, orderBy, tags, status, type, startDate, endDate };
+  const filteredPollList = filterPollList(pollList, pollFilters);
+  const pollTags = reducePollTags(pollList);
+
+  return {
+    ...filteredPollList,
+    tags: pollTags
   };
 }
