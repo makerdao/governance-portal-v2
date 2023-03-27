@@ -12,7 +12,7 @@ import { Delegate } from '../types';
 export function filterDelegates(
   delegates: Delegate[],
   showShadow: boolean,
-  showRecognized: boolean,
+  showConstitutional: boolean,
   showExpired: boolean,
   name: string | null,
   tags?: { [key: string]: boolean }
@@ -31,8 +31,8 @@ export function filterDelegates(
           return false;
         }
 
-        // return all if show shadow and show recognized are both unchecked
-        if (!showShadow && !showRecognized) {
+        // return all if show shadow and show constitutional are both unchecked
+        if (!showShadow && !showConstitutional) {
           return true;
         }
 
@@ -40,7 +40,7 @@ export function filterDelegates(
           return false;
         }
 
-        if (!showRecognized && delegate.status === DelegateStatusEnum.recognized) {
+        if (!showConstitutional && delegate.status === DelegateStatusEnum.constitutional) {
           return false;
         }
 

@@ -41,10 +41,10 @@ import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
-  const [showRecognized, showShadow, showExpired, sort, name, setName, resetFilters] =
+  const [showConstitutional, showShadow, showExpired, sort, name, setName, resetFilters] =
     useDelegatesFiltersStore(
       state => [
-        state.filters.showRecognized,
+        state.filters.showConstitutional,
         state.filters.showShadow,
         state.filters.showExpired,
         state.sort,
@@ -60,8 +60,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const bpi = useBreakpointIndex();
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized, showExpired, name);
-  }, [delegates, showRecognized, showShadow, showExpired, name]);
+    return filterDelegates(delegates, showShadow, showConstitutional, showExpired, name);
+  }, [delegates, showConstitutional, showShadow, showExpired, name]);
 
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
@@ -79,7 +79,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     });
 
     const recognized = sorted
-      .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+      .filter(delegate => delegate.status === DelegateStatusEnum.constitutional && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
 
     const shadow = sorted

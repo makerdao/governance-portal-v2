@@ -16,19 +16,19 @@ import { useMemo } from 'react';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showShadow, name, setShowRecognizedFilter, setShowShadowFilter] =
+  const [showConstitutional, showShadow, name, setShowConstitutionalFilter, setShowShadowFilter] =
     useDelegatesFiltersStore(
       state => [
-        state.filters.showRecognized,
+        state.filters.showConstitutional,
         state.filters.showShadow,
         state.filters.name,
-        state.setShowRecognizedFilter,
+        state.setShowConstitutionalFilter,
         state.setShowShadowFilter
       ],
       shallow
     );
 
-  const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
+  const itemsSelected = [showConstitutional, showShadow].filter(i => !!i).length;
 
   // Use filtered delegates to show the right amount of each type of delegates (ignoring the current filter ones)
   const filteredDelegates = useMemo(() => {
@@ -51,13 +51,13 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
           >
             <Checkbox
               sx={{ width: 3, height: 3 }}
-              checked={showRecognized}
-              onChange={event => setShowRecognizedFilter(event.target.checked)}
+              checked={showConstitutional}
+              onChange={event => setShowConstitutionalFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Constitutional Delegates</Text>
               <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.constitutional).length}
               </Text>
             </Flex>
           </Label>

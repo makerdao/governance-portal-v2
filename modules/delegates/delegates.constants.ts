@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 export enum DelegateStatusEnum {
-  recognized = 'recognized',
+  constitutional = 'constitutional',
   expired = 'expired',
   shadow = 'shadow'
 }

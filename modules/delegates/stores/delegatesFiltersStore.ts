@@ -18,14 +18,14 @@ type StoreDelegates = {
   filters: {
     creationDate: null | Date;
     showShadow: boolean;
-    showRecognized: boolean;
+    showConstitutional: boolean;
     showExpired: boolean;
     name: string | null;
   };
   sort: delegatesSortEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
-  setShowRecognizedFilter: (showRecognized: boolean) => void;
+  setShowConstitutionalFilter: (showConstitutional: boolean) => void;
   setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: delegatesSortEnum) => void;
   setName: (text: string) => void;
@@ -36,7 +36,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
     showShadow: false,
-    showRecognized: false,
+    showConstitutional: false,
     showExpired: false,
     name: null
   },
@@ -82,11 +82,11 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setShowRecognizedFilter: showRecognized => {
+  setShowConstitutionalFilter: showConstitutional => {
     set({
       filters: {
         ...get().filters,
-        showRecognized
+        showConstitutional
       }
     });
   },
@@ -97,7 +97,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         name: null,
         creationDate: null,
         showShadow: true,
-        showRecognized: true,
+        showConstitutional: true,
         showExpired: false
       }
     });
