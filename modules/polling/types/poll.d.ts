@@ -78,21 +78,19 @@ export type PollOptions = {
 };
 
 export type Poll = {
-  creator: string;
-  blockCreated: number;
   title: string;
   multiHash: string;
   content: string;
   pollId: number;
   summary: string;
-  options: PollOptions;
+  options: Record<any, any>;
   endDate: Date;
   startDate: Date;
   discussionLink: string | null;
   parameters: PollParameters;
-  tags: Tag[] | string[];
+  tags: Tag[];
   slug: string;
-  ctx?: {
+  ctx: {
     prev: PartialPoll | null;
     next: PartialPoll | null;
   };
@@ -123,10 +121,8 @@ export type PollsValidatedQueryParams = {
 
 export type PollFilterQueryParams = Omit<PollsValidatedQueryParams, 'network'>;
 
-export type PollListItem = Pick<
-  Poll,
-  'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary' | 'options'
-> & {
+export type PollListItem = Pick<Poll, 'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary'> & {
+  options: PollOptions;
   type: PollInputFormat;
   tags: string[];
 };
