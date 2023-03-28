@@ -44,7 +44,7 @@ describe('Home Page', () => {
       elementContainsText('[data-testid="MKR on Hat"]', new BigNumber(TESTING_MKR_ON_HAT_AMOUNT).toFormat(0));
       elementContainsText('[data-testid="Active Polls"]', TESTING_ACTIVE_POLLS_COUNT.toString());
       elementContainsText(
-        '[data-testid="Recognized Delegates"]',
+        '[data-testid="Constitional Delegates"]',
         TESTING_CONSTITUTIONAL_DELEGATE_COUNT.toString()
       );
       elementContainsText('[data-testid="Shadow Delegates"]', TESTING_SHADOW_DELEGATE_COUNT.toString());
@@ -64,8 +64,8 @@ describe('Home Page', () => {
 
       cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', TESTING_ACTIVE_POLLS_COUNT);
 
-      // Find the Top Recognized Delegates block
-      cy.contains('Top Recognized Delegates').should('be.visible');
+      // Find the Top Consitutional Delegates block
+      cy.contains('Top Consitutional Delegates').should('be.visible');
 
       // Find the How to participate block
       cy.contains('How to participate in Maker Governance').should('be.visible');
@@ -80,7 +80,7 @@ describe('Home Page', () => {
 
       // Checks that there are enough delegates
       // TODO enable this once we have recognized delegates in the db
-      cy.get('[data-testid="top-recognized-delegate"]')
+      cy.get('[data-testid="top-constitutional-delegate"]')
         .its('length')
         .should('be.eq', TESTING_CONSTITUTIONAL_DELEGATE_COUNT);
 

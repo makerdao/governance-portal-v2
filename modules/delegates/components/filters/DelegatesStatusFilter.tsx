@@ -47,7 +47,7 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
           <Label
             variant="thinLabel"
             sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
-            data-testid="delegate-type-filter-show-recognized"
+            data-testid="delegate-type-filter-show-constitutional"
           >
             <Checkbox
               sx={{ width: 3, height: 3 }}

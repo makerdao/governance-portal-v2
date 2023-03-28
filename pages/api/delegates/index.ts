@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 
-*/ 
+*/
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
@@ -53,7 +53,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         type: number
  *       shadow:
  *         type: number
- *       recognized:
+ *       constitutional:
  *         type: number
  *       totalMKRDelegated:
  *         type: string

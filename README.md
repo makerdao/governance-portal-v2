@@ -101,7 +101,7 @@ The following configuration values can be added to the `.env` file:
 
 - Set `POCKET_KEY` to a valid [Pocket](https://docs.pokt.network/home/#use-pocket-networks-rpc) API key for ethers provider to use
 
-- Set `GITHUB_TOKEN` to fetch polls, executives, and recognized delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
+- Set `GITHUB_TOKEN` to fetch polls, executives, and constitutional delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
 
 - Set `MONGODB_URI` to a full MongoDB uri (ex: `mongodb+srv://...`)
 

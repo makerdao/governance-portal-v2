@@ -52,9 +52,9 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
-  const [recognizedDelegates] = useMemo(() => {
-    const recognized = filterDelegates(delegates, false, true, false, null);
-    return [recognized];
+  const [constitutionalDelegates] = useMemo(() => {
+    const constitutional = filterDelegates(delegates, false, true, false, null);
+    return [constitutional];
   }, [delegates]);
 
   // change background on color mode switch
@@ -70,11 +70,11 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const pollCategories = getCategories(polls);
 
   // delegates
-  const topDelegates = recognizedDelegates
+  const topDelegates = constitutionalDelegates
     .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
 
-  const activeDelegates = recognizedDelegates
+  const activeDelegates = constitutionalDelegates
     .sort((a, b) => {
       const [first] = a.combinedParticipation?.split('%') || '0';
       const [second] = b.combinedParticipation?.split('%') || '0';

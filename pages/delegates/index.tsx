@@ -65,7 +65,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
 
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
-  const [sortedDelegates, recognizedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
+  const [sortedDelegates, constitutionalDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
     const sorted = filteredDelegates.sort((prev, next) => {
       if (sort === delegatesSortEnum.creationDate) {
         return prev.expirationDate > next.expirationDate ? -1 : 1;
@@ -78,7 +78,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       return 1;
     });
 
-    const recognized = sorted
+    const constitutional = sorted
       .filter(delegate => delegate.status === DelegateStatusEnum.constitutional && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
 
@@ -87,7 +87,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       .sort(d => (isOwner(d) ? -1 : 0));
 
     const expired = sorted.filter(delegate => delegate.expired === true);
-    return [sorted, recognized, shadow, expired];
+    return [sorted, constitutional, shadow, expired];
   }, [filteredDelegates, sort]);
 
   return (
@@ -173,11 +173,11 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                 </Flex>
               )}
 
-              {recognizedDelegates.length > 0 && (
+              {constitutionalDelegates.length > 0 && (
                 <Stack gap={3}>
                   <Heading as="h1">Constitutional Delegates</Heading>
 
-                  {recognizedDelegates.map(delegate => (
+                  {constitutionalDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
                         <DelegateOverviewCard delegate={delegate} />

@@ -51,7 +51,7 @@ describe('Delegates Page', () => {
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.get('[data-testid="delegate-type-filter"]').click();
 
-      cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
+      cy.get('[data-testid="delegate-type-filter-show-constitutional"]').click();
 
       // See now 2 delegates
       cy.get('[data-testid="delegate-card"]').should('have.length', TESTING_CONSTITUTIONAL_DELEGATE_COUNT);

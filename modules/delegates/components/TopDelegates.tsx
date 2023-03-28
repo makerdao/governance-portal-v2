@@ -91,7 +91,7 @@ export default function TopDelegates({
         {delegates.map((delegate, index) => {
           const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
           return (
-            <Box key={`top-delegate-${index}`} data-testid="top-recognized-delegate">
+            <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
                 sx={{
                   justifyContent: 'space-between',
