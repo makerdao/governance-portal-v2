@@ -56,9 +56,10 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   }, []);
   return (
     <Web3Provider>
-      <Analytics />
       {/* @ts-ignore */}
       <ThemeProvider theme={theme}>
+        <Analytics />
+
         <NextNprogress
           color="#1aab9b"
           startPosition={0.3}

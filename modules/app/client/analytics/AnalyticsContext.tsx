@@ -58,7 +58,6 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
         //   id: url,
         //   product: ANALYTICS_PRODUCT
         // });
-
         // goatcounterTrack(url.slice(1), ANALYTICS_EVENTS.ROUTE_CHANGE, false);
       };
 
