@@ -96,24 +96,28 @@ const resources: Record<ResourceType, Resource> = {
     boxTitle: 'Delegation FAQs',
     links: [
       {
-        linkTitle: 'What is vote delegation and how does it work in MakerDAO?',
-        url: 'https://forum.makerdao.com/t/delegation-and-makerdao/9429'
+        linkTitle: 'What is MKR vote delegation?',
+        url: 'https://manual.makerdao.com/delegation/overview/what-is-delegation'
       },
       {
-        linkTitle: 'What are the requirements for becoming a recognized delegate?',
-        url: 'https://forum.makerdao.com/t/recognised-delegate-requirements/9421'
+        linkTitle: 'What are Constitutional Voter Committees(CVCs)?',
+        url: 'https://mips.makerdao.com/mips/details/MIP101#5-constitutional-voter-committees-cvcs-'
+      },
+      {
+        linkTitle: 'What is the Maker Constitution?',
+        url: 'https://mips.makerdao.com/mips/details/MIP101'
+      },
+      {
+        linkTitle: 'What is a Constitutional Delegate?',
+        url: 'https://mips.makerdao.com/mips/details/MIP113#5-constitutional-delegates'
+      },
+      {
+        linkTitle: 'What is Maker Endgame?',
+        url: 'https://endgame.makerdao.com/endgame/overview'
       },
       {
         linkTitle: "The MKR holder's guide to delegation",
-        url: 'https://forum.makerdao.com/t/mkr-holder-s-guide-to-delegation/9602'
-      },
-      {
-        linkTitle: "MKR token holder's delegation agreement",
-        url: 'https://forum.makerdao.com/t/token-holders-delegation-agreement/9385'
-      },
-      {
-        linkTitle: 'Recognized delegate code of conduct',
-        url: 'https://forum.makerdao.com/t/recognised-delegate-code-of-conduct/9384'
+        url: 'https://manual.makerdao.com/delegation/for-mkr-holders/mkr-holder-guide'
       }
     ]
   }

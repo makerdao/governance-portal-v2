@@ -244,6 +244,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                 <DelegatesSystemInfo stats={stats} />
               </ErrorBoundary>
             )}
+            <ResourceBox type={'delegates'} />
             <ResourceBox type={'general'} />
           </Stack>
         </SidebarLayout>
