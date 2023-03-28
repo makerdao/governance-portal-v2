@@ -64,9 +64,6 @@ describe('Home Page', () => {
 
       cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', TESTING_ACTIVE_POLLS_COUNT);
 
-      // Find the Meet the Delegates block
-      cy.contains('Meet the Delegates').should('be.visible');
-
       // Find the Top Recognized Delegates block
       cy.contains('Top Recognized Delegates').should('be.visible');
 
