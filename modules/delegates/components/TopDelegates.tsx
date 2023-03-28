@@ -44,7 +44,6 @@ export default function TopDelegates({
           onDismiss={() => setShowDelegateModal(null)}
           mutateTotalStaked={() => null}
           mutateMKRDelegated={() => null}
-          refetchOnDelegation={true}
         />
       )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>

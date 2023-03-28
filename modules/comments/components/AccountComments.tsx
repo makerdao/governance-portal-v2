@@ -58,10 +58,16 @@ export default function AccountComments({ address }: { address: string }): React
           >
             Comments
           </Text>{' '}
-          {data.comments.map((comment, i) => (
+          {data.comments.map(comment => (
             <Box
               sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
-              key={comment.address.address + '-' + i}
+              key={
+                (comment.comment.commentType === 'executive'
+                  ? comment.comment.spellAddress
+                  : comment.comment.pollId) +
+                '-' +
+                comment.comment.date.toString()
+              }
             >
               <Text as="p" variant="caps" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}

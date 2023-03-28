@@ -27,7 +27,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
-import { DelegatesSortDirectionFilter } from 'modules/delegates/components/filters/DelegatesSortDirectionFilter';
 import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -168,39 +167,26 @@ const Delegates = ({
     setSeed(propSeed);
   }, [propDelegates, propPaginationInfo, propSeed]);
 
-  const applyFilters = () => {
-    setLoading(true);
-    setDelegates([]);
-    setFilters({
-      page: 1,
-      sort,
-      sortDirection,
-      name,
-      delegateTags,
-      showExpired,
-      delegateType:
-        showRecognized && showShadow
-          ? DelegateTypeEnum.RECOGNIZED
-          : showShadow
-          ? DelegateTypeEnum.SHADOW
-          : DelegateTypeEnum.RECOGNIZED
-    });
-  };
-
-  const resetFiltersAndRefetch = () => {
-    resetFilters();
-    setLoading(true);
-    setDelegates([]);
-    setFilters({
-      page: 1,
-      sort,
-      sortDirection,
-      name,
-      delegateTags,
-      showExpired,
-      delegateType: DelegateTypeEnum.RECOGNIZED
-    });
-  };
+  useEffect(() => {
+    if (!isRendering) {
+      setLoading(true);
+      setDelegates([]);
+      setFilters({
+        page: 1,
+        sort,
+        sortDirection,
+        name: name,
+        delegateTags,
+        showExpired,
+        delegateType:
+          showRecognized && showShadow
+            ? DelegateTypeEnum.RECOGNIZED
+            : showShadow
+            ? DelegateTypeEnum.SHADOW
+            : DelegateTypeEnum.RECOGNIZED
+      });
+    }
+  }, [sort, sortDirection, name, delegateTags, showRecognized, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
@@ -251,25 +237,18 @@ const Delegates = ({
                   flexWrap: 'wrap'
                 }}
               >
-                <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
+                <SearchBar
+                  sx={{ m: 2 }}
+                  onChange={setName}
+                  value={name}
+                  placeholder="Search by name"
+                  withSearchButton={true}
+                />
                 <DelegatesSortFilter />
-                <DelegatesSortDirectionFilter />
                 <DelegatesTagFilter tags={tags} sx={{ m: 2 }} />
                 <DelegatesStatusFilter stats={stats} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
-              <Button
-                variant={'outline'}
-                data-testid="delegate-apply-filters"
-                sx={{
-                  m: 2,
-                  color: 'textSecondary',
-                  border: 'none'
-                }}
-                onClick={applyFilters}
-              >
-                Apply filters
-              </Button>
               <Button
                 variant={'outline'}
                 data-testid="delegate-reset-filters"
@@ -278,7 +257,7 @@ const Delegates = ({
                   color: 'textSecondary',
                   border: 'none'
                 }}
-                onClick={resetFiltersAndRefetch}
+                onClick={resetFilters}
               >
                 Reset filters
               </Button>
@@ -311,7 +290,7 @@ const Delegates = ({
                   <Button
                     variant={'textual'}
                     sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
-                    onClick={resetFiltersAndRefetch}
+                    onClick={resetFilters}
                   >
                     Reset filters
                   </Button>
