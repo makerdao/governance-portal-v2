@@ -83,7 +83,7 @@ export function DelegatePicture({
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
             {delegate.status === DelegateStatusEnum.constitutional
-              ? 'Recognized Delegate'
+              ? 'Constitutional Delegate'
               : 'Shadow Delegate'}
           </Text>
         </Flex>
