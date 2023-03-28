@@ -36,6 +36,7 @@ import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
 import { Web3Provider } from 'modules/web3/components/Web3Provider';
 import GaslessBanner from 'modules/polling/components/GaslessBanner';
 import React, { useMemo } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -55,6 +56,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   }, []);
   return (
     <Web3Provider>
+      <Analytics />
       {/* @ts-ignore */}
       <ThemeProvider theme={theme}>
         <NextNprogress
