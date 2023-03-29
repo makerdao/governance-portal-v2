@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { Delegate, DelegateNameAndMetrics, DelegatePaginated } from '../../types';
+import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateMkr } from './InputDelegateMkr';
 import { ApprovalContent } from './Approval';
@@ -31,7 +31,7 @@ import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
-  delegate: Delegate | DelegatePaginated | DelegateNameAndMetrics;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
   mutateTotalStaked: (amount?: BigNumber) => void;
   mutateMKRDelegated: () => void;
   title?: string;

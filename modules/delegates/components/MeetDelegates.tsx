@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Text, Flex, Button, Heading, Card, get } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { DelegateNameAndMetrics } from '../types';
+import { DelegateInfo } from '../types';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -24,7 +24,7 @@ const MeetDelegateCard = ({
   bpi,
   setDelegateToPlay
 }: {
-  delegate: DelegateNameAndMetrics;
+  delegate: DelegateInfo;
   trackButtonClick: (string) => void;
   bpi: number;
   setDelegateToPlay: (boolean) => void;
@@ -84,7 +84,7 @@ export const ParticipationBreakdown = ({
   delegate,
   bpi
 }: {
-  delegate: DelegateNameAndMetrics;
+  delegate: DelegateInfo;
   bpi: number;
 }): React.ReactElement => {
   return (
@@ -128,7 +128,7 @@ export default function MeetYourDelegates({
   delegates,
   bpi
 }: {
-  delegates: DelegateNameAndMetrics[];
+  delegates: DelegateInfo[];
   bpi: number;
 }): React.ReactElement {
   const [delegateToPlay, setDelegateToPlay] = useState();

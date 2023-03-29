@@ -18,13 +18,13 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
-import { DelegateNameAndMetrics, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
+import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
 
 export type LandingPageData = {
   proposals: Proposal[];
   polls: Poll[];
   recognizedDelegates: DelegatePaginated[];
-  delegateNamesAndMetrics: DelegateNameAndMetrics[];
+  delegatesInfo: DelegateInfo[];
   stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   hat?: string;

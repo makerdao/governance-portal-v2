@@ -10,7 +10,7 @@ import { Text, Flex, Heading, Link as ThemeUILink, Button } from 'theme-ui';
 import React, { useState } from 'react';
 import LocalIcon from 'modules/app/components/Icon';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
-import { Delegate, DelegateNameAndMetrics, DelegatePaginated } from 'modules/delegates/types';
+import { Delegate, DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -20,7 +20,7 @@ export default function DelegateExpiryDate({
   delegate,
   reverse
 }: {
-  delegate: Delegate | DelegatePaginated | DelegateNameAndMetrics;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
   reverse?: boolean;
 }): React.ReactElement {
   const [modalOpen, setModalOpen] = useState(false);

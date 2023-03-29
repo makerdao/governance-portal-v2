@@ -16,11 +16,11 @@ import mockPolls from 'modules/polling/api/mocks/polls.json';
 import mockTally from 'modules/polling/api/mocks/tally.json';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { Poll, PollTally } from 'modules/polling/types';
-import { useDelegateNameAndMetricsByAddress } from 'modules/delegates/hooks/useDelegateNameAndMetricsByAddress';
+import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 jest.mock('@theme-ui/match-media');
-jest.mock('modules/delegates/hooks/useDelegateNameAndMetricsByAddress');
+jest.mock('modules/delegates/hooks/useSingleDelegateInfo');
 jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 const mockPoll: Poll = {
@@ -54,7 +54,7 @@ const props: { tally: PollTally; poll: Poll } = {
 
 describe('Polling votes by address', () => {
   beforeAll(() => {
-    (useDelegateNameAndMetricsByAddress as jest.Mock).mockReturnValue({
+    (useSingleDelegateInfo as jest.Mock).mockReturnValue({
       data: null
     });
     (useBreakpointIndex as jest.Mock).mockReturnValue(4);

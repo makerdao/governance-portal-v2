@@ -14,7 +14,7 @@ import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useDelegateNameAndMetricsByAddress } from 'modules/delegates/hooks/useDelegateNameAndMetricsByAddress';
+import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 import { limitString } from 'lib/string';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
@@ -35,7 +35,7 @@ export default function AddressIconBox({
   const { network } = useWeb3();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
-  const { data: delegate } = useDelegateNameAndMetricsByAddress(address);
+  const { data: delegate } = useSingleDelegateInfo(address);
   const { data: voteProxyInfo } = useVoteProxyAddress(address);
   // isOwner if the delegateAddress registered in the comment is the same one from the current user
   // isOwner also if the address is equal to the current account address

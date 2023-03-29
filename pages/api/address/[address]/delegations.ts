@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import {
-  DelegateNameAndMetrics,
+  DelegateInfo,
   DelegationHistory,
   DelegationHistoryWithExpirationDate
 } from 'modules/delegates/types';
@@ -22,11 +22,11 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
-import { fetchDelegateNamesAndMetrics } from 'modules/delegates/api/fetchDelegates';
+import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
 
 /**
  * @swagger
- * /api/address/{address}/delegatedToWithDelegates:
+ * /api/address/{address}/delegations:
  *  get:
  *    tags:
  *      - "address"
@@ -51,9 +51,9 @@ import { fetchDelegateNamesAndMetrics } from 'modules/delegates/api/fetchDelegat
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/definitions/MKRDelegatedToWithDelegateAPIResponse'
+ *              $ref: '#/definitions/MKRAddressDelegationsAPIResponse'
  * definitions:
- *  DelegateNameAndMetrics:
+ *  DelegateInfo:
  *    type: object
  *    properties:
  *      name:
@@ -130,7 +130,7 @@ import { fetchDelegateNamesAndMetrics } from 'modules/delegates/api/fetchDelegat
  *        type: array
  *        items:
  *          $ref: '#/definitions/DelegationHistoryEvent'
- *  MKRDelegatedToWithDelegateAPIResponse:
+ *  MKRAddressDelegationsAPIResponse:
  *    type: object
  *    properties:
  *      totalDelegated:
@@ -142,17 +142,17 @@ import { fetchDelegateNamesAndMetrics } from 'modules/delegates/api/fetchDelegat
  *      delegates:
  *        type: array
  *        items:
- *          $ref: '#/definitions/DelegateNameAndMetrics'
+ *          $ref: '#/definitions/DelegateInfo'
  */
 
-export type MKRDelegatedToWithDelegateAPIResponse = {
+export type MKRAddressDelegationsAPIResponse = {
   totalDelegated: number;
   delegatedTo: DelegationHistory[];
-  delegates: DelegateNameAndMetrics[];
+  delegates: DelegateInfo[];
 };
 
 export default withApiHandler(
-  async (req: NextApiRequest, res: NextApiResponse<MKRDelegatedToWithDelegateAPIResponse>) => {
+  async (req: NextApiRequest, res: NextApiResponse<MKRAddressDelegationsAPIResponse>) => {
     // validate network
     const network = validateQueryParam(
       (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
@@ -201,19 +201,19 @@ export default withApiHandler(
       })
       .map(({ address, lockAmount, events }) => ({ address, lockAmount, events }));
 
-    const delegateNamesAndMetrics = await fetchDelegateNamesAndMetrics(network, false, true);
-    const delegatesDelegatedTo = delegateNamesAndMetrics.filter(({ voteDelegateAddress }) =>
+    const delegatesInfo = await fetchDelegatesInfo(network, false, true);
+    const delegatesDelegatedTo = delegatesInfo.filter(({ voteDelegateAddress }) =>
       filtered.some(({ address }) => address.toLowerCase() === voteDelegateAddress.toLowerCase())
     );
     const delegatesAndNextContracts = [
       ...delegatesDelegatedTo,
       ...(delegatesDelegatedTo
         .map(({ next }) =>
-          delegateNamesAndMetrics.find(
+          delegatesInfo.find(
             d => d.voteDelegateAddress.toLowerCase() === next?.voteDelegateAddress.toLowerCase()
           )
         )
-        .filter(delegate => !!delegate) as DelegateNameAndMetrics[])
+        .filter(delegate => !!delegate) as DelegateInfo[])
     ];
 
     const totalDelegated = filtered.reduce((prev, next) => {

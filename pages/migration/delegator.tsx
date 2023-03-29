@@ -13,7 +13,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useMemo } from 'react';
-import { useDelegatedToWithDelegates } from 'modules/delegates/hooks/useDelegatedToWithDelegate';
+import { useAddressDelegations } from 'modules/delegates/hooks/useAddressDelegations';
 import { DelegateExpirationOverviewCard } from 'modules/migration/components/DelegateExpirationOverviewCard';
 import LocalIcon from 'modules/app/components/Icon';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -25,16 +25,16 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account, network } = useWeb3();
 
-  const delegatedToWithDelegates = useDelegatedToWithDelegates(account, network);
+  const addressDelegations = useAddressDelegations(account, network);
 
   // List of delegates that are about to expiry, the user has to undelegate from them
   const delegatesThatAreAboutToExpiryWithMKRDelegated = useMemo(() => {
-    if (!delegatedToWithDelegates) {
+    if (!addressDelegations) {
       return [];
     }
 
-    return delegatedToWithDelegates.delegates.filter(delegate => {
-      const delegatedToDelegate = delegatedToWithDelegates.delegatedTo.find(
+    return addressDelegations.delegates.filter(delegate => {
+      const delegatedToDelegate = addressDelegations.delegatedTo.find(
         i => i.address === delegate.voteDelegateAddress
       );
 
@@ -43,16 +43,16 @@ export default function DelegateMigrationPage(): React.ReactElement {
       }
       return delegate.expired || delegate.isAboutToExpire;
     });
-  }, [delegatedToWithDelegates]);
+  }, [addressDelegations]);
 
   // Historical list of delegates that the user interacted with that are about to expiry (no need to have current MKR delegated to them)
   const delegatesThatAreAboutToExpiry = useMemo(() => {
-    if (!delegatedToWithDelegates) {
+    if (!addressDelegations) {
       return [];
     }
 
-    return delegatedToWithDelegates.delegates.filter(delegate => {
-      const delegatedToDelegate = delegatedToWithDelegates.delegatedTo.find(
+    return addressDelegations.delegates.filter(delegate => {
+      const delegatedToDelegate = addressDelegations.delegatedTo.find(
         i => i.address === delegate.voteDelegateAddress
       );
 
@@ -61,25 +61,25 @@ export default function DelegateMigrationPage(): React.ReactElement {
       }
       return delegate.expired || delegate.isAboutToExpire;
     });
-  }, [delegatedToWithDelegates]);
+  }, [addressDelegations]);
 
   // List of new delegates that can be renewed, the user has to delegate to them
   const delegatesThatAreNotExpired = useMemo(() => {
-    if (!delegatedToWithDelegates) {
+    if (!addressDelegations) {
       return [];
     }
 
-    return delegatedToWithDelegates.delegates.filter(delegate => {
+    return addressDelegations.delegates.filter(delegate => {
       const isPreviousDelegate = delegatesThatAreAboutToExpiry.find(
         i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
       );
       return !delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate;
     });
-  }, [delegatedToWithDelegates, delegatesThatAreAboutToExpiry]);
+  }, [addressDelegations, delegatesThatAreAboutToExpiry]);
 
   // UI loading states
   const { isLoading, isEmpty } = useMemo(() => {
-    const isLoading = !delegatedToWithDelegates;
+    const isLoading = !addressDelegations;
     const isEmpty =
       delegatesThatAreAboutToExpiryWithMKRDelegated.length === 0 && delegatesThatAreNotExpired.length === 0;
 
@@ -87,7 +87,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
       isLoading,
       isEmpty
     };
-  }, [delegatedToWithDelegates, delegatesThatAreAboutToExpiryWithMKRDelegated, delegatesThatAreNotExpired]);
+  }, [addressDelegations, delegatesThatAreAboutToExpiryWithMKRDelegated, delegatesThatAreNotExpired]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>

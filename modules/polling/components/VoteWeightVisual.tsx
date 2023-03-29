@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { cutMiddle, limitString } from 'lib/string';
 import { Poll, PollTally } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { useDelegateNameAndMetricsByAddress } from 'modules/delegates/hooks/useDelegateNameAndMetricsByAddress';
+import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 
 type CircleProps = {
   poll: Poll;
@@ -30,7 +30,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
   const delegateAddresses =
     tally.votesByAddress
       ?.map(({ voter }) => {
-        const { data: delegate } = useDelegateNameAndMetricsByAddress(voter);
+        const { data: delegate } = useSingleDelegateInfo(voter);
         return delegate;
       })
       .reduce((acc, cur) => {

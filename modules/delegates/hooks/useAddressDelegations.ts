@@ -8,15 +8,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { fetchJson } from 'lib/fetchJson';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { MKRDelegatedToWithDelegateAPIResponse } from 'pages/api/address/[address]/delegatedToWithDelegates';
+import { MKRAddressDelegationsAPIResponse } from 'pages/api/address/[address]/delegations';
 import useSWR from 'swr';
 
-export function useDelegatedToWithDelegates(
+export function useAddressDelegations(
   address: string | undefined,
   network: SupportedNetworks
-): MKRDelegatedToWithDelegateAPIResponse | undefined {
-  const { data } = useSWR<MKRDelegatedToWithDelegateAPIResponse>(
-    address ? `/api/address/${address}/delegatedToWithDelegates?network=${network}` : null,
+): MKRAddressDelegationsAPIResponse | undefined {
+  const { data } = useSWR<MKRAddressDelegationsAPIResponse>(
+    address ? `/api/address/${address}/delegations?network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,

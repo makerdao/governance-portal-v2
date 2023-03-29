@@ -9,16 +9,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
-import { DelegateNameAndMetrics } from 'modules/delegates/types';
+import { DelegateInfo } from 'modules/delegates/types';
 
 export const useLandingPageDelegates = (): [
   SWRResponse<DelegatesPaginatedAPIResponse>,
-  SWRResponse<DelegateNameAndMetrics[]>
+  SWRResponse<DelegateInfo[]>
 ] => {
   const { network } = useWeb3();
   const { cache } = useSWRConfig();
   const delegatesDataKey = `/api/delegates?network=${network}&delegateType=RECOGNIZED&pageSize=5&orderBy=MKR`;
-  const delegateNamesAndMetricsDataKey = `/api/delegates/namesAndMetrics?network=${network}`;
+  const delegatesInfoDataKey = `/api/delegates/info?network=${network}`;
 
   const swrConfigObject = {
     // refresh every 30 mins
@@ -30,11 +30,7 @@ export const useLandingPageDelegates = (): [
   };
 
   const delegatesResponse = useSWR<DelegatesPaginatedAPIResponse>(delegatesDataKey, null, swrConfigObject);
-  const delegateNamesAndMetricsResponse = useSWR<DelegateNameAndMetrics[]>(
-    delegateNamesAndMetricsDataKey,
-    null,
-    swrConfigObject
-  );
+  const delegatesInfoResponse = useSWR<DelegateInfo[]>(delegatesInfoDataKey, null, swrConfigObject);
 
-  return [delegatesResponse, delegateNamesAndMetricsResponse];
+  return [delegatesResponse, delegatesInfoResponse];
 };

@@ -51,7 +51,7 @@ const LandingPage = ({
   proposals,
   polls,
   recognizedDelegates,
-  delegateNamesAndMetrics,
+  delegatesInfo,
   stats,
   mkrOnHat,
   hat,
@@ -76,8 +76,8 @@ const LandingPage = ({
 
   // delegates
   const [meetYourDelegates, activeDelegates] = useMemo(() => {
-    const meet = shuffleArray(delegateNamesAndMetrics);
-    const active = delegateNamesAndMetrics
+    const meet = shuffleArray(delegatesInfo);
+    const active = delegatesInfo
       .sort((a, b) => {
         const [first] = a.combinedParticipation?.split('%') || '0';
         const [second] = b.combinedParticipation?.split('%') || '0';
@@ -86,7 +86,7 @@ const LandingPage = ({
       .slice(0, 5);
 
     return [meet, active];
-  }, [delegateNamesAndMetrics]);
+  }, [delegatesInfo]);
 
   // executives
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
@@ -146,7 +146,7 @@ const LandingPage = ({
 
   return (
     <div>
-      {recognizedDelegates.length === 0 && delegateNamesAndMetrics.length === 0 && polls.length === 0 && (
+      {recognizedDelegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -305,7 +305,7 @@ export default function Index({
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const { network } = useWeb3();
-  const [delegatesData, delegateNamesAndMetrics] = useLandingPageDelegates();
+  const [delegatesData, delegatesInfo] = useLandingPageDelegates();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
@@ -344,7 +344,7 @@ export default function Index({
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     recognizedDelegates: delegatesData.data?.delegates ?? [],
-    delegateNamesAndMetrics: delegateNamesAndMetrics.data ?? [],
+    delegatesInfo: delegatesInfo.data ?? [],
     stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,

@@ -22,7 +22,7 @@ import {
   DelegatesPaginatedAPIResponse,
   DelegatePaginated,
   AllDelegatesEntryWithName,
-  DelegateNameAndMetrics
+  DelegateInfo
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -361,10 +361,10 @@ export async function fetchAndMergeDelegates(
   return [githubDelegates, allDelegatesWithNamesAndLinks];
 }
 
-export async function fetchSingleDelegateNameAndMetrics(
+export async function fetchSingleDelegateInfo(
   address: string,
   network: SupportedNetworks
-): Promise<DelegateNameAndMetrics | null> {
+): Promise<DelegateInfo | null> {
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
   const foundDelegate = allDelegatesWithNamesAndLinks.find(
@@ -397,14 +397,14 @@ export async function fetchSingleDelegateNameAndMetrics(
   };
 }
 
-export async function fetchDelegateNamesAndMetrics(
+export async function fetchDelegatesInfo(
   network: SupportedNetworks,
   recognizedOnly: boolean,
   includeExpired: boolean
-): Promise<DelegateNameAndMetrics[]> {
+): Promise<DelegateInfo[]> {
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
-  const delegateNamesAndMetrics = allDelegatesWithNamesAndLinks
+  const delegatesInfo = allDelegatesWithNamesAndLinks
     .filter(
       delegate =>
         (recognizedOnly ? delegate.delegateType === DelegateTypeEnum.RECOGNIZED : true) &&
@@ -436,7 +436,7 @@ export async function fetchDelegateNamesAndMetrics(
       };
     });
 
-  return delegateNamesAndMetrics;
+  return delegatesInfo;
 }
 
 export async function fetchDelegatesPaginated({

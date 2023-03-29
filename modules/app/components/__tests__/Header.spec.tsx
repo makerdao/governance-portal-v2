@@ -15,10 +15,10 @@ import Header from '../layout/Header';
 import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import { useWeb3React } from '@web3-react/core';
 import { formatAddress } from 'lib/utils';
-import { useDelegateNameAndMetricsByAddress } from 'modules/delegates/hooks/useDelegateNameAndMetricsByAddress';
+import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
-jest.mock('modules/delegates/hooks/useDelegateNameAndMetricsByAddress');
+jest.mock('modules/delegates/hooks/useSingleDelegateInfo');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
 jest.mock('next/router', () => ({
@@ -46,7 +46,7 @@ describe('Header component', () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       account: ''
     });
-    (useDelegateNameAndMetricsByAddress as jest.Mock).mockReturnValue({ data: null });
+    (useSingleDelegateInfo as jest.Mock).mockReturnValue({ data: null });
     (useAccount as jest.Mock).mockReturnValue({
       account: ''
     });

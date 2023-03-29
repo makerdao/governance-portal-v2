@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { fetchDelegateNamesAndMetrics } from 'modules/delegates/api/fetchDelegates';
-import { DelegateNameAndMetrics } from 'modules/delegates/types';
+import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
+import { DelegateInfo } from 'modules/delegates/types';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
@@ -16,7 +16,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 /**
  * @swagger
  * paths:
- *  /api/delegates/namesAndMetrics:
+ *  /api/delegates/info:
  *    get:
  *      tags:
  *        - "delegates"
@@ -37,9 +37,9 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *               schema:
  *                 type: array
  *                 items:
- *                   $ref: '#/definitions/DelegateNameAndMetrics'
+ *                   $ref: '#/definitions/DelegateInfo'
  * definitions:
- *  DelegateNameAndMetrics:
+ *  DelegateInfo:
  *    type: object
  *    properties:
  *      name:
@@ -97,13 +97,13 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *      - isAboutToExpire
  */
 
-export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegateNameAndMetrics[]>) => {
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegateInfo[]>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
     validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
-  const delegates = await fetchDelegateNamesAndMetrics(network, true, false);
+  const delegates = await fetchDelegatesInfo(network, true, false);
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(delegates);
 });

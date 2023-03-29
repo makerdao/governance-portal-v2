@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Flex, Image, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Delegate, DelegateNameAndMetrics, DelegatePaginated } from 'modules/delegates/types';
+import { Delegate, DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { Address } from 'modules/address/components/Address';
@@ -18,7 +18,7 @@ export function DelegatePicture({
   delegate,
   width = 41
 }: {
-  delegate: Delegate | DelegatePaginated | DelegateNameAndMetrics;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
   width?: number;
 }): React.ReactElement {
   const tooltipAvatarWidth = 68;

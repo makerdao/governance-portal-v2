@@ -156,7 +156,7 @@ export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   };
 };
 
-export type DelegateNameAndMetrics = Omit<DelegateRepoInformation, 'externalUrl' | 'description' | 'tags'> & {
+export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'description' | 'tags'> & {
   address: string;
   status: DelegateStatusEnum;
   blockTimestamp: Date;
