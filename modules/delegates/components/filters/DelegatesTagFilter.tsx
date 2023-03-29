@@ -24,7 +24,7 @@ export function DelegatesTagFilter({
     shallow
   );
 
-  const itemsSelected = Object.values(delegateFilters.tags || {}).filter(i => !!i).length;
+  const itemsSelected = delegateFilters.tags.length;
 
   return (
     <FilterButton
@@ -41,9 +41,13 @@ export function DelegatesTagFilter({
               <Label variant="thinLabel" sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(delegateFilters.tags && delegateFilters.tags[tag.id]) || false}
+                  checked={delegateFilters.tags?.includes(tag.id) || false}
                   onChange={event => {
-                    setTags({ ...delegateFilters.tags, [tag.id]: event.target.checked });
+                    setTags(
+                      event.target.checked
+                        ? [...delegateFilters.tags, tag.id]
+                        : delegateFilters.tags.filter(t => t !== tag.id)
+                    );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>

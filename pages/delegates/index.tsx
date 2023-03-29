@@ -85,6 +85,7 @@ const Delegates = ({
   const [delegates, setDelegates] = useState(propDelegates);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
+  const [delegateTagsLength, setDelegateTagsLength] = useState(delegateTags.length);
   const [filters, setFilters] = useState({
     page: 1,
     sort,
@@ -112,7 +113,7 @@ const Delegates = ({
           ...prevFilters,
           page: prevPage + 1
         }));
-      } else if (showShadow && !shadowDelegates.length && !name && Object.keys(delegateTags).length === 0) {
+      } else if (showShadow && !shadowDelegates.length && !name && delegateTagsLength === 0) {
         setLoading(true);
         setFilters(({ ...prevFilters }) => ({
           ...prevFilters,
@@ -129,10 +130,6 @@ const Delegates = ({
     if (!isRendering) {
       let mounted = true;
       const fetchDelegates = async () => {
-        const queryTags = Object.entries(delegateTags)
-          .filter(([, includeTag]) => includeTag)
-          .map(([tag]) => tag);
-
         const queryParams = {
           page: filters.page,
           delegateType: filters.delegateType,
@@ -140,7 +137,7 @@ const Delegates = ({
           orderDirection: filters.sortDirection,
           seed,
           name: filters.name,
-          queryTags,
+          queryTags: delegateTags,
           includeExpired: filters.showExpired
         };
 
@@ -168,6 +165,10 @@ const Delegates = ({
   }, [propDelegates, propPaginationInfo, propSeed]);
 
   useEffect(() => {
+    setDelegateTagsLength(delegateTags.length);
+  }, [delegateTags]);
+
+  useEffect(() => {
     if (!isRendering) {
       setLoading(true);
       setDelegates([]);
@@ -186,7 +187,7 @@ const Delegates = ({
             : DelegateTypeEnum.RECOGNIZED
       });
     }
-  }, [sort, sortDirection, name, delegateTags, showRecognized, showShadow, showExpired]);
+  }, [sort, sortDirection, name, delegateTagsLength, showRecognized, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);

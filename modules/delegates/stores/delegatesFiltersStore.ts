@@ -16,7 +16,7 @@ type StoreDelegates = {
     showRecognized: boolean;
     showExpired: boolean;
     name: string | null;
-    tags: { [key: string]: boolean };
+    tags: string[];
   };
   sort: DelegateOrderByEnum;
   sortDirection: OrderDirectionEnum;
@@ -26,7 +26,7 @@ type StoreDelegates = {
   setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: DelegateOrderByEnum) => void;
   setSortDirection: (sortDirection: OrderDirectionEnum) => void;
-  setTagFilter: (tag: { [key: string]: boolean }) => void;
+  setTagFilter: (tags: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
 };
@@ -38,7 +38,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     showRecognized: true,
     showExpired: false,
     name: null,
-    tags: {}
+    tags: []
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
@@ -109,7 +109,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetFilters: () => {
     set({
       filters: {
-        tags: {},
+        tags: [],
         name: null,
         creationDate: null,
         showShadow: true,
