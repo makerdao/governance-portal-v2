@@ -45,6 +45,18 @@ export const SearchBar = ({
     onChange(searchTerm);
   };
 
+  const handleKeyPress = event => {
+    if (withSearchButton) {
+      if (event.keyCode === 13) {
+        onChange(searchTerm);
+        return;
+      } else if (event.keyCode === 27) {
+        onChange('');
+        setSearchTerm('');
+      }
+    }
+  };
+
   useEffect(() => {
     if (!value) {
       setSearchTerm('');
@@ -60,6 +72,8 @@ export const SearchBar = ({
         onChange={handleInput}
         type={withSearchButton ? undefined : 'search'}
         value={searchTerm}
+        onKeyUp={handleKeyPress}
+        autoComplete="off"
         placeholder={placeholder}
         sx={{
           maxWidth: 250,
