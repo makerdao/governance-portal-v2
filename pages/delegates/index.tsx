@@ -112,7 +112,7 @@ const Delegates = ({
           ...prevFilters,
           page: prevPage + 1
         }));
-      } else if (showShadow && !shadowDelegates.length) {
+      } else if (showShadow && !shadowDelegates.length && !name && Object.keys(delegateTags).length === 0) {
         setLoading(true);
         setFilters(({ ...prevFilters }) => ({
           ...prevFilters,
