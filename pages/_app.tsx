@@ -19,8 +19,6 @@ import '@reach/tooltip/styles.css';
 import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
 import Header from 'modules/app/components/layout/Header';
-import Cookies from 'modules/app/components/Cookies';
-import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { AccountProvider } from 'modules/app/context/AccountContext';
 import NextNprogress from 'nextjs-progressbar';
@@ -77,7 +75,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                 strategy="afterInteractive"
               />
             )} */}
-            <CookiesProvider disabled={true}>
               <SWRConfig
                 value={{
                   // default to 60 second refresh intervals
@@ -110,10 +107,8 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   </Box>
                   <Header />
 
-                  <Cookies />
                 </Flex>
               </SWRConfig>
-            </CookiesProvider>
           </BallotProvider>
         </AccountProvider>
         <ToastContainer position="top-right" theme="light" />
