@@ -77,7 +77,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                 strategy="afterInteractive"
               />
             )} */}
-            <CookiesProvider disabled={false}>
+            <CookiesProvider disabled={true}>
               <SWRConfig
                 value={{
                   // default to 60 second refresh intervals
