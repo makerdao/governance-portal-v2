@@ -28,7 +28,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
-import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
+import { DelegatesCvcFilter } from 'modules/delegates/components/filters/DelegatesCvcFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -40,9 +40,9 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 
-const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
+const Delegates = ({ delegates, stats, cvcs }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
-  const [showConstitutional, showShadow, showExpired, sort, name, delegateTags, setName, resetFilters] =
+  const [showConstitutional, showShadow, showExpired, sort, name, delegateCvcs, setName, resetFilters] =
     useDelegatesFiltersStore(
       state => [
         state.filters.showConstitutional,
@@ -50,7 +50,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
         state.filters.showExpired,
         state.sort,
         state.filters.name,
-        state.filters.tags,
+        state.filters.cvcs,
         state.setName,
         state.resetFilters
       ],
@@ -62,8 +62,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const bpi = useBreakpointIndex();
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showConstitutional, showExpired, name, delegateTags);
-  }, [delegates, showConstitutional, showShadow, showExpired, name, delegateTags]);
+    return filterDelegates(delegates, showShadow, showConstitutional, showExpired, name, delegateCvcs);
+  }, [delegates, showConstitutional, showShadow, showExpired, name, delegateCvcs]);
 
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
@@ -122,7 +122,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
               >
                 <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
                 <DelegatesSortFilter />
-                <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
+                <DelegatesCvcFilter cvcs={cvcs} delegates={delegates} sx={{ m: 2 }} />
                 <DelegatesStatusFilter delegates={delegates} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
@@ -257,14 +257,14 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
-  tags: prefetchedTags
+  cvcs: prefetchedCvcs
 }: DelegatesPageData): JSX.Element {
   const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
         delegates: prefetchedDelegates,
-        tags: prefetchedTags
+        cvcs: prefetchedCvcs
       }
     : null;
 
@@ -294,7 +294,7 @@ export default function DelegatesPage({
   const props = {
     delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates || [],
     stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || undefined,
-    tags: isDefaultNetwork(network) ? prefetchedTags : data?.tags || []
+    cvcs: isDefaultNetwork(network) ? prefetchedCvcs : data?.cvcs || []
   };
 
   return (
@@ -310,20 +310,20 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         delegates: [],
-        tags: [],
+        cvcs: [],
         stats: []
       }
     };
   }
 
-  const { delegates, stats, tags } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
+  const { delegates, stats, cvcs } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates,
-      tags,
+      cvcs,
       stats
     }
   };
