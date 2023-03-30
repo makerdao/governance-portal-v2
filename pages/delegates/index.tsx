@@ -28,6 +28,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
+import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -41,7 +42,7 @@ import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
-  const [showConstitutional, showShadow, showExpired, sort, name, setName, resetFilters] =
+  const [showConstitutional, showShadow, showExpired, sort, name, delegateTags, setName, resetFilters] =
     useDelegatesFiltersStore(
       state => [
         state.filters.showConstitutional,
@@ -49,6 +50,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
         state.filters.showExpired,
         state.sort,
         state.filters.name,
+        state.filters.tags,
         state.setName,
         state.resetFilters
       ],
@@ -60,8 +62,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
   const bpi = useBreakpointIndex();
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showConstitutional, showExpired, name);
-  }, [delegates, showConstitutional, showShadow, showExpired, name]);
+    return filterDelegates(delegates, showShadow, showConstitutional, showExpired, name, delegateTags);
+  }, [delegates, showConstitutional, showShadow, showExpired, name, delegateTags]);
 
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
@@ -120,9 +122,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
               >
                 <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
                 <DelegatesSortFilter />
-                <Box sx={{ ml: 2 }}>
-                  <DelegatesStatusFilter delegates={delegates} />
-                </Box>
+                <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
+                <DelegatesStatusFilter delegates={delegates} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
               <Button
