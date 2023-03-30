@@ -11,7 +11,8 @@ import {
   PollInputFormat,
   PollResultDisplay,
   PollStatusEnum,
-  PollVictoryConditions
+  PollVictoryConditions,
+  PollOrderByEnum
 } from '../polling.constants';
 
 //  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
@@ -74,7 +75,7 @@ type PollParameters = {
 };
 
 export type PollOptions = {
-  [key: string]: string;
+  [key: string]: string | undefined;
 };
 
 export type Poll = {

@@ -235,6 +235,7 @@ export async function refetchPolls(
     };
 
     const pollCacheKey = getIndividualPollCacheKey(pollWithLinks.pollId);
+    // Individual polls contain more metadata than the poll-list array and are stored in the cache separately to render the poll detail page.
     cacheSet(pollCacheKey, JSON.stringify(pollWithLinks), network, ONE_WEEK_IN_MS);
   });
 
