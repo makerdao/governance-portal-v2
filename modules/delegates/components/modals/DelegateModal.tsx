@@ -15,8 +15,6 @@ import { InputDelegateMkr } from './InputDelegateMkr';
 import { ApprovalContent } from './Approval';
 import { TxDisplay } from './TxDisplay';
 import { ConfirmContent } from './Confirm';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
@@ -45,7 +43,6 @@ export const DelegateModal = ({
   mutateMKRDelegated,
   title = 'Deposit into delegate contract'
 }: Props): JSX.Element => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
 
   const voteDelegateAddress = delegate.voteDelegateAddress;
@@ -68,7 +65,6 @@ export const DelegateModal = ({
   const [tx, resetTx] = mkrAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
   const onClose = () => {
-    trackButtonClick('closeDelegateModal');
     resetTx(null);
     onDismiss();
   };

@@ -20,7 +20,6 @@ import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
 import Header from 'modules/app/components/layout/Header';
 import Cookies from 'modules/app/components/Cookies';
-import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { AccountProvider } from 'modules/app/context/AccountContext';
@@ -29,7 +28,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
-import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
 import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
@@ -80,43 +78,41 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
               />
             )} */}
             <CookiesProvider disabled={false}>
-              <AnalyticsProvider>
-                <SWRConfig
-                  value={{
-                    // default to 60 second refresh intervals
-                    refreshInterval: 60000,
-                    revalidateOnMount: true,
-                    fetcher: url => fetchJson(url)
+              <SWRConfig
+                value={{
+                  // default to 60 second refresh intervals
+                  refreshInterval: 60000,
+                  revalidateOnMount: true,
+                  fetcher: url => fetchJson(url)
+                }}
+              >
+                <Global
+                  styles={{
+                    '*': {
+                      WebkitFontSmoothing: 'antialiased',
+                      MozOsxFontSmoothing: 'grayscale'
+                    }
+                  }}
+                />
+
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    variant: 'layout.root',
+
+                    paddingTop: 5,
+                    overflowX: 'hidden'
                   }}
                 >
-                  <Global
-                    styles={{
-                      '*': {
-                        WebkitFontSmoothing: 'antialiased',
-                        MozOsxFontSmoothing: 'grayscale'
-                      }
-                    }}
-                  />
+                  {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
+                  <Box sx={{ px: [3, 4] }}>
+                    <Component {...pageProps} />
+                  </Box>
+                  <Header />
 
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      variant: 'layout.root',
-
-                      paddingTop: 5,
-                      overflowX: 'hidden'
-                    }}
-                  >
-                    {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
-                    <Box sx={{ px: [3, 4] }}>
-                      <Component {...pageProps} />
-                    </Box>
-                    <Header />
-
-                    <Cookies />
-                  </Flex>
-                </SWRConfig>
-              </AnalyticsProvider>
+                  <Cookies />
+                </Flex>
+              </SWRConfig>
             </CookiesProvider>
           </BallotProvider>
         </AccountProvider>

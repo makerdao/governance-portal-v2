@@ -13,8 +13,6 @@ import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'them
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useState } from 'react';
 import { DelegateModal } from './modals/DelegateModal';
@@ -29,8 +27,6 @@ export default function TopDelegates({
   delegates: Delegate[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.TOP_DELEGATES);
-
   const { account } = useAccount();
   const [showDelegateModal, setShowDelegateModal] = useState<Delegate | null>(null);
   const [toggledDelegates, setToggledDelegates] = useState({});
@@ -147,7 +143,6 @@ export default function TopDelegates({
                     data-testid="button-delegate"
                     disabled={!account}
                     onClick={() => {
-                      trackButtonClick('openDelegateModal');
                       setShowDelegateModal(delegate);
                     }}
                     sx={{
@@ -199,7 +194,6 @@ export default function TopDelegates({
                       data-testid="button-delegate"
                       disabled={!account}
                       onClick={() => {
-                        trackButtonClick('openDelegateModal');
                         setShowDelegateModal(delegate);
                       }}
                       sx={{

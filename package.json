@@ -73,7 +73,6 @@
     "lodash": "^4.17.21",
     "lottie-web": "^5.7.1",
     "mersenne-twister": "^1.1.0",
-    "mixpanel-browser": "^2.39.0",
     "mongodb": "^3.6.2",
     "next": "^12.2.4",
     "next-swagger-doc": "^0.1.10",

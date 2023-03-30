@@ -13,8 +13,6 @@ import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { Delegate } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
@@ -89,8 +87,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
     delegate.voteDelegateAddress
   );
   const hasMkrDelegated = account && mkrDelegated?.gt(0);
-
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 

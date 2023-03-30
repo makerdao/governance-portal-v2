@@ -10,8 +10,6 @@ import { Text, Flex, Button, Heading, Card, get } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import DelegateAvatarName from './DelegateAvatarName';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import VideoModal from 'modules/app/components/VideoModal';
 import { useState } from 'react';
@@ -20,12 +18,10 @@ import { MEET_DELEGATE_URLS } from '../delegates.constants';
 
 const MeetDelegateCard = ({
   delegate,
-  trackButtonClick,
   bpi,
   setDelegateToPlay
 }: {
   delegate: Delegate;
-  trackButtonClick: (string) => void;
   bpi: number;
   setDelegateToPlay: (boolean) => void;
 }) => {
@@ -62,7 +58,6 @@ const MeetDelegateCard = ({
                 backgroundColor: 'background'
               }
             }}
-            onClick={() => trackButtonClick('viewDelegateDetails')}
           >
             View Profile Details
           </Button>
@@ -132,7 +127,6 @@ export default function MeetYourDelegates({
   bpi: number;
 }): React.ReactElement {
   const [delegateToPlay, setDelegateToPlay] = useState();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.MEET_DELEGATES);
 
   return (
     <>
@@ -193,7 +187,6 @@ export default function MeetYourDelegates({
             <MeetDelegateCard
               key={delegate.id}
               delegate={delegate}
-              trackButtonClick={trackButtonClick}
               bpi={bpi}
               setDelegateToPlay={setDelegateToPlay}
             />
