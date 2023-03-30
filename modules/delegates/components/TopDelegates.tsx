@@ -49,7 +49,7 @@ export default function TopDelegates({
       )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
-          <Heading as="h2">Top Constitutional Delegates</Heading>
+          <Heading as="h2">Top Constitutional Voting Committees</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
             Constitutional Delegates ranking by their voting power
           </Text>

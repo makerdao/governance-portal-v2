@@ -13,6 +13,7 @@ export type DelegateRepoInformation = {
   voteDelegateAddress: string;
   picture?: string;
   name: string;
+  cvc_name?: string;
   externalUrl: string;
   description: string;
   combinedParticipation?: string;
@@ -35,6 +36,7 @@ export type DelegateContractInformation = {
 export type Delegate = {
   id: string;
   name: string;
+  cvc_name?: string;
   address: string;
   voteDelegateAddress: string;
   description: string;
