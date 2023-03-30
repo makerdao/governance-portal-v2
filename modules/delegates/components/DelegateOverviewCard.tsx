@@ -158,7 +158,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   variant="primaryOutline"
                   disabled={!hasMkrDelegated}
                   onClick={() => {
-                    trackButtonClick('openUndelegateModal');
                     setShowUndelegateModal(true);
                   }}
                   sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
@@ -172,7 +171,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 data-testid="button-delegate"
                 disabled={!account || !!delegate.next || delegate.expired}
                 onClick={() => {
-                  trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
                 sx={{
@@ -249,7 +247,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 >
                   <Button
                     variant="outline"
-                    onClick={() => trackButtonClick('openDelegateProfile')}
                     sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
                   >
                     {`View ${isOwner ? 'Your' : 'Profile'} Details`}
