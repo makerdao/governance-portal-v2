@@ -75,7 +75,7 @@ describe('Account Page', async () => {
       cy.get('[data-testid="locked-mkr"]').should('have.text', '0.01 MKR');
 
       // Goes to the account page
-      visitPage('/account', true);
+      visitPage('/account');
 
       setAccount(newAccount, () => {
         cy.contains(/You have a DSChief balance of 0.01 MKR/).should('be.visible');
