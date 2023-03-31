@@ -64,7 +64,7 @@ function mergeDelegateInfo({
     isAboutToExpire: isAboutToExpireCheck(expirationDate),
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
-    cvcName: githubDelegate?.cvcName,
+    cvc_name: githubDelegate?.cvc_name,
     picture: githubDelegate?.picture || '',
     id: onChainDelegate.voteDelegateAddress,
     externalUrl: githubDelegate?.externalUrl,

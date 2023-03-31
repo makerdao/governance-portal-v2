@@ -16,7 +16,7 @@ import { DelegateModal } from './modals/DelegateModal';
 import { DelegatePicture } from './DelegatePicture';
 
 type TopCvc = {
-  cvcName?: string;
+  cvc_name?: string;
   mkrDelegated?: string;
 };
 
@@ -79,8 +79,8 @@ export default function TopDelegates({
             </Text>
           </Box>
         </Flex>
-        {topCvcs?.map(({ cvcName, mkrDelegated }, index) => {
-          const cvcDelegate = delegates.find(delegate => delegate.cvcName === cvcName);
+        {topCvcs?.map(({ cvc_name, mkrDelegated }, index) => {
+          const cvcDelegate = delegates.find(delegate => delegate.cvc_name === cvc_name);
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
@@ -102,11 +102,11 @@ export default function TopDelegates({
                     >
                       <Flex sx={{ alignItems: 'center', gap: 2 }}>
                         <DelegatePicture delegate={cvcDelegate} />
-                        <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvcName}</Text>
+                        <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
                       </Flex>
                     </InternalLink>
                   ) : (
-                    <Text>{cvcName}</Text>
+                    <Text>{cvc_name}</Text>
                   )}
                 </Flex>
                 <Flex
@@ -140,7 +140,7 @@ export default function TopDelegates({
                     <InternalLink
                       href={'/delegates'}
                       title="View delegates"
-                      queryParams={{ cvc: cvcDelegate.cvcName || '' }}
+                      queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
                       styles={{
                         borderColor: 'secondaryMuted',
                         color: 'text',

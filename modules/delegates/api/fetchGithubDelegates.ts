@@ -65,7 +65,7 @@ async function extractGithubInformation(
     return {
       voteDelegateAddress: folder.name,
       name: cvc_name ? `${cvc_name} - ${name}` : name,
-      cvcName: cvc_name,
+      cvc_name: cvc_name,
       picture: picture ? picture.download_url : undefined,
       externalUrl: external_profile_url,
       description: html,

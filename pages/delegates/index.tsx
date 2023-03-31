@@ -6,9 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -42,20 +43,39 @@ import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 
 const Delegates = ({ delegates, stats, cvcs }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
-  const [showConstitutional, showShadow, showExpired, sort, name, delegateCvcs, setName, resetFilters] =
-    useDelegatesFiltersStore(
-      state => [
-        state.filters.showConstitutional,
-        state.filters.showShadow,
-        state.filters.showExpired,
-        state.sort,
-        state.filters.name,
-        state.filters.cvcs,
-        state.setName,
-        state.resetFilters
-      ],
-      shallow
-    );
+  const [
+    showConstitutional,
+    showShadow,
+    showExpired,
+    sort,
+    name,
+    delegateCvcs,
+    setCvcFilter,
+    setName,
+    resetFilters
+  ] = useDelegatesFiltersStore(
+    state => [
+      state.filters.showConstitutional,
+      state.filters.showShadow,
+      state.filters.showExpired,
+      state.sort,
+      state.filters.name,
+      state.filters.cvcs,
+      state.setCvcFilter,
+      state.setName,
+      state.resetFilters
+    ],
+    shallow
+  );
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.cvc) {
+      const cvc = router.query.cvc as string;
+      setCvcFilter({ [cvc]: true });
+    }
+  }, [router]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
