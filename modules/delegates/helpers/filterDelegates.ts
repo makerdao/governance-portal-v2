@@ -15,7 +15,7 @@ export function filterDelegates(
   showConstitutional: boolean,
   showExpired: boolean,
   name: string | null,
-  tags?: { [key: string]: boolean }
+  cvcs?: { [key: string]: boolean }
 ): Delegate[] {
   return (
     delegates
@@ -48,14 +48,15 @@ export function filterDelegates(
       })
       // Filter by tags
       .filter(delegate => {
-        const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
-        if (tagArray.length > 0) {
-          return tagArray.reduce((prev, next) => {
-            return prev && delegate.tags.filter(tag => tag.id === next).length > 0;
-          }, true);
-        }
+        // CVS act as a OR filter
+        if (!cvcs) return true;
 
-        return true;
+        const cvcArray = Object.keys(cvcs).filter(key => cvcs[key]);
+        if (cvcArray.length === 0) {
+          return true;
+        }
+        
+        return delegate.cvc_name && cvcArray.includes(delegate.cvc_name);
       })
   );
 }
