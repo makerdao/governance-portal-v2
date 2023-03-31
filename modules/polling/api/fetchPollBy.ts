@@ -16,6 +16,10 @@ export async function fetchPollById(pollId: number, network: SupportedNetworks):
   return null;
 }
 
+export async function fetchPollBySlug(slug: string, network: SupportedNetworks): Promise<Poll | null> {
+  return null;
+}
+
 export async function fetchSinglePoll(
   network: SupportedNetworks,
   paramPollId: number | null,
