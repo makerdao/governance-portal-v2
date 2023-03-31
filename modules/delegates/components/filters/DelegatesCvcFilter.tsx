@@ -10,7 +10,7 @@ import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
 import { useMemo } from 'react';
-import { TagCount as CvcCount } from 'modules/app/types/tag'; //todo: change
+import { CvcAndCount } from 'modules/delegates/types/cvc';
 import { Delegate } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
@@ -20,7 +20,7 @@ export function DelegatesCvcFilter({
   delegates,
   ...props
 }: {
-  cvcs: CvcCount[];
+  cvcs: CvcAndCount[];
   delegates: Delegate[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
@@ -53,19 +53,19 @@ export function DelegatesCvcFilter({
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
           {cvcs.map(cvc => (
-            <Flex key={cvc.id}>
+            <Flex key={cvc.cvc_name}>
               <Label variant="thinLabel" sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(delegateFilters.cvcs && delegateFilters.cvcs[cvc.id]) || false}
+                  checked={(delegateFilters.cvcs && delegateFilters.cvcs[cvc.cvc_name]) || false}
                   onChange={event => {
-                    setCvcs({ ...delegateFilters.cvcs, [cvc.id]: event.target.checked });
+                    setCvcs({ ...delegateFilters.cvcs, [cvc.cvc_name]: event.target.checked });
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{cvc.longname ? cvc.longname : cvc.shortname}</Text>
+                  <Text>{cvc}</Text>
                   <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                    {filteredDelegates.filter(i => i.cvcs.find(t => t.id === cvc.id)).length}
+                    {filteredDelegates.filter(i => i.cvc_name === cvc.cvc_name).length}
                   </Text>
                 </Flex>
               </Label>

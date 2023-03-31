@@ -11,11 +11,13 @@ import { TagCount } from 'modules/app/types/tag';
 import { Delegate, DelegatesAPIStats } from 'modules/delegates/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchDelegates } from './fetchDelegates';
+import { CvcAndCount } from 'modules/delegates/types/cvc';
 
 export type DelegatesPageData = {
   delegates: Delegate[];
   stats?: DelegatesAPIStats;
   tags: TagCount[];
+  cvcs: CvcAndCount[];
 };
 
 export async function fetchDelegatesPageData(
@@ -44,9 +46,33 @@ export async function fetchDelegatesPageData(
     return acc;
   }, [] as TagCount[]);
 
+  // Aggregate delegates by CVCs
+  function getCvcCounts(delegates: Delegate[]): CvcAndCount[] {
+    const counts: { [key: string]: number } = {};
+    
+    // Count the number of delegates with each cvc_name
+    delegates.forEach(delegate => {
+      if (delegate.cvc_name !== undefined) {
+        if (counts[delegate.cvc_name] === undefined) {
+          counts[delegate.cvc_name] = 0;
+        }
+        counts[delegate.cvc_name]++;
+      }
+    });
+    
+    // Convert the counts object to an array of CvcCounts
+    const result: CvcAndCount[] = [];
+    Object.entries(counts).forEach(([cvc_name, count]) => {
+      result.push({ cvc_name, count });
+    });
+    
+    return result;
+  }
+
   return {
     delegates,
     stats,
-    tags
+    tags,
+    cvcs: getCvcCounts(delegates)
   };
 }

@@ -110,7 +110,8 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         creationDate: null,
         showShadow: true,
         showConstitutional: true,
-        showExpired: false
+        showExpired: false,
+        cvcs: {}
       }
     });
   },
