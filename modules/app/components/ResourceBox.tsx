@@ -54,6 +54,10 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
       },
       {
+        linkTitle: 'How to manually vote in a poll with Etherscan?',
+        url: 'https://makerdux.notion.site/How-to-manually-vote-in-a-Maker-poll-with-Etherscan-d61a8fbac15a4bfc840ecb2d5c19cd80'
+      },
+      {
         linkTitle: 'How to set up your wallet for voting?',
         url: 'https://makerdao.world/en/learn/governance/voting-setup/'
       },
@@ -75,7 +79,7 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://makerdao.world/en/learn/governance/how-voting-works#executive-votes'
       },
       {
-        linkTitle: 'How to manually verify Executive Spells',
+        linkTitle: 'How to manually verify Executive Spells?',
         url: 'https://makerdao.world/en/learn/governance/audit-exec-spells'
       },
       {

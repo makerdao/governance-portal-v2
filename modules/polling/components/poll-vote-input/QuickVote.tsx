@@ -21,8 +21,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from '../ChoiceSummary';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
@@ -47,7 +45,6 @@ const QuickVote = ({
   onSubmit,
   buttonVariant
 }: Props): React.ReactElement => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight, loading } = useMKRVotingWeight({ address: account });
   const { data: allUserVotes } = useAllUserVotes(
@@ -141,7 +138,6 @@ const QuickVote = ({
             variant={buttonVariant ? buttonVariant : 'primary'}
             sx={{ width: '100%', mt: 3 }}
             onClick={() => {
-              trackButtonClick('addVoteToBallot');
               submit();
             }}
             mt={2}

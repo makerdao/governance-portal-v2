@@ -35,8 +35,6 @@ import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance'
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -81,7 +79,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     votingAccount
   } = useAccount();
   const { network } = useWeb3();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
@@ -226,9 +223,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       ':hover': { color: 'accentBlueEmphasis', borderColor: 'accentBlueEmphasis' },
                       ':hover svg': { color: 'accentBlueEmphasis' }
                     }}
-                    onClick={() => {
-                      trackButtonClick('chiefMigrationForumPostButton');
-                    }}
                   >
                     <Text>
                       Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
@@ -342,7 +336,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   <Button
                     variant="mutedOutline"
                     onClick={() => {
-                      trackButtonClick('showHistoricalExecs');
                       setShowHistorical(true);
                     }}
                   >
@@ -359,7 +352,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       <Button
                         variant="mutedOutline"
                         onClick={() => {
-                          trackButtonClick('hideHistoricalExecs');
                           setShowHistorical(false);
                         }}
                       >

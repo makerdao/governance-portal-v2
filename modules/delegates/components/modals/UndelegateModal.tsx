@@ -12,8 +12,6 @@ import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
@@ -42,7 +40,6 @@ export const UndelegateModal = ({
   mutateMKRDelegated,
   refetchOnDelegation = true
 }: Props): JSX.Element => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
@@ -62,7 +59,6 @@ export const UndelegateModal = ({
   const [tx, resetTx] = iouAllowance ? [freeTx, resetFree] : [approveTx, resetApprove];
 
   const onClose = () => {
-    trackButtonClick('closeUndelegateModal');
     resetTx(null);
     onDismiss();
   };
