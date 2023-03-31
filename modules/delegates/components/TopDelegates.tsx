@@ -97,8 +97,9 @@ export default function TopDelegates({
                   </Text>
                   {cvcDelegate ? (
                     <InternalLink
-                      href={`/address/${cvcDelegate.voteDelegateAddress}`}
-                      title="View profile details"
+                      href={'/delegates'}
+                      title="View delegates"
+                      queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
                     >
                       <Flex sx={{ alignItems: 'center', gap: 2 }}>
                         <DelegatePicture delegate={cvcDelegate} />
