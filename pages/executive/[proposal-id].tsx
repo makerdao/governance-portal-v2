@@ -22,8 +22,6 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -83,7 +81,6 @@ const ProposalTimingBanner = ({
 };
 
 const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
   const { account } = useAccount();
@@ -152,7 +149,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
           <Button
             variant="primaryLarge"
             onClick={() => {
-              trackButtonClick('openPollVoteModal');
               setVoting(true);
             }}
             sx={{ width: '100%' }}
@@ -295,7 +291,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 <Button
                   variant="primaryLarge"
                   onClick={() => {
-                    trackButtonClick('openPollVoteModal');
                     setVoting(true);
                   }}
                   sx={{ width: '100%', mt: 3 }}

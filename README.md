@@ -115,10 +115,6 @@ The following configuration values can be added to the `.env` file:
 
 - Set `GOERLI_FORK_API_KEY` to a valid [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) API key for Hardhat to use during e2e testing
 
-- Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
-
-- Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
-
 - Set `MIGRATION_WEBHOOK_URL` for sending migration requests to discord
 
 - Set `GASLESS_WEBHOOK_URL` for sending gasless vote requests to discord
