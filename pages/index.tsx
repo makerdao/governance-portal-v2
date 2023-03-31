@@ -51,7 +51,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
-
+  console.log(delegates);
   const [constitutionalDelegates] = useMemo(() => {
     const constitutional = filterDelegates(delegates, false, true, false, null);
     return [constitutional];
@@ -70,13 +70,13 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const pollCategories = getCategories(polls);
 
   const delegatesCVCs = constitutionalDelegates.reduce(
-    (a: { cvc_name: string | undefined; mkrDelegated: string }[], v) => {
-      const existingCvcMatch = a.find(({ cvc_name }) => v.cvc_name === cvc_name);
+    (a: { cvcName: string | undefined; mkrDelegated: string }[], v) => {
+      const existingCvcMatch = a.find(({ cvcName }) => v.cvcName === cvcName);
 
       if (!existingCvcMatch) {
-        a.push({ cvc_name: v.cvc_name, mkrDelegated: v.mkrDelegated });
+        a.push({ cvcName: v.cvcName, mkrDelegated: v.mkrDelegated });
       } else {
-        const idx = a.findIndex(({ cvc_name }) => cvc_name === v.cvc_name);
+        const idx = a.findIndex(({ cvcName }) => cvcName === v.cvcName);
         a[idx].mkrDelegated = a[idx].mkrDelegated + v.mkrDelegated;
       }
       return a;

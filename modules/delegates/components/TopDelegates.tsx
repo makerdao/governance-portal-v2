@@ -11,15 +11,12 @@ import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'them
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAccount } from 'modules/app/hooks/useAccount';
 import { useState } from 'react';
 import { DelegateModal } from './modals/DelegateModal';
 import { DelegatePicture } from './DelegatePicture';
 
 type TopCvc = {
-  cvc_name?: string;
+  cvcName?: string;
   mkrDelegated?: string;
 };
 
@@ -32,9 +29,6 @@ export default function TopDelegates({
   topCvcs: TopCvc[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.TOP_DELEGATES);
-
-  const { account } = useAccount();
   const [showDelegateModal, setShowDelegateModal] = useState<Delegate | null>(null);
 
   return (
@@ -85,8 +79,8 @@ export default function TopDelegates({
             </Text>
           </Box>
         </Flex>
-        {topCvcs?.map(({ cvc_name, mkrDelegated }, index) => {
-          const cvcDelegate = delegates.find(delegate => delegate.cvc_name === cvc_name);
+        {topCvcs?.map(({ cvcName, mkrDelegated }, index) => {
+          const cvcDelegate = delegates.find(delegate => delegate.cvcName === cvcName);
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
@@ -108,11 +102,11 @@ export default function TopDelegates({
                     >
                       <Flex sx={{ alignItems: 'center', gap: 2 }}>
                         <DelegatePicture delegate={cvcDelegate} />
-                        <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
+                        <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvcName}</Text>
                       </Flex>
                     </InternalLink>
                   ) : (
-                    <Text>{cvc_name}</Text>
+                    <Text>{cvcName}</Text>
                   )}
                 </Flex>
                 <Flex
@@ -143,15 +137,11 @@ export default function TopDelegates({
                 >
                   <Text as="p">{mkrDelegated ? parseFloat(mkrDelegated).toFixed(2) : '0.00'} MKR </Text>
                   {cvcDelegate && (
-                    <Button
-                      variant="outline"
-                      data-testid="button-delegate"
-                      disabled={!account}
-                      onClick={() => {
-                        trackButtonClick('openDelegateModal');
-                        setShowDelegateModal(cvcDelegate);
-                      }}
-                      sx={{
+                    <InternalLink
+                      href={'/delegates'}
+                      title="View delegates"
+                      queryParams={{ cvc: cvcDelegate.cvcName || '' }}
+                      styles={{
                         borderColor: 'secondaryMuted',
                         color: 'text',
                         ':hover': {
@@ -161,65 +151,11 @@ export default function TopDelegates({
                         }
                       }}
                     >
-                      Delegate
-                    </Button>
+                      <Button variant="outline">Delegate</Button>
+                    </InternalLink>
                   )}
                 </Flex>
               </Flex>
-              {/* {toggledDelegates[delegate.address] && (
-                <Box
-                  sx={{
-                    display: ['block', 'none']
-                  }}
-                >
-                  <Flex
-                    sx={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      mt: 3,
-                      mb: 3
-                    }}
-                  >
-                    <Box sx={{ width: '50%' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-                        Delegators
-                      </Text>
-                      <Text>
-                        {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length} addresses
-                      </Text>
-                    </Box>
-                    <Box sx={{ width: '50%', textAlign: 'right' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-                        MKR
-                      </Text>
-                      <Text as="p">{formatValue(parseUnits(delegate.mkrDelegated))} MKR </Text>
-                    </Box>
-                  </Flex>
-                  <Flex mb={3} sx={{ justifyContent: 'center' }}>
-                    <Button
-                      variant="outline"
-                      data-testid="button-delegate"
-                      disabled={!account}
-                      onClick={() => {
-                        trackButtonClick('openDelegateModal');
-                        setShowDelegateModal(delegate);
-                      }}
-                      sx={{
-                        borderColor: 'secondaryMuted',
-                        color: 'text',
-                        ':hover': {
-                          color: 'text',
-                          borderColor: 'onSecondary',
-                          backgroundColor: 'background'
-                        }
-                      }}
-                    >
-                      Delegate MKR to this delegate
-                    </Button>
-                  </Flex>
-                  <Divider />
-                </Box>
-              )} */}
             </Box>
           );
         })}
