@@ -12,7 +12,7 @@ import { Poll } from '../types';
 import { pollDetailsCacheKey, pollSlugToIdsCacheKey } from 'modules/cache/constants/cache-keys';
 import { checkCachedPollsValidity, refetchPolls } from './fetchPolls';
 
-export async function fetchSinglePoll(
+export async function fetchPollById(
   network: SupportedNetworks,
   paramPollId: number | null,
   pollSlug: string | null

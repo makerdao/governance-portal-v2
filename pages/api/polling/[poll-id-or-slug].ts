@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
+import { fetchPollById } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Poll } from 'modules/polling/types';
@@ -128,7 +128,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
     throw new ApiError('You must pass a poll id or slug', 400, 'You must pass a poll id or slug');
   }
 
-  const poll = await fetchSinglePoll(network, pollId, pollSlug);
+  const poll = await fetchPollById(network, pollId, pollSlug);
 
   if (!poll) {
     throw new ApiError('Poll not found', 404, 'Poll not found');
