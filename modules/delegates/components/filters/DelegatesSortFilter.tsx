@@ -45,37 +45,37 @@ export function DelegatesSortFilter(): JSX.Element {
             label="Sort by creation date (ASC)"
             value={DelegateOrderByEnum.DATE + ',' + OrderDirectionEnum.ASC}
           >
-            Creation date - ascending
+            Creation date: oldest first
           </ListboxOption>
           <ListboxOption
             label="Sort by creation date (DESC)"
             value={DelegateOrderByEnum.DATE + ',' + OrderDirectionEnum.DESC}
           >
-            Creation date - descending
+            Creation date: newest first
           </ListboxOption>
           <ListboxOption
             label="Sort by MKR delegated (ASC)"
             value={DelegateOrderByEnum.MKR + ',' + OrderDirectionEnum.ASC}
           >
-            MKR delegated - ascending
+            MKR delegated: lowest first
           </ListboxOption>
           <ListboxOption
             label="Sort by MKR delegated (DESC)"
             value={DelegateOrderByEnum.MKR + ',' + OrderDirectionEnum.DESC}
           >
-            MKR delegated - descending
+            MKR delegated: highest first
           </ListboxOption>
           <ListboxOption
             label="Sort by delegators count (ASC)"
             value={DelegateOrderByEnum.DELEGATORS + ',' + OrderDirectionEnum.ASC}
           >
-            Delegators count - ascending
+            Delegators count: lowest first
           </ListboxOption>
           <ListboxOption
             label="Sort by delegators count (DESC)"
             value={DelegateOrderByEnum.DELEGATORS + ',' + OrderDirectionEnum.DESC}
           >
-            Delegators count - descending
+            Delegators count: highest first
           </ListboxOption>
         </ListboxList>
       </ListboxPopover>
