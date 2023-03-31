@@ -16,7 +16,6 @@ import { CvcAndCount } from 'modules/delegates/types/cvc';
 export type DelegatesPageData = {
   delegates: Delegate[];
   stats?: DelegatesAPIStats;
-  tags: TagCount[];
   cvcs: CvcAndCount[];
 };
 
@@ -72,7 +71,6 @@ export async function fetchDelegatesPageData(
   return {
     delegates,
     stats,
-    tags,
     cvcs: getCvcCounts(delegates)
   };
 }
