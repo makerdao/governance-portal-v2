@@ -39,9 +39,11 @@ export const getAddressDelegationHistoryCacheKey = (address: string): string =>
 export const getAllPollsCacheKey = (filters?: any): string =>
   `polls-${filters ? JSON.stringify(filters) : 'all'}`;
 
-export const getIndividualPollCacheKey = (pollId: number): string => `poll-${pollId}`;
+export const pollSlugToIdsCacheKey = 'poll-slug-to-ids';
 
 export const pollListCacheKey = 'poll-list';
+
+export const pollDetailsCacheKey = 'poll-details';
 
 export const isPollsHashValidCacheKey = 'is-polls-hash-valid';
 

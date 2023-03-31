@@ -41,14 +41,16 @@ const redisCacheEnabled = () => {
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const memoryCache = {};
 
-function getFilePath(name: string, network: string): string {
+function getFilePath(name: string, network: string, extendedTTL = false): string {
   const date = new Date().toISOString().substring(0, 10);
 
-  return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}-${date}`;
+  return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}${
+    extendedTTL ? '' : '-' + date
+  }`;
 }
 
-export const cacheDel = (name: string, network: SupportedNetworks): void => {
-  const path = getFilePath(name, network);
+export const cacheDel = (name: string, network: SupportedNetworks, extendedTTL = false): void => {
+  const path = getFilePath(name, network, extendedTTL);
 
   if (redisCacheEnabled()) {
     // if clearing proposals, we need to find all of them first
@@ -106,7 +108,10 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
 export const cacheGet = async (
   name: string,
   network?: SupportedNetworks,
-  expiryMs?: number
+  expiryMs?: number,
+  extendedTTL = false,
+  method: 'GET' | 'HGET' = 'GET',
+  field = ''
 ): Promise<any> => {
   if (!config.USE_CACHE || config.USE_CACHE === 'false') {
     return Promise.resolve(null);
@@ -114,17 +119,17 @@ export const cacheGet = async (
 
   try {
     const currentNetwork = network || DEFAULT_NETWORK.network;
-    const path = getFilePath(name, currentNetwork);
+    const path = getFilePath(name, currentNetwork, extendedTTL);
 
     if (redisCacheEnabled()) {
       // Get redis data if it exists
-      const cachedData = await (redis as Redis).get(path);
+      const cachedData = method === 'GET' ? await redis?.get(path) : await redis?.hget(path, field);
       logger.debug(`Redis cache get for ${path}`);
-      return cachedData;
+      return cachedData || null;
     } else {
       // If fs does not exist as a module, return null (TODO: This shouldn't happen, consider removing this check)
       if (Object.keys(fs).length === 0) return null;
-      const memCached = memoryCache[path];
+      const memCached = method === 'GET' ? memoryCache[path] : memoryCache[path]?.[field];
 
       if (memCached) {
         logger.debug(`mem cache hit: ${path}`);
@@ -135,7 +140,7 @@ export const cacheGet = async (
           return null;
         }
 
-        return memoryCache[path].data;
+        return memCached.data;
       }
 
       if (fs.existsSync(path)) {
@@ -149,7 +154,9 @@ export const cacheGet = async (
         }
 
         logger.debug(`fs cache hit: ${path}`);
-        return fs.readFileSync(path).toString();
+        return method === 'GET'
+          ? fs.readFileSync(path).toString()
+          : JSON.parse(fs.readFileSync(path).toString())[field];
       }
     }
   } catch (e) {
@@ -160,9 +167,11 @@ export const cacheGet = async (
 
 export const cacheSet = (
   name: string,
-  data: string,
+  data: string | { [key: number]: string },
   network?: SupportedNetworks,
-  expiryMs = ONE_HOUR_IN_MS
+  expiryMs = ONE_HOUR_IN_MS,
+  extendedTTL = false,
+  method: 'SET' | 'HSET' = 'SET'
 ): void => {
   if (!config.USE_CACHE || config.USE_CACHE === 'false') {
     return;
@@ -170,7 +179,7 @@ export const cacheSet = (
 
   const currentNetwork = network || DEFAULT_NETWORK.network;
 
-  const path = getFilePath(name, currentNetwork);
+  const path = getFilePath(name, currentNetwork, extendedTTL);
 
   try {
     if (redisCacheEnabled()) {
@@ -178,16 +187,26 @@ export const cacheSet = (
       const expirySeconds = Math.round(expiryMs / 1000);
       logger.debug(`Redis cache set for ${path}, with TTL ${expirySeconds} seconds`);
 
-      (redis as Redis).set(path, data, 'EX', expirySeconds);
+      if (method === 'HSET' && typeof data !== 'string') {
+        redis?.hset(path, data, err => {
+          if (!err) {
+            redis.expire(path, expirySeconds);
+          }
+        });
+      } else {
+        const checkedData = typeof data === 'string' ? data : JSON.stringify(data);
+        redis?.set(path, checkedData, 'EX', expirySeconds);
+      }
     } else {
       // File cache
       if (Object.keys(fs).length === 0) return;
 
-      fs.writeFileSync(path, data);
+      const checkedData = typeof data === 'string' ? data : JSON.stringify(data);
+      fs.writeFileSync(path, checkedData);
 
       memoryCache[path] = {
         expiry: expiryMs ? Date.now() + expiryMs : null,
-        data
+        checkedData
       };
     }
   } catch (e) {
