@@ -21,6 +21,7 @@ type StoreDelegates = {
     showConstitutional: boolean;
     showExpired: boolean;
     name: string | null;
+    cvcs: { [key: string]: boolean };
   };
   sort: delegatesSortEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
@@ -28,6 +29,7 @@ type StoreDelegates = {
   setShowConstitutionalFilter: (showConstitutional: boolean) => void;
   setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: delegatesSortEnum) => void;
+  setCvcFilter: (cvc: { [key: string]: boolean }) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
 };
@@ -38,7 +40,8 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     showShadow: false,
     showConstitutional: false,
     showExpired: false,
-    name: null
+    name: null,
+    cvcs: {}
   },
   sort: delegatesSortEnum.random,
 
@@ -91,6 +94,15 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
+  setCvcFilter: cvcs => {
+    set({
+      filters: {
+        ...get().filters,
+        cvcs
+      }
+    });
+  },
+
   resetFilters: () => {
     set({
       filters: {
@@ -98,7 +110,8 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         creationDate: null,
         showShadow: true,
         showConstitutional: true,
-        showExpired: false
+        showExpired: false,
+        cvcs: {}
       }
     });
   },
