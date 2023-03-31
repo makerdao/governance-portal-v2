@@ -63,7 +63,7 @@ export function DelegatesCvcFilter({
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{cvc}</Text>
+                  <Text>{cvc.cvc_name}</Text>
                   <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
                     {filteredDelegates.filter(i => i.cvc_name === cvc.cvc_name).length}
                   </Text>
