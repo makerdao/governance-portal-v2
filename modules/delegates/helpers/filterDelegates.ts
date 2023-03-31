@@ -48,9 +48,14 @@ export function filterDelegates(
       })
       // Filter by tags
       .filter(delegate => {
-        const cvcArray = cvcs ? Object.keys(cvcs).filter(t => !!cvcs[t]) : [];
-        if (cvcArray.length === 0) return true;
-        if (cvcArray.length > 1) return false; //since no delegate can have more than 1 cvc
+        // CVS act as a OR filter
+        if (!cvcs) return true;
+
+        const cvcArray = Object.keys(cvcs).filter(key => cvcs[key]);
+        if (cvcArray.length === 0) {
+          return true;
+        }
+        
         return delegate.cvc_name && cvcArray.includes(delegate.cvc_name);
       })
   );

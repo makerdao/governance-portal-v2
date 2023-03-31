@@ -122,8 +122,8 @@ const Delegates = ({ delegates, stats, cvcs }: DelegatesPageData) => {
               >
                 <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
                 <DelegatesSortFilter />
-                <DelegatesCvcFilter cvcs={cvcs} delegates={delegates} sx={{ m: 2 }} />
-                <DelegatesStatusFilter delegates={delegates} />
+                <DelegatesCvcFilter cvcs={cvcs} delegates={delegates} sx={{ ml: 2 }} />
+                <DelegatesStatusFilter delegates={delegates}  />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
               <Button

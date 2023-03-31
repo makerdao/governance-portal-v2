@@ -42,8 +42,11 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
       listVariant="cards.noPadding"
       data-testid="delegate-type-filter"
       active={itemsSelected > 0}
+      sx={{
+        mx: 2
+      }}
     >
-      <Box p={2}>
+      <Box mx={2}>
         <Flex>
           <Label
             variant="thinLabel"
