@@ -15,8 +15,6 @@ import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
@@ -27,7 +25,6 @@ import { useFree } from '../hooks/useFree';
 import { Tokens } from 'modules/web3/constants/tokens';
 
 const ModalContent = ({ close, ...props }) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
@@ -109,7 +106,6 @@ const ModalContent = ({ close, ...props }) => {
               disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
               data-testid="button-withdraw-mkr"
               onClick={() => {
-                trackButtonClick('withdrawMkr');
                 free(mkrToWithdraw, {
                   mined: () => {
                     // Mutate locked state
@@ -138,7 +134,6 @@ const ModalContent = ({ close, ...props }) => {
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
-                trackButtonClick('approveWithdraw');
                 approve(chief.address, {
                   mined: () => {
                     mutateTokenAllowance();

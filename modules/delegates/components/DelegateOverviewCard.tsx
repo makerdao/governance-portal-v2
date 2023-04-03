@@ -13,8 +13,6 @@ import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { Delegate } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
@@ -89,8 +87,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
   );
   const hasMkrDelegated = account && mkrDelegated?.gt(0);
 
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   return (
@@ -161,7 +157,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   variant="primaryOutline"
                   disabled={!hasMkrDelegated}
                   onClick={() => {
-                    trackButtonClick('openUndelegateModal');
                     setShowUndelegateModal(true);
                   }}
                   sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
@@ -175,7 +170,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 data-testid="button-delegate"
                 disabled={!account || !!delegate.next || delegate.expired}
                 onClick={() => {
-                  trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
                 sx={{
@@ -250,7 +244,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 >
                   <Button
                     variant="outline"
-                    onClick={() => trackButtonClick('openDelegateProfile')}
                     sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
                   >
                     {`View ${isOwner ? 'Your' : 'Profile'} Details`}

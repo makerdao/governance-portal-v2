@@ -11,8 +11,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import VotingWeight from './VotingWeight';
 import PollBar from './BallotPollBar';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -21,8 +19,6 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 
 export default function BallotBox({ activePolls, network, polls }: Props): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-
   const { transaction, ballotCount, clearBallot } = useContext(BallotContext);
 
   return (
@@ -57,9 +53,6 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <InternalLink href="/polling/review" title="Review & submit your ballot">
               <Button
-                onClick={() => {
-                  trackButtonClick('reviewAndSubmitBallot');
-                }}
                 variant="primaryLarge"
                 disabled={!ballotCount}
                 sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}

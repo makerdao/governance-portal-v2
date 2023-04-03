@@ -21,8 +21,6 @@ import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import { Poll } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -46,8 +44,6 @@ type PollingReviewProps = {
 };
 
 const PollingReview = ({ polls, network }: PollingReviewProps) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-
   const bpi = useBreakpointIndex();
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);

@@ -19,8 +19,6 @@ type SystemConfig = {
   GITHUB_TOKEN: string;
   GITHUB_TOKEN_2: string;
   GITHUB_TOKEN_3: string;
-  MIXPANEL_PROD: string;
-  MIXPANEL_DEV: string;
   REDIS_URL: string;
   DEFENDER_API_KEY_TESTNET: string;
   DEFENDER_API_SECRET_TESTNET: string;
@@ -48,8 +46,6 @@ export const config: SystemConfig = {
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
   GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',
   GITHUB_TOKEN_3: process.env.GITHUB_TOKEN_3 || '',
-  MIXPANEL_PROD: process.env.NEXT_PUBLIC_MIXPANEL_PROD || '',
-  MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
   REDIS_URL: process.env.REDIS_URL || '',
   DEFENDER_API_KEY_TESTNET: process.env.DEFENDER_API_KEY_TESTNET || '',
   DEFENDER_API_SECRET_TESTNET: process.env.DEFENDER_API_SECRET_TESTNET || '',

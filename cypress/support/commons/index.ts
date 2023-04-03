@@ -1,13 +1,9 @@
 import { TestAccount } from '../types/TestAccount';
 
-export function visitPage(page: string, ignoreCookies?: boolean) {
+export function visitPage(page: string) {
   cy.visit(`${page}?network=goerlifork`, {
     onBeforeLoad: win => {
       // If an account is sent, connect with that one
-    }
-  }).then(() => {
-    if (!ignoreCookies) {
-      cy.contains('Accept configured cookies').click();
     }
   });
 }

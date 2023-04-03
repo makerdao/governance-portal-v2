@@ -11,8 +11,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -33,10 +31,6 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
-  const { trackButtonClick } = useAnalytics(
-    addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
-  );
-
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -55,7 +49,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
             <Flex sx={{ alignItems: 'center' }}>
               <Heading variant="microHeading" mr={3}>
                 <InternalLink scroll={false} href={'/delegates'} title="View delegates page">
-                  <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
+                  <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} />
                       {bpi > 0 ? 'Back to all delegates' : 'Back'}
