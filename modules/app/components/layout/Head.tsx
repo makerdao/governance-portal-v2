@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Head from 'next/head';
 import { config } from 'lib/config';
-
 export function HeadComponent({
   title,
   description,
@@ -20,11 +19,10 @@ export function HeadComponent({
   image?: string;
   url?: string;
 }): React.ReactElement {
-  const dev = config.NODE_ENV === 'development';
   const defaultDescription =
     'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote.';
   const defaultTitle = 'Governance Portal';
-
+  const dev = config.NODE_ENV === 'development';
   const renderedTitle = title || defaultTitle;
   const renderedDescription = description || defaultDescription;
   return (

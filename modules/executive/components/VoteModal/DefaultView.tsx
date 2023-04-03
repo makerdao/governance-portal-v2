@@ -9,8 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fetchJson } from 'lib/fetchJson';
 import { sortBytesArray } from 'lib/utils';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
@@ -52,7 +50,6 @@ export default function DefaultVoteModalView({
   onTransactionFailed: () => void;
   onTransactionCreated: (txId: string) => void;
 }): React.ReactElement {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
@@ -309,7 +306,6 @@ export default function DefaultVoteModalView({
             <Button
               mt={2}
               onClick={() => {
-                trackButtonClick('vote');
                 vote(hatChecked);
               }}
               variant="primaryLarge"
@@ -325,7 +321,6 @@ export default function DefaultVoteModalView({
             variant="primaryLarge"
             sx={{ width: '100%' }}
             onClick={() => {
-              trackButtonClick('vote');
               vote(hatChecked);
             }}
             data-testid="vote-modal-vote-btn"
