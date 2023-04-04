@@ -20,19 +20,16 @@ import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
-import DelegateTags from './DelegateTags';
 import Icon from 'modules/app/components/Icon';
 import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { TagCount } from 'modules/app/types/tag';
 import { BigNumber } from 'ethers';
 import { formatEther, parseEther } from 'ethers/lib/utils';
 
 type PropTypes = {
   delegate: DelegatePaginated;
-  tags: TagCount[];
   setStateDelegates: Dispatch<SetStateAction<DelegatePaginated[]>>;
 };
 
@@ -74,7 +71,7 @@ const DelegateVotingStatsModal = () => {
   );
 };
 
-export function DelegateOverviewCard({ delegate, tags, setStateDelegates }: PropTypes): React.ReactElement {
+export function DelegateOverviewCard({ delegate, setStateDelegates }: PropTypes): React.ReactElement {
   const { account, voteDelegateContractAddress } = useAccount();
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
@@ -204,19 +201,7 @@ export function DelegateOverviewCard({ delegate, tags, setStateDelegates }: Prop
             </Flex>
           </Flex>
 
-          <Flex
-            sx={{
-              mt: delegate.tags && delegate.tags.length > 0 ? 0 : 3,
-              flexDirection: 'column'
-            }}
-          >
-            <Box
-              sx={{
-                mb: delegate.tags && delegate.tags.length > 0 ? 1 : 0
-              }}
-            >
-              <DelegateTags delegateTags={delegate.tags.slice(0, 3)} allTags={tags} />
-            </Box>
+          <Flex sx={{ mt: 3, flexDirection: 'column' }}>
             <Flex
               sx={{
                 flexDirection: 'row',

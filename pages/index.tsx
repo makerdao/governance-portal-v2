@@ -32,7 +32,6 @@ import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLandi
 import BigNumber from 'lib/bigNumberJs';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -44,14 +43,14 @@ import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
 
 const LandingPage = ({
   proposals,
   polls,
-  recognizedDelegates,
+  constitutionalDelegates,
   delegatesInfo,
+  cvcs,
   stats,
   mkrOnHat,
   hat,
@@ -75,18 +74,17 @@ const LandingPage = ({
   const pollCategories = getCategories(polls);
 
   // delegates
-  const [meetYourDelegates, activeDelegates] = useMemo(() => {
-    const meet = shuffleArray(delegatesInfo);
-    const active = delegatesInfo
-      .sort((a, b) => {
-        const [first] = a.combinedParticipation?.split('%') || '0';
-        const [second] = b.combinedParticipation?.split('%') || '0';
-        return parseFloat(second) - parseFloat(first);
-      })
-      .slice(0, 5);
+  const topCvcs = cvcs
+    .sort((a, b) => (new BigNumber(a.totalMkr).gt(new BigNumber(b.totalMkr)) ? -1 : 1))
+    .slice(0, 5);
 
-    return [meet, active];
-  }, [delegatesInfo]);
+  const activeDelegates = delegatesInfo
+    .sort((a, b) => {
+      const [first] = a.combinedParticipation?.split('%') || '0';
+      const [second] = b.combinedParticipation?.split('%') || '0';
+      return parseFloat(second) - parseFloat(first);
+    })
+    .slice(0, 5);
 
   // executives
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
@@ -146,7 +144,7 @@ const LandingPage = ({
 
   return (
     <div>
-      {recognizedDelegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
+      {constitutionalDelegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -250,14 +248,8 @@ const LandingPage = ({
 
             <section id="delegate">
               <Box ref={delegateRef} />
-              <ErrorBoundary componentName="Meet Delegates">
-                <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
-              </ErrorBoundary>
-            </section>
-
-            <section>
               <TopDelegates
-                delegates={recognizedDelegates}
+                topCvcs={topCvcs}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
@@ -343,7 +335,8 @@ export default function Index({
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    recognizedDelegates: delegatesData.data?.delegates ?? [],
+    constitutionalDelegates: delegatesData.data?.delegates ?? [],
+    cvcs: delegatesData.data?.cvcs ?? [],
     delegatesInfo: delegatesInfo.data ?? [],
     stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,

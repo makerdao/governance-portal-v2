@@ -240,7 +240,6 @@ const AccountPage = (): React.ReactElement => {
               ]}
             />
           </ErrorBoundary>
-          <ResourceBox type={'delegates'} />
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>

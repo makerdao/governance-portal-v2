@@ -83,20 +83,13 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           in: query
  *           schema:
  *             type: string
- *             enum: [RECOGNIZED, SHADOW, ALL]
+ *             enum: [CONSTITUTIONAL, SHADOW, ALL]
  *           default: ALL
  *         - name: name
- *           description: The name of the recognized delegate to return. Only applicable when delegateType is recognized.
+ *           description: The name of the constitutional delegate to return. Only applicable when delegateType is constitutional.
  *           in: query
  *           schema:
  *             type: string
- *         - name: tags
- *           description: The tags to filter the recognized delegates by. Only applicable when delegateType is recognized.
- *           in: query
- *           schema:
- *             type: array
- *             items:
- *               type: string
  *       responses:
  *         200:
  *           description: A paginated list of delegates matching the specified filters and sorting.
@@ -113,7 +106,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: number
  *         shadow:
  *           type: number
- *         recognized:
+ *         constitutional:
  *           type: number
  *         totalMKRDelegated:
  *           type: string
@@ -152,7 +145,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *     DelegateStatus:
  *       type: string
  *       enum:
- *         - recognized
+ *         - constitutional
  *         - expired
  *         - shadow
  *     DelegatePaginated:
@@ -306,20 +299,20 @@ export default withApiHandler(
 
     const delegateType = validateQueryParam(req.query.delegateType, 'string', {
       defaultValue: DelegateTypeEnum.ALL,
-      validValues: [DelegateTypeEnum.RECOGNIZED, DelegateTypeEnum.SHADOW, DelegateTypeEnum.ALL]
+      validValues: [DelegateTypeEnum.CONSTITUTIONAL, DelegateTypeEnum.SHADOW, DelegateTypeEnum.ALL]
     }) as DelegateTypeEnum;
 
     const name =
-      delegateType !== DelegateTypeEnum.RECOGNIZED
+      delegateType !== DelegateTypeEnum.CONSTITUTIONAL
         ? null
         : (validateQueryParam(req.query.name, 'string', {
             defaultValue: null
           }) as string | null);
 
-    const tags =
-      delegateType !== DelegateTypeEnum.RECOGNIZED
+    const cvcs =
+      delegateType !== DelegateTypeEnum.CONSTITUTIONAL
         ? null
-        : (validateQueryParam(req.query.tags, 'array', {
+        : (validateQueryParam(req.query.cvcs, 'array', {
             defaultValue: null
           }) as string[] | null);
 
@@ -333,7 +326,7 @@ export default withApiHandler(
       seed,
       delegateType,
       name,
-      tags
+      cvcs
     });
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

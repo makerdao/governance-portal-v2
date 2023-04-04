@@ -91,7 +91,6 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               ]}
             />
           </ErrorBoundary>
-          {addressInfo.isDelegate && <ResourceBox type={'delegates'} />}
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>

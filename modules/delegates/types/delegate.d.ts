@@ -6,15 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Tag } from 'modules/app/types/tag';
 import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
-
-export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
 
 export type DelegateRepoInformation = {
   voteDelegateAddress: string;
   picture?: string;
   name: string;
+  cvc_name?: string;
   externalUrl: string;
   description: string;
   combinedParticipation?: string;
@@ -37,11 +35,12 @@ export type DelegateContractInformation = {
 export type Delegate = {
   id: string;
   name: string;
+  cvc_name?: string;
   address: string;
   voteDelegateAddress: string;
   description: string;
   picture: string;
-  status: DelegateStatus;
+  status: DelegateStatusEnum;
   lastVoteDate: number | null;
   expired: boolean;
   isAboutToExpire: boolean;
@@ -57,7 +56,6 @@ export type Delegate = {
   execSupported: CMSProposal | undefined;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
-  tags: Tag[];
   previous?: {
     address: string;
     voteDelegateAddress: string;
@@ -78,7 +76,6 @@ export type DelegatePaginated = Omit<
   | 'externalUrl'
   | 'execSupported'
   | 'mkrLockedDelegate'
-  | 'tags'
 > & {
   picture?: string;
   creationDate: Date;
@@ -88,7 +85,6 @@ export type DelegatePaginated = Omit<
     title: string;
     address: string;
   };
-  tags: string[];
 };
 
 export type DelegationHistory = {
@@ -140,8 +136,8 @@ export type AllDelegatesEntry = {
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   name?: string;
+  cvc_name?: string;
   delegateType: DelegateTypeEnum;
-  tags?: string[];
   blockTimestamp: Date;
   expirationDate: Date;
   expired: boolean;
@@ -156,7 +152,7 @@ export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   };
 };
 
-export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'description' | 'tags'> & {
+export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'description'> & {
   address: string;
   status: DelegateStatusEnum;
   blockTimestamp: Date;

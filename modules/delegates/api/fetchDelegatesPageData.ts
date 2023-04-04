@@ -20,7 +20,7 @@ export type DelegatesQueryParams = {
   seed?: number;
   delegateType?: DelegateTypeEnum;
   name?: string | null;
-  queryTags?: string[];
+  queryCvcs?: string[];
 };
 
 export async function fetchDelegatesPageData(
@@ -34,15 +34,15 @@ export async function fetchDelegatesPageData(
   const orderBy = queryParams?.orderBy || DelegateOrderByEnum.RANDOM;
   const orderDirection = queryParams?.orderDirection || OrderDirectionEnum.DESC;
   const seed = queryParams?.seed || null;
-  const delegateType = queryParams?.delegateType || DelegateTypeEnum.RECOGNIZED;
+  const delegateType = queryParams?.delegateType || DelegateTypeEnum.CONSTITUTIONAL;
   const name = queryParams?.name || null;
-  const queryTags = queryParams?.queryTags?.length ? queryParams.queryTags : null;
+  const queryCvcs = queryParams?.queryCvcs?.length ? queryParams.queryCvcs : null;
 
-  const { delegates, stats, tags, paginationInfo } = useApi
+  const { delegates, stats, cvcs, paginationInfo } = useApi
     ? await fetchJson(
         `/api/delegates?network=${network}&pageSize=${pageSize}&page=${page}&includeExpired=${includeExpired}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
           name ? '&name=' + name : ''
-        }${queryTags ? '&tags=' + queryTags.join(',') : ''}${seed ? '&seed=' + seed : ''}`
+        }${queryCvcs ? '&cvcs=' + queryCvcs.join(',') : ''}${seed ? '&seed=' + seed : ''}`
       )
     : await fetchDelegatesPaginated({
         network,
@@ -54,13 +54,13 @@ export async function fetchDelegatesPageData(
         seed,
         delegateType,
         name,
-        tags: queryTags
+        cvcs: queryCvcs
       });
 
   return {
     delegates,
     stats,
-    tags,
-    paginationInfo
+    paginationInfo,
+    cvcs
   };
 }

@@ -7,46 +7,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import BigNumber from 'lib/bigNumberJs';
-import { parseUnits } from 'ethers/lib/utils';
-import { formatValue } from 'lib/string';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { DelegatePaginated } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { useState } from 'react';
-import { DelegateModal } from './modals/DelegateModal';
-import { Icon } from '@makerdao/dai-ui-icons';
-import DelegateAvatarNameLight from './DelegateAvatarNameLight';
+import { CvcStats } from '../types/cvc';
 
 export default function TopDelegates({
-  delegates,
+  topCvcs,
   totalMKRDelegated
 }: {
-  delegates: DelegatePaginated[];
+  topCvcs: CvcStats[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
-  const { account } = useAccount();
-  const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
-  const [toggledDelegates, setToggledDelegates] = useState({});
-
   return (
     <Box>
-      {showDelegateModal && (
-        <DelegateModal
-          title={`Delegate to ${showDelegateModal.name}`}
-          delegate={showDelegateModal}
-          isOpen={true}
-          onDismiss={() => setShowDelegateModal(null)}
-          mutateTotalStaked={() => null}
-          mutateMKRDelegated={() => null}
-        />
-      )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
-          <Heading as="h2">Top Recognized Delegates</Heading>
+          <Heading as="h2">Top Constitutional Voting Committees</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-            Recognized Delegates ranking by their voting power
+            Constitutional Voting Committees ranking by their voting power
           </Text>
         </Stack>
       </Container>
@@ -62,14 +41,9 @@ export default function TopDelegates({
             justifyContent: 'space-between'
           }}
         >
-          <Box sx={{ width: '40%' }}>
+          <Box sx={{ width: ['25%', '20%'] }}>
             <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-              Address
-            </Text>
-          </Box>
-          <Box sx={{ width: '15%', display: ['none', 'block'] }}>
-            <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-              Delegators
+              CVC Name
             </Text>
           </Box>
           <Box sx={{ width: ['50%', '15%'], textAlign: ['right', 'left'] }}>
@@ -83,9 +57,9 @@ export default function TopDelegates({
             </Text>
           </Box>
         </Flex>
-        {delegates.map((delegate, index) => {
+        {topCvcs?.map(({ cvc_name, totalMkr }, index) => {
           return (
-            <Box key={`top-delegate-${index}`} data-testid="top-recognized-delegate">
+            <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
                 sx={{
                   justifyContent: 'space-between',
@@ -94,35 +68,25 @@ export default function TopDelegates({
                   mb: 3
                 }}
               >
-                <Flex sx={{ width: ['70%', '40%'], alignItems: 'center' }}>
+                <Flex sx={{ width: ['70%', '20%'], alignItems: 'center' }}>
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>
-                  <DelegateAvatarNameLight delegate={delegate} />
+                  <Text>{cvc_name}</Text>
                 </Flex>
-                <Box sx={{ width: '15%', display: ['none', 'block'] }}>
-                  <Text>{delegate.delegatorCount} addresses</Text>
-                </Box>
                 <Flex
                   sx={{
                     width: ['30%', '15%'],
                     textAlign: ['right', 'left'],
                     justifyContent: ['flex-end', 'flex-start']
                   }}
-                  onClick={() => {
-                    setToggledDelegates({
-                      ...toggledDelegates,
-                      [delegate.address]: !toggledDelegates[delegate.address]
-                    });
-                  }}
                 >
                   <Text>
-                    {new BigNumber(delegate.mkrDelegated).div(totalMKRDelegated).multipliedBy(100).toFixed(2)}
+                    {totalMkr
+                      ? new BigNumber(totalMkr).div(totalMKRDelegated).multipliedBy(100).toFixed(2)
+                      : '0.00'}
                     %
                   </Text>
-                  <Box sx={{ display: ['block', 'none'] }}>
-                    <Icon name="chevron_down" size={2} ml={2} />
-                  </Box>
                 </Flex>
                 <Flex
                   sx={{
@@ -133,79 +97,9 @@ export default function TopDelegates({
                     display: ['none', 'flex']
                   }}
                 >
-                  <Text as="p">{formatValue(parseUnits(delegate.mkrDelegated))} MKR </Text>
-                  <Button
-                    variant="outline"
-                    data-testid="button-delegate"
-                    disabled={!account}
-                    onClick={() => {
-                      setShowDelegateModal(delegate);
-                    }}
-                    sx={{
-                      borderColor: 'secondaryMuted',
-                      color: 'text',
-                      ':hover': {
-                        color: 'text',
-                        borderColor: 'onSecondary',
-                        backgroundColor: 'background'
-                      }
-                    }}
-                  >
-                    Delegate
-                  </Button>
+                  <Text as="p">{totalMkr ? totalMkr.toFixed(2) : '0.00'} MKR </Text>
                 </Flex>
               </Flex>
-              {toggledDelegates[delegate.address] && (
-                <Box
-                  sx={{
-                    display: ['block', 'none']
-                  }}
-                >
-                  <Flex
-                    sx={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      mt: 3,
-                      mb: 3
-                    }}
-                  >
-                    <Box sx={{ width: '50%' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-                        Delegators
-                      </Text>
-                      <Text>{delegate.delegatorCount} addresses</Text>
-                    </Box>
-                    <Box sx={{ width: '50%', textAlign: 'right' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-                        MKR
-                      </Text>
-                      <Text as="p">{formatValue(parseUnits(delegate.mkrDelegated))} MKR </Text>
-                    </Box>
-                  </Flex>
-                  <Flex mb={3} sx={{ justifyContent: 'center' }}>
-                    <Button
-                      variant="outline"
-                      data-testid="button-delegate"
-                      disabled={!account}
-                      onClick={() => {
-                        setShowDelegateModal(delegate);
-                      }}
-                      sx={{
-                        borderColor: 'secondaryMuted',
-                        color: 'text',
-                        ':hover': {
-                          color: 'text',
-                          borderColor: 'onSecondary',
-                          backgroundColor: 'background'
-                        }
-                      }}
-                    >
-                      Delegate MKR to this delegate
-                    </Button>
-                  </Flex>
-                  <Divider />
-                </Box>
-              )}
             </Box>
           );
         })}

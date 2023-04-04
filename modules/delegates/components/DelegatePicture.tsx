@@ -49,7 +49,7 @@ export function DelegatePicture({
               <Avatar size={tooltipAvatarWidth} address={delegate.address} />
             </Box>
           )}
-          {delegate.status === DelegateStatusEnum.recognized && (
+          {delegate.status === DelegateStatusEnum.constitutional && (
             <Icon
               name={'verified'}
               sx={{
@@ -76,13 +76,15 @@ export function DelegatePicture({
         </Box>
         <Flex sx={{ ml: 3, flexDirection: 'column' }}>
           <Text as="p" variant="microHeading">
-            {delegate.status === DelegateStatusEnum.recognized ? delegate.name : 'Shadow Delegate'}
+            {delegate.status === DelegateStatusEnum.constitutional ? delegate.name : 'Shadow Delegate'}
           </Text>
           <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
             <Address address={delegate.voteDelegateAddress} />
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
-            {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
+            {delegate.status === DelegateStatusEnum.constitutional
+              ? 'Constitutional Delegate'
+              : 'Shadow Delegate'}
           </Text>
         </Flex>
       </Flex>
@@ -156,7 +158,7 @@ export function DelegatePicture({
               </Box>
             )}
 
-            {delegate.status === DelegateStatusEnum.recognized && (
+            {delegate.status === DelegateStatusEnum.constitutional && (
               <Icon
                 name={'verified'}
                 sx={{

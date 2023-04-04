@@ -19,12 +19,14 @@ import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
 import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
+import { CvcStats } from 'modules/delegates/types/cvc';
 
 export type LandingPageData = {
   proposals: Proposal[];
   polls: Poll[];
-  recognizedDelegates: DelegatePaginated[];
+  constitutionalDelegates: DelegatePaginated[];
   delegatesInfo: DelegateInfo[];
+  cvcs: CvcStats[];
   stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   hat?: string;

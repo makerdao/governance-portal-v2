@@ -9,26 +9,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
-import { TagCount } from 'modules/app/types/tag';
+import { CvcAndCount } from 'modules/delegates/types/cvc';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 
-export function DelegatesTagFilter({
-  tags,
+export function DelegatesCvcFilter({
+  cvcs,
   ...props
 }: {
-  tags: TagCount[];
+  cvcs: CvcAndCount[];
   sx?: ThemeUIStyleObject;
-}): JSX.Element {
-  const [delegateFilters, setTags] = useDelegatesFiltersStore(
-    state => [state.filters, state.setTagFilter, state.filters.name],
+}): JSX.Element | null {
+  const [delegateFilters, setCvcs] = useDelegatesFiltersStore(
+    state => [state.filters, state.setCvcFilter],
     shallow
   );
 
-  const itemsSelected = delegateFilters.tags.length;
+  const itemsSelected = Object.values(delegateFilters.cvcs || {}).filter(i => !!i).length;
 
-  return (
+  return cvcs.length > 0 ? (
     <FilterButton
-      name={() => `Tag ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `CVC ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="delegates-filters-dropdown"
       active={itemsSelected > 0}
@@ -36,23 +36,23 @@ export function DelegatesTagFilter({
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
-          {tags.map(tag => (
-            <Flex key={tag.id}>
+          {cvcs.map(({ cvc_name, count }) => (
+            <Flex key={cvc_name}>
               <Label variant="thinLabel" sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={delegateFilters.tags?.includes(tag.id) || false}
+                  checked={delegateFilters.cvcs?.includes(cvc_name) || false}
                   onChange={event => {
-                    setTags(
+                    setCvcs(
                       event.target.checked
-                        ? [...delegateFilters.tags, tag.id]
-                        : delegateFilters.tags.filter(t => t !== tag.id)
+                        ? [...delegateFilters.cvcs, cvc_name]
+                        : delegateFilters.cvcs.filter(c => c !== cvc_name)
                     );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{tag.longname ? tag.longname : tag.shortname}</Text>
-                  <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{tag.count}</Text>
+                  <Text>{cvc_name}</Text>
+                  <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{count}</Text>
                 </Flex>
               </Label>
             </Flex>
@@ -60,5 +60,5 @@ export function DelegatesTagFilter({
         </Flex>
       </Box>
     </FilterButton>
-  );
+  ) : null;
 }

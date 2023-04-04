@@ -13,17 +13,18 @@ import { DelegatesAPIStats } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 
 export function DelegatesStatusFilter({ stats }: { stats: DelegatesAPIStats }): JSX.Element {
-  const [showRecognized, showShadow, setShowRecognizedFilter, setShowShadowFilter] = useDelegatesFiltersStore(
-    state => [
-      state.filters.showRecognized,
-      state.filters.showShadow,
-      state.setShowRecognizedFilter,
-      state.setShowShadowFilter
-    ],
-    shallow
-  );
+  const [showConstitutional, showShadow, setShowConstitutionalFilter, setShowShadowFilter] =
+    useDelegatesFiltersStore(
+      state => [
+        state.filters.showConstitutional,
+        state.filters.showShadow,
+        state.setShowConstitutionalFilter,
+        state.setShowShadowFilter
+      ],
+      shallow
+    );
 
-  const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
+  const itemsSelected = [showConstitutional, showShadow].filter(i => !!i).length;
 
   return (
     <FilterButton
@@ -31,22 +32,25 @@ export function DelegatesStatusFilter({ stats }: { stats: DelegatesAPIStats }): 
       listVariant="cards.noPadding"
       data-testid="delegate-type-filter"
       active={itemsSelected > 0}
+      sx={{
+        mx: 2
+      }}
     >
-      <Box p={2}>
+      <Box mx={2}>
         <Flex>
           <Label
             variant="thinLabel"
             sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
-            data-testid="delegate-type-filter-show-recognized"
+            data-testid="delegate-type-filter-show-constitutional"
           >
             <Checkbox
               sx={{ width: 3, height: 3 }}
-              checked={showRecognized}
-              onChange={event => setShowRecognizedFilter(event.target.checked)}
+              checked={showConstitutional}
+              onChange={event => setShowConstitutionalFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-              <Text>Recognized Delegates</Text>
-              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{stats.recognized}</Text>
+              <Text>Constitutional Delegates</Text>
+              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{stats.constitutional}</Text>
             </Flex>
           </Label>
         </Flex>

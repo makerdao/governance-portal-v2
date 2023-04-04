@@ -9,7 +9,7 @@ export const delegates = [
     voteDelegate: '0xb21e535fb349e4ef0520318acfe589e174b0126b',
     expired: false,
     name: 'coldiron.eth',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: ['growth', 'risk', 'security', 'decentralization'],
     previous: undefined,
     next: {
@@ -25,7 +25,7 @@ export const delegates = [
     voteDelegate: '0x845b36e1e4f41a361dd711bda8ea239bf191fe95',
     expired: false,
     name: 'Feedblack Loops LLC',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: ['scalability', 'community', 'guidance'],
     previous: undefined,
     next: {
@@ -41,7 +41,7 @@ export const delegates = [
     voteDelegate: '0xaf8aa6846539033eaf0c3ca4c9c7373e370e039b',
     expired: true,
     name: 'Flip Flop Flap Delegate LLC',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: ['decentralization', 'scalability', 'growth'],
     previous: undefined,
     next: {
@@ -96,7 +96,7 @@ export const delegates = [
     voteDelegate: '0x45127ec92b58c3a89e89f63553073adcaf2f1f5f',
     expired: false,
     name: 'monetsupply',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: undefined,
     previous: undefined,
     next: {
@@ -112,7 +112,7 @@ export const delegates = [
     voteDelegate: '0x22d5294a23d49294bf11d9db8beda36e104ad9b3',
     expired: true,
     name: 'MakerMan',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: ['data-driven', 'security', 'sustainability', 'scalability', 'pragmatism', 'decentralization'],
     previous: undefined,
     next: undefined
@@ -125,7 +125,7 @@ export const delegates = [
     voteDelegate: '0xb0b829a6aae0f7e59b43391b2c8a1cfd0c801c8c',
     expired: false,
     name: 'gauntlet',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: ['risk', 'data-driven', 'security', 'trust', 'scalability', 'compliance'],
     previous: undefined,
     next: {
@@ -141,7 +141,7 @@ export const delegates = [
     voteDelegate: '0x0f4be9f208c552a6b04d9a1222f385785f95beaa',
     expired: false,
     name: 'Flip Flop Flap Delegate LLC',
-    delegateType: DelegateTypeEnum.RECOGNIZED,
+    delegateType: DelegateTypeEnum.CONSTITUTIONAL,
     tags: ['decentralization', 'scalability', 'growth'],
     previous: {
       address: '0x688d508f3a6b0a377e266405a1583b3316f9a2b3',
