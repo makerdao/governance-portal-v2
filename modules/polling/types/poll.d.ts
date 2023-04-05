@@ -74,10 +74,6 @@ type PollParameters = {
   resultDisplay: PollResultDisplay;
 };
 
-export type PollOptions = {
-  [key: string]: string | undefined;
-};
-
 export type Poll = {
   title: string;
   multiHash: string;
@@ -122,8 +118,10 @@ export type PollsValidatedQueryParams = {
 
 export type PollFilterQueryParams = Omit<PollsValidatedQueryParams, 'network'>;
 
-export type PollListItem = Pick<Poll, 'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary'> & {
-  options: PollOptions;
+export type PollListItem = Pick<
+  Poll,
+  'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary' | 'parameters' | 'options'
+> & {
   type: PollInputFormat;
   tags: string[];
 };

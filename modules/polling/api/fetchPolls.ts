@@ -218,6 +218,7 @@ export async function refetchPolls(
       endDate: new Date(endDate).toISOString(),
       slug,
       type: parameters.inputFormat.type,
+      parameters,
       title,
       summary,
       options,
