@@ -17,7 +17,7 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 /**
  * @swagger
  * paths:
- *  /api/polling/poll-list:
+ *  /api/polling/v2/all-polls:
  *    get:
  *      tags:
  *        - "polls"
