@@ -39,6 +39,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *   get:
  *     tags:
  *     - "polls"
+ *     summary: Returns all polls
  *     description: Returns all polls
  *     produces:
  *     - "application/json"

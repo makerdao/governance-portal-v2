@@ -112,6 +112,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *   get:
  *     tags:
  *     - "tally"
+ *     summary: Returns a poll tally
  *     description: Returns a poll tally
  *     produces:
  *     - "application/json"

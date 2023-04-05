@@ -54,6 +54,7 @@ import { ApiError } from 'modules/app/api/ApiError';
  *   get:
  *     tags:
  *     - "executive"
+ *     summary: Returns a executive detail
  *     description: Returns a executive detail
  *     produces:
  *     - "application/json"

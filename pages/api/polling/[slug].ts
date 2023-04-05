@@ -87,6 +87,7 @@ import { isValidSlugParam } from '../../../modules/polling/helpers/isValidSlugPa
  *   get:
  *     tags:
  *     - "polls"
+ *     summary: Returns a poll detail
  *     description: Returns a poll detail
  *     produces:
  *     - "application/json"

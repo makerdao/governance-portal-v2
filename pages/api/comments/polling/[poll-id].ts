@@ -45,6 +45,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *   get:
  *     tags:
  *     - "comments"
+ *     summary: Returns all the comments for a poll
  *     description: Returns all the comments for a poll
  *     produces:
  *     - "application/json"
