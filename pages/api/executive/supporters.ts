@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *     summary: Get the supporters of all executive spells
  *     description: Returns the list of supporters for each executive spell. Supports mainnet, goerli and goerlifork networks.
  *     tags:
- *       - Executive
+ *       - executive
  *     parameters:
  *       - name: network
  *         in: query
