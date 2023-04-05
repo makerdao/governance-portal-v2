@@ -40,7 +40,7 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
+import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -484,11 +484,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const pollSlug = params?.['poll-hash'] as string;
   // invariant(pollSlug, 'getStaticProps poll hash not found in params');
 
-  let poll = await fetchPollBySlug(pollSlug, DEFAULT_NETWORK.network);
-
-  if (!poll && !isNaN(parseInt(pollSlug))) {
-    poll = await fetchPollById(parseInt(pollSlug), DEFAULT_NETWORK.network);
-  }
+  const poll = await fetchSinglePoll(DEFAULT_NETWORK.network, null, pollSlug);
 
   if (!poll) {
     return { revalidate: 30, props: { poll: null } };

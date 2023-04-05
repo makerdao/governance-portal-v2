@@ -10,7 +10,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getPollTally } from 'modules/polling/helpers/getPollTally';
-import { fetchPollById } from 'modules/polling/api/fetchPollBy';
+import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
 import { pollHasStarted } from 'modules/polling/helpers/utils';
 import { PollTally } from 'modules/polling/types';
 import { ApiError } from 'modules/app/api/ApiError';
@@ -155,7 +155,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     new ApiError('Invalid poll id', 400, 'Invalid poll id')
   ) as number;
 
-  const poll = await fetchPollById(pollId, network);
+  const poll = await fetchSinglePoll(network, pollId, null);
 
   if (!poll) {
     throw new ApiError('Poll not found', 404, 'Poll not found');

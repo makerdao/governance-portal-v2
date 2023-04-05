@@ -12,14 +12,6 @@ import { Poll } from '../types';
 import { pollDetailsCacheKey, pollSlugToIdsCacheKey } from 'modules/cache/constants/cache-keys';
 import { checkCachedPollsValidity, refetchPolls } from './fetchPolls';
 
-export async function fetchPollById(pollId: number, network: SupportedNetworks): Promise<Poll | null> {
-  return null;
-}
-
-export async function fetchPollBySlug(slug: string, network: SupportedNetworks): Promise<Poll | null> {
-  return null;
-}
-
 export async function fetchSinglePoll(
   network: SupportedNetworks,
   paramPollId: number | null,
