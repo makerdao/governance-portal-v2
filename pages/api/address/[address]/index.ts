@@ -47,6 +47,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *   get:
  *     tags:
  *     - "address"
+ *     summary: Returns the address info
  *     description: Returns the address info
  *     produces:
  *     - "application/json"

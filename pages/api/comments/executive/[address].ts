@@ -48,6 +48,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *   get:
  *     tags:
  *     - "comments"
+ *     summary: Returns all the comments for an executive
  *     description: Returns all the comments for an executive
  *     produces:
  *     - "application/json"

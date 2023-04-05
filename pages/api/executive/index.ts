@@ -28,6 +28,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *   get:
  *     tags:
  *     - "executive"
+ *     summary: Returns all executive proposals
  *     description: Returns all executive proposals
  *     produces:
  *     - "application/json"
