@@ -48,9 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *                       percent:
  *                         type: string
  *       '400':
- *         $ref: '#/components/responses/BadRequest'
+ *         description: Bad request
  *       '500':
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Internal server error
  */
 
 import { NextApiRequest, NextApiResponse } from 'next';
