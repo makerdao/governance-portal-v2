@@ -16,7 +16,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 /**
  * @swagger
  * paths:
- *  /api/delegates/legacy:
+ *  /api/delegates/v1:
  *    get:
  *      tags:
  *        - "delegates"

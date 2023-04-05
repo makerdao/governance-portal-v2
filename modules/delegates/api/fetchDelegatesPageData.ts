@@ -40,7 +40,7 @@ export async function fetchDelegatesPageData(
 
   const { delegates, stats, cvcs, paginationInfo } = useApi
     ? await fetchJson(
-        `/api/delegates?network=${network}&pageSize=${pageSize}&page=${page}&includeExpired=${includeExpired}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
+        `/api/delegates/v2?network=${network}&pageSize=${pageSize}&page=${page}&includeExpired=${includeExpired}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
           name ? '&name=' + name : ''
         }${queryCvcs ? '&cvcs=' + queryCvcs.join(',') : ''}${seed ? '&seed=' + seed : ''}`
       )

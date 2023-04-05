@@ -17,7 +17,7 @@ export const useLandingPageDelegates = (): [
 ] => {
   const { network } = useWeb3();
   const { cache } = useSWRConfig();
-  const delegatesDataKey = `/api/delegates?network=${network}&delegateType=CONSTITUTIONAL&pageSize=5&orderBy=MKR&orderDirection=DESC`;
+  const delegatesDataKey = `/api/delegates/v2?network=${network}&delegateType=CONSTITUTIONAL&pageSize=5&orderBy=MKR&orderDirection=DESC`;
   const delegatesInfoDataKey = `/api/delegates/info?network=${network}`;
 
   const swrConfigObject = {
