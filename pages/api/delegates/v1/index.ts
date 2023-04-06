@@ -20,6 +20,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *    get:
  *      tags:
  *        - "delegates"
+ *      summary: Returns information about all delegates
  *      description: Returns information about all delegates
  *      produces:
  *        - "application/json"
