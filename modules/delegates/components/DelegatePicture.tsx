@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Flex, Image, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Delegate } from 'modules/delegates/types';
+import { Delegate, DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { Address } from 'modules/address/components/Address';
@@ -18,7 +18,7 @@ export function DelegatePicture({
   delegate,
   width = 41
 }: {
-  delegate: Delegate;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
   width?: number;
 }): React.ReactElement {
   const tooltipAvatarWidth = 68;
@@ -36,7 +36,7 @@ export function DelegatePicture({
           {delegate.picture ? (
             <Image
               src={delegate.picture}
-              key={delegate.id}
+              key={delegate.voteDelegateAddress}
               sx={{
                 objectFit: 'cover',
                 width: '100%',
@@ -49,7 +49,7 @@ export function DelegatePicture({
               <Avatar size={tooltipAvatarWidth} address={delegate.address} />
             </Box>
           )}
-          {delegate.status === DelegateStatusEnum.recognized && (
+          {delegate.status === DelegateStatusEnum.constitutional && (
             <Icon
               name={'verified'}
               sx={{
@@ -76,13 +76,15 @@ export function DelegatePicture({
         </Box>
         <Flex sx={{ ml: 3, flexDirection: 'column' }}>
           <Text as="p" variant="microHeading">
-            {delegate.status === DelegateStatusEnum.recognized ? delegate.name : 'Shadow Delegate'}
+            {delegate.status === DelegateStatusEnum.constitutional ? delegate.name : 'Shadow Delegate'}
           </Text>
           <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
             <Address address={delegate.voteDelegateAddress} />
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
-            {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
+            {delegate.status === DelegateStatusEnum.constitutional
+              ? 'Constitutional Delegate'
+              : 'Shadow Delegate'}
           </Text>
         </Flex>
       </Flex>
@@ -142,7 +144,7 @@ export function DelegatePicture({
             {delegate.picture ? (
               <Image
                 src={delegate.picture}
-                key={delegate.id}
+                key={delegate.voteDelegateAddress}
                 sx={{
                   objectFit: 'cover',
                   width: '100%',
@@ -156,7 +158,7 @@ export function DelegatePicture({
               </Box>
             )}
 
-            {delegate.status === DelegateStatusEnum.recognized && (
+            {delegate.status === DelegateStatusEnum.constitutional && (
               <Icon
                 name={'verified'}
                 sx={{

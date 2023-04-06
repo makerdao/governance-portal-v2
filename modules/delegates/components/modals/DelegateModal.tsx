@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { Delegate } from '../../types';
+import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateMkr } from './InputDelegateMkr';
 import { ApprovalContent } from './Approval';
@@ -29,10 +29,11 @@ import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
-  delegate: Delegate;
-  mutateTotalStaked: () => void;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
+  mutateTotalStaked: (amount?: BigNumber) => void;
   mutateMKRDelegated: () => void;
   title?: string;
+  refetchOnDelegation?: boolean;
 };
 
 export const DelegateModal = ({
@@ -41,7 +42,8 @@ export const DelegateModal = ({
   delegate,
   mutateTotalStaked,
   mutateMKRDelegated,
-  title = 'Deposit into delegate contract'
+  title = 'Deposit into delegate contract',
+  refetchOnDelegation = true
 }: Props): JSX.Element => {
   const { account } = useAccount();
 
@@ -106,7 +108,7 @@ export const DelegateModal = ({
                         onClick={() => {
                           lock(mkrToDeposit, {
                             mined: () => {
-                              mutateTotalStaked();
+                              refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToDeposit);
                               mutateMKRDelegated();
                               mutateMkrBalance();
                             }

@@ -6,12 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Delegate } from '../types';
+import { DelegateInfo, DelegatePaginated } from '../types';
 import { Flex, Text } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatePicture } from 'modules/delegates/components';
 
-export default function DelegateAvatarNameLight({ delegate }: { delegate: Delegate }): React.ReactElement {
+export default function DelegateAvatarNameLight({
+  delegate
+}: {
+  delegate: DelegatePaginated | DelegateInfo;
+}): React.ReactElement {
   return (
     <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View profile details">
       <Flex sx={{ alignItems: 'center', gap: 2 }}>

@@ -31,5 +31,5 @@ export function useIntersectionObserver(
         observer?.unobserve(ref.current);
       }
     };
-  }, [ref, callback]);
+  }, [ref]);
 }

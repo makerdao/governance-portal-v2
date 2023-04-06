@@ -8,20 +8,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
-import { Delegate } from '../types';
+import { DelegateInfo } from '../types';
 
-type DelegateAddressMapResponse = {
-  data: Record<string, Delegate>;
+type DelegateInfoResponse = {
+  data: DelegateInfo | null;
   loading: boolean;
   error?: Error;
 };
 
-export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
+export const useSingleDelegateInfo = (address: string): DelegateInfoResponse => {
   const { network } = useWeb3();
   const { cache } = useSWRConfig();
-  const dataKey = `/api/delegates/names?network=${network}`;
+  const dataKey = `/api/delegates/${address}/info?network=${network}`;
 
-  const { data: delegates, error } = useSWR<Delegate[]>(dataKey, null, {
+  const { data: delegate, error } = useSWR<DelegateInfo | null>(dataKey, null, {
     // refresh every 30 mins
     refreshInterval: 1800000,
     revalidateIfStale: false,
@@ -30,16 +30,9 @@ export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
     revalidateOnReconnect: false
   });
 
-  const data =
-    delegates &&
-    delegates.reduce((acc, cur) => {
-      acc[cur.voteDelegateAddress] = cur;
-      return acc;
-    }, {});
-
   return {
-    data: data || {},
-    loading: !error && !data,
+    data: delegate || null,
+    loading: !error && !delegate,
     error
   };
 };

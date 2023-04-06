@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Head from 'next/head';
 import { config } from 'lib/config';
+
 export function HeadComponent({
   title,
   description,

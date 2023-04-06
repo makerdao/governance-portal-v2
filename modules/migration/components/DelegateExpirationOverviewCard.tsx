@@ -10,14 +10,14 @@ import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text } from 'theme-ui';
 import { formatValue } from 'lib/string';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
-import { Delegate } from 'modules/delegates/types';
+import { DelegateInfo } from 'modules/delegates/types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import DelegateExpiryDate from './DelegateExpiryDate';
 
 type PropTypes = {
-  delegate: Delegate;
+  delegate: DelegateInfo;
 };
 
 export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.ReactElement {

@@ -84,6 +84,10 @@ const moduleExports = {
       {
         source: '/delegates/:address',
         destination: '/address/:address'
+      },
+      {
+        source: '/api/delegates',
+        destination: '/api/delegates/v1'
       }
     ];
   },
