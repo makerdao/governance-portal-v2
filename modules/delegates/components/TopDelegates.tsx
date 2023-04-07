@@ -148,7 +148,6 @@ export default function TopDelegates({
                         ':hover': {
                           color: 'text',
                           borderColor: 'onSecondary',
-                          backgroundColor: 'background'
                         }
                       }}
                     >
