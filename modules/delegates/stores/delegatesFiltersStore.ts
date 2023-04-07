@@ -29,6 +29,8 @@ type StoreDelegates = {
   setCvcFilter: (cvc: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
+  keepState: boolean;
+  setKeepState: (keepState: boolean) => void;
 };
 
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
@@ -42,7 +44,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
-
+  keepState: false,
   setName: (name: string) => {
     set({
       filters: {
@@ -122,6 +124,12 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetSort: () => {
     set({
       sort: DelegateOrderByEnum.RANDOM
+    });
+  },
+
+  setKeepState: keepState => {
+    set({
+      keepState
     });
   }
 }));

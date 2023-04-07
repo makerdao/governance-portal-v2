@@ -63,8 +63,10 @@ const Delegates = ({
     sortDirection,
     name,
     delegateCvcs,
+    keepState,
     setCvcFilter,
     setName,
+    setKeepState,
     resetFilters
   ] = useDelegatesFiltersStore(
     state => [
@@ -75,17 +77,23 @@ const Delegates = ({
       state.sortDirection,
       state.filters.name,
       state.filters.cvcs,
+      state.keepState,
       state.setCvcFilter,
       state.setName,
+      state.setKeepState,
       state.resetFilters
     ],
     shallow
   );
 
-  const [loading, setLoading] = useState(false);
+  const onVisitDelegate = () => {
+    setKeepState(true);
+  };
+
+  const [loading, setLoading] = useState(keepState);
   const [isRendering, setIsRendering] = useState(true);
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
-  const [delegates, setDelegates] = useState(propDelegates);
+  const [delegates, setDelegates] = useState(keepState ? [] : propDelegates);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [delegateCvcsLength, setDelegateCvcsLength] = useState(delegateCvcs.length);
@@ -139,7 +147,7 @@ const Delegates = ({
   }, [shouldLoadMore]);
 
   useEffect(() => {
-    if (!isRendering) {
+    if (!isRendering || keepState) {
       let mounted = true;
       const fetchDelegates = async () => {
         const queryParams = {
@@ -171,10 +179,10 @@ const Delegates = ({
 
   useEffect(() => {
     resetFilters();
-    setDelegates(propDelegates);
+    setDelegates(keepState ? delegates : propDelegates);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propPaginationInfo, propSeed]);
+  }, [propDelegates, propPaginationInfo, propSeed, keepState]);
 
   useEffect(() => {
     setDelegateCvcsLength(delegateCvcs.length);
@@ -318,7 +326,11 @@ const Delegates = ({
                   {constitutionalDelegates.map(delegate => (
                     <Box key={delegate.voteDelegateAddress} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard delegate={delegate} setStateDelegates={setDelegates} />
+                        <DelegateOverviewCard
+                          delegate={delegate}
+                          setStateDelegates={setDelegates}
+                          onVisitDelegate={onVisitDelegate}
+                        />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -332,7 +344,11 @@ const Delegates = ({
                   {shadowDelegates.map(delegate => (
                     <Box key={delegate.voteDelegateAddress} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard delegate={delegate} setStateDelegates={setDelegates} />
+                        <DelegateOverviewCard
+                          delegate={delegate}
+                          setStateDelegates={setDelegates}
+                          onVisitDelegate={onVisitDelegate}
+                        />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -346,7 +362,11 @@ const Delegates = ({
                   {expiredDelegates.map(delegate => (
                     <Box key={delegate.voteDelegateAddress} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard delegate={delegate} setStateDelegates={setDelegates} />
+                        <DelegateOverviewCard
+                          delegate={delegate}
+                          setStateDelegates={setDelegates}
+                          onVisitDelegate={onVisitDelegate}
+                        />
                       </ErrorBoundary>
                     </Box>
                   ))}
