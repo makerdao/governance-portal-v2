@@ -273,6 +273,7 @@ const Delegates = ({
                   value={name}
                   placeholder="Search by name"
                   withSearchButton={true}
+                  performSearchOnClear={true}
                 />
                 <DelegatesSortFilter />
                 <DelegatesCvcFilter cvcs={cvcs} sx={{ m: 2 }} />

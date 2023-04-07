@@ -17,6 +17,7 @@ type Props = {
   value: string | null;
   placeholder?: string;
   withSearchButton?: boolean;
+  performSearchOnClear?: boolean;
 };
 
 export const SearchBar = ({
@@ -24,6 +25,7 @@ export const SearchBar = ({
   value,
   placeholder = 'Search',
   withSearchButton,
+  performSearchOnClear,
   ...props
 }: Props): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,7 +38,7 @@ export const SearchBar = ({
 
   const handleInput = event => {
     setSearchTerm(event.target.value);
-    if (!withSearchButton) {
+    if (!withSearchButton || (performSearchOnClear && event.target.value === '')) {
       debounce(onChange(event.target.value));
     }
   };
