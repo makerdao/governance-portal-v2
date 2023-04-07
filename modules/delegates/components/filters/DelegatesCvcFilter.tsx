@@ -13,6 +13,7 @@ import { CvcAndCount } from 'modules/delegates/types/cvc';
 import { Delegate } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 import { useMemo } from 'react';
+import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 export function DelegatesCvcFilter({
   cvcs,
@@ -23,8 +24,8 @@ export function DelegatesCvcFilter({
   delegates: Delegate[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element | null {
-  const [delegateFilters, setCvcs] = useDelegatesFiltersStore(
-    state => [state.filters, state.setCvcFilter],
+  const [delegateFilters, setCvcs, name] = useDelegatesFiltersStore(
+    state => [state.filters, state.setCvcFilter, state.filters.name],
     shallow
   );
 
@@ -38,6 +39,16 @@ export function DelegatesCvcFilter({
   }, [delegates]);
 
   const itemsSelected = Object.values(delegateFilters.cvcs || {}).filter(i => !!i).length;
+
+  const filteredDelegates = useMemo(() => {
+    return filterDelegates(
+      delegates,
+      delegateFilters.showShadow,
+      delegateFilters.showConstitutional,
+      delegateFilters.showExpired,
+      name
+    );
+  }, [delegates, delegateFilters]);
 
   return allCvcs.length > 0 ? (
     <FilterButton
@@ -62,7 +73,7 @@ export function DelegatesCvcFilter({
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{cvc.cvc_name}</Text>
                   <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                    {delegates.filter(i => i.cvc_name === cvc.cvc_name).length}
+                    {filteredDelegates.filter(i => i.cvc_name === cvc.cvc_name).length}
                   </Text>
                 </Flex>
               </Label>
