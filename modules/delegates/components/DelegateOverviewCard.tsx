@@ -201,7 +201,7 @@ export function DelegateOverviewCard({
                   ml: hasMkrDelegated ? 3 : 0
                 }}
               >
-                Delegate
+                Delegate MKR
               </Button>
             </Flex>
           </Flex>
