@@ -31,7 +31,7 @@ import { formatEther, parseEther } from 'ethers/lib/utils';
 type PropTypes = {
   delegate: DelegatePaginated;
   setStateDelegates: Dispatch<SetStateAction<DelegatePaginated[]>>;
-  onVisitDelegate?: () => void;
+  onVisitDelegate: () => void;
 };
 
 const DelegateVotingStatsModal = () => {
@@ -257,7 +257,7 @@ export function DelegateOverviewCard({
                   <Button
                     variant="outline"
                     sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
-                    onClick={() => onVisitDelegate?.()}
+                    onClick={() => onVisitDelegate()}
                   >
                     {`View ${isOwner ? 'Your' : 'Profile'} Details`}
                   </Button>
