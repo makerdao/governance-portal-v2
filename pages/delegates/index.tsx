@@ -67,7 +67,9 @@ const Delegates = ({
     setCvcFilter,
     setName,
     setKeepState,
-    resetFilters
+    resetFilters,
+    resetSort,
+    resetSortDirection
   ] = useDelegatesFiltersStore(
     state => [
       state.filters.showConstitutional,
@@ -81,13 +83,22 @@ const Delegates = ({
       state.setCvcFilter,
       state.setName,
       state.setKeepState,
-      state.resetFilters
+      state.resetFilters,
+      state.resetSort,
+      state.resetSortDirection
     ],
     shallow
   );
 
   const onVisitDelegate = () => {
     setKeepState(true);
+  };
+
+  const onResetClick = () => {
+    resetFilters();
+    resetSort();
+    resetSortDirection();
+    setKeepState(false);
   };
 
   const [loading, setLoading] = useState(keepState);
@@ -162,7 +173,6 @@ const Delegates = ({
         };
 
         const res = await fetchDelegatesPageData(network, true, queryParams);
-
         setLoading(false);
         setDelegates(prevDelegates => [...prevDelegates, ...res.delegates]);
         setPaginationInfo(res.paginationInfo);
@@ -178,7 +188,6 @@ const Delegates = ({
   }, [filters]);
 
   useEffect(() => {
-    resetFilters();
     setDelegates(keepState ? delegates : propDelegates);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
@@ -278,7 +287,7 @@ const Delegates = ({
                   color: 'textSecondary',
                   border: 'none'
                 }}
-                onClick={resetFilters}
+                onClick={onResetClick}
               >
                 Reset filters
               </Button>
@@ -312,7 +321,7 @@ const Delegates = ({
                     <Button
                       variant={'textual'}
                       sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
-                      onClick={resetFilters}
+                      onClick={onResetClick}
                     >
                       Reset filters
                     </Button>

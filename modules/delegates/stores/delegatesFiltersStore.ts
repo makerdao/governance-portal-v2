@@ -29,6 +29,8 @@ type StoreDelegates = {
   setCvcFilter: (cvc: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
+  resetSort: () => void;
+  resetSortDirection: () => void;
   keepState: boolean;
   setKeepState: (keepState: boolean) => void;
 };
@@ -124,6 +126,12 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetSort: () => {
     set({
       sort: DelegateOrderByEnum.RANDOM
+    });
+  },
+
+  resetSortDirection: () => {
+    set({
+      sortDirection: OrderDirectionEnum.DESC
     });
   },
 
