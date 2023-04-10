@@ -63,10 +63,10 @@ const Delegates = ({
     sortDirection,
     name,
     delegateCvcs,
-    keepState,
+    fetchOnLoad,
     setCvcFilter,
     setName,
-    setKeepState,
+    setFetchOnLoad,
     resetFilters,
     resetSort,
     resetSortDirection
@@ -79,10 +79,10 @@ const Delegates = ({
       state.sortDirection,
       state.filters.name,
       state.filters.cvcs,
-      state.keepState,
+      state.fetchOnLoad,
       state.setCvcFilter,
       state.setName,
-      state.setKeepState,
+      state.setFetchOnLoad,
       state.resetFilters,
       state.resetSort,
       state.resetSortDirection
@@ -91,20 +91,20 @@ const Delegates = ({
   );
 
   const onVisitDelegate = () => {
-    setKeepState(true);
+    setFetchOnLoad(true);
   };
 
   const onResetClick = () => {
     resetFilters();
     resetSort();
     resetSortDirection();
-    setKeepState(false);
+    setFetchOnLoad(false);
   };
 
-  const [loading, setLoading] = useState(keepState);
+  const [loading, setLoading] = useState(fetchOnLoad);
   const [isRendering, setIsRendering] = useState(true);
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
-  const [delegates, setDelegates] = useState(keepState ? [] : propDelegates);
+  const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [delegateCvcsLength, setDelegateCvcsLength] = useState(delegateCvcs.length);
@@ -158,7 +158,7 @@ const Delegates = ({
   }, [shouldLoadMore]);
 
   useEffect(() => {
-    if (!isRendering || keepState) {
+    if (!isRendering || fetchOnLoad) {
       let mounted = true;
       const fetchDelegates = async () => {
         const queryParams = {
@@ -188,10 +188,10 @@ const Delegates = ({
   }, [filters]);
 
   useEffect(() => {
-    setDelegates(keepState ? delegates : propDelegates);
+    setDelegates(fetchOnLoad ? delegates : propDelegates);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propPaginationInfo, propSeed, keepState]);
+  }, [propDelegates, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
     setDelegateCvcsLength(delegateCvcs.length);

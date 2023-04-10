@@ -31,8 +31,8 @@ type StoreDelegates = {
   resetFilters: () => void;
   resetSort: () => void;
   resetSortDirection: () => void;
-  keepState: boolean;
-  setKeepState: (keepState: boolean) => void;
+  fetchOnLoad: boolean;
+  setFetchOnLoad: (fetchOnLoad: boolean) => void;
 };
 
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
@@ -46,7 +46,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
-  keepState: false,
+  fetchOnLoad: false,
   setName: (name: string) => {
     set({
       filters: {
@@ -135,9 +135,9 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setKeepState: keepState => {
+  setFetchOnLoad: fetchOnLoad => {
     set({
-      keepState
+      fetchOnLoad
     });
   }
 }));
