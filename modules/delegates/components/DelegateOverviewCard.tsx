@@ -162,7 +162,7 @@ export function DelegateOverviewCard({
             }}
           >
             <Box sx={{ mr: 2, my: 2 }}>
-              <DelegateAvatarName delegate={delegate} />
+              <DelegateAvatarName delegate={delegate} onVisitDelegate={onVisitDelegate} />
             </Box>
 
             <Flex
