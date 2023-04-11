@@ -70,14 +70,14 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const pollCategories = getCategories(polls);
 
   const delegatesCVCs = constitutionalDelegates.reduce(
-    (a: { cvc_name: string | undefined; mkrDelegated: string }[], v) => {
+    (a: { cvc_name: string | undefined; mkrDelegated: number }[], v) => {
       const existingCvcMatch = a.find(({ cvc_name }) => v.cvc_name === cvc_name);
 
       if (!existingCvcMatch) {
-        a.push({ cvc_name: v.cvc_name, mkrDelegated: v.mkrDelegated });
+        a.push({ cvc_name: v.cvc_name, mkrDelegated: parseFloat(v.mkrDelegated) });
       } else {
         const idx = a.findIndex(({ cvc_name }) => cvc_name === v.cvc_name);
-        a[idx].mkrDelegated = a[idx].mkrDelegated + v.mkrDelegated;
+        a[idx].mkrDelegated = a[idx].mkrDelegated + parseFloat(v.mkrDelegated);
       }
       return a;
     },
