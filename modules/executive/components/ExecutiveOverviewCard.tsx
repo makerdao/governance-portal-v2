@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -12,8 +20,6 @@ import VoteModal from './VoteModal';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
 import { CardTitle } from 'modules/app/components/Card/CardTitle';
 import { CardSummary } from 'modules/app/components/Card/CardSummary';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
@@ -36,7 +42,6 @@ export default function ExecutiveOverviewCard({
   votedProposals,
   mkrOnHat
 }: Props): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voting, setVoting] = useState(false);
   const { comments } = useExecutiveComments(proposal.address);
 
@@ -150,13 +155,12 @@ export default function ExecutiveOverviewCard({
                     isDelegateContractExpired
                   }
                   onClick={ev => {
-                    trackButtonClick('openExecVoteModal');
                     setVoting(true);
                     ev.stopPropagation();
                   }}
                   data-testid="vote-button-exec-overview-card"
                 >
-                  {isDelegateContractExpired ? 'Delegate contract expired' : 'Vote'}
+                  {'Vote'}
                 </Button>
               )}
               {hasVotedFor && (

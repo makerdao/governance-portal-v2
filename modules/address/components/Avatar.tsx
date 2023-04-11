@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useEffect, useCallback, useState, ReactChild, CSSProperties } from 'react';
@@ -16,25 +24,30 @@ export function Avatar({ size, address, defaultComponent, style }: AvatarProps):
   const { chainId, provider: library } = useWeb3();
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
-  const fetchAvatarUri = async () => {
-    if (library && address && chainId !== SupportedChainId.GOERLIFORK) {
-      const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
-      try {
-        const ensName = await library.lookupAddress(address);
-        if (ensName) {
-          const uri = await avt.getAvatar(ensName, {});
-          if (uri) {
-            setAvatarUri(uri);
-          }
-        }
-      } catch (err) {
-        logger.error(err);
-      }
-    }
-  };
-
   useEffect(() => {
+    let mounted = true;
+
+    const fetchAvatarUri = async () => {
+      if (library && address && chainId !== SupportedChainId.GOERLIFORK) {
+        const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
+        try {
+          const ensName = await library.lookupAddress(address);
+          if (ensName) {
+            const uri = await avt.getAvatar(ensName, {});
+            if (uri && mounted) {
+              setAvatarUri(uri);
+            }
+          }
+        } catch (err) {
+          logger.error(err);
+        }
+      }
+    };
+
     fetchAvatarUri();
+    return () => {
+      mounted = false;
+    };
   }, [address, library]);
 
   const [loaded, setLoaded] = useState(false);

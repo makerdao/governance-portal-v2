@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import BigNumber from 'lib/bigNumberJs';
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -22,7 +30,7 @@ export function DelegateMKRDelegatedStats({
   // TODO: Fetch addresses suporting through API fetching
 
   const { data: mkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
-  const { data: votingWeight } = useMKRVotingWeight(delegate.voteDelegateAddress);
+  const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
 
   return (
     <Flex

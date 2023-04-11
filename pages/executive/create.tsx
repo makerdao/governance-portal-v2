@@ -1,4 +1,12 @@
-import { Heading, Box, Button, Flex, Input, Label, Card, Text, Link } from 'theme-ui';
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
+import { Heading, Box, Button, Flex, Input, Label, Card, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';

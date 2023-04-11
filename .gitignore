@@ -39,5 +39,6 @@ yalc.lock
 
 package-lock.json
 
-# Sentry
-.sentryclirc
+# Yarn
+/.yarn
+.yarnrc.yml

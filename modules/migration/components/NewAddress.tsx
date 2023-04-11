@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { NewAddressInitial } from 'modules/migration/components/NewAddressInitial';
 import { NewAddressSuccess } from 'modules/migration/components/NewAddressSuccess';

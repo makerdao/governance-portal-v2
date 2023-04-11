@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert } from 'theme-ui';
 import useSWR from 'swr';
@@ -5,8 +13,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import TxIndicators from 'modules/app/components/TxIndicators';
 
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useOldChiefFree } from 'modules/mkr/hooks/useOldChiefFree';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -24,7 +30,6 @@ import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 // TODO: Test with cypress
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const { chiefOld } = useContracts() as MainnetSdk;
 
@@ -95,7 +100,6 @@ const ModalContent = ({ close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={!lockedMkr}
               onClick={() => {
-                trackButtonClick('withdrawMkrOldChief');
                 free(lockedMkr as BigNumber, {
                   mined: () => close(),
                   error: () => close()
@@ -121,7 +125,6 @@ const ModalContent = ({ close, ...props }) => {
               data-testid="button-approve-voting-contract"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
-                trackButtonClick('approveWithdrawOldChief');
                 approve(chiefOld.address, {
                   mined: () => mutateTokenAllowance()
                 });

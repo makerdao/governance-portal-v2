@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { allEsmV2Joins } from 'modules/gql/queries/allEsmV2Joins';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
 import { useGqlQuery } from 'modules/gql/hooks/useGqlQuery';

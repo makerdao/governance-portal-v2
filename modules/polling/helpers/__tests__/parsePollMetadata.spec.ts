@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { parsePollMetadata, spockPollToPartialPoll } from '../parsePollMetadata';
 import pollJson327 from './__helpers__/poll-327.js';
 import pollJson431 from './__helpers__/poll-431.js';

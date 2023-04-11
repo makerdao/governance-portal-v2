@@ -3,29 +3,30 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
+import {
+  TESTING_ACTIVE_POLLS_COUNT,
+  TESTING_ENDED_POLLS_COUNT,
+  TESTING_TOTAL_POLLS_COUNT
+} from 'cypress/support/constants/polling';
 import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { forkNetwork, setAccount, visitPage } from '../support/commons';
+import { forkNetwork, resetDatabase, setAccount, visitPage } from '../support/commons';
 
 describe('/polling page', async () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
+    forkNetwork();
+    resetDatabase();
   });
   it('renders active polls', () => {
-    // Polls keep growing and the num polls check keeps failing
-    // We should have an API method that returns number of active polls we can compare here
-    // Or we just mock the polls since the DB calls should be tested elsewhere anyway.
-    const activePolls = 21;
-    const endedPolls = 24;
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.contains('Active Polls').should('be.visible');
 
-      cy.contains(/2 POLLS - ENDING NOV 04 2022 16:00 UTC/, {
+      cy.contains(/1 POLL - ENDING DEC 02 2023 16:00 UTC/, {
         matchCase: false
       }).should('be.visible');
 
-      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', activePolls);
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', TESTING_ACTIVE_POLLS_COUNT);
 
       // Poll card should display poll ID
       cy.contains('Poll ID 4').should('be.visible');
@@ -33,8 +34,8 @@ describe('/polling page', async () => {
       // Show ended polls
       cy.get('[data-testid="button-view-ended-polls"]').click();
 
-      // Check that now only shows 2 polls
-      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', endedPolls);
+      // Check that now shows all polls
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', TESTING_TOTAL_POLLS_COUNT);
     });
   });
 
@@ -59,7 +60,7 @@ describe('/polling page', async () => {
       cy.get('[data-testid="poll-filters-status"]').click();
       cy.get('[data-testid="checkbox-show-polls-ended"]').click();
 
-      cy.get('[data-testid="poll-overview-card"]').should('have.length', 3);
+      cy.get('[data-testid="poll-overview-card"]').should('have.length', TESTING_ENDED_POLLS_COUNT);
 
       cy.contains('Ended Polls').should('be.visible');
     });

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Button, Box, Flex, Text } from '@theme-ui/components';
 import { Alert } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';

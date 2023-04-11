@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Flex, Text, useColorMode } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -126,10 +134,6 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
         {
           url: 'https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4',
           title: t('Brand Assets')
-        },
-        {
-          url: 'https://makerdao.com/en/feeds/',
-          title: t('Oracle Feeds')
         }
       ]
     }

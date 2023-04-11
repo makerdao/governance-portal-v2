@@ -4,14 +4,15 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { visitPage, setAccount, forkNetwork } from '../../support/commons';
+import { visitPage, setAccount, forkNetwork, resetDatabase } from '../../support/commons';
 
 describe('/polling/review page as a delegate', async () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
+    forkNetwork();
+    resetDatabase();
   });
 
-  it('Can vote as a delegate', () => {
+  it('Can legacy vote as a delegate', () => {
     // visitPage(`/address/0x6eb08a8f2b6c6d0dcc2e935872562bafc5599c3e`);
     visitPage('/polling');
     setAccount(TEST_ACCOUNTS.delegate, () => {
@@ -38,6 +39,20 @@ describe('/polling/review page as a delegate', async () => {
       cy.get('[data-testid="submit-ballot-button"]').should('be.enabled');
 
       cy.get('[data-testid="submit-ballot-button"]').first().click();
+
+      // Switch to legacy voting for this test
+      cy.get('[data-testid="switch-to-legacy-voting-button"]').click();
+
+      cy.contains(
+        'Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+      ).should('be.visible');
+
+      // Click legacy voting submit button
+      cy.get('[data-testid="submit-ballot-legacy-button"]').click();
+
+      cy.contains('Please use your wallet to sign').should('be.visible');
+
+      cy.contains('Transaction Pending').should('be.visible');
 
       // Expect to see the previously voted polls
       cy.get('[data-testid="previously-voted-on"]')

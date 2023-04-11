@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
@@ -10,7 +18,7 @@ import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecuti
 
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight } = useMKRVotingWeight(account);
+  const { data: votingWeight } = useMKRVotingWeight({ address: account });
   const votingWeightCopy = getPollingVotingWeightCopy(!!voteDelegateContractAddress);
 
   return (

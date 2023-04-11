@@ -1,8 +1,14 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Text, Flex, Box, Button } from 'theme-ui';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { ABSTAIN } from '../polling.constants';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Poll } from '../types';
 import { useContext } from 'react';
@@ -24,8 +30,6 @@ const ChoiceSummary = ({
   showReviewButton?: boolean;
   choice: number | number[];
 }): React.ReactElement => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-
   const { removeVoteFromBallot, isPollOnBallot } = useContext(BallotContext);
 
   const onBallot = isPollOnBallot(poll.pollId);
@@ -65,7 +69,6 @@ const ChoiceSummary = ({
           <Button
             data-testid="edit-poll-choice"
             onClick={() => {
-              trackButtonClick('editChoice');
               edit();
             }}
             variant={'smallOutline'}
@@ -103,13 +106,7 @@ const ChoiceSummary = ({
       </Flex>
       {showReviewButton && onBallot && (
         <InternalLink href="/polling/review" title="Review & submit your ballot">
-          <Button
-            onClick={() => {
-              trackButtonClick('reviewAndSubmitBallot');
-            }}
-            variant="primaryLarge"
-            sx={{ width: '100%', cursor: 'pointer', mt: 3 }}
-          >
+          <Button variant="primaryLarge" sx={{ width: '100%', cursor: 'pointer', mt: 3 }}>
             Review & Submit Your Ballot
           </Button>
         </InternalLink>

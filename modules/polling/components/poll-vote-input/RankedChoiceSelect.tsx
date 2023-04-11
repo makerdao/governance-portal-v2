@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useMemo, useState, useEffect } from 'react';
 import { Box, Flex, Text, Close } from 'theme-ui';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
@@ -8,8 +16,6 @@ import omitBy from 'lodash/omitBy';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { Poll } from 'modules/polling/types';
 import Stack from '../../../app/components/layout/layouts/Stack';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 type RankedChoiceSelectProps = {
   poll: Poll;
@@ -22,7 +28,6 @@ export default function RankedChoiceSelect({
   setChoice,
   choice: _choice
 }: RankedChoiceSelectProps): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const choice = _choice || [];
   const [numConfirmed, setNumConfirmed] = useState(choice.length);
   const [showListboxInput, setShowListboxInput] = useState(true);
@@ -131,7 +136,6 @@ export default function RankedChoiceSelect({
           variant="caps"
           aria-label="Add button"
           onClick={() => {
-            trackButtonClick('addAnotherRankedChoice');
             setShowListboxInput(true);
           }}
           sx={{

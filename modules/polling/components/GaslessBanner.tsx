@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import Banner from 'modules/app/components/layout/header/Banner';
 import { Box, Flex, Text } from 'theme-ui';
@@ -33,7 +41,7 @@ export default function GaslessBanner(): React.ReactElement {
             <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
               <Flex sx={{ justifyContent: 'center', width: '100%' }}>
                 <ExternalLink
-                  href="https://makerdao.com"
+                  href="https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting"
                   title="Learn more about gasless voting"
                   styles={{ color: 'inherit' }}
                 >

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Flex, Text, Divider } from 'theme-ui';
 import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
 import { useState } from 'react';

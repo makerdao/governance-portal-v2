@@ -1,12 +1,19 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Divider, Box, Text, Flex } from 'theme-ui';
-import { CMSProposal } from 'modules/executive/types';
 
 export function CurrentlySupportingExecutive({
   proposalsSupported,
   execSupported
 }: {
   proposalsSupported: number;
-  execSupported: CMSProposal | undefined;
+  execSupported: { title: string; address: string } | undefined;
 }): React.ReactElement | null {
   const getSupportText = (): string | null => {
     if (proposalsSupported === 0) {

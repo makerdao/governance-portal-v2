@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Flex, Text, Box, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -23,7 +31,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
     <Flex sx={{ flexDirection: 'column' }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Flex>
-          <Icon name="MetaMask" size={'24px'} />
+          <Icon name={accountName} size={'24px'} />
           <Text variant="secondary" sx={{ ml: 2 }}>
             Connected with {accountName}
           </Text>

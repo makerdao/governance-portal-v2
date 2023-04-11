@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React, { useEffect, useState, useContext } from 'react';
 import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -13,7 +21,6 @@ import { useRouter } from 'next/router';
 import { isAndroid, isIOS } from 'react-device-detect';
 import { SUPPORTED_WALLETS, WalletName, ConnectionType } from 'modules/web3/constants/wallets';
 import { connectorToWalletName, getConnection } from 'modules/web3/connections';
-import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import { getIsMetaMask } from 'modules/web3/helpers/getIsMetaMask';
 import logger from 'lib/logger';
@@ -30,7 +37,6 @@ const closeButtonStyle: ThemeUICSSObject = {
 };
 
 const AccountSelect = (): React.ReactElement => {
-  const { setUserData } = useContext(AnalyticsContext);
   const router = useRouter();
   const { account: address, connector, chainId } = useWeb3React();
 
@@ -78,10 +84,6 @@ const AccountSelect = (): React.ReactElement => {
       await connection.connector.activate();
 
       setSelectedConnection(connection.type);
-
-      if (chainId) {
-        setUserData({ wallet: name });
-      }
 
       setChangeWallet(false);
 
@@ -172,7 +174,7 @@ const AccountSelect = (): React.ReactElement => {
       />
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
-        <DialogContent aria-label="Change Wallet">
+        <DialogContent ariaLabel="Change Wallet">
           {changeWallet ? (
             <>
               <BackButton onClick={() => setChangeWallet(false)} />

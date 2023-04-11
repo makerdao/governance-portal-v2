@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 export const getPollTallyCacheKey = (pollId: number): string => `parsed-tally-${pollId}`;
 
 export const executiveSupportersCacheKey = 'executive-supporters';
@@ -7,6 +15,10 @@ export const githubExecutivesCacheKey = 'executives-github';
 export const delegatesGithubCacheKey = 'delegates-github';
 
 export const allDelegatesCacheKey = 'all-delegates';
+
+export const allDelegatesExecSupportKey = 'all-delegates-exec-support';
+
+export const allDelegateAddressesKey = 'all-delegate-addresses';
 
 export const executiveProposalsCacheKey = 'proposals';
 

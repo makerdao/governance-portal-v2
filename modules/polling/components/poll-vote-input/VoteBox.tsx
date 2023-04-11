@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Heading, Card, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
@@ -14,8 +22,8 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
   const showQuickVote = canVote && bpi > 0;
 
   return (
-    <Box {...props} data-testid="poll-vote-box">
-      <Heading mb={2} as="h3" variant="microHeading">
+    <Box {...props} data-testid="poll-vote-box" sx={{ mt: 2 }}>
+      <Heading mb={3} as="h3" variant="microHeading">
         Your Vote
       </Heading>
       <Card variant="compact">

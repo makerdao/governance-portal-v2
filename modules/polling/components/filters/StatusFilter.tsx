@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { Poll } from 'modules/polling/types';
@@ -6,11 +14,8 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [pollFilters, showPollActive, showPollEnded, setShowPollActive, setShowPollEnded] = useUiFiltersStore(
     state => [
       state.pollFilters,
@@ -51,7 +56,6 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
               checked={showPollActive}
               onChange={event => {
                 setShowPollActive(event.target.checked);
-                trackButtonClick(`activePollsFilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`);
               }}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
@@ -69,7 +73,6 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
               checked={showPollEnded}
               onChange={event => {
                 setShowPollEnded(event.target.checked);
-                trackButtonClick(`endedPollsFilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`);
               }}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>

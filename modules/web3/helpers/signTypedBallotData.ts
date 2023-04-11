@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -18,24 +26,6 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
   const chainId = networkNameToChainId(networkForSignature);
   return {
     types: {
-      EIP712Domain: [
-        {
-          name: 'name',
-          type: 'string'
-        },
-        {
-          name: 'version',
-          type: 'string'
-        },
-        {
-          name: 'chainId',
-          type: 'uint256'
-        },
-        {
-          name: 'verifyingContract',
-          type: 'address'
-        }
-      ],
       Vote: [
         {
           name: 'voter',
@@ -75,7 +65,8 @@ export async function signTypedBallotData(
   provider: JsonRpcProvider | Web3Provider,
   network: SupportedNetworks
 ): Promise<string> {
-  const typedData = JSON.stringify(getTypedBallotData(message, network));
+  const signer = provider.getSigner();
+  const typedData = getTypedBallotData(message, network);
 
-  return provider.send('eth_signTypedData_v4', [message.voter, typedData]);
+  return signer._signTypedData(typedData.domain, typedData.types, typedData.message);
 }

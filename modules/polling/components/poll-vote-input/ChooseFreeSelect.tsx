@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { Poll } from 'modules/polling/types';
 import { Box, Button } from 'theme-ui';

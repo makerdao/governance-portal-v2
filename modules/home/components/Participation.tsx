@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Text, Image, Flex, Heading, Container, Link as ExternalLink, Card } from 'theme-ui';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from './ViewMore';
@@ -5,7 +13,7 @@ import useSWR from 'swr';
 import { format, sub } from 'date-fns';
 import ParticipationChart from './ParticipationChart';
 import forumPosts from '../data/forumPosts.json';
-import { Delegate } from 'modules/delegates/types';
+import { DelegateInfo } from 'modules/delegates/types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
@@ -70,7 +78,7 @@ export default function Participation({
   activeDelegates,
   bpi
 }: {
-  activeDelegates: Delegate[];
+  activeDelegates: DelegateInfo[];
   bpi: number;
 }): React.ReactElement {
   const { network } = useWeb3();

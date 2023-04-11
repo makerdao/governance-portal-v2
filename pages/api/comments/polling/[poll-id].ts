@@ -1,8 +1,18 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollCommentsAPIResponseItem } from 'modules/comments/types/comments';
 import { getPollComments } from 'modules/comments/api/getPollComments';
 import withApiHandler from 'modules/app/api/withApiHandler';
+import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 /**
  * @swagger
@@ -35,6 +45,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
  *   get:
  *     tags:
  *     - "comments"
+ *     summary: Returns all the comments for a poll
  *     description: Returns all the comments for a poll
  *     produces:
  *     - "application/json"
@@ -62,9 +73,29 @@ import withApiHandler from 'modules/app/api/withApiHandler';
  */
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<PollCommentsAPIResponseItem[]>) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
+    // validate network
+    const network = validateQueryParam(
+      (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+      'string',
+      {
+        defaultValue: null,
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      },
+      n => !!n,
+      new ApiError('Invalid network', 400, 'Invalid network')
+    ) as SupportedNetworks;
 
-    const pollId = parseInt(req.query['poll-id'] as string, 10);
+    // validate pollId
+    const pollId = validateQueryParam(
+      req.query['poll-id'],
+      'number',
+      {
+        defaultValue: null,
+        minValue: 0
+      },
+      n => !!n,
+      new ApiError('Invalid poll id', 400, 'Invalid poll id')
+    ) as number;
 
     const response = await getPollComments(pollId, network);
 

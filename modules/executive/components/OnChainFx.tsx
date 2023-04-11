@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Fragment } from 'react';
 import { Grid, Text, Box, Link as ExternalLink } from 'theme-ui';
 import BigNumber from 'lib/bigNumberJs';

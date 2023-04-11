@@ -1,20 +1,39 @@
-import invariant from 'tiny-invariant';
-import { ethers } from 'ethers';
-import { NextApiRequest, NextApiResponse } from 'next';
+/*
 
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 // In memory result cache
 const results = {};
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const spellAddress: string = req.query.address as string;
-  invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
+  // validate network
+  const network = validateQueryParam(
+    (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+    'string',
+    {
+      defaultValue: null,
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
+  ) as SupportedNetworks;
 
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
-  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  // validate address
+  const address = await validateAddress(
+    req.query.address as string,
+    new ApiError('Invalid address', 400, 'Invalid address')
+  );
 
   let analysis;
 
@@ -22,12 +41,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     results[network] = {};
   }
 
-  if (results[network][spellAddress]) {
-    analysis = results[network][spellAddress];
+  if (results[network][address]) {
+    analysis = results[network][address];
   } else {
-    analysis = await analyzeSpell(spellAddress, network);
+    analysis = await analyzeSpell(address, network);
     if (analysis.hasBeenCast) {
-      results[network][spellAddress] = analysis;
+      results[network][address] = analysis;
     }
   }
 

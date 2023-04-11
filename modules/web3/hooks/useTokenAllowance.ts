@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { BigNumber, ethers } from 'ethers';
 import useSWR from 'swr';
 import { ContractName } from '../types/contracts';

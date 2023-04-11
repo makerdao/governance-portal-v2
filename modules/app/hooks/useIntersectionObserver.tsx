@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { RefObject, useEffect } from 'react';
 
 export function useIntersectionObserver(
@@ -23,5 +31,5 @@ export function useIntersectionObserver(
         observer?.unobserve(ref.current);
       }
     };
-  }, [ref, callback]);
+  }, [ref]);
 }

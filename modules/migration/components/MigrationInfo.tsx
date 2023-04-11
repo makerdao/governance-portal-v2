@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Flex, Text, Label, Checkbox, Button, Box } from 'theme-ui';
 import { CircleIcon } from 'modules/app/components/CircleIcon';
@@ -37,8 +45,10 @@ export function MigrationInfo({
 
         <Text as="p" variant="secondary" sx={{ mt: 3 }}>
           Completing the migration will also assist your delegators in migrating their MKR to your new
-          delegate contract address. Migration is not supported for Shadow Delegates, only for Recognized
-          Delegates.
+          delegate contract address.
+        </Text>
+        <Text as="p" variant="secondary" sx={{ mt: 3, fontWeight: 'bold' }}>
+          Migration is not supported for Shadow Delegates, only for Constitutional Delegates.
         </Text>
         <Text as="h3" variant="smallHeading" sx={{ my: 4 }}>
           Before starting the flow, please consider the following notice:

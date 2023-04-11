@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
@@ -8,8 +16,6 @@ import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
@@ -28,7 +34,6 @@ const ModalContent = ({
   showProxyInfo?: boolean;
 }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const { data: mkrBalance } = useMkrBalance(account);
 
@@ -97,7 +102,6 @@ const ModalContent = ({
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
               onClick={() => {
-                trackButtonClick('DepositMkr');
                 lock(mkrToDeposit, {
                   mined: () => {
                     // Mutate locked state
@@ -126,7 +130,6 @@ const ModalContent = ({
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
-                trackButtonClick('approveDeposit');
                 approve(voteProxyContractAddress || chief.address, {
                   mined: () => {
                     mutateTokenAllowance();
@@ -162,7 +165,6 @@ const ModalContent = ({
 
 const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boolean }): JSX.Element => {
   const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
 
   const open = () => {
@@ -187,7 +189,6 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
       {link ? (
         <Link
           onClick={() => {
-            trackButtonClick('btn-click');
             open();
           }}
           sx={{ textDecoration: 'underline', cursor: 'pointer' }}
@@ -198,7 +199,6 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
         <Button
           variant="mutedOutline"
           onClick={() => {
-            trackButtonClick('OpenDepositModal');
             open();
           }}
           data-testid="deposit-button"

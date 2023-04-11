@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { config } from 'lib/config';
 import { SupportedChain } from '../types/chain';
 import { SupportedChainId } from './chainID';
@@ -48,10 +56,11 @@ export const CHAIN_INFO: ChainInfo = {
     type: 'normal',
     network: SupportedNetworks.MAINNET,
     defaultRpc: NodeProviders.ALCHEMY,
-    spockUrl: process.env.NODE_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
+    spockUrl:
+      process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
-      [NodeProviders.ALCHEMY]: `https://eth-mainnet.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
+      [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`
     }
   },
   [SupportedChainId.GOERLI]: {
@@ -149,5 +158,5 @@ export const DECODED_SPELL_ENDPOINT = (hash: string): string =>
 
 export const AVG_BLOCKS_PER_DAY = 6500;
 
-export const GASNOW_ENDPOINT = 'https://www.etherchain.org/api/gasnow';
+export const GASNOW_ENDPOINT = 'https://beaconcha.in/api/v1/execution/gasnow';
 export const GASNOW_URL = 'https://www.etherchain.org/tools/gasnow';

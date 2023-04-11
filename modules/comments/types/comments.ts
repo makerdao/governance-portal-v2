@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { BigNumber } from 'ethers';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -55,6 +63,7 @@ export type ExecutiveComment = {
   spellAddress: string;
   network: SupportedNetworks;
   txHash?: string;
+  gaslessNetwork?: SupportedNetworks;
 };
 
 export type ExecutiveCommentFromDB = ExecutiveComment & {

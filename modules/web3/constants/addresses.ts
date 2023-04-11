@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export enum ArbitrumPollingAddressMap {

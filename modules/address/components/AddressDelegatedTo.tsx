@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -196,7 +204,10 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToP
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: bpi > 1 ? '20%' : '25%' }} variant="caps">
               <Tooltip label={'This is the percentage of the total MKR delegated by this address.'}>
-                <span>Voting Weight</span>
+                <Flex>
+                  <span>Voting Weight</span>
+                  <Icon name="question" ml={1} />
+                </Flex>
               </Tooltip>
             </Text>
             <Text

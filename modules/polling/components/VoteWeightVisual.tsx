@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useEffect, useRef, useState } from 'react';
 import { Box } from 'theme-ui';
 import { select } from 'd3-selection';
@@ -6,7 +14,7 @@ import { useRouter } from 'next/router';
 import { cutMiddle, limitString } from 'lib/string';
 import { Poll, PollTally } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 
 type CircleProps = {
   poll: Poll;
@@ -19,7 +27,19 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
   const ref = useRef<SVGSVGElement>(null);
   const router = useRouter();
 
-  const { data: delegateAddresses } = useDelegateAddressMap();
+  const delegateAddresses =
+    tally.votesByAddress
+      ?.map(({ voter }) => {
+        const { data: delegate } = useSingleDelegateInfo(voter);
+        return delegate;
+      })
+      .reduce((acc, cur) => {
+        if (!cur) {
+          return acc;
+        }
+        acc[cur.voteDelegateAddress] = cur;
+        return acc;
+      }, {}) || {};
 
   const data = {
     title: 'votes',

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import React from 'react';
 import Icon from 'modules/app/components/Icon';
@@ -11,7 +19,7 @@ export default function LastVoted({
   styles
 }: {
   expired: boolean;
-  date?: number | string | null;
+  date?: number | string | Date | null;
   left?: boolean;
   styles?: ThemeUIStyleObject;
 }): React.ReactElement {

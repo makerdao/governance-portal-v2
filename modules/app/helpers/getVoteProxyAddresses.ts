@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Contract } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';

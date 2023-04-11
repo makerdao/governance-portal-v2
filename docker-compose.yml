@@ -19,7 +19,7 @@ services:
     container_name: spock-test-container
     command: ['yarn', 'start-all']
     environment:
-      - SEED_BLOCKS=5815619,6495082
+      - SEED_BLOCKS=5815619,6495082,7218785,7744939
     depends_on:
       postgres:
         condition: service_healthy

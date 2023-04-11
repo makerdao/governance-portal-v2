@@ -4,12 +4,14 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
-import { setAccount, visitPage, forkNetwork } from '../support/commons';
-import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
+import { setAccount, visitPage, forkNetwork, resetDatabase } from '../support/commons';
+
+const STARTING_ESM_BAL = 2.463;
 
 describe('Esmodule Page', async () => {
   before(() => {
-    forkNetwork(INIT_BLOCK);
+    forkNetwork();
+    resetDatabase();
   });
 
   it('should navigate to the es module page', () => {
@@ -21,11 +23,12 @@ describe('Esmodule Page', async () => {
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
 
-      cy.contains(/0.003/).should('be.visible');
+      cy.contains(STARTING_ESM_BAL).should('be.visible');
     });
   });
 
   it('Should be able to burn mkr', () => {
+    const MKR_TO_BURN = 0.01;
     visitPage('/esmodule');
 
     const newAccount = getTestAccountByIndex(2);
@@ -89,7 +92,7 @@ describe('Esmodule Page', async () => {
       cy.scrollTo(0, 0);
 
       // The total burned increased
-      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/0.013/);
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(STARTING_ESM_BAL + MKR_TO_BURN);
     });
   });
 
@@ -118,13 +121,13 @@ describe('Esmodule Page', async () => {
       cy.contains('Continue').click();
 
       // Enter 100K MKR to pass the threshhold
-      cy.get('[data-testid="mkr-input"]').type('100000');
+      cy.get('[data-testid="mkr-input"]').type('150000');
 
       // Continue with the burn
       cy.contains('Continue').click();
 
       // Type the passphrase
-      cy.get('[data-testid="confirm-input"]').type('I am burning 100,000 MKR');
+      cy.get('[data-testid="confirm-input"]').type('I am burning 150,000 MKR');
 
       // Unlock mkr
       cy.get('[data-testid="allowance-toggle"]').click();
@@ -148,7 +151,7 @@ describe('Esmodule Page', async () => {
       cy.contains('Initiate Emergency Shutdown').click();
 
       // See that the limit has been reached
-      cy.contains('The 100,000 MKR limit for the emergency shutdown module has been reached.').should(
+      cy.contains('The 150,000 MKR limit for the emergency shutdown module has been reached.').should(
         'be.visible'
       );
 
@@ -157,10 +160,6 @@ describe('Esmodule Page', async () => {
 
       // Pending state
       cy.contains('Shutdown will update once the transaction has been confirmed.');
-
-      // cy.wait(3500);
-      // Scroll for screenshot
-      cy.scrollTo(0, 0);
 
       // Shows banner after shutdown
       // TODO fix cageTime showing incorrect date

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type RepositoryInfo = {
@@ -10,13 +18,13 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
   const repoMainnet = {
     owner: 'makerdao',
     repo: 'community',
-    page: 'governance/delegates'
+    page: 'governance/delegates/meta/delegates.json'
   };
 
   const repoTest = {
     owner: 'makerdao-dux',
     repo: 'voting-delegates',
-    page: 'delegates'
+    page: 'delegates/meta/delegates.json'
   };
 
   const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoTest;

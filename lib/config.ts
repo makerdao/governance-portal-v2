@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 type SystemConfig = {
   USE_CACHE: string;
   ALCHEMY_KEY: string;
@@ -11,8 +19,6 @@ type SystemConfig = {
   GITHUB_TOKEN: string;
   GITHUB_TOKEN_2: string;
   GITHUB_TOKEN_3: string;
-  MIXPANEL_PROD: string;
-  MIXPANEL_DEV: string;
   REDIS_URL: string;
   DEFENDER_API_KEY_TESTNET: string;
   DEFENDER_API_SECRET_TESTNET: string;
@@ -24,6 +30,7 @@ type SystemConfig = {
   GASLESS_WEBHOOK_URL: string;
   DASHBOARD_PASSWORD: string;
   GASLESS_BACKDOOR_SECRET: string;
+  GASLESS_DISABLED: string;
 };
 
 export const config: SystemConfig = {
@@ -39,8 +46,6 @@ export const config: SystemConfig = {
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
   GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',
   GITHUB_TOKEN_3: process.env.GITHUB_TOKEN_3 || '',
-  MIXPANEL_PROD: process.env.NEXT_PUBLIC_MIXPANEL_PROD || '',
-  MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
   REDIS_URL: process.env.REDIS_URL || '',
   DEFENDER_API_KEY_TESTNET: process.env.DEFENDER_API_KEY_TESTNET || '',
   DEFENDER_API_SECRET_TESTNET: process.env.DEFENDER_API_SECRET_TESTNET || '',
@@ -51,5 +56,6 @@ export const config: SystemConfig = {
   MIGRATION_WEBHOOK_URL: process.env.MIGRATION_WEBHOOK_URL || '',
   GASLESS_WEBHOOK_URL: process.env.GASLESS_WEBHOOK_URL || '',
   DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || '',
-  GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || ''
+  GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || '',
+  GASLESS_DISABLED: process.env.GASLESS_DISABLED || ''
 };

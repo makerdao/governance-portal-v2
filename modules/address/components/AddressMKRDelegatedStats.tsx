@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { parseUnits } from 'ethers/lib/utils';
@@ -14,7 +22,7 @@ export function AddressMKRDelegatedStats({
   totalMKRDelegated?: number;
   address: string;
 }): React.ReactElement {
-  const { data: votingWeight } = useMKRVotingWeight(address);
+  const { data: votingWeight } = useMKRVotingWeight({ address, excludeDelegateOwnerBalance: true });
 
   return (
     <Flex

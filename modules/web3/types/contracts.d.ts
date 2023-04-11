@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { GoerliSdk, MainnetSdk, ArbitrumGoerliTestnetSdk, ArbitrumOneSdk } from '@dethcrypto/eth-sdk-client';
 import { providers, Signer } from 'ethers';
 

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Octokit } from '@octokit/core';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { config } from 'lib/config';
@@ -43,8 +51,10 @@ const getNextToken = () => {
 
 export async function fetchGitHubPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
   const octokit = getNextToken();
-
   const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    mediaType: {
+      format: 'raw'
+    },
     owner,
     repo,
     path
@@ -59,5 +69,6 @@ export async function fetchGithubGraphQL(
 ): Promise<GraphQlQueryResponseData> {
   const octokit = getNextToken();
   const data = await octokit.graphql(query, { owner, name: repo, expression: `master:${page}` });
+
   return data as GraphQlQueryResponseData;
 }

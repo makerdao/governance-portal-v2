@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DefenderRelayProvider, DefenderRelaySigner } from 'defender-relay-client/lib/ethers';
 import { relayerCredentials } from '../helpers/relayerCredentials';
@@ -8,7 +16,7 @@ export const getArbitrumRelaySigner = (network: SupportedNetworks): DefenderRela
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
   const provider = new DefenderRelayProvider(relayerCredentials[sdkNetwork]);
   const signer = new DefenderRelaySigner(relayerCredentials[sdkNetwork], provider, {
-    speed: 'fast'
+    speed: 'fastest' // 'safeLow' | 'average' | 'fast' | 'fastest'
   });
 
   return signer;

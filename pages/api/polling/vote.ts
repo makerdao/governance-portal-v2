@@ -1,7 +1,14 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { ethers } from 'ethers';
-import { recoverTypedSignature, SignTypedDataVersion } from '@metamask/eth-sig-util';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
@@ -37,10 +44,12 @@ export const API_VOTE_ERRORS = {
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes.',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature.',
   LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_MKR_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
-  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.'
+  ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.',
+  RELAYER_ERROR: 'Relayer transaction creation failed.'
 };
 
 import { ApiError } from 'modules/app/api/ApiError';
+import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 async function postErrorInDiscord(error: string, body: any, type = 'error') {
   // Post on discord
@@ -61,9 +70,11 @@ async function postErrorInDiscord(error: string, body: any, type = 'error') {
   }
 }
 
-async function throwError(error: string, body: any, code = 400) {
+type ErrorArgs = { error: string; body: any; code?: number; skipDiscord?: boolean };
+
+async function throwError({ error, body, code = 400, skipDiscord = false }: ErrorArgs) {
   // Post on discord
-  postErrorInDiscord(error, body);
+  if (!skipDiscord) postErrorInDiscord(error, body);
 
   // Return api error
   throw new ApiError(`Poll Gasless Vote: ${error}`, code, error);
@@ -72,37 +83,45 @@ async function throwError(error: string, body: any, code = 400) {
 //TODO: add swagger documentation
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret } = req.body;
+    const { voter, pollIds, optionIds, nonce, expiry, signature, network, secret, skipDiscord } = req.body;
     if (typeof voter !== 'string' || !voter) {
-      await throwError(API_VOTE_ERRORS.VOTER_MUST_BE_STRING, req.body);
+      await throwError({ error: API_VOTE_ERRORS.VOTER_MUST_BE_STRING, body: req.body, skipDiscord });
     }
     if (!Array.isArray(pollIds) || !pollIds.every(e => !isNaN(parseInt(e)))) {
-      await throwError(API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS, req.body);
+      await throwError({
+        error: API_VOTE_ERRORS.POLLIDS_MUST_BE_ARRAY_NUMBERS,
+        body: req.body,
+        skipDiscord
+      });
     }
     if (!Array.isArray(optionIds) || !optionIds.every(e => !isNaN(parseInt(e)))) {
-      await throwError(API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS, req.body);
+      await throwError({
+        error: API_VOTE_ERRORS.OPTIONIDS_MUST_BE_ARRAY_NUMBERS,
+        body: req.body,
+        skipDiscord
+      });
     }
     if (typeof nonce !== 'number') {
-      await throwError(API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER, req.body);
+      await throwError({ error: API_VOTE_ERRORS.NONCE_MUST_BE_NUMBER, body: req.body, skipDiscord });
     }
     if (typeof expiry !== 'number') {
-      await throwError(API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER, req.body);
+      await throwError({ error: API_VOTE_ERRORS.EXPIRY_MUST_BE_NUMBER, body: req.body, skipDiscord });
     }
 
     if (expiry <= Date.now() / 1000) {
-      await throwError(API_VOTE_ERRORS.EXPIRED_VOTES, req.body);
+      await throwError({ error: API_VOTE_ERRORS.EXPIRED_VOTES, body: req.body, skipDiscord });
     }
 
     if (typeof signature !== 'string' || !signature) {
-      await throwError(API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING, req.body);
+      await throwError({ error: API_VOTE_ERRORS.SIGNATURE_MUST_BE_STRING, body: req.body, skipDiscord });
     }
 
     if (!isSupportedNetwork(network)) {
-      await throwError(API_VOTE_ERRORS.INVALID_NETWORK, req.body);
+      await throwError({ error: API_VOTE_ERRORS.INVALID_NETWORK, body: req.body, skipDiscord });
     }
 
     if (secret && secret !== config.GASLESS_BACKDOOR_SECRET) {
-      await throwError(API_VOTE_ERRORS.WRONG_SECRET, req.body);
+      await throwError({ error: API_VOTE_ERRORS.WRONG_SECRET, body: req.body, skipDiscord });
     }
 
     //get arbitrum polling contract with relayer's signer
@@ -126,18 +145,15 @@ export default withApiHandler(
     //verify valid nonce and expiry date
     const nonceFromContract = await pollingContract.nonces(voter);
     if (nonceFromContract.toNumber() !== nonce) {
-      await throwError(API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS, req.body);
+      await throwError({ error: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS, body: req.body, skipDiscord });
     }
 
     //verify that signature and address correspond
-    const recovered = recoverTypedSignature({
-      data: getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network),
-      signature,
-      version: SignTypedDataVersion.V4
-    });
+    const typedData = getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network);
+    const recovered = verifyTypedSignature(typedData.domain, typedData.types, typedData.message, signature);
 
     if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
-      await throwError(API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, req.body);
+      await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });
     }
 
     //run eligibility checks unless backdoor secret provided
@@ -146,12 +162,17 @@ export default withApiHandler(
       const hasMkrRequired = await hasMkrRequiredVotingWeight(
         voter,
         network,
-        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING
+        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING,
+        true
       );
 
       if (!hasMkrRequired) {
         //ether's bignumber library doesnt handle decimals
-        await throwError(API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED, req.body);
+        await throwError({
+          error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED,
+          body: req.body,
+          skipDiscord
+        });
       }
 
       // Verify that all the polls are active
@@ -175,7 +196,7 @@ export default withApiHandler(
         });
 
       if (!areAllPollsActive) {
-        await throwError(API_VOTE_ERRORS.EXPIRED_POLLS, req.body);
+        await throwError({ error: API_VOTE_ERRORS.EXPIRED_POLLS, body: req.body, skipDiscord });
       }
 
       //check that address hasn't used gasless service recently
@@ -185,27 +206,38 @@ export default withApiHandler(
         network
       );
       if (recentlyUsedGaslessVoting) {
-        await throwError(API_VOTE_ERRORS.RATE_LIMITED, req.body);
+        await throwError({ error: API_VOTE_ERRORS.RATE_LIMITED, body: req.body, skipDiscord });
       }
       //can't use gasless service to vote in a poll you've already voted on
       // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
       const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(addressDisplayedAsVoter, network, pollIds);
       if (ballotHasVotedPolls) {
-        await throwError(API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, req.body);
+        await throwError({ error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, body: req.body, skipDiscord });
       }
     } else {
       await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
     }
-
-    const r = signature.slice(0, 66);
-    const s = '0x' + signature.slice(66, 130);
-    const v = Number('0x' + signature.slice(130, 132));
+    const { r, s, v } = ethers.utils.splitSignature(signature);
 
     const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
-    const tx = await pollingContract[
-      'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'
-    ](voter, nonce, expiry, pollIds, optionIds, v, r, s);
+    let tx;
+    try {
+      tx = await pollingContract['vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'](
+        voter,
+        nonce,
+        expiry,
+        pollIds,
+        optionIds,
+        v,
+        r,
+        s
+      );
+    } catch (err) {
+      //don't rate limit if tx didn't succeed
+      cacheSet(cacheKey, '', network, GASLESS_RATE_LIMIT_IN_MS);
+      await throwError({ error: API_VOTE_ERRORS.RELAYER_ERROR, body: req.body, skipDiscord });
+    }
 
     return res.status(200).json(tx);
   },

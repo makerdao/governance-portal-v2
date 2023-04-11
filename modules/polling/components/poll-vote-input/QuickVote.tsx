@@ -1,7 +1,14 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState, useEffect, useContext } from 'react';
-import { Text, Flex, Button, Box } from 'theme-ui';
+import { Text, Flex, Button } from 'theme-ui';
 import invariant from 'tiny-invariant';
-import isEqual from 'lodash/isEqual';
 import { Poll } from 'modules/polling/types';
 import {
   extractCurrentPollVote,
@@ -14,8 +21,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from '../ChoiceSummary';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
@@ -40,9 +45,8 @@ const QuickVote = ({
   onSubmit,
   buttonVariant
 }: Props): React.ReactElement => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight, loading } = useMKRVotingWeight(account);
+  const { data: votingWeight, loading } = useMKRVotingWeight({ address: account });
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
@@ -134,7 +138,6 @@ const QuickVote = ({
             variant={buttonVariant ? buttonVariant : 'primary'}
             sx={{ width: '100%', mt: 3 }}
             onClick={() => {
-              trackButtonClick('addVoteToBallot');
               submit();
             }}
             mt={2}

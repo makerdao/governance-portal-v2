@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { Poll } from 'modules/polling/types';
@@ -5,8 +13,6 @@ import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { TagCount } from 'modules/app/types/tag';
 
 export function CategoryFilter({
@@ -18,7 +24,6 @@ export function CategoryFilter({
   polls: Poll[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [pollFilters, categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters, state.pollFilters.categoryFilter, state.setCategoryFilter],
     shallow
@@ -51,9 +56,6 @@ export function CategoryFilter({
                   checked={(categoryFilter && categoryFilter[tag.id]) || false}
                   onChange={event => {
                     setCategoryFilter({ ...categoryFilter, [tag.id]: event.target.checked });
-                    trackButtonClick(
-                      `${tag.id}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
-                    );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>

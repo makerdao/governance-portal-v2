@@ -1,5 +1,13 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useEffect, useState } from 'react';
-import { Box, Input, ThemeUIStyleObject } from 'theme-ui';
+import { Box, Input, ThemeUIStyleObject, IconButton } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { debounce } from 'modules/app/helpers/debounce';
 
@@ -8,9 +16,18 @@ type Props = {
   onChange: (seach: string) => void;
   value: string | null;
   placeholder?: string;
+  withSearchButton?: boolean;
+  performSearchOnClear?: boolean;
 };
 
-export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }: Props): JSX.Element => {
+export const SearchBar = ({
+  onChange,
+  value,
+  placeholder = 'Search',
+  withSearchButton,
+  performSearchOnClear,
+  ...props
+}: Props): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -21,7 +38,25 @@ export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }:
 
   const handleInput = event => {
     setSearchTerm(event.target.value);
-    debounce(onChange(event.target.value));
+    if (!withSearchButton || (performSearchOnClear && event.target.value === '')) {
+      debounce(onChange(event.target.value));
+    }
+  };
+
+  const handleSearchButton = () => {
+    onChange(searchTerm);
+  };
+
+  const handleKeyPress = event => {
+    if (withSearchButton) {
+      if (event.keyCode === 13) {
+        onChange(searchTerm);
+        return;
+      } else if (event.keyCode === 27) {
+        onChange('');
+        setSearchTerm('');
+      }
+    }
   };
 
   useEffect(() => {
@@ -37,8 +72,10 @@ export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }:
       <Input
         name="search"
         onChange={handleInput}
-        type="search"
+        type={withSearchButton ? undefined : 'search'}
         value={searchTerm}
+        onKeyUp={handleKeyPress}
+        autoComplete="off"
         placeholder={placeholder}
         sx={{
           maxWidth: 250,
@@ -56,9 +93,23 @@ export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }:
         }}
       />
       {!hasSearchTerm && (
-        <Box sx={{ position: 'absolute', top: 11, right: 16 }}>
-          <Icon name="magnifying_glass" sx={{ color: 'text', size: 3 }} />
+        <Box sx={{ position: 'absolute', top: 11, right: 13 }}>
+          <Icon name="magnifying_glass" sx={{ color: 'textSecondary', size: 3 }} />
         </Box>
+      )}
+      {withSearchButton && hasSearchTerm && (
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: '5px',
+            right: '5px',
+            backgroundColor: 'primary',
+            borderRadius: 'round'
+          }}
+          onClick={handleSearchButton}
+        >
+          <Icon name="magnifying_glass" sx={{ color: 'background', size: 3 }} />
+        </IconButton>
       )}
     </Box>
   );

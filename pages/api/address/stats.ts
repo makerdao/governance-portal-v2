@@ -1,15 +1,24 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
-import { resolveENS } from 'modules/web3/helpers/ens';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressStatsCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { ApiError } from 'modules/app/api/ApiError';
+import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { validateAddress } from 'modules/web3/api/validateAddress';
 
 /**
  * @swagger
@@ -57,6 +66,7 @@ import { ApiError } from 'modules/app/api/ApiError';
  *   get:
  *     tags:
  *     - "address"
+ *     summary: Returns stats for address
  *     description: Returns stats for address
  *     produces:
  *     - "application/json"
@@ -77,40 +87,43 @@ import { ApiError } from 'modules/app/api/ApiError';
  *
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+  // validate network
+  const network = validateQueryParam(
+    (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
+    'string',
+    {
+      defaultValue: null,
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    },
+    n => !!n,
+    new ApiError('Invalid network', 400, 'Invalid network')
+  ) as SupportedNetworks;
 
-  const tempAddresses =
-    typeof req.query.address === 'string'
-      ? [req.query.address.toLowerCase()]
-      : (req.query.address as string[]);
-
-  if (!req.query.address) {
-    throw new ApiError('Address stats, missing address', 400, 'Missing address');
-  }
+  // Make sure the address exists
+  const tmpAddresses = typeof req.query.address === 'string' ? [req.query.address] : req.query.address || [];
+  const addresses = await Promise.all(
+    tmpAddresses
+      ?.filter(i => !!i)
+      .map(tmpAddress =>
+        validateAddress(tmpAddress, new ApiError('Address stats, Invalid address', 400, 'Invalid address'))
+      )
+  );
 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const cacheKey = getAddressStatsCacheKey(tempAddresses);
+  const cacheKey = getAddressStatsCacheKey(addresses);
 
   const cachedResponse = await cacheGet(cacheKey, network);
   if (cachedResponse) {
     return res.status(200).json(JSON.parse(cachedResponse));
   }
 
-  const addresses = await Promise.all(
-    tempAddresses.map(async tempAddress => {
-      return tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
-    })
-  );
-
   const pollVoteHistories = await Promise.all(
-    addresses
-      .filter(a => !!a)
-      .map(async (address: string) => {
-        const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
+    addresses.map(async (address: string) => {
+      const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
 
-        return pollVoteHistory;
-      })
+      return pollVoteHistory;
+    })
   );
 
   const combinedPollVoteHistory = pollVoteHistories.flat();

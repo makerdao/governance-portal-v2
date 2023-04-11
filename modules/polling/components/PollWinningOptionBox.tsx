@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React from 'react';
 import { Poll, PollTally, PollVictoryConditionComparison } from '../types';
 import { Flex } from 'theme-ui';
@@ -25,7 +33,9 @@ export default function PollWinningOptionBox({
   const isFinishedWithNoWinner = !tally.winner && !isActivePoll(poll);
 
   const numberOfLeadingOptions = tally.results.filter(
-    result => result.mkrSupport === tally.results[0].mkrSupport
+    result =>
+      parseUnits(tally.results[0].mkrSupport as string).gt(0) &&
+      result.mkrSupport === tally.results[0].mkrSupport
   ).length;
 
   // Winner will be null if the winning conditions are not met, but we want to display the leading option too
@@ -59,7 +69,8 @@ export default function PollWinningOptionBox({
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {tally.totalMkrActiveParticipation > 0 ? (
+        {parseUnits(tally.totalMkrActiveParticipation as string).gt(0) ||
+        (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) ? (
           <>
             {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
 

@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner, Card } from 'theme-ui';
 import { useEffect, useMemo, useRef } from 'react';
@@ -27,8 +35,6 @@ import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance'
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -73,7 +79,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     votingAccount
   } = useAccount();
   const { network } = useWeb3();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
@@ -218,9 +223,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       ':hover': { color: 'accentBlueEmphasis', borderColor: 'accentBlueEmphasis' },
                       ':hover svg': { color: 'accentBlueEmphasis' }
                     }}
-                    onClick={() => {
-                      trackButtonClick('chiefMigrationForumPostButton');
-                    }}
                   >
                     <Text>
                       Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
@@ -334,7 +336,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   <Button
                     variant="mutedOutline"
                     onClick={() => {
-                      trackButtonClick('showHistoricalExecs');
                       setShowHistorical(true);
                     }}
                   >
@@ -351,7 +352,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       <Button
                         variant="mutedOutline"
                         onClick={() => {
-                          trackButtonClick('hideHistoricalExecs');
                           setShowHistorical(false);
                         }}
                       >
@@ -501,7 +501,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds
     props: {
       proposals,
-      staticPageGenerationTimeout: 120
+      staticPageGenerationTimeout: 180
     }
   };
 };

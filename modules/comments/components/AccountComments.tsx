@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR from 'swr';
 import { Box, Text } from 'theme-ui';
@@ -53,7 +61,13 @@ export default function AccountComments({ address }: { address: string }): React
           {data.comments.map(comment => (
             <Box
               sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
-              key={comment.address.address}
+              key={
+                (comment.comment.commentType === 'executive'
+                  ? comment.comment.spellAddress
+                  : comment.comment.pollId) +
+                '-' +
+                comment.comment.date.toString()
+              }
             >
               <Text as="p" variant="caps" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}

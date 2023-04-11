@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { getMessageFromCode, ERROR_CODES } from 'eth-rpc-errors';
 
 export const TX_NOT_ENOUGH_FUNDS = "Sender doesn't have enough funds to send the transaction";

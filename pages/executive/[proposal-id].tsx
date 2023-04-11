@@ -1,8 +1,16 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge, Label, Checkbox } from 'theme-ui';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -14,8 +22,6 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -40,6 +46,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
 
 type Props = {
   proposal: Proposal;
@@ -74,7 +81,6 @@ const ProposalTimingBanner = ({
 };
 
 const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
   const { account } = useAccount();
@@ -101,6 +107,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
+  const [showSmallVoters, setShowSmallVoters] = useState(false);
   const close = () => setVoting(false);
 
   const hasVotedFor =
@@ -108,6 +115,10 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
     !!votedProposals.find(
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
+
+  const handleSmallVotersChecked = () => {
+    setShowSmallVoters(!showSmallVoters);
+  };
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -138,7 +149,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
           <Button
             variant="primaryLarge"
             onClick={() => {
-              trackButtonClick('openPollVoteModal');
               setVoting(true);
             }}
             sx={{ width: '100%' }}
@@ -162,23 +172,45 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {proposal.title ? proposal.title : proposal.address}
             </Heading>
-            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', mx: [3, 4] }}>
-              {isHat && proposal.address !== ZERO_ADDRESS ? (
-                // TODO this should be made the primary badge component in our theme
-                <Box
+            <Flex>
+              <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', ml: [3, 4] }}>
+                {isHat && proposal.address !== ZERO_ADDRESS ? (
+                  // TODO this should be made the primary badge component in our theme
+                  <Box
+                    sx={{
+                      borderRadius: '12px',
+                      padding: '4px 8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'tagColorThree',
+                      backgroundColor: 'tagColorThreeBg',
+                      my: 2
+                    }}
+                  >
+                    <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
+                  </Box>
+                ) : null}
+              </Flex>
+
+              {hasVotedFor && (
+                <Badge
+                  variant="primary"
                   sx={{
-                    borderRadius: '12px',
-                    padding: '4px 8px',
-                    display: 'flex',
+                    color: 'primary',
+                    borderColor: 'primary',
+                    textTransform: 'uppercase',
+                    display: 'inline-flex',
                     alignItems: 'center',
-                    color: 'tagColorThree',
-                    backgroundColor: 'tagColorThreeBg',
-                    my: 2
+                    m: 1,
+                    border: 'none'
                   }}
                 >
-                  <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
-                </Box>
-              ) : null}
+                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                    <Icon name="verified" size={3} />
+                  </Flex>
+                  Your Vote
+                </Badge>
+              )}
             </Flex>
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
@@ -251,10 +283,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
         </Box>
         <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
-            <Box>
-              <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
-                Your Vote
-              </Heading>
+            <Box sx={{ mt: 4, pt: 3 }}>
               <Card variant="compact">
                 <Text sx={{ fontSize: 5 }}>
                   {proposal.title ? proposal.title : cutMiddle(proposal.address)}
@@ -262,7 +291,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 <Button
                   variant="primaryLarge"
                   onClick={() => {
-                    trackButtonClick('openPollVoteModal');
                     setVoting(true);
                   }}
                   sx={{ width: '100%', mt: 3 }}
@@ -274,7 +302,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             </Box>
           )}
           <Box>
-            <Flex sx={{ mt: 3, mb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
               <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
                 Supporters
               </Heading>
@@ -284,6 +312,22 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 </Box>
                 <Text sx={{ fontSize: 1, color: 'textSecondary' }}>Updated every five minutes</Text>
               </Flex>
+            </Flex>
+            <Flex sx={{ justifyContent: 'right' }}>
+              <Label
+                variant="thinLabel"
+                sx={{
+                  fontSize: 1,
+                  alignItems: 'center',
+                  justifyContent: 'right',
+                  py: [0, 1],
+                  color: 'textSecondary',
+                  cursor: 'pointer'
+                }}
+              >
+                <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
+                <Text variant="caps">Show &lt;0.05 MKR voters</Text>
+              </Label>
             </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>
@@ -327,45 +371,47 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
 
                   {supporters &&
                     supporters.length > 0 &&
-                    supporters.map(supporter => (
-                      <Flex
-                        sx={{
-                          justifyContent: 'space-between',
-                          ':not(:last-child)': {
-                            mb: 2
-                          }
-                        }}
-                        key={supporter.address}
-                      >
-                        <Box>
-                          <InternalLink
-                            href={`/address/${supporter.address}`}
-                            title="Profile details"
-                            styles={{ mt: 'auto' }}
-                          >
-                            <Text
-                              sx={{
-                                color: 'accentBlue',
-                                fontSize: 2,
-                                ':hover': { color: 'accentBlueEmphasis' }
-                              }}
+                    supporters
+                      .filter(supporter => showSmallVoters || supporter.deposits >= 0.05)
+                      .map(supporter => (
+                        <Flex
+                          sx={{
+                            justifyContent: 'space-between',
+                            ':not(:last-child)': {
+                              mb: 2
+                            }
+                          }}
+                          key={supporter.address}
+                        >
+                          <Box>
+                            <InternalLink
+                              href={`/address/${supporter.address}`}
+                              title="Profile details"
+                              styles={{ mt: 'auto' }}
                             >
-                              <AddressIconBox
-                                address={supporter.address}
-                                width={30}
-                                limitTextLength={bpi === 0 ? 12 : 14}
-                              />
-                            </Text>
-                          </InternalLink>
-                        </Box>
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 2,
+                                  ':hover': { color: 'accentBlueEmphasis' }
+                                }}
+                              >
+                                <AddressIconBox
+                                  address={supporter.address}
+                                  width={30}
+                                  limitTextLength={bpi === 0 ? 12 : 14}
+                                />
+                              </Text>
+                            </InternalLink>
+                          </Box>
 
-                        <Box sx={{ textAlign: 'right' }}>
-                          <Text color="onSecondary">
-                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
-                          </Text>
-                        </Box>
-                      </Flex>
-                    ))}
+                          <Box sx={{ textAlign: 'right' }}>
+                            <Text color="onSecondary">
+                              {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
+                            </Text>
+                          </Box>
+                        </Flex>
+                      ))}
                 </Box>
               </Card>
             </ErrorBoundary>
@@ -417,16 +463,18 @@ export default function ProposalPage({
 
   if (error || (isDefaultNetwork(network) && !prefetchedProposal?.key)) {
     return (
-      <ErrorPage
-        statusCode={404}
-        title="Executive proposal either does not exist, or could not be fetched at this time"
-      />
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+        <ErrorPage
+          statusCode={404}
+          title="Executive proposal either does not exist, or could not be fetched at this time"
+        />
+      </PrimaryLayout>
     );
   }
 
   if (!isDefaultNetwork(network) && !_proposal)
     return (
-      <PrimaryLayout>
+      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
         <p>Loading…</p>
       </PrimaryLayout>
     );
@@ -468,9 +516,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
-  const MAX = 5;
+  const MAX_PROPOSALS = 5;
 
-  const paths = proposals.slice(0, MAX).map(proposal => `/executive/${proposal.key}`);
+  const paths = proposals
+    .slice(0, MAX_PROPOSALS)
+    .map(proposal => `/executive/${trimProposalKey(proposal.key)}`);
 
   return {
     paths,

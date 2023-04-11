@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { DssSpell } from '.dethcrypto/eth-sdk-client/esm/types';
 import { SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from './chain';

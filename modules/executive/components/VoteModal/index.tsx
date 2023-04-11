@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Button, Flex, Close, Text } from 'theme-ui';
 import shallow from 'zustand/shallow';
@@ -30,7 +38,7 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
 
   return (
     <DialogOverlay isOpen={true} onDismiss={close}>
-      <DialogContent aria-label="Executive Vote">
+      <DialogContent aria-label="Executive Vote" widthDesktop="640px">
         {step === 'confirm' && (
           <DefaultVoteModalView
             proposal={proposal}

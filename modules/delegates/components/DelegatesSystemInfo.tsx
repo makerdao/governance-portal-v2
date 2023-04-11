@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import BigNumber from 'lib/bigNumberJs';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
@@ -29,9 +37,9 @@ export function DelegatesSystemInfo({
       value: stats.total
     },
     {
-      title: 'Recognized delegates',
-      id: 'total-recognized-delegates-system-info',
-      value: stats.recognized
+      title: 'Constitutional delegates',
+      id: 'total-constitutional-delegates-system-info',
+      value: stats.constitutional
     },
     {
       title: 'Shadow delegates',

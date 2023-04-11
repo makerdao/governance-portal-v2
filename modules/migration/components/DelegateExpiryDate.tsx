@@ -1,8 +1,16 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Text, Flex, Heading, Link as ThemeUILink, Button } from 'theme-ui';
 import React, { useState } from 'react';
 import LocalIcon from 'modules/app/components/Icon';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
-import { Delegate } from 'modules/delegates/types';
+import { Delegate, DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -12,7 +20,7 @@ export default function DelegateExpiryDate({
   delegate,
   reverse
 }: {
-  delegate: Delegate;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
   reverse?: boolean;
 }): React.ReactElement {
   const [modalOpen, setModalOpen] = useState(false);
@@ -85,7 +93,9 @@ export default function DelegateExpiryDate({
                 <Text sx={{ mb: 3, color: 'onSecondary', textAlign: 'center' }}>
                   Maker delegate contracts expire after 1 year. Please{' '}
                   <InternalLink href="/migration/delegator" title="Migrate your MKR">
-                    <span sx={{ color: 'accentBlue' }}>migrate your MKR</span>
+                    <Text as={'span'} sx={{ color: 'accentBlue' }}>
+                      migrate your MKR
+                    </Text>
                   </InternalLink>{' '}
                   by undelegating from the expiring/expired contracts and redelegating to the new contracts.
                 </Text>

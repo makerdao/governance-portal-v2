@@ -1,8 +1,22 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import TagComponent from 'modules/app/components/Tag';
-import { Tag } from 'modules/app/types/tag';
+import { Tag, TagCount } from 'modules/app/types/tag';
 import { Box, Flex } from 'theme-ui';
 
-export default function DelegateTags({ tags }: { tags: Tag[] }): React.ReactElement {
+export default function DelegateTags({
+  delegateTags,
+  allTags
+}: {
+  delegateTags: string[] | Tag[];
+  allTags?: TagCount[];
+}): React.ReactElement {
   const tagColors = {
     academia: {
       color: 'tagColorOne',
@@ -88,21 +102,31 @@ export default function DelegateTags({ tags }: { tags: Tag[] }): React.ReactElem
 
   return (
     <Flex sx={{ flexWrap: 'wrap' }}>
-      {tags.map(tag => (
-        <Box
-          key={tag.id}
-          sx={{
-            m: 2,
-            cursor: 'help'
-          }}
-        >
-          <TagComponent
-            tag={tag}
-            color={tagColors[tag.id]?.color}
-            backgroundColor={tagColors[tag.id]?.backgroundColor}
-          />
-        </Box>
-      ))}
+      {delegateTags.map(tag => {
+        const foundTag = (!allTags ? tag : allTags.find(t => t.id === tag.id || t.id === tag)) as
+          | Tag
+          | TagCount;
+
+        if (!foundTag) {
+          return <></>;
+        }
+
+        return (
+          <Box
+            key={foundTag.id}
+            sx={{
+              m: 2,
+              cursor: 'help'
+            }}
+          >
+            <TagComponent
+              tag={foundTag}
+              color={tagColors[foundTag.id]?.color}
+              backgroundColor={tagColors[foundTag.id]?.backgroundColor}
+            />
+          </Box>
+        );
+      })}
     </Flex>
   );
 }

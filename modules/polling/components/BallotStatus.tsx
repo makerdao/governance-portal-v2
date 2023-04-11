@@ -1,15 +1,24 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useRouter } from 'next/router';
 import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 const BallotStatus = (props: any): JSX.Element => {
   const { transaction, ballotCount } = useContext(BallotContext);
 
   const router = useRouter();
-
+  const bpi = useBreakpointIndex();
   return (
     <Button
       variant={
@@ -35,17 +44,19 @@ const BallotStatus = (props: any): JSX.Element => {
         ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined' ? false : true
       }
     >
-      <Icon
-        name="ballot"
-        size={3}
-        sx={{
-          color:
-            ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
-              ? 'onPrimary'
-              : 'textSecondary',
-          mr: 2
-        }}
-      />
+      {bpi > 1 && (
+        <Icon
+          name="ballot"
+          size={3}
+          sx={{
+            color:
+              ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+                ? 'onPrimary'
+                : 'textSecondary',
+            mr: 2
+          }}
+        />
+      )}
       <StatusText {...{ transaction }} ballotCount={transaction?.status === 'pending' ? 0 : ballotCount} />
     </Button>
   );

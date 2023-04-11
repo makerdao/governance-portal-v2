@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Flex, Text, Button } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { ExternalLink } from 'modules/app/components/ExternalLink';

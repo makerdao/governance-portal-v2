@@ -1,13 +1,19 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { Box, Button, Card, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
-import { useDelegates } from 'modules/delegates/hooks/useDelegates';
 import { useMemo } from 'react';
-import { Delegate } from 'modules/delegates/types';
-import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
+import { useAddressDelegations } from 'modules/delegates/hooks/useAddressDelegations';
 import { DelegateExpirationOverviewCard } from 'modules/migration/components/DelegateExpirationOverviewCard';
 import LocalIcon from 'modules/app/components/Icon';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -19,18 +25,16 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account, network } = useWeb3();
 
-  const { data: delegatesData } = useDelegates();
-
-  const delegatedTo = useDelegatedTo(account, network);
+  const addressDelegations = useAddressDelegations(account, network);
 
   // List of delegates that are about to expiry, the user has to undelegate from them
-  const delegatesThatAreAboutToExpiryWithMKRDelegated: Delegate[] = useMemo(() => {
-    if (!delegatesData || !delegatedTo.data) {
+  const delegatesThatAreAboutToExpiryWithMKRDelegated = useMemo(() => {
+    if (!addressDelegations) {
       return [];
     }
 
-    return delegatesData.delegates.filter(delegate => {
-      const delegatedToDelegate = delegatedTo.data?.delegatedTo.find(
+    return addressDelegations.delegates.filter(delegate => {
+      const delegatedToDelegate = addressDelegations.delegatedTo.find(
         i => i.address === delegate.voteDelegateAddress
       );
 
@@ -39,16 +43,16 @@ export default function DelegateMigrationPage(): React.ReactElement {
       }
       return delegate.expired || delegate.isAboutToExpire;
     });
-  }, [delegatesData, delegatedTo.data]);
+  }, [addressDelegations]);
 
   // Historical list of delegates that the user interacted with that are about to expiry (no need to have current MKR delegated to them)
-  const delegatesThatAreAboutToExpiry: Delegate[] = useMemo(() => {
-    if (!delegatesData || !delegatedTo.data) {
+  const delegatesThatAreAboutToExpiry = useMemo(() => {
+    if (!addressDelegations) {
       return [];
     }
 
-    return delegatesData.delegates.filter(delegate => {
-      const delegatedToDelegate = delegatedTo.data?.delegatedTo.find(
+    return addressDelegations.delegates.filter(delegate => {
+      const delegatedToDelegate = addressDelegations.delegatedTo.find(
         i => i.address === delegate.voteDelegateAddress
       );
 
@@ -57,25 +61,25 @@ export default function DelegateMigrationPage(): React.ReactElement {
       }
       return delegate.expired || delegate.isAboutToExpire;
     });
-  }, [delegatesData, delegatedTo.data]);
+  }, [addressDelegations]);
 
   // List of new delegates that can be renewed, the user has to delegate to them
-  const delegatesThatAreNotExpired: Delegate[] = useMemo(() => {
-    if (!delegatesData) {
+  const delegatesThatAreNotExpired = useMemo(() => {
+    if (!addressDelegations) {
       return [];
     }
 
-    return delegatesData.delegates.filter(delegate => {
+    return addressDelegations.delegates.filter(delegate => {
       const isPreviousDelegate = delegatesThatAreAboutToExpiry.find(
         i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
       );
       return !delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate;
     });
-  }, [delegatesData, delegatesThatAreAboutToExpiry, delegatedTo.data]);
+  }, [addressDelegations, delegatesThatAreAboutToExpiry]);
 
   // UI loading states
   const { isLoading, isEmpty } = useMemo(() => {
-    const isLoading = !delegatesData || !delegatedTo.data;
+    const isLoading = !addressDelegations;
     const isEmpty =
       delegatesThatAreAboutToExpiryWithMKRDelegated.length === 0 && delegatesThatAreNotExpired.length === 0;
 
@@ -83,12 +87,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
       isLoading,
       isEmpty
     };
-  }, [
-    delegatesData,
-    delegatedTo.data,
-    delegatesThatAreAboutToExpiryWithMKRDelegated,
-    delegatesThatAreNotExpired
-  ]);
+  }, [addressDelegations, delegatesThatAreAboutToExpiryWithMKRDelegated, delegatesThatAreNotExpired]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -119,7 +118,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
                     href="https://manual.makerdao.com/delegation/delegate-expiration"
                     title="Read more about delegate expiration"
                   >
-                    <span sx={{ color: 'accentBlue' }}>Read more about delegate expiration.</span>
+                    <Text as={'span'} sx={{ color: 'accentBlue' }}>
+                      Read more about delegate expiration.
+                    </Text>
                   </ExternalLink>
                 </Text>
               </Box>

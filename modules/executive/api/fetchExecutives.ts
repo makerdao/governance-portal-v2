@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { fetchGithubGraphQL } from 'lib/github';
@@ -13,6 +21,7 @@ import logger from 'lib/logger';
 import { getExecutiveProposalsCacheKey, githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 import { allGithubExecutives } from 'modules/gql/queries/allGithubExecutives';
+import { trimProposalKey } from '../helpers/trimProposalKey';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cachedProposals = await cacheGet(githubExecutivesCacheKey, network);
@@ -157,7 +166,12 @@ export async function getExecutiveProposal(
 
   const proposals = await getGithubExecutives(currentNetwork);
 
-  const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
+  const proposal = proposals.find(
+    proposal =>
+      trimProposalKey(proposal.key) === proposalId ||
+      proposal.key === proposalId ||
+      proposal.address === proposalId
+  );
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
 

@@ -1,5 +1,12 @@
-import Head from 'next/head';
+/*
 
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
+import Head from 'next/head';
 import { config } from 'lib/config';
 
 export function HeadComponent({
@@ -13,12 +20,10 @@ export function HeadComponent({
   image?: string;
   url?: string;
 }): React.ReactElement {
-  const dev = config.NODE_ENV === 'development';
-
   const defaultDescription =
     'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote.';
   const defaultTitle = 'Governance Portal';
-
+  const dev = config.NODE_ENV === 'development';
   const renderedTitle = title || defaultTitle;
   const renderedDescription = description || defaultDescription;
   return (
@@ -39,14 +44,13 @@ export function HeadComponent({
       <meta
         httpEquiv="Content-Security-Policy"
         content={
-          "default-src 'none';" +
-          'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com;' +
-          "font-src 'self';" +
+          "default-src 'self' https://*.makerdao.com;" +
+          'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com https://vercel.live;' +
+          "font-src 'self' data:;" +
           "connect-src http://localhost:8545/ http://127.0.0.1:8546/ http://127.0.0.1:8545/ http://localhost:3001/ 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +
-          `script-src 'self' https://gc.zgo.at/count.js ${
-            dev ? "'unsafe-eval'" : ''
-          } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
+          "prefetch-src 'self' https://*.makerdao.com;" +
+          `script-src 'self' ${dev ? "'unsafe-eval'" : ''};` +
           "img-src 'self' https: data:"
         }
       />

@@ -1,10 +1,15 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { useState } from 'react';
 import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatValue } from 'lib/string';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -31,7 +36,6 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 const AccountPage = (): React.ReactElement => {
-  const bpi = useBreakpointIndex();
   const { network } = useWeb3();
   const {
     account,
@@ -48,7 +52,6 @@ const AccountPage = (): React.ReactElement => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.ACCOUNT);
 
   const { create, tx, setTxId } = useDelegateCreate();
 
@@ -146,7 +149,6 @@ const AccountPage = (): React.ReactElement => {
                         isOpen={modalOpen}
                         onDismiss={() => {
                           setModalOpen(false);
-                          trackButtonClick('closeCreateDelegateModal');
                         }}
                       >
                         <DialogContent aria-label="Delegate modal" widthDesktop="580px">
@@ -155,7 +157,6 @@ const AccountPage = (): React.ReactElement => {
                             setTxId={setTxId}
                             onDismiss={() => {
                               setModalOpen(false);
-                              trackButtonClick('closeCreateDelegateModal');
                             }}
                           />
                         </DialogContent>
@@ -174,7 +175,6 @@ const AccountPage = (): React.ReactElement => {
                         checked={warningRead}
                         onChange={() => {
                           setWarningRead(!warningRead);
-                          trackButtonClick('setWarningRead');
                         }}
                       />
                       I understand
@@ -182,10 +182,12 @@ const AccountPage = (): React.ReactElement => {
                     <Button
                       disabled={!warningRead}
                       onClick={() => {
-                        trackButtonClick('createDelegate');
                         create({
                           initialized: () => setModalOpen(true),
-                          mined: () => mutateAccount && mutateAccount()
+                          mined: () => {
+                            mutateAccount && mutateAccount();
+                            setModalOpen(false);
+                          }
                         });
                       }}
                       sx={{ mt: 3, mb: 1 }}
@@ -230,6 +232,7 @@ const AccountPage = (): React.ReactElement => {
               fields={[
                 'polling contract v2',
                 'polling contract v1',
+                'arbitrum polling contract',
                 'savings rate',
                 'total dai',
                 'debt ceiling',
@@ -237,7 +240,6 @@ const AccountPage = (): React.ReactElement => {
               ]}
             />
           </ErrorBoundary>
-          <ResourceBox type={'delegates'} />
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>

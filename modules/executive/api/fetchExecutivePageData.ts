@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { fetchJson } from 'lib/fetchJson';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { Proposal } from 'modules/executive/types';

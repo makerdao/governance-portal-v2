@@ -1,3 +1,11 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { ethers } from 'ethers';
 import logger from 'lib/logger';
 import { FIVE_MINUTES_IN_MS } from 'modules/app/constants/time';
@@ -20,11 +28,7 @@ export async function getCommentTransactionStatus(
 
   try {
     const transaction = txHash ? await provider.getTransaction(txHash as string) : null;
-
-    const isValid =
-      transaction &&
-      ethers.utils.getAddress(transaction.from).toLowerCase() ===
-        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
+    const isValid = !!transaction;
 
     const completed = transaction && transaction.confirmations > 10;
     const response = { completed: !!completed, isValid: !!isValid };

@@ -1,14 +1,20 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { verifyCommentParameters } from 'modules/comments/api/verifyCommentParameters';
 import { insertPollComments } from 'modules/comments/api/insertPollingComments';
-import logger from 'lib/logger';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getGaslessNetwork } from 'modules/web3/helpers/chain';
 import { ApiError } from 'modules/app/api/ApiError';
-import { API_ERROR_CODES } from 'modules/app/constants/apiErrors';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
