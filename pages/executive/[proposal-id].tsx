@@ -244,15 +244,15 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 ]}
                 tabRoutes={['Proposal Detail', 'Spell Details', 'Comments']}
                 tabPanels={[
-                  <div
+                  <Box
                     key={'about'}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
-                  <div key={'spell'} sx={{ p: [3, 4] }}>
+                  <Box key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} spellDiffs={spellDiffs} />
-                  </div>,
-                  <div key={'comments'} sx={{ p: [3, 4] }}>
+                  </Box>,
+                  <Box key={'comments'} sx={{ p: [3, 4] }}>
                     {comments ? (
                       <ExecutiveComments comments={comments} />
                     ) : (
@@ -260,7 +260,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                         {commentsError ? 'Unable to fetch comments' : <Spinner size={20} ml={2} />}
                       </Flex>
                     )}
-                  </div>
+                  </Box>
                 ]}
                 banner={
                   <ErrorBoundary componentName="Executive Timing Banner">
@@ -273,9 +273,9 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={['Spell Details']}
                 tabPanels={[
-                  <div key={'spell'} sx={{ p: [3, 4] }}>
+                  <Box key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
-                  </div>
+                  </Box>
                 ]}
               />
             )}
