@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState, useEffect } from 'react';
-import { Flex, Divider, ThemeUIStyleObject } from 'theme-ui';
+import { Flex, Divider, ThemeUIStyleObject, Text } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import Router from 'next/router';
 import { slugify } from 'lib/utils';
@@ -65,7 +65,9 @@ const TabbedLayout = ({
                 ...getTabStyles({ isActive: activeTab === tabRoute, isFirst: index === 0 })
               }}
             >
-              <ErrorBoundary componentName={tabRoute}>{tabTitles[index]}</ErrorBoundary>
+              <ErrorBoundary componentName={tabRoute}>
+                <Text>{tabTitles[index]}</Text>
+              </ErrorBoundary>
             </Tab>
           ))}
         </TabList>

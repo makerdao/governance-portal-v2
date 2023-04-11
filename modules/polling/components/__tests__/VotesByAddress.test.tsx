@@ -110,7 +110,7 @@ describe('Polling votes by address', () => {
       tally: updatedTally
     };
 
-    render(<VotesByAddress {...updatedProps as any} />);
+    render(<VotesByAddress {...(updatedProps as any)} />);
 
     // look for columns
     await screen.findByText(/Address/);

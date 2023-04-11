@@ -14,8 +14,6 @@ import { formatValue } from 'lib/string';
 import { paddedBytes32ToAddress } from 'lib/utils';
 
 export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null> {
-
-
   const filter = {
     fromBlock: DEPLOYMENT_BLOCK[chief.address],
     toBlock: 'latest',

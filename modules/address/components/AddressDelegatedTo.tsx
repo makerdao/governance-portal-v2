@@ -43,7 +43,8 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
     : `This contract will expire ${formattedDate}`;
 
   return (
-    <Box as="tr"
+    <Box
+      as="tr"
       sx={{
         color: delegate.isExpired ? 'warning' : delegate.isAboutToExpire ? 'voterYellow' : 'onSecondary'
       }}

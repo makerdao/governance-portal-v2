@@ -145,7 +145,10 @@ export default function RankedChoiceSelect({
             cursor: 'pointer'
           }}
         >
-          <Text as="span" sx={{ mr: 1 }}>+</Text> Add another choice
+          <Text as="span" sx={{ mr: 1 }}>
+            +
+          </Text>{' '}
+          Add another choice
         </Text>
       )}
     </Box>

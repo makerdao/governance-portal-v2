@@ -78,7 +78,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                           whiteSpace: 'nowrap',
                           maxWidth: '205px',
                           textOverflow: 'ellipsis',
-                          overflow: 'hidden',
+                          overflow: 'hidden'
                         }}
                       >
                         <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
