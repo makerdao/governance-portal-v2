@@ -12354,7 +12354,7 @@ ramda-adjunct@=3.4.0:
   resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.4.0.tgz#3b07f4d879406b8cbb5415b165bea48d2fe0ab06"
   integrity sha512-qKRgqwZzJUZmPJfGK8/uLVxQXkiftKhW6FW9NUCUlQrzsBUZBvFAZUxwH7nTRwDMg+ChRU69rVVuS/4EUgtuIg==
 
-ramda@=0.28.0, ramda@^0.28.0:
+ramda@=0.28.0:
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.28.0.tgz#acd785690100337e8b063cab3470019be427cc97"
   integrity sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==

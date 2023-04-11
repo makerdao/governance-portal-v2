@@ -77,7 +77,6 @@
     "next": "^13.3.0",
     "next-swagger-doc": "^0.1.10",
     "nextjs-progressbar": "^0.0.13",
-    "ramda": "^0.28.0",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.2",
     "react-dom": "^18.2.0",

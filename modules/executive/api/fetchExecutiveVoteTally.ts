@@ -9,14 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Chief } from '.dethcrypto/eth-sdk-client/esm/types';
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
 import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
-import { uniq, nth, memoizeWith, identity } from 'ramda';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 import { formatValue } from 'lib/string';
 import { paddedBytes32ToAddress } from 'lib/utils';
 
 export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null> {
-  // helper for when we might call getSlateAddresses with the same slate several times
-  const memoizedGetSlateAddresses = memoizeWith(identity, slate => getSlateAddresses(chief, slate));
+
 
   const filter = {
     fromBlock: DEPLOYMENT_BLOCK[chief.address],
@@ -26,7 +24,15 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
     topics: ['0xdd46706400000000000000000000000000000000000000000000000000000000']
   };
   const locks = await chief.provider.getLogs(filter);
-  const voters = uniq(locks.map(logObj => nth(1, logObj.topics)).map(paddedBytes32ToAddress));
+  const voters: string[] = [];
+
+  // get unique voters
+  locks.forEach(lock => {
+    const voter = paddedBytes32ToAddress(lock.topics[1]);
+    if (!voters.includes(voter)) {
+      voters.push(voter);
+    }
+  });
 
   const withDeposits = await Promise.all(
     voters.map(voter =>
@@ -48,7 +54,7 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
 
   const withVotes = await Promise.all(
     withSlates.map(withSlate =>
-      memoizedGetSlateAddresses(withSlate.slate).then(addresses => ({
+      getSlateAddresses(chief, withSlate.slate).then(addresses => ({
         ...withSlate,
         votes: addresses
       }))
