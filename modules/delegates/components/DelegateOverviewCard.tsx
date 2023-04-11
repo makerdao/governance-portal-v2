@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, memo, SetStateAction, useState } from 'react';
 import { Card, Box, Flex, Button, Text, Heading } from 'theme-ui';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatValue } from 'lib/string';
@@ -72,274 +72,277 @@ const DelegateVotingStatsModal = () => {
   );
 };
 
-export function DelegateOverviewCard({
-  delegate,
-  setStateDelegates,
-  onVisitDelegate
-}: PropTypes): React.ReactElement {
-  const { account, voteDelegateContractAddress } = useAccount();
+export const DelegateOverviewCard = memo(
+  function DelegateOverviewCard({
+    delegate,
+    setStateDelegates,
+    onVisitDelegate
+  }: PropTypes): React.ReactElement {
+    const { account, voteDelegateContractAddress } = useAccount();
 
-  const [showDelegateModal, setShowDelegateModal] = useState(false);
-  const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
+    const [showDelegateModal, setShowDelegateModal] = useState(false);
+    const [showUndelegateModal, setShowUndelegateModal] = useState(false);
+    const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
 
-  const handleInfoClick = () => {
-    setShowCoreUnitModal(!showCoreUnitModal);
-  };
+    const handleInfoClick = () => {
+      setShowCoreUnitModal(!showCoreUnitModal);
+    };
 
-  const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
-    account,
-    delegate.voteDelegateAddress
-  );
-  const hasMkrDelegated = account && mkrDelegated?.gt(0);
+    const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
+      account,
+      delegate.voteDelegateAddress
+    );
+    const hasMkrDelegated = account && mkrDelegated?.gt(0);
 
-  const mutateDelegateTotalMkr = (amount: BigNumber) => {
-    setStateDelegates(prevDelegates => {
-      const mutatedDelegateArray = prevDelegates.map(d => {
-        if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
-          return {
-            ...d,
-            mkrDelegated: formatEther(parseEther(d.mkrDelegated).add(amount))
-          };
-        }
-        return d;
+    const mutateDelegateTotalMkr = (amount: BigNumber) => {
+      setStateDelegates(prevDelegates => {
+        const mutatedDelegateArray = prevDelegates.map(d => {
+          if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
+            return {
+              ...d,
+              mkrDelegated: formatEther(parseEther(d.mkrDelegated).add(amount))
+            };
+          }
+          return d;
+        });
+
+        return mutatedDelegateArray;
       });
+    };
 
-      return mutatedDelegateArray;
-    });
-  };
+    const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
-  const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
-
-  return (
-    <Card
-      sx={{
-        p: 0
-      }}
-      data-testid="delegate-card"
-    >
-      <Box px={[3, 4]} pb={3} pt={3}>
-        <Flex
-          sx={{
-            flexDirection: ['column', 'row'],
-            mb: 2,
-            justifyContent: 'space-between',
-            alignItems: 'flex-start'
-          }}
-        >
+    return (
+      <Card
+        sx={{
+          p: 0
+        }}
+        data-testid="delegate-card"
+      >
+        <Box px={[3, 4]} pb={3} pt={3}>
           <Flex
             sx={{
               flexDirection: ['column', 'row'],
-              justifyContent: 'flex-start'
+              mb: 2,
+              justifyContent: 'space-between',
+              alignItems: 'flex-start'
             }}
           >
-            <LastVoted
-              expired={delegate.expired}
-              date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
-              left
-            />
-          </Flex>
-          <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
-            <DelegateExpiryDate delegate={delegate} />
-            {delegate.cuMember && (
-              <Flex sx={{ mt: 1 }}>
-                <CoreUnitButton handleInfoClick={handleInfoClick} />
-              </Flex>
-            )}
-          </Flex>
-        </Flex>
-
-        <Flex
-          sx={{
-            flexDirection: 'column'
-          }}
-        >
-          <Flex
-            sx={{
-              flexDirection: ['column', 'row'],
-              alignItems: ['flex-start', 'center'],
-              justifyContent: 'space-between'
-            }}
-          >
-            <Box sx={{ mr: 2, my: 2 }}>
-              <DelegateAvatarName delegate={delegate} onVisitDelegate={onVisitDelegate} />
-            </Box>
-
             <Flex
               sx={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                ml: 2,
-                my: 2,
-                justifyContent: 'right'
+                flexDirection: ['column', 'row'],
+                justifyContent: 'flex-start'
               }}
             >
-              {hasMkrDelegated && (
-                <Button
-                  variant="primaryOutline"
-                  disabled={!hasMkrDelegated}
-                  onClick={() => {
-                    setShowUndelegateModal(true);
-                  }}
-                  sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
-                  data-testid="button-undelegate"
-                >
-                  Undelegate
-                </Button>
+              <LastVoted
+                expired={delegate.expired}
+                date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
+                left
+              />
+            </Flex>
+            <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
+              <DelegateExpiryDate delegate={delegate} />
+              {delegate.cuMember && (
+                <Flex sx={{ mt: 1 }}>
+                  <CoreUnitButton handleInfoClick={handleInfoClick} />
+                </Flex>
               )}
-              <Button
-                variant="primaryLarge"
-                data-testid="button-delegate"
-                disabled={!account || !!delegate.next || delegate.expired}
-                onClick={() => {
-                  setShowDelegateModal(true);
-                }}
+            </Flex>
+          </Flex>
+
+          <Flex
+            sx={{
+              flexDirection: 'column'
+            }}
+          >
+            <Flex
+              sx={{
+                flexDirection: ['column', 'row'],
+                alignItems: ['flex-start', 'center'],
+                justifyContent: 'space-between'
+              }}
+            >
+              <Box sx={{ mr: 2, my: 2 }}>
+                <DelegateAvatarName delegate={delegate} onVisitDelegate={onVisitDelegate} />
+              </Box>
+
+              <Flex
                 sx={{
-                  width: '135px',
-                  maxWidth: '135px',
-                  height: '45px',
-                  ml: hasMkrDelegated ? 3 : 0
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  ml: 2,
+                  my: 2,
+                  justifyContent: 'right'
                 }}
               >
-                Delegate MKR
-              </Button>
-            </Flex>
-          </Flex>
-
-          <Flex sx={{ mt: 3, flexDirection: 'column' }}>
-            <Flex
-              sx={{
-                flexDirection: 'row',
-                flexWrap: 'wrap'
-              }}
-            >
-              <Box sx={{ mr: 3, mb: 1 }}>
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Icon name="participation" />
-                  <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
-                    {delegate.combinedParticipation === 'No Data'
-                      ? 'No Participation Data'
-                      : delegate.combinedParticipation
-                      ? delegate.combinedParticipation + ' Participation'
-                      : 'Untracked Participation'}
-                  </Text>
-                </Flex>
-              </Box>
-              <Box>
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Icon name="comment" />
-                  <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
-                    {delegate.communication === 'No Data'
-                      ? 'No Communication Data'
-                      : delegate.communication
-                      ? delegate.communication + ' Communication'
-                      : 'Untracked Communication'}
-                  </Text>
-                </Flex>
-              </Box>
-              <Box>
-                <DelegateVotingStatsModal />
-              </Box>
-            </Flex>
-            <Flex
-              sx={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap-reverse'
-              }}
-            >
-              <Flex sx={{ height: '100%' }}>
-                <InternalLink
-                  href={`/address/${delegate.voteDelegateAddress}`}
-                  title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
-                  styles={{ mt: 'auto' }}
-                >
+                {hasMkrDelegated && (
                   <Button
-                    variant="outline"
-                    sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
-                    onClick={() => onVisitDelegate()}
+                    variant="primaryOutline"
+                    disabled={!hasMkrDelegated}
+                    onClick={() => {
+                      setShowUndelegateModal(true);
+                    }}
+                    sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
+                    data-testid="button-undelegate"
                   >
-                    {`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                    Undelegate
                   </Button>
-                </InternalLink>
+                )}
+                <Button
+                  variant="primaryLarge"
+                  data-testid="button-delegate"
+                  disabled={!account || !!delegate.next || delegate.expired}
+                  onClick={() => {
+                    setShowDelegateModal(true);
+                  }}
+                  sx={{
+                    width: '135px',
+                    maxWidth: '135px',
+                    height: '45px',
+                    ml: hasMkrDelegated ? 3 : 0
+                  }}
+                >
+                  Delegate MKR
+                </Button>
               </Flex>
-              <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
-                {account && (
-                  <Box>
-                    {mkrDelegated ? (
+            </Flex>
+
+            <Flex sx={{ mt: 3, flexDirection: 'column' }}>
+              <Flex
+                sx={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <Box sx={{ mr: 3, mb: 1 }}>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Icon name="participation" />
+                    <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
+                      {delegate.combinedParticipation === 'No Data'
+                        ? 'No Participation Data'
+                        : delegate.combinedParticipation
+                        ? delegate.combinedParticipation + ' Participation'
+                        : 'Untracked Participation'}
+                    </Text>
+                  </Flex>
+                </Box>
+                <Box>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Icon name="comment" />
+                    <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
+                      {delegate.communication === 'No Data'
+                        ? 'No Communication Data'
+                        : delegate.communication
+                        ? delegate.communication + ' Communication'
+                        : 'Untracked Communication'}
+                    </Text>
+                  </Flex>
+                </Box>
+                <Box>
+                  <DelegateVotingStatsModal />
+                </Box>
+              </Flex>
+              <Flex
+                sx={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap-reverse'
+                }}
+              >
+                <Flex sx={{ height: '100%' }}>
+                  <InternalLink
+                    href={`/address/${delegate.voteDelegateAddress}`}
+                    title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                    styles={{ mt: 'auto' }}
+                  >
+                    <Button
+                      variant="outline"
+                      sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
+                      onClick={() => onVisitDelegate()}
+                    >
+                      {`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                    </Button>
+                  </InternalLink>
+                </Flex>
+                <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
+                  {account && (
+                    <Box>
+                      {mkrDelegated ? (
+                        <Text
+                          as="p"
+                          variant="microHeading"
+                          sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                          data-testid="mkr-delegated-by-you"
+                        >
+                          {formatValue(mkrDelegated)}
+                        </Text>
+                      ) : (
+                        <SkeletonThemed />
+                      )}
                       <Text
                         as="p"
-                        variant="microHeading"
-                        sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                        data-testid="mkr-delegated-by-you"
+                        variant="secondary"
+                        color="onSecondary"
+                        sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
                       >
-                        {formatValue(mkrDelegated)}
+                        MKR delegated by you
                       </Text>
-                    ) : (
-                      <SkeletonThemed />
-                    )}
+                    </Box>
+                  )}
+                  <Box sx={{ ml: account ? 4 : 0 }}>
+                    <Text
+                      as="p"
+                      variant="microHeading"
+                      sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                      data-testid="total-mkr-delegated"
+                    >
+                      {formatValue(parseEther(delegate.mkrDelegated))}
+                    </Text>
                     <Text
                       as="p"
                       variant="secondary"
                       color="onSecondary"
                       sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
                     >
-                      MKR delegated by you
+                      Total MKR delegated
                     </Text>
                   </Box>
-                )}
-                <Box sx={{ ml: account ? 4 : 0 }}>
-                  <Text
-                    as="p"
-                    variant="microHeading"
-                    sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                    data-testid="total-mkr-delegated"
-                  >
-                    {formatValue(parseEther(delegate.mkrDelegated))}
-                  </Text>
-                  <Text
-                    as="p"
-                    variant="secondary"
-                    color="onSecondary"
-                    sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
-                  >
-                    Total MKR delegated
-                  </Text>
-                </Box>
+                </Flex>
               </Flex>
             </Flex>
           </Flex>
-        </Flex>
-      </Box>
-      <CurrentlySupportingExecutive
-        proposalsSupported={delegate.proposalsSupported}
-        execSupported={delegate.execSupported}
-      />
-
-      {showDelegateModal && (
-        <DelegateModal
-          delegate={delegate}
-          isOpen={showDelegateModal}
-          onDismiss={() => setShowDelegateModal(false)}
-          mutateTotalStaked={mutateDelegateTotalMkr}
-          mutateMKRDelegated={mutateMKRDelegated}
-          refetchOnDelegation={false}
+        </Box>
+        <CurrentlySupportingExecutive
+          proposalsSupported={delegate.proposalsSupported}
+          execSupported={delegate.execSupported}
         />
-      )}
-      {showUndelegateModal && (
-        <UndelegateModal
-          delegate={delegate}
-          isOpen={showUndelegateModal}
-          onDismiss={() => setShowUndelegateModal(false)}
-          mutateTotalStaked={mutateDelegateTotalMkr}
-          mutateMKRDelegated={mutateMKRDelegated}
-          refetchOnDelegation={false}
-        />
-      )}
 
-      {showCoreUnitModal && (
-        <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
-      )}
-    </Card>
-  );
-}
+        {showDelegateModal && (
+          <DelegateModal
+            delegate={delegate}
+            isOpen={showDelegateModal}
+            onDismiss={() => setShowDelegateModal(false)}
+            mutateTotalStaked={mutateDelegateTotalMkr}
+            mutateMKRDelegated={mutateMKRDelegated}
+            refetchOnDelegation={false}
+          />
+        )}
+        {showUndelegateModal && (
+          <UndelegateModal
+            delegate={delegate}
+            isOpen={showUndelegateModal}
+            onDismiss={() => setShowUndelegateModal(false)}
+            mutateTotalStaked={mutateDelegateTotalMkr}
+            mutateMKRDelegated={mutateMKRDelegated}
+            refetchOnDelegation={false}
+          />
+        )}
+
+        {showCoreUnitModal && (
+          <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
+        )}
+      </Card>
+    );
+  },
+  ({ delegate: prevDelegate }, { delegate: nextDelegate }) => Object.is(prevDelegate, nextDelegate)
+);
