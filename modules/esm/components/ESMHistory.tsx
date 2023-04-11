@@ -74,12 +74,12 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                       }}
                     >
                       <td
-                        css={`
-                          white-space: nowrap;
-                          max-width: 205px;
-                          text-overflow: ellipsis;
-                          overflow: hidden;
-                        `}
+                        style={{
+                          whiteSpace: 'nowrap',
+                          maxWidth: '205px',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                        }}
                       >
                         <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
                           {bpi > 0
@@ -88,9 +88,9 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                         </Text>
                       </td>
                       <td
-                        css={`
-                          white-space: nowrap;
-                        `}
+                        style={{
+                          whiteSpace: 'nowrap'
+                        }}
                       >
                         <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
                           {amount.gte(0.1)
