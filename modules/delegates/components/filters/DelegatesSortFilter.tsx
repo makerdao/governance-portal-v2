@@ -10,13 +10,12 @@ import useDelegatesFiltersStore from '../../stores/delegatesFiltersStore';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DelegateOrderByEnum, OrderDirectionEnum } from 'modules/delegates/delegates.constants';
+import { useMemo } from 'react';
 
 export function DelegatesSortFilter(): JSX.Element {
-  const [sort, setSort, setSortDirection] = useDelegatesFiltersStore(state => [
-    state.sort,
-    state.setSort,
-    state.setSortDirection
-  ]);
+  const [sort, sortDirection, setSort, setSortDirection] = useDelegatesFiltersStore(state => {
+    return [state.sort, state.sortDirection, state.setSort, state.setSortDirection];
+  });
 
   const setSortMethodAndDirection = (sortString: string) => {
     const [sortOption, sortDirectionOption] = sortString.split(',') as [
@@ -30,8 +29,13 @@ export function DelegatesSortFilter(): JSX.Element {
     }
   };
 
+  const calculatedSortValue = useMemo(() => {
+    if (sort === DelegateOrderByEnum.RANDOM) return sort;
+    return sort + ',' + sortDirection;
+  }, [sort, sortDirection]);
+
   return (
-    <ListboxInput onChange={setSortMethodAndDirection} defaultValue={sort}>
+    <ListboxInput onChange={setSortMethodAndDirection} value={calculatedSortValue}>
       <ListboxButton
         sx={{ variant: 'listboxes.default.button', fontWeight: 'semiBold', py: [2] }}
         arrow={<Icon name="chevron_down" size={2} />}

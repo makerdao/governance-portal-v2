@@ -29,6 +29,10 @@ type StoreDelegates = {
   setCvcFilter: (cvc: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
+  resetSort: () => void;
+  resetSortDirection: () => void;
+  fetchOnLoad: boolean;
+  setFetchOnLoad: (fetchOnLoad: boolean) => void;
 };
 
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
@@ -42,7 +46,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
-
+  fetchOnLoad: false,
   setName: (name: string) => {
     set({
       filters: {
@@ -122,6 +126,18 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetSort: () => {
     set({
       sort: DelegateOrderByEnum.RANDOM
+    });
+  },
+
+  resetSortDirection: () => {
+    set({
+      sortDirection: OrderDirectionEnum.DESC
+    });
+  },
+
+  setFetchOnLoad: fetchOnLoad => {
+    set({
+      fetchOnLoad
     });
   }
 }));
