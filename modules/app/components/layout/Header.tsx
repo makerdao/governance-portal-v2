@@ -440,7 +440,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
                   icon="gas"
                   label={
                     <Text>
-                      <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+                      <Text as="span" sx={{ color: 'primary' }}>{gas}</Text> Gwei
                     </Text>
                   }
                 />

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useEffect, useState } from 'react';
-import { Box, Text } from 'theme-ui';
+import { Box, Text, Textarea } from 'theme-ui';
 import {
   findVictoryCondition,
   hasVictoryConditionApproval,
@@ -70,7 +70,7 @@ export function PollMarkdownEditor(): React.ReactElement {
 
   return (
     <Box>
-      <textarea
+      <Textarea
         sx={{ p: 3, width: '100%' }}
         value={markdown}
         placeholder="Poll Markdown"

@@ -50,7 +50,7 @@ const VideoModal = ({
             src={url}
             width="620"
             height="360"
-            sx={{
+            style={{
               width: '100%',
               height: '100%'
             }}
