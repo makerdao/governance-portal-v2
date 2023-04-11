@@ -11,7 +11,7 @@ import { Delegate } from './delegate';
 export type DelegatesAPIStats = {
   total: number;
   shadow: number;
-  recognized: number;
+  constitutional: number;
   totalMKRDelegated: string;
   totalDelegators: number;
 };

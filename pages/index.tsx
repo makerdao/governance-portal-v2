@@ -32,7 +32,6 @@ import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLandi
 import BigNumber from 'lib/bigNumberJs';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -45,7 +44,6 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAllDelegates } from 'modules/gql/hooks/useAllDelegates';
 
 const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInChief }: LandingPageData) => {
@@ -54,13 +52,9 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
-  const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
-    const recognized = filterDelegates(delegates, false, true, false, null);
-    const meet = shuffleArray(
-      // filter out previous contracts for delegates who have migrated, but the old contract has not yet expired
-      recognized.filter(({ next }) => !next)
-    );
-    return [recognized, meet];
+  const [constitutionalDelegates] = useMemo(() => {
+    const constitutional = filterDelegates(delegates, false, true, false, null);
+    return [constitutional];
   }, [delegates]);
 
   // change background on color mode switch
@@ -75,12 +69,26 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const pollCategories = getCategories(polls);
 
-  // delegates
-  const topDelegates = recognizedDelegates
+  const delegatesCVCs = constitutionalDelegates.reduce(
+    (a: { cvc_name: string | undefined; mkrDelegated: number }[], v) => {
+      const existingCvcMatch = a.find(({ cvc_name }) => v.cvc_name === cvc_name);
+
+      if (!existingCvcMatch) {
+        a.push({ cvc_name: v.cvc_name, mkrDelegated: parseFloat(v.mkrDelegated) });
+      } else {
+        const idx = a.findIndex(({ cvc_name }) => cvc_name === v.cvc_name);
+        a[idx].mkrDelegated = a[idx].mkrDelegated + parseFloat(v.mkrDelegated);
+      }
+      return a;
+    },
+    []
+  );
+
+  const topCvcs = delegatesCVCs
     .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
 
-  const activeDelegates = recognizedDelegates
+  const activeDelegates = constitutionalDelegates
     .sort((a, b) => {
       const [first] = a.combinedParticipation?.split('%') || '0';
       const [second] = b.combinedParticipation?.split('%') || '0';
@@ -249,14 +257,9 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
             <section id="delegate">
               <Box ref={delegateRef} />
-              <ErrorBoundary componentName="Meet Delegates">
-                <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
-              </ErrorBoundary>
-            </section>
-
-            <section>
               <TopDelegates
-                delegates={topDelegates}
+                topCvcs={topCvcs}
+                delegates={constitutionalDelegates}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>

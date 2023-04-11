@@ -18,18 +18,18 @@ type StoreDelegates = {
   filters: {
     creationDate: null | Date;
     showShadow: boolean;
-    showRecognized: boolean;
+    showConstitutional: boolean;
     showExpired: boolean;
     name: string | null;
-    tags: { [key: string]: boolean };
+    cvcs: { [key: string]: boolean };
   };
   sort: delegatesSortEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
-  setShowRecognizedFilter: (showRecognized: boolean) => void;
+  setShowConstitutionalFilter: (showConstitutional: boolean) => void;
   setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: delegatesSortEnum) => void;
-  setTagFilter: (tag: { [key: string]: boolean }) => void;
+  setCvcFilter: (cvc: { [key: string]: boolean }) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
 };
@@ -38,10 +38,10 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
     showShadow: false,
-    showRecognized: false,
+    showConstitutional: false,
     showExpired: false,
     name: null,
-    tags: {}
+    cvcs: {}
   },
   sort: delegatesSortEnum.random,
 
@@ -85,20 +85,20 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setShowRecognizedFilter: showRecognized => {
+  setShowConstitutionalFilter: showConstitutional => {
     set({
       filters: {
         ...get().filters,
-        showRecognized
+        showConstitutional
       }
     });
   },
 
-  setTagFilter: tags => {
+  setCvcFilter: cvcs => {
     set({
       filters: {
         ...get().filters,
-        tags
+        cvcs
       }
     });
   },
@@ -106,12 +106,12 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetFilters: () => {
     set({
       filters: {
-        tags: {},
         name: null,
         creationDate: null,
         showShadow: true,
-        showRecognized: true,
-        showExpired: false
+        showConstitutional: true,
+        showExpired: false,
+        cvcs: {}
       }
     });
   },

@@ -16,25 +16,25 @@ import { useMemo } from 'react';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showShadow, name, delegateTags, setShowRecognizedFilter, setShowShadowFilter] =
+  const [showConstitutional, showShadow, name, setShowConstitutionalFilter, delegateCvcs, setShowShadowFilter] =
     useDelegatesFiltersStore(
       state => [
-        state.filters.showRecognized,
+        state.filters.showConstitutional,
         state.filters.showShadow,
         state.filters.name,
-        state.filters.tags,
-        state.setShowRecognizedFilter,
+        state.setShowConstitutionalFilter,
+        state.filters.cvcs,
         state.setShowShadowFilter
       ],
       shallow
     );
 
-  const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
+  const itemsSelected = [showConstitutional, showShadow].filter(i => !!i).length;
 
   // Use filtered delegates to show the right amount of each type of delegates (ignoring the current filter ones)
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, true, true, false, name, delegateTags);
-  }, [delegates, name, delegateTags]);
+    return filterDelegates(delegates, true, true, false, name, delegateCvcs);
+  }, [delegates, name, delegateCvcs]);
 
   return (
     <FilterButton
@@ -42,23 +42,26 @@ export function DelegatesStatusFilter({ delegates }: { delegates: Delegate[] }):
       listVariant="cards.noPadding"
       data-testid="delegate-type-filter"
       active={itemsSelected > 0}
+      sx={{
+        mx: 2
+      }}
     >
-      <Box p={2}>
+      <Box mx={2}>
         <Flex>
           <Label
             variant="thinLabel"
             sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
-            data-testid="delegate-type-filter-show-recognized"
+            data-testid="delegate-type-filter-show-constitutional"
           >
             <Checkbox
               sx={{ width: 3, height: 3 }}
-              checked={showRecognized}
-              onChange={event => setShowRecognizedFilter(event.target.checked)}
+              checked={showConstitutional}
+              onChange={event => setShowConstitutionalFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-              <Text>Recognized Delegates</Text>
+              <Text>Constitutional Delegates</Text>
               <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.constitutional).length}
               </Text>
             </Flex>
           </Label>

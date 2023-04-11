@@ -57,13 +57,14 @@ function mergeDelegateInfo({
     status: isExpired
       ? DelegateStatusEnum.expired
       : githubDelegate
-      ? DelegateStatusEnum.recognized
+      ? DelegateStatusEnum.constitutional
       : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
     isAboutToExpire: isAboutToExpireCheck(expirationDate),
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
+    cvc_name: githubDelegate?.cvc_name,
     picture: githubDelegate?.picture || '',
     id: onChainDelegate.voteDelegateAddress,
     externalUrl: githubDelegate?.externalUrl,
@@ -206,7 +207,7 @@ export async function fetchDelegates(
     return JSON.parse(cachedResponse);
   }
 
-  // This contains all the delegates including info merged with recognized delegates
+  // This contains all the delegates including info merged with constitutional delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
   const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
@@ -287,7 +288,7 @@ export async function fetchDelegates(
     stats: {
       total: dedupedDelegates.length,
       shadow: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
-      recognized: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
+      constitutional: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.constitutional).length,
       totalMKRDelegated: new BigNumberJS(
         delegates.reduce((prev, next) => {
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);

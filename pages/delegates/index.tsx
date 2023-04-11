@@ -6,9 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -28,7 +29,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
-import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
+import { DelegatesCvcFilter } from 'modules/delegates/components/filters/DelegatesCvcFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -40,34 +41,53 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 
-const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
+const Delegates = ({ delegates, stats, cvcs }: DelegatesPageData) => {
   const { voteDelegateContractAddress } = useAccount();
-  const [showRecognized, showShadow, showExpired, sort, name, delegateTags, setName, resetFilters] =
-    useDelegatesFiltersStore(
-      state => [
-        state.filters.showRecognized,
-        state.filters.showShadow,
-        state.filters.showExpired,
-        state.sort,
-        state.filters.name,
-        state.filters.tags,
-        state.setName,
-        state.resetFilters
-      ],
-      shallow
-    );
+  const [
+    showConstitutional,
+    showShadow,
+    showExpired,
+    sort,
+    name,
+    delegateCvcs,
+    setCvcFilter,
+    setName,
+    resetFilters
+  ] = useDelegatesFiltersStore(
+    state => [
+      state.filters.showConstitutional,
+      state.filters.showShadow,
+      state.filters.showExpired,
+      state.sort,
+      state.filters.name,
+      state.filters.cvcs,
+      state.setCvcFilter,
+      state.setName,
+      state.resetFilters
+    ],
+    shallow
+  );
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.cvc) {
+      const cvc = router.query.cvc as string;
+      setCvcFilter({ [cvc]: true });
+    }
+  }, [router]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
   const bpi = useBreakpointIndex();
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized, showExpired, name, delegateTags);
-  }, [delegates, showRecognized, showShadow, showExpired, name, delegateTags]);
+    return filterDelegates(delegates, showShadow, showConstitutional, showExpired, name, delegateCvcs);
+  }, [delegates, showConstitutional, showShadow, showExpired, name, delegateCvcs]);
 
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
-  const [sortedDelegates, recognizedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
+  const [sortedDelegates, constitutionalDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
     const sorted = filteredDelegates.sort((prev, next) => {
       if (sort === delegatesSortEnum.creationDate) {
         return prev.expirationDate > next.expirationDate ? -1 : 1;
@@ -80,8 +100,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       return 1;
     });
 
-    const recognized = sorted
-      .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+    const constitutional = sorted
+      .filter(delegate => delegate.status === DelegateStatusEnum.constitutional && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
 
     const shadow = sorted
@@ -89,7 +109,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       .sort(d => (isOwner(d) ? -1 : 0));
 
     const expired = sorted.filter(delegate => delegate.expired === true);
-    return [sorted, recognized, shadow, expired];
+    return [sorted, constitutional, shadow, expired];
   }, [filteredDelegates, sort]);
 
   return (
@@ -122,8 +142,8 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
               >
                 <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
                 <DelegatesSortFilter />
-                <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
-                <DelegatesStatusFilter delegates={delegates} />
+                <DelegatesCvcFilter cvcs={cvcs} delegates={delegates} sx={{ ml: 2 }} />
+                <DelegatesStatusFilter delegates={delegates}  />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
               <Button
@@ -174,11 +194,11 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                 </Flex>
               )}
 
-              {recognizedDelegates.length > 0 && (
+              {constitutionalDelegates.length > 0 && (
                 <Stack gap={3}>
-                  <Heading as="h1">Recognized Delegates</Heading>
+                  <Heading as="h1">Constitutional Delegates</Heading>
 
-                  {recognizedDelegates.map(delegate => (
+                  {constitutionalDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
                         <DelegateOverviewCard delegate={delegate} />
@@ -257,14 +277,14 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
-  tags: prefetchedTags
+  cvcs: prefetchedCvcs
 }: DelegatesPageData): JSX.Element {
   const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
         delegates: prefetchedDelegates,
-        tags: prefetchedTags
+        cvcs: prefetchedCvcs
       }
     : null;
 
@@ -294,7 +314,7 @@ export default function DelegatesPage({
   const props = {
     delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates || [],
     stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || undefined,
-    tags: isDefaultNetwork(network) ? prefetchedTags : data?.tags || []
+    cvcs: isDefaultNetwork(network) ? prefetchedCvcs : data?.cvcs || []
   };
 
   return (
@@ -310,20 +330,20 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         delegates: [],
-        tags: [],
+        cvcs: [],
         stats: []
       }
     };
   }
 
-  const { delegates, stats, tags } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
+  const { delegates, stats, cvcs } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates,
-      tags,
+      cvcs,
       stats
     }
   };

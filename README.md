@@ -76,7 +76,7 @@ The tag and versioning should be done on develop, and then merged to master thro
 
 The portal seeks to rely on on-chain data as much as possible and to minimize reliance on data stored on centralized servers. However, due to the large volume of data that is relevant to Maker governance, fetching this data from on-chain is both time and resource-intensive. In order to improve the user's experience, some reliance on third-party services has been added, and we recommend a few configuration steps for optimal use. These services include:
 
-- [GitHub](https://github.com/makerdao/community/tree/master/governance) for storing markdown related to [polls](https://github.com/makerdao/community/tree/master/governance/polls), [executives](https://github.com/makerdao/community/tree/master/governance/votes), and [recognized delegates](https://github.com/makerdao/community/tree/master/governance/delegates)
+- [GitHub](https://github.com/makerdao/community/tree/master/governance) for storing markdown related to [polls](https://github.com/makerdao/community/tree/master/governance/polls), [executives](https://github.com/makerdao/community/tree/master/governance/votes), and [constitutional delegates](https://github.com/makerdao/community/tree/master/governance/delegates)
 - MongoDB for storing comments related to votes on polls and executives
 
 #### Network providers
@@ -101,7 +101,7 @@ The following configuration values can be added to the `.env` file:
 
 - Set `POCKET_KEY` to a valid [Pocket](https://docs.pokt.network/home/#use-pocket-networks-rpc) API key for ethers provider to use
 
-- Set `GITHUB_TOKEN` to fetch polls, executives, and recognized delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
+- Set `GITHUB_TOKEN` to fetch polls, executives, and constitutional delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
 
 - Set `MONGODB_URI` to a full MongoDB uri (ex: `mongodb+srv://...`)
 

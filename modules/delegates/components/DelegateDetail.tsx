@@ -36,7 +36,6 @@ import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import DelegateTags from './DelegateTags';
 import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
@@ -73,23 +72,23 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const tabTitles = [
-    delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
+    delegate.status === DelegateStatusEnum.constitutional ? 'Delegate Credentials' : null,
     'Metrics',
     'Voting History',
     'Comments'
   ].filter(i => !!i) as string[];
 
   const tabPanels = [
-    delegate.status === DelegateStatusEnum.recognized ? (
+    delegate.status === DelegateStatusEnum.constitutional ? (
       <Box key="delegate-credentials">
         <DelegateCredentials delegate={delegate} />
       </Box>
     ) : null,
     <Box key="delegate-participation-metrics">
-      {delegate.status === DelegateStatusEnum.recognized && (
+      {delegate.status === DelegateStatusEnum.constitutional && (
         <DelegateParticipationMetrics delegate={delegate} />
       )}
-      {delegate.status === DelegateStatusEnum.recognized && <Divider />}
+      {delegate.status === DelegateStatusEnum.constitutional && <Divider />}
       {delegationHistory.length > 0 && totalStaked ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
@@ -185,7 +184,6 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                 </Box>
               </Box>
             </Flex>
-            <DelegateTags tags={delegate.tags} />
           </Box>
           <Flex sx={{ mt: [2, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
             {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}

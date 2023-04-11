@@ -37,9 +37,9 @@ export function DelegatesSystemInfo({
       value: stats.total
     },
     {
-      title: 'Recognized delegates',
-      id: 'total-recognized-delegates-system-info',
-      value: stats.recognized
+      title: 'Constitutional delegates',
+      id: 'total-constitutional-delegates-system-info',
+      value: stats.constitutional
     },
     {
       title: 'Shadow delegates',

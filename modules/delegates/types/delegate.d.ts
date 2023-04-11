@@ -7,13 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Tag } from 'modules/app/types/tag';
-
-export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
+import { DelegateStatusEnum } from '../delegates.constants';
 
 export type DelegateRepoInformation = {
   voteDelegateAddress: string;
   picture?: string;
   name: string;
+  cvc_name?: string;
   externalUrl: string;
   description: string;
   combinedParticipation?: string;
@@ -36,11 +36,12 @@ export type DelegateContractInformation = {
 export type Delegate = {
   id: string;
   name: string;
+  cvc_name?: string;
   address: string;
   voteDelegateAddress: string;
   description: string;
   picture: string;
-  status: DelegateStatus;
+  status: DelegateStatusEnum;
   lastVoteDate: number | null;
   expired: boolean;
   isAboutToExpire: boolean;
