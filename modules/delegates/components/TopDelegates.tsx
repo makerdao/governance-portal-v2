@@ -30,7 +30,6 @@ export default function TopDelegates({
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState<Delegate | null>(null);
-
   return (
     <Box>
       {showDelegateModal && (
@@ -119,7 +118,7 @@ export default function TopDelegates({
                 >
                   <Text>
                     {mkrDelegated
-                      ? new BigNumber(mkrDelegated).div(totalMKRDelegated).multipliedBy(100).toFixed(2)
+                      ? new BigNumber(parseFloat(mkrDelegated)).div(totalMKRDelegated).multipliedBy(100).toFixed(2)
                       : '0.00'}
                     %
                   </Text>
