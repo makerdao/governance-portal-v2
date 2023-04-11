@@ -27,8 +27,8 @@ export default function DelegateAvatarName({ delegate }: { delegate: Delegate })
           <Flex sx={{ alignItems: 'center' }}>
             <Text as="p" variant="microHeading" sx={{ fontSize: [3, 4], overflowWrap: 'break-word' }}>
               {delegate.name
-                ? limitString(delegate.name, isOwner ? 23 : 43, '...')
-                : limitString('Unknown', isOwner ? 12 : 43, '...')}
+                ? limitString(delegate.name, isOwner ? 23 : 63, '...')
+                : limitString('Unknown', isOwner ? 12 : 63, '...')}
             </Text>
             {isOwner && (
               <Flex
