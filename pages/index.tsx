@@ -84,11 +84,6 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
     []
   );
 
-  // delegates
-  const topDelegates = constitutionalDelegates
-    .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
-    .slice(0, 5);
-
   const topCvcs = delegatesCVCs
     .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
@@ -264,7 +259,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
               <Box ref={delegateRef} />
               <TopDelegates
                 topCvcs={topCvcs}
-                delegates={topDelegates}
+                delegates={constitutionalDelegates}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
