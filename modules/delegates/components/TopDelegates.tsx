@@ -17,7 +17,7 @@ import { DelegatePicture } from './DelegatePicture';
 
 type TopCvc = {
   cvc_name?: string;
-  mkrDelegated?: string;
+  mkrDelegated?: number;
 };
 
 export default function TopDelegates({
@@ -118,7 +118,7 @@ export default function TopDelegates({
                 >
                   <Text>
                     {mkrDelegated
-                      ? new BigNumber(parseFloat(mkrDelegated)).div(totalMKRDelegated).multipliedBy(100).toFixed(2)
+                      ? new BigNumber(mkrDelegated).div(totalMKRDelegated).multipliedBy(100).toFixed(2)
                       : '0.00'}
                     %
                   </Text>
@@ -135,7 +135,7 @@ export default function TopDelegates({
                     display: ['none', 'flex']
                   }}
                 >
-                  <Text as="p">{mkrDelegated ? parseFloat(mkrDelegated).toFixed(2) : '0.00'} MKR </Text>
+                  <Text as="p">{mkrDelegated ? mkrDelegated.toFixed(2) : '0.00'} MKR </Text>
                   {cvcDelegate && (
                     <InternalLink
                       href={'/delegates'}
@@ -146,7 +146,7 @@ export default function TopDelegates({
                         color: 'text',
                         ':hover': {
                           color: 'text',
-                          borderColor: 'onSecondary',
+                          borderColor: 'onSecondary'
                         }
                       }}
                     >
