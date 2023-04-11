@@ -101,7 +101,7 @@ export default function TopDelegates({
                       queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
                     >
                       <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                        <DelegatePicture delegate={cvcDelegate} />
+                        <DelegatePicture delegate={cvcDelegate} showTooltip={false}/>
                         <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
                       </Flex>
                     </InternalLink>
