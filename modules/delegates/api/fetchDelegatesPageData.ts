@@ -34,7 +34,7 @@ export async function fetchDelegatesPageData(
   const orderBy = queryParams?.orderBy || DelegateOrderByEnum.RANDOM;
   const orderDirection = queryParams?.orderDirection || OrderDirectionEnum.DESC;
   const seed = queryParams?.seed || null;
-  const delegateType = queryParams?.delegateType || DelegateTypeEnum.CONSTITUTIONAL;
+  const delegateType = queryParams?.delegateType || DelegateTypeEnum.ALL;
   const searchTerm = queryParams?.searchTerm || null;
   const queryCvcs = queryParams?.queryCvcs?.length ? queryParams.queryCvcs : null;
 
