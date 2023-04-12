@@ -28,7 +28,13 @@ export const InternalLink = ({
   hash,
   scroll = true
 }: Props): JSX.Element => (
-  <Link href={{ pathname: href, query: queryParams, hash }} scroll={scroll} title={title} passHref>
+  <Link
+    href={{ pathname: href, query: queryParams, hash }}
+    scroll={scroll}
+    title={title}
+    sx={{ textDecoration: 'none', color: 'inherit', ...styles }}
+    passHref
+  >
     <a sx={{ textDecoration: 'none', color: 'inherit', ...styles }}>{children}</a>
   </Link>
 );
