@@ -73,12 +73,26 @@ const LandingPage = ({
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const pollCategories = getCategories(polls);
 
-  // delegates
-  const topCvcs = cvcs
-    .sort((a, b) => (new BigNumber(a.totalMkr).gt(new BigNumber(b.totalMkr)) ? -1 : 1))
+  const delegatesCVCs = constitutionalDelegates.reduce(
+    (a: { cvc_name: string | undefined; mkrDelegated: number }[], v) => {
+      const existingCvcMatch = a.find(({ cvc_name }) => v.cvc_name === cvc_name);
+
+      if (!existingCvcMatch) {
+        a.push({ cvc_name: v.cvc_name, mkrDelegated: parseFloat(v.mkrDelegated) });
+      } else {
+        const idx = a.findIndex(({ cvc_name }) => cvc_name === v.cvc_name);
+        a[idx].mkrDelegated = a[idx].mkrDelegated + parseFloat(v.mkrDelegated);
+      }
+      return a;
+    },
+    []
+  );
+
+  const topCvcs = delegatesCVCs
+    .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
 
-  const activeDelegates = delegatesInfo
+  const activeDelegates = constitutionalDelegates
     .sort((a, b) => {
       const [first] = a.combinedParticipation?.split('%') || '0';
       const [second] = b.combinedParticipation?.split('%') || '0';
@@ -250,6 +264,7 @@ const LandingPage = ({
               <Box ref={delegateRef} />
               <TopDelegates
                 topCvcs={topCvcs}
+                // delegates={constitutionalDelegates}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
