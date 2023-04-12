@@ -276,7 +276,7 @@ const Delegates = ({
                   performSearchOnClear={true}
                 />
                 <DelegatesSortFilter />
-                <DelegatesCvcFilter cvcs={cvcs} sx={{ m: 2 }} />
+                <DelegatesCvcFilter delegates={delegates} cvcs={cvcs} sx={{ m: 2 }} />
                 <DelegatesStatusFilter stats={stats} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>

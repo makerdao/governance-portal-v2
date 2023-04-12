@@ -13,7 +13,7 @@ import { CvcAndCount } from 'modules/delegates/types/cvc';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 import { useMemo } from 'react';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
-import { Delegate } from 'modules/delegates/types';
+import { Delegate, DelegatePaginated } from 'modules/delegates/types';
 
 export function DelegatesCvcFilter({
   cvcs,
@@ -21,7 +21,7 @@ export function DelegatesCvcFilter({
   ...props
 }: {
   cvcs: CvcAndCount[];
-  delegates: Delegate[];
+  delegates: DelegatePaginated[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element | null {
   const [delegateFilters, setCvcs, name] = useDelegatesFiltersStore(
