@@ -46,7 +46,17 @@ import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
-const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInChief }: LandingPageData) => {
+const LandingPage = ({
+  proposals,
+  polls,
+  delegates,
+  stats,
+  mkrOnHat,
+  hat,
+  mkrInChief,
+  cvcs
+}: LandingPageData) => {
+  console.log({ cvcs });
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
@@ -348,6 +358,7 @@ export default function Index({
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     delegates: delegatesData.data?.delegates ?? [],
     stats: delegatesData.data?.stats,
+    cvcs: delegatesData.data?.cvcs,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
