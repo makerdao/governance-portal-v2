@@ -85,11 +85,18 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *             type: string
  *             enum: [CONSTITUTIONAL, SHADOW, ALL]
  *           default: ALL
- *         - name: name
- *           description: The name of the constitutional delegate to return. Only applicable when delegateType is constitutional.
+ *         - name: searchTerm
+ *           description: Name or address (whole or part) of the delegate to return.
  *           in: query
  *           schema:
  *             type: string
+ *         - name: cvcs
+ *           description: Array of CVC names to filter for.
+ *           in: query
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: string
  *       responses:
  *         200:
  *           description: A paginated list of delegates matching the specified filters and sorting.
@@ -112,36 +119,15 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: string
  *         totalDelegators:
  *           type: number
- *     Tag:
+ *     Cvc:
  *       type: object
  *       properties:
- *         id:
+ *         cvc_name:
  *           type: string
- *         shortname:
- *           type: string
- *         longname:
- *           type: string
- *         description:
- *           type: string
- *         recommend_ui:
- *           type: boolean
- *         related_link:
- *           type: string
- *         precedence:
- *           type: integer
- *       required:
- *         - id
- *         - shortname
- *         - longname
- *     TagCount:
- *       allOf:
- *         - $ref: "#/components/schemas/Tag"
- *         - type: object
- *           properties:
- *             count:
- *               type: integer
- *           required:
- *             - count
+ *         count:
+ *           type: number
+ *         mkrDelegated:
+ *           type: number
  *     DelegateStatus:
  *       type: string
  *       enum:
@@ -152,6 +138,8 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       type: object
  *       properties:
  *         name:
+ *           type: string
+ *         cvc_name:
  *           type: string
  *         voteDelegateAddress:
  *           type: string
@@ -197,10 +185,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *               type: string
  *             address:
  *               type: string
- *         tags:
- *           type: array
- *           items:
- *             type: string
  *         previous:
  *           type: object
  *           properties:
@@ -227,7 +211,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         - mkrDelegated
  *         - delegatorCount
  *         - proposalsSupported
- *         - tags
  *     DelegatesPaginatedAPIResponse:
  *       type: object
  *       properties:
@@ -248,10 +231,10 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/DelegatePaginated'
- *         tags:
+ *         cvcs:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/TagCount'
+ *             $ref: '#/components/schemas/Cvc'
  */
 
 export default withApiHandler(
@@ -302,19 +285,13 @@ export default withApiHandler(
       validValues: [DelegateTypeEnum.CONSTITUTIONAL, DelegateTypeEnum.SHADOW, DelegateTypeEnum.ALL]
     }) as DelegateTypeEnum;
 
-    const name =
-      delegateType !== DelegateTypeEnum.CONSTITUTIONAL
-        ? null
-        : (validateQueryParam(req.query.name, 'string', {
-            defaultValue: null
-          }) as string | null);
+    const searchTerm = validateQueryParam(req.query.searchTerm, 'string', {
+      defaultValue: null
+    }) as string | null;
 
-    const cvcs =
-      delegateType !== DelegateTypeEnum.CONSTITUTIONAL
-        ? null
-        : (validateQueryParam(req.query.cvcs, 'array', {
-            defaultValue: null
-          }) as string[] | null);
+    const cvcs = validateQueryParam(req.query.cvcs, 'array', {
+      defaultValue: null
+    }) as string[] | null;
 
     const delegates = await fetchDelegatesPaginated({
       network,
@@ -325,7 +302,7 @@ export default withApiHandler(
       orderDirection,
       seed,
       delegateType,
-      name,
+      searchTerm,
       cvcs
     });
 

@@ -37,7 +37,7 @@ export type DelegatesValidatedQueryParams = {
   orderDirection: string;
   seed: number | null;
   delegateType: DelegateTypeEnum;
-  name: string | null;
+  searchTerm: string | null;
   cvcs: string[] | null;
 };
 

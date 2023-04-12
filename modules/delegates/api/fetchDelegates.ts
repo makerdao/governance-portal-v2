@@ -447,13 +447,15 @@ export async function fetchDelegatesPaginated({
   orderDirection,
   seed,
   delegateType,
-  name
+  searchTerm,
+  cvcs
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
-  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, name);
+  const constitutionalDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
+  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, cvcs, searchTerm);
   const { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
     allDelegatesWithNamesAndLinks
   );
@@ -475,19 +477,30 @@ export async function fetchDelegatesPaginated({
       return acc;
     }, [] as CvcWithCountAndDelegates[]);
 
-  const delegatesQueryFilter =
-    delegateType === DelegateTypeEnum.CONSTITUTIONAL
-      ? { voteDelegate: { in: filteredDelegates } }
-      : delegateType === DelegateTypeEnum.SHADOW
-      ? { voteDelegate: { notIn: filteredDelegates } }
-      : null;
+  let delegatesQueryFilter;
+  if (delegateType !== DelegateTypeEnum.CONSTITUTIONAL && delegateType !== DelegateTypeEnum.SHADOW) {
+    delegatesQueryFilter = searchTerm || cvcs ? { voteDelegate: { in: filteredDelegates } } : null;
+  } else {
+    delegatesQueryFilter = {
+      and: [
+        {
+          voteDelegate:
+            delegateType === DelegateTypeEnum.CONSTITUTIONAL
+              ? { in: constitutionalDelegatesAddresses }
+              : { notIn: constitutionalDelegatesAddresses }
+        }
+      ]
+    };
+    (searchTerm || cvcs) && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegates } });
+  }
 
   const delegatesQueryVariables = {
     first: pageSize,
     offset: (page - 1) * pageSize,
     includeExpired,
     orderBy,
-    orderDirection
+    orderDirection,
+    constitutionalDelegates: constitutionalDelegatesAddresses
   };
   if (delegatesQueryFilter) {
     delegatesQueryVariables['filter'] = delegatesQueryFilter;

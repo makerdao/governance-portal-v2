@@ -18,6 +18,7 @@ export const delegatesQuery = gql`
     $includeExpired: Boolean
     $seed: Float
     $filter: DelegateEntryFilter
+    $constitutionalDelegates: [String]
   ) {
     delegates(
       first: $first
@@ -29,6 +30,7 @@ export const delegatesQuery = gql`
       includeExpired: $includeExpired
       seed: $seed
       filter: $filter
+      constitutionalDelegates: $constitutionalDelegates
     ) {
       totalCount
       pageInfo {
