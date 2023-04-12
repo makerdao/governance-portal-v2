@@ -44,28 +44,22 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
-import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 const LandingPage = ({
   proposals,
   polls,
   delegates,
+  delegatesInfo,
   stats,
   mkrOnHat,
   hat,
   mkrInChief,
   cvcs
 }: LandingPageData) => {
-  console.log({ cvcs });
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
-
-  const [constitutionalDelegates] = useMemo(() => {
-    const constitutional = filterDelegates(delegates, false, true, false, null);
-    return [constitutional];
-  }, [delegates]);
 
   // change background on color mode switch
   useEffect(() => {
@@ -79,26 +73,11 @@ const LandingPage = ({
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const pollCategories = getCategories(polls);
 
-  const delegatesCVCs = constitutionalDelegates.reduce(
-    (a: { cvc_name: string | undefined; mkrDelegated: number }[], v) => {
-      const existingCvcMatch = a.find(({ cvc_name }) => v.cvc_name === cvc_name);
-
-      if (!existingCvcMatch) {
-        a.push({ cvc_name: v.cvc_name, mkrDelegated: parseFloat(v.mkrDelegated) });
-      } else {
-        const idx = a.findIndex(({ cvc_name }) => cvc_name === v.cvc_name);
-        a[idx].mkrDelegated = a[idx].mkrDelegated + parseFloat(v.mkrDelegated);
-      }
-      return a;
-    },
-    []
-  );
-
-  const topCvcs = delegatesCVCs
+  const topCvcs = cvcs
     .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
 
-  const activeDelegates = constitutionalDelegates
+  const activeDelegates = delegatesInfo
     .sort((a, b) => {
       const [first] = a.combinedParticipation?.split('%') || '0';
       const [second] = b.combinedParticipation?.split('%') || '0';
@@ -164,7 +143,7 @@ const LandingPage = ({
 
   return (
     <div>
-      {delegates.length === 0 && polls.length === 0 && (
+      {delegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -270,7 +249,6 @@ const LandingPage = ({
               <Box ref={delegateRef} />
               <TopDelegates
                 topCvcs={topCvcs}
-                // delegates={constitutionalDelegates}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
@@ -318,7 +296,7 @@ export default function Index({
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const { network } = useWeb3();
-  const [delegatesData] = useLandingPageDelegates();
+  const [delegatesData, delegatesInfo] = useLandingPageDelegates();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
@@ -357,8 +335,9 @@ export default function Index({
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     delegates: delegatesData.data?.delegates ?? [],
+    delegatesInfo: delegatesInfo.data ?? [],
     stats: delegatesData.data?.stats,
-    cvcs: delegatesData.data?.cvcs,
+    cvcs: delegatesData.data?.cvcs ?? [],
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined

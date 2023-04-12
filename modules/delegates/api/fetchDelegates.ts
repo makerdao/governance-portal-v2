@@ -345,6 +345,7 @@ export async function fetchAndMergeDelegates(
       expired: expirationDate > new Date() ? false : true,
       isAboutToExpire: isAboutToExpireCheck(expirationDate),
       name: ghDelegate?.name,
+      cvc_name: ghDelegate?.cvc_name,
       previous:
         oldOwner && oldContractAddress
           ? { address: oldOwner, voteDelegateAddress: oldContractAddress }

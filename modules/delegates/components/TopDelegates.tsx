@@ -10,18 +10,14 @@ import BigNumber from 'lib/bigNumberJs';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
+import { CvcStats } from '../types/cvc';
 // import { DelegatePicture } from './DelegatePicture';
-
-type TopCvc = {
-  cvc_name?: string;
-  mkrDelegated?: number;
-};
 
 export default function TopDelegates({
   topCvcs,
   totalMKRDelegated
 }: {
-  topCvcs: TopCvc[];
+  topCvcs: CvcStats[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
   return (
@@ -63,7 +59,6 @@ export default function TopDelegates({
           </Box>
         </Flex>
         {topCvcs?.map(({ cvc_name, mkrDelegated }, index) => {
-          const cvcDelegate = topCvcs.find(delegate => delegate.cvc_name === cvc_name);
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
@@ -78,20 +73,12 @@ export default function TopDelegates({
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>
-                  {cvcDelegate ? (
-                    <InternalLink
-                      href={'/delegates'}
-                      title="View delegates"
-                      queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
-                    >
-                      <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                        {/* <DelegatePicture delegate={cvcDelegate} showTooltip={false} /> */}
-                        <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
-                      </Flex>
-                    </InternalLink>
-                  ) : (
-                    <Text>{cvc_name}</Text>
-                  )}
+                  <InternalLink href={'/delegates'} title="View delegates" queryParams={{ cvc: cvc_name }}>
+                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                      {/* <DelegatePicture delegate={cvcDelegate} showTooltip={false} /> */}
+                      <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
+                    </Flex>
+                  </InternalLink>
                 </Flex>
                 <Flex
                   sx={{
@@ -117,23 +104,21 @@ export default function TopDelegates({
                   }}
                 >
                   <Text as="p">{mkrDelegated ? mkrDelegated.toFixed(2) : '0.00'} MKR </Text>
-                  {cvcDelegate && (
-                    <InternalLink
-                      href={'/delegates'}
-                      title="View delegates"
-                      queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
-                      styles={{
-                        borderColor: 'secondaryMuted',
+                  <InternalLink
+                    href={'/delegates'}
+                    title="View delegates"
+                    queryParams={{ cvc: cvc_name }}
+                    styles={{
+                      borderColor: 'secondaryMuted',
+                      color: 'text',
+                      ':hover': {
                         color: 'text',
-                        ':hover': {
-                          color: 'text',
-                          borderColor: 'onSecondary'
-                        }
-                      }}
-                    >
-                      <Button variant="outline">Delegate</Button>
-                    </InternalLink>
-                  )}
+                        borderColor: 'onSecondary'
+                      }
+                    }}
+                  >
+                    <Button variant="outline">Delegate</Button>
+                  </InternalLink>
                 </Flex>
               </Flex>
             </Box>
