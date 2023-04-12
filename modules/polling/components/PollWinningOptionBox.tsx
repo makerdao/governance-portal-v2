@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React from 'react';
 import { Poll, PollTally, PollVictoryConditionComparison } from '../types';
-import { Flex } from 'theme-ui';
+import { Flex, Text } from 'theme-ui';
 import {
   isActivePoll,
   isInputFormatChooseFree,
@@ -78,9 +78,9 @@ export default function PollWinningOptionBox({
               <StatusText>
                 <>
                   {textWin}:{' '}
-                  <span sx={{ color: getVoteColor(leadingOption, poll.parameters) }}>
+                  <Text as="span" sx={{ color: getVoteColor(leadingOption, poll.parameters) }}>
                     {leadingOptionName}
-                  </span>
+                  </Text>
                   {!isDefault &&
                     (isInputFormatSingleChoice(poll.parameters) ||
                       isInputFormatChooseFree(poll.parameters)) &&

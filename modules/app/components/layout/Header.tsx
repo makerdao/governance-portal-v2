@@ -22,7 +22,7 @@ import {
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect /*, useMemo */ } from 'react';
+import React, { useState, useEffect /*, useMemo */ } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -40,11 +40,11 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ClientRenderOnly } from '../ClientRenderOnly';
 
-const MenuItemContent = ({ label, icon }) => {
+const MenuItemContent = ({ label, icon }: { label: React.ReactNode; icon: string }) => {
   return (
     <Flex sx={{ alignItems: 'center', gap: 2, justifyContent: 'flex-start' }}>
       <Icon name={icon} size={'auto'} sx={{ height: '20px', width: '20px' }} />
-      {typeof label === 'function' ? { label } : <Text>{label}</Text>}
+      {typeof label === 'string' ? <Text>{label}</Text> : label}
     </Flex>
   );
 };
@@ -440,7 +440,10 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
                   icon="gas"
                   label={
                     <Text>
-                      <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+                      <Text as="span" sx={{ color: 'primary' }}>
+                        {gas}
+                      </Text>{' '}
+                      Gwei
                     </Text>
                   }
                 />

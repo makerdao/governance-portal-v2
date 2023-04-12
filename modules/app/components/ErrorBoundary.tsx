@@ -10,10 +10,10 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { Box, Text } from 'theme-ui';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-export class ErrorBoundary extends React.Component<{ componentName: string }> {
+export class ErrorBoundary extends React.Component<{ componentName: string; children: React.ReactNode }> {
   componentName = 'component';
 
-  constructor(props: { componentName: string }) {
+  constructor(props: { componentName: string; children: React.ReactElement }) {
     super(props);
     this.state = { hasError: false };
     this.componentName = props.componentName || this.componentName;

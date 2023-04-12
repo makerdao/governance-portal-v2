@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import create from 'zustand';
+import { create } from 'zustand';
 import { DelegateOrderByEnum, OrderDirectionEnum } from '../delegates.constants';
 
 type StoreDelegates = {

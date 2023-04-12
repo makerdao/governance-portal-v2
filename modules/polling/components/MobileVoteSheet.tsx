@@ -19,7 +19,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useRouter } from 'next/router';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
-import { slideUp } from 'lib/keyframes';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -209,7 +208,7 @@ const AddingView = ({ done }: { done: () => void }) => {
 
   return (
     <Stack gap={2} sx={{ alignItems: 'center' }}>
-      <div sx={{ height: '160px', width: '100%' }} id="ballot-animation-container" />
+      <Box sx={{ height: '160px', width: '100%' }} id="ballot-animation-container" />
     </Stack>
   );
 };

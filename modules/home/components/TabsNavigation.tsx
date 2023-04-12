@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Box, Flex, Text } from 'theme-ui';
+import { Box, Flex, Link, Text } from 'theme-ui';
 
 export default function TabsNavigation({ activeTab }: { activeTab: string }): React.ReactElement {
   const links = [
@@ -53,7 +53,7 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
                 mb: '-1px'
               }}
             >
-              <a
+              <Link
                 href={link.href}
                 sx={{
                   textDecoration: 'none',
@@ -77,7 +77,7 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
                 >
                   <Text>{link.text}</Text>
                 </Box>
-              </a>
+              </Link>
             </Box>
           );
         })}

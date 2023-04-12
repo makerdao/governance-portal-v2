@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Flex, Text, useColorMode } from 'theme-ui';
+import { Box, Flex, Text, useColorMode } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import React from 'react';
@@ -158,8 +158,8 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
 
   const mobile = bpi <= 1;
   return (
-    <div sx={{ position: 'relative', mt: 4 }}>
-      <div
+    <Box sx={{ position: 'relative', mt: 4 }}>
+      <Box
         sx={{
           width: '100vw',
           height: '100%',
@@ -225,6 +225,6 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
         </Flex>
         <ContactSection heading="Development & UX Channels" icon="makerdux" logos={logos.makerdux} />
       </Flex>
-    </div>
+    </Box>
   );
 }

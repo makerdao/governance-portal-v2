@@ -75,40 +75,39 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                 strategy="afterInteractive"
               />
             )} */}
-              <SWRConfig
-                value={{
-                  // default to 60 second refresh intervals
-                  refreshInterval: 60000,
-                  revalidateOnMount: true,
-                  fetcher: url => fetchJson(url)
+            <SWRConfig
+              value={{
+                // default to 60 second refresh intervals
+                refreshInterval: 60000,
+                revalidateOnMount: true,
+                fetcher: url => fetchJson(url)
+              }}
+            >
+              <Global
+                styles={{
+                  '*': {
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale'
+                  }
+                }}
+              />
+
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  variant: 'layout.root',
+
+                  paddingTop: 5,
+                  overflowX: 'hidden'
                 }}
               >
-                <Global
-                  styles={{
-                    '*': {
-                      WebkitFontSmoothing: 'antialiased',
-                      MozOsxFontSmoothing: 'grayscale'
-                    }
-                  }}
-                />
-
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    variant: 'layout.root',
-
-                    paddingTop: 5,
-                    overflowX: 'hidden'
-                  }}
-                >
-                  {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
-                  <Box sx={{ px: [3, 4] }}>
-                    <Component {...pageProps} />
-                  </Box>
-                  <Header />
-
-                </Flex>
-              </SWRConfig>
+                {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
+                <Box sx={{ px: [3, 4] }}>
+                  <Component {...pageProps} />
+                </Box>
+                <Header />
+              </Flex>
+            </SWRConfig>
           </BallotProvider>
         </AccountProvider>
         <ToastContainer position="top-right" theme="light" />

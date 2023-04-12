@@ -45,7 +45,7 @@ const mockPoll: Poll = {
 
 const mockedTally: PollTally = {
   ...mockTally
-};
+} as any;
 
 const props: { tally: PollTally; poll: Poll } = {
   tally: mockedTally,
@@ -78,7 +78,7 @@ describe('Polling votes by address', () => {
         {
           voter: '0xad2fda5f6ce305d2ced380fdfa791b6a26e7f281',
           ballot: [0, 1, 2],
-          mkrSupport: 28312.074392254362747305,
+          mkrSupport: '28312.074392254362747305',
           chainId: 1,
           hash: '0x021',
           blockTimestamp: 1,
@@ -110,7 +110,7 @@ describe('Polling votes by address', () => {
       tally: updatedTally
     };
 
-    render(<VotesByAddress {...updatedProps} />);
+    render(<VotesByAddress {...(updatedProps as any)} />);
 
     // look for columns
     await screen.findByText(/Address/);
