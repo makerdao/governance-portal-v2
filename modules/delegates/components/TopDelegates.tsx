@@ -46,7 +46,7 @@ export default function TopDelegates({
         <Stack gap={2}>
           <Heading as="h2">Top Constitutional Voting Committees</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-            Constitutional Voting Committees ranking by their voting power
+            Constitutional Voting Committees ranked by the voting weight of their supporting delegates
           </Text>
         </Stack>
       </Container>
@@ -101,7 +101,7 @@ export default function TopDelegates({
                       queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
                     >
                       <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                        <DelegatePicture delegate={cvcDelegate} showTooltip={false}/>
+                        <DelegatePicture delegate={cvcDelegate} showTooltip={false} />
                         <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
                       </Flex>
                     </InternalLink>
