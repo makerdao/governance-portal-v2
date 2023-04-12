@@ -18,13 +18,13 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
   const repoMainnet = {
     owner: 'makerdao',
     repo: 'community',
-    page: 'governance/delegates/meta/delegates.json'
+    page: 'governance/delegates'
   };
 
   const repoTest = {
     owner: 'makerdao-dux',
     repo: 'voting-delegates',
-    page: 'delegates/meta/delegates.json'
+    page: 'delegates'
   };
 
   const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoTest;
