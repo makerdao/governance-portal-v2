@@ -18,8 +18,7 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
-import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
-import { CvcStats } from 'modules/delegates/types/cvc';
+import { DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
 
 export type LandingPageData = {
   proposals: Proposal[];

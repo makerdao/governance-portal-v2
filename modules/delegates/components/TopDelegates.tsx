@@ -10,9 +10,6 @@ import BigNumber from 'lib/bigNumberJs';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { CvcStats } from '../types/cvc';
-import { useState } from 'react';
-import { DelegateModal } from './modals/DelegateModal';
 import { DelegatePicture } from './DelegatePicture';
 
 type TopCvc = {
@@ -88,7 +85,7 @@ export default function TopDelegates({
                       queryParams={{ cvc: cvcDelegate.cvc_name || '' }}
                     >
                       <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                        {/* <DelegatePicture delegate={cvcDelegate} showTooltip={false} /> */}
+                        <DelegatePicture delegate={cvcDelegate} showTooltip={false} />
                         <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
                       </Flex>
                     </InternalLink>

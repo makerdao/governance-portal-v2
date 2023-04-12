@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
-import { AllDelegatesEntryWithName, Delegate, DelegatePaginated } from '../types';
+import { AllDelegatesEntryWithName, DelegatePaginated } from '../types';
 
 export function filterDelegates(
   delegates: DelegatePaginated[],

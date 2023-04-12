@@ -446,8 +446,7 @@ export async function fetchDelegatesPaginated({
   orderDirection,
   seed,
   delegateType,
-  name,
-  cvcs
+  name
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
 
