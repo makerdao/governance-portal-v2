@@ -16,10 +16,12 @@ import { Avatar } from 'modules/address/components/Avatar';
 
 export function DelegatePicture({
   delegate,
-  width = 41
+  width = 41,
+  showTooltip = true
 }: {
   delegate: Delegate | DelegatePaginated | DelegateInfo;
   width?: number;
+  showTooltip?: boolean;
 }): React.ReactElement {
   const tooltipAvatarWidth = 68;
   const delegateMetrics = (
@@ -139,7 +141,7 @@ export function DelegatePicture({
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
       <Box>
-        <Tooltip label={delegateMetrics}>
+        <Tooltip label={delegateMetrics} disable={!showTooltip}>
           <Box>
             {delegate.picture ? (
               <Image

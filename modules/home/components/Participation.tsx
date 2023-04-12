@@ -13,7 +13,7 @@ import useSWR from 'swr';
 import { format, sub } from 'date-fns';
 import ParticipationChart from './ParticipationChart';
 import forumPosts from '../data/forumPosts.json';
-import { DelegateInfo } from 'modules/delegates/types';
+import { DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
@@ -78,7 +78,7 @@ export default function Participation({
   activeDelegates,
   bpi
 }: {
-  activeDelegates: DelegateInfo[];
+  activeDelegates: DelegateInfo[] | DelegatePaginated[];
   bpi: number;
 }): React.ReactElement {
   const { network } = useWeb3();
