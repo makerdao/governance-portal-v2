@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import Link from 'next/link';
-import { Link as ThemeUILink, ThemeUIStyleObject } from 'theme-ui';
+import { ThemeUIStyleObject } from 'theme-ui';
 
 type Props = {
   children: JSX.Element;
@@ -18,7 +18,6 @@ type Props = {
   hash?: string;
   scroll?: boolean;
 };
-
 export const InternalLink = ({
   children,
   title,
@@ -33,8 +32,7 @@ export const InternalLink = ({
     scroll={scroll}
     title={title}
     sx={{ textDecoration: 'none', color: 'inherit', ...styles }}
-    passHref
   >
-    <ThemeUILink sx={{ textDecoration: 'none', color: 'inherit', ...styles }}>{children}</ThemeUILink>
+    {children}
   </Link>
 );
