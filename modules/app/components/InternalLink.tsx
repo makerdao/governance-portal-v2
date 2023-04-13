@@ -33,7 +33,8 @@ export const InternalLink = ({
     scroll={scroll}
     title={title}
     sx={{ textDecoration: 'none', color: 'inherit', ...styles }}
+    passHref
   >
-    {children}
+    <ThemeUILink sx={{ textDecoration: 'none', color: 'inherit', ...styles }}>{children}</ThemeUILink>
   </Link>
 );

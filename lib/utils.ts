@@ -54,7 +54,7 @@ export function backoffRetry(
   retries: number,
   fn: () => Promise<any>,
   delay = 500,
-  logFn: any = (message: string) => null
+  logFn: any = () => null
 ): Promise<any> {
   return fn().catch(err => {
     logFn(`backOffRetry: ${retries}`);

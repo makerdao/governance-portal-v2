@@ -112,12 +112,12 @@ const Delegates = ({
     page: 1,
     sort,
     sortDirection,
-    name,
+    searchTerm: name,
     delegateCvcs,
     showExpired,
     delegateType:
       showConstitutional && showShadow
-        ? DelegateTypeEnum.CONSTITUTIONAL
+        ? DelegateTypeEnum.ALL
         : showShadow
         ? DelegateTypeEnum.SHADOW
         : DelegateTypeEnum.CONSTITUTIONAL
@@ -144,13 +144,6 @@ const Delegates = ({
           ...prevFilters,
           page: prevPage + 1
         }));
-      } else if (showShadow && !shadowDelegates.length && !name && delegateCvcsLength === 0) {
-        setLoading(true);
-        setFilters(({ ...prevFilters }) => ({
-          ...prevFilters,
-          page: 1,
-          delegateType: DelegateTypeEnum.SHADOW
-        }));
       } else {
         setShouldLoadMore(false);
       }
@@ -167,7 +160,7 @@ const Delegates = ({
           orderBy: filters.sort,
           orderDirection: filters.sortDirection,
           seed,
-          name: filters.name,
+          searchTerm: filters.searchTerm,
           queryCvcs: delegateCvcs,
           includeExpired: filters.showExpired
         };
@@ -205,12 +198,12 @@ const Delegates = ({
         page: 1,
         sort,
         sortDirection,
-        name: name,
+        searchTerm: name,
         delegateCvcs,
         showExpired,
         delegateType:
           showConstitutional && showShadow
-            ? DelegateTypeEnum.CONSTITUTIONAL
+            ? DelegateTypeEnum.ALL
             : showShadow
             ? DelegateTypeEnum.SHADOW
             : DelegateTypeEnum.CONSTITUTIONAL
@@ -271,12 +264,12 @@ const Delegates = ({
                   sx={{ m: 2 }}
                   onChange={setName}
                   value={name}
-                  placeholder="Search by name"
+                  placeholder="Name or address"
                   withSearchButton={true}
                   performSearchOnClear={true}
                 />
                 <DelegatesSortFilter />
-                <DelegatesCvcFilter delegates={delegates} cvcs={cvcs} sx={{ m: 2 }} />
+                <DelegatesCvcFilter cvcs={cvcs} sx={{ m: 2 }} />
                 <DelegatesStatusFilter stats={stats} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>

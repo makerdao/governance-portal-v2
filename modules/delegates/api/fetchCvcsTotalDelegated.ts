@@ -28,18 +28,18 @@ export async function fetchCvcsTotalDelegated(
           }
         });
 
-        const totalMkr: number = +res.totalMkrDelegatedToGroup;
+        const mkrDelegated: number = +res.totalMkrDelegatedToGroup;
         return {
           cvc_name: cvc.cvc_name,
           count: cvc.count,
-          totalMkr
+          mkrDelegated
         };
       } catch (e) {
         logger.error('fetchCvcTotalDelegated: Error fetching MKR delegated to CVC', e.message);
         return {
           cvc_name: cvc.cvc_name,
           count: cvc.count,
-          totalMkr: 0
+          mkrDelegated: 0
         };
       }
     })

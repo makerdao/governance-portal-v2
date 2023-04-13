@@ -24,10 +24,10 @@ import { CvcStats } from 'modules/delegates/types/cvc';
 export type LandingPageData = {
   proposals: Proposal[];
   polls: Poll[];
-  constitutionalDelegates: DelegatePaginated[];
+  delegates: DelegatePaginated[];
   delegatesInfo: DelegateInfo[];
-  cvcs: CvcStats[];
   stats?: DelegatesAPIStats;
+  cvcs: CvcStats[];
   mkrOnHat?: string;
   hat?: string;
   mkrInChief?: string;

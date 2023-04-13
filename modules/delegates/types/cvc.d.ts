@@ -16,5 +16,5 @@ export type CvcWithCountAndDelegates = CvcAndCount & {
 };
 
 export type CvcStats = CvcAndCount & {
-  totalMkr: number;
+  mkrDelegated: number;
 };
