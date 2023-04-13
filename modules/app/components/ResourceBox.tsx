@@ -100,7 +100,7 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://manual.makerdao.com/delegation/overview/what-is-delegation'
       },
       {
-        linkTitle: "What's a Constitutional Voter Committee(CVCs)?",
+        linkTitle: "What's a Constitutional Voter Committee(CVC)?",
         url: 'https://mips.makerdao.com/mips/details/MIP101#5-constitutional-voter-committees-cvcs-'
       },
       {
