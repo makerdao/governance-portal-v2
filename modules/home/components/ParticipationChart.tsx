@@ -66,7 +66,11 @@ const ParticipationChart = ({
     );
   };
 
-  const formatLegend = () => <span sx={{ color: 'onSurface' }}>MKR Locked in Chief</span>;
+  const formatLegend = () => (
+    <Text as="span" sx={{ color: 'onSurface' }}>
+      MKR Locked in Chief
+    </Text>
+  );
 
   return (
     <ResponsiveContainer width={'100%'} minHeight={200}>

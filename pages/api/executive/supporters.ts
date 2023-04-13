@@ -6,6 +6,53 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+/**
+ * @swagger
+ * /api/executive/supporters:
+ *   get:
+ *     summary: Get the supporters of all executive spells
+ *     description: Returns the list of supporters for each executive spell. Supports mainnet, goerli and goerlifork networks.
+ *     tags:
+ *       - executive
+ *     parameters:
+ *       - name: network
+ *         in: query
+ *         description: The Ethereum network to use.
+ *         schema:
+ *           type: string
+ *         enum:
+ *           - goerli
+ *           - goerlifork
+ *           - mainnet
+ *     responses:
+ *       '200':
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 {EXECUTIVE_SPELL}:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       address:
+ *                         type: string
+ *                       support:
+ *                         type: string
+ *                       votes:
+ *                         type: string
+ *                       percent:
+ *                         type: string
+ *       '400':
+ *         description: Bad request
+ *       '500':
+ *         description: Internal server error
+ */
+
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';

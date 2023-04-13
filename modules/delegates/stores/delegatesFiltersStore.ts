@@ -6,45 +6,47 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import create from 'zustand';
-
-export enum delegatesSortEnum {
-  random = 'random',
-  mkrDelegated = 'mkrDelegated',
-  creationDate = 'creationDate'
-}
+import { create } from 'zustand';
+import { DelegateOrderByEnum, OrderDirectionEnum } from '../delegates.constants';
 
 type StoreDelegates = {
   filters: {
     creationDate: null | Date;
     showShadow: boolean;
-    showRecognized: boolean;
+    showConstitutional: boolean;
     showExpired: boolean;
     name: string | null;
-    tags: { [key: string]: boolean };
+    cvcs: string[];
   };
-  sort: delegatesSortEnum;
+  sort: DelegateOrderByEnum;
+  sortDirection: OrderDirectionEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
-  setShowRecognizedFilter: (showRecognized: boolean) => void;
+  setShowConstitutionalFilter: (showConstitutional: boolean) => void;
   setShowExpiredFilter: (showExpired: boolean) => void;
-  setSort: (sort: delegatesSortEnum) => void;
-  setTagFilter: (tag: { [key: string]: boolean }) => void;
+  setSort: (sort: DelegateOrderByEnum) => void;
+  setSortDirection: (sortDirection: OrderDirectionEnum) => void;
+  setCvcFilter: (cvc: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
+  resetSort: () => void;
+  resetSortDirection: () => void;
+  fetchOnLoad: boolean;
+  setFetchOnLoad: (fetchOnLoad: boolean) => void;
 };
 
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
-    showShadow: false,
-    showRecognized: false,
+    showShadow: true,
+    showConstitutional: true,
     showExpired: false,
     name: null,
-    tags: {}
+    cvcs: []
   },
-  sort: delegatesSortEnum.random,
-
+  sort: DelegateOrderByEnum.RANDOM,
+  sortDirection: OrderDirectionEnum.DESC,
+  fetchOnLoad: false,
   setName: (name: string) => {
     set({
       filters: {
@@ -57,6 +59,11 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   setSort: sort => {
     set({
       sort
+    });
+  },
+  setSortDirection: sortDirection => {
+    set({
+      sortDirection
     });
   },
   setCreationDateFilter: creationDate => {
@@ -85,20 +92,20 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setShowRecognizedFilter: showRecognized => {
+  setShowConstitutionalFilter: showConstitutional => {
     set({
       filters: {
         ...get().filters,
-        showRecognized
+        showConstitutional
       }
     });
   },
 
-  setTagFilter: tags => {
+  setCvcFilter: cvcs => {
     set({
       filters: {
         ...get().filters,
-        tags
+        cvcs
       }
     });
   },
@@ -106,19 +113,31 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetFilters: () => {
     set({
       filters: {
-        tags: {},
         name: null,
         creationDate: null,
         showShadow: true,
-        showRecognized: true,
-        showExpired: false
+        showConstitutional: true,
+        showExpired: false,
+        cvcs: []
       }
     });
   },
 
   resetSort: () => {
     set({
-      sort: delegatesSortEnum.random
+      sort: DelegateOrderByEnum.RANDOM
+    });
+  },
+
+  resetSortDirection: () => {
+    set({
+      sortDirection: OrderDirectionEnum.DESC
+    });
+  },
+
+  setFetchOnLoad: fetchOnLoad => {
+    set({
+      fetchOnLoad
     });
   }
 }));

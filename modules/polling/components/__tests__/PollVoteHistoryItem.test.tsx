@@ -24,7 +24,7 @@ describe('Poll vote history item', () => {
       tally: {
         rounds: 1,
         winner: 1,
-        totalMkrParticipation: 70288.579356787892861292,
+        totalMkrParticipation: '70288.579356787892861292',
         results: [
           {
             firstChoice: 2.001309,
@@ -33,7 +33,7 @@ describe('Poll vote history item', () => {
             eliminated: false
           },
           {
-            firstChoice: 70286.578047787892861292,
+            firstChoice: '70286.578047787892861292',
             transfer: 0,
             winner: true,
             eliminated: false
@@ -94,7 +94,7 @@ describe('Poll vote history item', () => {
       }
     };
 
-    render(<PollVoteHistoryItem vote={vote as PollVoteHistory} />);
+    render(<PollVoteHistoryItem vote={vote as any as PollVoteHistory} />);
 
     // search page for query text
     await screen.findByText(/VOTED CHOICES/);

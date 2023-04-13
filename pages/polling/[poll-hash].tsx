@@ -370,7 +370,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   ]
                 ),
                 <div key={2}>
-                  <div
+                  <Box
                     data-testid="poll-detail"
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
@@ -396,7 +396,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 </div>
               ]}
               banner={
-                tally && tally.totalMkrParticipation > 0 && tally.winningOptionName ? (
+                tally && (tally.totalMkrParticipation as number) > 0 && tally.winningOptionName ? (
                   <Box>
                     <Divider my={0} />
                     <PollWinningOptionBox tally={tally} poll={poll} />

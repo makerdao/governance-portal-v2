@@ -18,8 +18,9 @@ import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pol
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
-import { Delegate, DelegatesAPIStats } from 'modules/delegates/types';
 import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
+import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
+import { CvcStats } from 'modules/delegates/types/cvc';
 import { TagCount } from 'modules/app/types/tag';
 
 export type LandingPageData = {
@@ -28,8 +29,10 @@ export type LandingPageData = {
   endedPolls: PollListItem[];
   pollStats: PollsResponse['stats'];
   pollTags: TagCount[];
-  delegates: Delegate[];
+  delegates: DelegatePaginated[];
+  delegatesInfo: DelegateInfo[];
   stats?: DelegatesAPIStats;
+  cvcs: CvcStats[];
   mkrOnHat?: string;
   hat?: string;
   mkrInChief?: string;

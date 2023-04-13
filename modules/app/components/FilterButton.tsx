@@ -8,8 +8,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Menu, MenuButton, MenuList } from '@reach/menu-button';
+import { ThemeUIStyleObject } from 'theme-ui';
 
-type Props = { name: () => string; listVariant?: string; active?: boolean; children: React.ReactNode };
+type Props = {
+  name: () => string;
+  listVariant?: string;
+  active?: boolean;
+  children: React.ReactNode;
+  sx?: ThemeUIStyleObject;
+};
 
 export default function FilterButton({
   name,

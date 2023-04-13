@@ -6,17 +6,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { DelegateStatusEnum } from '../delegates.constants';
-import { Delegate } from '../types';
+import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
+import { AllDelegatesEntryWithName, DelegatePaginated } from '../types';
 
 export function filterDelegates(
-  delegates: Delegate[],
+  delegates: DelegatePaginated[],
   showShadow: boolean,
-  showRecognized: boolean,
+  showConstitutional: boolean,
   showExpired: boolean,
   name: string | null,
-  tags?: { [key: string]: boolean }
-): Delegate[] {
+  cvcs?: { [key: string]: boolean }
+): DelegatePaginated[] {
   return (
     delegates
       // name filter
@@ -31,8 +31,8 @@ export function filterDelegates(
           return false;
         }
 
-        // return all if show shadow and show recognized are both unchecked
-        if (!showShadow && !showRecognized) {
+        // return all if show shadow and show constitutional are both unchecked
+        if (!showShadow && !showConstitutional) {
           return true;
         }
 
@@ -40,7 +40,7 @@ export function filterDelegates(
           return false;
         }
 
-        if (!showRecognized && delegate.status === DelegateStatusEnum.recognized) {
+        if (!showConstitutional && delegate.status === DelegateStatusEnum.constitutional) {
           return false;
         }
 
@@ -48,14 +48,35 @@ export function filterDelegates(
       })
       // Filter by tags
       .filter(delegate => {
-        const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
-        if (tagArray.length > 0) {
-          return tagArray.reduce((prev, next) => {
-            return prev && delegate.tags.filter(tag => tag.id === next).length > 0;
-          }, true);
+        // CVS act as a OR filter
+        if (!cvcs) return true;
+
+        const cvcArray = Object.keys(cvcs).filter(key => cvcs[key]);
+        if (cvcArray.length === 0) {
+          return true;
         }
 
-        return true;
+        return delegate.cvc_name && cvcArray.includes(delegate.cvc_name);
       })
   );
+}
+
+export function filterDelegateAddresses(
+  allDelegatesWithNames: AllDelegatesEntryWithName[],
+  queryCvcs: string[] | null,
+  searchTerm: string | null
+): string[] {
+  const filteredDelegates =
+    !queryCvcs && !searchTerm
+      ? allDelegatesWithNames.filter(delegate => delegate.delegateType === DelegateTypeEnum.CONSTITUTIONAL)
+      : allDelegatesWithNames.filter(
+          delegate =>
+            (searchTerm
+              ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
+              : true) &&
+            (queryCvcs ? queryCvcs.find(c => c.toLowerCase() === delegate.cvc_name?.toLowerCase()) : true)
+        );
+
+  return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());
 }

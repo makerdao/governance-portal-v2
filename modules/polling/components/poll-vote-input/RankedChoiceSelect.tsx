@@ -16,8 +16,6 @@ import omitBy from 'lodash/omitBy';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { PollListItem } from 'modules/polling/types';
 import Stack from '../../../app/components/layout/layouts/Stack';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 type RankedChoiceSelectProps = {
   poll: PollListItem;
@@ -30,7 +28,6 @@ export default function RankedChoiceSelect({
   setChoice,
   choice: _choice
 }: RankedChoiceSelectProps): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const choice = _choice || [];
   const [numConfirmed, setNumConfirmed] = useState(choice.length);
   const [showListboxInput, setShowListboxInput] = useState(true);
@@ -139,7 +136,6 @@ export default function RankedChoiceSelect({
           variant="caps"
           aria-label="Add button"
           onClick={() => {
-            trackButtonClick('addAnotherRankedChoice');
             setShowListboxInput(true);
           }}
           sx={{
@@ -149,7 +145,10 @@ export default function RankedChoiceSelect({
             cursor: 'pointer'
           }}
         >
-          <span sx={{ mr: 1 }}>+</span> Add another choice
+          <Text as="span" sx={{ mr: 1 }}>
+            +
+          </Text>{' '}
+          Add another choice
         </Text>
       )}
     </Box>

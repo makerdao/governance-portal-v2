@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 
-*/ 
+*/
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
@@ -12,13 +12,15 @@ import { DelegatesAPIResponse } from 'modules/delegates/types';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+
 /**
  * @swagger
  * paths:
- *  /api/delegates:
+ *  /api/delegates/v1:
  *    get:
  *      tags:
  *        - "delegates"
+ *      summary: Returns information about all delegates
  *      description: Returns information about all delegates
  *      produces:
  *        - "application/json"
@@ -184,6 +186,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       precedence:
  *         type: number
  */
+
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
