@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import Link from 'next/link';
-import { ThemeUIStyleObject } from 'theme-ui';
+import { Link as ThemeUILink, ThemeUIStyleObject } from 'theme-ui';
 
 type Props = {
   children: JSX.Element;
@@ -35,6 +35,6 @@ export const InternalLink = ({
     sx={{ textDecoration: 'none', color: 'inherit', ...styles }}
     passHref
   >
-    <a sx={{ textDecoration: 'none', color: 'inherit', ...styles }}>{children}</a>
+    <ThemeUILink sx={{ textDecoration: 'none', color: 'inherit', ...styles }}>{children}</ThemeUILink>
   </Link>
 );
