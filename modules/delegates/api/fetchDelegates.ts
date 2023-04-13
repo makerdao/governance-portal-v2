@@ -345,6 +345,7 @@ export async function fetchAndMergeDelegates(
       expired: expirationDate > new Date() ? false : true,
       isAboutToExpire: isAboutToExpireCheck(expirationDate),
       name: ghDelegate?.name,
+      picture: ghDelegate?.picture,
       cvc_name: ghDelegate?.cvc_name,
       previous:
         oldOwner && oldContractAddress
@@ -470,8 +471,11 @@ export async function fetchDelegatesPaginated({
       if (prev !== -1) {
         acc[prev].count += 1;
         acc[prev].delegates.push(cur.voteDelegate);
+        if (!acc[prev].picture && cur.picture) {
+          acc[prev].picture = cur.picture;
+        }
       } else {
-        acc.push({ cvc_name: cur.cvc_name, count: 1, delegates: [cur.voteDelegate] });
+        acc.push({ cvc_name: cur.cvc_name, count: 1, delegates: [cur.voteDelegate], picture: cur.picture });
       }
 
       return acc;

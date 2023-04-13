@@ -11,7 +11,7 @@ import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'them
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { CvcStats } from '../types/cvc';
-// import { DelegatePicture } from './DelegatePicture';
+import { DelegatePicture } from './DelegatePicture';
 
 export default function TopDelegates({
   topCvcs,
@@ -58,7 +58,8 @@ export default function TopDelegates({
             </Text>
           </Box>
         </Flex>
-        {topCvcs?.map(({ cvc_name, mkrDelegated }, index) => {
+        {topCvcs?.map(({ cvc_name, mkrDelegated, picture }, index) => {
+          console.log({ cvc_name, mkrDelegated, picture, index });
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
@@ -75,7 +76,7 @@ export default function TopDelegates({
                   </Text>
                   <InternalLink href={'/delegates'} title="View delegates" queryParams={{ cvc: cvc_name }}>
                     <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                      {/* <DelegatePicture delegate={cvcDelegate} showTooltip={false} /> */}
+                      <DelegatePicture cvcPicture={picture} showTooltip={false} />
                       <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
                     </Flex>
                   </InternalLink>

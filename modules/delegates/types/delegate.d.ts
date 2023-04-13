@@ -137,6 +137,7 @@ export type AllDelegatesEntry = {
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   name?: string;
   cvc_name?: string;
+  picture?: string;
   delegateType: DelegateTypeEnum;
   blockTimestamp: Date;
   expirationDate: Date;
