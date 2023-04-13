@@ -471,11 +471,16 @@ export async function fetchDelegatesPaginated({
       if (prev !== -1) {
         acc[prev].count += 1;
         acc[prev].delegates.push(cur.voteDelegate);
-        if (!acc[prev].picture && cur.picture) {
+        if (cur.picture) {
           acc[prev].picture = cur.picture;
         }
       } else {
-        acc.push({ cvc_name: cur.cvc_name, count: 1, delegates: [cur.voteDelegate], picture: cur.picture });
+        acc.push({
+          cvc_name: cur.cvc_name,
+          count: 1,
+          delegates: [cur.voteDelegate],
+          ...(cur.picture ? { picture: cur.picture } : {})
+        });
       }
 
       return acc;

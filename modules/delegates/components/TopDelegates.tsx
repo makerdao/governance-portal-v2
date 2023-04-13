@@ -42,7 +42,7 @@ export default function TopDelegates({
             justifyContent: 'space-between'
           }}
         >
-          <Box sx={{ width: ['25%', '20%'] }}>
+          <Box sx={{ width: ['25%', '40%'] }}>
             <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
               CVC Name
             </Text>
@@ -59,7 +59,6 @@ export default function TopDelegates({
           </Box>
         </Flex>
         {topCvcs?.map(({ cvc_name, mkrDelegated, picture }, index) => {
-          console.log({ cvc_name, mkrDelegated, picture, index });
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
               <Flex
@@ -70,7 +69,7 @@ export default function TopDelegates({
                   mb: 3
                 }}
               >
-                <Flex sx={{ width: ['70%', '20%'], alignItems: 'center' }}>
+                <Flex sx={{ width: ['70%', '40%'], alignItems: 'center' }}>
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>

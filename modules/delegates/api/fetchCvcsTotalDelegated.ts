@@ -32,6 +32,7 @@ export async function fetchCvcsTotalDelegated(
         return {
           cvc_name: cvc.cvc_name,
           count: cvc.count,
+          picture: cvc.picture,
           mkrDelegated
         };
       } catch (e) {
@@ -39,6 +40,7 @@ export async function fetchCvcsTotalDelegated(
         return {
           cvc_name: cvc.cvc_name,
           count: cvc.count,
+          picture: cvc.picture,
           mkrDelegated: 0
         };
       }

@@ -28,16 +28,18 @@ export function DelegatePicture({
   // if cvc is passed in, return cvc picture
   if (cvcPicture) {
     return (
-      <Image
-        src={cvcPicture}
-        key={cvcPicture}
-        sx={{
-          objectFit: 'cover',
-          width: '100%',
-          borderRadius: '100%',
-          maxHeight: width
-        }}
-      />
+      <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
+        <Image
+          src={cvcPicture}
+          key={cvcPicture}
+          sx={{
+            objectFit: 'cover',
+            width: '100%',
+            borderRadius: '100%',
+            maxHeight: width
+          }}
+        />
+      </Box>
     );
   }
 
@@ -99,6 +101,19 @@ export function DelegatePicture({
     );
   }
 
-  // no cvc or delegate passed in, return nothing
-  return <></>;
+  // no cvc or delegate passed in, return empty image
+  return (
+    <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
+      <Image
+        src={cvcPicture}
+        key={cvcPicture}
+        sx={{
+          objectFit: 'cover',
+          width: '100%',
+          borderRadius: '100%',
+          maxHeight: width
+        }}
+      />
+    </Box>
+  );
 }
