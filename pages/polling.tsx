@@ -46,43 +46,49 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
-import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
+import { fetchPollingPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
+import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 
-const getSortCriteria = (sort: PollsSortEnum | null) => {
-  if (!sort) sort = PollsSortEnum.endDateAsc;
-  const sortCriteria = {
-    endDateAsc: {
-      active: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ending' },
-      historical: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ended' }
-    },
-    endDateDesc: {
-      active: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ending' },
-      historical: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ended' }
-    },
-    startDateAsc: {
-      active: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' },
-      historical: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' }
-    },
-    startDateDesc: {
-      active: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' },
-      historical: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' }
-    }
-  };
+// const getSortCriteria = (sort: PollsSortEnum | null) => {
+//   if (!sort) sort = PollsSortEnum.endDateAsc;
+//   const sortCriteria = {
+//     endDateAsc: {
+//       active: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ending' },
+//       historical: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ended' }
+//     },
+//     endDateDesc: {
+//       active: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ending' },
+//       historical: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ended' }
+//     },
+//     startDateAsc: {
+//       active: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' },
+//       historical: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' }
+//     },
+//     startDateDesc: {
+//       active: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' },
+//       historical: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' }
+//     }
+//   };
 
-  return {
-    activeVerb: sortCriteria[sort].active.verb,
-    historicalVerb: sortCriteria[sort].historical.verb,
-    activeGroupBy: sortCriteria[sort].active.groupBy,
-    historicalGroupBy: sortCriteria[sort].historical.groupBy,
-    activeSortFn: sortCriteria[sort].active.sortFn,
-    historicalSortFn: sortCriteria[sort].historical.sortFn
-  };
-};
+//   return {
+//     activeVerb: sortCriteria[sort].active.verb,
+//     historicalVerb: sortCriteria[sort].historical.verb,
+//     activeGroupBy: sortCriteria[sort].active.groupBy,
+//     historicalGroupBy: sortCriteria[sort].historical.groupBy,
+//     activeSortFn: sortCriteria[sort].active.sortFn,
+//     historicalSortFn: sortCriteria[sort].historical.sortFn
+//   };
+// };
 
-const PollingOverview = ({ polls, tags }: PollingPageData) => {
+const PollingOverview = ({
+  polls: propPolls,
+  tags,
+  stats,
+  paginationInfo: propPaginationInfo
+}: PollsPaginatedResponse) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [pollFilters, setCategoryFilter, resetPollFilters, sort, title, setTitle] = useUiFiltersStore(
     state => [
@@ -101,7 +107,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
   useEffect(() => {
     if (router.query.category) {
       const category = router.query.category as string;
-      setCategoryFilter({ [category]: true });
+      setCategoryFilter([category]);
     }
   }, [router]);
 
@@ -362,20 +368,24 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  tags: prefetchedCategories
-}: PollingPageData): JSX.Element {
+  tags: prefetchedCategories,
+  stats: prefetchedStats,
+  paginationInfo: prefetchedPaginationInfo
+}: PollsPaginatedResponse): JSX.Element {
   const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
         polls: prefetchedPolls,
-        tags: prefetchedCategories
+        tags: prefetchedCategories,
+        stats: prefetchedStats,
+        paginationInfo: prefetchedPaginationInfo
       }
     : null;
 
   const { cache } = useSWRConfig();
   const cacheKey = `page/polling/${network}`;
-  const { data, error } = useSWR<PollingPageData>(
+  const { data, error } = useSWR<PollsPaginatedResponse>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
     () => fetchPollingPageData(network, true),
     {
@@ -398,7 +408,16 @@ export default function PollingOverviewPage({
 
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || []
+    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || [],
+    stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || { active: 0, finished: 0, total: 0 },
+    paginationInfo: isDefaultNetwork(network)
+      ? prefetchedPaginationInfo
+      : data?.paginationInfo || {
+          totalCount: 0,
+          page: 0,
+          numPages: 0,
+          hasNextPage: false
+        }
   };
 
   return (
@@ -409,13 +428,15 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
+  const { polls, tags, stats, paginationInfo } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60, // revalidate every 60 seconds
     props: {
       polls,
-      tags
+      tags,
+      stats,
+      paginationInfo
     }
   };
 };

@@ -18,7 +18,7 @@ import {
 } from 'modules/polling/helpers/utils';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { Poll } from 'modules/polling/types';
+import { PollListItem } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import QuickVote from './poll-vote-input/QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
@@ -37,9 +37,11 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { ListVoteSummary } from './vote-summary/ListVoteSummary';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
+import { TagCount } from 'modules/app/types/tag';
 
 type Props = {
-  poll: Poll;
+  poll: PollListItem;
+  allTags: TagCount[];
   reviewPage: boolean;
   disableVoting?: boolean;
   sx?: ThemeUIStyleObject;
@@ -49,6 +51,7 @@ type Props = {
 };
 export default function PollOverviewCard({
   poll,
+  allTags,
   reviewPage,
   showVoting,
   disableVoting = false,
@@ -136,8 +139,8 @@ export default function PollOverviewCard({
 
                   <Flex sx={{ flexWrap: 'wrap' }}>
                     {poll.tags.map(c => (
-                      <Box key={c.id} sx={{ marginRight: 2, marginBottom: 2 }}>
-                        <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} />
+                      <Box key={c} sx={{ marginRight: 2, marginBottom: 2 }}>
+                        <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} allTags={allTags} />
                       </Box>
                     ))}
                   </Flex>
