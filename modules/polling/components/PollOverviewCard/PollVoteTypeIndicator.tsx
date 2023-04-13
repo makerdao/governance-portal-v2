@@ -13,7 +13,7 @@ import {
   hasVictoryConditionMajority,
   hasVictoryConditionPlurality
 } from 'modules/polling/helpers/utils';
-import { Poll } from 'modules/polling/types';
+import { PollListItem } from 'modules/polling/types';
 import { Box, Flex, Text, Heading } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
@@ -74,7 +74,7 @@ const PollTypesModal = ({ iconName }) => {
   );
 };
 
-export function PollVoteTypeIndicator({ poll }: { poll: Poll }): React.ReactElement {
+export function PollVoteTypeIndicator({ poll }: { poll: PollListItem }): React.ReactElement {
   const isRanked = hasVictoryConditionInstantRunOff(poll.parameters.victoryConditions);
   const isPlurality = hasVictoryConditionPlurality(poll.parameters.victoryConditions);
   const isApproval = hasVictoryConditionApproval(poll.parameters.victoryConditions);

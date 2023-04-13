@@ -11,16 +11,18 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import { Poll } from 'modules/polling/types';
+import { PollListItem } from 'modules/polling/types';
+import { TagCount } from 'modules/app/types/tag';
 
 type Props = {
-  activePolls: Poll[];
-  allPolls: Poll[];
+  activePolls: PollListItem[];
+  endedPolls: PollListItem[];
+  allTags: TagCount[];
 };
 
-export const PollsOverviewLanding = ({ activePolls, allPolls }: Props): JSX.Element => {
+export const PollsOverviewLanding = ({ activePolls, endedPolls, allTags }: Props): JSX.Element => {
   const hasActivePolls = activePolls.length > 0;
-  const pollsToDisplay = hasActivePolls ? activePolls : allPolls.slice(0, 2);
+  const pollsToDisplay = hasActivePolls ? activePolls : endedPolls;
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>
@@ -34,7 +36,13 @@ export const PollsOverviewLanding = ({ activePolls, allPolls }: Props): JSX.Elem
         <ErrorBoundary componentName="Active Polls">
           <Grid gap={4} columns={[1, 1, 1, 2]}>
             {pollsToDisplay.map(poll => (
-              <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
+              <PollOverviewCard
+                key={poll.pollId}
+                poll={poll}
+                allTags={allTags}
+                reviewPage={false}
+                showVoting={false}
+              />
             ))}
           </Grid>
         </ErrorBoundary>

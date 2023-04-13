@@ -12,7 +12,7 @@ import { ABSTAIN } from '../polling.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Poll } from '../types';
+import { PollListItem } from '../types';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -26,7 +26,7 @@ const ChoiceSummary = ({
   showReviewButton,
   ...props
 }: {
-  poll: Poll;
+  poll: PollListItem;
   edit: () => void;
   showActions: boolean;
   showReviewButton?: boolean;

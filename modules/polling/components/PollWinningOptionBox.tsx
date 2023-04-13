@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React from 'react';
-import { Poll, PollTally, PollVictoryConditionComparison } from '../types';
+import { PollListItem, PollTally, PollVictoryConditionComparison } from '../types';
 import { Flex } from 'theme-ui';
 import {
   isActivePoll,
@@ -27,7 +27,7 @@ export default function PollWinningOptionBox({
   tally,
   poll
 }: {
-  poll: Poll;
+  poll: PollListItem;
   tally: PollTally;
 }): React.ReactElement {
   const isFinishedWithNoWinner = !tally.winner && !isActivePoll(poll);

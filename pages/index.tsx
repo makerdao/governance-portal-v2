@@ -10,7 +10,6 @@ import { useMemo, useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from 'modules/home/components/ViewMore';
@@ -30,7 +29,6 @@ import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'lib/bigNumberJs';
-import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
@@ -48,7 +46,18 @@ import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAllDelegates } from 'modules/gql/hooks/useAllDelegates';
 
-const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInChief }: LandingPageData) => {
+const LandingPage = ({
+  proposals,
+  activePolls,
+  endedPolls,
+  pollStats,
+  pollTags,
+  delegates,
+  stats,
+  mkrOnHat,
+  hat,
+  mkrInChief
+}: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
@@ -70,10 +79,6 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
   // account
   const { account, votingAccount } = useAccount();
-
-  // polls
-  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
-  const pollCategories = getCategories(polls);
 
   // delegates
   const topDelegates = recognizedDelegates
@@ -146,7 +151,7 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
   return (
     <div>
-      {delegates.length === 0 && polls.length === 0 && (
+      {delegates.length === 0 && activePolls.length === 0 && endedPolls.length === 0 && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -220,7 +225,12 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
             <section>
               <ErrorBoundary componentName="Governance Stats">
-                <GovernanceStats polls={polls} stats={stats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
+                <GovernanceStats
+                  pollStats={pollStats}
+                  stats={stats}
+                  mkrOnHat={mkrOnHat}
+                  mkrInChief={mkrInChief}
+                />
               </ErrorBoundary>
             </section>
 
@@ -242,9 +252,9 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
               </Sticky>
               <Box ref={voteRef} />
               <Box sx={{ mt: 3 }}>
-                <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+                <PollsOverviewLanding activePolls={activePolls} endedPolls={endedPolls} allTags={pollTags} />
               </Box>
-              <PollCategoriesLanding pollCategories={pollCategories} />
+              <PollCategoriesLanding pollCategories={pollTags} />
             </section>
 
             <section id="delegate">
@@ -298,7 +308,10 @@ const LandingPage = ({ proposals, polls, delegates, stats, mkrOnHat, hat, mkrInC
 
 export default function Index({
   proposals: prefetchedProposals,
-  polls: prefetchedPolls,
+  activePolls: prefetchedActivePolls,
+  endedPolls: prefetchedEndedPolls,
+  pollStats: prefetchedPollStats,
+  pollTags: prefetchedPollTags,
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
@@ -309,7 +322,10 @@ export default function Index({
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,
-        polls: prefetchedPolls,
+        activePolls: prefetchedActivePolls,
+        endedPolls: prefetchedEndedPolls,
+        pollStats: prefetchedPollStats,
+        pollTags: prefetchedPollTags,
         mkrOnHat: prefetchedMkrOnHat,
         hat: prefetchedHat,
         mkrInChief: prefetchedMkrInChief
@@ -341,7 +357,12 @@ export default function Index({
 
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
-    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    activePolls: isDefaultNetwork(network) ? prefetchedActivePolls : data?.activePolls || [],
+    endedPolls: isDefaultNetwork(network) ? prefetchedEndedPolls : data?.endedPolls || [],
+    pollStats: isDefaultNetwork(network)
+      ? prefetchedPollStats
+      : data?.pollStats || { active: 0, finished: 0, total: 0 },
+    pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
     delegates: delegatesData.data?.delegates ?? [],
     stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
@@ -353,15 +374,17 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
-    SupportedNetworks.MAINNET
-  );
+  const { proposals, activePolls, endedPolls, pollStats, pollTags, mkrOnHat, hat, mkrInChief } =
+    await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 5 * 60, // allow revalidation every 30 minutes
     props: {
       proposals,
-      polls,
+      activePolls,
+      endedPolls,
+      pollStats,
+      pollTags,
       mkrOnHat,
       hat,
       mkrInChief

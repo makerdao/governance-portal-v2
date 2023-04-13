@@ -20,7 +20,7 @@ type Store = {
     title: null | string;
     startDate: null | Date;
     endDate: null | Date;
-    categoryFilter: null | { [category: string]: boolean };
+    categoryFilter: string[];
     pollVictoryCondition: null | { [type: string]: boolean };
     showPollActive: boolean;
     showPollEnded: boolean;
@@ -32,7 +32,7 @@ type Store = {
   setTitle: (title: null | string) => void;
   setStartDate: (type: 'poll' | 'executive', startDate: Date | null) => void;
   setEndDate: (type: 'poll' | 'executive', endDate: Date | null) => void;
-  setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
+  setCategoryFilter: (categoryFilter: string[]) => void;
   setPollVictoryCondition: (pollVictoryCondition: { [type: string]: boolean }) => void;
   setShowPollActive: (showActive: boolean) => void;
   setShowPollEnded: (ended: boolean) => void;
@@ -49,7 +49,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     title: null,
     startDate: null,
     endDate: null,
-    categoryFilter: null,
+    categoryFilter: [],
     pollVictoryCondition: null,
     showPollActive: false,
     showPollEnded: false
@@ -96,7 +96,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         title: null,
         startDate: null,
         endDate: null,
-        categoryFilter: null,
+        categoryFilter: [],
         pollVictoryCondition: null,
         showPollActive: false,
         showPollEnded: false

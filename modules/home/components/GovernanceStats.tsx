@@ -6,24 +6,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useMemo } from 'react';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
-import { Poll } from 'modules/polling/types';
 import { DelegatesAPIStats } from 'modules/delegates/types';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
 
 type Props = {
-  polls: Poll[];
+  pollStats: PollsResponse['stats'];
   stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   mkrInChief?: string;
 };
 
-export function GovernanceStats({ polls, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
-  const activePollCount = useMemo(() => polls.filter(poll => isActivePoll(poll)).length, [polls]);
-
+export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
   const infoUnits = [
     {
       title: 'MKR on Hat',
@@ -31,7 +27,7 @@ export function GovernanceStats({ polls, stats, mkrOnHat, mkrInChief }: Props): 
     },
     {
       title: 'Active Polls',
-      value: polls ? activePollCount.toString() : <Skeleton />
+      value: pollStats ? pollStats.active.toString() : <Skeleton />
     },
     {
       title: 'Recognized Delegates',

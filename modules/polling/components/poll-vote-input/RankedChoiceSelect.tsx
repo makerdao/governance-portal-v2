@@ -14,13 +14,13 @@ import map from 'lodash/map';
 import omitBy from 'lodash/omitBy';
 
 import { getNumberWithOrdinal } from 'lib/utils';
-import { Poll } from 'modules/polling/types';
+import { PollListItem } from 'modules/polling/types';
 import Stack from '../../../app/components/layout/layouts/Stack';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 type RankedChoiceSelectProps = {
-  poll: Poll;
+  poll: PollListItem;
   choice: number[] | null;
   setChoice: (choices: number[]) => void;
 };

@@ -7,10 +7,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import TagComponent from 'modules/app/components/Tag';
-import { Tag } from 'modules/app/types/tag';
+import { TagCount } from 'modules/app/types/tag';
 import { Box } from 'theme-ui';
 
-export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => void }): React.ReactElement {
+export function PollCategoryTag({
+  tag,
+  onClick,
+  allTags
+}: {
+  tag: string;
+  onClick?: () => void;
+  allTags: TagCount[];
+}): React.ReactElement {
+  const foundTag = allTags.find(t => t.id === tag);
+
   const categories = {
     'collateral-onboard': {
       color: 'tagColorOne',
@@ -120,19 +130,21 @@ export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => vo
     }
   };
 
-  return (
+  return foundTag ? (
     <Box
       sx={{
         cursor: onClick ? 'pointer' : 'inherit'
       }}
       onClick={onClick}
-      title={`See all ${tag.id} polls`}
+      title={`See all ${foundTag.id} polls`}
     >
       <TagComponent
-        tag={tag}
-        color={categories[tag.id]?.color}
-        backgroundColor={categories[tag.id]?.backgroundColor}
+        tag={foundTag}
+        color={categories[foundTag.id]?.color}
+        backgroundColor={categories[foundTag.id]?.backgroundColor}
       />
     </Box>
+  ) : (
+    <></>
   );
 }
