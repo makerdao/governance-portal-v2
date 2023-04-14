@@ -38,18 +38,6 @@ async function main() {
     );
 
     console.log('Downloaded poll tags.');
-
-    //delegate tags
-    const urlDelegateTags =
-      'https://raw.githubusercontent.com/makerdao/community/master/governance/delegates/meta/tags.json';
-    const tagsDelegates = await fetch(urlDelegateTags);
-    const dataTagsDelegates = await tagsDelegates.json();
-    fs.writeFileSync(
-      './modules/tags/constants/delegates-tags-definitions.json',
-      JSON.stringify(dataTagsDelegates, null, 2)
-    );
-
-    console.log('Downloaded delegate tags.');
   } catch (e) {
     console.error('Error downloading info from the community repo', e.message);
   }
