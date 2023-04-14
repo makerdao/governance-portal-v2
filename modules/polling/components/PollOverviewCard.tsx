@@ -47,7 +47,7 @@ type Props = {
   children?: React.ReactNode;
   hideTally?: boolean;
   disableTagFilter?: boolean;
-  onVisitPoll: () => void;
+  onVisitPoll?: () => void;
 };
 export default function PollOverviewCard({
   poll,
@@ -219,7 +219,7 @@ export default function PollOverviewCard({
                       sx={{
                         display: reviewPage ? 'none' : undefined
                       }}
-                      onClick={() => onVisitPoll()}
+                      onClick={() => onVisitPoll?.()}
                     >
                       View Details
                     </Button>
