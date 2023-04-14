@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import React from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
-import shallow from 'zustand/shallow';
 import {
   isActivePoll,
   isResultDisplayApprovalBreakdown,
@@ -34,7 +33,6 @@ import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { ListVoteSummary } from './vote-summary/ListVoteSummary';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 import { TagCount } from 'modules/app/types/tag';
@@ -48,6 +46,8 @@ type Props = {
   showVoting?: boolean;
   children?: React.ReactNode;
   hideTally?: boolean;
+  disableTagFilter?: boolean;
+  onVisitPoll: () => void;
 };
 export default function PollOverviewCard({
   poll,
@@ -56,7 +56,9 @@ export default function PollOverviewCard({
   showVoting,
   disableVoting = false,
   children,
-  hideTally = false
+  onVisitPoll,
+  hideTally = false,
+  disableTagFilter = false
 }: Props): JSX.Element {
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -64,14 +66,6 @@ export default function PollOverviewCard({
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
   const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
-  const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
-    state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
-    shallow
-  );
-
-  function onClickCategory(category) {
-    setCategoryFilter({ ...categoryFilter, [category.id]: !(categoryFilter || {})[category.id] });
-  }
 
   const myComment = comments?.find(c => {
     return c.comment.hotAddress.toLowerCase() === account?.toLowerCase();
@@ -129,18 +123,22 @@ export default function PollOverviewCard({
                         styles={{ mb: 2 }}
                       />
                       <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                        <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
+                        <CardTitle
+                          title={poll.title}
+                          dataTestId="poll-overview-card-poll-title"
+                          onVisit={onVisitPoll}
+                        />
                       </InternalLink>
                     </Box>
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                      <CardSummary text={poll.summary} styles={{ my: 2 }} />
+                      <CardSummary text={poll.summary} styles={{ my: 2 }} onVisit={onVisitPoll} />
                     </InternalLink>
                   </Box>
 
                   <Flex sx={{ flexWrap: 'wrap' }}>
                     {poll.tags.map(c => (
                       <Box key={c} sx={{ marginRight: 2, marginBottom: 2 }}>
-                        <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} allTags={allTags} />
+                        <PollCategoryTag tag={c} allTags={allTags} disableTagFilter={disableTagFilter} />
                       </Box>
                     ))}
                   </Flex>
@@ -221,6 +219,7 @@ export default function PollOverviewCard({
                       sx={{
                         display: reviewPage ? 'none' : undefined
                       }}
+                      onClick={() => onVisitPoll()}
                     >
                       View Details
                     </Button>
@@ -243,7 +242,7 @@ export default function PollOverviewCard({
                       <PollVoteTypeIndicator poll={poll} />
                     </Flex>
                   )}
-                  {tally && tally.totalMkrParticipation > 0 && (
+                  {tally && +tally.totalMkrParticipation > 0 && (
                     <InternalLink
                       href={`/polling/${poll.slug}`}
                       hash="vote-breakdown"

@@ -7,19 +7,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import TagComponent from 'modules/app/components/Tag';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import shallow from 'zustand/shallow';
 import { TagCount } from 'modules/app/types/tag';
 import { Box } from 'theme-ui';
 
 export function PollCategoryTag({
   tag,
-  onClick,
-  allTags
+  allTags,
+  disableTagFilter = false
 }: {
   tag: string;
-  onClick?: () => void;
   allTags: TagCount[];
+  disableTagFilter?: boolean;
 }): React.ReactElement {
   const foundTag = allTags.find(t => t.id === tag);
+
+  const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
+    state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
+    shallow
+  );
 
   const categories = {
     'collateral-onboard': {
@@ -133,9 +140,17 @@ export function PollCategoryTag({
   return foundTag ? (
     <Box
       sx={{
-        cursor: onClick ? 'pointer' : 'inherit'
+        cursor: !disableTagFilter ? 'pointer' : 'inherit'
       }}
-      onClick={onClick}
+      onClick={() => {
+        if (!disableTagFilter) {
+          setCategoryFilter(
+            categoryFilter.includes(foundTag.id)
+              ? categoryFilter.filter(c => c !== foundTag.id)
+              : [...categoryFilter, foundTag.id]
+          );
+        }
+      }}
       title={`See all ${foundTag.id} polls`}
     >
       <TagComponent

@@ -47,6 +47,8 @@ export const pollSlugToIdsCacheKey = 'poll-slug-to-ids';
 
 export const pollListCacheKey = 'poll-list';
 
+export const partialActivePollsCacheKey = 'partial-active-polls';
+
 export const pollDetailsCacheKey = 'poll-details';
 
 export const isPollsHashValidCacheKey = 'is-polls-hash-valid';

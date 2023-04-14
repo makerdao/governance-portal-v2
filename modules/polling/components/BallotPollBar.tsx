@@ -9,16 +9,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Text, Flex } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 
-import { Poll } from 'modules/polling/types';
-import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 
-type Props = { polls: Poll[]; activePolls: Poll[]; voted?: boolean };
+type Props = {
+  activePollCount: number;
+  partialActivePolls: { pollId: number; endDate: Date }[];
+  voted?: boolean;
+};
 
-export default function BallotPollBar({ polls, activePolls, voted, ...props }: Props): JSX.Element {
+export default function BallotPollBar({
+  activePollCount,
+  partialActivePolls,
+  voted,
+  ...props
+}: Props): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
   const { ballot, ballotCount, previousBallot } = useContext(BallotContext);
   const { data: allUserVotes } = useAllUserVotes(
@@ -28,14 +35,13 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
   const ballotToPick = voted ? previousBallot : ballot;
   const ballotLength = voted ? Object.keys(previousBallot).length : ballotCount;
 
-  const allUserPolls: Poll[] = allUserVotes
+  const allUserVotesActiveCount = allUserVotes
     ? allUserVotes
-        .map(vote => findPollById(polls, vote.pollId.toString()))
-        .filter((vote): vote is Poll => Boolean(vote))
-    : [];
+        .map(vote => partialActivePolls.find(poll => poll.pollId === vote.pollId))
+        .filter(poll => !!poll && new Date(poll.endDate) > new Date()).length
+    : 0;
 
-  const allUserVotesActive = allUserPolls.filter(poll => isActivePoll(poll));
-  const availablePollsLength = activePolls.length - allUserVotesActive.length;
+  const availablePollsLength = activePollCount - allUserVotesActiveCount;
 
   const edits = Object.keys(ballotToPick).filter(pollId => {
     const existingVote = allUserVotes?.find(vote => vote.pollId === parseInt(pollId));

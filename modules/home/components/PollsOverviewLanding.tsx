@@ -42,6 +42,7 @@ export const PollsOverviewLanding = ({ activePolls, endedPolls, allTags }: Props
                 allTags={allTags}
                 reviewPage={false}
                 showVoting={false}
+                disableTagFilter={true}
               />
             ))}
           </Grid>

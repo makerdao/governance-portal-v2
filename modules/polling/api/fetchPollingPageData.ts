@@ -6,22 +6,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
+import { getPartialActivePolls, getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { PollInputFormat, PollOrderByEnum, PollStatusEnum } from '../polling.constants';
 import { PollsPaginatedResponse } from '../types/pollsResponse';
+import { PollingPageProps } from 'pages/polling';
 
 export type PollsQueryParams = {
   page?: number;
   orderBy?: PollOrderByEnum;
-  status?: PollStatusEnum;
+  status?: PollStatusEnum | null;
   title?: string | null;
   queryTags?: string[];
-  type?: PollInputFormat[];
-  startDate?: Date;
-  endDate?: Date;
+  type?: PollInputFormat[] | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
 };
 
 export type PollingReviewPageData = {
@@ -32,11 +33,11 @@ export async function fetchPollingPageData(
   network: SupportedNetworks,
   useApi = false,
   queryParams?: PollsQueryParams
-): Promise<PollsPaginatedResponse> {
+): Promise<PollingPageProps> {
   const pageSize = 30;
   const page = queryParams?.page || 1;
   const orderBy = queryParams?.orderBy || PollOrderByEnum.nearestEnd;
-  const status = queryParams?.status || PollStatusEnum.active;
+  const status = queryParams?.status || null;
   const title = queryParams?.title || null;
   const queryTags = queryParams?.queryTags || null;
   const type = queryParams?.type || null;
@@ -47,7 +48,7 @@ export async function fetchPollingPageData(
     ? await fetchJson(
         `/api/polling/v2/all-polls?network=${network}&pageSize=${pageSize}&page=${page}&orderBy=${orderBy}&status=${status}${
           title ? '&title=' + title : ''
-        }${queryTags ? '&tags=' + queryTags.join(',') : ''}${type ? '&type=' + type : ''}${
+        }${queryTags?.length ? '&tags=' + queryTags.join(',') : ''}${type?.length ? '&type=' + type : ''}${
           startDate ? '&startDate=' + startDate : ''
         }${endDate ? '&endDate=' + endDate : ''}`
       )
@@ -64,10 +65,13 @@ export async function fetchPollingPageData(
         endDate
       });
 
+  const partialActivePolls = await getPartialActivePolls(network);
+
   return {
     polls,
     tags,
     stats,
-    paginationInfo
+    paginationInfo,
+    partialActivePolls
   };
 }

@@ -38,7 +38,8 @@ export const POLL_VOTE_TYPES_ARRAY: PollVoteType[] = [
 export enum PollInputFormat {
   singleChoice = 'single-choice',
   rankFree = 'rank-free',
-  chooseFree = 'choose-free'
+  chooseFree = 'choose-free',
+  majority = 'majority'
 }
 
 export enum PollVictoryConditions {

@@ -305,7 +305,6 @@ export default function Index({
 }: LandingPageData): JSX.Element {
   const { network } = useWeb3();
   const [delegatesData, delegatesInfo] = useLandingPageDelegates();
-
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,

@@ -23,6 +23,12 @@ export type PollsResponse = {
     active: number;
     finished: number;
     total: number;
+    type?: {
+      plurality: number;
+      rankChoice: number;
+      majority: number;
+      approval: number;
+    };
   };
 };
 

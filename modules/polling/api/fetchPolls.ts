@@ -25,6 +25,7 @@ import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql
 import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
 import {
+  partialActivePollsCacheKey,
   getAllPollsCacheKey,
   isPollsHashValidCacheKey,
   pollDetailsCacheKey,
@@ -33,7 +34,12 @@ import {
   pollSlugToIdsCacheKey
 } from 'modules/cache/constants/cache-keys';
 import { getPollTagsMapping, getPollTags } from './getPollTags';
-import { AGGREGATED_POLLS_FILE_URL, PollStatusEnum, POLLS_HASH_FILE_URL } from '../polling.constants';
+import {
+  AGGREGATED_POLLS_FILE_URL,
+  PollStatusEnum,
+  POLLS_HASH_FILE_URL,
+  PollInputFormat
+} from '../polling.constants';
 import { ONE_WEEK_IN_MS, THIRTY_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { sortPollsBy } from '../helpers/sortPolls';
 import { TagCount } from 'modules/app/types/tag';
@@ -206,11 +212,15 @@ export async function checkCachedPollsValidity(
 export async function refetchPolls(
   network: SupportedNetworks,
   githubHash: string
-): Promise<{ pollList: PollListItem[]; allPolls: Poll[] }> {
+): Promise<{
+  pollList: PollListItem[];
+  allPolls: Poll[];
+  partialActivePolls: { pollId: number; endDate: Date }[];
+}> {
   const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL);
   const allPolls = await allPollsRes.json();
 
-  const pollList = allPolls.map(poll => {
+  const pollList: PollListItem[] = allPolls.map(poll => {
     const { pollId, startDate, endDate, slug, parameters, summary, title, options, tags } = poll;
     return {
       pollId,
@@ -226,9 +236,14 @@ export async function refetchPolls(
     };
   });
 
+  const partialActivePolls = pollList
+    .filter(poll => new Date(poll.endDate) > new Date())
+    .map(({ pollId, endDate }) => ({ pollId, endDate }));
+
   cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS, true);
   cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS, true);
   cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS, true);
+  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS, true);
 
   const pollTags = getPollTags();
 
@@ -259,7 +274,24 @@ export async function refetchPolls(
   cacheSet(pollDetailsCacheKey, stringifiedPolls, network, ONE_WEEK_IN_MS, true, 'HSET');
   cacheSet(pollSlugToIdsCacheKey, JSON.stringify(pollSlugToIds), network, ONE_WEEK_IN_MS, true);
 
-  return { pollList, allPolls: parsedPolls };
+  return { pollList, allPolls: parsedPolls, partialActivePolls };
+}
+
+export async function getPartialActivePolls(
+  network: SupportedNetworks
+): Promise<{ pollId: number; endDate: Date }[]> {
+  const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
+
+  if (cachedPollsAreValid) {
+    const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, undefined, true);
+    if (cachedPartialActivePolls) {
+      return JSON.parse(cachedPartialActivePolls);
+    }
+  }
+
+  const { partialActivePolls } = await refetchPolls(network, githubHash as string);
+
+  return partialActivePolls;
 }
 
 export async function getPollList(network: SupportedNetworks): Promise<PollListItem[]> {
@@ -319,15 +351,46 @@ export function filterPollList(
     // Finally, return the number of entries based on the `page` and `pageSize` parameters
     .slice((page - 1) * pageSize, page * pageSize);
 
-  const activePollsCount = pollList.filter(
-    p => new Date() >= new Date(p.startDate) && new Date() < new Date(p.endDate)
-  ).length;
-  const allPollsCount = pollList.length;
-  const endedPollsCount = allPollsCount - activePollsCount;
-
   const totalCount = filteredPolls.length;
   const numPages = Math.ceil(filteredPolls.length / pageSize);
   const hasNextPage = page < numPages;
+
+  const pollStats = {
+    active: 0,
+    finished: 0,
+    total: pollList.length,
+    type: {
+      plurality: 0,
+      rankChoice: 0,
+      majority: 0,
+      approval: 0
+    }
+  };
+
+  pollList.forEach(poll => {
+    if (new Date(poll.endDate) > new Date()) {
+      pollStats.active++;
+    } else {
+      pollStats.finished++;
+    }
+
+    switch (poll.type) {
+      case PollInputFormat.singleChoice:
+        pollStats.type.plurality++;
+        break;
+      case PollInputFormat.rankFree:
+        pollStats.type.rankChoice++;
+        break;
+      case PollInputFormat.chooseFree:
+        pollStats.type.approval++;
+        break;
+      case PollInputFormat.majority:
+        pollStats.type.majority++;
+        break;
+      default:
+        break;
+    }
+  });
 
   return {
     paginationInfo: {
@@ -336,11 +399,7 @@ export function filterPollList(
       numPages,
       hasNextPage
     },
-    stats: {
-      total: allPollsCount,
-      active: activePollsCount,
-      finished: endedPollsCount
-    },
+    stats: pollStats,
     polls: sortedPolls
   };
 }

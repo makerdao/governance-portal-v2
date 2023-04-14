@@ -8,57 +8,50 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { Poll } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import { useMemo } from 'react';
-import { filterPolls } from '../../helpers/filterPolls';
-import { PollVictoryConditions } from 'modules/polling/polling.constants';
-import { findVictoryCondition } from 'modules/polling/helpers/utils';
+import { PollInputFormat } from 'modules/polling/polling.constants';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
 
 const VICTORY_CONDITIONS = [
   {
     name: 'Plurality',
-    key: PollVictoryConditions.plurality
+    key: PollInputFormat.singleChoice
   },
   {
     name: 'Ranked Choice',
-    key: PollVictoryConditions.instantRunoff
+    key: PollInputFormat.rankFree
   },
   {
     name: 'Majority',
-    key: PollVictoryConditions.majority
+    key: PollInputFormat.majority
   },
   {
     name: 'Approval',
-    key: PollVictoryConditions.approval
+    key: PollInputFormat.chooseFree
   }
 ];
 
-export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
-  const [pollFilters, pollVictoryCondition, setPollVictoryCondition] = useUiFiltersStore(
-    state => [state.pollFilters, state.pollFilters.pollVictoryCondition, state.setPollVictoryCondition],
+export function PollTypeFilter({
+  stats,
+  ...props
+}: {
+  stats: PollsResponse['stats'];
+  sx?: ThemeUIStyleObject;
+}): JSX.Element {
+  const [pollVictoryCondition, setPollVictoryCondition] = useUiFiltersStore(
+    state => [state.pollFilters.pollVictoryCondition, state.setPollVictoryCondition],
     shallow
   );
 
-  const itemsSelected = Object.values(pollVictoryCondition || {}).filter(i => !!i);
-
-  const filteredPolls = useMemo(() => {
-    return filterPolls({
-      polls,
-      pollFilters: {
-        ...pollFilters,
-        pollVictoryCondition: null
-      }
-    });
-  }, [polls, pollFilters]);
+  const itemsSelected = pollVictoryCondition?.length || 0;
 
   return (
     <FilterButton
-      name={() => `Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : ''}`}
+      name={() => `Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-type"
-      active={itemsSelected.length > 0}
+      active={itemsSelected > 0}
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
@@ -68,19 +61,19 @@ export function PollTypeFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeU
               <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(pollVictoryCondition && pollVictoryCondition[type.key]) || false}
+                  checked={pollVictoryCondition.includes(type.key)}
                   onChange={event => {
-                    setPollVictoryCondition({ ...pollVictoryCondition, [type.key]: event.target.checked });
+                    setPollVictoryCondition(
+                      event.target.checked
+                        ? [...pollVictoryCondition, type.key]
+                        : pollVictoryCondition.filter(vc => vc !== type.key)
+                    );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{type.name}</Text>
                   <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>
-                    {
-                      filteredPolls.filter(
-                        i => findVictoryCondition(i.parameters.victoryConditions, type.key).length > 0
-                      ).length
-                    }
+                    {stats.type ? stats.type[type.key] : 0}
                   </Text>
                 </Flex>
               </Label>
