@@ -101,6 +101,12 @@ const Delegates = ({
     setFetchOnLoad(false);
   };
 
+  const handleLoadAllClick = () => {
+    setLoadAllDelegates(true);
+    setEndOfList(false);
+    setShouldLoadMore(true);
+  };
+
   const [loading, setLoading] = useState(fetchOnLoad);
   const [isRendering, setIsRendering] = useState(true);
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
@@ -108,6 +114,8 @@ const Delegates = ({
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [delegateCvcsLength, setDelegateCvcsLength] = useState(delegateCvcs.length);
+  const [endOfList, setEndOfList] = useState(false);
+  const [loadAllDelegates, setLoadAllDelegates] = useState(false);
   const [filters, setFilters] = useState({
     page: 1,
     sort,
@@ -138,12 +146,16 @@ const Delegates = ({
 
   useEffect(() => {
     if (shouldLoadMore) {
-      if (paginationInfo.hasNextPage) {
+      if (paginationInfo.hasNextPage && (shadowDelegates.length < 30 || loadAllDelegates)) {
         setLoading(true);
         setFilters(({ page: prevPage, ...prevFilters }) => ({
           ...prevFilters,
           page: prevPage + 1
         }));
+
+        if (shadowDelegates.length > 0 && !loadAllDelegates) {
+          setEndOfList(true);
+        }
       } else {
         setShouldLoadMore(false);
       }
@@ -217,7 +229,15 @@ const Delegates = ({
 
   // Load more on scroll
   const delegatesLoaderRef = useRef<HTMLDivElement>(null);
-  useIntersectionObserver(delegatesLoaderRef, () => setShouldLoadMore(true), '0px');
+  useIntersectionObserver(
+    delegatesLoaderRef,
+    () => {
+      if (!endOfList) {
+        setShouldLoadMore(true);
+      }
+    },
+    '0px'
+  );
 
   const [constitutionalDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
     const constitutional = delegates.filter(
@@ -375,6 +395,22 @@ const Delegates = ({
                   ))}
                 </Stack>
               )}
+
+              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text as="p" sx={{ color: 'onSecondary' }}>
+                  Looking for a specific delegate? Try using the search bar above!
+                </Text>
+                <Button
+                  variant="outline"
+                  sx={{ display: 'block', color: 'onSecondary', marginLeft: 'auto' }}
+                  disabled={loadAllDelegates}
+                  onClick={handleLoadAllClick}
+                >
+                  <Text sx={{ mr: 1 }}>Load all delegates</Text>
+                  <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} />
+                </Button>
+              </Flex>
+
               {loading && (
                 <Flex sx={{ justifyContent: 'center' }}>
                   <SkeletonThemed circle={true} width={50} height={50} />
