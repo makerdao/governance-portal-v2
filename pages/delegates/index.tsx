@@ -96,6 +96,7 @@ const Delegates = ({
 
   const onResetClick = () => {
     resetFilters();
+    setName('');
     resetSort();
     resetSortDirection();
     setFetchOnLoad(false);
@@ -146,16 +147,15 @@ const Delegates = ({
 
   useEffect(() => {
     if (shouldLoadMore) {
-      if (paginationInfo.hasNextPage && (shadowDelegates.length < 15 || loadAllDelegates)) {
+      if (shadowDelegates.length >= 15 && !loadAllDelegates) {
+        setEndOfList(true);
+        setShouldLoadMore(false);
+      } else if (paginationInfo.hasNextPage) {
         setLoading(true);
         setFilters(({ page: prevPage, ...prevFilters }) => ({
           ...prevFilters,
           page: prevPage + 1
         }));
-
-        if (shadowDelegates.length > 0 && !loadAllDelegates) {
-          setEndOfList(true);
-        }
       } else {
         setShouldLoadMore(false);
       }
@@ -396,20 +396,21 @@ const Delegates = ({
                 </Stack>
               )}
 
-              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text as="p" sx={{ color: 'onSecondary' }}>
-                  Looking for a specific delegate? Try using the search bar above!
-                </Text>
-                <Button
-                  variant="outline"
-                  sx={{ display: 'block', color: 'onSecondary', marginLeft: 'auto' }}
-                  disabled={loadAllDelegates}
-                  onClick={handleLoadAllClick}
-                >
-                  <Text sx={{ mr: 1 }}>Load all delegates</Text>
-                  <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} />
-                </Button>
-              </Flex>
+              {delegates.length && (
+                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text as="p" sx={{ color: 'onSecondary' }}>
+                    Looking for a specific delegate? Try using the search bar above!
+                  </Text>
+                  <Button
+                    variant="outline"
+                    sx={{ display: 'block', color: 'onSecondary', marginLeft: 'auto' }}
+                    disabled={loadAllDelegates}
+                    onClick={handleLoadAllClick}
+                  >
+                    <Text sx={{ mr: 1 }}>Load all delegates</Text>
+                  </Button>
+                </Flex>
+              )}
 
               {loading && (
                 <Flex sx={{ justifyContent: 'center' }}>
