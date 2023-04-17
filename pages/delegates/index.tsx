@@ -146,7 +146,7 @@ const Delegates = ({
 
   useEffect(() => {
     if (shouldLoadMore) {
-      if (paginationInfo.hasNextPage && (shadowDelegates.length < 30 || loadAllDelegates)) {
+      if (paginationInfo.hasNextPage && (shadowDelegates.length < 15 || loadAllDelegates)) {
         setLoading(true);
         setFilters(({ page: prevPage, ...prevFilters }) => ({
           ...prevFilters,
