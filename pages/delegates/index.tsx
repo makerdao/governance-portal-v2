@@ -401,14 +401,15 @@ const Delegates = ({
                   <Text as="p" sx={{ color: 'onSecondary' }}>
                     Looking for a specific delegate? Try using the search bar above!
                   </Text>
-                  <Button
-                    variant="outline"
-                    sx={{ display: 'block', color: 'onSecondary', marginLeft: 'auto' }}
-                    disabled={loadAllDelegates}
-                    onClick={handleLoadAllClick}
-                  >
-                    <Text sx={{ mr: 1 }}>Load all delegates</Text>
-                  </Button>
+                  {!loadAllDelegates && (
+                    <Button
+                      variant="outline"
+                      sx={{ display: 'block', color: 'onSecondary', marginLeft: 'auto' }}
+                      onClick={handleLoadAllClick}
+                    >
+                      <Text sx={{ mr: 1 }}>Load all delegates</Text>
+                    </Button>
+                  )}
                 </Flex>
               )}
 
