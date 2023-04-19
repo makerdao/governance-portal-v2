@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { ThemeUIStyleObject } from 'theme-ui';
+import { Box, ThemeUIStyleObject } from 'theme-ui';
 import { useEffect } from 'react';
 import lottie from 'lottie-web';
 
@@ -26,7 +26,7 @@ const Failed = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObject
     done && animation.addEventListener('complete', () => setTimeout(done, 200));
   }, []);
 
-  return <div sx={{ width: '100%' }} id="tx-failed-animation-container" {...props} />;
+  return <Box sx={{ width: '100%' }} id="tx-failed-animation-container" {...props} />;
 };
 
 const Success = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObject }): React.ReactElement => {
@@ -41,7 +41,7 @@ const Success = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObjec
     done && animation.addEventListener('complete', () => setTimeout(done, 200));
   }, []);
 
-  return <div sx={{ width: '100%' }} id="tx-success-animation-container" {...props} />;
+  return <Box sx={{ width: '100%' }} id="tx-success-animation-container" {...props} />;
 };
 
 const Pending = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObject }): React.ReactElement => {
@@ -56,7 +56,7 @@ const Pending = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObjec
     done && animation.addEventListener('complete', () => setTimeout(done, 200));
   }, []);
 
-  return <div sx={{ width: '100%' }} id="tx-pending-animation-container" {...props} />;
+  return <Box sx={{ width: '100%' }} id="tx-pending-animation-container" {...props} />;
 };
 
 export default {

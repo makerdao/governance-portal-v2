@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Delegate } from '../types';
+import { Delegate, DelegateInfo, DelegatePaginated } from '../types';
 import { Box, Flex, Text } from 'theme-ui';
 import { limitString } from 'lib/string';
 import { DelegatePicture } from 'modules/delegates/components';
@@ -14,13 +14,19 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { Address } from 'modules/address/components/Address';
 
-export default function DelegateAvatarName({ delegate }: { delegate: Delegate }): React.ReactElement {
+export default function DelegateAvatarName({
+  delegate,
+  onVisitDelegate
+}: {
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
+  onVisitDelegate?: () => void;
+}): React.ReactElement {
   const { account } = useAccount();
   const isOwner = account?.toLowerCase() === delegate.address.toLowerCase();
 
   return (
     <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View profile details">
-      <Flex>
+      <Flex onClick={() => onVisitDelegate?.()}>
         <DelegatePicture delegate={delegate} />
 
         <Box sx={{ ml: 2 }}>

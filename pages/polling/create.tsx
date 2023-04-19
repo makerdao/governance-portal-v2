@@ -126,7 +126,7 @@ const PollingCreate = (): React.ReactElement => {
                   tabListStyles={{ pl: [3, 4] }}
                   tabTitles={['Poll Creator', 'Poll Markdown Checker']}
                   tabPanels={[
-                    <div key={0} sx={{ p: [3, 4] }}>
+                    <Box key={0} sx={{ p: [3, 4] }}>
                       <Box>
                         <Label htmlFor="url">URL</Label>
                         <Flex sx={{ flexDirection: 'row' }}>
@@ -208,10 +208,10 @@ const PollingCreate = (): React.ReactElement => {
                           Reset Form
                         </Button>
                       </Flex>
-                    </div>,
-                    <div key={1} sx={{ p: [3, 4] }}>
+                    </Box>,
+                    <Box key={1} sx={{ p: [3, 4] }}>
                       <PollMarkdownEditor />
-                    </div>
+                    </Box>
                   ]}
                 />
                 {creating && (

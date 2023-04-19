@@ -1,3 +1,4 @@
+/* eslint-disable  react/no-unknown-property */
 /*
 
 SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>

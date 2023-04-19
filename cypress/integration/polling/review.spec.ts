@@ -354,7 +354,7 @@ describe('/polling/review page', async () => {
             .first()
             .invoke('attr', 'href')
             .then(hrefComment2 => {
-              visitPage(hrefComment1 as string, true);
+              visitPage(hrefComment1 as string);
 
               setAccount(TEST_ACCOUNTS.normal, () => {
                 // Opens the comment tab
@@ -363,7 +363,7 @@ describe('/polling/review page', async () => {
                 // Checks the comment exists
                 cy.contains(comment1Text).should('be.visible');
 
-                visitPage(hrefComment2 as string, true);
+                visitPage(hrefComment2 as string);
 
                 setAccount(TEST_ACCOUNTS.normal, () => {
                   cy.get('[data-testid="tab-Comments"]').click();

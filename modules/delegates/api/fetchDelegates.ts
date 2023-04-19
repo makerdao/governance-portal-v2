@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { fetchChainDelegates } from './fetchChainDelegates';
-import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
+import { DelegateStatusEnum, DelegateTypeEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { add, isBefore } from 'date-fns';
@@ -17,7 +17,12 @@ import {
   DelegatesAPIResponse,
   Delegate,
   DelegateContractInformation,
-  DelegateRepoInformation
+  DelegateRepoInformation,
+  DelegatesValidatedQueryParams,
+  DelegatesPaginatedAPIResponse,
+  DelegatePaginated,
+  AllDelegatesEntryWithName,
+  DelegateInfo
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -27,13 +32,20 @@ import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegationHistory';
 import { CMSProposal } from 'modules/executive/types';
 import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
-import { getDelegateTags } from './getDelegateTags';
-import { Tag } from 'modules/app/types/tag';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
 import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { delegatesQuery } from 'modules/gql/queries/delegates';
+import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
+import { fetchDelegateAddresses } from './fetchDelegateAddresses';
+import getDelegatesCounts from '../helpers/getDelegatesCounts';
+import { filterDelegateAddresses } from '../helpers/filterDelegates';
+import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
+import { CvcWithCountAndDelegates } from '../types/cvc';
+import { fetchCvcsTotalDelegated } from './fetchCvcsTotalDelegated';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -49,7 +61,6 @@ function mergeDelegateInfo({
   // check if contract is expired to assing the status
   const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
   const isExpired = isBefore(new Date(expirationDate), new Date());
-  const tags = getDelegateTags();
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
@@ -79,7 +90,6 @@ function mergeDelegateInfo({
     execSupported: undefined,
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp,
-    tags: (githubDelegate?.tags || []).map(tag => tags.find(t => t.id === tag)).filter(t => !!t) as Tag[],
     ...(previousOnChainDelegate && {
       previous: {
         address: previousOnChainDelegate.address,
@@ -302,4 +312,287 @@ export async function fetchDelegates(
   cacheSet(cacheKey, JSON.stringify(delegatesResponse), network, TEN_MINUTES_IN_MS);
 
   return delegatesResponse;
+}
+
+export async function fetchAndMergeDelegates(
+  network: SupportedNetworks
+): Promise<[DelegateRepoInformation[] | undefined, AllDelegatesEntryWithName[]]> {
+  const [{ data: githubDelegates }, allDelegateAddresses] = await Promise.all([
+    fetchGithubDelegates(network),
+    fetchDelegateAddresses(network)
+  ]);
+
+  const allDelegatesWithNamesAndLinks = allDelegateAddresses.map(delegate => {
+    const oldOwner = getPreviousOwnerFromNew(delegate.delegate, network);
+    const newOwner = getNewOwnerFromPrevious(delegate.delegate, network);
+
+    const oldContractAddress = allDelegateAddresses.find(del => del.delegate === oldOwner)?.voteDelegate;
+    const newContractAddress = allDelegateAddresses.find(del => del.delegate === newOwner)?.voteDelegate;
+
+    const ghDelegate = githubDelegates?.find(del =>
+      [delegate.voteDelegate, oldContractAddress, newContractAddress].includes(
+        del.voteDelegateAddress.toLowerCase()
+      )
+    );
+
+    const expirationDate = add(new Date(delegate.blockTimestamp), { years: 1 });
+
+    return {
+      ...delegate,
+      delegateType: ghDelegate ? DelegateTypeEnum.CONSTITUTIONAL : DelegateTypeEnum.SHADOW,
+      blockTimestamp: delegate.blockTimestamp,
+      expirationDate,
+      expired: expirationDate > new Date() ? false : true,
+      isAboutToExpire: isAboutToExpireCheck(expirationDate),
+      name: ghDelegate?.name,
+      picture: ghDelegate?.picture,
+      cvc_name: ghDelegate?.cvc_name,
+      previous:
+        oldOwner && oldContractAddress
+          ? { address: oldOwner, voteDelegateAddress: oldContractAddress }
+          : undefined,
+      next:
+        newOwner && newContractAddress
+          ? { address: newOwner, voteDelegateAddress: newContractAddress }
+          : undefined
+    };
+  });
+
+  return [githubDelegates, allDelegatesWithNamesAndLinks];
+}
+
+export async function fetchSingleDelegateInfo(
+  address: string,
+  network: SupportedNetworks
+): Promise<DelegateInfo | null> {
+  const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
+
+  const foundDelegate = allDelegatesWithNamesAndLinks.find(
+    delegate => delegate.voteDelegate.toLowerCase() === address.toLowerCase()
+  );
+
+  if (!foundDelegate) {
+    return null;
+  }
+
+  const foundGithubDelegate = githubDelegates?.find(delegate => delegate.name === foundDelegate?.name);
+
+  return {
+    name: foundDelegate.name || 'Shadow Delegate',
+    picture: foundGithubDelegate?.picture,
+    address: foundDelegate.delegate,
+    voteDelegateAddress: foundDelegate.voteDelegate,
+    status: foundGithubDelegate ? DelegateStatusEnum.constitutional : DelegateStatusEnum.shadow,
+    cuMember: foundGithubDelegate?.cuMember,
+    pollParticipation: foundGithubDelegate?.pollParticipation,
+    executiveParticipation: foundGithubDelegate?.executiveParticipation,
+    combinedParticipation: foundGithubDelegate?.combinedParticipation,
+    communication: foundGithubDelegate?.communication,
+    blockTimestamp: foundDelegate.blockTimestamp,
+    expirationDate: foundDelegate.expirationDate,
+    expired: foundDelegate.expired,
+    isAboutToExpire: foundDelegate.isAboutToExpire,
+    previous: foundDelegate.previous,
+    next: foundDelegate.next
+  };
+}
+
+export async function fetchDelegatesInfo(
+  network: SupportedNetworks,
+  constitutionalOnly: boolean,
+  includeExpired: boolean
+): Promise<DelegateInfo[]> {
+  const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
+
+  const delegatesInfo = allDelegatesWithNamesAndLinks
+    .filter(
+      delegate =>
+        (constitutionalOnly ? delegate.delegateType === DelegateTypeEnum.CONSTITUTIONAL : true) &&
+        (includeExpired ? true : !delegate.expired)
+    )
+    .filter((delegate, i, arr) =>
+      constitutionalOnly && !includeExpired ? arr.findIndex(d => d.name === delegate.name) === i : true
+    )
+    .sort((a, b) => new Date(a.blockTimestamp).getTime() - new Date(b.blockTimestamp).getTime())
+    .map(delegate => {
+      const githubDelegate = githubDelegates?.find(d => d.name === delegate.name);
+      return {
+        name: delegate.name || 'Shadow Delegate',
+        picture: githubDelegate?.picture,
+        address: delegate.delegate,
+        voteDelegateAddress: delegate.voteDelegate,
+        status: delegate.name ? DelegateStatusEnum.constitutional : DelegateStatusEnum.shadow,
+        cuMember: githubDelegate?.cuMember,
+        pollParticipation: githubDelegate?.pollParticipation,
+        executiveParticipation: githubDelegate?.executiveParticipation,
+        combinedParticipation: githubDelegate?.combinedParticipation,
+        communication: githubDelegate?.communication,
+        blockTimestamp: delegate.blockTimestamp,
+        expirationDate: delegate.expirationDate,
+        expired: delegate.expired,
+        isAboutToExpire: delegate.isAboutToExpire,
+        previous: delegate.previous,
+        next: delegate.next
+      };
+    });
+
+  return delegatesInfo;
+}
+
+export async function fetchDelegatesPaginated({
+  network,
+  pageSize,
+  page,
+  includeExpired,
+  orderBy,
+  orderDirection,
+  seed,
+  delegateType,
+  searchTerm,
+  cvcs
+}: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
+  const chainId = networkNameToChainId(network);
+
+  const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
+
+  const constitutionalDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
+  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, cvcs, searchTerm);
+  const { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
+    allDelegatesWithNamesAndLinks
+  );
+
+  const cvcAndCount = allDelegatesWithNamesAndLinks
+    .filter(delegate => !delegate.expired && delegate.name && delegate.cvc_name)
+    .filter((delegate, i, thisArr) => thisArr.findIndex(del => del.name === delegate.name) === i)
+    .reduce((acc, cur) => {
+      if (!cur.cvc_name) return acc;
+
+      const prev = acc.findIndex(cvc => cvc.cvc_name === cur.cvc_name);
+      if (prev !== -1) {
+        acc[prev].count += 1;
+        acc[prev].delegates.push(cur.voteDelegate);
+        if (cur.picture) {
+          acc[prev].picture = cur.picture;
+        }
+      } else {
+        acc.push({
+          cvc_name: cur.cvc_name,
+          count: 1,
+          delegates: [cur.voteDelegate],
+          ...(cur.picture ? { picture: cur.picture } : {})
+        });
+      }
+
+      return acc;
+    }, [] as CvcWithCountAndDelegates[]);
+
+  let delegatesQueryFilter;
+  if (delegateType !== DelegateTypeEnum.CONSTITUTIONAL && delegateType !== DelegateTypeEnum.SHADOW) {
+    delegatesQueryFilter = searchTerm || cvcs ? { voteDelegate: { in: filteredDelegates } } : null;
+  } else {
+    delegatesQueryFilter = {
+      and: [
+        {
+          voteDelegate:
+            delegateType === DelegateTypeEnum.CONSTITUTIONAL
+              ? { in: constitutionalDelegatesAddresses }
+              : { notIn: constitutionalDelegatesAddresses }
+        }
+      ]
+    };
+    (searchTerm || cvcs) && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegates } });
+  }
+
+  const delegatesQueryVariables = {
+    first: pageSize,
+    offset: (page - 1) * pageSize,
+    includeExpired,
+    orderBy,
+    orderDirection,
+    constitutionalDelegates: constitutionalDelegatesAddresses
+  };
+  if (delegatesQueryFilter) {
+    delegatesQueryVariables['filter'] = delegatesQueryFilter;
+  }
+  if (seed) {
+    delegatesQueryVariables['seed'] = seed;
+  }
+
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes, cvcStats] =
+    await Promise.all([
+      getGithubExecutives(network),
+      fetchDelegatesExecSupport(network),
+      gqlRequest<any>({
+        chainId,
+        query: delegatesQuery,
+        variables: delegatesQueryVariables
+      }),
+      gqlRequest<any>({
+        chainId,
+        query: delegationMetricsQuery
+      }),
+      fetchCvcsTotalDelegated(cvcAndCount, network)
+    ]);
+
+  const delegatesData = {
+    paginationInfo: {
+      totalCount: delegatesQueryRes.delegates.totalCount,
+      page,
+      numPages: Math.ceil(delegatesQueryRes.delegates.totalCount / pageSize),
+      hasNextPage: delegatesQueryRes.delegates.pageInfo.hasNextPage
+    },
+    stats: {
+      total: totalDelegatesCount,
+      shadow: shadowDelegatesCount,
+      constitutional: constitutionalDelegatesCount,
+      totalMKRDelegated: delegationMetricsRes.delegationMetrics.totalMkrDelegated || 0,
+      totalDelegators: +delegationMetricsRes.delegationMetrics.delegatorCount || 0
+    },
+    delegates: delegatesQueryRes.delegates.nodes.map(delegate => {
+      const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(
+        del => del.voteDelegate === delegate.voteDelegate
+      );
+
+      const githubDelegate = githubDelegates?.find(ghDelegate => ghDelegate.name === allDelegatesEntry?.name);
+
+      const votedProposals = delegatesExecSupport.data?.find(
+        del => del.voteDelegate === delegate.voteDelegate
+      )?.votedProposals;
+      const execSupported = githubExecutives.find(proposal =>
+        votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
+      );
+
+      return {
+        name: githubDelegate?.name || 'Shadow Delegate',
+        cvc_name: githubDelegate?.cvc_name,
+        voteDelegateAddress: delegate.voteDelegate,
+        address: delegate.delegate,
+        status: delegate.expired
+          ? DelegateStatusEnum.expired
+          : githubDelegate
+          ? DelegateStatusEnum.constitutional
+          : DelegateStatusEnum.shadow,
+        creationDate: new Date(delegate.creationDate),
+        expirationDate: new Date(delegate.expirationDate),
+        expired: delegate.expired,
+        isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
+        picture: githubDelegate?.picture,
+        communication: githubDelegate?.communication,
+        combinedParticipation: githubDelegate?.combinedParticipation,
+        pollParticipation: githubDelegate?.pollParticipation,
+        executiveParticipation: githubDelegate?.executiveParticipation,
+        cuMember: githubDelegate?.cuMember,
+        mkrDelegated: delegate.totalMkr,
+        delegatorCount: delegate.delegatorCount,
+        lastVoteDate: delegate.lastVoted && new Date(delegate.lastVoted),
+        proposalsSupported: votedProposals?.length || 0,
+        execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
+        previous: allDelegatesEntry?.previous,
+        next: allDelegatesEntry?.next
+      };
+    }) as DelegatePaginated[],
+    cvcs: cvcStats
+  };
+
+  return delegatesData;
 }

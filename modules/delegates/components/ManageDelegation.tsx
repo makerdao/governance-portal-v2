@@ -9,8 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Card, Box, Button, Heading } from 'theme-ui';
 import React, { useState } from 'react';
 import { Delegate } from '../types';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -27,7 +25,6 @@ export default function ManageDelegation({
   textUndelegate?: string;
 }): React.ReactElement {
   const { account } = useAccount();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATE_DETAIL);
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
@@ -46,7 +43,6 @@ export default function ManageDelegation({
             data-testid="button-delegate"
             disabled={!account}
             onClick={() => {
-              trackButtonClick('openDelegateModal');
               setShowDelegateModal(true);
             }}
             sx={{ width: '100%', height: 'auto', mb: [3] }}
@@ -60,7 +56,6 @@ export default function ManageDelegation({
             variant="primaryOutline"
             disabled={!account}
             onClick={() => {
-              trackButtonClick('openUndelegateModal');
               setShowUndelegateModal(true);
             }}
             sx={{ width: '100%', height: 'auto' }}

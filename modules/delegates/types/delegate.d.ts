@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Tag } from 'modules/app/types/tag';
-import { DelegateStatusEnum } from '../delegates.constants';
+import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
 
 export type DelegateRepoInformation = {
   voteDelegateAddress: string;
@@ -57,7 +56,6 @@ export type Delegate = {
   execSupported: CMSProposal | undefined;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
-  tags: Tag[];
   previous?: {
     address: string;
     voteDelegateAddress: string;
@@ -65,6 +63,27 @@ export type Delegate = {
   next?: {
     address: string;
     voteDelegateAddress: string;
+  };
+};
+
+export type DelegatePaginated = Omit<
+  Delegate,
+  | 'id'
+  | 'blockTimestamp'
+  | 'picture'
+  | 'description'
+  | 'lastVoteDate'
+  | 'externalUrl'
+  | 'execSupported'
+  | 'mkrLockedDelegate'
+> & {
+  picture?: string;
+  creationDate: Date;
+  delegatorCount: number;
+  lastVoteDate?: Date;
+  execSupported?: {
+    title: string;
+    address: string;
   };
 };
 
@@ -102,4 +121,51 @@ export type MKRLockedDelegateAPIResponse = {
 export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
   hash: string;
   immediateCaller: string;
+};
+
+export type DelegateExecSupport = {
+  voteDelegate: string;
+  votedProposals: string[];
+};
+
+export type AllDelegatesEntry = {
+  blockTimestamp: Date;
+  delegate: string;
+  voteDelegate: string;
+};
+
+export type AllDelegatesEntryWithName = AllDelegatesEntry & {
+  name?: string;
+  cvc_name?: string;
+  picture?: string;
+  delegateType: DelegateTypeEnum;
+  blockTimestamp: Date;
+  expirationDate: Date;
+  expired: boolean;
+  isAboutToExpire: boolean;
+  previous?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+};
+
+export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'description'> & {
+  address: string;
+  status: DelegateStatusEnum;
+  blockTimestamp: Date;
+  expirationDate: Date;
+  expired: boolean;
+  isAboutToExpire: boolean;
+  previous?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
+  next?: {
+    address: string;
+    voteDelegateAddress: string;
+  };
 };

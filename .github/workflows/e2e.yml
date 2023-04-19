@@ -13,7 +13,7 @@ on:
 jobs:
   ui-chrome-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.19.0-chrome100-ff99-edge
+    container: cypress/browsers:node16.18.0-chrome107-ff106-edge
     strategy:
       fail-fast: false
     env:
@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install node packages
         run: yarn
@@ -42,7 +42,7 @@ jobs:
       #     name: build
 
       - name: 'UI Tests - Chrome'
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v3
         with:
           # we have already installed all dependencies above
           # use (install: false) if you want to do parallel jobs.

@@ -36,8 +36,6 @@ import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import useUiFiltersStore, { PollsSortEnum } from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
@@ -83,7 +81,6 @@ const getSortCriteria = (sort: PollsSortEnum | null) => {
 };
 
 const PollingOverview = ({ polls, tags }: PollingPageData) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [pollFilters, setCategoryFilter, resetPollFilters, sort, title, setTitle] = useUiFiltersStore(
     state => [
       state.pollFilters,
@@ -149,15 +146,15 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
   }, [filteredPolls]);
 
   const loadMore = () => {
-    setNumHistoricalGroupingsLoaded(
-      numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
-        ? numHistoricalGroupingsLoaded + 2
-        : numHistoricalGroupingsLoaded
+    setNumHistoricalGroupingsLoaded(prevNumHistoricalGroupingsLoaded =>
+      prevNumHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
+        ? prevNumHistoricalGroupingsLoaded + 2
+        : prevNumHistoricalGroupingsLoaded
     );
   };
 
   // Load more on scroll
-  useIntersectionObserver(loader, loadMore);
+  useIntersectionObserver(showHistorical ? loader : null, loadMore);
 
   useEffect(() => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
@@ -259,7 +256,6 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                         Ended Polls
                         <Button
                           onClick={() => {
-                            trackButtonClick('hideHistoricalPolls');
                             setShowHistorical(false);
                           }}
                           variant="mutedOutline"
@@ -291,7 +287,6 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                 ) : (
                   <Button
                     onClick={() => {
-                      trackButtonClick('showHistoricalPolls');
                       setShowHistorical(true);
                     }}
                     variant="outline"

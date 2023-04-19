@@ -6,11 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
-
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { Proposal } from 'modules/executive/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
@@ -28,6 +24,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *   get:
  *     tags:
  *     - "executive"
+ *     summary: Returns all executive proposals
  *     description: Returns all executive proposals
  *     produces:
  *     - "application/json"

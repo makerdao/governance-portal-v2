@@ -6,12 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 
 /**
@@ -39,6 +37,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *   get:
  *     tags:
  *     - "polls"
+ *     summary: Returns all polls
  *     description: Returns all polls
  *     produces:
  *     - "application/json"

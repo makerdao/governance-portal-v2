@@ -18,7 +18,7 @@ interface ContextProps {
 }
 
 export const Web3ProviderContext = React.createContext<ContextProps>({
-  addConnector: (a: any) => null
+  addConnector: () => null
 });
 
 export function Web3Provider({ children }: { children: ReactNode }): React.ReactElement {

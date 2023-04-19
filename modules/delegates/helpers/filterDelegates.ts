@@ -6,17 +6,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { DelegateStatusEnum } from '../delegates.constants';
-import { Delegate } from '../types';
+import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
+import { AllDelegatesEntryWithName, DelegatePaginated } from '../types';
 
 export function filterDelegates(
-  delegates: Delegate[],
+  delegates: DelegatePaginated[],
   showShadow: boolean,
   showConstitutional: boolean,
   showExpired: boolean,
   name: string | null,
   cvcs?: { [key: string]: boolean }
-): Delegate[] {
+): DelegatePaginated[] {
   return (
     delegates
       // name filter
@@ -55,8 +55,28 @@ export function filterDelegates(
         if (cvcArray.length === 0) {
           return true;
         }
-        
+
         return delegate.cvc_name && cvcArray.includes(delegate.cvc_name);
       })
   );
+}
+
+export function filterDelegateAddresses(
+  allDelegatesWithNames: AllDelegatesEntryWithName[],
+  queryCvcs: string[] | null,
+  searchTerm: string | null
+): string[] {
+  const filteredDelegates =
+    !queryCvcs && !searchTerm
+      ? allDelegatesWithNames.filter(delegate => delegate.delegateType === DelegateTypeEnum.CONSTITUTIONAL)
+      : allDelegatesWithNames.filter(
+          delegate =>
+            (searchTerm
+              ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
+              : true) &&
+            (queryCvcs ? queryCvcs.find(c => c.toLowerCase() === delegate.cvc_name?.toLowerCase()) : true)
+        );
+
+  return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());
 }

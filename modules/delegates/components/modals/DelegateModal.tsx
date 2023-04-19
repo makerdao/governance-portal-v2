@@ -9,14 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { Delegate } from '../../types';
+import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateMkr } from './InputDelegateMkr';
 import { ApprovalContent } from './Approval';
 import { TxDisplay } from './TxDisplay';
 import { ConfirmContent } from './Confirm';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
@@ -31,10 +29,11 @@ import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
-  delegate: Delegate;
-  mutateTotalStaked: () => void;
+  delegate: Delegate | DelegatePaginated | DelegateInfo;
+  mutateTotalStaked: (amount?: BigNumber) => void;
   mutateMKRDelegated: () => void;
   title?: string;
+  refetchOnDelegation?: boolean;
 };
 
 export const DelegateModal = ({
@@ -43,9 +42,9 @@ export const DelegateModal = ({
   delegate,
   mutateTotalStaked,
   mutateMKRDelegated,
-  title = 'Deposit into delegate contract'
+  title = 'Deposit into delegate contract',
+  refetchOnDelegation = true
 }: Props): JSX.Element => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
 
   const voteDelegateAddress = delegate.voteDelegateAddress;
@@ -68,7 +67,6 @@ export const DelegateModal = ({
   const [tx, resetTx] = mkrAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
   const onClose = () => {
-    trackButtonClick('closeDelegateModal');
     resetTx(null);
     onDismiss();
   };
@@ -110,7 +108,7 @@ export const DelegateModal = ({
                         onClick={() => {
                           lock(mkrToDeposit, {
                             mined: () => {
-                              mutateTotalStaked();
+                              refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToDeposit);
                               mutateMKRDelegated();
                               mutateMkrBalance();
                             }

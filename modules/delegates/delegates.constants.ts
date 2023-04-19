@@ -17,3 +17,21 @@ export enum MKRWeightTimeRanges {
   week = 'week',
   month = 'month'
 }
+
+export enum DelegateTypeEnum {
+  CONSTITUTIONAL = 'CONSTITUTIONAL',
+  SHADOW = 'SHADOW',
+  ALL = 'ALL'
+}
+
+export enum DelegateOrderByEnum {
+  DATE = 'DATE',
+  MKR = 'MKR',
+  DELEGATORS = 'DELEGATORS',
+  RANDOM = 'RANDOM'
+}
+
+export enum OrderDirectionEnum {
+  ASC = 'ASC',
+  DESC = 'DESC'
+}

@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React, { useState, useCallback } from 'react';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
@@ -79,7 +78,6 @@ const NetworkSelect = (): React.ReactElement => {
   const [showDialog, setShowDialog] = useState(false);
 
   const close = () => setShowDialog(false);
-  const bpi = useBreakpointIndex();
 
   const networkOptions = Object.keys(CHAIN_INFO)
     .filter(

@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import logger from 'lib/logger';
 import { getCacheInfo } from 'modules/cache/cache';
