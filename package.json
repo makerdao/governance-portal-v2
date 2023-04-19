@@ -57,7 +57,7 @@
     "@web3-react/metamask": "^8.0.28-beta.0",
     "@web3-react/network": "^8.0.27-beta.0",
     "@web3-react/types": "^8.0.20-beta.0",
-    "@web3-react/walletconnect": "^8.0.34-beta.0",
+    "@web3-react/walletconnect": "^8.2.0",
     "babel-plugin-superjson-next": "^0.3.0",
     "color": "^4.2.3",
     "d3-hierarchy": "^3.0.1",
