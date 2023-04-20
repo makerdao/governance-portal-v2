@@ -25,7 +25,7 @@ describe('Delegates Page', () => {
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Find the shadow delegates
       cy.contains('Shadow Delegates').should('be.visible');
-      cy.contains('aligned Delegates').should('be.visible');
+      cy.contains('Aligned Delegates').should('be.visible');
 
       // Shoudl find various delegates
       cy.get('[data-testid="delegate-card"]').should('have.length', TESTING_TOTAL_DELEGATE_COUNT);
