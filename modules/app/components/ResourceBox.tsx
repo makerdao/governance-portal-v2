@@ -100,7 +100,7 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://manual.makerdao.com/delegation/overview/what-is-delegation'
       },
       {
-        linkTitle: "What's a Constitutional Voter Committee(CVC)?",
+        linkTitle: "What's an Aligned Voter Committee(AVC)?",
         url: 'https://mips.makerdao.com/mips/details/MIP101#5-constitutional-voter-committees-cvcs-'
       },
       {
@@ -108,7 +108,7 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://mips.makerdao.com/mips/details/MIP101'
       },
       {
-        linkTitle: 'What is a Constitutional Delegate?',
+        linkTitle: 'What is an Aligned Delegate?',
         url: 'https://mips.makerdao.com/mips/details/MIP113#5-constitutional-delegates'
       },
       {

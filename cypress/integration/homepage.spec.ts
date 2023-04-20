@@ -10,7 +10,7 @@ import { formatAddress } from '../../lib/utils';
 // import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { TESTING_ACTIVE_POLLS_COUNT } from 'cypress/support/constants/polling';
 import {
-  TESTING_CONSTITUTIONAL_DELEGATE_COUNT,
+  TESTING_ALIGNED_DELEGATE_COUNT,
   TESTING_SHADOW_DELEGATE_COUNT,
   TESTING_MKR_DELEGATED_AMOUNT
 } from 'cypress/support/constants/delegates';
@@ -43,10 +43,7 @@ describe('Home Page', () => {
 
       elementContainsText('[data-testid="MKR on Hat"]', new BigNumber(TESTING_MKR_ON_HAT_AMOUNT).toFormat(0));
       elementContainsText('[data-testid="Active Polls"]', TESTING_ACTIVE_POLLS_COUNT.toString());
-      elementContainsText(
-        '[data-testid="Constitional Delegates"]',
-        TESTING_CONSTITUTIONAL_DELEGATE_COUNT.toString()
-      );
+      elementContainsText('[data-testid="Aligned Delegates"]', TESTING_ALIGNED_DELEGATE_COUNT.toString());
       elementContainsText('[data-testid="Shadow Delegates"]', TESTING_SHADOW_DELEGATE_COUNT.toString());
       elementContainsText(
         '[data-testid="MKR Delegated"]',
@@ -64,8 +61,8 @@ describe('Home Page', () => {
 
       cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', TESTING_ACTIVE_POLLS_COUNT);
 
-      // Find the Top Consitutional Delegates block
-      cy.contains('Top Consitutional Delegates').should('be.visible');
+      // Find the Top Aligned Delegates block
+      cy.contains('Top Aligned Delegates').should('be.visible');
 
       // Find the How to participate block
       cy.contains('How to participate in Maker Governance').should('be.visible');
@@ -80,9 +77,9 @@ describe('Home Page', () => {
 
       // Checks that there are enough delegates
       // TODO enable this once we have recognized delegates in the db
-      cy.get('[data-testid="top-constitutional-delegate"]')
+      cy.get('[data-testid="top-aligned-delegate"]')
         .its('length')
-        .should('be.eq', TESTING_CONSTITUTIONAL_DELEGATE_COUNT);
+        .should('be.eq', TESTING_ALIGNED_DELEGATE_COUNT);
 
       //TODO test footer stuff
 

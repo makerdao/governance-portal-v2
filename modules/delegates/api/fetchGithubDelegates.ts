@@ -44,7 +44,7 @@ async function extractGithubInformation(
 
     const {
       content,
-      data: { name, external_profile_url, tags, cvc_name }
+      data: { name, external_profile_url, tags, avc_name }
     } = matter(profileMdDoc);
 
     let metricsMdDoc;
@@ -64,8 +64,8 @@ async function extractGithubInformation(
     const html = await markdownToHtml(content);
     return {
       voteDelegateAddress: folder.name,
-      name: cvc_name ? `${cvc_name} - ${name}` : name,
-      cvc_name: cvc_name,
+      name: avc_name ? `${avc_name} - ${name}` : name,
+      avc_name: avc_name,
       picture: picture ? picture.download_url : undefined,
       externalUrl: external_profile_url,
       description: html,
@@ -109,7 +109,7 @@ async function extractGithubInformationGraphQL(
 
       const {
         content,
-        data: { name, external_profile_url, tags, cvc_name }
+        data: { name, external_profile_url, tags, avc_name }
       } = matter(profileMdDoc);
 
       const metricsMdDoc = metricsMd?.object?.text;
@@ -125,8 +125,8 @@ async function extractGithubInformationGraphQL(
       const html = await markdownToHtml(content);
       const vd = {
         voteDelegateAddress,
-        name: cvc_name ? `${cvc_name} - ${name}` : name,
-        cvc_name,
+        name: avc_name ? `${avc_name} - ${name}` : name,
+        avc_name,
 
         // The graphql api unfortunately does not return the download_url or raw url for blobs/images. In this case we have to manually construct the delegate avatar picture url
         // In case the delegate repository gets migrated, reconsider this approach

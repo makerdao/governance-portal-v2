@@ -54,7 +54,7 @@ const LandingPage = ({
   mkrOnHat,
   hat,
   mkrInChief,
-  cvcs
+  avcs
 }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
@@ -73,7 +73,7 @@ const LandingPage = ({
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const pollCategories = getCategories(polls);
 
-  const topCvcs = cvcs
+  const topAvcs = avcs
     .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
 
@@ -248,7 +248,7 @@ const LandingPage = ({
             <section id="delegate">
               <Box ref={delegateRef} />
               <TopDelegates
-                topCvcs={topCvcs}
+                topAvcs={topAvcs}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
@@ -337,7 +337,7 @@ export default function Index({
     delegates: delegatesData.data?.delegates ?? [],
     delegatesInfo: delegatesInfo.data ?? [],
     stats: delegatesData.data?.stats,
-    cvcs: delegatesData.data?.cvcs ?? [],
+    avcs: delegatesData.data?.avcs ?? [],
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
