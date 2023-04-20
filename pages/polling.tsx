@@ -46,6 +46,7 @@ import PollsSort from 'modules/polling/components/filters/PollsSort';
 import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
 import { getPartialActivePolls } from 'modules/polling/api/fetchPolls';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export type PollingPageProps = PollsPaginatedResponse & {
   partialActivePolls: {
@@ -121,7 +122,11 @@ const PollingOverview = ({
     startDate,
     endDate,
     status:
-      showPollActive && showPollEnded ? null : showPollEnded ? PollStatusEnum.ended : PollStatusEnum.active
+      (showPollActive && showPollEnded) || (!showPollActive && !showPollEnded)
+        ? null
+        : showPollEnded
+        ? PollStatusEnum.ended
+        : PollStatusEnum.active
   });
 
   // only for mobile
@@ -196,7 +201,7 @@ const PollingOverview = ({
         startDate,
         endDate,
         status:
-          showPollActive && showPollEnded
+          (showPollActive && showPollEnded) || (!showPollActive && !showPollEnded)
             ? null
             : showPollEnded
             ? PollStatusEnum.ended
@@ -235,19 +240,23 @@ const PollingOverview = ({
         ? ['endDate', 'ending', 'ended']
         : ['startDate', 'started', 'started'];
 
-    const groupedActive = Object.entries(groupBy(active, groupByKey)).map(([date, pollList]) => [
-      `${pollList.length} Poll${pollList.length === 1 ? '' : 's'} - ${activePollsVerb} ${formatDateWithTime(
-        date
-      )}`,
-      pollList
-    ]) as [string, PollListItem[]][];
+    const groupedActive = Object.entries(groupBy(active, groupByKey)).map(
+      ([date, pollList]: [string, PollListItem[]]) => [
+        `${pollList.length} Poll${pollList.length === 1 ? '' : 's'} - ${activePollsVerb} ${formatDateWithTime(
+          date
+        )}`,
+        pollList
+      ]
+    ) as [string, PollListItem[]][];
 
-    const groupedEnded = Object.entries(groupBy(ended, groupByKey)).map(([date, pollList]) => [
-      `${pollList.length} Poll${pollList.length === 1 ? '' : 's'} - ${endedPollsVerb} ${formatDateWithTime(
-        date
-      )}`,
-      pollList
-    ]) as [string, PollListItem[]][];
+    const groupedEnded = Object.entries(groupBy(ended, groupByKey)).map(
+      ([date, pollList]: [string, PollListItem[]]) => [
+        `${pollList.length} Poll${pollList.length === 1 ? '' : 's'} - ${endedPollsVerb} ${formatDateWithTime(
+          date
+        )}`,
+        pollList
+      ]
+    ) as [string, PollListItem[]][];
 
     return [active, ended, groupedActive, groupedEnded];
   }, [polls, propPolls]);
@@ -412,7 +421,6 @@ const PollingOverview = ({
                       </div>
                     ))}
                   </Stack>
-                  <div ref={loader} />
                 </div>
               ) : (
                 <Button
@@ -427,6 +435,11 @@ const PollingOverview = ({
                 </Button>
               )}
             </Stack>
+            {loading && (
+              <Flex sx={{ justifyContent: 'center' }}>
+                <SkeletonThemed circle={true} width={50} height={50} />
+              </Flex>
+            )}
           </Box>
           <Stack gap={3}>
             {account && bpi > 0 && (
@@ -457,6 +470,7 @@ const PollingOverview = ({
           </Stack>
         </SidebarLayout>
       </Stack>
+      <div ref={loader} />
     </PrimaryLayout>
   );
 };
