@@ -45,11 +45,10 @@ const TabbedLayout = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (hashRoute && router.isReady) {
-      router.replace(`${location.pathname + location.search}#${slugify(activeTab)}`);
-    }
-  }, [activeTab, router.isReady]);
+  const handleTabChange = (index: number) => {
+    setActiveTabIndex(index);
+    router.replace(`${location.pathname + location.search}#${slugify(tabRoutes[index])}`);
+  };
 
   return (
     <Flex
@@ -57,7 +56,7 @@ const TabbedLayout = ({
         flexDirection: 'column'
       }}
     >
-      <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
+      <Tabs index={activeTabIndex} onChange={index => handleTabChange(index)}>
         <TabList sx={{ display: ['flex', 'block'], bg: 'inherit', ...tabListStyles }}>
           {tabRoutes.map((tabRoute, index) => (
             <Tab
