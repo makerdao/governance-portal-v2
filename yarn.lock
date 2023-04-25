@@ -4523,13 +4523,13 @@
   dependencies:
     "@web3-react/types" "^8.0.20-beta.0"
 
-"@web3-react/metamask@^8.0.28-beta.0":
-  version "8.0.28-beta.0"
-  resolved "https://registry.yarnpkg.com/@web3-react/metamask/-/metamask-8.0.28-beta.0.tgz#f7e9e0de446727a961745cbec75c8cbf6c961388"
-  integrity sha512-IXuVyj6vhRAhfGQ/sN4qgET8EEdqX844pB4kCDG9kjPD3LLm5kq47ykBosgTr9YCUtdHAXN0UaUimD0TbLMRFg==
+"@web3-react/metamask@^8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@web3-react/metamask/-/metamask-8.2.0.tgz#4f822e36bcbc37bbbce6f97f55c10537eeb5014d"
+  integrity sha512-nitDOHFZOUi9FWBmGAKlvExZDxZPWSJaXZn0lxl7LKaM6rPwBoEWKI2wJJvWCf+h5q9+p6ifiaFd7JKqucS6rQ==
   dependencies:
     "@metamask/detect-provider" "^1.2.0"
-    "@web3-react/types" "^8.0.20-beta.0"
+    "@web3-react/types" "^8.2.0"
 
 "@web3-react/network@^8.0.27-beta.0":
   version "8.0.27-beta.0"
