@@ -10,7 +10,6 @@ import { useState, useEffect } from 'react';
 import { Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import useInterval from 'lib/useInterval';
 import TooltipComponent from './Tooltip';
 import { formatDateWithTime } from 'lib/datetime';
 
@@ -44,12 +43,14 @@ const CountdownTimer = ({ endDate, endText, ...props }: Props): JSX.Element => {
 
   useEffect(() => {
     setText(generateText(endTime, endText));
-  }, []);
 
-  useInterval(() => {
-    const newText = generateText(endTime, endText);
-    if (newText !== text) setText(newText);
-  }, 1000);
+    const interval = setInterval(() => {
+      const newText = generateText(endTime, endText);
+      if (newText !== text) setText(newText);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Flex
