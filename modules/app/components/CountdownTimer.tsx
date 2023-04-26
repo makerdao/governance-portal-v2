@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -39,15 +39,12 @@ const generateText = (endTime, endText) => {
 };
 
 const CountdownTimer = ({ endDate, endText, ...props }: Props): JSX.Element => {
-  let [endTime, setEndTime] = useState<number>(); // eslint-disable-line prefer-const
-  let [text, setText] = useState(''); // eslint-disable-line prefer-const
+  const endTime = Math.floor(new Date(endDate).getTime() / 1000);
+  const [text, setText] = useState('');
 
-  if (!text) {
-    endTime = Math.floor(new Date(endDate).getTime() / 1000);
-    setEndTime(endTime);
-    text = generateText(endTime, endText);
-    setText(text);
-  }
+  useEffect(() => {
+    setText(generateText(endTime, endText));
+  }, []);
 
   useInterval(() => {
     const newText = generateText(endTime, endText);
