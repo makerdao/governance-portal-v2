@@ -14,7 +14,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { formatValue } from 'lib/string';
 import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
@@ -88,9 +88,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               Address
               {sortBy.type === 'address' ? (
                 sortBy.order === 1 ? (
-                  <Icon name="chevron_down" size={2} ml={1} />
+                  <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
-                  <Icon name="chevron_up" size={2} ml={1} />
+                  <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                 )
               ) : (
                 ''
@@ -105,9 +105,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               {`Option${isResultDisplayApprovalBreakdown(poll.parameters) ? '(s)' : ''}`}
               {sortBy.type === 'option' ? (
                 sortBy.order === 1 ? (
-                  <Icon name="chevron_down" size={2} ml={1} />
+                  <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
-                  <Icon name="chevron_up" size={2} ml={1} />
+                  <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                 )
               ) : (
                 ''
@@ -123,9 +123,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                 Vote %
                 {sortBy.type === 'mkr' ? (
                   sortBy.order === 1 ? (
-                    <Icon name="chevron_down" size={2} ml={1} />
+                    <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                   ) : (
-                    <Icon name="chevron_up" size={2} ml={1} />
+                    <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                   )
                 ) : (
                   ''
@@ -142,9 +142,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               MKR
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
-                  <Icon name="chevron_down" size={2} ml={1} />
+                  <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
-                  <Icon name="chevron_up" size={2} ml={1} />
+                  <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                 )
               ) : (
                 ''

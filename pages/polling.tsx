@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';

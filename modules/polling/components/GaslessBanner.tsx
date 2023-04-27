@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import Banner from 'modules/app/components/layout/header/Banner';
 import { Box, Flex, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useEffect, useState } from 'react';
 import { localStorage } from 'modules/app/client/storage/localStorage';
 
@@ -46,13 +46,15 @@ export default function GaslessBanner(): React.ReactElement {
                   styles={{ color: 'inherit' }}
                 >
                   <Text sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Icon name="lightningBolt" size={3} mr={1} /> Poll voting is now gasless!&nbsp;
+                    <Icon name="lightningBolt" size={3} sx={{ mr: 1 }} /> Poll voting is now gasless!&nbsp;
                     <b>Learn more</b>
-                    <Icon name="chevron_right" size={2} ml={2} />
+                    <Icon name="chevron_right" size={2} sx={{ ml: 2 }} />
                   </Text>
                 </ExternalLink>
               </Flex>
-              <Icon name="close" size={2} onClick={onClose} sx={{ cursor: 'pointer' }} />
+              <Box onClick={onClose}>
+                <Icon name="close" size={2} sx={{ cursor: 'pointer' }} />
+              </Box>
             </Flex>
           }
         />

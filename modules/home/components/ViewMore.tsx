@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Flex, Text } from 'theme-ui';
 
 type Props = {
@@ -32,7 +32,7 @@ export const ViewMore = ({ label = 'View more', icon = 'chevron_right' }: Props)
       }}
     >
       <Text sx={{ fontSize: 2 }}>{label}</Text>
-      <Icon name={icon} size={2} ml={2} color="primary" />
+      <Icon name={icon} size={2} color="primary" sx={{ ml: 2 }} />
     </Flex>
   );
 };

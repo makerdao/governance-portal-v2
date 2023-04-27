@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Button, Text, Grid, Close, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import { formatValue } from 'lib/string';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -34,7 +34,7 @@ const ModalContent = ({
   const DefaultScreen = () => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
-      <Icon ml={2} name="warning" size={5} sx={{ color: 'notice' }} />
+      <Icon name="warning" size={5} sx={{ color: 'notice', ml: 2 }} />
       <Text variant="heading" mt={4}>
         Shutting down the Dai Credit System
       </Text>
@@ -77,7 +77,7 @@ const ModalContent = ({
         Sign TX to start Emergency Shutdown.
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+        <Spinner size={60} sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
           Please use your wallet to sign this transaction.
         </Text>

@@ -16,7 +16,7 @@ import { useMemo } from 'react';
 import { useAddressDelegations } from 'modules/delegates/hooks/useAddressDelegations';
 import { DelegateExpirationOverviewCard } from 'modules/migration/components/DelegateExpirationOverviewCard';
 import LocalIcon from 'modules/app/components/Icon';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 
 import Link from 'next/link';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';

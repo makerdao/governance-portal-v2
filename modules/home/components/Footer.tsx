@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Flex, Text, useColorMode } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import React from 'react';
 import { translate } from '@makerdao/i18n-helper';

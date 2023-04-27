@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useMemo, useState } from 'react';
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -246,9 +246,9 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               Address
               {sortBy.type === 'address' ? (
                 sortBy.order === 1 ? (
-                  <Icon name="chevron_down" size={2} ml={1} />
+                  <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
-                  <Icon name="chevron_up" size={2} ml={1} />
+                  <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                 )
               ) : (
                 ''
@@ -263,9 +263,9 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               {bpi < 1 ? 'MKR' : 'MKR Delegated'}
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
-                  <Icon name="chevron_down" size={2} ml={1} />
+                  <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
-                  <Icon name="chevron_up" size={2} ml={1} />
+                  <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                 )
               ) : (
                 ''
@@ -281,9 +281,9 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
                 {bpi < 1 ? '%' : 'Voting Weight'}
                 {sortBy.type === 'mkr' ? (
                   sortBy.order === 1 ? (
-                    <Icon name="chevron_down" size={2} ml={1} />
+                    <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                   ) : (
-                    <Icon name="chevron_up" size={2} ml={1} />
+                    <Icon name="chevron_up" size={2} sx={{ ml: 1 }} />
                   )
                 ) : (
                   ''

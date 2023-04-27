@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect } from 'react';
 import { Text, Flex, ThemeUIStyleObject } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from './Icon';
 
 import TooltipComponent from './Tooltip';
 import { formatDateWithTime } from 'lib/datetime';
@@ -58,7 +58,7 @@ const CountdownTimer = ({ endDate, endText, ...props }: Props): JSX.Element => {
       sx={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'nowrap' }}
       {...props}
     >
-      <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
+      <Icon name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary', mr: 1 }} />
       <TooltipComponent label={formatDateWithTime(endDate)}>
         <Text variant="caps" color={text !== endText ? 'textSecondary' : 'secondary'}>
           {text}

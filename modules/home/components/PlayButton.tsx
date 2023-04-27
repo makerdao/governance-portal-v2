@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Button, Flex, Text, ThemeUIStyleObject } from 'theme-ui';
 
 type Props = { label: string; onClick: () => void; styles?: ThemeUIStyleObject; disabled?: boolean };

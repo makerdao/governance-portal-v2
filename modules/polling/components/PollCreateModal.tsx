@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useMemo } from 'react';
 import { Button, Flex, Close, Text, Box, Spinner } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import { TXMined } from 'modules/web3/types/transaction';
@@ -116,7 +116,7 @@ const Signing = ({ close }) => (
       Sign Transaction
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+      <Spinner size={60} sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
         Please use your wallet to sign this transaction.
       </Text>

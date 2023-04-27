@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Link as ExternalLink, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 
 type Props = {
   title: string;
@@ -33,8 +33,8 @@ const IntroCard = ({ icon, title, children, linkDest, ...otherProps }: Props): J
           justifyContent: 'space-between'
         }}
       >
-        <Icon name={icon} size="4" />
-        <Icon ml="2" name="arrowTopRight" size="2" color="onSecondary" />
+        <Icon name={icon || ''} size="4" />
+        <Icon name="arrowTopRight" size="2" color="onSecondary" sx={{ ml: 2 }} />
       </Flex>
       <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', height: [null, 'auto'] }}>
         <Text mt="2" mb="1" sx={{ fontSize: [4, 5], textAlign: 'left', fontWeight: ['500', '400'] }}>

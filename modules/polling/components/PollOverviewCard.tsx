@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React from 'react';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import {
@@ -240,7 +240,7 @@ export default function PollOverviewCard({
                       <PollVoteTypeIndicator poll={poll} />
                     </Flex>
                   )}
-                  {tally && tally.totalMkrParticipation > 0 && (
+                  {tally && +tally.totalMkrParticipation > 0 && (
                     <InternalLink
                       href={`/polling/${poll.slug}`}
                       hash="vote-breakdown"

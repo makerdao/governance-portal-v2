@@ -12,7 +12,7 @@ import LocalIcon from 'modules/app/components/Icon';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 import { Delegate, DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
@@ -107,7 +107,7 @@ export default function DelegateExpiryDate({
                 >
                   <Text px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
                     Read More
-                    <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+                    <Icon name="arrowTopRight" color="accentBlue" sx={{ pt: 2 }} />
                   </Text>
                 </ThemeUILink>
                 <Button

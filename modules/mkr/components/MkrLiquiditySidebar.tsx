@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Card, Flex, Text, Box, Heading, IconButton } from 'theme-ui';
 import useSWR from 'swr';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { request } from 'graphql-request';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';

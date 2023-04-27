@@ -95,7 +95,7 @@
     "superjson": "^1.8.1",
     "swagger-ui-react": "^4.11.0",
     "swr": "^1.0.1",
-    "theme-ui": "^0.12.0",
+    "theme-ui": "^0.15.7",
     "tiny-invariant": "^1.1.0",
     "unified": "^10.1.2",
     "uuid": "^8.3.0",

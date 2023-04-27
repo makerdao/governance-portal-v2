@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useState } from 'react';
 import { Alert, Box, Text, Flex, Divider } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import Tabs from 'modules/app/components/Tabs';
 import BigNumber from 'lib/bigNumberJs';
 import {
@@ -129,7 +129,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                 }}
               >
                 You are viewing an older contract. View delegate&apos;s renewed contract
-                <Icon name="chevron_right" size={2} ml={2} />
+                <Icon name="chevron_right" size={2} sx={{ ml: 2 }} />
               </Alert>
             </Flex>
           </InternalLink>

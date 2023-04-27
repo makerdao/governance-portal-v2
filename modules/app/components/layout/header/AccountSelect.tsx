@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
@@ -149,7 +149,7 @@ const AccountSelect = (): React.ReactElement => {
   const BackButton = ({ onClick }) => (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Button variant="textual" color="primary" sx={{ fontSize: 3, px: 0 }} onClick={onClick}>
-        <Icon name="chevron_left" color="primary" size="10px" mr="2" />
+        <Icon name="chevron_left" color="primary" size="10px" sx={{ mr: 2 }} />
         Back
       </Button>
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />

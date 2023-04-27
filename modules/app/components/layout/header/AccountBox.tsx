@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Flex, Text, Box, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 import { formatAddress } from 'lib/utils';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AddressIcon from 'modules/address/components/AddressIcon';
@@ -31,7 +31,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
     <Flex sx={{ flexDirection: 'column' }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Flex>
-          <Icon name={accountName} size={'24px'} />
+          <Icon name={accountName || ''} size={'24px'} />
           <Text variant="secondary" sx={{ ml: 2 }}>
             Connected with {accountName}
           </Text>

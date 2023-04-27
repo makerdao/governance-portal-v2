@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useEffect, useState } from 'react';
 import { Box, Flex, Heading, Text, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { markdownToHtml } from 'lib/markdown';
 import InternalIcon from 'modules/app/components/Icon';
@@ -61,7 +61,7 @@ export const ShareVotesModal = ({
             <Flex sx={{ justifyContent: 'center', mt: 4, flexDirection: ['column', 'row'] }}>
               <Box sx={{ width: ['100%', '50%'], paddingRight: [0, 1], mb: [2, 0] }}>
                 <Button onClick={copyToClipboard} sx={{ width: '100%' }}>
-                  <Icon name="copy" mr={2} color="background" size={12} />
+                  <Icon name="copy" color="background" size={12} sx={{ mr: 2 }} />
                   {copied ? 'Copied!' : 'Copy & paste on the forum'}
                 </Button>
               </Box>

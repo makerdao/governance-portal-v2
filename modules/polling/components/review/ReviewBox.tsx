@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
 import { Poll } from 'modules/polling/types';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import ActivePollsBox from './ActivePollsBox';
 import { useContext, useState, useEffect } from 'react';
 import { BallotContext } from '../../context/BallotContext';
@@ -142,7 +142,7 @@ export default function ReviewBox({
                   <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                     {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
                     <Text>1 - Sign comment{commentsCount > 1 ? 's' : ''}</Text>
-                    {commentsLoading && <Spinner sx={{ ml: 2 }} size={'16px'} />}
+                    {commentsLoading && <Spinner sx={{ ml: 2 }} size={16} />}
                   </Flex>
                 </Button>
                 <Button
@@ -231,7 +231,7 @@ export default function ReviewBox({
                     >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                        <Icon name="arrowTopRight" size={2} sx={{ ml: 2 }} />
                       </Text>
                     </ExternalLink>
                   </Box>
@@ -294,7 +294,7 @@ export default function ReviewBox({
                     <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                        <Icon name="arrowTopRight" size={2} sx={{ ml: 2 }} />
                       </Text>
                     </ExternalLink>
                   </Box>
@@ -328,7 +328,7 @@ export default function ReviewBox({
                     >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
                         Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                        <Icon name="arrowTopRight" size={2} sx={{ ml: 2 }} />
                       </Text>
                     </ExternalLink>
                   </Flex>

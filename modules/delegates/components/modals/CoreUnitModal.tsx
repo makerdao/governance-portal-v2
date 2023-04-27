@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Text, Heading, Flex, Button, Link as ThemeUILink } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
@@ -46,7 +46,7 @@ export const CoreUnitModal = ({ isOpen, onDismiss }: Props): JSX.Element => {
             >
               <Text px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
                 Read More
-                <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+                <Icon name="arrowTopRight" sx={{ pt: 2 }} color="accentBlue" />
               </Text>
             </ThemeUILink>
             <Button onClick={onDismiss}>Close</Button>

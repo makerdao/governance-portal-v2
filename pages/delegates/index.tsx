@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import useSWR, { useSWRConfig } from 'swr';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';

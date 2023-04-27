@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React from 'react';
 import { Text, Box, Label, Textarea, Flex } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useWeb3React } from '@web3-react/core';
 import { getConnection } from 'modules/web3/connections';
 import { ConnectionType } from 'modules/web3/constants/wallets';

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Text, NavLink } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';

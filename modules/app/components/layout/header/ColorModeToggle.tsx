@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React from 'react';
 import { useColorMode, IconButton } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 
 const ColorModeToggle = (): React.ReactElement => {
   const [mode, setMode] = useColorMode();

@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Text, Flex } from 'theme-ui';
 import Banner from 'modules/app/components/layout/header/Banner';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getMigrationBannerContent } from 'modules/migration/helpers/getMigrationBannerContent';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 export function MigrationBanner(): React.ReactElement | null {
-  const link = <Icon name="chevron_right" size={2} ml={2} />;
+  const link = <Icon name="chevron_right" size={2} sx={{ ml: 2 }} />;
 
   const {
     isDelegatedToExpiringContract,

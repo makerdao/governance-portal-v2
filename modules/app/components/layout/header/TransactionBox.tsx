@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Text, Spinner } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 
 import { Transaction } from 'modules/web3/types/transaction';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -37,7 +37,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
       <Flex sx={{ alignItems: 'center' }}>
         {tx.status === 'pending' && (
           <Spinner
-            size={'16px'}
+            size={16}
             sx={{
               color: 'orangeAttention',
               alignSelf: 'center'

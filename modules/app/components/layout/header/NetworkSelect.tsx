@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useState, useCallback } from 'react';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, Divider, Text, useColorMode } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../Icon';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import React, { useState, useEffect } from 'react';

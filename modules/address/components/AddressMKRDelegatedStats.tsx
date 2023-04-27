@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Flex } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { parseUnits } from 'ethers/lib/utils';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
