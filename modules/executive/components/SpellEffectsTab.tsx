@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Flex, Text, Divider } from 'theme-ui';
 import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
 import { useState } from 'react';
-import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
@@ -31,7 +31,7 @@ const CircleIcon = ({ name }) => (
       justifyContent: 'center'
     })}
   >
-    <DaiUIIcon name={name} size={3} color="primary" />
+    <Icon name={name} size={3} color="primary" />
   </Flex>
 );
 
@@ -141,7 +141,7 @@ export function SpellEffectsTab({
               onClick={() => setExpanded(!expanded)}
             >
               <Text variant="secondary">
-                What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
+                What&apos;s this? <Icon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
               </Text>
             </Box>
           </Flex>
@@ -161,7 +161,7 @@ export function SpellEffectsTab({
                 >
                   <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                     Learn more about auditing Executive Spells
-                    <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
+                    <Icon name="arrowTopRight" size="2" sx={{ ml: 2 }} />
                   </Text>
                 </ExternalLink>
               </Box>
@@ -184,7 +184,7 @@ export function SpellEffectsTab({
               <ExternalLink href={proposal.proposalLink} title="View in GitHub">
                 <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                   View in GitHub
-                  <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
+                  <Icon name="arrowTopRight" size="2" sx={{ ml: 2 }} />
                 </Text>
               </ExternalLink>
             </Box>
