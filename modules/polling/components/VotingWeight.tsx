@@ -95,7 +95,7 @@ export default function VotingWeight(): JSX.Element {
         </Text>
         <Tooltip label={tooltipLabel}>
           <Box>
-            <Icon name="question" color="textSecondary" ml={1} mt={'6px'} />
+            <Icon name="question" color="textSecondary" sx={{ ml: 1, mt: '6px' }} />
           </Box>
         </Tooltip>
       </Flex>
