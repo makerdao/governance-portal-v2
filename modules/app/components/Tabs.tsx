@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect } from 'react';
 import { Flex, Divider, ThemeUIStyleObject, Text } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { slugify } from 'lib/utils';
 import { ErrorBoundary } from './ErrorBoundary';
 
@@ -30,6 +30,8 @@ const TabbedLayout = ({
   hashRoute = true,
   banner
 }: Props): JSX.Element => {
+  const router = useRouter();
+
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   if (tabRoutes.length === 0) tabRoutes = tabTitles;
   const activeTab = tabRoutes[activeTabIndex];
@@ -43,11 +45,10 @@ const TabbedLayout = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (hashRoute) {
-      Router.replace(`${location.pathname + location.search}#${slugify(activeTab)}`);
-    }
-  }, [activeTab]);
+  const handleTabChange = (index: number) => {
+    setActiveTabIndex(index);
+    router.replace(`${location.pathname + location.search}#${slugify(tabRoutes[index])}`);
+  };
 
   return (
     <Flex
@@ -55,7 +56,7 @@ const TabbedLayout = ({
         flexDirection: 'column'
       }}
     >
-      <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
+      <Tabs index={activeTabIndex} onChange={index => handleTabChange(index)}>
         <TabList sx={{ display: ['flex', 'block'], bg: 'inherit', ...tabListStyles }}>
           {tabRoutes.map((tabRoute, index) => (
             <Tab
