@@ -220,6 +220,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                   </Box>
                 }
                 label="Spell Address"
+                renderAsDiv
               />
               <StatBox
                 value={spellData && spellData.mkrSupport && formatValue(BigNumber.from(spellData.mkrSupport))}
