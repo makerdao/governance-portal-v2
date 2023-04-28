@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { BigNumber } from 'ethers';
@@ -43,7 +43,12 @@ export default function ExecutiveOverviewCard({
   mkrOnHat
 }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
+  const [postedDateString, setPostedDateString] = useState('');
   const { comments } = useExecutiveComments(proposal.address);
+
+  useEffect(() => {
+    setPostedDateString(`posted ${formatDateWithoutTime(proposal.date)}`);
+  }, []);
 
   const hasVotedFor =
     votedProposals &&
@@ -85,7 +90,7 @@ export default function ExecutiveOverviewCard({
             <Flex sx={{ flexDirection: 'column' }}>
               <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <>
-                  <CardHeader text={`posted ${formatDateWithoutTime(proposal.date)}`} />
+                  <CardHeader text={postedDateString} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
                   <CardSummary text={proposal.proposalBlurb} styles={{ my: 2 }} />
                 </>
