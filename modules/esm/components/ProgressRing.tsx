@@ -48,7 +48,7 @@ const ProgressRing = ({
           cy={radius}
         ></circle>
         <text x="50%" y="48%" textAnchor="middle" fill="#434358" fontSize="18px" dy=".3em">
-          {totalStaked ? `${formatValue(totalStaked, 'wad', 6)}      ` : '---      '}
+          {totalStaked ? `${formatValue(totalStaked, 'wad', 6)}` : '---'}
         </text>
         <text x="50%" y="58%" textAnchor="middle" fill="#708390" fontSize="14px" dy=".3em">
           {`of ${thresholdAmount ? `${formatValue(thresholdAmount)} MKR` : '---'}`}

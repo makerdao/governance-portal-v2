@@ -18,7 +18,9 @@ const CategoryButton = ({ label, color, active, onClick }) => {
   const [badgeSelectorColor, setBadgeSelectorColor] = useState('#000');
 
   useEffect(() => {
-    setBadgeSelectorColor(theme.rawColors?.badgeSelector as string);
+    if (theme.rawColors?.badgeSelector) {
+      setBadgeSelectorColor(theme.rawColors?.badgeSelector as string);
+    }
   }, []);
 
   return (
