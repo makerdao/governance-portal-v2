@@ -249,7 +249,7 @@ const PollOverviewCard = memo(
                         hash="vote-breakdown"
                         title="View poll vote breakdown"
                       >
-                        <Box sx={{ mt: 2 }}>
+                        <Box sx={{ mt: 2 }} onClick={() => onVisitPoll?.()}>
                           <ErrorBoundary componentName="Poll Results">
                             {isResultDisplaySingleVoteBreakdown(poll.parameters) ? (
                               <PluralityVoteSummary tally={tally} showTitles={false} />

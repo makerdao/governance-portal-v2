@@ -124,7 +124,7 @@ export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
 }
 
 export function extractCurrentPollVote(
-  poll: PollListItem,
+  poll: PollListItem | Poll,
   allUserVotes: PollTallyVote[] | undefined
 ): number[] | null {
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);

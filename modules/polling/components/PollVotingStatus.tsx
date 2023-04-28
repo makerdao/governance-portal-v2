@@ -11,7 +11,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import { PollListItem } from 'modules/polling/types';
+import { Poll, PollListItem } from 'modules/polling/types';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
@@ -45,7 +45,7 @@ const VotingStatus = ({
   poll,
   ...props
 }: {
-  poll: PollListItem;
+  poll: PollListItem | Poll;
   sx?: ThemeUIStyleObject;
 }): JSX.Element | null => {
   const { account, voteDelegateContractAddress } = useAccount();

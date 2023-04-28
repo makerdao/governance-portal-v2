@@ -9,9 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect } from 'react';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { PollListItem } from 'modules/polling/types';
+import { Poll, PollListItem } from 'modules/polling/types';
 
-type Props = { poll: PollListItem; choice: number | null; setChoice: (number) => void };
+type Props = { poll: PollListItem | Poll; choice: number | null; setChoice: (number) => void };
 
 export default function SingleSelect({ poll, choice, setChoice }: Props): JSX.Element {
   const [defaultValue, setDefaultValue] = useState('default');

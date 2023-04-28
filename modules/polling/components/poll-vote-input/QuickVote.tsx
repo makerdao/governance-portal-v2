@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect, useContext } from 'react';
 import { Text, Flex, Button } from 'theme-ui';
 import invariant from 'tiny-invariant';
-import { PollListItem } from 'modules/polling/types';
+import { PollListItem, Poll } from 'modules/polling/types';
 import {
   extractCurrentPollVote,
   isInputFormatChooseFree,
@@ -29,7 +29,7 @@ import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 type Props = {
-  poll: PollListItem;
+  poll: PollListItem | Poll;
   showStatus?: boolean;
   showReviewButton?: boolean;
   disabled?: boolean;

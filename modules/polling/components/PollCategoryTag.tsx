@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import TagComponent from 'modules/app/components/Tag';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import shallow from 'zustand/shallow';
-import { TagCount } from 'modules/app/types/tag';
+import { Tag, TagCount } from 'modules/app/types/tag';
 import { Box } from 'theme-ui';
 
 export function PollCategoryTag({
@@ -17,11 +17,11 @@ export function PollCategoryTag({
   allTags,
   disableTagFilter = false
 }: {
-  tag: string;
-  allTags: TagCount[];
+  tag: string | Tag;
+  allTags?: TagCount[];
   disableTagFilter?: boolean;
 }): React.ReactElement {
-  const foundTag = allTags.find(t => t.id === tag);
+  const foundTag = allTags?.find(t => t.id === tag) || (tag as Tag);
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
