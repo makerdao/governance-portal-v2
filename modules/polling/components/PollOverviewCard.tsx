@@ -240,7 +240,7 @@ export default function PollOverviewCard({
                       <PollVoteTypeIndicator poll={poll} />
                     </Flex>
                   )}
-                  {tally && tally.totalMkrParticipation > 0 && (
+                  {tally && +tally.totalMkrParticipation > 0 && (
                     <InternalLink
                       href={`/polling/${poll.slug}`}
                       hash="vote-breakdown"

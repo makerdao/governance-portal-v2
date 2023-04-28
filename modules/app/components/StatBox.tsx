@@ -14,9 +14,10 @@ type Props = {
   label: string;
   styles?: ThemeUIStyleObject;
   tooltip?: string | JSX.Element;
+  renderAsDiv?: boolean;
 };
 
-export const StatBox = ({ value, label, tooltip, styles }: Props): JSX.Element => {
+export const StatBox = ({ value, label, tooltip, styles, renderAsDiv = false }: Props): JSX.Element => {
   return (
     <Flex
       sx={{
@@ -29,7 +30,7 @@ export const StatBox = ({ value, label, tooltip, styles }: Props): JSX.Element =
         {value ? (
           <Text
             data-testid={`${label}-stat-box`}
-            as="p"
+            as={renderAsDiv ? 'div' : 'p'}
             sx={{
               color: 'secondaryAlt',
               fontWeight: 'semiBold',

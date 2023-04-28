@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useRef } from 'react';
-import { Box, Flex } from 'theme-ui';
+import { Flex } from 'theme-ui';
 import { formatValue } from 'lib/string';
 import { BigNumber } from 'ethers';
 
@@ -25,7 +24,6 @@ const ProgressRing = ({
   const normalizedRadius = radius - stroke * 2;
   const circumference = normalizedRadius * 2 * Math.PI;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
-  const loader = useRef<HTMLDivElement>(null);
   return (
     <Flex sx={{ justifyContent: 'center', alignItems: 'center' }} data-testid="progress-ring">
       <svg height={radius * 2} width={radius * 2}>
@@ -50,13 +48,7 @@ const ProgressRing = ({
           cy={radius}
         ></circle>
         <text x="50%" y="48%" textAnchor="middle" fill="#434358" fontSize="18px" dy=".3em">
-          {totalStaked ? (
-            `${formatValue(totalStaked, 'wad', 6)}      `
-          ) : (
-            <Box pl="14px" pr="14px">
-              <div ref={loader} />
-            </Box>
-          )}
+          {totalStaked ? `${formatValue(totalStaked, 'wad', 6)}      ` : '---      '}
         </text>
         <text x="50%" y="58%" textAnchor="middle" fill="#708390" fontSize="14px" dy=".3em">
           {`of ${thresholdAmount ? `${formatValue(thresholdAmount)} MKR` : '---'}`}
