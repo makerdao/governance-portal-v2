@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Poll } from 'modules/polling/types';
+import { PartialActivePoll } from 'modules/polling/types';
 import { Box, Card, Divider, Flex } from 'theme-ui';
 import BallotPollBar from '../BallotPollBar';
 import VotingWeight from '../VotingWeight';
@@ -18,19 +18,23 @@ const ReviewBoxCard = ({ children }) => (
 );
 
 export default function ActivePollsBox({
-  polls,
-  activePolls,
+  activePollCount,
+  partialActivePolls,
   children,
   voted
 }: {
-  polls: Poll[];
-  activePolls: Poll[];
+  activePollCount: number;
+  partialActivePolls: PartialActivePoll[];
   voted?: boolean;
   children: React.ReactNode;
 }): React.ReactElement {
   return (
     <ReviewBoxCard>
-      <BallotPollBar polls={polls} activePolls={activePolls} voted={voted} />
+      <BallotPollBar
+        activePollCount={activePollCount}
+        partialActivePolls={partialActivePolls}
+        voted={voted}
+      />
       <Divider />
       <Box sx={{ px: 3, py: 2, mb: 1 }}>
         <VotingWeight />

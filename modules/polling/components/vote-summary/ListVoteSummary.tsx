@@ -11,7 +11,7 @@ import { getNumberWithOrdinal } from 'lib/utils';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { isResultDisplayApprovalBreakdown } from 'modules/polling/helpers/utils';
 import { Box } from 'theme-ui';
-import { PollListItem } from '../../types';
+import { Poll, PollListItem } from '../../types';
 
 export function ListVoteSummary({
   choices,
@@ -21,7 +21,7 @@ export function ListVoteSummary({
   showOrdinal = true
 }: {
   choices: number[];
-  poll: PollListItem;
+  poll: PollListItem | Poll;
   limit?: number;
   align?: 'right' | 'left';
   showOrdinal?: boolean;

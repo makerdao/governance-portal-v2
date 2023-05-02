@@ -13,12 +13,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR, { useSWRConfig } from 'swr';
-import { isActivePoll, findPollById, isInputFormatRankFree } from 'modules/polling/helpers/utils';
+import { isInputFormatRankFree } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import { Poll } from 'modules/polling/types';
+import { PartialActivePoll, PollListItem } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
@@ -32,19 +32,22 @@ import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
 import Markdown from 'modules/app/components/Makrdown';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api/fetchPollingPageData';
+import { fetchPollingReviewPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { TagCount } from 'modules/app/types/tag';
 
-type PollingReviewProps = {
-  polls: Poll[];
-  network: SupportedNetworks;
+export type PollingReviewPageProps = {
+  polls: PollListItem[];
+  tags: TagCount[];
+  partialActivePolls: PartialActivePoll[];
 };
 
-const PollingReview = ({ polls, network }: PollingReviewProps) => {
+const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: PollingReviewPageProps) => {
   const bpi = useBreakpointIndex();
+  const { network } = useWeb3();
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
@@ -58,8 +61,6 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
 
   const { account, votingAccount } = useAccount();
 
-  const activePolls = polls.filter(poll => isActivePoll(poll));
-
   // Used to create a string that does not trigger the useMemo of votedPolls to be recreated. (Unique string does not re-render the votedPolls object)
   const ballotKeys = useMemo(() => {
     return Object.keys(ballot).join('');
@@ -68,16 +69,16 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
   const votedPolls = useMemo(() => {
     return Object.keys(ballot)
       .map(pollId => {
-        return findPollById(polls, pollId);
+        return activePolls.find(poll => poll?.pollId === parseInt(pollId));
       })
-      .filter(p => !!p) as Poll[];
+      .filter(p => !!p) as PollListItem[];
   }, [ballotKeys]);
 
   const previousVotedPolls = Object.keys(previousBallot)
     .map(pollId => {
-      return findPollById(polls, pollId);
+      return activePolls.find(poll => poll?.pollId === parseInt(pollId));
     })
-    .filter(p => !!p) as Poll[];
+    .filter(p => !!p) as PollListItem[];
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
@@ -209,8 +210,8 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                     {!hasVoted && (
                       <ReviewBox
                         account={votingAccount}
-                        polls={polls}
-                        activePolls={activePolls}
+                        activePollCount={activePolls.length}
+                        partialActivePolls={partialActivePolls}
                         ballotPollIds={ballotPollIds}
                       />
                     )}
@@ -219,7 +220,11 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                         <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                           Share all your votes
                         </Heading>
-                        <ActivePollsBox polls={polls} activePolls={activePolls} voted>
+                        <ActivePollsBox
+                          activePollCount={activePolls.length}
+                          partialActivePolls={partialActivePolls}
+                          voted
+                        >
                           <Box p={3}>
                             <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                               <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -244,6 +249,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                         >
                           <PollOverviewCard
                             poll={poll}
+                            allTags={tags}
                             reviewPage={true}
                             showVoting={true}
                             disableVoting={true}
@@ -273,7 +279,7 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                     {votedPolls.map(poll => {
                       return (
                         <Box key={poll.slug} sx={{ mb: 3 }}>
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={true}>
+                          <PollOverviewCard poll={poll} allTags={tags} reviewPage={true} showVoting={true}>
                             <Box sx={{ pt: 2 }}>
                               <CommentTextBox
                                 onChange={(val: string) => {
@@ -325,8 +331,8 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                   </Heading>
                   <ReviewBox
                     account={votingAccount}
-                    polls={polls}
-                    activePolls={activePolls}
+                    activePollCount={activePolls.length}
+                    partialActivePolls={partialActivePolls}
                     ballotPollIds={ballotPollIds}
                   />
                 </Box>
@@ -336,7 +342,11 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
                   <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                     Share all your votes
                   </Heading>
-                  <ActivePollsBox polls={polls} activePolls={activePolls} voted>
+                  <ActivePollsBox
+                    activePollCount={activePolls.length}
+                    partialActivePolls={partialActivePolls}
+                    voted
+                  >
                     <Box p={3}>
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -363,20 +373,26 @@ const PollingReview = ({ polls, network }: PollingReviewProps) => {
   );
 };
 
-export default function PollingReviewPage({ polls: prefetchedPolls }: PollingReviewPageData): JSX.Element {
+export default function PollingReviewPage({
+  polls: prefetchedPolls,
+  partialActivePolls: prefetchedPartialActivePolls,
+  tags: prefetchedTags
+}: PollingReviewPageProps): JSX.Element {
   const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
-        polls: prefetchedPolls
+        polls: prefetchedPolls,
+        partialActivePolls: prefetchedPartialActivePolls,
+        tags: prefetchedTags
       }
     : null;
 
   const { cache } = useSWRConfig();
   const cacheKey = `page/polling/${network}`;
-  const { data, error } = useSWR<PollingReviewPageData>(
+  const { data, error } = useSWR<PollingReviewPageProps>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    () => fetchPollingPageData(network, true),
+    () => fetchPollingReviewPageData(network, true),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })
@@ -396,7 +412,10 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: PollingRev
   }
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    network
+    partialActivePolls: isDefaultNetwork(network)
+      ? prefetchedPartialActivePolls
+      : data?.partialActivePolls || [],
+    tags: isDefaultNetwork(network) ? prefetchedTags : data?.tags || []
   };
 
   return (
@@ -407,12 +426,14 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: PollingRev
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls } = await fetchPollingPageData(SupportedNetworks.MAINNET);
+  const { polls, partialActivePolls, tags } = await fetchPollingReviewPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60, // revalidate every 60 seconds
     props: {
-      polls
+      polls,
+      partialActivePolls,
+      tags
     }
   };
 };

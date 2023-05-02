@@ -16,7 +16,7 @@ export default function PollsSort(): JSX.Element {
   const [sort, setSort] = useUiFiltersStore(state => [state.pollsSortBy, state.setPollsSortBy], shallow);
 
   return (
-    <ListboxInput onChange={setSort} value={PollOrderByEnum.nearestEnd}>
+    <ListboxInput onChange={setSort} value={sort}>
       <ListboxButton
         sx={{ variant: 'listboxes.default.button', fontWeight: 'semiBold', py: [2] }}
         arrow={<Icon name="chevron_down" size={2} />}

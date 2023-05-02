@@ -41,15 +41,16 @@ import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
-import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-import { getPolls } from 'modules/polling/api/fetchPolls';
+import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import usePollsStore from 'modules/polling/stores/polls';
 import { PollVoteTypeIndicator } from 'modules/polling/components/PollOverviewCard/PollVoteTypeIndicator';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
+import { PollOrderByEnum } from 'modules/polling/polling.constants';
 
 const editMarkdown = (content: string) => {
   // hide the duplicate proposal title
@@ -500,9 +501,20 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const pollsResponse = await getPolls();
-  const MAX = 5;
-  const paths = pollsResponse.polls.slice(0, MAX).map(p => `/polling/${p.slug}`);
+  const pollsResponse = await getPollsPaginated({
+    network: SupportedNetworks.MAINNET,
+    page: 1,
+    pageSize: 5,
+    orderBy: PollOrderByEnum.nearestEnd,
+    title: null,
+    tags: null,
+    status: null,
+    type: null,
+    startDate: null,
+    endDate: null
+  });
+
+  const paths = pollsResponse.polls.map(p => `/polling/${p.slug}`);
 
   return {
     paths,

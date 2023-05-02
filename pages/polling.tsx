@@ -45,7 +45,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
-import { getPartialActivePolls } from 'modules/polling/api/fetchPolls';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export type PollingPageProps = PollsPaginatedResponse & {
@@ -261,6 +260,12 @@ const PollingOverview = ({
     return [active, ended, groupedActive, groupedEnded];
   }, [polls, propPolls]);
 
+  useEffect(() => {
+    if (activePolls.length === 0 && endedPolls.length > 0) {
+      setShowHistorical(true);
+    }
+  }, [activePolls.length, endedPolls.length]);
+
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -352,89 +357,91 @@ const PollingOverview = ({
 
             {activePolls.length === 0 && bpi <= 2 && account && <BallotStatus />}
 
-            <Stack>
-              {activePolls.length > 0 && (
-                <div>
-                  <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
-                    <Heading as="h4">Active Polls</Heading>
-                    {bpi <= 2 && account && <BallotStatus />}
-                  </Flex>
-                  <Stack>
-                    {groupedActivePolls.map(([groupTitle, pollGroup]) => (
-                      <div key={groupTitle}>
-                        <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                          {groupTitle}
-                        </Text>
-                        <Box sx={{ mb: 0 }}>
-                          {pollGroup.map(poll => (
-                            <Box key={poll.slug} sx={{ mb: 4 }}>
-                              <PollOverviewCard
-                                poll={poll}
-                                allTags={tags}
-                                showVoting={!!account}
-                                reviewPage={false}
-                                onVisitPoll={onVisitPoll}
-                              />
-                            </Box>
-                          ))}
-                        </Box>
-                      </div>
-                    ))}
-                  </Stack>
-                </div>
-              )}
-
-              {showHistorical ? (
-                <div>
-                  <Heading mb={3} as="h4" sx={{ display: stats.finished > 0 ? undefined : 'none' }}>
-                    <Flex sx={{ justifyContent: 'space-between' }}>
-                      Ended Polls
-                      <Button
-                        onClick={() => {
-                          setShowHistorical(false);
-                        }}
-                        variant="mutedOutline"
-                      >
-                        Hide ended polls
-                      </Button>
+            {[...activePolls, ...endedPolls].length !== 0 && (
+              <Stack>
+                {activePolls.length > 0 && (
+                  <div>
+                    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
+                      <Heading as="h4">Active Polls</Heading>
+                      {bpi <= 2 && account && <BallotStatus />}
                     </Flex>
-                  </Heading>
-                  <Stack>
-                    {groupedEndedPolls.map(([groupTitle, pollGroup]) => (
-                      <div key={groupTitle}>
-                        <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                          {groupTitle}
-                        </Text>
-                        <Box>
-                          {pollGroup.map(poll => (
-                            <Box key={poll.slug} sx={{ mb: 4 }}>
-                              <PollOverviewCard
-                                poll={poll}
-                                allTags={tags}
-                                reviewPage={false}
-                                showVoting={false}
-                                onVisitPoll={onVisitPoll}
-                              />
-                            </Box>
-                          ))}
-                        </Box>
-                      </div>
-                    ))}
-                  </Stack>
-                </div>
-              ) : (
-                <Button
-                  onClick={() => {
-                    setShowHistorical(true);
-                  }}
-                  variant="outline"
-                  data-testid="button-view-ended-polls"
-                  sx={{ mb: 5, py: 3, display: stats.finished > 0 ? undefined : 'none' }}
-                >
-                  View ended polls ({stats.finished})
-                </Button>
-              )}
-            </Stack>
+                    <Stack>
+                      {groupedActivePolls.map(([groupTitle, pollGroup]) => (
+                        <div key={groupTitle}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
+                            {groupTitle}
+                          </Text>
+                          <Box sx={{ mb: 0 }}>
+                            {pollGroup.map(poll => (
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard
+                                  poll={poll}
+                                  allTags={tags}
+                                  showVoting={!!account}
+                                  reviewPage={false}
+                                  onVisitPoll={onVisitPoll}
+                                />
+                              </Box>
+                            ))}
+                          </Box>
+                        </div>
+                      ))}
+                    </Stack>
+                  </div>
+                )}
+
+                {showHistorical ? (
+                  <div>
+                    <Heading mb={3} as="h4" sx={{ display: stats.finished > 0 ? undefined : 'none' }}>
+                      <Flex sx={{ justifyContent: 'space-between' }}>
+                        Ended Polls
+                        <Button
+                          onClick={() => {
+                            setShowHistorical(false);
+                          }}
+                          variant="mutedOutline"
+                        >
+                          Hide ended polls
+                        </Button>
+                      </Flex>
+                    </Heading>
+                    <Stack>
+                      {groupedEndedPolls.map(([groupTitle, pollGroup]) => (
+                        <div key={groupTitle}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
+                            {groupTitle}
+                          </Text>
+                          <Box>
+                            {pollGroup.map(poll => (
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard
+                                  poll={poll}
+                                  allTags={tags}
+                                  reviewPage={false}
+                                  showVoting={false}
+                                  onVisitPoll={onVisitPoll}
+                                />
+                              </Box>
+                            ))}
+                          </Box>
+                        </div>
+                      ))}
+                    </Stack>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setShowHistorical(true);
+                    }}
+                    variant="outline"
+                    data-testid="button-view-ended-polls"
+                    sx={{ mb: 5, py: 3, display: stats.finished > 0 ? undefined : 'none' }}
+                  >
+                    View ended polls ({stats.finished})
+                  </Button>
+                )}
+              </Stack>
+            )}
             {loading && (
               <Flex sx={{ justifyContent: 'center' }}>
                 <SkeletonThemed circle={true} width={50} height={50} />
@@ -542,8 +549,9 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, tags, stats, paginationInfo } = await fetchPollingPageData(SupportedNetworks.MAINNET);
-  const partialActivePolls = await getPartialActivePolls(SupportedNetworks.MAINNET);
+  const { polls, tags, stats, paginationInfo, partialActivePolls } = await fetchPollingPageData(
+    SupportedNetworks.MAINNET
+  );
 
   return {
     revalidate: 60, // revalidate every 60 seconds

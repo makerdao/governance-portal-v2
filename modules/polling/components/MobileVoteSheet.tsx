@@ -13,8 +13,7 @@ import invariant from 'tiny-invariant';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
 import lottie from 'lottie-web';
-import { isActivePoll } from 'modules/polling/helpers/utils';
-import { Poll } from 'modules/polling/types';
+import { PartialActivePoll, Poll } from 'modules/polling/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useRouter } from 'next/router';
 import VotingStatus from './PollVotingStatus';
@@ -25,6 +24,7 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import QuickVote from './poll-vote-input/QuickVote';
 import { BallotContext } from '../context/BallotContext';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { fetchSinglePoll } from '../api/fetchPollBy';
 
 enum ViewState {
   START,
@@ -56,8 +56,8 @@ export default function MobileVoteSheet({
   const router = useRouter();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
-  const [activePolls, setActivePolls] = useState<Poll[]>([]);
-  const { data: pollsData } = useSWR(`/api/polling/all-polls?network=${network}`, fetchJson, {
+  const [activePolls, setActivePolls] = useState<PartialActivePoll[]>([]);
+  const { data: pollsData } = useSWR(`/api/polling/v2/partial-active-polls?network=${network}`, fetchJson, {
     refreshInterval: 0,
     revalidateOnFocus: false,
     revalidateOnMount: true
@@ -65,7 +65,7 @@ export default function MobileVoteSheet({
 
   useEffect(() => {
     if (pollsData) {
-      setActivePolls(pollsData.polls.filter(isActivePoll));
+      setActivePolls(pollsData);
     }
   }, [pollsData]);
 
@@ -81,8 +81,10 @@ export default function MobileVoteSheet({
     }
   };
 
-  const goToNextPoll = () => {
-    const nextPoll = activePolls.find(p => !ballot[p.pollId]);
+  const goToNextPoll = async () => {
+    const nextPollId = activePolls.find(p => !ballot[p.pollId])?.pollId;
+    const nextPoll = await fetchSinglePoll(network, nextPollId || null, null);
+
     invariant(nextPoll && setPoll);
     setPoll(nextPoll);
     setViewState(ViewState.INPUT);
