@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { Poll, PollFilterQueryParams, PollListItem } from 'modules/polling/types';
+import { PartialActivePoll, Poll, PollFilterQueryParams, PollListItem } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
@@ -277,9 +277,7 @@ export async function refetchPolls(
   return { pollList, allPolls: parsedPolls, partialActivePolls };
 }
 
-export async function getPartialActivePolls(
-  network: SupportedNetworks
-): Promise<{ pollId: number; endDate: Date }[]> {
+export async function getPartialActivePolls(network: SupportedNetworks): Promise<PartialActivePoll[]> {
   const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
 
   if (cachedPollsAreValid) {
@@ -360,10 +358,10 @@ export function filterPollList(
     finished: 0,
     total: pollList.length,
     type: {
-      plurality: 0,
-      rankChoice: 0,
-      majority: 0,
-      approval: 0
+      [PollInputFormat.singleChoice]: 0,
+      [PollInputFormat.rankFree]: 0,
+      [PollInputFormat.majority]: 0,
+      [PollInputFormat.chooseFree]: 0
     }
   };
 
@@ -376,16 +374,16 @@ export function filterPollList(
 
     switch (poll.type) {
       case PollInputFormat.singleChoice:
-        pollStats.type.plurality++;
+        pollStats.type[PollInputFormat.singleChoice]++;
         break;
       case PollInputFormat.rankFree:
-        pollStats.type.rankChoice++;
+        pollStats.type[PollInputFormat.rankFree]++;
         break;
       case PollInputFormat.chooseFree:
-        pollStats.type.approval++;
+        pollStats.type[PollInputFormat.chooseFree]++;
         break;
       case PollInputFormat.majority:
-        pollStats.type.majority++;
+        pollStats.type[PollInputFormat.majority]++;
         break;
       default:
         break;

@@ -125,3 +125,8 @@ export type PollListItem = Pick<
   type: PollInputFormat;
   tags: string[];
 };
+
+export type PartialActivePoll = {
+  pollId: number;
+  endDate: Date;
+};

@@ -24,10 +24,10 @@ export type PollsResponse = {
     finished: number;
     total: number;
     type?: {
-      plurality: number;
-      rankChoice: number;
-      majority: number;
-      approval: number;
+      [PollInputFormat.singleChoice]: number;
+      [PollInputFormat.rankFree]: number;
+      [PollInputFormat.majority]: number;
+      [PollInputFormat.chooseFree]: number;
     };
   };
 };
