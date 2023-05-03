@@ -437,7 +437,7 @@ const PollingOverview = ({
                     data-testid="button-view-ended-polls"
                     sx={{ mb: 5, py: 3, display: stats.finished > 0 ? undefined : 'none' }}
                   >
-                    View ended polls ({stats.finished})
+                    View ended polls ({paginationInfo.totalCount - activePolls.length})
                   </Button>
                 )}
               </Stack>
