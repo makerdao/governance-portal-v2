@@ -15,6 +15,8 @@ import { pollHasStarted } from 'modules/polling/helpers/utils';
 import { PollTally } from 'modules/polling/types';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
+import { cacheGet } from 'modules/cache/cache';
 
 // Returns a PollTally given a pollID
 
@@ -156,28 +158,37 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     new ApiError('Invalid poll id', 400, 'Invalid poll id')
   ) as number;
 
-  const poll = await fetchSinglePoll(network, pollId, null);
+  const cacheKey = getPollTallyCacheKey(pollId);
+  const cachedTally = await cacheGet(cacheKey, network, undefined, true);
 
-  if (!poll) {
-    throw new ApiError('Poll not found', 404, 'Poll not found');
+  let tally: PollTally;
+
+  if (cachedTally) {
+    tally = JSON.parse(cachedTally);
+  } else {
+    const poll = await fetchSinglePoll(network, pollId, null);
+
+    if (!poll) {
+      throw new ApiError('Poll not found', 404, 'Poll not found');
+    }
+
+    if (!pollHasStarted(poll)) {
+      const emptyTally: PollTally = {
+        parameters: poll.parameters,
+        numVoters: 0,
+        results: [],
+        totalMkrParticipation: 0,
+        totalMkrActiveParticipation: 0,
+        victoryConditionMatched: null,
+        winner: null,
+        winningOptionName: '',
+        votesByAddress: []
+      };
+
+      return res.status(200).json(emptyTally);
+    }
+    tally = await getPollTally(poll, network);
   }
-
-  if (!pollHasStarted(poll)) {
-    const emptyTally: PollTally = {
-      parameters: poll.parameters,
-      numVoters: 0,
-      results: [],
-      totalMkrParticipation: 0,
-      totalMkrActiveParticipation: 0,
-      victoryConditionMatched: null,
-      winner: null,
-      winningOptionName: '',
-      votesByAddress: []
-    };
-
-    return res.status(200).json(emptyTally);
-  }
-  const tally = await getPollTally(poll, network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   return res.status(200).json(tally);

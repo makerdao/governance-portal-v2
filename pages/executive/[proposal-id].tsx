@@ -315,20 +315,22 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
               </Flex>
             </Flex>
             <Flex sx={{ justifyContent: 'right' }}>
-              <Label
-                variant="thinLabel"
-                sx={{
-                  fontSize: 1,
-                  alignItems: 'center',
-                  justifyContent: 'right',
-                  py: [0, 1],
-                  color: 'textSecondary',
-                  cursor: 'pointer'
-                }}
-              >
-                <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
-                <Text variant="caps">Show &lt;0.05 MKR voters</Text>
-              </Label>
+              <Box sx={{ flexGrow: 0 }}>
+                <Label
+                  variant="thinLabel"
+                  sx={{
+                    fontSize: 1,
+                    alignItems: 'center',
+                    justifyContent: 'right',
+                    py: [0, 1],
+                    color: 'textSecondary',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
+                  <Text variant="caps">Show &lt;0.05 MKR voters</Text>
+                </Label>
+              </Box>
             </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>

@@ -38,7 +38,7 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
  *          schema:
  *            type: integer
  *            minimum: 1
- *            maximum 30
+ *            maximum: 30
  *          default: 20
  *        - name: page
  *          in: query
