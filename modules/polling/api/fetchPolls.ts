@@ -195,7 +195,7 @@ export async function checkCachedPollsValidity(
     return { valid: true };
   }
 
-  const githubPollsHashRes = await fetch(POLLS_HASH_FILE_URL);
+  const githubPollsHashRes = await fetch(POLLS_HASH_FILE_URL[network]);
   const githubPollsHashFile = await githubPollsHashRes.json();
 
   const githubPollsHash: string | undefined = githubPollsHashFile.hash;
@@ -217,7 +217,7 @@ export async function refetchPolls(
   allPolls: Poll[];
   partialActivePolls: { pollId: number; endDate: Date }[];
 }> {
-  const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL);
+  const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL[network]);
   const allPolls = await allPollsRes.json();
 
   const pollList: PollListItem[] = allPolls.map(poll => {
@@ -237,7 +237,7 @@ export async function refetchPolls(
   });
 
   const partialActivePolls = pollList
-    .filter(poll => new Date(poll.endDate) > new Date())
+    .filter(poll => new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date())
     .map(({ pollId, endDate }) => ({ pollId, endDate }));
 
   cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS, true);
@@ -330,13 +330,14 @@ export function filterPollList(
       const paramEndDate = new Date(endDate);
 
       return (
+        new Date() >= paramStartDate &&
         (filterTitle ? title.toLowerCase().includes(filterTitle.toLowerCase()) : true) &&
         (filterTags ? filterTags.every(tag => tags.includes(tag)) : true) &&
         (filterStartDate ? paramStartDate >= filterStartDate : true) &&
         (filterEndDate ? paramEndDate < filterEndDate : true) &&
         (status
           ? status === PollStatusEnum.active
-            ? new Date() >= paramStartDate && new Date() < paramEndDate
+            ? new Date() < paramEndDate
             : new Date() >= paramEndDate
           : true) &&
         (filterTypes ? filterTypes.includes(type) : true)
@@ -366,7 +367,7 @@ export function filterPollList(
   };
 
   pollList.forEach(poll => {
-    if (new Date(poll.endDate) > new Date()) {
+    if (new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date()) {
       pollStats.active++;
     } else {
       pollStats.finished++;
