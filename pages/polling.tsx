@@ -453,7 +453,7 @@ const PollingOverview = ({
               <ErrorBoundary componentName="Ballot">
                 <BallotBox
                   network={network}
-                  activePollCount={stats.active}
+                  activePollCount={partialActivePolls.length}
                   partialActivePolls={partialActivePolls}
                 />
               </ErrorBoundary>

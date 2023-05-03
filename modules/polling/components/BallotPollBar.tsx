@@ -13,10 +13,12 @@ import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { PartialActivePoll } from '../types';
 
 type Props = {
   activePollCount: number;
-  partialActivePolls: { pollId: number; endDate: Date }[];
+  partialActivePolls: PartialActivePoll[];
   voted?: boolean;
 };
 
@@ -55,51 +57,58 @@ export default function BallotPollBar({
 
   return availablePollsLength > 0 || edits > 0 ? (
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }} {...props}>
-      <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
-        {voted
-          ? `You voted on ${ballotLength} poll${ballotLength > 1 ? 's' : ''}`
-          : `${ballotLength - edits} of ${availablePollsLength} available poll${
-              availablePollsLength > 1 ? 's' : ''
-            } added to ballot`}
-      </Text>
-      <Flex
-        sx={{
-          width: '100%',
-          height: 2,
-          backgroundColor: 'secondary',
-          mt: 2,
-          flexDirection: 'row',
-          borderRadius: 'small'
-        }}
-      >
-        {Array(availablePollsLength)
-          .fill(null)
-          .map((_, index) => (
-            <Box
-              key={index}
-              backgroundColor="secondary"
-              sx={{
-                flex: 1,
-                borderLeft: index === 0 ? undefined : '1px solid white',
-                borderTopLeftRadius: index === 0 ? 'small' : undefined,
-                borderBottomLeftRadius: index === 0 ? 'small' : undefined,
-                borderTopRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
-                borderBottomRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
-                backgroundColor: index < (voted ? ballotLength : ballotLength - edits) ? 'primary' : undefined
-              }}
-            />
-          ))}
-      </Flex>
-      {edits > 0 && !voted && (
-        <Box mt={2} mb={-2}>
-          <Text sx={{ color: 'textSecondary' }}>
-            <Text as="span" sx={{ color: 'text', fontWeight: 'bold' }}>
-              and {edits}
-            </Text>{' '}
-            vote edit
-            {edits > 1 && 's'} added to ballot.
+      {!allUserVotes ? (
+        <SkeletonThemed />
+      ) : (
+        <>
+          <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
+            {voted
+              ? `You voted on ${ballotLength} poll${ballotLength > 1 ? 's' : ''}`
+              : `${ballotLength - edits} of ${availablePollsLength} available poll${
+                  availablePollsLength > 1 ? 's' : ''
+                } added to ballot`}
           </Text>
-        </Box>
+          <Flex
+            sx={{
+              width: '100%',
+              height: 2,
+              backgroundColor: 'secondary',
+              mt: 2,
+              flexDirection: 'row',
+              borderRadius: 'small'
+            }}
+          >
+            {Array(availablePollsLength)
+              .fill(null)
+              .map((_, index) => (
+                <Box
+                  key={index}
+                  backgroundColor="secondary"
+                  sx={{
+                    flex: 1,
+                    borderLeft: index === 0 ? undefined : '1px solid white',
+                    borderTopLeftRadius: index === 0 ? 'small' : undefined,
+                    borderBottomLeftRadius: index === 0 ? 'small' : undefined,
+                    borderTopRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
+                    borderBottomRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
+                    backgroundColor:
+                      index < (voted ? ballotLength : ballotLength - edits) ? 'primary' : undefined
+                  }}
+                />
+              ))}
+          </Flex>
+          {edits > 0 && !voted && (
+            <Box mt={2} mb={-2}>
+              <Text sx={{ color: 'textSecondary' }}>
+                <Text as="span" sx={{ color: 'text', fontWeight: 'bold' }}>
+                  and {edits}
+                </Text>{' '}
+                vote edit
+                {edits > 1 && 's'} added to ballot.
+              </Text>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   ) : (

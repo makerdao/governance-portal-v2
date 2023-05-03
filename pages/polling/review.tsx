@@ -210,7 +210,7 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                     {!hasVoted && (
                       <ReviewBox
                         account={votingAccount}
-                        activePollCount={activePolls.length}
+                        activePollCount={partialActivePolls.length}
                         partialActivePolls={partialActivePolls}
                         ballotPollIds={ballotPollIds}
                       />
@@ -221,7 +221,7 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                           Share all your votes
                         </Heading>
                         <ActivePollsBox
-                          activePollCount={activePolls.length}
+                          activePollCount={partialActivePolls.length}
                           partialActivePolls={partialActivePolls}
                           voted
                         >
@@ -331,7 +331,7 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                   </Heading>
                   <ReviewBox
                     account={votingAccount}
-                    activePollCount={activePolls.length}
+                    activePollCount={partialActivePolls.length}
                     partialActivePolls={partialActivePolls}
                     ballotPollIds={ballotPollIds}
                   />
@@ -343,7 +343,7 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                     Share all your votes
                   </Heading>
                   <ActivePollsBox
-                    activePollCount={activePolls.length}
+                    activePollCount={partialActivePolls.length}
                     partialActivePolls={partialActivePolls}
                     voted
                   >
