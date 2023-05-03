@@ -12,6 +12,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { WAD } from 'modules/web3/constants/numbers';
 import { PollVoteType } from './types';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export const ABSTAIN = 0;
 
@@ -70,8 +71,16 @@ export enum PollStatusEnum {
   ended = 'ENDED'
 }
 
-export const POLLS_HASH_FILE_URL =
-  'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/hashed-polls.json';
+export const POLLS_HASH_FILE_URL = {
+  [SupportedNetworks.MAINNET]:
+    'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/hashed-polls.json',
+  [SupportedNetworks.GOERLI]:
+    'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/hashed-polls-goerli.json'
+};
 
-export const AGGREGATED_POLLS_FILE_URL =
-  'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/polls.json';
+export const AGGREGATED_POLLS_FILE_URL = {
+  [SupportedNetworks.MAINNET]:
+    'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/polls.json',
+  [SupportedNetworks.GOERLI]:
+    'https://raw.githubusercontent.com/hernandoagf/community/master/governance/polls/meta/polls-goerli.json'
+};
