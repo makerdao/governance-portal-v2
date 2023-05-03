@@ -63,8 +63,8 @@ export default function Jazzicon({ address, size }: Props) {
       const angle = Math.PI * 2 * firstRot;
       const velocity = (size / shapeCount) * generator.random() + (index * size) / shapeCount;
 
-      const tx = Math.cos(angle) * velocity;
-      const ty = Math.sin(angle) * velocity;
+      const tx = (Math.cos(angle) * velocity).toFixed(1);
+      const ty = (Math.sin(angle) * velocity).toFixed(1);
 
       const secondRot = generator.random();
       const rot = firstRot * 360 + secondRot * 180;
