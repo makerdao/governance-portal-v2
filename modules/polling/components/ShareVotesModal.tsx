@@ -48,7 +48,7 @@ export const ShareVotesModal = ({
 
   return (
     <DialogOverlay isOpen={isOpen} onDismiss={onDismiss}>
-      <DialogContent widthDesktop="720px">
+      <DialogContent widthDesktop="720px" ariaLabel="Share votes modal">
         <BoxWithClose close={onDismiss}>
           <Flex sx={{ flexDirection: 'column' }}>
             <Heading sx={{ textAlign: 'center', mb: 3 }}>Share your votes</Heading>

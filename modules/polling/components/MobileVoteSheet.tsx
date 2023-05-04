@@ -138,7 +138,7 @@ export default function MobileVoteSheet({
   else
     return (
       <DialogOverlay isOpen onDismiss={close ? close : () => setViewState(ViewState.START)}>
-        <DialogContent aria-label="Vote Form">
+        <DialogContent ariaLabel="Vote Form">
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">
