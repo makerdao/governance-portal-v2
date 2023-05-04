@@ -305,7 +305,8 @@ const PollOverviewCard = memo(
       </Card>
     );
   },
-  ({ poll: prevPoll }, { poll: nextPoll }) => Object.is(prevPoll, nextPoll)
+  ({ poll: prevPoll, children: prevChildren }, { poll: nextPoll, children: nextChildren }) =>
+    Object.is(prevPoll, nextPoll) && Object.is(prevChildren, nextChildren)
 );
 
 export default PollOverviewCard;
