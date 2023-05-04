@@ -15,14 +15,14 @@ import { PollListItem } from 'modules/polling/types';
 import { TagCount } from 'modules/app/types/tag';
 
 type Props = {
-  activePolls: PollListItem[];
-  endedPolls: PollListItem[];
+  polls: PollListItem[];
+  activePollCount: number;
   allTags: TagCount[];
 };
 
-export const PollsOverviewLanding = ({ activePolls, endedPolls, allTags }: Props): JSX.Element => {
-  const hasActivePolls = activePolls.length > 0;
-  const pollsToDisplay = hasActivePolls ? activePolls : endedPolls;
+export const PollsOverviewLanding = ({ polls, activePollCount, allTags }: Props): JSX.Element => {
+  const hasActivePolls = activePollCount > 0;
+  const pollsToDisplay = hasActivePolls ? polls : polls.slice(0, 2);
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>

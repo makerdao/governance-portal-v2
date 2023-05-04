@@ -18,15 +18,14 @@ import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pol
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
-import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
+import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
 import { CvcStats } from 'modules/delegates/types/cvc';
 import { TagCount } from 'modules/app/types/tag';
 
 export type LandingPageData = {
   proposals: Proposal[];
-  activePolls: PollListItem[];
-  endedPolls: PollListItem[];
+  polls: PollListItem[];
   pollStats: PollsResponse['stats'];
   pollTags: TagCount[];
   delegates: DelegatePaginated[];
@@ -50,6 +49,7 @@ export async function fetchLandingPageData(
     page: 1,
     title: null,
     orderBy: PollOrderByEnum.nearestEnd,
+    status: null,
     tags: null,
     type: null,
     startDate: null,
@@ -61,32 +61,27 @@ export async function fetchLandingPageData(
         fetchJson(
           `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
         ),
-        fetchJson(`/api/polling/v2/all-polls?network=${network}&status=${PollStatusEnum.active}&pageSize=4`),
-        fetchJson(`/api/polling/v2/all-polls?network=${network}&status=${PollStatusEnum.ended}&pageSize=2`),
+        fetchJson(`/api/polling/v2/all-polls?network=${network}&pageSize=4`),
         fetchMkrOnHat(network),
         fetchMkrInChief(network)
       ])
     : await Promise.allSettled([
         getExecutiveProposals({ start: 0, limit: EXEC_FETCH_SIZE, sortBy: EXEC_SORT_BY, network }),
-        getPollsPaginated({ ...pollQueryVariables, pageSize: 4, status: PollStatusEnum.active }),
-        getPollsPaginated({ ...pollQueryVariables, pageSize: 2, status: PollStatusEnum.ended }),
+        getPollsPaginated({ ...pollQueryVariables, pageSize: 4 }),
         fetchMkrOnHat(network),
         fetchMkrInChief(network)
       ]);
 
   // return null for any data we couldn't fetch
-  const [proposals, activePollsData, endedPollsData, mkrOnHatResponse, mkrInChief] = responses.map(promise =>
+  const [proposals, pollsData, mkrOnHatResponse, mkrInChief] = responses.map(promise =>
     promise.status === 'fulfilled' ? promise.value : null
   );
 
   return {
     proposals: proposals ? (proposals as Proposal[]).filter(i => i.active) : [],
-    activePolls: activePollsData ? (activePollsData as PollsPaginatedResponse).polls : [],
-    endedPolls: endedPollsData ? (endedPollsData as PollsPaginatedResponse).polls : [],
-    pollStats: activePollsData
-      ? (activePollsData as PollsPaginatedResponse).stats
-      : { active: 0, finished: 0, total: 0 },
-    pollTags: activePollsData ? (activePollsData as PollsPaginatedResponse).tags : [],
+    polls: pollsData ? (pollsData as PollsPaginatedResponse).polls : [],
+    pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
+    pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
     mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat) : undefined,
     hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
     mkrInChief: mkrInChief ? formatValue(mkrInChief as BigNumber) : undefined

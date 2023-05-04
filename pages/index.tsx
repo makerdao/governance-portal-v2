@@ -45,8 +45,7 @@ import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegat
 
 const LandingPage = ({
   proposals,
-  activePolls,
-  endedPolls,
+  polls,
   pollStats,
   pollTags,
   delegates,
@@ -140,14 +139,11 @@ const LandingPage = ({
 
   return (
     <div>
-      {delegates.length === 0 &&
-        delegatesInfo.length === 0 &&
-        activePolls.length === 0 &&
-        endedPolls.length === 0 && (
-          <Alert variant="warning">
-            <Text>There is a problem loading the governance data. Please, try again later.</Text>
-          </Alert>
-        )}
+      {delegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
+        <Alert variant="warning">
+          <Text>There is a problem loading the governance data. Please, try again later.</Text>
+        </Alert>
+      )}
       <Box
         as={'div'}
         sx={{
@@ -245,7 +241,7 @@ const LandingPage = ({
               </Sticky>
               <Box ref={voteRef} />
               <Box sx={{ mt: 3 }}>
-                <PollsOverviewLanding activePolls={activePolls} endedPolls={endedPolls} allTags={pollTags} />
+                <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
               </Box>
               <PollCategoriesLanding pollCategories={pollTags} />
             </section>
@@ -295,8 +291,7 @@ const LandingPage = ({
 
 export default function Index({
   proposals: prefetchedProposals,
-  activePolls: prefetchedActivePolls,
-  endedPolls: prefetchedEndedPolls,
+  polls: prefetchedPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
   mkrOnHat: prefetchedMkrOnHat,
@@ -308,8 +303,7 @@ export default function Index({
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,
-        activePolls: prefetchedActivePolls,
-        endedPolls: prefetchedEndedPolls,
+        polls: prefetchedPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
         mkrOnHat: prefetchedMkrOnHat,
@@ -343,8 +337,7 @@ export default function Index({
 
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
-    activePolls: isDefaultNetwork(network) ? prefetchedActivePolls : data?.activePolls || [],
-    endedPolls: isDefaultNetwork(network) ? prefetchedEndedPolls : data?.endedPolls || [],
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     pollStats: isDefaultNetwork(network)
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
@@ -362,15 +355,15 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, activePolls, endedPolls, pollStats, pollTags, mkrOnHat, hat, mkrInChief } =
-    await fetchLandingPageData(SupportedNetworks.MAINNET);
+  const { proposals, polls, pollStats, pollTags, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
+    SupportedNetworks.MAINNET
+  );
 
   return {
     revalidate: 5 * 60, // allow revalidation every 30 minutes
     props: {
       proposals,
-      activePolls,
-      endedPolls,
+      polls,
       pollStats,
       pollTags,
       mkrOnHat,
