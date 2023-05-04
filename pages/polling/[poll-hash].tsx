@@ -47,7 +47,6 @@ import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import usePollsStore from 'modules/polling/stores/polls';
-import { PollVoteTypeIndicator } from 'modules/polling/components/PollOverviewCard/PollVoteTypeIndicator';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
@@ -161,18 +160,12 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   >
                     Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
                   </Text>
-
-                  <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                    <CountdownTimer
-                      key={poll.multiHash}
-                      endText="Poll ended"
-                      endDate={poll.endDate}
-                      sx={{ ml: [0, 'auto'] }}
-                    />
-                    <Box sx={{ ml: 2 }}>
-                      <PollVoteTypeIndicator poll={poll} />
-                    </Box>
-                  </Flex>
+                  <CountdownTimer
+                    key={poll.multiHash}
+                    endText="Poll ended"
+                    endDate={poll.endDate}
+                    sx={{ ml: [0, 'auto'] }}
+                  />
                 </Flex>
 
                 <Flex sx={{ mb: 2, flexDirection: 'column' }}>
