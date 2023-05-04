@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { getPartialActivePolls, getPollsPaginated } from 'modules/polling/api/fetchPolls';
+import { getActivePollIds, getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { PollInputFormat, PollOrderByEnum, PollStatusEnum } from '../polling.constants';
@@ -63,14 +63,14 @@ export async function fetchPollingPageData(
         endDate
       });
 
-  const partialActivePolls = await getPartialActivePolls(network);
+  const activePollIds = await getActivePollIds(network);
 
   return {
     polls,
     tags,
     stats,
     paginationInfo,
-    partialActivePolls
+    activePollIds
   };
 }
 
@@ -116,11 +116,11 @@ export async function fetchPollingReviewPageData(
     }
   }
 
-  const partialActivePolls = await getPartialActivePolls(network);
+  const activePollIds = await getActivePollIds(network);
 
   return {
     polls,
-    partialActivePolls,
+    activePollIds,
     tags
   };
 }

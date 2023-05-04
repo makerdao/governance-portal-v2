@@ -16,7 +16,7 @@ import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-k
 import { config } from 'lib/config';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import logger from 'lib/logger';
-import { getPartialActivePolls } from 'modules/polling/api/fetchPolls';
+import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
@@ -29,7 +29,6 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { ApiError } from 'modules/app/api/ApiError';
 import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
-import { PartialActivePoll } from 'modules/polling/types';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'Voter must be a string.',
@@ -175,11 +174,9 @@ export default withApiHandler(
       }
 
       // Verify that all the polls are active
-      const activePolls: PartialActivePoll[] = await getPartialActivePolls(network);
+      const activePollIds: number[] = await getActivePollIds(network);
 
-      const areAllPollsActive = pollIds.every(pollId =>
-        activePolls.some(poll => poll?.pollId === parseInt(pollId))
-      );
+      const areAllPollsActive = pollIds.every(pollId => activePollIds.some(pId => pId === parseInt(pollId)));
 
       if (!areAllPollsActive) {
         await throwError({ error: API_VOTE_ERRORS.EXPIRED_POLLS, body: req.body, skipDiscord });

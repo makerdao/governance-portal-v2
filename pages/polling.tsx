@@ -48,10 +48,7 @@ import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constan
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export type PollingPageProps = PollsPaginatedResponse & {
-  partialActivePolls: {
-    pollId: number;
-    endDate: Date;
-  }[];
+  activePollIds: number[];
 };
 
 const PollingOverview = ({
@@ -59,7 +56,7 @@ const PollingOverview = ({
   tags,
   stats,
   paginationInfo: propPaginationInfo,
-  partialActivePolls
+  activePollIds
 }: PollingPageProps) => {
   const [
     { categoryFilter, pollVictoryCondition, startDate, endDate, showPollActive, showPollEnded },
@@ -453,8 +450,8 @@ const PollingOverview = ({
               <ErrorBoundary componentName="Ballot">
                 <BallotBox
                   network={network}
-                  activePollCount={partialActivePolls.length}
-                  partialActivePolls={partialActivePolls}
+                  activePollCount={activePollIds.length}
+                  activePollIds={activePollIds}
                 />
               </ErrorBoundary>
             )}
@@ -487,7 +484,7 @@ export default function PollingOverviewPage({
   tags: prefetchedCategories,
   stats: prefetchedStats,
   paginationInfo: prefetchedPaginationInfo,
-  partialActivePolls: prefetchedPartialActivePolls
+  activePollIds: prefetchedActivePollIds
 }: PollingPageProps): JSX.Element {
   const { network } = useWeb3();
 
@@ -497,7 +494,7 @@ export default function PollingOverviewPage({
         tags: prefetchedCategories,
         stats: prefetchedStats,
         paginationInfo: prefetchedPaginationInfo,
-        partialActivePolls: prefetchedPartialActivePolls
+        activePollIds: prefetchedActivePollIds
       }
     : null;
 
@@ -536,9 +533,7 @@ export default function PollingOverviewPage({
           numPages: 0,
           hasNextPage: false
         },
-    partialActivePolls: isDefaultNetwork(network)
-      ? prefetchedPartialActivePolls
-      : data?.partialActivePolls || []
+    activePollIds: isDefaultNetwork(network) ? prefetchedActivePollIds : data?.activePollIds || []
   };
 
   return (
@@ -549,7 +544,7 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, tags, stats, paginationInfo, partialActivePolls } = await fetchPollingPageData(
+  const { polls, tags, stats, paginationInfo, activePollIds } = await fetchPollingPageData(
     SupportedNetworks.MAINNET
   );
 
@@ -560,7 +555,7 @@ export const getStaticProps: GetStaticProps = async () => {
       tags,
       stats,
       paginationInfo,
-      partialActivePolls
+      activePollIds
     }
   };
 };

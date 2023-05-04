@@ -277,19 +277,26 @@ export async function refetchPolls(
   return { pollList, allPolls: parsedPolls, partialActivePolls };
 }
 
-export async function getPartialActivePolls(network: SupportedNetworks): Promise<PartialActivePoll[]> {
+export async function getActivePollIds(network: SupportedNetworks): Promise<number[]> {
   const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
+
+  let partialActivePolls: PartialActivePoll[] = [];
 
   if (cachedPollsAreValid) {
     const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, undefined, true);
     if (cachedPartialActivePolls) {
-      return JSON.parse(cachedPartialActivePolls);
+      partialActivePolls = JSON.parse(cachedPartialActivePolls);
     }
+  } else {
+    const { partialActivePolls: newPartialActivePolls } = await refetchPolls(network, githubHash as string);
+    partialActivePolls = newPartialActivePolls;
   }
 
-  const { partialActivePolls } = await refetchPolls(network, githubHash as string);
+  const activePollIds = partialActivePolls
+    .filter(poll => new Date(poll.endDate) > new Date())
+    .map(poll => poll.pollId);
 
-  return partialActivePolls;
+  return activePollIds;
 }
 
 export async function getPollList(network: SupportedNetworks): Promise<PollListItem[]> {

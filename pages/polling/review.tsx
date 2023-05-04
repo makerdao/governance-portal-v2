@@ -18,7 +18,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import { PartialActivePoll, PollListItem } from 'modules/polling/types';
+import { PollListItem } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
@@ -42,10 +42,10 @@ import { TagCount } from 'modules/app/types/tag';
 export type PollingReviewPageProps = {
   polls: PollListItem[];
   tags: TagCount[];
-  partialActivePolls: PartialActivePoll[];
+  activePollIds: number[];
 };
 
-const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: PollingReviewPageProps) => {
+const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingReviewPageProps) => {
   const bpi = useBreakpointIndex();
   const { network } = useWeb3();
 
@@ -210,8 +210,8 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                     {!hasVoted && (
                       <ReviewBox
                         account={votingAccount}
-                        activePollCount={partialActivePolls.length}
-                        partialActivePolls={partialActivePolls}
+                        activePollCount={activePollIds.length}
+                        activePollIds={activePollIds}
                         ballotPollIds={ballotPollIds}
                       />
                     )}
@@ -221,8 +221,8 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                           Share all your votes
                         </Heading>
                         <ActivePollsBox
-                          activePollCount={partialActivePolls.length}
-                          partialActivePolls={partialActivePolls}
+                          activePollCount={activePollIds.length}
+                          activePollIds={activePollIds}
                           voted
                         >
                           <Box p={3}>
@@ -331,8 +331,8 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                   </Heading>
                   <ReviewBox
                     account={votingAccount}
-                    activePollCount={partialActivePolls.length}
-                    partialActivePolls={partialActivePolls}
+                    activePollCount={activePollIds.length}
+                    activePollIds={activePollIds}
                     ballotPollIds={ballotPollIds}
                   />
                 </Box>
@@ -342,11 +342,7 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
                   <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                     Share all your votes
                   </Heading>
-                  <ActivePollsBox
-                    activePollCount={partialActivePolls.length}
-                    partialActivePolls={partialActivePolls}
-                    voted
-                  >
+                  <ActivePollsBox activePollCount={activePollIds.length} activePollIds={activePollIds} voted>
                     <Box p={3}>
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
                         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -375,7 +371,7 @@ const PollingReview = ({ polls: activePolls, partialActivePolls, tags }: Polling
 
 export default function PollingReviewPage({
   polls: prefetchedPolls,
-  partialActivePolls: prefetchedPartialActivePolls,
+  activePollIds: prefetchedActivePollIds,
   tags: prefetchedTags
 }: PollingReviewPageProps): JSX.Element {
   const { network } = useWeb3();
@@ -383,7 +379,7 @@ export default function PollingReviewPage({
   const fallbackData = isDefaultNetwork(network)
     ? {
         polls: prefetchedPolls,
-        partialActivePolls: prefetchedPartialActivePolls,
+        activePollIds: prefetchedActivePollIds,
         tags: prefetchedTags
       }
     : null;
@@ -412,9 +408,7 @@ export default function PollingReviewPage({
   }
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    partialActivePolls: isDefaultNetwork(network)
-      ? prefetchedPartialActivePolls
-      : data?.partialActivePolls || [],
+    activePollIds: isDefaultNetwork(network) ? prefetchedActivePollIds : data?.activePollIds || [],
     tags: isDefaultNetwork(network) ? prefetchedTags : data?.tags || []
   };
 
@@ -426,13 +420,13 @@ export default function PollingReviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, partialActivePolls, tags } = await fetchPollingReviewPageData(SupportedNetworks.MAINNET);
+  const { polls, activePollIds, tags } = await fetchPollingReviewPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60, // revalidate every 60 seconds
     props: {
       polls,
-      partialActivePolls,
+      activePollIds,
       tags
     }
   };

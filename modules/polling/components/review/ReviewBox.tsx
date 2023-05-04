@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
-import { PartialActivePoll } from 'modules/polling/types';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ActivePollsBox from './ActivePollsBox';
 import { useContext, useState, useEffect } from 'react';
@@ -34,12 +33,12 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 export default function ReviewBox({
   account,
   activePollCount,
-  partialActivePolls,
+  activePollIds,
   ballotPollIds
 }: {
   account: string;
   activePollCount: number;
-  partialActivePolls: PartialActivePoll[];
+  activePollIds: number[];
   ballotPollIds: string[];
 }): JSX.Element {
   const {
@@ -128,7 +127,7 @@ export default function ReviewBox({
   return (
     <Box>
       {ballotStep === 'initial' && (
-        <ActivePollsBox activePollCount={activePollCount} partialActivePolls={partialActivePolls}>
+        <ActivePollsBox activePollCount={activePollCount} activePollIds={activePollIds}>
           {commentsCount > 0 && canUseComments ? (
             <Box p={3}>
               <StackLayout gap={2}>

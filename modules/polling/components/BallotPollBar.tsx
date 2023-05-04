@@ -14,17 +14,16 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { PartialActivePoll } from '../types';
 
 type Props = {
   activePollCount: number;
-  partialActivePolls: PartialActivePoll[];
+  activePollIds: number[];
   voted?: boolean;
 };
 
 export default function BallotPollBar({
   activePollCount,
-  partialActivePolls,
+  activePollIds,
   voted,
   ...props
 }: Props): JSX.Element {
@@ -38,9 +37,8 @@ export default function BallotPollBar({
   const ballotLength = voted ? Object.keys(previousBallot).length : ballotCount;
 
   const allUserVotesActiveCount = allUserVotes
-    ? allUserVotes
-        .map(vote => partialActivePolls.find(poll => poll.pollId === vote.pollId))
-        .filter(poll => !!poll && new Date(poll.endDate) > new Date()).length
+    ? allUserVotes.map(vote => activePollIds.find(pollId => pollId === vote.pollId)).filter(poll => !!poll)
+        .length
     : 0;
 
   const availablePollsLength = activePollCount - allUserVotesActiveCount;

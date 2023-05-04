@@ -18,10 +18,10 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 type Props = {
   activePollCount: number;
   network: SupportedNetworks;
-  partialActivePolls: { pollId: number; endDate: Date }[];
+  activePollIds: number[];
 };
 
-export default function BallotBox({ activePollCount, network, partialActivePolls }: Props): JSX.Element {
+export default function BallotBox({ activePollCount, network, activePollIds }: Props): JSX.Element {
   const { transaction, ballotCount, clearBallot } = useContext(BallotContext);
 
   return (
@@ -46,7 +46,7 @@ export default function BallotBox({ activePollCount, network, partialActivePolls
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <PollBar activePollCount={activePollCount} partialActivePolls={partialActivePolls} />
+          <PollBar activePollCount={activePollCount} activePollIds={activePollIds} />
 
           <Divider />
           <Box sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }}>
