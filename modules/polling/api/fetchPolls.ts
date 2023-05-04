@@ -184,12 +184,7 @@ export async function getPolls(
 export async function checkCachedPollsValidity(
   network: SupportedNetworks
 ): Promise<{ valid: boolean; hash?: string }> {
-  const isPollsHashValid: boolean | undefined = await cacheGet(
-    isPollsHashValidCacheKey,
-    network,
-    undefined,
-    true
-  );
+  const isPollsHashValid: boolean | undefined = await cacheGet(isPollsHashValidCacheKey, network);
 
   if (isPollsHashValid) {
     return { valid: true };
@@ -199,10 +194,10 @@ export async function checkCachedPollsValidity(
   const githubPollsHashFile = await githubPollsHashRes.json();
 
   const githubPollsHash: string | undefined = githubPollsHashFile.hash;
-  const cachedPollsHash: string | undefined = await cacheGet(pollsHashCacheKey, network, undefined, true);
+  const cachedPollsHash: string | undefined = await cacheGet(pollsHashCacheKey, network, ONE_WEEK_IN_MS);
 
   if (githubPollsHash && cachedPollsHash && githubPollsHash === cachedPollsHash) {
-    cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS, true);
+    cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
     return { valid: true };
   } else {
     return { valid: false, hash: githubPollsHash };
@@ -240,10 +235,10 @@ export async function refetchPolls(
     .filter(poll => new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date())
     .map(({ pollId, endDate }) => ({ pollId, endDate }));
 
-  cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS, true);
-  cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS, true);
-  cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS, true);
-  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS, true);
+  cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
+  cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS);
+  cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
+  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
 
   const pollTags = getPollTags();
 
@@ -271,8 +266,8 @@ export async function refetchPolls(
 
   // Individual polls contain more metadata than the poll-list array and are used to render the poll detail page.
   // They are stored as multiple hashes for a same cache key for improved performance when setting and getting them.
-  cacheSet(pollDetailsCacheKey, stringifiedPolls, network, ONE_WEEK_IN_MS, true, 'HSET');
-  cacheSet(pollSlugToIdsCacheKey, JSON.stringify(pollSlugToIds), network, ONE_WEEK_IN_MS, true);
+  cacheSet(pollDetailsCacheKey, stringifiedPolls, network, ONE_WEEK_IN_MS, 'HSET');
+  cacheSet(pollSlugToIdsCacheKey, JSON.stringify(pollSlugToIds), network, ONE_WEEK_IN_MS);
 
   return { pollList, allPolls: parsedPolls, partialActivePolls };
 }
@@ -283,7 +278,7 @@ export async function getActivePollIds(network: SupportedNetworks): Promise<numb
   let partialActivePolls: PartialActivePoll[] = [];
 
   if (cachedPollsAreValid) {
-    const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, undefined, true);
+    const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, ONE_WEEK_IN_MS);
     if (cachedPartialActivePolls) {
       partialActivePolls = JSON.parse(cachedPartialActivePolls);
     }
@@ -303,7 +298,7 @@ export async function getPollList(network: SupportedNetworks): Promise<PollListI
   const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
 
   if (cachedPollsAreValid) {
-    const cachedPollList = await cacheGet(pollListCacheKey, network, undefined, true);
+    const cachedPollList = await cacheGet(pollListCacheKey, network, ONE_WEEK_IN_MS);
     if (cachedPollList) {
       return JSON.parse(cachedPollList);
     }

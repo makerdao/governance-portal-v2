@@ -17,6 +17,7 @@ import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet } from 'modules/cache/cache';
+import { ONE_WEEK_IN_MS, THIRTY_SECONDS_IN_MS } from 'modules/app/constants/time';
 
 // Returns a PollTally given a pollID
 
@@ -158,10 +159,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     new ApiError('Invalid poll id', 400, 'Invalid poll id')
   ) as number;
 
-  const cacheKey = getPollTallyCacheKey(pollId);
-  const cachedTally = await cacheGet(cacheKey, network, undefined, true);
-
   let tally: PollTally;
+
+  const cacheKey = getPollTallyCacheKey(pollId);
+  const cachedTally =
+    (await cacheGet(cacheKey, network, ONE_WEEK_IN_MS)) ||
+    (await cacheGet(cacheKey, network, THIRTY_SECONDS_IN_MS));
 
   if (cachedTally) {
     tally = JSON.parse(cachedTally);

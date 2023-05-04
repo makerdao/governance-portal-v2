@@ -21,7 +21,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   const pollEnded = pollHasEnded(poll);
 
   const cacheKey = getPollTallyCacheKey(poll.pollId);
-  cacheSet(cacheKey, JSON.stringify(tally), network, pollEnded ? ONE_WEEK_IN_MS : THIRTY_SECONDS_IN_MS, true);
+  cacheSet(cacheKey, JSON.stringify(tally), network, pollEnded ? ONE_WEEK_IN_MS : THIRTY_SECONDS_IN_MS);
 
   return tally;
 }

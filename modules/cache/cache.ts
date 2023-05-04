@@ -13,7 +13,7 @@ import { config } from 'lib/config';
 import Redis from 'ioredis';
 import packageJSON from '../../package.json';
 import logger from 'lib/logger';
-import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
+import { ONE_DAY_IN_MS, ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 import { executiveProposalsCacheKey } from './constants/cache-keys';
 
 let isConnected = true;
@@ -41,16 +41,16 @@ const redisCacheEnabled = () => {
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const memoryCache = {};
 
-function getFilePath(name: string, network: string, extendedTTL = false): string {
+function getFilePath(name: string, network: string, expiryMs?: number): string {
   const date = new Date().toISOString().substring(0, 10);
 
   return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}${
-    extendedTTL ? '' : '-' + date
+    expiryMs && expiryMs > ONE_DAY_IN_MS ? '' : '-' + date
   }`;
 }
 
-export const cacheDel = (name: string, network: SupportedNetworks, extendedTTL = false): void => {
-  const path = getFilePath(name, network, extendedTTL);
+export const cacheDel = (name: string, network: SupportedNetworks, expiryMs?: number): void => {
+  const path = getFilePath(name, network, expiryMs);
 
   if (redisCacheEnabled()) {
     // if clearing proposals, we need to find all of them first
@@ -109,7 +109,6 @@ export const cacheGet = async (
   name: string,
   network?: SupportedNetworks,
   expiryMs?: number,
-  extendedTTL = false,
   method: 'GET' | 'HGET' = 'GET',
   field = ''
 ): Promise<any> => {
@@ -119,7 +118,7 @@ export const cacheGet = async (
 
   try {
     const currentNetwork = network || DEFAULT_NETWORK.network;
-    const path = getFilePath(name, currentNetwork, extendedTTL);
+    const path = getFilePath(name, currentNetwork, expiryMs);
 
     if (redisCacheEnabled()) {
       // Get redis data if it exists
@@ -170,7 +169,6 @@ export const cacheSet = (
   data: string | { [key: number]: string },
   network?: SupportedNetworks,
   expiryMs = ONE_HOUR_IN_MS,
-  extendedTTL = false,
   method: 'SET' | 'HSET' = 'SET'
 ): void => {
   if (!config.USE_CACHE || config.USE_CACHE === 'false') {
@@ -179,7 +177,7 @@ export const cacheSet = (
 
   const currentNetwork = network || DEFAULT_NETWORK.network;
 
-  const path = getFilePath(name, currentNetwork, extendedTTL);
+  const path = getFilePath(name, currentNetwork, expiryMs);
 
   try {
     if (redisCacheEnabled()) {

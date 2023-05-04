@@ -11,6 +11,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from '../types';
 import { pollDetailsCacheKey, pollSlugToIdsCacheKey } from 'modules/cache/constants/cache-keys';
 import { checkCachedPollsValidity, refetchPolls } from './fetchPolls';
+import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
 
 export async function fetchSinglePoll(
   network: SupportedNetworks,
@@ -24,7 +25,7 @@ export async function fetchSinglePoll(
   const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
 
   if (cachedPollsAreValid) {
-    const pollSlugToIdsString = await cacheGet(pollSlugToIdsCacheKey, network, undefined, true);
+    const pollSlugToIdsString = await cacheGet(pollSlugToIdsCacheKey, network, ONE_WEEK_IN_MS);
 
     if (!pollSlugToIdsString) {
       return null;
@@ -39,7 +40,7 @@ export async function fetchSinglePoll(
       return null;
     }
 
-    const cachedPoll = await cacheGet(pollDetailsCacheKey, network, undefined, true, 'HGET', String(pollId));
+    const cachedPoll = await cacheGet(pollDetailsCacheKey, network, ONE_WEEK_IN_MS, 'HGET', String(pollId));
     if (cachedPoll) {
       return JSON.parse(cachedPoll);
     }
