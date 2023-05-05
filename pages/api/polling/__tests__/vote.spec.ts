@@ -17,7 +17,7 @@ import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/get
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { BigNumber } from 'ethers';
-import { getPolls } from 'modules/polling/api/fetchPolls';
+import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { parseUnits } from 'ethers/lib/utils';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
@@ -234,17 +234,7 @@ describe('/api/polling/vote API Endpoint', () => {
         total: parseUnits('0.2')
       })
     );
-    (getPolls as jest.Mock).mockReturnValue(
-      Promise.resolve({
-        polls: [
-          {
-            pollId: 1,
-            endDate: Date.now() - 500,
-            startDate: Date.now() - 10000
-          }
-        ]
-      })
-    );
+    (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([]));
     const { req, res } = mockRequestResponse('POST', {
       voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
       pollIds: [1],
@@ -271,17 +261,7 @@ describe('/api/polling/vote API Endpoint', () => {
         total: parseUnits('0.2')
       })
     );
-    (getPolls as jest.Mock).mockReturnValue(
-      Promise.resolve({
-        polls: [
-          {
-            pollId: 1,
-            endDate: Date.now() + 5000,
-            startDate: Date.now() - 10000
-          }
-        ]
-      })
-    );
+    (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
     (recentlyUsedGaslessVotingCheck as jest.Mock).mockReturnValue(Promise.resolve(true));
 
     const { req, res } = mockRequestResponse('POST', {
@@ -313,17 +293,7 @@ describe('/api/polling/vote API Endpoint', () => {
         total: parseUnits('0.2')
       })
     );
-    (getPolls as jest.Mock).mockReturnValue(
-      Promise.resolve({
-        polls: [
-          {
-            pollId: 1,
-            endDate: Date.now() + 5000,
-            startDate: Date.now() - 10000
-          }
-        ]
-      })
-    );
+    (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
 
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
 
