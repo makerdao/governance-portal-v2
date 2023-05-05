@@ -11,10 +11,11 @@
         }
       ]
     ],
-    "plugins": ["superjson-next"],
-    "env": {
-      "test": {
+    //"plugins": ["superjson-next"],
+    // "env": {
+    //   "cypress-test": {
         "plugins": [
+          ["superjson-next"],
           ["istanbul", {
             "exclude": [
               "**/*.d.ts",
@@ -25,6 +26,6 @@
             ]
           }]
         ]
-      }
-    }
+    //   }
+    // }
 }

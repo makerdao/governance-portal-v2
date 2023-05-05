@@ -78,7 +78,8 @@ const moduleExports = {
     config.resolve.alias['stores'] = path.join(__dirname, 'stores');
 
     //use babel-loader for cypress code coverage when running in test mode
-    if (process.env.NODE_ENV === 'test') {
+    console.log('BABEL_ENV:', process.env.BABEL_ENV);
+    if (process.env.BABEL_ENV === 'cypress-test') {
       const oneOfRule = config.module.rules.find((rule) => 'oneOf' in rule);
       if (oneOfRule) {
         const tsRule = oneOfRule.oneOf.find((rule) =>
