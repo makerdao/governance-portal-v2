@@ -14,8 +14,18 @@
 /**
  * @type {Cypress.PluginConfig}
  */
-// eslint-disable-next-line no-unused-vars
+
+//code coverage
+const cypressCoverage = require('@cypress/code-coverage/task');
+
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
+  // Add this line to ensure the `env` property exists on the `config` object
+  config.env = config.env || {};
+
+  // Make sure to pass the `on` function to the `cypressCoverage` function
+  cypressCoverage(on, config);
+
+  // Your other plugin configurations, if any
+
+  return config;
 };

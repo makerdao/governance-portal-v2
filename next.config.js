@@ -76,6 +76,19 @@ const moduleExports = {
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');
     config.resolve.alias['components'] = path.join(__dirname, 'components');
     config.resolve.alias['stores'] = path.join(__dirname, 'stores');
+
+    //use babel-loader for cypress code coverage when running in test mode
+    if (process.env.NODE_ENV === 'test') {
+      const oneOfRule = config.module.rules.find((rule) => 'oneOf' in rule);
+      if (oneOfRule) {
+        const tsRule = oneOfRule.oneOf.find((rule) =>
+          rule.test && rule.test.toString().includes('tsx|ts')
+        );
+        if (tsRule) {
+          tsRule.use.loader = 'babel-loader';
+        }
+      }
+    }
     return config;
   },
 

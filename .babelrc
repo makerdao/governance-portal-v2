@@ -11,5 +11,20 @@
         }
       ]
     ],
-    "plugins": ["superjson-next"]
+    "plugins": ["superjson-next"],
+    "env": {
+      "test": {
+        "plugins": [
+          ["istanbul", {
+            "exclude": [
+              "**/*.d.ts",
+              "**/{node_modules,coverage}/**",
+              "**/*.test.ts",
+              "**/*.spec.ts",
+              "cypress/**/*.ts"
+            ]
+          }]
+        ]
+      }
+    }
 }
