@@ -30,7 +30,8 @@
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/",
     "gql-generate": "graphql-codegen --config codegen.yml",
     "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
-    "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\""
+    "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\"",
+    "combine:coverage": "mkdir -p combined-coverage && cp coverage/coverage-final.json combined-coverage/jest-final.json && cp cypress-coverage/coverage-final.json combined-coverage/cypress-final.json && npx nyc merge combined-coverage combined-coverage/combined.json && npx nyc report --report-dir combined-coverage --reporter=lcov -i combined.json"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.3.0",
