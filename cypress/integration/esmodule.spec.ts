@@ -8,7 +8,7 @@ import { setAccount, visitPage, forkNetwork, resetDatabase } from '../support/co
 
 const STARTING_ESM_BAL = 2.463;
 
-describe.skip('Esmodule Page', async () => {
+describe('Esmodule Page', async () => {
   before(() => {
     forkNetwork();
     resetDatabase();

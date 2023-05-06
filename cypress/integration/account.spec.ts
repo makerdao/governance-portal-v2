@@ -6,7 +6,7 @@
 import { getTestAccountByIndex } from 'cypress/support/constants/testaccounts';
 import { forkNetwork, resetDatabase, setAccount, visitPage } from '../support/commons';
 
-describe.skip('Account Page', async () => {
+describe('Account Page', async () => {
   before(() => {
     forkNetwork();
     resetDatabase();

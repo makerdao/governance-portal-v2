@@ -11,7 +11,7 @@ import {
 import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { forkNetwork, resetDatabase, setAccount, visitPage } from '../support/commons';
 
-describe.skip('/polling page', async () => {
+describe('/polling page', async () => {
   before(() => {
     forkNetwork();
     resetDatabase();

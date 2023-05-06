@@ -13,7 +13,7 @@ const mockRelayRes = {
   relayBalance: '0.99766447864494'
 };
 
-describe.skip('/polling/review page', async () => {
+describe('/polling/review page', async () => {
   before(() => {
     forkNetwork();
     resetDatabase();

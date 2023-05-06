@@ -7,7 +7,7 @@ import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support
 import { forkNetwork, setAccount, visitPage } from '../support/commons';
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 
-describe.skip('Executive page', async () => {
+describe('Executive page', async () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
   });
