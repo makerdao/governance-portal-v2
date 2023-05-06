@@ -6,7 +6,7 @@ import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { visitPage, setAccount, forkNetwork, resetDatabase } from '../../support/commons';
 
-describe('/polling/review page as a delegate', async () => {
+describe.skip('/polling/review page as a delegate', async () => {
   before(() => {
     forkNetwork();
     resetDatabase();

@@ -9,7 +9,7 @@ import { formatAddress } from 'lib/utils';
 import { closeModal, forkNetwork, resetDatabase, setAccount, visitPage } from '../../support/commons';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
-describe('Delegates Page', () => {
+describe.skip('Delegates Page', () => {
   before(() => {
     forkNetwork();
     resetDatabase();

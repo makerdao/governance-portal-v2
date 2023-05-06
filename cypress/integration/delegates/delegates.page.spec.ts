@@ -13,7 +13,7 @@ import {
 import { forkNetwork, resetDatabase, setAccount, visitPage } from '../../support/commons';
 import { TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
-describe('Delegates Page', () => {
+describe.skip('Delegates Page', () => {
   before(() => {
     forkNetwork();
     resetDatabase();

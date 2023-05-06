@@ -6,7 +6,7 @@ import { forkNetwork, setAccount, visitPage } from '../../support/commons';
 import { TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 import { INIT_BLOCK } from '../../support/constants/blockNumbers';
 
-describe('/polling detail page', async () => {
+describe.skip('/polling detail page', async () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
   });

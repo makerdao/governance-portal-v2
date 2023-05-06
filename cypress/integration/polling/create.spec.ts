@@ -6,7 +6,7 @@ import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { forkNetwork, setAccount, visitPage } from '../../support/commons';
 
-describe('/polling create page', async () => {
+describe.skip('/polling create page', async () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
   });

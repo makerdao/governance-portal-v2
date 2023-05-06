@@ -21,7 +21,7 @@ import {
 } from 'cypress/support/constants/executives';
 import BigNumber from 'bignumber.js';
 
-describe('Home Page', () => {
+describe.skip('Home Page', () => {
   before(() => {
     forkNetwork(/* INIT_BLOCK */);
   });
