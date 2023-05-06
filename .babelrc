@@ -16,15 +16,7 @@
     //   "cypress-test": {
         "plugins": [
           ["superjson-next"],
-          ["istanbul", {
-            "exclude": [
-              "**/*.d.ts",
-              "**/{node_modules,coverage}/**",
-              "**/*.test.ts",
-              "**/*.spec.ts",
-              "cypress/**/*.ts"
-            ]
-          }]
+          ["istanbul"]
         ]
     //   }
     // }
