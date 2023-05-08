@@ -26,15 +26,18 @@ const resources: Record<ResourceType, Resource> = {
     boxTitle: 'General Governance Resources',
     links: [
       { linkTitle: 'Maker Forum', url: 'https://forum.makerdao.com/' },
-      { linkTitle: 'Governance FAQs', url: 'https://makerdao.world/learn/governance/governance-faq/' },
+      {
+        linkTitle: 'Governance Docs',
+        url: 'https://manual.makerdao.com/governance/flowcharts/governance-flow'
+      },
       {
         linkTitle: 'Governance Risk Framework',
         url: 'https://blog.makerdao.com/makerdao-governance-risk-framework/'
       },
       { linkTitle: 'Awesome MakerDAO', url: 'https://github.com/makerdao/awesome-makerdao/' },
       {
-        linkTitle: 'Governance Call Schedule',
-        url: 'https://makerdao.world/resources/governance_and_risk_meetings/'
+        linkTitle: 'MakerDAO Calls Calendar',
+        url: 'https://manual.makerdao.com/makerdao/calendars/calls-calendar'
       }
     ]
   },
@@ -43,23 +46,23 @@ const resources: Record<ResourceType, Resource> = {
     links: [
       {
         linkTitle: 'How to participate in MakerDAO governance?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works/'
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao'
       },
       {
         linkTitle: 'What are Governance Polls?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls'
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao/on-chain-governance#governance-polls'
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
+        url: 'https://makerdux.notion.site/How-to-Calculate-Polling-Results-32a3f732d7fd481abd685e1f419d2bba'
       },
       {
         linkTitle: 'How to manually vote in a poll with Etherscan?',
         url: 'https://makerdux.notion.site/How-to-manually-vote-in-a-Maker-poll-with-Etherscan-d61a8fbac15a4bfc840ecb2d5c19cd80'
       },
       {
-        linkTitle: 'How to set up your wallet for voting?',
-        url: 'https://makerdao.world/en/learn/governance/voting-setup/'
+        linkTitle: 'How to vote in on-chain governance?',
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao/how-to-vote'
       },
       {
         linkTitle: 'How does gasless poll voting work?',
@@ -72,23 +75,23 @@ const resources: Record<ResourceType, Resource> = {
     links: [
       {
         linkTitle: 'How to participate in MakerDAO governance?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works/'
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao'
       },
       {
         linkTitle: 'What are Executive Votes?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works#executive-votes'
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao/on-chain-governance#executive-votes'
       },
       {
         linkTitle: 'How to manually verify Executive Spells?',
-        url: 'https://makerdao.world/en/learn/governance/audit-exec-spells'
+        url: 'https://manual.makerdao.com/governance/verification/executive-audit'
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao/on-chain-governance#how-is-the-voting-calculated'
       },
       {
-        linkTitle: 'How to set up your wallet for voting?',
-        url: 'https://makerdao.world/en/learn/governance/voting-setup/'
+        linkTitle: 'How to vote in on-chain governance?',
+        url: 'https://manual.makerdao.com/governance/voting-in-makerdao/how-to-vote'
       }
     ]
   },

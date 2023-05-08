@@ -151,7 +151,6 @@ export function PollCategoryTag({
           );
         }
       }}
-      title={`See all ${foundTag.id} polls`}
     >
       <TagComponent
         tag={foundTag}

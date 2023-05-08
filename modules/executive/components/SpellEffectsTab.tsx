@@ -156,7 +156,7 @@ export function SpellEffectsTab({
               </Text>
               <Box sx={{ mt: 3 }}>
                 <ExternalLink
-                  href="https://makerdao.world/en/learn/governance/audit-exec-spells"
+                  href="https://manual.makerdao.com/governance/verification/executive-audit"
                   title="Learn more about auditing executive spells"
                 >
                   <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
