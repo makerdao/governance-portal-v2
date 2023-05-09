@@ -13,23 +13,22 @@ const keyPairs = require('../cypress/support/constants/keypairs.json');
 const ERC20_ABI = require('../cypress/fixtures/erc20_abi.json');
 
 async function main() {
-  console.log('1');
   const accounts = await hre.ethers.getSigners();
   const testAccount = '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B';
   const mkrAddress = '0xc5E4eaB513A7CD12b2335e8a0D57273e13D499f7';
-  console.log('2');
+
   // Impersonate accounts
   await hre.network.provider.request({
     method: 'hardhat_impersonateAccount',
     params: [accounts[0].address]
   });
-  console.log('3');
+
   // This is the test account used on the tests
   await hre.network.provider.request({
     method: 'hardhat_impersonateAccount',
     params: [testAccount]
   });
-  console.log('4');
+
   const ethSender = await ethers.getSigner(accounts[0].address);
   // Send 0.5 ETH to all addresses
   for (let i = 0; i < 50; i++) {
@@ -38,12 +37,15 @@ async function main() {
       value: ethers.utils.parseEther('0.5')
     });
   }
+
   console.log('Imported accounts have been sent 0.5 ETH');
 
   await ethSender.sendTransaction({
     to: testAccount,
     value: ethers.utils.parseEther('2.5')
   });
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   console.log(
     'testAcct ETH balance is now',
