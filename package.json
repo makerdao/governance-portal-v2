@@ -31,7 +31,7 @@
     "gql-generate": "graphql-codegen --config codegen.yml",
     "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
     "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\"",
-    "combine:coverage": "mkdir -p combined-coverage && cp coverage/coverage-final.json combined-coverage/jest-final.json && cp cypress-coverage/coverage-final.json combined-coverage/cypress-final.json && npx nyc merge combined-coverage combined-coverage/combined.json && npx nyc report --report-dir combined-coverage --reporter=lcov -i combined.json"
+    "combine:coverage": "mkdir -p combined-coverage && cp coverage/coverage-final.json combined-coverage/jest-final.json && cp cypress-coverage/coverage-final.json combined-coverage/cypress-final.json && npx nyc merge combined-coverage combined-coverage/combined.json && npx nyc report --temp-directory combined-coverage --report-dir combined-coverage --reporter=lcov"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.3.0",
