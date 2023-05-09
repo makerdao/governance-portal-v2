@@ -66,4 +66,4 @@ jobs:
       - name: Codecov
         run: |
           yarn add --dev codecov
-          ./node_modules/.bin/codecov -f cypress-coverage/lcov.info
+          ./node_modules/.bin/codecov -f combined-coverage/lcov.info
