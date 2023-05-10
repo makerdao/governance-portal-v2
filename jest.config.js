@@ -1,4 +1,5 @@
 module.exports = {
+  collectCoverage: true,
   collectCoverageFrom: [
     '{modules,lib,pages}/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
