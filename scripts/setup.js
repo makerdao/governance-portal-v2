@@ -37,7 +37,6 @@ async function main() {
       value: ethers.utils.parseEther('0.5')
     });
   }
-
   console.log('Imported accounts have been sent 0.5 ETH');
 
   await ethSender.sendTransaction({

@@ -19,12 +19,8 @@
 const cypressCoverage = require('@cypress/code-coverage/task');
 
 module.exports = (on, config) => {
-  // Add this line to ensure the `env` property exists on the `config` object
-  config.env = config.env || {};
-
   // Make sure to pass the `on` function to the `cypressCoverage` function
   cypressCoverage(on, config);
-
   // Your other plugin configurations, if any
 
   return config;
