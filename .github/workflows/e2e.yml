@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - cypress-coverage
   pull_request:
     # Sequence of patterns matched against refs/heads
     branches:
