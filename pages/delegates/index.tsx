@@ -67,9 +67,7 @@ const Delegates = ({
     setCvcFilter,
     setName,
     setFetchOnLoad,
-    resetFilters,
-    resetSort,
-    resetSortDirection
+    resetFilters
   ] = useDelegatesFiltersStore(
     state => [
       state.filters.showConstitutional,
@@ -95,11 +93,8 @@ const Delegates = ({
   };
 
   const onResetClick = () => {
-    resetFilters();
-    setName('');
-    resetSort();
-    resetSortDirection();
     setFetchOnLoad(false);
+    resetFilters();
   };
 
   const handleLoadAllClick = () => {
@@ -114,7 +109,6 @@ const Delegates = ({
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
-  const [delegateCvcsLength, setDelegateCvcsLength] = useState(delegateCvcs.length);
   const [endOfList, setEndOfList] = useState(false);
   const [loadAllDelegates, setLoadAllDelegates] = useState(false);
   const [filters, setFilters] = useState({
@@ -199,10 +193,6 @@ const Delegates = ({
   }, [propDelegates, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
-    setDelegateCvcsLength(delegateCvcs.length);
-  }, [delegateCvcs]);
-
-  useEffect(() => {
     if (!isRendering) {
       setLoading(true);
       setDelegates([]);
@@ -221,7 +211,7 @@ const Delegates = ({
             : DelegateTypeEnum.CONSTITUTIONAL
       });
     }
-  }, [sort, sortDirection, name, delegateCvcsLength, showConstitutional, showShadow, showExpired]);
+  }, [sort, sortDirection, name, delegateCvcs.length, showConstitutional, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);

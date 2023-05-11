@@ -113,13 +113,15 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetFilters: () => {
     set({
       filters: {
-        name: null,
+        name: '',
         creationDate: null,
         showShadow: true,
         showConstitutional: true,
         showExpired: false,
         cvcs: []
-      }
+      },
+      sort: DelegateOrderByEnum.RANDOM,
+      sortDirection: OrderDirectionEnum.DESC
     });
   },
 
