@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Box, Text } from 'theme-ui';
+import { Box, Button, Flex, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'lib/bigNumberJs';
-import { PollTally, Poll } from 'modules/polling/types';
+import { PollTally, Poll, PollTallyVote } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
@@ -33,6 +33,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     type: 'mkr',
     order: 1
   });
+  const [numVotes, setNumVotes] = useState(10);
 
   const changeSort = type => {
     if (sortBy.type === type) {
@@ -48,29 +49,40 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     }
   };
 
-  const sortedVotes = useMemo(() => {
+  const loadMoreVotes = () => {
+    setNumVotes(prevCount => prevCount + 10);
+  };
+
+  const filteredVotes = useMemo(() => {
+    let sorted: PollTallyVote[] | undefined;
+
     switch (sortBy.type) {
       case 'mkr':
-        return votes?.sort((a, b) => {
+        sorted = votes?.sort((a, b) => {
           const aMKR = parseUnits(a.mkrSupport.toString());
           const bMKR = parseUnits(b.mkrSupport.toString());
           return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
         });
+        break;
       case 'address':
-        return votes?.sort((a, b) =>
+        sorted = votes?.sort((a, b) =>
           sortBy.order === 1 ? (a.voter > b.voter ? -1 : 1) : a.voter > b.voter ? 1 : -1
         );
+        break;
       case 'option':
-        return votes?.sort((a, b) =>
+        sorted = votes?.sort((a, b) =>
           sortBy.order === 1 ? (a.ballot[0] > b.ballot[0] ? -1 : 1) : a.ballot[0] > b.ballot[0] ? 1 : -1
         );
+        break;
       default:
-        return votes;
+        sorted = votes;
     }
-  }, [votes, sortBy.type, sortBy.order]);
+
+    return sorted?.slice(0, numVotes);
+  }, [votes, sortBy.type, sortBy.order, numVotes]);
 
   return (
-    <Box>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <table
         style={{
           width: '100%',
@@ -163,9 +175,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          {sortedVotes ? (
+          {filteredVotes ? (
             <>
-              {sortedVotes.map((v, i) => (
+              {filteredVotes.map((v, i) => (
                 <tr key={`voter-${v.voter}-${i}`} data-testid="vote-by-address">
                   <Text
                     as="td"
@@ -234,7 +246,24 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           )}
         </tbody>
       </table>
-    </Box>
+      {filteredVotes &&
+        (votes && filteredVotes.length < votes.length ? (
+          <Button
+            onClick={loadMoreVotes}
+            variant="outline"
+            data-testid="button-show-more-poll-voters"
+            sx={{ mt: 3 }}
+          >
+            <Text color="text" variant="caps">
+              Show more votes
+            </Text>
+          </Button>
+        ) : (
+          <Text variant="caps" sx={{ mt: 4 }}>
+            No more votes to display
+          </Text>
+        ))}
+    </Flex>
   );
 };
 
