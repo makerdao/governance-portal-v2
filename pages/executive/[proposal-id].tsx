@@ -11,7 +11,6 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge, Label, Checkbox } from 'theme-ui';
-import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -47,6 +46,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   proposal: Proposal;
@@ -387,7 +387,11 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                           }}
                           key={supporter.address}
                         >
-                          <InternalLink href={`/address/${supporter.address}`} title="Profile details">
+                          <InternalLink
+                            href={`/address/${supporter.address}`}
+                            title="Profile details"
+                            styles={{ maxWidth: '265px' }}
+                          >
                             <Text
                               sx={{
                                 color: 'accentBlue',
@@ -395,26 +399,16 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                                 ':hover': { color: 'accentBlueEmphasis' }
                               }}
                             >
-                              <AddressIconBox address={supporter.address} width={30} limitTextLength={bpi === 0 ? 26 : 22} />
+                              <AddressIconBox address={supporter.address} width={30} limitTextLength={70} />
                             </Text>
                           </InternalLink>
-                          <Box
-                            sx={{
-                              textAlign: 'right',
-                              display: 'flex',
-                              flexDirection: bpi === 0 ? 'column' : 'row'
-                            }}
-                          >
-                            <Text as="div" color="onSecondary">
-                              {supporter.percent > 0.01 ? supporter.percent : '<0.01'}%
+                          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
+                            <Text color="onSecondary" sx={{ fontSize: 2 }}>
+                              {formatValue(parseUnits(supporter.deposits), undefined, undefined, true, true)}{' '}
+                              MKR
                             </Text>
-
-                            <Text as="div" color="onSecondary" sx={{ fontSize: bpi === 0 ? 1 : 3, ml: 2 }}>
-                              {bpi > 0 && '('}
-                              {new BigNumberJS(supporter.deposits).toFormat(2)} MKR
-                              {bpi > 0 && ')'}
-                            </Text>
-                          </Box>
+                          </Flex>
                         </Flex>
                       ))}
                 </Box>
