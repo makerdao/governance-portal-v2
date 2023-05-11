@@ -90,7 +90,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
-  const { data: allSupporters, error: supportersError } = useSWR(dataKey, fetchJson, {
+  const { data: allSupporters, error: supportersError } = useSWR<Proposal[]>(dataKey, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnMount: !cache.get(dataKey),
@@ -380,37 +380,39 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                         <Flex
                           sx={{
                             justifyContent: 'space-between',
+                            alignItems: 'flex-start',
                             ':not(:last-child)': {
                               mb: 2
                             }
                           }}
                           key={supporter.address}
                         >
-                          <Box>
-                            <InternalLink
-                              href={`/address/${supporter.address}`}
-                              title="Profile details"
-                              styles={{ mt: 'auto' }}
+                          <InternalLink href={`/address/${supporter.address}`} title="Profile details">
+                            <Text
+                              sx={{
+                                color: 'accentBlue',
+                                fontSize: 2,
+                                ':hover': { color: 'accentBlueEmphasis' }
+                              }}
                             >
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 2,
-                                  ':hover': { color: 'accentBlueEmphasis' }
-                                }}
-                              >
-                                <AddressIconBox
-                                  address={supporter.address}
-                                  width={30}
-                                  limitTextLength={bpi === 0 ? 12 : 14}
-                                />
-                              </Text>
-                            </InternalLink>
-                          </Box>
+                              <AddressIconBox address={supporter.address} width={30} limitTextLength={bpi === 0 ? 26 : 22} />
+                            </Text>
+                          </InternalLink>
+                          <Box
+                            sx={{
+                              textAlign: 'right',
+                              display: 'flex',
+                              flexDirection: bpi === 0 ? 'column' : 'row'
+                            }}
+                          >
+                            <Text as="div" color="onSecondary">
+                              {supporter.percent > 0.01 ? supporter.percent : '<0.01'}%
+                            </Text>
 
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Text color="onSecondary">
-                              {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
+                            <Text as="div" color="onSecondary" sx={{ fontSize: bpi === 0 ? 1 : 3, ml: 2 }}>
+                              {bpi > 0 && '('}
+                              {new BigNumberJS(supporter.deposits).toFormat(2)} MKR
+                              {bpi > 0 && ')'}
                             </Text>
                           </Box>
                         </Flex>
