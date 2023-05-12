@@ -53,6 +53,8 @@ type Props = {
   spellDiffs: SpellDiff[];
 };
 
+const INITIAL_SUPPORTERS_COUNT = 10;
+
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
@@ -107,7 +109,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
-  const [numSupporters, setNumSupporters] = useState(10);
+  const [showAllSupporters, setShowAllSupporters] = useState(false);
   const close = () => setVoting(false);
 
   const hasVotedFor =
@@ -117,10 +119,13 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
     );
 
   const loadMoreSupporters = () => {
-    setNumSupporters(prevCount => prevCount + 10);
+    setShowAllSupporters(true);
   };
 
-  const filteredSupporters = useMemo(() => supporters?.slice(0, numSupporters), [supporters, numSupporters]);
+  const filteredSupporters = useMemo(
+    () => (showAllSupporters ? supporters : supporters?.slice(0, INITIAL_SUPPORTERS_COUNT)),
+    [supporters, showAllSupporters]
+  );
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -399,23 +404,18 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                         </Flex>
                       ))}
 
-                    {filteredSupporters &&
-                      (supporters && filteredSupporters.length < supporters.length ? (
-                        <Button
-                          onClick={loadMoreSupporters}
-                          variant="outline"
-                          data-testid="button-show-more-executive-supporters"
-                          sx={{ mt: 2, alignSelf: 'center' }}
-                        >
-                          <Text color="text" variant="caps">
-                            Show more supporters
-                          </Text>
-                        </Button>
-                      ) : (
-                        <Text variant="caps" sx={{ mt: 3, alignSelf: 'center' }}>
-                          No more supporters to display
+                    {filteredSupporters && supporters && filteredSupporters.length < supporters.length && (
+                      <Button
+                        onClick={loadMoreSupporters}
+                        variant="outline"
+                        data-testid="button-show-more-executive-supporters"
+                        sx={{ mt: 2, alignSelf: 'center' }}
+                      >
+                        <Text color="text" variant="caps">
+                          Show all supporters
                         </Text>
-                      ))}
+                      </Button>
+                    )}
                   </Flex>
                 </Box>
               </Card>

@@ -26,6 +26,8 @@ type Props = {
   poll: Poll;
 };
 
+const INITIAL_VOTES_COUNT = 10;
+
 const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
@@ -33,7 +35,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     type: 'mkr',
     order: 1
   });
-  const [numVotes, setNumVotes] = useState(10);
+  const [showAllVotes, setShowAllVotes] = useState(false);
 
   const changeSort = type => {
     if (sortBy.type === type) {
@@ -50,7 +52,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   };
 
   const loadMoreVotes = () => {
-    setNumVotes(prevCount => prevCount + 10);
+    setShowAllVotes(true);
   };
 
   const filteredVotes = useMemo(() => {
@@ -78,8 +80,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
         sorted = votes;
     }
 
-    return sorted?.slice(0, numVotes);
-  }, [votes, sortBy.type, sortBy.order, numVotes]);
+    return showAllVotes ? sorted : sorted?.slice(0, INITIAL_VOTES_COUNT);
+  }, [votes, sortBy.type, sortBy.order, showAllVotes]);
 
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
@@ -246,23 +248,18 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           )}
         </tbody>
       </table>
-      {filteredVotes &&
-        (votes && filteredVotes.length < votes.length ? (
-          <Button
-            onClick={loadMoreVotes}
-            variant="outline"
-            data-testid="button-show-more-poll-voters"
-            sx={{ mt: 3 }}
-          >
-            <Text color="text" variant="caps">
-              Show more votes
-            </Text>
-          </Button>
-        ) : (
-          <Text variant="caps" sx={{ mt: 4 }}>
-            No more votes to display
+      {filteredVotes && votes && filteredVotes.length < votes.length && (
+        <Button
+          onClick={loadMoreVotes}
+          variant="outline"
+          data-testid="button-show-more-poll-voters"
+          sx={{ mt: 3 }}
+        >
+          <Text color="text" variant="caps">
+            Show all votes
           </Text>
-        ))}
+        </Button>
+      )}
     </Flex>
   );
 };
