@@ -64,19 +64,21 @@ export function filterDelegates(
 export function filterDelegateAddresses(
   allDelegatesWithNames: AllDelegatesEntryWithName[],
   queryCvcs: string[] | null,
-  searchTerm: string | null
+  searchTerm: string | null,
+  shadow = false
 ): string[] {
-  const filteredDelegates =
-    !queryCvcs && !searchTerm
-      ? allDelegatesWithNames.filter(delegate => delegate.delegateType === DelegateTypeEnum.CONSTITUTIONAL)
-      : allDelegatesWithNames.filter(
-          delegate =>
-            (searchTerm
-              ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
-              : true) &&
-            (queryCvcs ? queryCvcs.find(c => c.toLowerCase() === delegate.cvc_name?.toLowerCase()) : true)
-        );
+  const statusFiltered = allDelegatesWithNames.filter(
+    delegate => delegate.delegateType === (shadow ? DelegateTypeEnum.SHADOW : DelegateTypeEnum.CONSTITUTIONAL)
+  );
+
+  const filteredDelegates = statusFiltered.filter(
+    delegate =>
+      (searchTerm
+        ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
+        : true) &&
+      (queryCvcs ? queryCvcs.find(c => c.toLowerCase() === delegate.cvc_name?.toLowerCase()) : true)
+  );
 
   return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());
 }

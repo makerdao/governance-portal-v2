@@ -452,14 +452,25 @@ export async function fetchDelegatesPaginated({
   cvcs
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
+  const onlyShadow = delegateType === DelegateTypeEnum.SHADOW ? true : false;
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
   const constitutionalDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
-  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, cvcs, searchTerm);
-  const { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
-    allDelegatesWithNamesAndLinks
+  const filteredDelegateAddresses = filterDelegateAddresses(
+    allDelegatesWithNamesAndLinks,
+    cvcs,
+    searchTerm,
+    onlyShadow
   );
+  const filteredDelegateEntries =
+    !searchTerm && !cvcs
+      ? allDelegatesWithNamesAndLinks
+      : allDelegatesWithNamesAndLinks.filter(delegate =>
+          filteredDelegateAddresses.includes(delegate.voteDelegate)
+        );
+  const { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
+    getDelegatesCounts(filteredDelegateEntries);
 
   const cvcAndCount = allDelegatesWithNamesAndLinks
     .filter(delegate => !delegate.expired && delegate.name && delegate.cvc_name)
@@ -469,7 +480,9 @@ export async function fetchDelegatesPaginated({
 
       const prev = acc.findIndex(cvc => cvc.cvc_name === cur.cvc_name);
       if (prev !== -1) {
-        acc[prev].count += 1;
+        if (!onlyShadow) {
+          acc[prev].count += 1;
+        }
         acc[prev].delegates.push(cur.voteDelegate);
         if (cur.picture) {
           acc[prev].picture = cur.picture;
@@ -477,7 +490,7 @@ export async function fetchDelegatesPaginated({
       } else {
         acc.push({
           cvc_name: cur.cvc_name,
-          count: 1,
+          count: onlyShadow ? 0 : 1,
           delegates: [cur.voteDelegate],
           ...(cur.picture ? { picture: cur.picture } : {})
         });
@@ -488,7 +501,7 @@ export async function fetchDelegatesPaginated({
 
   let delegatesQueryFilter;
   if (delegateType !== DelegateTypeEnum.CONSTITUTIONAL && delegateType !== DelegateTypeEnum.SHADOW) {
-    delegatesQueryFilter = searchTerm || cvcs ? { voteDelegate: { in: filteredDelegates } } : null;
+    delegatesQueryFilter = searchTerm || cvcs ? { voteDelegate: { in: filteredDelegateAddresses } } : null;
   } else {
     delegatesQueryFilter = {
       and: [
@@ -500,7 +513,8 @@ export async function fetchDelegatesPaginated({
         }
       ]
     };
-    (searchTerm || cvcs) && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegates } });
+    (searchTerm || cvcs) &&
+      delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegateAddresses } });
   }
 
   const delegatesQueryVariables = {

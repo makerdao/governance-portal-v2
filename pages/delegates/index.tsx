@@ -46,10 +46,18 @@ type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
   seed: number;
 };
 
+const emptyStats = {
+  total: 0,
+  shadow: 0,
+  constitutional: 0,
+  totalMKRDelegated: '0',
+  totalDelegators: 0
+};
+
 const Delegates = ({
   delegates: propDelegates,
-  stats,
-  cvcs,
+  stats: propStats,
+  cvcs: propCvcs,
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
@@ -107,6 +115,8 @@ const Delegates = ({
   const [isRendering, setIsRendering] = useState(true);
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
+  const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
+  const [cvcs, setCvcs] = useState(fetchOnLoad ? [] : propCvcs);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [endOfList, setEndOfList] = useState(false);
@@ -174,6 +184,8 @@ const Delegates = ({
         const res = await fetchDelegatesPageData(network, true, queryParams);
         setLoading(false);
         setDelegates(prevDelegates => [...prevDelegates, ...res.delegates]);
+        setStats(res.stats);
+        setCvcs(res.cvcs);
         setPaginationInfo(res.paginationInfo);
         setShouldLoadMore(false);
       };
@@ -188,9 +200,11 @@ const Delegates = ({
 
   useEffect(() => {
     setDelegates(fetchOnLoad ? delegates : propDelegates);
+    setStats(fetchOnLoad ? stats : propStats);
+    setCvcs(fetchOnLoad ? cvcs : propCvcs);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propPaginationInfo, propSeed, fetchOnLoad]);
+  }, [propDelegates, propStats, propCvcs, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
     if (!isRendering) {
@@ -435,7 +449,7 @@ const Delegates = ({
             </Box>
             {stats && (
               <ErrorBoundary componentName="Delegates System Info">
-                <DelegatesSystemInfo stats={stats} />
+                <DelegatesSystemInfo stats={propStats} />
               </ErrorBoundary>
             )}
             <ResourceBox type={'delegates'} />
