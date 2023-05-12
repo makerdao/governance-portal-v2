@@ -65,10 +65,10 @@ export function filterDelegateAddresses(
   allDelegatesWithNames: AllDelegatesEntryWithName[],
   queryCvcs: string[] | null,
   searchTerm: string | null,
-  shadow = false
+  type?: DelegateTypeEnum
 ): string[] {
-  const statusFiltered = allDelegatesWithNames.filter(
-    delegate => delegate.delegateType === (shadow ? DelegateTypeEnum.SHADOW : DelegateTypeEnum.CONSTITUTIONAL)
+  const statusFiltered = allDelegatesWithNames.filter(delegate =>
+    type === DelegateTypeEnum.ALL ? true : delegate.delegateType === (type || DelegateTypeEnum.CONSTITUTIONAL)
   );
 
   const filteredDelegates = statusFiltered.filter(

@@ -452,7 +452,6 @@ export async function fetchDelegatesPaginated({
   cvcs
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
-  const onlyShadow = delegateType === DelegateTypeEnum.SHADOW ? true : false;
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
@@ -461,7 +460,7 @@ export async function fetchDelegatesPaginated({
     allDelegatesWithNamesAndLinks,
     cvcs,
     searchTerm,
-    onlyShadow
+    delegateType
   );
   const filteredDelegateEntries =
     !searchTerm && !cvcs
@@ -479,8 +478,9 @@ export async function fetchDelegatesPaginated({
       if (!cur.cvc_name) return acc;
 
       const prev = acc.findIndex(cvc => cvc.cvc_name === cur.cvc_name);
+      const foundInFilteredDelegates = filteredDelegateAddresses.includes(cur.voteDelegate);
       if (prev !== -1) {
-        if (!onlyShadow) {
+        if (foundInFilteredDelegates) {
           acc[prev].count += 1;
         }
         acc[prev].delegates.push(cur.voteDelegate);
@@ -490,7 +490,7 @@ export async function fetchDelegatesPaginated({
       } else {
         acc.push({
           cvc_name: cur.cvc_name,
-          count: onlyShadow ? 0 : 1,
+          count: foundInFilteredDelegates ? 1 : 0,
           delegates: [cur.voteDelegate],
           ...(cur.picture ? { picture: cur.picture } : {})
         });
