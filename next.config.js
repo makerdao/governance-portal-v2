@@ -70,7 +70,8 @@ const moduleExports = {
         fs: false,
         dns: false,
         net: false,
-        tls: false
+        tls: false,
+        child_process: false
       };
     }
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');

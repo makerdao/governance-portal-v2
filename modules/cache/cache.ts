@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import fs from 'fs';
 import os from 'os';
+import { execSync } from 'child_process';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { config } from 'lib/config';
 import Redis from 'ioredis';
@@ -43,10 +44,18 @@ const memoryCache = {};
 
 function getFilePath(name: string, network: string, expiryMs?: number): string {
   const date = new Date().toISOString().substring(0, 10);
+  // Need to check if execSync is defined in case it's being called from the frontend
+  const includeBranchName =
+    // @ts-ignore
+    execSync &&
+    (process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' || process.env.NODE_ENV === 'development');
+  const branchName = execSync('git rev-parse --abbrev-ref HEAD')
+    .toString('utf8')
+    .replace(/[\n\r\s]+$/, '');
 
-  return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}${
-    expiryMs && expiryMs > ONE_DAY_IN_MS ? '' : '-' + date
-  }`;
+  return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}${
+    includeBranchName ? '-' + branchName : ''
+  }-${network}-${name}${expiryMs && expiryMs > ONE_DAY_IN_MS ? '' : '-' + date}`;
 }
 
 export const cacheDel = (name: string, network: SupportedNetworks, expiryMs?: number): void => {
