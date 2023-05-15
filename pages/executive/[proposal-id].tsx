@@ -47,6 +47,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   proposal: Proposal;
@@ -90,7 +91,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
-  const { data: allSupporters, error: supportersError } = useSWR(dataKey, fetchJson, {
+  const { data: allSupporters, error: supportersError } = useSWR<Proposal[]>(dataKey, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnMount: !cache.get(dataKey),
@@ -363,39 +364,35 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                         <Flex
                           sx={{
                             justifyContent: 'space-between',
+                            alignItems: 'flex-start',
                             ':not(:last-child)': {
                               mb: 2
                             }
                           }}
                           key={supporter.address}
                         >
-                          <Box>
-                            <InternalLink
-                              href={`/address/${supporter.address}`}
-                              title="Profile details"
-                              styles={{ mt: 'auto' }}
+                          <InternalLink
+                            href={`/address/${supporter.address}`}
+                            title="Profile details"
+                            styles={{ maxWidth: '265px' }}
+                          >
+                            <Text
+                              sx={{
+                                color: 'accentBlue',
+                                fontSize: 2,
+                                ':hover': { color: 'accentBlueEmphasis' }
+                              }}
                             >
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 2,
-                                  ':hover': { color: 'accentBlueEmphasis' }
-                                }}
-                              >
-                                <AddressIconBox
-                                  address={supporter.address}
-                                  width={30}
-                                  limitTextLength={bpi === 0 ? 12 : 14}
-                                />
-                              </Text>
-                            </InternalLink>
-                          </Box>
-
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Text color="onSecondary">
-                              {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
+                              <AddressIconBox address={supporter.address} width={30} limitTextLength={70} />
                             </Text>
-                          </Box>
+                          </InternalLink>
+                          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
+                            <Text color="onSecondary" sx={{ fontSize: 2 }}>
+                              {formatValue(parseUnits(supporter.deposits), undefined, undefined, true, true)}{' '}
+                              MKR
+                            </Text>
+                          </Flex>
                         </Flex>
                       ))}
 
