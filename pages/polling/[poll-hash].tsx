@@ -11,7 +11,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, Box, Button, Badge, Label, Checkbox } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
@@ -70,7 +70,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
   const [overlayOpen, setOverlayOpen] = useState(false);
-  const [showSmallVoters, setShowSmallVoters] = useState(false);
 
   const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
     ssr: false
@@ -93,10 +92,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
       setNextSlug(poll.ctx?.next?.slug);
     }
   }, [filteredPollData, poll]);
-
-  const handleSmallVotersChecked = () => {
-    setShowSmallVoters(!showSmallVoters);
-  };
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -307,34 +302,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       sx={{ p: [3, 4], flexDirection: 'column' }}
                       key={'votes by address'}
                     >
-                      <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                        <Text variant="microHeading">Voting By Address</Text>
-                        <Box>
-                          <Label
-                            variant="thinLabel"
-                            sx={{
-                              fontSize: 1,
-                              alignItems: 'center',
-                              color: 'textSecondary',
-                              py: 0,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
-                            <Text variant="caps">Show &lt;0.05 MKR voters</Text>
-                          </Label>
-                        </Box>
-                      </Flex>
+                      <Text variant="microHeading" sx={{ mb: 3 }}>
+                        Voting By Address
+                      </Text>
                       {tally && tally.votesByAddress && tally.numVoters > 0 ? (
-                        <VotesByAddress
-                          tally={{
-                            ...tally,
-                            votesByAddress: tally.votesByAddress.filter(
-                              vote => showSmallVoters || +vote.mkrSupport >= 0.05
-                            )
-                          }}
-                          poll={poll}
-                        />
+                        <VotesByAddress tally={tally} poll={poll} />
                       ) : tally && tally.numVoters === 0 ? (
                         <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>
                       ) : (
