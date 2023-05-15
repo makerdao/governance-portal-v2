@@ -6,11 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge, Label, Checkbox } from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge } from 'theme-ui';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -107,7 +108,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
-  const [showSmallVoters, setShowSmallVoters] = useState(false);
+  const [numSupporters, setNumSupporters] = useState(10);
   const close = () => setVoting(false);
 
   const hasVotedFor =
@@ -116,9 +117,11 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
 
-  const handleSmallVotersChecked = () => {
-    setShowSmallVoters(!showSmallVoters);
+  const loadMoreSupporters = () => {
+    setNumSupporters(prevCount => prevCount + 10);
   };
+
+  const filteredSupporters = useMemo(() => supporters?.slice(0, numSupporters), [supporters, numSupporters]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -303,7 +306,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             </Box>
           )}
           <Box>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Flex sx={{ mt: 3, mb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
               <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
                 Supporters
               </Heading>
@@ -313,24 +316,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 </Box>
                 <Text sx={{ fontSize: 1, color: 'textSecondary' }}>Updated every five minutes</Text>
               </Flex>
-            </Flex>
-            <Flex sx={{ justifyContent: 'right' }}>
-              <Box sx={{ flexGrow: 0 }}>
-                <Label
-                  variant="thinLabel"
-                  sx={{
-                    fontSize: 1,
-                    alignItems: 'center',
-                    justifyContent: 'right',
-                    py: [0, 1],
-                    color: 'textSecondary',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
-                  <Text variant="caps">Show &lt;0.05 MKR voters</Text>
-                </Label>
-              </Box>
             </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>
@@ -372,11 +357,10 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                     </Flex>
                   )}
 
-                  {supporters &&
-                    supporters.length > 0 &&
-                    supporters
-                      .filter(supporter => showSmallVoters || supporter.deposits >= 0.05)
-                      .map(supporter => (
+                  <Flex sx={{ flexDirection: 'column' }}>
+                    {filteredSupporters &&
+                      filteredSupporters.length > 0 &&
+                      filteredSupporters.map(supporter => (
                         <Flex
                           sx={{
                             justifyContent: 'space-between',
@@ -411,6 +395,25 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                           </Flex>
                         </Flex>
                       ))}
+
+                    {filteredSupporters &&
+                      (supporters && filteredSupporters.length < supporters.length ? (
+                        <Button
+                          onClick={loadMoreSupporters}
+                          variant="outline"
+                          data-testid="button-show-more-executive-supporters"
+                          sx={{ mt: 2, alignSelf: 'center' }}
+                        >
+                          <Text color="text" variant="caps">
+                            Show more supporters
+                          </Text>
+                        </Button>
+                      ) : (
+                        <Text variant="caps" sx={{ mt: 3, alignSelf: 'center' }}>
+                          No more supporters to display
+                        </Text>
+                      ))}
+                  </Flex>
                 </Box>
               </Card>
             </ErrorBoundary>

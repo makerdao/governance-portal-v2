@@ -51,10 +51,16 @@ export type PollingPageProps = PollsPaginatedResponse & {
   activePollIds: number[];
 };
 
+const emptyStats = {
+  active: 0,
+  finished: 0,
+  total: 0
+};
+
 const PollingOverview = ({
   polls: propPolls,
-  tags,
-  stats,
+  tags: propTags,
+  stats: propStats,
   paginationInfo: propPaginationInfo,
   activePollIds
 }: PollingPageProps) => {
@@ -107,6 +113,8 @@ const PollingOverview = ({
   const [isRendering, setIsRendering] = useState(true);
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [polls, setPolls] = useState(fetchOnLoad ? [] : propPolls);
+  const [tags, setTags] = useState(fetchOnLoad ? [] : propTags);
+  const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [showHistorical, setShowHistorical] = useState(false);
   const [filters, setFilters] = useState({
@@ -166,6 +174,8 @@ const PollingOverview = ({
 
         setLoading(false);
         setPolls(prevPolls => [...prevPolls, ...res.polls]);
+        setTags(res.tags);
+        setStats(res.stats);
         setPaginationInfo(res.paginationInfo);
         setShouldLoadMore(false);
       };
@@ -181,8 +191,10 @@ const PollingOverview = ({
 
   useEffect(() => {
     setPolls(fetchOnLoad ? polls : propPolls);
+    setTags(fetchOnLoad ? tags : propTags);
+    setStats(fetchOnLoad ? stats : propStats);
     setPaginationInfo(propPaginationInfo);
-  }, [propPolls, propPaginationInfo, fetchOnLoad]);
+  }, [propPolls, propTags, propStats, propPaginationInfo, fetchOnLoad]);
 
   useEffect(() => {
     if (!isRendering) {
