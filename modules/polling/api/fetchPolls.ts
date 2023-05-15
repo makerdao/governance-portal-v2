@@ -348,9 +348,7 @@ export function filterPollList(
 
   const sortedPolls = filteredPolls
     // Then, sort it by the `orderBy` parameter
-    .sort(sortPollsBy(orderBy))
-    // Finally, return the number of entries based on the `page` and `pageSize` parameters
-    .slice((page - 1) * pageSize, page * pageSize);
+    .sort(sortPollsBy(orderBy));
 
   const totalCount = filteredPolls.length;
   const numPages = Math.ceil(filteredPolls.length / pageSize);
@@ -359,7 +357,7 @@ export function filterPollList(
   const pollStats = {
     active: 0,
     finished: 0,
-    total: pollList.length,
+    total: filteredPolls.length,
     type: {
       [PollInputFormat.singleChoice]: 0,
       [PollInputFormat.rankFree]: 0,
@@ -368,7 +366,14 @@ export function filterPollList(
     }
   };
 
-  pollList.forEach(poll => {
+  // If the only filter applied is the poll status (active or finished), use all polls for counts.
+  // Else, use only the filtered polls
+  const onlyStatusFiltered =
+    status && !filterTitle && !filterTags && !filterTypes && !filterStartDate && !filterEndDate;
+
+  const pollsToCount = onlyStatusFiltered ? pollList : filteredPolls;
+
+  pollsToCount.forEach(poll => {
     if (new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date()) {
       pollStats.active++;
     } else {
@@ -405,15 +410,19 @@ export function filterPollList(
   };
 }
 
-export function reducePollTags(pollList: PollListItem[]): TagCount[] {
+export function reducePollTags(pollList: PollListItem[], filteredPollList: PollListItem[]): TagCount[] {
   const pollTags = getPollTags();
 
   const tags = pollList.reduce((acumTags, poll) => {
+    const pollInFilteredPolls = filteredPollList.some(p => p.pollId === poll.pollId);
+
     poll.tags.forEach(tag => {
       const addedTag = acumTags.find(t => t.id === tag);
 
       if (addedTag) {
-        addedTag.count += 1;
+        if (pollInFilteredPolls) {
+          addedTag.count += 1;
+        }
         return;
       }
 
@@ -422,7 +431,7 @@ export function reducePollTags(pollList: PollListItem[]): TagCount[] {
       if (pollTag) {
         acumTags.push({
           ...pollTag,
-          count: 1
+          count: pollInFilteredPolls ? 1 : 0
         });
       }
     });
@@ -430,7 +439,7 @@ export function reducePollTags(pollList: PollListItem[]): TagCount[] {
     return acumTags;
   }, [] as TagCount[]);
 
-  return tags.sort((a, b) => b.count - a.count);
+  return tags.sort((a, b) => (a.longname > b.longname ? 1 : -1));
 }
 
 export async function getPollsPaginated({
@@ -449,10 +458,11 @@ export async function getPollsPaginated({
 
   const pollFilters = { pageSize, page, title, orderBy, tags, status, type, startDate, endDate };
   const filteredPollList = filterPollList(pollList, pollFilters);
-  const pollTags = reducePollTags(pollList);
+  const pollTags = reducePollTags(pollList, filteredPollList.polls);
 
   return {
     ...filteredPollList,
+    polls: filteredPollList.polls.slice((page - 1) * pageSize, page * pageSize),
     tags: pollTags
   };
 }
