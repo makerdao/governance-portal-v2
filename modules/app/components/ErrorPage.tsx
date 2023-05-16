@@ -19,12 +19,11 @@ export default function ErrorPage({
   title?: string;
   children?: React.ReactElement;
 }): React.ReactElement {
+  const headTitle = `${statusCode}: ${title}`;
   return (
     <Box>
       <Head>
-        <title>
-          {statusCode}: {title}
-        </title>
+        <title>{headTitle}</title>
       </Head>
       <Box sx={{ maxWidth: '500px', margin: '0 auto', pt: '200px', paddingBottom: '200px' }}>
         <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>

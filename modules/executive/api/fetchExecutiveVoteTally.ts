@@ -36,7 +36,7 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
     voters.map(voter =>
       getChiefDeposits(voter, chief).then(deposits => ({
         address: voter,
-        deposits: parseFloat(formatValue(deposits, 'wad', 6, false))
+        deposits
       }))
     )
   );
@@ -70,7 +70,7 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
           addresses: [{ address: voteObj.address, deposits: voteObj.deposits }]
         };
       } else {
-        voteTally[vote].approvals += voteObj.deposits;
+        voteTally[vote].approvals = voteTally[vote].approvals.add(voteObj.deposits);
         voteTally[vote].addresses.push({
           address: voteObj.address,
           deposits: voteObj.deposits
@@ -80,10 +80,15 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
   }
 
   for (const [key, value] of Object.entries(voteTally)) {
-    const sortedAddresses = (value as any).addresses.sort((a, b) => b.deposits - a.deposits);
+    const sortedAddresses = (value as any).addresses.sort(
+      (a, b) =>
+        parseFloat(formatValue(b.deposits, 'wad', 6, false)) -
+        parseFloat(formatValue(a.deposits, 'wad', 6, false))
+    );
     const approvals = voteTally[key].approvals;
     const withPercentages = sortedAddresses.map(shapedVoteObj => ({
       ...shapedVoteObj,
+      deposits: formatValue(shapedVoteObj.deposits, 'wad', 6, false),
       percent: ((shapedVoteObj.deposits * 100) / approvals).toFixed(2)
     }));
     voteTally[key] = withPercentages;

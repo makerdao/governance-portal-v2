@@ -76,7 +76,7 @@ export default function DelegateExpiryDate({
       </Flex>
       {modalOpen && (
         <DialogOverlay isOpen={modalOpen} onDismiss={() => setModalOpen(false)}>
-          <DialogContent widthDesktop="580px">
+          <DialogContent widthDesktop="580px" ariaLabel="Delegate expiry date">
             <BoxWithClose close={() => setModalOpen(false)}>
               <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Icon

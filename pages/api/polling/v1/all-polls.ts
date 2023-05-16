@@ -33,7 +33,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         finished: 10
  *         total: 10
  *
- * /api/polling/all-polls:
+ * /api/polling/v1/all-polls:
  *   get:
  *     tags:
  *     - "polls"

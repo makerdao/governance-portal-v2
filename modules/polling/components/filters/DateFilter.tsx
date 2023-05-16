@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, ChangeEvent } from 'react';
 import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
@@ -42,6 +42,20 @@ export function DateFilter(props): JSX.Element {
     if (endInput.current && endDate === null) endInput.current.value = '';
   }, [startDate, endDate]);
 
+  const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // Min value verification to prevent fetching the API on every input number change
+    if (new Date(e.target.value) >= new Date(e.target.min)) {
+      setStartDate('poll', new Date(e.target.value));
+    }
+  };
+
+  const handleEndDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // Min value verification to prevent fetching the API on every input number change
+    if (new Date(e.target.value) >= new Date(e.target.min)) {
+      setEndDate('poll', new Date(e.target.value));
+    }
+  };
+
   return (
     <FilterButton
       name={() => {
@@ -54,18 +68,14 @@ export function DateFilter(props): JSX.Element {
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
-        <Text>Ended after:</Text>
+        <Text>Started after:</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input
-            ref={startInput}
-            type="date"
-            onChange={e => setStartDate('poll', new Date(e.target.value))}
-          />
+          <Input ref={startInput} type="date" min="2000-01-01" onChange={handleStartDateChange} />
         </Flex>
 
         <Text>Ended before:</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input ref={endInput} type="date" onChange={e => setEndDate('poll', new Date(e.target.value))} />
+          <Input ref={endInput} type="date" min="2000-01-01" onChange={handleEndDateChange} />
         </Flex>
 
         <span />

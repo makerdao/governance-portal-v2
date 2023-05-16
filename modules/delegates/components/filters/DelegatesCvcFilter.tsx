@@ -41,7 +41,7 @@ export function DelegatesCvcFilter({
               <Label variant="thinLabel" sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={delegateCvcs.includes(cvc_name) || false}
+                  checked={delegateCvcs.includes(cvc_name)}
                   onChange={event => {
                     setCvcs(
                       event.target.checked

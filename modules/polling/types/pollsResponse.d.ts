@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { TagCount } from 'modules/app/types/tag';
-import { Poll } from './poll';
+import { Poll, PollListItem } from './poll';
 
 export type PollFilters = {
   startDate?: Date | null;
@@ -15,6 +15,7 @@ export type PollFilters = {
   tags?: string[] | null;
   active?: boolean | null;
 };
+
 export type PollsResponse = {
   polls: Poll[];
   tags: TagCount[];
@@ -22,5 +23,23 @@ export type PollsResponse = {
     active: number;
     finished: number;
     total: number;
+    type?: {
+      [PollInputFormat.singleChoice]: number;
+      [PollInputFormat.rankFree]: number;
+      [PollInputFormat.majority]: number;
+      [PollInputFormat.chooseFree]: number;
+    };
   };
+};
+
+export type PollsPaginatedResponse = {
+  paginationInfo: {
+    totalCount: number;
+    page: number;
+    numPages: number;
+    hasNextPage: boolean;
+  };
+  stats: PollsResponse['stats'];
+  polls: PollListItem[];
+  tags: PollsResponse['tags'];
 };

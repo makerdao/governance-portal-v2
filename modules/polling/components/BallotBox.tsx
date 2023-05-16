@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Divider } from 'theme-ui';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { Poll } from 'modules/polling/types';
 import VotingWeight from './VotingWeight';
 import PollBar from './BallotPollBar';
 import { useContext } from 'react';
@@ -16,9 +15,13 @@ import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
-type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
+type Props = {
+  activePollCount: number;
+  network: SupportedNetworks;
+  activePollIds: number[];
+};
 
-export default function BallotBox({ activePolls, network, polls }: Props): JSX.Element {
+export default function BallotBox({ activePollCount, network, activePollIds }: Props): JSX.Element {
   const { transaction, ballotCount, clearBallot } = useContext(BallotContext);
 
   return (
@@ -43,7 +46,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <PollBar polls={polls} activePolls={activePolls} />
+          <PollBar activePollCount={activePollCount} activePollIds={activePollIds} />
 
           <Divider />
           <Box sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }}>

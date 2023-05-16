@@ -7,19 +7,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from '../polling.constants';
-import { Poll, PollParameters, PollVictoryConditionAND, PollTallyVote, VictoryCondition } from '../types';
+import {
+  Poll,
+  PollParameters,
+  PollVictoryConditionAND,
+  PollTallyVote,
+  VictoryCondition,
+  PollListItem
+} from '../types';
 
-export function pollHasEnded(poll: Poll): boolean {
+export function pollHasEnded(poll: PollListItem | Poll): boolean {
   const now = Date.now();
   return new Date(poll.endDate).getTime() < now;
 }
 
-export function pollHasStarted(poll: Poll): boolean {
+export function pollHasStarted(poll: PollListItem | Poll): boolean {
   const now = Date.now();
   return new Date(poll.startDate).getTime() < now;
 }
 
-export function isActivePoll(poll: Poll): boolean {
+export function isActivePoll(poll: PollListItem | Poll): boolean {
   return !pollHasEnded(poll) && pollHasStarted(poll);
 }
 
@@ -117,7 +124,7 @@ export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
 }
 
 export function extractCurrentPollVote(
-  poll: Poll,
+  poll: PollListItem | Poll,
   allUserVotes: PollTallyVote[] | undefined
 ): number[] | null {
   const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);

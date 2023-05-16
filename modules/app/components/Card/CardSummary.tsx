@@ -11,15 +11,17 @@ import { Text, ThemeUIStyleObject } from 'theme-ui';
 type Props = {
   text: string;
   styles?: ThemeUIStyleObject;
+  onVisit?: () => void;
 };
 
-export const CardSummary = ({ text, styles }: Props): JSX.Element => (
+export const CardSummary = ({ text, styles, onVisit }: Props): JSX.Element => (
   <Text
     as="p"
     variant="secondary"
     sx={{
       ...styles
     }}
+    onClick={() => onVisit?.()}
   >
     {text}
   </Text>

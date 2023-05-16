@@ -38,7 +38,7 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
 
   return (
     <DialogOverlay isOpen={true} onDismiss={close}>
-      <DialogContent aria-label="Executive Vote" widthDesktop="640px">
+      <DialogContent ariaLabel="Executive Vote" widthDesktop="640px">
         {step === 'confirm' && (
           <DefaultVoteModalView
             proposal={proposal}
