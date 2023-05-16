@@ -79,7 +79,7 @@ export const DelegateModal = ({
   return (
     <>
       <DialogOverlay isOpen={isOpen} onDismiss={onClose}>
-        <DialogContent aria-label="Delegate modal" widthDesktop="580px">
+        <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (

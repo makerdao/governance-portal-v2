@@ -66,7 +66,7 @@ export const UndelegateModal = ({
   return (
     <>
       <DialogOverlay isOpen={isOpen} onDismiss={onClose}>
-        <DialogContent widthDesktop="580px" aria-label="Undelegate modal">
+        <DialogContent widthDesktop="580px" ariaLabel="Undelegate modal">
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (

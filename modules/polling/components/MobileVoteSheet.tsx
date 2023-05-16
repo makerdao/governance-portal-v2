@@ -13,7 +13,6 @@ import invariant from 'tiny-invariant';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
 import lottie from 'lottie-web';
-import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useRouter } from 'next/router';
@@ -25,6 +24,7 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import QuickVote from './poll-vote-input/QuickVote';
 import { BallotContext } from '../context/BallotContext';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { fetchSinglePoll } from '../api/fetchPollBy';
 
 enum ViewState {
   START,
@@ -56,8 +56,8 @@ export default function MobileVoteSheet({
   const router = useRouter();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
-  const [activePolls, setActivePolls] = useState<Poll[]>([]);
-  const { data: pollsData } = useSWR(`/api/polling/all-polls?network=${network}`, fetchJson, {
+  const [activePollIds, setActivePollIds] = useState<number[]>([]);
+  const { data: pollsData } = useSWR(`/api/polling/v2/active-poll-ids?network=${network}`, fetchJson, {
     refreshInterval: 0,
     revalidateOnFocus: false,
     revalidateOnMount: true
@@ -65,7 +65,7 @@ export default function MobileVoteSheet({
 
   useEffect(() => {
     if (pollsData) {
-      setActivePolls(pollsData.polls.filter(isActivePoll));
+      setActivePollIds(pollsData);
     }
   }, [pollsData]);
 
@@ -81,8 +81,10 @@ export default function MobileVoteSheet({
     }
   };
 
-  const goToNextPoll = () => {
-    const nextPoll = activePolls.find(p => !ballot[p.pollId]);
+  const goToNextPoll = async () => {
+    const nextPollId = activePollIds.find(pollId => !ballot[pollId]);
+    const nextPoll = await fetchSinglePoll(network, nextPollId || null, null);
+
     invariant(nextPoll && setPoll);
     setPoll(nextPoll);
     setViewState(ViewState.INPUT);
@@ -136,11 +138,11 @@ export default function MobileVoteSheet({
   else
     return (
       <DialogOverlay isOpen onDismiss={close ? close : () => setViewState(ViewState.START)}>
-        <DialogContent aria-label="Vote Form">
+        <DialogContent ariaLabel="Vote Form">
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">
-                {ballotCount} of {activePolls.length} available polls added to ballot
+                {ballotCount} of {activePollIds.length} available polls added to ballot
               </Text>
               <Flex
                 sx={{
@@ -150,7 +152,7 @@ export default function MobileVoteSheet({
                   my: 2
                 }}
               >
-                {range(activePolls.length).map(i => (
+                {range(activePollIds.length).map(i => (
                   <Box
                     key={i}
                     sx={{
@@ -158,14 +160,14 @@ export default function MobileVoteSheet({
                       borderLeft: i === 0 ? undefined : '2px solid white',
                       borderTopLeftRadius: i === 0 ? 'small' : undefined,
                       borderBottomLeftRadius: i === 0 ? 'small' : undefined,
-                      borderTopRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
-                      borderBottomRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
+                      borderTopRightRadius: i === activePollIds.length - 1 ? 'small' : undefined,
+                      borderBottomRightRadius: i === activePollIds.length - 1 ? 'small' : undefined,
                       backgroundColor: i < ballotCount ? 'primary' : 'secondary'
                     }}
                   />
                 ))}
               </Flex>
-              {pollsData && ballotCount < activePolls.length && (
+              {pollsData && ballotCount < activePollIds.length && (
                 <Button variant="outline" sx={{ py: 3, fontSize: 2 }} onClick={goToNextPoll}>
                   Next Poll
                 </Button>

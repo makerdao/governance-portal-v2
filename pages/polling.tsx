@@ -14,13 +14,10 @@ import ErrorPage from 'modules/app/components/ErrorPage';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
-import sortBy from 'lodash/sortBy';
 import useSWR, { useSWRConfig } from 'swr';
 import groupBy from 'lodash/groupBy';
-import partition from 'lodash/partition';
-import { Poll } from 'modules/polling/types';
+import { PollListItem } from 'modules/polling/types';
 import { formatDateWithTime } from 'lib/datetime';
-import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -33,132 +30,206 @@ import { DateFilter } from 'modules/polling/components/filters/DateFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useUiFiltersStore, { PollsSortEnum } from 'modules/app/stores/uiFilters';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
-import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
+import { fetchPollingPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
-import usePollsStore from 'modules/polling/stores/polls';
+import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
+import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
-const getSortCriteria = (sort: PollsSortEnum | null) => {
-  if (!sort) sort = PollsSortEnum.endDateAsc;
-  const sortCriteria = {
-    endDateAsc: {
-      active: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ending' },
-      historical: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ended' }
-    },
-    endDateDesc: {
-      active: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ending' },
-      historical: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ended' }
-    },
-    startDateAsc: {
-      active: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' },
-      historical: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' }
-    },
-    startDateDesc: {
-      active: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' },
-      historical: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' }
-    }
-  };
-
-  return {
-    activeVerb: sortCriteria[sort].active.verb,
-    historicalVerb: sortCriteria[sort].historical.verb,
-    activeGroupBy: sortCriteria[sort].active.groupBy,
-    historicalGroupBy: sortCriteria[sort].historical.groupBy,
-    activeSortFn: sortCriteria[sort].active.sortFn,
-    historicalSortFn: sortCriteria[sort].historical.sortFn
-  };
+export type PollingPageProps = PollsPaginatedResponse & {
+  activePollIds: number[];
 };
 
-const PollingOverview = ({ polls, tags }: PollingPageData) => {
-  const [pollFilters, setCategoryFilter, resetPollFilters, sort, title, setTitle] = useUiFiltersStore(
+const emptyStats = {
+  active: 0,
+  finished: 0,
+  total: 0
+};
+
+const PollingOverview = ({
+  polls: propPolls,
+  tags: propTags,
+  stats: propStats,
+  paginationInfo: propPaginationInfo,
+  activePollIds
+}: PollingPageProps) => {
+  const [
+    { categoryFilter, pollVictoryCondition, startDate, endDate, showPollActive, showPollEnded },
+    setCategoryFilter,
+    resetPollFilters,
+    sort,
+    title,
+    setTitle,
+    fetchOnLoad,
+    setFetchOnLoad
+  ] = useUiFiltersStore(
     state => [
       state.pollFilters,
       state.setCategoryFilter,
       state.resetPollFilters,
       state.pollsSortBy,
       state.pollFilters.title,
-      state.setTitle
+      state.setTitle,
+      state.fetchOnLoad,
+      state.setFetchOnLoad
     ],
     shallow
   );
-  const setFilteredPolls = usePollsStore(state => state.setFilteredPolls);
+
+  const onVisitPoll = () => {
+    setFetchOnLoad(true);
+  };
+
+  const onResetClick = () => {
+    setShowHistorical(false);
+    resetPollFilters();
+    setFetchOnLoad(false);
+  };
+
   const router = useRouter();
 
   useEffect(() => {
     if (router.query.category) {
       const category = router.query.category as string;
-      setCategoryFilter({ [category]: true });
+      setCategoryFilter([category]);
     }
   }, [router]);
 
-  const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
-  const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
   const { network } = useWeb3();
 
-  const filteredPolls = useMemo(() => {
-    return filterPolls({
-      polls,
-      pollFilters
-    });
-  }, [polls, pollFilters]);
-
-  useEffect(() => {
-    setFilteredPolls(filteredPolls);
-  }, [filteredPolls]);
-
-  const { activeGroupBy, historicalGroupBy, activeSortFn, historicalSortFn, activeVerb, historicalVerb } =
-    getSortCriteria(sort);
-
-  const [activePolls, setActivePolls] = useState([]);
-  const [historicalPolls, setHistoricalPolls] = useState([]);
+  const [loading, setLoading] = useState(fetchOnLoad);
+  const [isRendering, setIsRendering] = useState(true);
+  const [shouldLoadMore, setShouldLoadMore] = useState(false);
+  const [polls, setPolls] = useState(fetchOnLoad ? [] : propPolls);
+  const [tags, setTags] = useState(fetchOnLoad ? [] : propTags);
+  const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
+  const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [showHistorical, setShowHistorical] = useState(false);
+  const [filters, setFilters] = useState({
+    page: 1,
+    sort,
+    title,
+    queryTags: categoryFilter,
+    type: pollVictoryCondition,
+    startDate,
+    endDate,
+    status:
+      (showPollActive && showPollEnded) || (!showPollActive && !showPollEnded)
+        ? null
+        : showPollEnded
+        ? PollStatusEnum.ended
+        : PollStatusEnum.active
+  });
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
 
-  const groupedActivePolls = groupBy(activePolls, activeGroupBy);
-  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), activeSortFn);
-
-  const groupedHistoricalPolls = groupBy(historicalPolls, historicalGroupBy);
-  const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), historicalSortFn);
+  useEffect(() => {
+    setIsRendering(false);
+  }, []);
 
   useEffect(() => {
-    const [active, historical] = partition(filteredPolls, isActivePoll);
-
-    if (active.length === 0) {
-      setShowHistorical(true);
+    if (shouldLoadMore) {
+      if (paginationInfo.hasNextPage) {
+        setLoading(true);
+        setFilters(({ page: prevPage, ...prevFilters }) => ({
+          ...prevFilters,
+          page: prevPage + 1
+        }));
+      } else {
+        setShouldLoadMore(false);
+      }
     }
+  }, [shouldLoadMore]);
 
-    setActivePolls(active);
-    setHistoricalPolls(historical);
-  }, [filteredPolls]);
+  useEffect(() => {
+    if (!isRendering || fetchOnLoad) {
+      let mounted = true;
 
-  const loadMore = () => {
-    setNumHistoricalGroupingsLoaded(prevNumHistoricalGroupingsLoaded =>
-      prevNumHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
-        ? prevNumHistoricalGroupingsLoaded + 2
-        : prevNumHistoricalGroupingsLoaded
-    );
-  };
+      const fetchPolls = async () => {
+        const queryParams = {
+          page: filters.page,
+          type: filters.type,
+          orderBy: filters.sort,
+          title: filters.title,
+          queryTags: filters.queryTags,
+          startDate: filters.startDate,
+          endDate: filters.endDate,
+          status: filters.status
+        };
+
+        const res = await fetchPollingPageData(network, true, queryParams);
+
+        setLoading(false);
+        setPolls(prevPolls => [...prevPolls, ...res.polls]);
+        setTags(res.tags);
+        setStats(res.stats);
+        setPaginationInfo(res.paginationInfo);
+        setShouldLoadMore(false);
+      };
+
+      if (mounted) {
+        fetchPolls();
+      }
+      return () => {
+        mounted = false;
+      };
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    setPolls(fetchOnLoad ? polls : propPolls);
+    setTags(fetchOnLoad ? tags : propTags);
+    setStats(fetchOnLoad ? stats : propStats);
+    setPaginationInfo(propPaginationInfo);
+  }, [propPolls, propTags, propStats, propPaginationInfo, fetchOnLoad]);
+
+  useEffect(() => {
+    if (!isRendering) {
+      setLoading(true);
+      setPolls([]);
+      setFilters({
+        page: 1,
+        sort,
+        title,
+        queryTags: categoryFilter,
+        type: pollVictoryCondition,
+        startDate,
+        endDate,
+        status:
+          (showPollActive && showPollEnded) || (!showPollActive && !showPollEnded)
+            ? null
+            : showPollEnded
+            ? PollStatusEnum.ended
+            : PollStatusEnum.active
+      });
+    }
+  }, [
+    sort,
+    title,
+    categoryFilter.length,
+    pollVictoryCondition.length,
+    startDate,
+    endDate,
+    showPollActive,
+    showPollEnded
+  ]);
 
   // Load more on scroll
-  useIntersectionObserver(showHistorical ? loader : null, loadMore);
-
-  useEffect(() => {
-    setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
-  }, [filteredPolls]);
+  const loader = useRef<HTMLDivElement>(null);
+  useIntersectionObserver(showHistorical ? loader : null, () => setShouldLoadMore(true));
 
   const { account, votingAccount } = useAccount();
   const { mutate: mutateAllUserVotes } = useAllUserVotes(votingAccount);
@@ -167,6 +238,42 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
   useEffect(() => {
     mutateAllUserVotes();
   }, [votingAccount]);
+
+  const [activePolls, endedPolls, groupedActivePolls, groupedEndedPolls] = useMemo(() => {
+    const active = polls.filter(poll => new Date(poll.endDate) > new Date());
+    const ended = polls.filter(poll => new Date(poll.endDate) <= new Date());
+
+    const [groupByKey, activePollsVerb, endedPollsVerb] =
+      sort === PollOrderByEnum.nearestEnd || sort === PollOrderByEnum.furthestEnd
+        ? ['endDate', 'ending', 'ended']
+        : ['startDate', 'started', 'started'];
+
+    const groupedActive = Object.entries(groupBy(active, groupByKey)).map(
+      ([date, pollList]: [string, PollListItem[]]) => [
+        `${pollList.length} Poll${pollList.length === 1 ? '' : 's'} - ${activePollsVerb} ${formatDateWithTime(
+          date
+        )}`,
+        pollList
+      ]
+    ) as [string, PollListItem[]][];
+
+    const groupedEnded = Object.entries(groupBy(ended, groupByKey)).map(
+      ([date, pollList]: [string, PollListItem[]]) => [
+        `${pollList.length} Poll${pollList.length === 1 ? '' : 's'} - ${endedPollsVerb} ${formatDateWithTime(
+          date
+        )}`,
+        pollList
+      ]
+    ) as [string, PollListItem[]][];
+
+    return [active, ended, groupedActive, groupedEnded];
+  }, [polls, propPolls]);
+
+  useEffect(() => {
+    if (activePolls.length === 0 && endedPolls.length > 0) {
+      setShowHistorical(true);
+    }
+  }, [activePolls.length, endedPolls.length]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -198,11 +305,18 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                   flexWrap: 'wrap'
                 }}
               >
-                <SearchBar sx={{ m: 2 }} onChange={setTitle} value={title} placeholder="Search poll titles" />
+                <SearchBar
+                  sx={{ m: 2 }}
+                  onChange={setTitle}
+                  value={title}
+                  placeholder="Search poll titles"
+                  withSearchButton={true}
+                  performSearchOnClear={true}
+                />
                 <PollsSort />
-                <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
-                <StatusFilter polls={polls} sx={{ m: 2 }} />
-                <PollTypeFilter polls={polls} sx={{ m: 2 }} />
+                <CategoryFilter tags={tags} sx={{ m: 2 }} />
+                <StatusFilter stats={stats} sx={{ m: 2 }} />
+                <PollTypeFilter stats={stats} sx={{ m: 2 }} />
                 <DateFilter sx={{ m: 2 }} />
               </Flex>
               <Button
@@ -212,7 +326,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                   color: 'textSecondary',
                   border: 'none'
                 }}
-                onClick={resetPollFilters}
+                onClick={onResetClick}
               >
                 Reset filters
               </Button>
@@ -221,83 +335,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
         </Flex>
         <SidebarLayout>
           <Box>
-            {filteredPolls.length > 0 ? (
-              <Stack>
-                <div>
-                  <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
-                    <Heading as="h4" sx={{ display: sortedEndDatesActive.length > 0 ? undefined : 'none' }}>
-                      Active Polls
-                    </Heading>
-                    {bpi <= 2 && account && <BallotStatus />}
-                  </Flex>
-                  <Stack>
-                    {sortedEndDatesActive.map(date => (
-                      <div key={date}>
-                        <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                          {`${groupedActivePolls[date].length} Poll${
-                            groupedActivePolls[date].length === 1 ? '' : 's'
-                          } - ${activeVerb} ${formatDateWithTime(date)}`}
-                        </Text>
-                        <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
-                          {groupedActivePolls[date].map((poll: Poll) => (
-                            <Box key={poll.slug} sx={{ mb: 4 }}>
-                              <PollOverviewCard poll={poll} showVoting={!!account} reviewPage={false} />
-                            </Box>
-                          ))}
-                        </Box>
-                      </div>
-                    ))}
-                  </Stack>
-                </div>
-                {showHistorical ? (
-                  <div>
-                    <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? undefined : 'none' }}>
-                      <Flex sx={{ justifyContent: 'space-between' }}>
-                        Ended Polls
-                        <Button
-                          onClick={() => {
-                            setShowHistorical(false);
-                          }}
-                          variant="mutedOutline"
-                        >
-                          Hide ended polls
-                        </Button>
-                      </Flex>
-                    </Heading>
-                    <Stack>
-                      {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
-                        <div key={date}>
-                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                            {`${groupedHistoricalPolls[date].length} Poll${
-                              groupedHistoricalPolls[date].length === 1 ? '' : 's'
-                            } - ${historicalVerb} ${formatDateWithTime(date)}`}
-                          </Text>
-                          <Box>
-                            {groupedHistoricalPolls[date].map((poll: Poll) => (
-                              <Box key={poll.slug} sx={{ mb: 4 }}>
-                                <PollOverviewCard poll={poll} reviewPage={false} showVoting={false} />
-                              </Box>
-                            ))}
-                          </Box>
-                        </div>
-                      ))}
-                    </Stack>
-                    <div ref={loader} />
-                  </div>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      setShowHistorical(true);
-                    }}
-                    variant="outline"
-                    data-testid="button-view-ended-polls"
-                    sx={{ mb: 5, py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
-                  >
-                    View ended polls ({historicalPolls.length})
-                  </Button>
-                )}
-              </Stack>
-            ) : (
+            {[...activePolls, ...endedPolls].length === 0 && !loading && (
               <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
                 <Flex
                   sx={{
@@ -325,11 +363,108 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                 </Button>
               </Flex>
             )}
+
+            {activePolls.length === 0 && bpi <= 2 && account && <BallotStatus />}
+
+            {[...activePolls, ...endedPolls].length !== 0 && (
+              <Stack>
+                {activePolls.length > 0 && (
+                  <div>
+                    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
+                      <Heading as="h4">Active Polls</Heading>
+                      {bpi <= 2 && account && <BallotStatus />}
+                    </Flex>
+                    <Stack>
+                      {groupedActivePolls.map(([groupTitle, pollGroup]) => (
+                        <div key={groupTitle}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
+                            {groupTitle}
+                          </Text>
+                          <Box sx={{ mb: 0 }}>
+                            {pollGroup.map(poll => (
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard
+                                  poll={poll}
+                                  allTags={tags}
+                                  showVoting={!!account}
+                                  reviewPage={false}
+                                  onVisitPoll={onVisitPoll}
+                                />
+                              </Box>
+                            ))}
+                          </Box>
+                        </div>
+                      ))}
+                    </Stack>
+                  </div>
+                )}
+
+                {showHistorical ? (
+                  <div>
+                    <Heading mb={3} as="h4" sx={{ display: stats.finished > 0 ? undefined : 'none' }}>
+                      <Flex sx={{ justifyContent: 'space-between' }}>
+                        Ended Polls
+                        <Button
+                          onClick={() => {
+                            setShowHistorical(false);
+                          }}
+                          variant="mutedOutline"
+                        >
+                          Hide ended polls
+                        </Button>
+                      </Flex>
+                    </Heading>
+                    <Stack>
+                      {groupedEndedPolls.map(([groupTitle, pollGroup]) => (
+                        <div key={groupTitle}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
+                            {groupTitle}
+                          </Text>
+                          <Box>
+                            {pollGroup.map(poll => (
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard
+                                  poll={poll}
+                                  allTags={tags}
+                                  reviewPage={false}
+                                  showVoting={false}
+                                  onVisitPoll={onVisitPoll}
+                                />
+                              </Box>
+                            ))}
+                          </Box>
+                        </div>
+                      ))}
+                    </Stack>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setShowHistorical(true);
+                    }}
+                    variant="outline"
+                    data-testid="button-view-ended-polls"
+                    sx={{ mb: 5, py: 3, display: stats.finished > 0 ? undefined : 'none' }}
+                  >
+                    View ended polls ({paginationInfo.totalCount - activePolls.length})
+                  </Button>
+                )}
+              </Stack>
+            )}
+            {loading && (
+              <Flex sx={{ justifyContent: 'center' }}>
+                <SkeletonThemed circle={true} width={50} height={50} />
+              </Flex>
+            )}
           </Box>
           <Stack gap={3}>
             {account && bpi > 0 && (
               <ErrorBoundary componentName="Ballot">
-                <BallotBox polls={polls} activePolls={activePolls} network={network} />
+                <BallotBox
+                  network={network}
+                  activePollCount={activePollIds.length}
+                  activePollIds={activePollIds}
+                />
               </ErrorBoundary>
             )}
 
@@ -351,26 +486,33 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
           </Stack>
         </SidebarLayout>
       </Stack>
+      <div ref={loader} />
     </PrimaryLayout>
   );
 };
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  tags: prefetchedCategories
-}: PollingPageData): JSX.Element {
+  tags: prefetchedCategories,
+  stats: prefetchedStats,
+  paginationInfo: prefetchedPaginationInfo,
+  activePollIds: prefetchedActivePollIds
+}: PollingPageProps): JSX.Element {
   const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
         polls: prefetchedPolls,
-        tags: prefetchedCategories
+        tags: prefetchedCategories,
+        stats: prefetchedStats,
+        paginationInfo: prefetchedPaginationInfo,
+        activePollIds: prefetchedActivePollIds
       }
     : null;
 
   const { cache } = useSWRConfig();
   const cacheKey = `page/polling/${network}`;
-  const { data, error } = useSWR<PollingPageData>(
+  const { data, error } = useSWR<PollingPageProps>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
     () => fetchPollingPageData(network, true),
     {
@@ -393,7 +535,17 @@ export default function PollingOverviewPage({
 
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || []
+    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || [],
+    stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || { active: 0, finished: 0, total: 0 },
+    paginationInfo: isDefaultNetwork(network)
+      ? prefetchedPaginationInfo
+      : data?.paginationInfo || {
+          totalCount: 0,
+          page: 0,
+          numPages: 0,
+          hasNextPage: false
+        },
+    activePollIds: isDefaultNetwork(network) ? prefetchedActivePollIds : data?.activePollIds || []
   };
 
   return (
@@ -404,13 +556,18 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
+  const { polls, tags, stats, paginationInfo, activePollIds } = await fetchPollingPageData(
+    SupportedNetworks.MAINNET
+  );
 
   return {
     revalidate: 60, // revalidate every 60 seconds
     props: {
       polls,
-      tags
+      tags,
+      stats,
+      paginationInfo,
+      activePollIds
     }
   };
 };

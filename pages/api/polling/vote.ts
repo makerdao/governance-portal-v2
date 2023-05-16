@@ -16,8 +16,7 @@ import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-k
 import { config } from 'lib/config';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import logger from 'lib/logger';
-import { getPolls } from 'modules/polling/api/fetchPolls';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
@@ -28,6 +27,8 @@ import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
+import { ApiError } from 'modules/app/api/ApiError';
+import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'Voter must be a string.',
@@ -47,9 +48,6 @@ export const API_VOTE_ERRORS = {
   ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.',
   RELAYER_ERROR: 'Relayer transaction creation failed.'
 };
-
-import { ApiError } from 'modules/app/api/ApiError';
-import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
 async function postErrorInDiscord(error: string, body: any, type = 'error') {
   // Post on discord
@@ -176,24 +174,9 @@ export default withApiHandler(
       }
 
       // Verify that all the polls are active
-      const filters = {
-        startDate: new Date(),
-        endDate: null,
-        tags: null
-      };
+      const activePollIds: number[] = await getActivePollIds(network);
 
-      const pollsResponse = await getPolls(filters, network);
-      const areAllPollsActive = pollIds
-        .map(pollId => {
-          const poll = pollsResponse.polls.find(p => p.pollId === parseInt(pollId));
-          if (!poll || !isActivePoll(poll)) {
-            return false;
-          }
-          return true;
-        })
-        .reduce((prev, next) => {
-          return prev && next;
-        });
+      const areAllPollsActive = pollIds.every(pollId => activePollIds.some(pId => pId === parseInt(pollId)));
 
       if (!areAllPollsActive) {
         await throwError({ error: API_VOTE_ERRORS.EXPIRED_POLLS, body: req.body, skipDiscord });

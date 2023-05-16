@@ -14,11 +14,11 @@ import map from 'lodash/map';
 import omitBy from 'lodash/omitBy';
 
 import { getNumberWithOrdinal } from 'lib/utils';
-import { Poll } from 'modules/polling/types';
+import { Poll, PollListItem } from 'modules/polling/types';
 import Stack from '../../../app/components/layout/layouts/Stack';
 
 type RankedChoiceSelectProps = {
-  poll: Poll;
+  poll: PollListItem | Poll;
   choice: number[] | null;
   setChoice: (choices: number[]) => void;
 };

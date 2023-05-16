@@ -6,107 +6,47 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { markdownToHtml } from 'lib/markdown';
-import { QueryFilterNames } from 'modules/gql/gql.constants';
-import { getQueryFilter } from 'modules/gql/gqlFilters';
+import { cacheGet } from 'modules/cache/cache';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { Poll } from '../types';
-import { PollSpock } from '../types/pollSpock';
-import { fetchPollMetadata } from './fetchPollMetadata';
-import { fetchSpockPolls } from './fetchPolls';
-import { getPollTagsMapping } from './getPollTags';
+import { pollDetailsCacheKey, pollSlugToIdsCacheKey } from 'modules/cache/constants/cache-keys';
+import { checkCachedPollsValidity, refetchPolls } from './fetchPolls';
+import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
 
-export async function fetchSpockPollById(
-  pollId: number,
-  network: SupportedNetworks
-): Promise<PollSpock | undefined> {
-  const filter = getQueryFilter(QueryFilterNames.PollId, { pollId });
-  const [poll] = await fetchSpockPolls(network, filter);
-  return poll as PollSpock;
-}
-
-export async function fetchSpockPollBySlug(slug: string, network: SupportedNetworks): Promise<PollSpock> {
-  const filter = getQueryFilter(QueryFilterNames.MultiHash, { multiHash: slug });
-  const [poll] = await fetchSpockPolls(network, filter);
-  return poll as PollSpock;
-}
-
-export async function fetchPollById(pollId: number, network: SupportedNetworks): Promise<Poll | null> {
-  const cacheKey = `poll_${pollId}`;
-
-  const cachedPoll = await cacheGet(cacheKey, network);
-  if (cachedPoll) {
-    return JSON.parse(cachedPoll);
-  }
-
-  const data = await fetchSpockPollById(pollId, network);
-
-  if (!data) {
+export async function fetchSinglePoll(
+  network: SupportedNetworks,
+  paramPollId: number | null,
+  pollSlug: string | null
+): Promise<Poll | null> {
+  if (!paramPollId && !pollSlug) {
     return null;
   }
 
-  const tagsMapping = await getPollTagsMapping();
+  const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
 
-  const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data), tagsMapping);
-  if (parsedPoll) {
-    const prev = await fetchSpockPollById(pollId - 1, network);
+  if (cachedPollsAreValid) {
+    const pollSlugToIdsString = await cacheGet(pollSlugToIdsCacheKey, network, ONE_WEEK_IN_MS);
 
-    const next = await fetchSpockPollById(pollId + 1, network);
+    if (!pollSlugToIdsString) {
+      return null;
+    }
 
-    const poll = {
-      ...parsedPoll,
-      content: await markdownToHtml(parsedPoll.content),
-      ctx: {
-        prev: prev ? spockPollToPartialPoll(prev) : null,
-        next: next ? spockPollToPartialPoll(next) : null
-      }
-    };
+    const pollSlugToIds = JSON.parse(pollSlugToIdsString);
+    const pollId: number | null = paramPollId
+      ? paramPollId
+      : pollSlugToIds.find(p => p[0] === pollSlug)?.[1] || null;
 
-    cacheSet(cacheKey, JSON.stringify(poll), network);
+    if (!pollId) {
+      return null;
+    }
 
-    return poll;
+    const cachedPoll = await cacheGet(pollDetailsCacheKey, network, ONE_WEEK_IN_MS, 'HGET', String(pollId));
+    if (cachedPoll) {
+      return JSON.parse(cachedPoll);
+    }
   }
 
-  return null;
-}
+  const { allPolls } = await refetchPolls(network, githubHash as string);
 
-export async function fetchPollBySlug(slug: string, network: SupportedNetworks): Promise<Poll | null> {
-  const cacheKey = `poll_${slug}`;
-  const cachedPoll = await cacheGet(cacheKey, network);
-  if (cachedPoll) {
-    return JSON.parse(cachedPoll);
-  }
-
-  const data = await fetchSpockPollBySlug(slug, network);
-
-  if (!data) {
-    return null;
-  }
-
-  const tagsMapping = await getPollTagsMapping();
-
-  const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data), tagsMapping);
-
-  if (parsedPoll) {
-    const prev = await fetchSpockPollById(parsedPoll.pollId - 1, network);
-
-    const next = await fetchSpockPollById(parsedPoll.pollId + 1, network);
-
-    const poll = {
-      ...parsedPoll,
-      content: await markdownToHtml(parsedPoll.content),
-      ctx: {
-        prev: prev ? spockPollToPartialPoll(prev) : null,
-        next: next ? spockPollToPartialPoll(next) : null
-      }
-    };
-
-    cacheSet(cacheKey, JSON.stringify(poll), network);
-
-    return poll;
-  }
-
-  return null;
+  return allPolls.find(poll => (paramPollId ? poll.pollId === paramPollId : poll.slug === pollSlug)) || null;
 }

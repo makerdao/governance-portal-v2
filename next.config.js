@@ -87,6 +87,10 @@ const moduleExports = {
         destination: '/address/:address'
       },
       {
+        source: '/api/polling/all-polls',
+        destination: '/api/polling/v1/all-polls'
+      },
+      {
         source: '/api/delegates',
         destination: '/api/delegates/v1'
       }

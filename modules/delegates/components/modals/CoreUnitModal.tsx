@@ -19,7 +19,7 @@ type Props = {
 export const CoreUnitModal = ({ isOpen, onDismiss }: Props): JSX.Element => {
   return (
     <DialogOverlay isOpen={isOpen} onDismiss={onDismiss}>
-      <DialogContent widthDesktop="580px">
+      <DialogContent widthDesktop="580px" ariaLabel="Core Unit modal">
         <BoxWithClose close={onDismiss}>
           <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <Icon

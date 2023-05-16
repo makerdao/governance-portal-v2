@@ -160,7 +160,7 @@ const Withdraw = (props): JSX.Element => {
   return (
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
-        <DialogContent aria-label="Executive Vote" widthDesktop="520px">
+        <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
           <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
