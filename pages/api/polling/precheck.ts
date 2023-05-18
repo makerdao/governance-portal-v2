@@ -48,14 +48,13 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   }
 
   const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
-
   const [recentlyUsedGaslessVoting, hasMkrRequired, alreadyVoted, relayBalance] = await Promise.all([
     cacheGet(cacheKey, network),
     hasMkrRequiredVotingWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING, true),
     ballotIncludesAlreadyVoted(voter, network, pollIdsArray),
     getRelayerBalance(network)
   ]);
-
+  console.log('alreadyVoted!!!', alreadyVoted);
   return res.status(200).json({
     recentlyUsedGaslessVoting,
     hasMkrRequired,
