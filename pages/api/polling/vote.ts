@@ -137,10 +137,10 @@ export default withApiHandler(
     // this is equivalent to the votingAddress returned from the useAccount hook
     // and thus the address used on the frontend to do the precheck
     const addressDisplayedAsVoter = voteDelegateAddress
-    ? voteDelegateAddress
-    : voteProxyAddress?.voteProxyAddress
-    ? voteProxyAddress.voteProxyAddress
-    : voter;
+      ? voteDelegateAddress
+      : voteProxyAddress?.voteProxyAddress
+      ? voteProxyAddress.voteProxyAddress
+      : voter;
 
     //verify valid nonce and expiry date
     const nonceFromContract = await pollingContract.nonces(voter);
@@ -196,11 +196,14 @@ export default withApiHandler(
       //this is the address that is the msg.sender of the vote transaction
       //(since vote proxies can't vote from their contract)
       //so this is the address used to find the vote history
-      const DelegateElseWalletAddress = voteDelegateAddress
-      ? voteDelegateAddress : voter;
+      const DelegateElseWalletAddress = voteDelegateAddress ? voteDelegateAddress : voter;
 
       //can't use gasless service to vote in a poll you've already voted on
-      const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(DelegateElseWalletAddress, network, pollIds);
+      const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(
+        DelegateElseWalletAddress,
+        network,
+        pollIds
+      );
       if (ballotHasVotedPolls) {
         await throwError({ error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, body: req.body, skipDiscord });
       }
