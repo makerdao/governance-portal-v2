@@ -132,13 +132,15 @@ export default withApiHandler(
     const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, voter, network);
 
     // Find the delegate contract address if the address is a normal wallet
-    const voteDelegateAdress = await getDelegateContractAddress(contracts, voter);
+    const voteDelegateAddress = await getDelegateContractAddress(contracts, voter);
 
-    const addressDisplayedAsVoter = voteDelegateAdress
-      ? voteDelegateAdress
-      : voteProxyAddress?.hotAddress
-      ? voteProxyAddress.hotAddress
-      : voter;
+    // this is equivalent to the votingAddress returned from the useAccount hook
+    // and thus the address used on the frontend to do the precheck
+    const addressDisplayedAsVoter = voteDelegateAddress
+    ? voteDelegateAddress
+    : voteProxyAddress?.voteProxyAddress
+    ? voteProxyAddress.voteProxyAddress
+    : voter;
 
     //verify valid nonce and expiry date
     const nonceFromContract = await pollingContract.nonces(voter);
@@ -183,7 +185,6 @@ export default withApiHandler(
       }
 
       //check that address hasn't used gasless service recently
-      // use the "addressDisplayedAsVoter" in case the user created a delegate contract, so it does not use the user's wallet
       const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(
         addressDisplayedAsVoter,
         network
@@ -191,9 +192,15 @@ export default withApiHandler(
       if (recentlyUsedGaslessVoting) {
         await throwError({ error: API_VOTE_ERRORS.RATE_LIMITED, body: req.body, skipDiscord });
       }
+
+      //this is the address that is the msg.sender of the vote transaction
+      //(since vote proxies can't vote from their contract)
+      //so this is the address used to find the vote history
+      const DelegateElseWalletAddress = voteDelegateAddress
+      ? voteDelegateAddress : voter;
+
       //can't use gasless service to vote in a poll you've already voted on
-      // use "addressDisplayedAsVoter" to make sure we match against the delegate contract votes or the normal votes.
-      const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(addressDisplayedAsVoter, network, pollIds);
+      const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(DelegateElseWalletAddress, network, pollIds);
       if (ballotHasVotedPolls) {
         await throwError({ error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, body: req.body, skipDiscord });
       }
