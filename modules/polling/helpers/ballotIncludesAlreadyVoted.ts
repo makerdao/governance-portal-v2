@@ -17,7 +17,6 @@ export async function ballotIncludesAlreadyVoted(
 ): Promise<boolean> {
   try {
     const voteHistory = await fetchAllCurrentVotes(voter, network);
-    console.log('voteHistory', voteHistory);
     const votedPollIds = voteHistory.map(v => v.pollId);
     const areUnvoted = pollIds.map(pollId => !votedPollIds.includes(parseInt(pollId)));
 

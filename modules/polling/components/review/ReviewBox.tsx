@@ -32,11 +32,15 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function ReviewBox({
   account,
+  delegateAddress,
+  proxyAddress,
   activePollCount,
   activePollIds,
   ballotPollIds
 }: {
   account: string;
+  delegateAddress: string | undefined;
+  proxyAddress: string | undefined;
   activePollCount: number;
   activePollIds: number[];
   ballotPollIds: string[];
@@ -59,7 +63,9 @@ export default function ReviewBox({
 
   const { data: precheckData } = useSWR(
     account && ballotPollIds && ballotPollIds.length > 0 && network
-      ? `/api/polling/precheck?network=${network}&voter=${account}&pollIds=${ballotPollIds.join(',')}`
+      ? `/api/polling/precheck?network=${network}&voter=${account}${
+          delegateAddress ? `&delegateAddress=${delegateAddress}` : ''
+        }${proxyAddress ? `&proxyAddress=${proxyAddress}` : ''}&pollIds=${ballotPollIds.join(',')}`
       : null,
     fetchJson
   );

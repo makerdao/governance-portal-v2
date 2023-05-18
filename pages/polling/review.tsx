@@ -59,7 +59,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
   const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
 
-  const { account, votingAccount } = useAccount();
+  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
 
   // Used to create a string that does not trigger the useMemo of votedPolls to be recreated. (Unique string does not re-render the votedPolls object)
   const ballotKeys = useMemo(() => {
@@ -205,11 +205,13 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
                   </Text>
                 )}
 
-                {bpi <= 2 && !!votingAccount && (
+                {bpi <= 2 && !!account && (
                   <Box>
                     {!hasVoted && (
                       <ReviewBox
-                        account={votingAccount}
+                        account={account}
+                        delegateAddress={voteDelegateContractAddress}
+                        proxyAddress={voteProxyContractAddress}
                         activePollCount={activePollIds.length}
                         activePollIds={activePollIds}
                         ballotPollIds={ballotPollIds}
@@ -322,7 +324,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
             </Stack>
           </Box>
 
-          {bpi >= 3 && !!votingAccount && (
+          {bpi >= 3 && !!account && (
             <Box sx={{ pt: 3 }}>
               {!hasVoted && (
                 <Box>
@@ -330,7 +332,9 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
                     Submit Ballot
                   </Heading>
                   <ReviewBox
-                    account={votingAccount}
+                    account={account}
+                    delegateAddress={voteDelegateContractAddress}
+                    proxyAddress={voteProxyContractAddress}
                     activePollCount={activePollIds.length}
                     activePollIds={activePollIds}
                     ballotPollIds={ballotPollIds}
