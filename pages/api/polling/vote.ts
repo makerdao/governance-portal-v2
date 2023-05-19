@@ -23,10 +23,6 @@ import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.con
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
-import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { ApiError } from 'modules/app/api/ApiError';
 import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 
@@ -125,23 +121,6 @@ export default withApiHandler(
     //get arbitrum polling contract with relayer's signer
     const pollingContract = await getArbitrumPollingContractRelayProvider(network);
 
-    // Extract the real address that will be used for voting (delegate contract, proxy contract or normal address)
-    const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
-
-    // Find the voty proxy for the address (in case there's one)
-    const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, voter, network);
-
-    // Find the delegate contract address if the address is a normal wallet
-    const voteDelegateAddress = await getDelegateContractAddress(contracts, voter);
-
-    // this is equivalent to the votingAddress returned from the useAccount hook
-    // and thus the address used on the frontend to do the precheck
-    const addressDisplayedAsVoter = voteDelegateAddress
-      ? voteDelegateAddress
-      : voteProxyAddress?.voteProxyAddress
-      ? voteProxyAddress.voteProxyAddress
-      : voter;
-
     //verify valid nonce and expiry date
     const nonceFromContract = await pollingContract.nonces(voter);
     if (nonceFromContract.toNumber() !== nonce) {
@@ -158,14 +137,15 @@ export default withApiHandler(
 
     //run eligibility checks unless backdoor secret provided
     if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
-      //verify address has a poll weight > 0.1 MKR
-      const hasMkrRequired = await hasMkrRequiredVotingWeight(
-        voter,
-        network,
-        MIN_MKR_REQUIRED_FOR_GASLESS_VOTING,
-        true
-      );
+      const [hasMkrRequired, activePollIds, recentlyUsedGaslessVoting, ballotHasVotedPolls] =
+        await Promise.all([
+          hasMkrRequiredVotingWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING, true),
+          getActivePollIds(network),
+          recentlyUsedGaslessVotingCheck(voter, network),
+          ballotIncludesAlreadyVoted(voter, network, pollIds)
+        ]);
 
+      //verify address has a poll weight > 0.1 MKR
       if (!hasMkrRequired) {
         //ether's bignumber library doesnt handle decimals
         await throwError({
@@ -176,34 +156,17 @@ export default withApiHandler(
       }
 
       // Verify that all the polls are active
-      const activePollIds: number[] = await getActivePollIds(network);
-
       const areAllPollsActive = pollIds.every(pollId => activePollIds.some(pId => pId === parseInt(pollId)));
-
       if (!areAllPollsActive) {
         await throwError({ error: API_VOTE_ERRORS.EXPIRED_POLLS, body: req.body, skipDiscord });
       }
 
       //check that address hasn't used gasless service recently
-      const recentlyUsedGaslessVoting = await recentlyUsedGaslessVotingCheck(
-        addressDisplayedAsVoter,
-        network
-      );
       if (recentlyUsedGaslessVoting) {
         await throwError({ error: API_VOTE_ERRORS.RATE_LIMITED, body: req.body, skipDiscord });
       }
 
-      //this is the address that is the msg.sender of the vote transaction
-      //(since vote proxies can't vote from their contract)
-      //so this is the address used to find the vote history
-      const DelegateElseWalletAddress = voteDelegateAddress ? voteDelegateAddress : voter;
-
       //can't use gasless service to vote in a poll you've already voted on
-      const ballotHasVotedPolls = await ballotIncludesAlreadyVoted(
-        DelegateElseWalletAddress,
-        network,
-        pollIds
-      );
       if (ballotHasVotedPolls) {
         await throwError({ error: API_VOTE_ERRORS.ALREADY_VOTED_IN_POLL, body: req.body, skipDiscord });
       }
@@ -212,7 +175,7 @@ export default withApiHandler(
     }
     const { r, s, v } = ethers.utils.splitSignature(signature);
 
-    const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
+    const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
     let tx;
     try {

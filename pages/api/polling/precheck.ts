@@ -42,35 +42,17 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new ApiError('Gasless precheck: Missing parameters', 400, 'No poll ids provided');
   }
 
-  const [voter, delegateAddress, proxyAddress] = await Promise.all([
-    validateAddress(
-      req.query.voter as string,
-      new ApiError('Gasless precheck: Invalid address', 400, 'Invalid address')
-    ),
-    !req.query.delegateAddress
-      ? ''
-      : validateAddress(
-          req.query.delegateAddress as string,
-          new ApiError('Gasless precheck: Invalid address', 400, 'Invalid address')
-        ),
-    !req.query.proxyAddress
-      ? ''
-      : validateAddress(
-          req.query.proxyAddress as string,
-          new ApiError('Gasless precheck: Invalid address', 400, 'Invalid address')
-        )
-  ]);
+  const voter = await validateAddress(
+    req.query.voter as string,
+    new ApiError('Gasless precheck: Invalid address', 400, 'Invalid address')
+  );
 
-  // Use the same address that's used in the vote endpoint
-  // to store the last gasless vote date
-  const addressDisplayedAsVoter = delegateAddress ? delegateAddress : proxyAddress ? proxyAddress : voter;
-  const DelegateElseWalletAddress = delegateAddress ? delegateAddress : voter;
+  const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
 
-  const cacheKey = getRecentlyUsedGaslessVotingKey(addressDisplayedAsVoter);
   const [recentlyUsedGaslessVoting, hasMkrRequired, alreadyVoted, relayBalance] = await Promise.all([
     cacheGet(cacheKey, network),
-    hasMkrRequiredVotingWeight(DelegateElseWalletAddress, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING, true),
-    ballotIncludesAlreadyVoted(DelegateElseWalletAddress, network, pollIdsArray),
+    hasMkrRequiredVotingWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING, true),
+    ballotIncludesAlreadyVoted(voter, network, pollIdsArray),
     getRelayerBalance(network)
   ]);
 
