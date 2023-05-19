@@ -59,7 +59,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
   const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
 
-  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
+  const { account } = useAccount();
 
   // Used to create a string that does not trigger the useMemo of votedPolls to be recreated. (Unique string does not re-render the votedPolls object)
   const ballotKeys = useMemo(() => {
@@ -210,8 +210,6 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
                     {!hasVoted && (
                       <ReviewBox
                         account={account}
-                        delegateAddress={voteDelegateContractAddress}
-                        proxyAddress={voteProxyContractAddress}
                         activePollCount={activePollIds.length}
                         activePollIds={activePollIds}
                         ballotPollIds={ballotPollIds}
@@ -333,8 +331,6 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
                   </Heading>
                   <ReviewBox
                     account={account}
-                    delegateAddress={voteDelegateContractAddress}
-                    proxyAddress={voteProxyContractAddress}
                     activePollCount={activePollIds.length}
                     activePollIds={activePollIds}
                     ballotPollIds={ballotPollIds}
