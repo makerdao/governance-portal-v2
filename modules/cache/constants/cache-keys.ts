@@ -22,9 +22,9 @@ export const allDelegateAddressesKey = 'all-delegate-addresses';
 
 export const executiveProposalsCacheKey = 'proposals';
 
-export const getDelegateGithubCacheKey = (address: string): string => `delegate-github-${address}`;
+export const getDelegateGithubCacheKey = (address: string): string => `delegate-github-${address.toLowerCase()}`;
 
-export const getAddressDetailCacheKey = (address: string): string => `address-${address}`;
+export const getAddressDetailCacheKey = (address: string): string => `address-${address.toLowerCase()}`;
 
 export const getExecutiveProposalsCacheKey = (
   start = 0,
@@ -35,10 +35,10 @@ export const getExecutiveProposalsCacheKey = (
 ): string => `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
 
 export const getAddressStatsCacheKey = (address: string | string[]): string =>
-  `address-stats-${Array.isArray(address) ? address.join('-') : address}`;
+  (`address-stats-${Array.isArray(address) ? address.join('-') : address}`).toLowerCase();
 
 export const getAddressDelegationHistoryCacheKey = (address: string): string =>
-  `address-delegation-history-${address}`;
+  `address-delegation-history-${address.toLowerCase()}`;
 
 export const getAllPollsCacheKey = (filters?: any): string =>
   `polls-${filters ? JSON.stringify(filters) : 'all'}`;
@@ -58,4 +58,4 @@ export const pollsHashCacheKey = 'polls-hash';
 export const pollTagsMappingJSONCacheKey = 'poll-tags-mapping';
 
 export const getRecentlyUsedGaslessVotingKey = (address: string): string =>
-  `recently-used-gasless-voting-${address}`;
+  `recently-used-gasless-voting-${address.toLowerCase()}`;
