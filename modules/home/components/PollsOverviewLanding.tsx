@@ -22,7 +22,11 @@ type Props = {
 
 export const PollsOverviewLanding = ({ polls, activePollCount, allTags }: Props): JSX.Element => {
   const hasActivePolls = activePollCount > 0;
-  const pollsToDisplay = hasActivePolls ? polls : polls.slice(0, 2);
+  const pollsToDisplay = hasActivePolls
+    ? activePollCount >= 4
+      ? polls
+      : polls.slice(0, activePollCount)
+    : polls.slice(0, 2);
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>

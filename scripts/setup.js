@@ -44,6 +44,8 @@ async function main() {
     value: ethers.utils.parseEther('2.5')
   });
 
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
   console.log(
     'testAcct ETH balance is now',
     ethers.utils.formatEther(await ethers.provider.getBalance(testAccount))
@@ -86,6 +88,8 @@ async function main() {
     indexForHHAcct.toString(),
     toBytes32(ethers.utils.parseUnits('2.3')).toString()
   );
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   const mkrBalanceA = await mkrToken.balanceOf(testAccount);
   console.log(`testAccount now has ${ethers.utils.formatUnits(mkrBalanceA)} MKR`);

@@ -61,3 +61,8 @@ jobs:
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Codecov
+        run: |
+          yarn add --dev codecov
+          ./node_modules/.bin/codecov -f combined-coverage/lcov.info

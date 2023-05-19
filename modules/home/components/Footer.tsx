@@ -53,7 +53,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
 
   useEffect(() => {
     setRenderedMode(mode);
-  }, []);
+  }, [mode]);
 
   const t = text => translate(text, locale);
 

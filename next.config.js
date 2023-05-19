@@ -76,6 +76,7 @@ const moduleExports = {
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');
     config.resolve.alias['components'] = path.join(__dirname, 'components');
     config.resolve.alias['stores'] = path.join(__dirname, 'stores');
+    
     return config;
   },
 
