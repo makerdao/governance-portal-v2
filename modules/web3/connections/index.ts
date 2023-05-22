@@ -10,7 +10,7 @@ import { initializeConnector } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { Network } from '@web3-react/network';
 import { MetaMask } from '@web3-react/metamask';
-import { WalletConnect } from '@web3-react/walletconnect';
+import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { GnosisSafe } from '@makerdao-dux/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
@@ -46,21 +46,33 @@ export const metamaskConnection: Connection = {
 };
 
 // walletconnect
-const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<any>(
+const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
   actions =>
     new WalletConnect({
       actions,
       options: {
-        rpc: {
+        projectId: '1af507fd8108eb2a5b201edc8f444cd4',
+        chains: [SupportedChainId.MAINNET, SupportedChainId.GOERLI],
+        disableProviderPing: true,
+        // optionalChains: [SupportedChainId.GOERLI],
+        rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
           [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
         },
-        qrcode: true
+        // methods: ['eth_signTypedData_v4', 'eth_sendTransaction', 'test', 'eth_call', 'wc_'],
+        showQrModal: true,
+        qrModalOptions: {
+          themeVariables: {
+            '--w3m-background-color': '#1aab9b',
+            '--w3m-accent-color': '#1aab9b',
+            '--w3m-logo-image-url': 'maker_logo.svg'
+          }
+        }
       }
     })
 );
 export const walletConnectConnection: Connection = {
-  connector: web3WalletConnect as any,
+  connector: web3WalletConnect,
   hooks: web3WalletConnectHooks,
   type: ConnectionType.WALLET_CONNECT
 };
