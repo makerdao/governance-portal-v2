@@ -9,26 +9,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
-import { CvcAndCount } from 'modules/delegates/types/cvc';
+import { AvcAndCount } from 'modules/delegates/types/avc';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 
-export function DelegatesCvcFilter({
-  cvcs,
+export function DelegatesAvcFilter({
+  avcs,
   ...props
 }: {
-  cvcs: CvcAndCount[];
+  avcs: AvcAndCount[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element | null {
-  const [delegateCvcs, setCvcs] = useDelegatesFiltersStore(
-    state => [state.filters.cvcs, state.setCvcFilter],
+  const [delegateAvcs, setAvcs] = useDelegatesFiltersStore(
+    state => [state.filters.avcs, state.setAvcFilter],
     shallow
   );
 
-  const itemsSelected = delegateCvcs.length;
+  const itemsSelected = delegateAvcs.length;
 
-  return cvcs.length > 0 ? (
+  return avcs.length > 0 ? (
     <FilterButton
-      name={() => `CVC ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `AVC ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="delegates-filters-dropdown"
       active={itemsSelected > 0}
@@ -36,22 +36,22 @@ export function DelegatesCvcFilter({
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
-          {cvcs.map(({ cvc_name, count }) => (
-            <Flex key={cvc_name}>
+          {avcs.map(({ avc_name, count }) => (
+            <Flex key={avc_name}>
               <Label variant="thinLabel" sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={delegateCvcs.includes(cvc_name) || false}
+                  checked={delegateAvcs.includes(avc_name) || false}
                   onChange={event => {
-                    setCvcs(
+                    setAvcs(
                       event.target.checked
-                        ? [...delegateCvcs, cvc_name]
-                        : delegateCvcs.filter(c => c !== cvc_name)
+                        ? [...delegateAvcs, avc_name]
+                        : delegateAvcs.filter(c => c !== avc_name)
                     );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{cvc_name}</Text>
+                  <Text>{avc_name}</Text>
                   <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{count}</Text>
                 </Flex>
               </Label>

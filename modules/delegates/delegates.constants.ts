@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 export enum DelegateStatusEnum {
-  constitutional = 'constitutional',
+  aligned = 'aligned',
   expired = 'expired',
   shadow = 'shadow'
 }
@@ -19,7 +19,7 @@ export enum MKRWeightTimeRanges {
 }
 
 export enum DelegateTypeEnum {
-  CONSTITUTIONAL = 'CONSTITUTIONAL',
+  ALIGNED = 'ALIGNED',
   SHADOW = 'SHADOW',
   ALL = 'ALL'
 }

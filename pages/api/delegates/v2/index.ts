@@ -83,15 +83,15 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           in: query
  *           schema:
  *             type: string
- *             enum: [CONSTITUTIONAL, SHADOW, ALL]
+ *             enum: [ALIGNED, SHADOW, ALL]
  *           default: ALL
  *         - name: searchTerm
  *           description: Name or address (whole or part) of the delegate to return.
  *           in: query
  *           schema:
  *             type: string
- *         - name: cvcs
- *           description: Array of CVC names to filter for.
+ *         - name: avcs
+ *           description: Array of AVC names to filter for.
  *           in: query
  *           schema:
  *             type: array
@@ -113,16 +113,16 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: number
  *         shadow:
  *           type: number
- *         constitutional:
+ *         aligned:
  *           type: number
  *         totalMKRDelegated:
  *           type: string
  *         totalDelegators:
  *           type: number
- *     Cvc:
+ *     Avc:
  *       type: object
  *       properties:
- *         cvc_name:
+ *         avc_name:
  *           type: string
  *         count:
  *           type: number
@@ -131,7 +131,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *     DelegateStatus:
  *       type: string
  *       enum:
- *         - constitutional
+ *         - aligned
  *         - expired
  *         - shadow
  *     DelegatePaginated:
@@ -139,7 +139,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       properties:
  *         name:
  *           type: string
- *         cvc_name:
+ *         avc_name:
  *           type: string
  *         voteDelegateAddress:
  *           type: string
@@ -231,10 +231,10 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/DelegatePaginated'
- *         cvcs:
+ *         avcs:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Cvc'
+ *             $ref: '#/components/schemas/Avc'
  */
 
 export default withApiHandler(
@@ -282,14 +282,14 @@ export default withApiHandler(
 
     const delegateType = validateQueryParam(req.query.delegateType, 'string', {
       defaultValue: DelegateTypeEnum.ALL,
-      validValues: [DelegateTypeEnum.CONSTITUTIONAL, DelegateTypeEnum.SHADOW, DelegateTypeEnum.ALL]
+      validValues: [DelegateTypeEnum.ALIGNED, DelegateTypeEnum.SHADOW, DelegateTypeEnum.ALL]
     }) as DelegateTypeEnum;
 
     const searchTerm = validateQueryParam(req.query.searchTerm, 'string', {
       defaultValue: null
     }) as string | null;
 
-    const cvcs = validateQueryParam(req.query.cvcs, 'array', {
+    const avcs = validateQueryParam(req.query.avcs, 'array', {
       defaultValue: null
     }) as string[] | null;
 
@@ -303,7 +303,7 @@ export default withApiHandler(
       seed,
       delegateType,
       searchTerm,
-      cvcs
+      avcs
     });
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

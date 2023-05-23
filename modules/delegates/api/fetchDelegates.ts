@@ -44,8 +44,8 @@ import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegateAddresses } from '../helpers/filterDelegates';
 import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
-import { CvcWithCountAndDelegates } from '../types/cvc';
-import { fetchCvcsTotalDelegated } from './fetchCvcsTotalDelegated';
+import { AvcWithCountAndDelegates } from '../types/avc';
+import { fetchAvcsTotalDelegated } from './fetchAvcsTotalDelegated';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -68,14 +68,14 @@ function mergeDelegateInfo({
     status: isExpired
       ? DelegateStatusEnum.expired
       : githubDelegate
-      ? DelegateStatusEnum.constitutional
+      ? DelegateStatusEnum.aligned
       : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
     isAboutToExpire: isAboutToExpireCheck(expirationDate),
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
-    cvc_name: githubDelegate?.cvc_name,
+    avc_name: githubDelegate?.avc_name,
     picture: githubDelegate?.picture || '',
     id: onChainDelegate.voteDelegateAddress,
     externalUrl: githubDelegate?.externalUrl,
@@ -217,7 +217,7 @@ export async function fetchDelegates(
     return JSON.parse(cachedResponse);
   }
 
-  // This contains all the delegates including info merged with constitutional delegates
+  // This contains all the delegates including info merged with aligned delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
   const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
@@ -298,7 +298,7 @@ export async function fetchDelegates(
     stats: {
       total: dedupedDelegates.length,
       shadow: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
-      constitutional: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.constitutional).length,
+      aligned: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.aligned).length,
       totalMKRDelegated: new BigNumberJS(
         delegates.reduce((prev, next) => {
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);
@@ -339,14 +339,14 @@ export async function fetchAndMergeDelegates(
 
     return {
       ...delegate,
-      delegateType: ghDelegate ? DelegateTypeEnum.CONSTITUTIONAL : DelegateTypeEnum.SHADOW,
+      delegateType: ghDelegate ? DelegateTypeEnum.ALIGNED : DelegateTypeEnum.SHADOW,
       blockTimestamp: delegate.blockTimestamp,
       expirationDate,
       expired: expirationDate > new Date() ? false : true,
       isAboutToExpire: isAboutToExpireCheck(expirationDate),
       name: ghDelegate?.name,
       picture: ghDelegate?.picture,
-      cvc_name: ghDelegate?.cvc_name,
+      avc_name: ghDelegate?.avc_name,
       previous:
         oldOwner && oldContractAddress
           ? { address: oldOwner, voteDelegateAddress: oldContractAddress }
@@ -382,7 +382,7 @@ export async function fetchSingleDelegateInfo(
     picture: foundGithubDelegate?.picture,
     address: foundDelegate.delegate,
     voteDelegateAddress: foundDelegate.voteDelegate,
-    status: foundGithubDelegate ? DelegateStatusEnum.constitutional : DelegateStatusEnum.shadow,
+    status: foundGithubDelegate ? DelegateStatusEnum.aligned : DelegateStatusEnum.shadow,
     cuMember: foundGithubDelegate?.cuMember,
     pollParticipation: foundGithubDelegate?.pollParticipation,
     executiveParticipation: foundGithubDelegate?.executiveParticipation,
@@ -399,7 +399,7 @@ export async function fetchSingleDelegateInfo(
 
 export async function fetchDelegatesInfo(
   network: SupportedNetworks,
-  constitutionalOnly: boolean,
+  alignedOnly: boolean,
   includeExpired: boolean
 ): Promise<DelegateInfo[]> {
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
@@ -407,11 +407,11 @@ export async function fetchDelegatesInfo(
   const delegatesInfo = allDelegatesWithNamesAndLinks
     .filter(
       delegate =>
-        (constitutionalOnly ? delegate.delegateType === DelegateTypeEnum.CONSTITUTIONAL : true) &&
+        (alignedOnly ? delegate.delegateType === DelegateTypeEnum.ALIGNED : true) &&
         (includeExpired ? true : !delegate.expired)
     )
     .filter((delegate, i, arr) =>
-      constitutionalOnly && !includeExpired ? arr.findIndex(d => d.name === delegate.name) === i : true
+      alignedOnly && !includeExpired ? arr.findIndex(d => d.name === delegate.name) === i : true
     )
     .sort((a, b) => new Date(a.blockTimestamp).getTime() - new Date(b.blockTimestamp).getTime())
     .map(delegate => {
@@ -421,7 +421,7 @@ export async function fetchDelegatesInfo(
         picture: githubDelegate?.picture,
         address: delegate.delegate,
         voteDelegateAddress: delegate.voteDelegate,
-        status: delegate.name ? DelegateStatusEnum.constitutional : DelegateStatusEnum.shadow,
+        status: delegate.name ? DelegateStatusEnum.aligned : DelegateStatusEnum.shadow,
         cuMember: githubDelegate?.cuMember,
         pollParticipation: githubDelegate?.pollParticipation,
         executiveParticipation: githubDelegate?.executiveParticipation,
@@ -449,25 +449,25 @@ export async function fetchDelegatesPaginated({
   seed,
   delegateType,
   searchTerm,
-  cvcs
+  avcs
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
-  const constitutionalDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
-  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, cvcs, searchTerm);
-  const { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
+  const alignedDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
+  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, avcs, searchTerm);
+  const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
     allDelegatesWithNamesAndLinks
   );
 
-  const cvcAndCount = allDelegatesWithNamesAndLinks
-    .filter(delegate => !delegate.expired && delegate.name && delegate.cvc_name)
+  const avcAndCount = allDelegatesWithNamesAndLinks
+    .filter(delegate => !delegate.expired && delegate.name && delegate.avc_name)
     .filter((delegate, i, thisArr) => thisArr.findIndex(del => del.name === delegate.name) === i)
     .reduce((acc, cur) => {
-      if (!cur.cvc_name) return acc;
+      if (!cur.avc_name) return acc;
 
-      const prev = acc.findIndex(cvc => cvc.cvc_name === cur.cvc_name);
+      const prev = acc.findIndex(avc => avc.avc_name === cur.avc_name);
       if (prev !== -1) {
         acc[prev].count += 1;
         acc[prev].delegates.push(cur.voteDelegate);
@@ -476,7 +476,7 @@ export async function fetchDelegatesPaginated({
         }
       } else {
         acc.push({
-          cvc_name: cur.cvc_name,
+          avc_name: cur.avc_name,
           count: 1,
           delegates: [cur.voteDelegate],
           ...(cur.picture ? { picture: cur.picture } : {})
@@ -484,23 +484,23 @@ export async function fetchDelegatesPaginated({
       }
 
       return acc;
-    }, [] as CvcWithCountAndDelegates[]);
+    }, [] as AvcWithCountAndDelegates[]);
 
   let delegatesQueryFilter;
-  if (delegateType !== DelegateTypeEnum.CONSTITUTIONAL && delegateType !== DelegateTypeEnum.SHADOW) {
-    delegatesQueryFilter = searchTerm || cvcs ? { voteDelegate: { in: filteredDelegates } } : null;
+  if (delegateType !== DelegateTypeEnum.ALIGNED && delegateType !== DelegateTypeEnum.SHADOW) {
+    delegatesQueryFilter = searchTerm || avcs ? { voteDelegate: { in: filteredDelegates } } : null;
   } else {
     delegatesQueryFilter = {
       and: [
         {
           voteDelegate:
-            delegateType === DelegateTypeEnum.CONSTITUTIONAL
-              ? { in: constitutionalDelegatesAddresses }
-              : { notIn: constitutionalDelegatesAddresses }
+            delegateType === DelegateTypeEnum.ALIGNED
+              ? { in: alignedDelegatesAddresses }
+              : { notIn: alignedDelegatesAddresses }
         }
       ]
     };
-    (searchTerm || cvcs) && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegates } });
+    (searchTerm || avcs) && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegates } });
   }
 
   const delegatesQueryVariables = {
@@ -509,7 +509,7 @@ export async function fetchDelegatesPaginated({
     includeExpired,
     orderBy,
     orderDirection,
-    constitutionalDelegates: constitutionalDelegatesAddresses
+    constitutionalDelegates: alignedDelegatesAddresses
   };
   if (delegatesQueryFilter) {
     delegatesQueryVariables['filter'] = delegatesQueryFilter;
@@ -518,7 +518,7 @@ export async function fetchDelegatesPaginated({
     delegatesQueryVariables['seed'] = seed;
   }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes, cvcStats] =
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes, avcStats] =
     await Promise.all([
       getGithubExecutives(network),
       fetchDelegatesExecSupport(network),
@@ -531,7 +531,7 @@ export async function fetchDelegatesPaginated({
         chainId,
         query: delegationMetricsQuery
       }),
-      fetchCvcsTotalDelegated(cvcAndCount, network)
+      fetchAvcsTotalDelegated(avcAndCount, network)
     ]);
 
   const delegatesData = {
@@ -544,7 +544,7 @@ export async function fetchDelegatesPaginated({
     stats: {
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
-      constitutional: constitutionalDelegatesCount,
+      aligned: alignedDelegatesCount,
       totalMKRDelegated: delegationMetricsRes.delegationMetrics.totalMkrDelegated || 0,
       totalDelegators: +delegationMetricsRes.delegationMetrics.delegatorCount || 0
     },
@@ -564,13 +564,13 @@ export async function fetchDelegatesPaginated({
 
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
-        cvc_name: githubDelegate?.cvc_name,
+        avc_name: githubDelegate?.avc_name,
         voteDelegateAddress: delegate.voteDelegate,
         address: delegate.delegate,
         status: delegate.expired
           ? DelegateStatusEnum.expired
           : githubDelegate
-          ? DelegateStatusEnum.constitutional
+          ? DelegateStatusEnum.aligned
           : DelegateStatusEnum.shadow,
         creationDate: new Date(delegate.creationDate),
         expirationDate: new Date(delegate.expirationDate),
@@ -591,7 +591,7 @@ export async function fetchDelegatesPaginated({
         next: allDelegatesEntry?.next
       };
     }) as DelegatePaginated[],
-    cvcs: cvcStats
+    avcs: avcStats
   };
 
   return delegatesData;

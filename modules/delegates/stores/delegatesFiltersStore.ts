@@ -13,20 +13,20 @@ type StoreDelegates = {
   filters: {
     creationDate: null | Date;
     showShadow: boolean;
-    showConstitutional: boolean;
+    showAligned: boolean;
     showExpired: boolean;
     name: string | null;
-    cvcs: string[];
+    avcs: string[];
   };
   sort: DelegateOrderByEnum;
   sortDirection: OrderDirectionEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
-  setShowConstitutionalFilter: (showConstitutional: boolean) => void;
+  setShowAlignedFilter: (showAligned: boolean) => void;
   setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: DelegateOrderByEnum) => void;
   setSortDirection: (sortDirection: OrderDirectionEnum) => void;
-  setCvcFilter: (cvc: string[]) => void;
+  setAvcFilter: (avc: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
   resetSort: () => void;
@@ -39,10 +39,10 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
     showShadow: true,
-    showConstitutional: true,
+    showAligned: true,
     showExpired: false,
     name: null,
-    cvcs: []
+    avcs: []
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
@@ -92,20 +92,20 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setShowConstitutionalFilter: showConstitutional => {
+  setShowAlignedFilter: showAligned => {
     set({
       filters: {
         ...get().filters,
-        showConstitutional
+        showAligned
       }
     });
   },
 
-  setCvcFilter: cvcs => {
+  setAvcFilter: avcs => {
     set({
       filters: {
         ...get().filters,
-        cvcs
+        avcs
       }
     });
   },
@@ -116,9 +116,9 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         name: null,
         creationDate: null,
         showShadow: true,
-        showConstitutional: true,
+        showAligned: true,
         showExpired: false,
-        cvcs: []
+        avcs: []
       }
     });
   },

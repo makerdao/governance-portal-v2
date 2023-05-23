@@ -13,18 +13,17 @@ import { DelegatesAPIStats } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 
 export function DelegatesStatusFilter({ stats }: { stats: DelegatesAPIStats }): JSX.Element {
-  const [showConstitutional, showShadow, setShowConstitutionalFilter, setShowShadowFilter] =
-    useDelegatesFiltersStore(
-      state => [
-        state.filters.showConstitutional,
-        state.filters.showShadow,
-        state.setShowConstitutionalFilter,
-        state.setShowShadowFilter
-      ],
-      shallow
-    );
+  const [showAligned, showShadow, setShowAlignedFilter, setShowShadowFilter] = useDelegatesFiltersStore(
+    state => [
+      state.filters.showAligned,
+      state.filters.showShadow,
+      state.setShowAlignedFilter,
+      state.setShowShadowFilter
+    ],
+    shallow
+  );
 
-  const itemsSelected = [showConstitutional, showShadow].filter(i => !!i).length;
+  const itemsSelected = [showAligned, showShadow].filter(i => !!i).length;
 
   return (
     <FilterButton
@@ -41,16 +40,16 @@ export function DelegatesStatusFilter({ stats }: { stats: DelegatesAPIStats }): 
           <Label
             variant="thinLabel"
             sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
-            data-testid="delegate-type-filter-show-constitutional"
+            data-testid="delegate-type-filter-show-aligned"
           >
             <Checkbox
               sx={{ width: 3, height: 3 }}
-              checked={showConstitutional}
-              onChange={event => setShowConstitutionalFilter(event.target.checked)}
+              checked={showAligned}
+              onChange={event => setShowAlignedFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-              <Text>Constitutional Delegates</Text>
-              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{stats.constitutional}</Text>
+              <Text>Aligned Delegates</Text>
+              <Text sx={{ color: 'secondaryEmphasis', ml: 3 }}>{stats.aligned}</Text>
             </Flex>
           </Label>
         </Flex>

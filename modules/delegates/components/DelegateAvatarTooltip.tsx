@@ -39,7 +39,7 @@ export function DelegateAvatarTooltip({
               <Avatar size={tooltipAvatarWidth} address={delegate.address} />
             </Box>
           )}
-          {delegate.status === DelegateStatusEnum.constitutional && (
+          {delegate.status === DelegateStatusEnum.aligned && (
             <Icon
               name={'verified'}
               sx={{
@@ -66,15 +66,13 @@ export function DelegateAvatarTooltip({
         </Box>
         <Flex sx={{ ml: 3, flexDirection: 'column' }}>
           <Text as="p" variant="microHeading">
-            {delegate.status === DelegateStatusEnum.constitutional ? delegate.name : 'Shadow Delegate'}
+            {delegate.status === DelegateStatusEnum.aligned ? delegate.name : 'Shadow Delegate'}
           </Text>
           <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
             <Address address={delegate.voteDelegateAddress} />
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
-            {delegate.status === DelegateStatusEnum.constitutional
-              ? 'Constitutional Delegate'
-              : 'Shadow Delegate'}
+            {delegate.status === DelegateStatusEnum.aligned ? 'Aligned Delegate' : 'Shadow Delegate'}
           </Text>
         </Flex>
       </Flex>

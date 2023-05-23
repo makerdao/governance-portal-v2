@@ -20,7 +20,7 @@ export type DelegatesQueryParams = {
   seed?: number;
   delegateType?: DelegateTypeEnum;
   searchTerm?: string | null;
-  queryCvcs?: string[];
+  queryAvcs?: string[];
 };
 
 export async function fetchDelegatesPageData(
@@ -36,13 +36,13 @@ export async function fetchDelegatesPageData(
   const seed = queryParams?.seed || null;
   const delegateType = queryParams?.delegateType || DelegateTypeEnum.ALL;
   const searchTerm = queryParams?.searchTerm || null;
-  const queryCvcs = queryParams?.queryCvcs?.length ? queryParams.queryCvcs : null;
+  const queryAvcs = queryParams?.queryAvcs?.length ? queryParams.queryAvcs : null;
 
-  const { delegates, stats, cvcs, paginationInfo } = useApi
+  const { delegates, stats, avcs, paginationInfo } = useApi
     ? await fetchJson(
         `/api/delegates/v2?network=${network}&pageSize=${pageSize}&page=${page}&includeExpired=${includeExpired}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
           searchTerm ? '&searchTerm=' + searchTerm : ''
-        }${queryCvcs ? '&cvcs=' + queryCvcs.join(',') : ''}${seed ? '&seed=' + seed : ''}`
+        }${queryAvcs ? '&avcs=' + queryAvcs.join(',') : ''}${seed ? '&seed=' + seed : ''}`
       )
     : await fetchDelegatesPaginated({
         network,
@@ -54,13 +54,13 @@ export async function fetchDelegatesPageData(
         seed,
         delegateType,
         searchTerm,
-        cvcs: queryCvcs
+        avcs: queryAvcs
       });
 
   return {
     delegates,
     stats,
     paginationInfo,
-    cvcs
+    avcs
   };
 }
