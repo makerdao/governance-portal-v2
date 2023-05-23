@@ -101,7 +101,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: "What's an Aligned Voter Committee(AVC)?",
-        url: 'https://mips.makerdao.com/mips/details/MIP101#5-constitutional-voter-committees-cvcs-'
+        url: 'https://mips.makerdao.com/mips/details/MIP101#2-5-aligned-voter-committees-gov5'
       },
       {
         linkTitle: 'What is the Maker Constitution?',
@@ -109,7 +109,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'What is an Aligned Delegate?',
-        url: 'https://mips.makerdao.com/mips/details/MIP113#5-constitutional-delegates'
+        url: 'https://mips.makerdao.com/mips/details/MIP101#2-6-aligned-delegates-ads-gov6'
       },
       {
         linkTitle: 'What is Maker Endgame?',
