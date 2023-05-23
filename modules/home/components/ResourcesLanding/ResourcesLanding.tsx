@@ -6,29 +6,36 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState } from 'react';
-import { Button, Box, Flex, Heading, Card, Text, Image } from 'theme-ui';
+import { useState, useEffect } from 'react';
+import { Button, Box, Flex, Heading, Card, Text, Image, useThemeUI } from 'theme-ui';
 import { resources, ResourceColor, ResourceCategory } from './resources';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { fadeIn } from 'lib/keyframes';
 import { alpha } from '@theme-ui/color';
 
 const CategoryButton = ({ label, color, active, onClick }) => {
+  const { theme } = useThemeUI();
+  const [badgeSelectorColor, setBadgeSelectorColor] = useState('#000');
+
+  useEffect(() => {
+    if (theme.rawColors?.badgeSelector) {
+      setBadgeSelectorColor(theme.rawColors?.badgeSelector as string);
+    }
+  }, []);
+
   return (
     <Button
       variant="outline"
       onClick={onClick}
       title={label}
       sx={{
-        background: theme =>
-          active
-            ? `${alpha(theme?.rawColors?.badgeSelector, 0.4)(theme)}`
-            : `${alpha(theme?.rawColors?.badgeSelector, 0)(theme)}`,
+        background: active
+          ? `${alpha(badgeSelectorColor, 0.4)(theme)}`
+          : `${alpha(badgeSelectorColor, 0)(theme)}`,
         '&:hover': {
-          background: theme =>
-            active
-              ? `${alpha(theme?.rawColors?.badgeSelector, 0.4)(theme)}`
-              : `${alpha(theme?.rawColors?.badgeSelector, 0.2)(theme)}`
+          background: active
+            ? `${alpha(badgeSelectorColor, 0.4)(theme)}`
+            : `${alpha(badgeSelectorColor, 0.2)(theme)}`
         },
         px: [2, 2, 3],
         border: 'none'

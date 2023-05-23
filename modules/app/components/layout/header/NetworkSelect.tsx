@@ -111,7 +111,7 @@ const NetworkSelect = (): React.ReactElement => {
       )}
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
-        <DialogContent aria-label="Change Network" widthDesktop="400px">
+        <DialogContent ariaLabel="Change Network" widthDesktop="400px">
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
             <Text variant="microHeading">Switch Network</Text>
             <Close sx={closeButtonStyle} aria-label="close" onClick={close} />

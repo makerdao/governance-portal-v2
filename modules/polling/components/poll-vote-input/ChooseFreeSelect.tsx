@@ -7,11 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { Poll } from 'modules/polling/types';
+import { Poll, PollListItem } from 'modules/polling/types';
 import { Box, Button } from 'theme-ui';
 
 type props = {
-  poll: Poll;
+  poll: PollListItem | Poll;
   choice: number[] | null;
   setChoice: (choices: number[]) => void;
 };

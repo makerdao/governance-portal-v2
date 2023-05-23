@@ -11,5 +11,12 @@
         }
       ]
     ],
-    "plugins": ["superjson-next"]
+    "plugins": ["superjson-next"],
+    "env": {
+      "cypress-test": {
+        "plugins": [
+          ["istanbul"]
+        ]
+      }
+    }
 }

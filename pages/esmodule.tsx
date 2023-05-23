@@ -123,7 +123,7 @@ const ESModule = (): React.ReactElement => {
       <HeadComponent title="Emergency Shutdown Module" />
 
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
-        <DialogContent aria-label="Executive Vote">
+        <DialogContent ariaLabel="Executive Vote">
           {totalStaked ? (
             !esmThresholdMet ? (
               <BurnModal

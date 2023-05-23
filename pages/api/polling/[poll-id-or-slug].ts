@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
+import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isValidSlugParam } from '../../../modules/polling/helpers/isValidSlugParam';
+import { Poll } from 'modules/polling/types';
 
 /**
  * @swagger
@@ -106,34 +106,30 @@ import { isValidSlugParam } from '../../../modules/polling/helpers/isValidSlugPa
  *             schema:
  *               $ref: '#/definitions/Poll'
  */
-export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<Poll>) => {
   // validate network
-  const network = validateQueryParam(
-    (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,
-    'string',
-    {
-      defaultValue: null,
-      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
-    },
-    n => !!n,
-    new ApiError('Invalid network', 400, 'Invalid network')
-  ) as SupportedNetworks;
+  const network = validateQueryParam(req.query.network, 'string', {
+    defaultValue: DEFAULT_NETWORK.network,
+    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+  }) as SupportedNetworks;
 
-  const slug = validateQueryParam(
-    req.query.slug,
-    'string',
-    {
+  const pollId = validateQueryParam(req.query['poll-id-or-slug'], 'number', {
+    defaultValue: null
+  }) as number | null;
+
+  let pollSlug: string | null = null;
+
+  if (!pollId) {
+    pollSlug = validateQueryParam(req.query['poll-id-or-slug'], 'string', {
       defaultValue: null
-    },
-    isValidSlugParam,
-    new ApiError('Slug not found', 400, 'Slug not found')
-  ) as string;
-
-  let poll = await fetchPollBySlug(slug, network);
-
-  if (!poll && !isNaN(parseInt(slug))) {
-    poll = await fetchPollById(parseInt(slug), network);
+    }) as string | null;
   }
+
+  if (!pollId && !pollSlug) {
+    throw new ApiError('You must pass a poll id or slug', 400, 'You must pass a poll id or slug');
+  }
+
+  const poll = await fetchSinglePoll(network, pollId, pollSlug);
 
   if (!poll) {
     throw new ApiError('Poll not found', 404, 'Poll not found');

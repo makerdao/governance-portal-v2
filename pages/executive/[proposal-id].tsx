@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge, Label, Checkbox } from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge } from 'theme-ui';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -47,11 +47,14 @@ import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   proposal: Proposal;
   spellDiffs: SpellDiff[];
 };
+
+const INITIAL_SUPPORTERS_COUNT = 10;
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -90,7 +93,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
-  const { data: allSupporters, error: supportersError } = useSWR(dataKey, fetchJson, {
+  const { data: allSupporters, error: supportersError } = useSWR<Proposal[]>(dataKey, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnMount: !cache.get(dataKey),
@@ -107,7 +110,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
-  const [showSmallVoters, setShowSmallVoters] = useState(false);
+  const [showAllSupporters, setShowAllSupporters] = useState(false);
   const close = () => setVoting(false);
 
   const hasVotedFor =
@@ -116,9 +119,14 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
 
-  const handleSmallVotersChecked = () => {
-    setShowSmallVoters(!showSmallVoters);
+  const loadMoreSupporters = () => {
+    setShowAllSupporters(true);
   };
+
+  const filteredSupporters = useMemo(
+    () => (showAllSupporters ? supporters : supporters?.slice(0, INITIAL_SUPPORTERS_COUNT)),
+    [supporters, showAllSupporters]
+  );
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -220,6 +228,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                   </Box>
                 }
                 label="Spell Address"
+                renderAsDiv
               />
               <StatBox
                 value={spellData && spellData.mkrSupport && formatValue(BigNumber.from(spellData.mkrSupport))}
@@ -302,7 +311,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             </Box>
           )}
           <Box>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Flex sx={{ mt: 3, mb: 2, alignItems: 'center', justifyContent: 'space-between' }}>
               <Heading as="h3" variant="microHeading" sx={{ mr: 1 }}>
                 Supporters
               </Heading>
@@ -312,22 +321,6 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 </Box>
                 <Text sx={{ fontSize: 1, color: 'textSecondary' }}>Updated every five minutes</Text>
               </Flex>
-            </Flex>
-            <Flex sx={{ justifyContent: 'right' }}>
-              <Label
-                variant="thinLabel"
-                sx={{
-                  fontSize: 1,
-                  alignItems: 'center',
-                  justifyContent: 'right',
-                  py: [0, 1],
-                  color: 'textSecondary',
-                  cursor: 'pointer'
-                }}
-              >
-                <Checkbox checked={showSmallVoters} onChange={handleSmallVotersChecked} />
-                <Text variant="caps">Show &lt;0.05 MKR voters</Text>
-              </Label>
             </Flex>
             <ErrorBoundary componentName="Executive Supporters">
               <Card variant="compact" p={3}>
@@ -369,49 +362,58 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                     </Flex>
                   )}
 
-                  {supporters &&
-                    supporters.length > 0 &&
-                    supporters
-                      .filter(supporter => showSmallVoters || supporter.deposits >= 0.05)
-                      .map(supporter => (
+                  <Flex sx={{ flexDirection: 'column' }}>
+                    {filteredSupporters &&
+                      filteredSupporters.length > 0 &&
+                      filteredSupporters.map(supporter => (
                         <Flex
                           sx={{
                             justifyContent: 'space-between',
+                            alignItems: 'flex-start',
                             ':not(:last-child)': {
                               mb: 2
                             }
                           }}
                           key={supporter.address}
                         >
-                          <Box>
-                            <InternalLink
-                              href={`/address/${supporter.address}`}
-                              title="Profile details"
-                              styles={{ mt: 'auto' }}
+                          <InternalLink
+                            href={`/address/${supporter.address}`}
+                            title="Profile details"
+                            styles={{ maxWidth: '265px' }}
+                          >
+                            <Text
+                              sx={{
+                                color: 'accentBlue',
+                                fontSize: 2,
+                                ':hover': { color: 'accentBlueEmphasis' }
+                              }}
                             >
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 2,
-                                  ':hover': { color: 'accentBlueEmphasis' }
-                                }}
-                              >
-                                <AddressIconBox
-                                  address={supporter.address}
-                                  width={30}
-                                  limitTextLength={bpi === 0 ? 12 : 14}
-                                />
-                              </Text>
-                            </InternalLink>
-                          </Box>
-
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Text color="onSecondary">
-                              {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
+                              <AddressIconBox address={supporter.address} width={30} limitTextLength={70} />
                             </Text>
-                          </Box>
+                          </InternalLink>
+                          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
+                            <Text color="onSecondary" sx={{ fontSize: 2 }}>
+                              {formatValue(parseUnits(supporter.deposits), undefined, undefined, true, true)}{' '}
+                              MKR
+                            </Text>
+                          </Flex>
                         </Flex>
                       ))}
+
+                    {filteredSupporters && supporters && filteredSupporters.length < supporters.length && (
+                      <Button
+                        onClick={loadMoreSupporters}
+                        variant="outline"
+                        data-testid="button-show-more-executive-supporters"
+                        sx={{ mt: 2, alignSelf: 'center' }}
+                      >
+                        <Text color="text" variant="caps">
+                          Show all supporters
+                        </Text>
+                      </Button>
+                    )}
+                  </Flex>
                 </Box>
               </Card>
             </ErrorBoundary>

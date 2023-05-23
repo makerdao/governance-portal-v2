@@ -20,7 +20,6 @@ jest.mock('remark-rehype', () => () => null);
 jest.mock('unified', () => () => null);
 jest.mock('rehype-stringify', () => () => null);
 jest.mock('rehype-sanitize', () => () => null);
-jest.mock('lib/useInterval', () => () => null);
 
 jest.mock('uuid', () => {
   return {
