@@ -16,22 +16,22 @@ import { DelegateAvatarTooltip } from 'modules/delegates/components/DelegateAvat
 
 export function DelegatePicture({
   delegate,
-  cvcPicture,
+  avcPicture,
   width = 41,
   showTooltip = true
 }: {
-  cvcPicture?: string;
+  avcPicture?: string;
   delegate?: Delegate | DelegatePaginated | DelegateInfo;
   width?: number;
   showTooltip?: boolean;
 }): React.ReactElement {
-  // if cvc is passed in, return cvc picture
-  if (cvcPicture) {
+  // if avc is passed in, return avc picture
+  if (avcPicture) {
     return (
       <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
         <Image
-          src={cvcPicture}
-          key={cvcPicture}
+          src={avcPicture}
+          key={avcPicture}
           sx={{
             objectFit: 'cover',
             width: '100%',
@@ -70,7 +70,7 @@ export function DelegatePicture({
                 </Box>
               )}
 
-              {delegate.status === DelegateStatusEnum.constitutional && (
+              {delegate.status === DelegateStatusEnum.aligned && (
                 <Icon
                   name={'verified'}
                   sx={{
@@ -101,12 +101,12 @@ export function DelegatePicture({
     );
   }
 
-  // no cvc or delegate passed in, return empty image
+  // no avc or delegate passed in, return empty image
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
       <Image
-        src={cvcPicture}
-        key={cvcPicture}
+        src={avcPicture}
+        key={avcPicture}
         sx={{
           objectFit: 'cover',
           width: '100%',

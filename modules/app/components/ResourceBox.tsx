@@ -100,16 +100,16 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://manual.makerdao.com/delegation/overview/what-is-delegation'
       },
       {
-        linkTitle: "What's a Constitutional Voter Committee(CVC)?",
-        url: 'https://mips.makerdao.com/mips/details/MIP101#5-constitutional-voter-committees-cvcs-'
+        linkTitle: "What's an Aligned Voter Committee (AVC)?",
+        url: 'https://mips.makerdao.com/mips/details/MIP101#2-5-aligned-voter-committees-gov5'
       },
       {
-        linkTitle: 'What is the Maker Constitution?',
+        linkTitle: 'What is the Maker Atlas Immutable Alignment Artifact?',
         url: 'https://mips.makerdao.com/mips/details/MIP101'
       },
       {
-        linkTitle: 'What is a Constitutional Delegate?',
-        url: 'https://mips.makerdao.com/mips/details/MIP113#5-constitutional-delegates'
+        linkTitle: 'What is an Aligned Delegate?',
+        url: 'https://mips.makerdao.com/mips/details/MIP101#2-6-aligned-delegates-ads-gov6'
       },
       {
         linkTitle: 'What is Maker Endgame?',

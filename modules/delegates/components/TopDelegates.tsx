@@ -10,23 +10,23 @@ import BigNumber from 'lib/bigNumberJs';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { CvcStats } from '../types/cvc';
+import { AvcStats } from '../types/avc';
 import { DelegatePicture } from './DelegatePicture';
 
 export default function TopDelegates({
-  topCvcs,
+  topAvcs,
   totalMKRDelegated
 }: {
-  topCvcs: CvcStats[];
+  topAvcs: AvcStats[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
   return (
     <Box>
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
-          <Heading as="h2">Top Constitutional Voting Committees</Heading>
+          <Heading as="h2">Top Aligned Voting Committees</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-            Constitutional Voting Committees ranked by the voting weight of their supporting delegates
+            Aligned Voting Committees ranked by the voting weight of their supporting delegates
           </Text>
         </Stack>
       </Container>
@@ -44,7 +44,7 @@ export default function TopDelegates({
         >
           <Box sx={{ width: ['25%', '40%'] }}>
             <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-              CVC Name
+              AVC Name
             </Text>
           </Box>
           <Box sx={{ width: ['50%', '15%'], textAlign: ['right', 'left'] }}>
@@ -58,9 +58,9 @@ export default function TopDelegates({
             </Text>
           </Box>
         </Flex>
-        {topCvcs?.map(({ cvc_name, mkrDelegated, picture }, index) => {
+        {topAvcs?.map(({ avc_name, mkrDelegated, picture }, index) => {
           return (
-            <Box key={`top-delegate-${index}`} data-testid="top-constitutional-delegate">
+            <Box key={`top-delegate-${index}`} data-testid="top-aligned-delegate">
               <Flex
                 sx={{
                   justifyContent: 'space-between',
@@ -73,10 +73,10 @@ export default function TopDelegates({
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>
-                  <InternalLink href={'/delegates'} title="View delegates" queryParams={{ cvc: cvc_name }}>
+                  <InternalLink href={'/delegates'} title="View delegates" queryParams={{ avc: avc_name }}>
                     <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                      <DelegatePicture cvcPicture={picture} showTooltip={false} />
-                      <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{cvc_name}</Text>
+                      <DelegatePicture avcPicture={picture} showTooltip={false} />
+                      <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{avc_name}</Text>
                     </Flex>
                   </InternalLink>
                 </Flex>
@@ -107,7 +107,7 @@ export default function TopDelegates({
                   <InternalLink
                     href={'/delegates'}
                     title="View delegates"
-                    queryParams={{ cvc: cvc_name }}
+                    queryParams={{ avc: avc_name }}
                     styles={{
                       borderColor: 'secondaryMuted',
                       color: 'text',

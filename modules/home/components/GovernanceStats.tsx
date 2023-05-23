@@ -30,8 +30,8 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
       value: pollStats ? pollStats.active.toString() : <Skeleton />
     },
     {
-      title: 'Constitutional Delegates',
-      value: stats ? stats.constitutional.toString() : <Skeleton />
+      title: 'Aligned Delegates',
+      value: stats ? stats.aligned.toString() : <Skeleton />
     },
     {
       title: 'Shadow Delegates',

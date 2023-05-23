@@ -3,7 +3,7 @@ import { AllDelegatesEntryWithName } from '../types';
 import { DelegateTypeEnum } from '../delegates.constants';
 
 describe('getDelegatesCounts', () => {
-  it('should return the correct counts for constitutional, shadow, and total delegates', () => {
+  it('should return the correct counts for aligned, shadow, and total delegates', () => {
     const currentDate = new Date();
     const expiredDate = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000);
 
@@ -13,7 +13,7 @@ describe('getDelegatesCounts', () => {
         delegate: '0x123',
         voteDelegate: '0x234',
         name: 'Alice',
-        delegateType: DelegateTypeEnum.CONSTITUTIONAL,
+        delegateType: DelegateTypeEnum.ALIGNED,
         expirationDate: currentDate,
         expired: false,
         isAboutToExpire: false
@@ -23,7 +23,7 @@ describe('getDelegatesCounts', () => {
         delegate: '0x124',
         voteDelegate: '0x235',
         name: 'Bob',
-        delegateType: DelegateTypeEnum.CONSTITUTIONAL,
+        delegateType: DelegateTypeEnum.ALIGNED,
         expirationDate: currentDate,
         expired: false,
         isAboutToExpire: false
@@ -33,7 +33,7 @@ describe('getDelegatesCounts', () => {
         delegate: '0x126',
         voteDelegate: '0x237',
         name: 'Cathy',
-        delegateType: DelegateTypeEnum.CONSTITUTIONAL,
+        delegateType: DelegateTypeEnum.ALIGNED,
         expirationDate: expiredDate,
         expired: true,
         isAboutToExpire: false
@@ -59,7 +59,7 @@ describe('getDelegatesCounts', () => {
     ];
 
     const expectedCounts = {
-      constitutionalDelegatesCount: 2,
+      alignedDelegatesCount: 2,
       shadowDelegatesCount: 2,
       totalDelegatesCount: 4
     };

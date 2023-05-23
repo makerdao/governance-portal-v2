@@ -10,42 +10,42 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { totalMkrDelegatedToGroup } from 'modules/gql/queries/totalMkrDelegatedToGroup';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { CvcStats, CvcWithCountAndDelegates } from '../types/cvc';
+import { AvcStats, AvcWithCountAndDelegates } from '../types/avc';
 import logger from 'lib/logger';
 
-export async function fetchCvcsTotalDelegated(
-  cvcs: CvcWithCountAndDelegates[],
+export async function fetchAvcsTotalDelegated(
+  avcs: AvcWithCountAndDelegates[],
   network: SupportedNetworks
-): Promise<CvcStats[]> {
-  const cvcsData = await Promise.all(
-    cvcs.map(async cvc => {
+): Promise<AvcStats[]> {
+  const avcsData = await Promise.all(
+    avcs.map(async avc => {
       try {
         const res = await gqlRequest({
           chainId: networkNameToChainId(network),
           query: totalMkrDelegatedToGroup,
           variables: {
-            delegates: cvc.delegates
+            delegates: avc.delegates
           }
         });
 
         const mkrDelegated: number = +res.totalMkrDelegatedToGroup;
         return {
-          cvc_name: cvc.cvc_name,
-          count: cvc.count,
-          picture: cvc.picture,
+          avc_name: avc.avc_name,
+          count: avc.count,
+          picture: avc.picture,
           mkrDelegated
         };
       } catch (e) {
-        logger.error('fetchCvcTotalDelegated: Error fetching MKR delegated to CVC', e.message);
+        logger.error('fetchAvcTotalDelegated: Error fetching MKR delegated to AVC', e.message);
         return {
-          cvc_name: cvc.cvc_name,
-          count: cvc.count,
-          picture: cvc.picture,
+          avc_name: avc.avc_name,
+          count: avc.count,
+          picture: avc.picture,
           mkrDelegated: 0
         };
       }
     })
   );
 
-  return cvcsData;
+  return avcsData;
 }
