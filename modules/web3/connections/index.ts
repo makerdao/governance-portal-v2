@@ -17,6 +17,7 @@ import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
 import { Connection, EIP1193Provider } from '../types/connection';
+import { config } from 'lib/config';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -51,7 +52,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
     new WalletConnect({
       actions,
       options: {
-        projectId: '1af507fd8108eb2a5b201edc8f444cd4',
+        projectId: config.WALLETCONNECT_PROJECT_ID,
         chains: [SupportedChainId.MAINNET, SupportedChainId.GOERLI],
         disableProviderPing: true,
         rpcMap: {
