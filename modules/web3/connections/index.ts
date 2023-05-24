@@ -54,12 +54,10 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
         projectId: '1af507fd8108eb2a5b201edc8f444cd4',
         chains: [SupportedChainId.MAINNET, SupportedChainId.GOERLI],
         disableProviderPing: true,
-        // optionalChains: [SupportedChainId.GOERLI],
         rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
           [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
         },
-        // methods: ['eth_signTypedData_v4', 'eth_sendTransaction', 'test', 'eth_call', 'wc_'],
         showQrModal: true,
         qrModalOptions: {
           themeVariables: {

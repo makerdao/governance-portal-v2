@@ -342,6 +342,10 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   };
 
   const submitBallot = () => {
+    if (!account || !provider) {
+      return;
+    }
+
     const pollIds: string[] = [];
     const pollOptions: string[] = [];
 
@@ -359,7 +363,23 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const voteTxCreator = voteDelegateContract
       ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
       : // vote with array arguments can be used for single vote and multiple vote
-        () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
+        // () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
+        async () => {
+          const populatedTransaction = await polling.populateTransaction['vote(uint256[],uint256[])'](
+            pollIds,
+            optionIds
+          );
+
+          const gasLimit = await provider.estimateGas(populatedTransaction);
+          populatedTransaction.gasLimit = gasLimit;
+
+          const signer = provider.getSigner(account);
+          const txHash = await signer.sendUncheckedTransaction(populatedTransaction);
+          // @ts-ignore
+          const tx = await provider.getTransaction(txHash?.hash);
+          console.log(tx);
+          return tx;
+        };
 
     trackPollVote(voteTxCreator);
   };
