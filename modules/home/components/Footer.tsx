@@ -70,7 +70,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           title: t('Operational Manual')
         },
         {
-          url: 'https://makerdao.world/en/learn/governance/',
+          url: 'https://manual.makerdao.com/',
           title: t('Governance FAQs')
         },
         {

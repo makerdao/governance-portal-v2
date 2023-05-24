@@ -163,7 +163,7 @@ const ESModule = (): React.ReactElement => {
             Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
             is currently read-only. You can read more information about next steps{' '}
             <ExternalLink
-              href="https://makerdao.world/en/learn/governance/emergency-shutdown"
+              href="https://manual.makerdao.com/governance/emergency-shutdown"
               title="Learn about emergency shutdown"
             >
               <Text>here</Text>
