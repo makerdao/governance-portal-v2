@@ -38,14 +38,14 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const pollIdsArray = pollIds.split(',');
 
+  if (!pollIds || pollIdsArray.length === 0) {
+    throw new ApiError('Gasless precheck: Missing parameters', 400, 'No poll ids provided');
+  }
+
   const voter = await validateAddress(
     req.query.voter as string,
     new ApiError('Gasless precheck: Invalid address', 400, 'Invalid address')
   );
-
-  if (!pollIds || pollIdsArray.length === 0) {
-    throw new ApiError('Gasless precheck: Missing parameters', 400, 'No poll ids provided');
-  }
 
   const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
 
