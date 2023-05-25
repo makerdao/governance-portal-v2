@@ -18,6 +18,7 @@ import { shallow } from 'zustand/shallow';
 import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
 import { VoteDelegate } from '../../../types/ethers-contracts';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 type LockResponse = {
   txId: string | null;
@@ -39,7 +40,15 @@ export const useDelegateFree = (voteDelegateAddress: string): LockResponse => {
   const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, provider, account);
 
   const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
-    const freeTxCreator = () => vdContract.free(mkrToWithdraw);
+    if (!account || !provider) {
+      return;
+    }
+
+    const freeTxCreator = async () => {
+      const populatedTransaction = await vdContract.populateTransaction.free(mkrToWithdraw);
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
     const txId = track(freeTxCreator, account, 'Withdrawing MKR', {
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();

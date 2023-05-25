@@ -15,6 +15,8 @@ import { shallow } from 'zustand/shallow';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 type LockResponse = {
   txId: string | null;
@@ -27,6 +29,7 @@ export const useDelegateCreate = (): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
+  const { provider } = useWeb3();
   const { voteDelegateFactory } = useContracts();
 
   const [track, tx] = useTransactionStore(
@@ -35,7 +38,15 @@ export const useDelegateCreate = (): LockResponse => {
   );
 
   const create = callbacks => {
-    const freeTxCreator = () => voteDelegateFactory.create();
+    if (!account || !provider) {
+      return;
+    }
+
+    const freeTxCreator = async () => {
+      const populatedTransaction = await voteDelegateFactory.populateTransaction.create();
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
     const txId = track(freeTxCreator, account, 'Create delegate contract', {
       initialized: () => {
         if (typeof callbacks?.initialized === 'function') callbacks.initialized();

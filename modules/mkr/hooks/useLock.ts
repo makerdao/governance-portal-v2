@@ -16,6 +16,8 @@ import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 
 type LockResponse = {
   txId: string | null;
@@ -28,6 +30,7 @@ export const useLock = (): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account, voteProxyContract } = useAccount();
+  const { provider } = useWeb3();
   const { chief } = useContracts();
 
   const [track, tx] = useTransactionStore(
@@ -36,9 +39,17 @@ export const useLock = (): LockResponse => {
   );
 
   const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
-    const lockTxCreator = voteProxyContract
-      ? () => voteProxyContract.lock(mkrToDeposit)
-      : () => chief.lock(mkrToDeposit);
+    if (!account || !provider) {
+      return;
+    }
+
+    const lockTxCreator = async () => {
+      const populatedTransaction = voteProxyContract
+        ? await voteProxyContract.populateTransaction.lock(mkrToDeposit)
+        : await chief.populateTransaction.lock(mkrToDeposit);
+
+      return sendTransaction(populatedTransaction, provider, account);
+    };
 
     const transactionId = track(lockTxCreator, account, 'Depositing MKR', {
       pending: () => {

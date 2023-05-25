@@ -15,6 +15,8 @@ import { shallow } from 'zustand/shallow';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 type VoteResponse = {
   txId: string | null;
@@ -27,6 +29,7 @@ export const useChiefVote = (): VoteResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
+  const { provider } = useWeb3();
   const { chief } = useContracts();
 
   const [track, tx] = useTransactionStore(
@@ -35,8 +38,17 @@ export const useChiefVote = (): VoteResponse => {
   );
 
   const vote = (slateOrProposals: any, callbacks?: Record<string, (id: string) => void>) => {
-    const voteCall = Array.isArray(slateOrProposals) ? chief['vote(address[])'] : chief['vote(bytes32)'];
-    const voteTxCreator = () => voteCall(slateOrProposals);
+    if (!account || !provider) {
+      return;
+    }
+
+    const voteTxCreator = async () => {
+      const populatedTransaction = Array.isArray(slateOrProposals)
+        ? await chief.populateTransaction['vote(address[])'](slateOrProposals)
+        : await chief.populateTransaction['vote(bytes32)'](slateOrProposals);
+
+      return sendTransaction(populatedTransaction, provider, account);
+    };
 
     const transactionId = track(voteTxCreator, account, 'Voting on executive proposal', {
       initialized: txId => {

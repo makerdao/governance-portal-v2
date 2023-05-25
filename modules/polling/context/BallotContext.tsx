@@ -50,7 +50,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 import { parseTxError } from 'modules/web3/helpers/errors';
 import { backoffRetry } from 'lib/utils';
-import { isAfter } from 'date-fns';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 interface ContextProps {
   ballot: Ballot;
@@ -360,26 +360,14 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const optionIds = parsePollOptions(pollOptions);
 
-    const voteTxCreator = voteDelegateContract
-      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
-      : // vote with array arguments can be used for single vote and multiple vote
-        // () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
-        async () => {
-          const populatedTransaction = await polling.populateTransaction['vote(uint256[],uint256[])'](
-            pollIds,
-            optionIds
-          );
+    const voteTxCreator = async () => {
+      // vote with array arguments can be used for single vote and multiple vote
+      const populatedTransaction = voteDelegateContract
+        ? await voteDelegateContract.populateTransaction['votePoll(uint256[],uint256[])'](pollIds, optionIds)
+        : await polling.populateTransaction['vote(uint256[],uint256[])'](pollIds, optionIds);
 
-          const gasLimit = await provider.estimateGas(populatedTransaction);
-          populatedTransaction.gasLimit = gasLimit;
-
-          const signer = provider.getSigner(account);
-          const txHash = await signer.sendUncheckedTransaction(populatedTransaction);
-          // @ts-ignore
-          const tx = await provider.getTransaction(txHash?.hash);
-          console.log(tx);
-          return tx;
-        };
+      return sendTransaction(populatedTransaction, provider, account);
+    };
 
     trackPollVote(voteTxCreator);
   };
