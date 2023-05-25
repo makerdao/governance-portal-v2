@@ -64,8 +64,15 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
           themeVariables: {
             '--w3m-background-color': '#1aab9b',
             '--w3m-accent-color': '#1aab9b',
-            '--w3m-logo-image-url': 'maker_logo.svg'
+            '--w3m-logo-image-url': '/assets/maker_logo.svg'
           }
+        },
+        metadata: {
+          name: 'Maker Governance - Governance Portal',
+          description:
+            'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote',
+          url: 'https://vote.makerdao.com',
+          icons: ['https://vote.makerdao.com/maker.svg']
         }
       }
     })
