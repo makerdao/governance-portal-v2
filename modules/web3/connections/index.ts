@@ -53,7 +53,8 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
       actions,
       options: {
         projectId: config.WALLETCONNECT_PROJECT_ID,
-        chains: [SupportedChainId.MAINNET, SupportedChainId.GOERLI],
+        chains: [SupportedChainId.MAINNET],
+        optionalChains: [SupportedChainId.GOERLI],
         disableProviderPing: true,
         rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
