@@ -3841,5 +3841,128 @@
     "ratification",
     "mips",
     "endgame"
+  ],
+  "993": [
+    "high-impact",
+    "real-world-assets",
+    "collateral-onboard",
+    "risk-parameter",
+    "psm"
+  ],
+  "994": [
+    "high-impact",
+    "collateral-onboard",
+    "psm"
+  ],
+  "995": [
+    "medium-impact",
+    "risk-parameter"
+  ],
+  "996": [
+    "medium-impact",
+    "misc-governance",
+    "endgame"
+  ],
+  "997": [
+    "high-impact",
+    "misc-governance",
+    "endgame"
+  ],
+  "998": [
+    "medium-impact",
+    "misc-governance",
+    "endgame"
+  ],
+  "999": [
+    "high-impact",
+    "misc-governance",
+    "endgame"
+  ],
+  "1000": [
+    "high-impact",
+    "ratification",
+    "mips",
+    "endgame"
+  ],
+  "1001": [
+    "high-impact",
+    "technical",
+    "misc-funding"
+  ],
+  "1002": [
+    "high-impact",
+    "collateral-onboard",
+    "spark"
+  ],
+  "1003": [
+    "low-impact",
+    "technical",
+    "real-world-assets",
+    "risk-parameter"
+  ],
+  "1004": [
+    "medium-impact",
+    "real-world-assets",
+    "greenlight"
+  ],
+  "1005": [
+    "high-impact",
+    "budget",
+    "endgame"
+  ],
+  "1006": [
+    "high-impact",
+    "real-world-assets",
+    "collateral-onboard",
+    "risk-parameter",
+    "psm"
+  ],
+  "1007": [
+    "high-impact",
+    "risk-parameter"
+  ],
+  "1008": [
+    "medium-impact",
+    "risk-parameter",
+    "d3m",
+    "spark"
+  ],
+  "1009": [
+    "high-impact",
+    "technical",
+    "spark"
+  ],
+  "1010": [
+    "high-impact",
+    "collateral-onboard",
+    "risk-parameter",
+    "spark"
+  ],
+  "1011": [
+    "medium-impact",
+    "risk-parameter",
+    "d3m",
+    "spark"
+  ],
+  "1012": [
+    "medium-impact",
+    "risk-parameter",
+    "psm"
+  ],
+  "1013": [
+    "high-impact",
+    "ratification",
+    "mips",
+    "endgame"
+  ],
+  "1014": [
+    "medium-impact",
+    "ratification",
+    "mips"
+  ],
+  "1015": [
+    "medium-impact",
+    "risk-parameter",
+    "psm"
   ]
 }

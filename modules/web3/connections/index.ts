@@ -53,20 +53,12 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
       actions,
       options: {
         projectId: config.WALLETCONNECT_PROJECT_ID,
+        showQrModal: true,
         chains: [SupportedChainId.MAINNET],
         optionalChains: [SupportedChainId.GOERLI],
-        disableProviderPing: true,
         rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
           [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
-        },
-        showQrModal: true,
-        qrModalOptions: {
-          themeVariables: {
-            '--w3m-background-color': '#1aab9b',
-            '--w3m-accent-color': '#1aab9b',
-            '--w3m-logo-image-url': '/assets/maker_logo.svg'
-          }
         },
         metadata: {
           name: 'Maker Governance - Governance Portal',
@@ -74,6 +66,14 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
             'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote',
           url: 'https://vote.makerdao.com',
           icons: ['https://vote.makerdao.com/maker.svg']
+        },
+        qrModalOptions: {
+          chainImages: {},
+          themeVariables: {
+            '--w3m-background-color': '#1aab9b',
+            '--w3m-accent-color': '#1aab9b',
+            '--w3m-logo-image-url': '/assets/maker_logo.svg'
+          }
         }
       }
     })
