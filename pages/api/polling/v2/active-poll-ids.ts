@@ -19,7 +19,8 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *    get:
  *      tags:
  *        - "polls"
- *      description: Returns the list of poll ids for active polls.
+ *      description: Returns an array of poll ids for active polls.
+ *      summary: Returns poll ids for active polls
  *      produces:
  *        - "application/json"
  *      parameters:

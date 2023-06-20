@@ -26,6 +26,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       tags:
  *         - "delegates"
  *       description: Returns a paginated list of delegates according to the specified filters and sorting.
+ *       summary: Returns a paginated list of delegates
  *       produces:
  *         - "application/json"
  *       parameters:
