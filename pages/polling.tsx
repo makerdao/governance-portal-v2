@@ -216,16 +216,7 @@ const PollingOverview = ({
             : PollStatusEnum.active
       });
     }
-  }, [
-    sort,
-    title,
-    categoryFilter.length,
-    pollVictoryCondition.length,
-    startDate,
-    endDate,
-    showPollActive,
-    showPollEnded
-  ]);
+  }, [sort, title, categoryFilter, pollVictoryCondition, startDate, endDate, showPollActive, showPollEnded]);
 
   // Load more on scroll
   const loader = useRef<HTMLDivElement>(null);
