@@ -69,7 +69,7 @@ The new poll parameters transform the "Ranked Choice IRV" and "Plurality Voting"
   - Defines how the governance portal will display in the UI the voted options.
 
 When combining these 3 options we can get the ranked-choice, plurality or other vote types, such as approval.
-We also introduced the "version" option, version 2.0.0, which refers to the new polls. Not all the options can be combined together, for example rank-free has to be combined with a instant-runoff victory condition.
+We also introduced the "version" option, version 2.0.0, which refers to the new polls. Not all the options can be combined together, for example rank-free has to be combined with an instant-runoff victory condition.
 
 ### Input format
 
@@ -87,12 +87,12 @@ Currently we support plurality, majority, approval, instant-runoff (IRV), "and",
 | victory_conditions                                                 | summary                                                                                                                            |
 | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
 | majority                                                           | Condition returns true for the option with more than 50% of the total vote-weight - false for others                               |
-| plurality                                                          | Condition return true for the option with more vote weight than any other option - false for others                                |
-| instant-runoff                                                     | Condition returns true for the option winning when applying the IRV algorthim - false for others                                   |
+| plurality                                                          | Condition returns true for the option with more vote weight than any other option - false for others                                |
+| instant-runoff                                                     | Condition returns true for the option winning when applying the IRV algorithm - false for others                                   |
 | "comparison"  | Condition returns true for <option(s)> if expression <option/value><comparator><option/value> evaluates to true - false for others |
 | no-victor                                                          | Condition returns false for every option (marking a poll that is not supposed to result in a winning option)                       |
 | default-<option>                                                   | Condition returns true for <option> if no other option returns true on all other victory conditions                                |
-| approval                                                           | Condition return true for the option with the most approval - false for others                                                     |
+| approval                                                           | Condition returns true for the option with the most approval - false for others                                                     |
 
 ### Result display:
 
