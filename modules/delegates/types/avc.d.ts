@@ -6,16 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-export type CvcAndCount = {
-  cvc_name: string;
+export type AvcAndCount = {
+  avc_name: string;
   count: number;
   picture?: string;
 };
 
-export type CvcWithCountAndDelegates = CvcAndCount & {
+export type AvcWithCountAndDelegates = AvcAndCount & {
   delegates: string[];
 };
 
-export type CvcStats = CvcAndCount & {
+export type AvcStats = AvcAndCount & {
   mkrDelegated: number;
 };

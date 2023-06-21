@@ -12,7 +12,7 @@ export type DelegateRepoInformation = {
   voteDelegateAddress: string;
   picture?: string;
   name: string;
-  cvc_name?: string;
+  avc_name?: string;
   externalUrl: string;
   description: string;
   combinedParticipation?: string;
@@ -35,7 +35,7 @@ export type DelegateContractInformation = {
 export type Delegate = {
   id: string;
   name: string;
-  cvc_name?: string;
+  avc_name?: string;
   address: string;
   voteDelegateAddress: string;
   description: string;
@@ -136,7 +136,7 @@ export type AllDelegatesEntry = {
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   name?: string;
-  cvc_name?: string;
+  avc_name?: string;
   picture?: string;
   delegateType: DelegateTypeEnum;
   blockTimestamp: Date;

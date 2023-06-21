@@ -1,19 +1,16 @@
 import { AllDelegatesEntryWithName } from '../types';
 
 export default function getDelegatesCounts(allDelegatesWithNames: AllDelegatesEntryWithName[]): {
-  constitutionalDelegatesCount: number;
+  alignedDelegatesCount: number;
   shadowDelegatesCount: number;
   totalDelegatesCount: number;
 } {
-  const rawConstitutionalDelegates = allDelegatesWithNames.filter(
-    delegate => !delegate.expired && delegate.name
-  );
+  const rawAlignedDelegates = allDelegatesWithNames.filter(delegate => !delegate.expired && delegate.name);
 
-  const constitutionalDelegatesCount = new Set(rawConstitutionalDelegates.map(delegate => delegate.name))
-    .size;
+  const alignedDelegatesCount = new Set(rawAlignedDelegates.map(delegate => delegate.name)).size;
   const shadowDelegatesCount =
-    allDelegatesWithNames.filter(delegate => !delegate.expired).length - rawConstitutionalDelegates.length;
-  const totalDelegatesCount = constitutionalDelegatesCount + shadowDelegatesCount;
+    allDelegatesWithNames.filter(delegate => !delegate.expired).length - rawAlignedDelegates.length;
+  const totalDelegatesCount = alignedDelegatesCount + shadowDelegatesCount;
 
-  return { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount };
+  return { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount };
 }

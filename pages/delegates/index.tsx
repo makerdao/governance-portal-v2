@@ -28,7 +28,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
-import { DelegatesCvcFilter } from 'modules/delegates/components/filters/DelegatesCvcFilter';
+import { DelegatesAvcFilter } from 'modules/delegates/components/filters/DelegatesAvcFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -49,7 +49,7 @@ type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
 const emptyStats = {
   total: 0,
   shadow: 0,
-  constitutional: 0,
+  aligned: 0,
   totalMKRDelegated: '0',
   totalDelegators: 0
 };
@@ -57,41 +57,39 @@ const emptyStats = {
 const Delegates = ({
   delegates: propDelegates,
   stats: propStats,
-  cvcs: propCvcs,
+  avcs: propAvcs,
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
   const { network } = useWeb3();
   const { voteDelegateContractAddress } = useAccount();
   const [
-    showConstitutional,
+    showAligned,
     showShadow,
     showExpired,
     sort,
     sortDirection,
     name,
-    delegateCvcs,
+    delegateAvcs,
     fetchOnLoad,
-    setCvcFilter,
+    setAvcFilter,
     setName,
     setFetchOnLoad,
     resetFilters
   ] = useDelegatesFiltersStore(
     state => [
-      state.filters.showConstitutional,
+      state.filters.showAligned,
       state.filters.showShadow,
       state.filters.showExpired,
       state.sort,
       state.sortDirection,
       state.filters.name,
-      state.filters.cvcs,
+      state.filters.avcs,
       state.fetchOnLoad,
-      state.setCvcFilter,
+      state.setAvcFilter,
       state.setName,
       state.setFetchOnLoad,
-      state.resetFilters,
-      state.resetSort,
-      state.resetSortDirection
+      state.resetFilters
     ],
     shallow
   );
@@ -116,7 +114,7 @@ const Delegates = ({
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
   const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
-  const [cvcs, setCvcs] = useState(fetchOnLoad ? [] : propCvcs);
+  const [avcs, setAvcs] = useState(fetchOnLoad ? [] : propAvcs);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [endOfList, setEndOfList] = useState(false);
@@ -126,14 +124,14 @@ const Delegates = ({
     sort,
     sortDirection,
     searchTerm: name,
-    delegateCvcs,
+    delegateAvcs,
     showExpired,
     delegateType:
-      showConstitutional && showShadow
+      showAligned && showShadow
         ? DelegateTypeEnum.ALL
         : showShadow
         ? DelegateTypeEnum.SHADOW
-        : DelegateTypeEnum.CONSTITUTIONAL
+        : DelegateTypeEnum.ALIGNED
   });
 
   useEffect(() => {
@@ -143,9 +141,9 @@ const Delegates = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (router.query.cvc) {
-      const cvc = router.query.cvc as string;
-      setCvcFilter([cvc]);
+    if (router.query.avc) {
+      const avc = router.query.avc as string;
+      setAvcFilter([avc]);
     }
   }, [router]);
 
@@ -177,7 +175,7 @@ const Delegates = ({
           orderDirection: filters.sortDirection,
           seed,
           searchTerm: filters.searchTerm,
-          queryCvcs: delegateCvcs,
+          queryAvcs: delegateAvcs,
           includeExpired: filters.showExpired
         };
 
@@ -185,7 +183,7 @@ const Delegates = ({
         setLoading(false);
         setDelegates(prevDelegates => [...prevDelegates, ...res.delegates]);
         setStats(res.stats);
-        setCvcs(res.cvcs);
+        setAvcs(res.avcs);
         setPaginationInfo(res.paginationInfo);
         setShouldLoadMore(false);
       };
@@ -201,10 +199,10 @@ const Delegates = ({
   useEffect(() => {
     setDelegates(fetchOnLoad ? delegates : propDelegates);
     setStats(fetchOnLoad ? stats : propStats);
-    setCvcs(fetchOnLoad ? cvcs : propCvcs);
+    setAvcs(fetchOnLoad ? avcs : propAvcs);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propStats, propCvcs, propPaginationInfo, propSeed, fetchOnLoad]);
+  }, [propDelegates, propStats, propAvcs, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
     if (!isRendering) {
@@ -215,17 +213,17 @@ const Delegates = ({
         sort,
         sortDirection,
         searchTerm: name,
-        delegateCvcs,
+        delegateAvcs,
         showExpired,
         delegateType:
-          showConstitutional && showShadow
+          showAligned && showShadow
             ? DelegateTypeEnum.ALL
             : showShadow
             ? DelegateTypeEnum.SHADOW
-            : DelegateTypeEnum.CONSTITUTIONAL
+            : DelegateTypeEnum.ALIGNED
       });
     }
-  }, [sort, sortDirection, name, delegateCvcs.length, showConstitutional, showShadow, showExpired]);
+  }, [sort, sortDirection, name, delegateAvcs, showAligned, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
@@ -243,9 +241,9 @@ const Delegates = ({
     '0px'
   );
 
-  const [constitutionalDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
-    const constitutional = delegates.filter(
-      delegate => delegate.status === DelegateStatusEnum.constitutional && !delegate.expired
+  const [alignedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
+    const aligned = delegates.filter(
+      delegate => delegate.status === DelegateStatusEnum.aligned && !delegate.expired
     );
 
     const shadow = delegates.filter(
@@ -253,7 +251,7 @@ const Delegates = ({
     );
 
     const expired = delegates.filter(delegate => delegate.expired === true);
-    return [constitutional, shadow, expired];
+    return [aligned, shadow, expired];
   }, [delegates, propDelegates]);
 
   return (
@@ -293,7 +291,7 @@ const Delegates = ({
                   performSearchOnClear={true}
                 />
                 <DelegatesSortFilter />
-                <DelegatesCvcFilter cvcs={cvcs} sx={{ m: 2 }} />
+                <DelegatesAvcFilter avcs={avcs} sx={{ m: 2 }} />
                 <DelegatesStatusFilter stats={stats} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
@@ -316,41 +314,40 @@ const Delegates = ({
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              {[...constitutionalDelegates, ...shadowDelegates, ...expiredDelegates].length === 0 &&
-                !loading && (
-                  <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
-                    <Flex
-                      sx={{
-                        borderRadius: '50%',
-                        backgroundColor: 'secondary',
-                        p: 2,
-                        width: '111px',
-                        height: '111px',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <Box m={'auto'}>
-                        <Icon name="magnifying_glass" sx={{ color: 'background', size: 4 }} />
-                      </Box>
-                    </Flex>
-                    <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
-                      No delegates found
-                    </Text>
-                    <Button
-                      variant={'textual'}
-                      sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
-                      onClick={onResetClick}
-                    >
-                      Reset filters
-                    </Button>
+              {[...alignedDelegates, ...shadowDelegates, ...expiredDelegates].length === 0 && !loading && (
+                <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
+                  <Flex
+                    sx={{
+                      borderRadius: '50%',
+                      backgroundColor: 'secondary',
+                      p: 2,
+                      width: '111px',
+                      height: '111px',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Box m={'auto'}>
+                      <Icon name="magnifying_glass" sx={{ color: 'background', size: 4 }} />
+                    </Box>
                   </Flex>
-                )}
+                  <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
+                    No delegates found
+                  </Text>
+                  <Button
+                    variant={'textual'}
+                    sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
+                    onClick={onResetClick}
+                  >
+                    Reset filters
+                  </Button>
+                </Flex>
+              )}
 
-              {constitutionalDelegates.length > 0 && (
+              {alignedDelegates.length > 0 && (
                 <Stack gap={3}>
-                  <Heading as="h1">Constitutional Delegates</Heading>
+                  <Heading as="h1">Aligned Delegates</Heading>
 
-                  {constitutionalDelegates.map(delegate => (
+                  {alignedDelegates.map(delegate => (
                     <Box key={delegate.voteDelegateAddress} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
                         <DelegateOverviewCard
@@ -465,7 +462,7 @@ const Delegates = ({
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
-  cvcs: prefetchedCvcs,
+  avcs: prefetchedAvcs,
   paginationInfo: prefetchedPaginationInfo,
   seed
 }: DelegatesPageProps): JSX.Element {
@@ -474,7 +471,7 @@ export default function DelegatesPage({
   const fallbackData = isDefaultNetwork(network)
     ? {
         delegates: prefetchedDelegates,
-        cvcs: prefetchedCvcs,
+        avcs: prefetchedAvcs,
         stats: prefetchedStats,
         paginationInfo: prefetchedPaginationInfo
       }
@@ -510,11 +507,11 @@ export default function DelegatesPage({
       : data?.stats || {
           total: 0,
           shadow: 0,
-          constitutional: 0,
+          aligned: 0,
           totalMKRDelegated: '0',
           totalDelegators: 0
         },
-    cvcs: isDefaultNetwork(network) ? prefetchedCvcs : data?.cvcs || [],
+    avcs: isDefaultNetwork(network) ? prefetchedAvcs : data?.avcs || [],
     paginationInfo: isDefaultNetwork(network)
       ? prefetchedPaginationInfo
       : data?.paginationInfo || {
@@ -539,7 +536,7 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         delegates: [],
-        cvcs: [],
+        avcs: [],
         stats: {},
         paginationInfo: {},
         seed: null
@@ -548,7 +545,7 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 
   const seed = Math.random() * 2 - 1;
-  const { delegates, stats, cvcs, paginationInfo } = await fetchDelegatesPageData(
+  const { delegates, stats, avcs, paginationInfo } = await fetchDelegatesPageData(
     SupportedNetworks.MAINNET,
     false,
     { seed }
@@ -559,7 +556,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates,
-      cvcs,
+      avcs,
       stats,
       paginationInfo,
       seed

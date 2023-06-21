@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Delegate, DelegatePaginated } from './delegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegateTypeEnum } from '../delegates.constants';
-import { CvcStats } from './cvc';
+import { AvcStats } from './avc';
 
 export type DelegatesAPIStats = {
   total: number;
   shadow: number;
-  constitutional: number;
+  aligned: number;
   totalMKRDelegated: string;
   totalDelegators: number;
 };
@@ -38,7 +38,7 @@ export type DelegatesValidatedQueryParams = {
   seed: number | null;
   delegateType: DelegateTypeEnum;
   searchTerm: string | null;
-  cvcs: string[] | null;
+  avcs: string[] | null;
 };
 
 export type DelegatesPaginatedAPIResponse = {
@@ -50,5 +50,5 @@ export type DelegatesPaginatedAPIResponse = {
   };
   stats: DelegatesAPIStats;
   delegates: DelegatePaginated[];
-  cvcs: CvcStats[];
+  avcs: AvcStats[];
 };

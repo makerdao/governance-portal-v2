@@ -361,7 +361,7 @@ export default function ReviewBox({
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Address has not voted more than once in any included poll
+                      Address has not voted in any included poll
                     </Text>
                     <Text>
                       {!precheckData ? (

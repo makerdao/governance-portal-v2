@@ -36,12 +36,12 @@ export function filterDelegates(
 
 export function filterDelegateAddresses(
   allDelegatesWithNames: AllDelegatesEntryWithName[],
-  queryCvcs: string[] | null,
+  queryAvcs: string[] | null,
   searchTerm: string | null,
   type?: DelegateTypeEnum
 ): string[] {
   const statusFiltered = allDelegatesWithNames.filter(delegate =>
-    type === DelegateTypeEnum.ALL ? true : delegate.delegateType === (type || DelegateTypeEnum.CONSTITUTIONAL)
+    type === DelegateTypeEnum.ALL ? true : delegate.delegateType === (type || DelegateTypeEnum.ALIGNED)
   );
 
   const filteredDelegates = statusFiltered.filter(
@@ -50,7 +50,7 @@ export function filterDelegateAddresses(
         ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
         : true) &&
-      (queryCvcs ? queryCvcs.find(c => c.toLowerCase() === delegate.cvc_name?.toLowerCase()) : true)
+      (queryAvcs ? queryAvcs.find(c => c.toLowerCase() === delegate.avc_name?.toLowerCase()) : true)
   );
 
   return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());
