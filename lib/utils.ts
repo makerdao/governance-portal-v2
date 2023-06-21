@@ -116,7 +116,7 @@ export const sortBytesArray = _array =>
   });
 
 export const formatRound = (num, decimals = 2) =>
-  isNaN(num) ? '----' : round(num, decimals).toLocaleString({}, { minimumFractionDigits: decimals });
+  isNaN(num) ? '----' : round(num, decimals).toLocaleString(undefined, { minimumFractionDigits: decimals });
 
 export const paddedArray = (k, value) =>
   Array.from({ length: k })

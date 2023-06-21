@@ -12,10 +12,10 @@ import { AllDelegatesEntryWithName, DelegatePaginated } from '../types';
 export function filterDelegates(
   delegates: DelegatePaginated[],
   showShadow: boolean,
-  showConstitutional: boolean,
+  showAligned: boolean,
   showExpired: boolean,
   name: string | null,
-  cvcs?: { [key: string]: boolean }
+  avcs?: { [key: string]: boolean }
 ): DelegatePaginated[] {
   return (
     delegates
@@ -31,8 +31,8 @@ export function filterDelegates(
           return false;
         }
 
-        // return all if show shadow and show constitutional are both unchecked
-        if (!showShadow && !showConstitutional) {
+        // return all if show shadow and show aligned are both unchecked
+        if (!showShadow && !showAligned) {
           return true;
         }
 
@@ -40,7 +40,7 @@ export function filterDelegates(
           return false;
         }
 
-        if (!showConstitutional && delegate.status === DelegateStatusEnum.constitutional) {
+        if (!showAligned && delegate.status === DelegateStatusEnum.aligned) {
           return false;
         }
 
@@ -49,33 +49,33 @@ export function filterDelegates(
       // Filter by tags
       .filter(delegate => {
         // CVS act as a OR filter
-        if (!cvcs) return true;
+        if (!avcs) return true;
 
-        const cvcArray = Object.keys(cvcs).filter(key => cvcs[key]);
-        if (cvcArray.length === 0) {
+        const avcArray = Object.keys(avcs).filter(key => avcs[key]);
+        if (avcArray.length === 0) {
           return true;
         }
 
-        return delegate.cvc_name && cvcArray.includes(delegate.cvc_name);
+        return delegate.avc_name && avcArray.includes(delegate.avc_name);
       })
   );
 }
 
 export function filterDelegateAddresses(
   allDelegatesWithNames: AllDelegatesEntryWithName[],
-  queryCvcs: string[] | null,
+  queryAvcs: string[] | null,
   searchTerm: string | null
 ): string[] {
   const filteredDelegates =
-    !queryCvcs && !searchTerm
-      ? allDelegatesWithNames.filter(delegate => delegate.delegateType === DelegateTypeEnum.CONSTITUTIONAL)
+    !queryAvcs && !searchTerm
+      ? allDelegatesWithNames.filter(delegate => delegate.delegateType === DelegateTypeEnum.ALIGNED)
       : allDelegatesWithNames.filter(
           delegate =>
             (searchTerm
               ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
               : true) &&
-            (queryCvcs ? queryCvcs.find(c => c.toLowerCase() === delegate.cvc_name?.toLowerCase()) : true)
+            (queryAvcs ? queryAvcs.find(c => c.toLowerCase() === delegate.avc_name?.toLowerCase()) : true)
         );
 
   return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());

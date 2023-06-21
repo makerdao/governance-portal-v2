@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
-import { Poll } from 'modules/polling/types';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ActivePollsBox from './ActivePollsBox';
 import { useContext, useState, useEffect } from 'react';
@@ -33,13 +32,13 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function ReviewBox({
   account,
-  activePolls,
-  polls,
+  activePollCount,
+  activePollIds,
   ballotPollIds
 }: {
   account: string;
-  activePolls: Poll[];
-  polls: Poll[];
+  activePollCount: number;
+  activePollIds: number[];
   ballotPollIds: string[];
 }): JSX.Element {
   const {
@@ -128,7 +127,7 @@ export default function ReviewBox({
   return (
     <Box>
       {ballotStep === 'initial' && (
-        <ActivePollsBox polls={polls} activePolls={activePolls}>
+        <ActivePollsBox activePollCount={activePollCount} activePollIds={activePollIds}>
           {commentsCount > 0 && canUseComments ? (
             <Box p={3}>
               <StackLayout gap={2}>
@@ -362,7 +361,7 @@ export default function ReviewBox({
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Address has not voted more than once in any included poll
+                      Address has not voted in any included poll
                     </Text>
                     <Text>
                       {!precheckData ? (

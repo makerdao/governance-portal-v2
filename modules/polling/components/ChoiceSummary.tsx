@@ -10,7 +10,7 @@ import { Text, Flex, Box, Button } from 'theme-ui';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { ABSTAIN } from '../polling.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Poll } from '../types';
+import { Poll, PollListItem } from '../types';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -24,7 +24,7 @@ const ChoiceSummary = ({
   showReviewButton,
   ...props
 }: {
-  poll: Poll;
+  poll: PollListItem | Poll;
   edit: () => void;
   showActions: boolean;
   showReviewButton?: boolean;

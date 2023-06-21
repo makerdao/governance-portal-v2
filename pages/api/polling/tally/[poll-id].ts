@@ -10,11 +10,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getPollTally } from 'modules/polling/helpers/getPollTally';
-import { fetchPollById } from 'modules/polling/api/fetchPollBy';
+import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
 import { pollHasStarted } from 'modules/polling/helpers/utils';
 import { PollTally } from 'modules/polling/types';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
+import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
+import { cacheGet } from 'modules/cache/cache';
+import { ONE_WEEK_IN_MS, THIRTY_SECONDS_IN_MS } from 'modules/app/constants/time';
 
 // Returns a PollTally given a pollID
 
@@ -156,28 +159,39 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     new ApiError('Invalid poll id', 400, 'Invalid poll id')
   ) as number;
 
-  const poll = await fetchPollById(pollId, network);
+  let tally: PollTally;
 
-  if (!poll) {
-    throw new ApiError('Poll not found', 404, 'Poll not found');
+  const cacheKey = getPollTallyCacheKey(pollId);
+  const cachedTally =
+    (await cacheGet(cacheKey, network, ONE_WEEK_IN_MS)) ||
+    (await cacheGet(cacheKey, network, THIRTY_SECONDS_IN_MS));
+
+  if (cachedTally) {
+    tally = JSON.parse(cachedTally);
+  } else {
+    const poll = await fetchSinglePoll(network, pollId, null);
+
+    if (!poll) {
+      throw new ApiError('Poll not found', 404, 'Poll not found');
+    }
+
+    if (!pollHasStarted(poll)) {
+      const emptyTally: PollTally = {
+        parameters: poll.parameters,
+        numVoters: 0,
+        results: [],
+        totalMkrParticipation: 0,
+        totalMkrActiveParticipation: 0,
+        victoryConditionMatched: null,
+        winner: null,
+        winningOptionName: '',
+        votesByAddress: []
+      };
+
+      return res.status(200).json(emptyTally);
+    }
+    tally = await getPollTally(poll, network);
   }
-
-  if (!pollHasStarted(poll)) {
-    const emptyTally: PollTally = {
-      parameters: poll.parameters,
-      numVoters: 0,
-      results: [],
-      totalMkrParticipation: 0,
-      totalMkrActiveParticipation: 0,
-      victoryConditionMatched: null,
-      winner: null,
-      winningOptionName: '',
-      votesByAddress: []
-    };
-
-    return res.status(200).json(emptyTally);
-  }
-  const tally = await getPollTally(poll, network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   return res.status(200).json(tally);

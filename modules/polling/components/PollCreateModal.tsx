@@ -99,7 +99,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
 
   return (
     <DialogOverlay isOpen onDismiss={close}>
-      <DialogContent aria-label="Executive Vote">{view}</DialogContent>
+      <DialogContent ariaLabel="Executive Vote">{view}</DialogContent>
     </DialogOverlay>
   );
 };

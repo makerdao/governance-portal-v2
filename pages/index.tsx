@@ -6,11 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from 'modules/home/components/ViewMore';
@@ -30,7 +29,6 @@ import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'lib/bigNumberJs';
-import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -48,13 +46,15 @@ import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegat
 const LandingPage = ({
   proposals,
   polls,
+  pollStats,
+  pollTags,
   delegates,
   delegatesInfo,
   stats,
   mkrOnHat,
   hat,
   mkrInChief,
-  cvcs
+  avcs
 }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
@@ -69,11 +69,7 @@ const LandingPage = ({
   // account
   const { account, votingAccount } = useAccount();
 
-  // polls
-  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
-  const pollCategories = getCategories(polls);
-
-  const topCvcs = cvcs
+  const topAvcs = avcs
     .sort((a, b) => (new BigNumber(a.mkrDelegated).gt(new BigNumber(b.mkrDelegated)) ? -1 : 1))
     .slice(0, 5);
 
@@ -218,7 +214,12 @@ const LandingPage = ({
 
             <section>
               <ErrorBoundary componentName="Governance Stats">
-                <GovernanceStats polls={polls} stats={stats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
+                <GovernanceStats
+                  pollStats={pollStats}
+                  stats={stats}
+                  mkrOnHat={mkrOnHat}
+                  mkrInChief={mkrInChief}
+                />
               </ErrorBoundary>
             </section>
 
@@ -240,15 +241,15 @@ const LandingPage = ({
               </Sticky>
               <Box ref={voteRef} />
               <Box sx={{ mt: 3 }}>
-                <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+                <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
               </Box>
-              <PollCategoriesLanding pollCategories={pollCategories} />
+              <PollCategoriesLanding pollCategories={pollTags} />
             </section>
 
             <section id="delegate">
               <Box ref={delegateRef} />
               <TopDelegates
-                topCvcs={topCvcs}
+                topAvcs={topAvcs}
                 totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
@@ -291,17 +292,20 @@ const LandingPage = ({
 export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
+  pollStats: prefetchedPollStats,
+  pollTags: prefetchedPollTags,
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const { network } = useWeb3();
   const [delegatesData, delegatesInfo] = useLandingPageDelegates();
-
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,
         polls: prefetchedPolls,
+        pollStats: prefetchedPollStats,
+        pollTags: prefetchedPollTags,
         mkrOnHat: prefetchedMkrOnHat,
         hat: prefetchedHat,
         mkrInChief: prefetchedMkrInChief
@@ -334,10 +338,14 @@ export default function Index({
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    pollStats: isDefaultNetwork(network)
+      ? prefetchedPollStats
+      : data?.pollStats || { active: 0, finished: 0, total: 0 },
+    pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
     delegates: delegatesData.data?.delegates ?? [],
     delegatesInfo: delegatesInfo.data ?? [],
     stats: delegatesData.data?.stats,
-    cvcs: delegatesData.data?.cvcs ?? [],
+    avcs: delegatesData.data?.avcs ?? [],
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
@@ -347,7 +355,7 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
+  const { proposals, polls, pollStats, pollTags, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
     SupportedNetworks.MAINNET
   );
 
@@ -356,6 +364,8 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       proposals,
       polls,
+      pollStats,
+      pollTags,
       mkrOnHat,
       hat,
       mkrInChief

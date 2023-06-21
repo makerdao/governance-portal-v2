@@ -7,10 +7,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import TagComponent from 'modules/app/components/Tag';
-import { Tag } from 'modules/app/types/tag';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import shallow from 'zustand/shallow';
+import { Tag, TagCount } from 'modules/app/types/tag';
 import { Box } from 'theme-ui';
 
-export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => void }): React.ReactElement {
+export function PollCategoryTag({
+  tag,
+  allTags,
+  disableTagFilter = false
+}: {
+  tag: string | Tag;
+  allTags?: TagCount[];
+  disableTagFilter?: boolean;
+}): React.ReactElement {
+  const foundTag = allTags?.find(t => t.id === tag) || (tag as Tag);
+
+  const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
+    state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
+    shallow
+  );
+
   const categories = {
     'collateral-onboard': {
       color: 'tagColorOne',
@@ -120,19 +137,29 @@ export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => vo
     }
   };
 
-  return (
+  return foundTag ? (
     <Box
       sx={{
-        cursor: onClick ? 'pointer' : 'inherit'
+        cursor: !disableTagFilter ? 'pointer' : 'inherit'
       }}
-      onClick={onClick}
-      title={`See all ${tag.id} polls`}
+      onClick={() => {
+        if (!disableTagFilter) {
+          setCategoryFilter(
+            categoryFilter.includes(foundTag.id)
+              ? categoryFilter.filter(c => c !== foundTag.id)
+              : [...categoryFilter, foundTag.id]
+          );
+        }
+      }}
+      title={`See all ${foundTag.id} polls`}
     >
       <TagComponent
-        tag={tag}
-        color={categories[tag.id]?.color}
-        backgroundColor={categories[tag.id]?.backgroundColor}
+        tag={foundTag}
+        color={categories[foundTag.id]?.color}
+        backgroundColor={categories[foundTag.id]?.backgroundColor}
       />
     </Box>
+  ) : (
+    <></>
   );
 }

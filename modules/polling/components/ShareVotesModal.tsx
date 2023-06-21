@@ -48,14 +48,14 @@ export const ShareVotesModal = ({
 
   return (
     <DialogOverlay isOpen={isOpen} onDismiss={onDismiss}>
-      <DialogContent widthDesktop="720px">
+      <DialogContent widthDesktop="720px" ariaLabel="Share votes modal">
         <BoxWithClose close={onDismiss}>
           <Flex sx={{ flexDirection: 'column' }}>
             <Heading sx={{ textAlign: 'center', mb: 3 }}>Share your votes</Heading>
             <Text sx={{ mb: 3, color: 'onSecondary', textAlign: 'center' }}>
               Your recent votes and comments are formatted below
             </Text>
-            <Box sx={{ bg: 'background', px: 3 }}>
+            <Box sx={{ bg: 'background', px: 3, overflowY: 'scroll', maxHeight: ['200px', '100%'] }}>
               <div dangerouslySetInnerHTML={{ __html: html || '' }} />
             </Box>
             <Flex sx={{ justifyContent: 'center', mt: 4, flexDirection: ['column', 'row'] }}>

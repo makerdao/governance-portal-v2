@@ -26,7 +26,7 @@ export const NetworkAlertModal = ({
   if (chainIdError === 'network mismatch') {
     return (
       <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
-        <DialogContent aria-label="Network Mismatch">
+        <DialogContent ariaLabel="Network Mismatch">
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', mb: 3 }}>
             <Flex sx={{ alignItems: 'center' }}>
               <Text variant="microHeading" sx={{ alignItems: 'center' }}>

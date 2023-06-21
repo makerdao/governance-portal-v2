@@ -20,7 +20,8 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *    get:
  *      tags:
  *        - "delegates"
- *      description: Returns a list of recognized delegates names and metrics
+ *      description: Returns a list of aligned delegates names and metrics
+ *      summary: Returns names and metrics for aligned delegates
  *      parameters:
  *        - name: network
  *          in: query
@@ -53,7 +54,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *      status:
  *        type: string
  *        enum:
- *          - recognized
+ *          - aligned
  *          - expired
  *          - shadow
  *      cuMember:
