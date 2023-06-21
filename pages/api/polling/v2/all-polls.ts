@@ -22,6 +22,7 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
  *      tags:
  *        - "polls"
  *      description: Returns a paginated list of polls according to the specified filters and sorting.
+ *      summary: Returns a paginated list of polls
  *      produces:
  *        - "application/json"
  *      parameters:

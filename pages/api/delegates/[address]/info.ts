@@ -23,6 +23,7 @@ import { ApiError } from 'modules/app/api/ApiError';
  *      tags:
  *        - "delegates"
  *      description: Returns a delegate's name and metrics
+ *      summary: Returns name and metrics for a delegate
  *      parameters:
  *        - name: network
  *          in: query
@@ -59,7 +60,7 @@ import { ApiError } from 'modules/app/api/ApiError';
  *      status:
  *        type: string
  *        enum:
- *          - recognized
+ *          - aligned
  *          - expired
  *          - shadow
  *      cuMember:

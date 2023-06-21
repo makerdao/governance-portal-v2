@@ -31,6 +31,7 @@ import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
  *    tags:
  *      - "address"
  *    description: Returns a list of delegates an address has delegated to along with the delegations for each delegate
+ *    summary: Returns the list of delegations for an address
  *    parameters:
  *      - in: path
  *        name: address
