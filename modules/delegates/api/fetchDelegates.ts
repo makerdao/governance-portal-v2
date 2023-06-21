@@ -42,7 +42,7 @@ import { delegatesQuery } from 'modules/gql/queries/delegates';
 import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
-import { filterDelegateAddresses } from '../helpers/filterDelegates';
+import { filterDelegates } from '../helpers/filterDelegates';
 import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
 import { CvcWithCountAndDelegates } from '../types/cvc';
 import { fetchCvcsTotalDelegated } from './fetchCvcsTotalDelegated';
@@ -455,19 +455,13 @@ export async function fetchDelegatesPaginated({
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
-  const constitutionalDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
-  const filteredDelegateAddresses = filterDelegateAddresses(
+  const { alignedDelegatesAddresses, filteredDelegateAddresses, filteredDelegateEntries } = filterDelegates(
     allDelegatesWithNamesAndLinks,
     cvcs,
     searchTerm,
     delegateType
   );
-  const filteredDelegateEntries =
-    !searchTerm && !cvcs
-      ? allDelegatesWithNamesAndLinks
-      : allDelegatesWithNamesAndLinks.filter(delegate =>
-          filteredDelegateAddresses.includes(delegate.voteDelegate)
-        );
+
   const { constitutionalDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
     getDelegatesCounts(filteredDelegateEntries);
 
@@ -508,8 +502,8 @@ export async function fetchDelegatesPaginated({
         {
           voteDelegate:
             delegateType === DelegateTypeEnum.CONSTITUTIONAL
-              ? { in: constitutionalDelegatesAddresses }
-              : { notIn: constitutionalDelegatesAddresses }
+              ? { in: alignedDelegatesAddresses }
+              : { notIn: alignedDelegatesAddresses }
         }
       ]
     };
@@ -523,7 +517,7 @@ export async function fetchDelegatesPaginated({
     includeExpired,
     orderBy,
     orderDirection,
-    constitutionalDelegates: constitutionalDelegatesAddresses
+    constitutionalDelegates: alignedDelegatesAddresses
   };
   if (delegatesQueryFilter) {
     delegatesQueryVariables['filter'] = delegatesQueryFilter;
