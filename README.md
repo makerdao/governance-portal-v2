@@ -125,7 +125,7 @@ The following configuration values can be added to the `.env` file:
 17. **Optional** Set `DEFENDER_API_SECRET_MAINNET` and/or`DEFENDER_API_SECRET_TESTNET` to a valid OpenZeppelin Defender Relay secret
 18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
 19. **Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
-20. **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibilty checks by anyone with the password
+20. **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibility checks by anyone with the password
 
 - Set `DASHBOARD_PASSWORD` for adding protection to the `/dashboard` route
 
