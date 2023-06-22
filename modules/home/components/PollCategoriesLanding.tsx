@@ -30,7 +30,7 @@ export const PollCategoriesLanding = ({ pollCategories }: Props): JSX.Element =>
               queryParams={{ category: category.id }}
               title={`${category.longname} polls`}
             >
-              <PollCategoryTag tag={category} />
+              <PollCategoryTag tag={category.id} allTags={pollCategories} />
             </InternalLink>
           </Box>
         ))}

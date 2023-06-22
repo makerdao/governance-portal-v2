@@ -123,7 +123,7 @@ const ESModule = (): React.ReactElement => {
       <HeadComponent title="Emergency Shutdown Module" />
 
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
-        <DialogContent aria-label="Executive Vote">
+        <DialogContent ariaLabel="Executive Vote">
           {totalStaked ? (
             !esmThresholdMet ? (
               <BurnModal
@@ -163,7 +163,7 @@ const ESModule = (): React.ReactElement => {
             Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
             is currently read-only. You can read more information about next steps{' '}
             <ExternalLink
-              href="https://makerdao.world/en/learn/governance/emergency-shutdown"
+              href="https://manual.makerdao.com/governance/emergency-shutdown"
               title="Learn about emergency shutdown"
             >
               <Text>here</Text>

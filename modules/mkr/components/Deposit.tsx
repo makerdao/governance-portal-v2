@@ -182,7 +182,7 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
   return (
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
-        <DialogContent aria-label="Executive Vote" widthDesktop="520px">
+        <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
           <ModalContent close={() => setShowDialog(false)} showProxyInfo={showProxyInfo} />
         </DialogContent>
       </DialogOverlay>

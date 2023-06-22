@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Flex, Text, useColorMode } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { translate } from '@makerdao/i18n-helper';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
@@ -49,6 +49,11 @@ const ContactSection = ({ heading, logos, icon }) => {
 export default function Footer({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const [mode] = useColorMode();
+  const [renderedMode, setRenderedMode] = useState('light');
+
+  useEffect(() => {
+    setRenderedMode(mode);
+  }, [mode]);
 
   const t = text => translate(text, locale);
 
@@ -65,7 +70,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           title: t('Operational Manual')
         },
         {
-          url: 'https://makerdao.world/en/learn/governance/',
+          url: 'https://manual.makerdao.com/',
           title: t('Governance FAQs')
         },
         {
@@ -169,7 +174,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           position: 'absolute',
           transform: 'translateX(-50%)',
           backgroundImage:
-            mode === 'dark'
+            renderedMode === 'dark'
               ? bpi <= 2
                 ? 'url(/assets/bg_dark_medium.jpeg)'
                 : 'url(/assets/bg_footer_dark.jpeg)'

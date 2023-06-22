@@ -151,7 +151,7 @@ const AccountPage = (): React.ReactElement => {
                           setModalOpen(false);
                         }}
                       >
-                        <DialogContent aria-label="Delegate modal" widthDesktop="580px">
+                        <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
                           <TxDisplay
                             tx={tx}
                             setTxId={setTxId}

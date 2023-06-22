@@ -114,7 +114,6 @@ const Delegates = ({
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
-  const [delegateAvcsLength, setDelegateAvcsLength] = useState(delegateAvcs.length);
   const [endOfList, setEndOfList] = useState(false);
   const [loadAllDelegates, setLoadAllDelegates] = useState(false);
   const [filters, setFilters] = useState({
@@ -199,10 +198,6 @@ const Delegates = ({
   }, [propDelegates, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
-    setDelegateAvcsLength(delegateAvcs.length);
-  }, [delegateAvcs]);
-
-  useEffect(() => {
     if (!isRendering) {
       setLoading(true);
       setDelegates([]);
@@ -221,7 +216,7 @@ const Delegates = ({
             : DelegateTypeEnum.ALIGNED
       });
     }
-  }, [sort, sortDirection, name, delegateAvcsLength, showAligned, showShadow, showExpired]);
+  }, [sort, sortDirection, name, delegateAvcs, showAligned, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);

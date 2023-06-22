@@ -7,7 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Tag } from 'modules/app/types/tag';
-import { PollResultDisplay, PollVictoryConditions } from '../polling.constants';
+import {
+  PollInputFormat,
+  PollResultDisplay,
+  PollStatusEnum,
+  PollVictoryConditions,
+  PollOrderByEnum
+} from '../polling.constants';
 
 //  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
 export type PollVictoryConditionComparison = {
@@ -95,4 +101,32 @@ export type PartialPoll = {
   startDate: Date;
   endDate: Date;
   url: string;
+};
+
+export type PollsValidatedQueryParams = {
+  network: SupportedNetworks;
+  pageSize: number;
+  page: number;
+  title: string | null;
+  orderBy: PollOrderByEnum;
+  tags: string[] | null;
+  status: PollStatusEnum | null;
+  type: PollInputFormat[] | null;
+  startDate: Date | null;
+  endDate: Date | null;
+};
+
+export type PollFilterQueryParams = Omit<PollsValidatedQueryParams, 'network'>;
+
+export type PollListItem = Pick<
+  Poll,
+  'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary' | 'parameters' | 'options'
+> & {
+  type: PollInputFormat;
+  tags: string[];
+};
+
+export type PartialActivePoll = {
+  pollId: number;
+  endDate: Date;
 };
