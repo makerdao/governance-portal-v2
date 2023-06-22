@@ -46,10 +46,18 @@ type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
   seed: number;
 };
 
+const emptyStats = {
+  total: 0,
+  shadow: 0,
+  aligned: 0,
+  totalMKRDelegated: '0',
+  totalDelegators: 0
+};
+
 const Delegates = ({
   delegates: propDelegates,
-  stats,
-  avcs,
+  stats: propStats,
+  avcs: propAvcs,
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
@@ -67,9 +75,7 @@ const Delegates = ({
     setAvcFilter,
     setName,
     setFetchOnLoad,
-    resetFilters,
-    resetSort,
-    resetSortDirection
+    resetFilters
   ] = useDelegatesFiltersStore(
     state => [
       state.filters.showAligned,
@@ -83,9 +89,7 @@ const Delegates = ({
       state.setAvcFilter,
       state.setName,
       state.setFetchOnLoad,
-      state.resetFilters,
-      state.resetSort,
-      state.resetSortDirection
+      state.resetFilters
     ],
     shallow
   );
@@ -95,11 +99,8 @@ const Delegates = ({
   };
 
   const onResetClick = () => {
-    resetFilters();
-    setName('');
-    resetSort();
-    resetSortDirection();
     setFetchOnLoad(false);
+    resetFilters();
   };
 
   const handleLoadAllClick = () => {
@@ -112,6 +113,8 @@ const Delegates = ({
   const [isRendering, setIsRendering] = useState(true);
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
+  const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
+  const [avcs, setAvcs] = useState(fetchOnLoad ? [] : propAvcs);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [endOfList, setEndOfList] = useState(false);
@@ -179,6 +182,8 @@ const Delegates = ({
         const res = await fetchDelegatesPageData(network, true, queryParams);
         setLoading(false);
         setDelegates(prevDelegates => [...prevDelegates, ...res.delegates]);
+        setStats(res.stats);
+        setAvcs(res.avcs);
         setPaginationInfo(res.paginationInfo);
         setShouldLoadMore(false);
       };
@@ -193,9 +198,11 @@ const Delegates = ({
 
   useEffect(() => {
     setDelegates(fetchOnLoad ? delegates : propDelegates);
+    setStats(fetchOnLoad ? stats : propStats);
+    setAvcs(fetchOnLoad ? avcs : propAvcs);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propPaginationInfo, propSeed, fetchOnLoad]);
+  }, [propDelegates, propStats, propAvcs, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
     if (!isRendering) {
@@ -439,7 +446,7 @@ const Delegates = ({
             </Box>
             {stats && (
               <ErrorBoundary componentName="Delegates System Info">
-                <DelegatesSystemInfo stats={stats} />
+                <DelegatesSystemInfo stats={propStats} />
               </ErrorBoundary>
             )}
             <ResourceBox type={'delegates'} />
