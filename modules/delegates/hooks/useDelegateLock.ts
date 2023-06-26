@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -16,15 +16,12 @@ import useTransactionStore, {
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
 import { BigNumber } from 'ethers';
-import { Transaction } from 'modules/web3/types/transaction';
+import { BaseTransactionResponse } from 'modules/web3/types/transaction';
 import { VoteDelegate } from 'types/ethers-contracts';
 import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
-type LockResponse = {
-  txId: string | null;
-  setTxId: Dispatch<SetStateAction<null>>;
+type LockResponse = BaseTransactionResponse & {
   lock: (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => void;
-  tx: Transaction | null;
 };
 
 export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {

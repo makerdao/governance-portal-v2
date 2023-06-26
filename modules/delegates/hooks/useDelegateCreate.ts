@@ -6,26 +6,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
-import { Transaction } from 'modules/web3/types/transaction';
+import { BaseTransactionResponse } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
-type LockResponse = {
-  txId: string | null;
-  setTxId: Dispatch<SetStateAction<null>>;
+type CreateResponse = BaseTransactionResponse & {
   create: (callbacks?: Record<string, (id?: string) => void>) => void;
-  tx: Transaction | null;
 };
 
-export const useDelegateCreate = (): LockResponse => {
+export const useDelegateCreate = (): CreateResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
@@ -42,12 +39,12 @@ export const useDelegateCreate = (): LockResponse => {
       return;
     }
 
-    const freeTxCreator = async () => {
+    const createTxCreator = async () => {
       const populatedTransaction = await voteDelegateFactory.populateTransaction.create();
       return sendTransaction(populatedTransaction, provider, account);
     };
 
-    const txId = track(freeTxCreator, account, 'Create delegate contract', {
+    const txId = track(createTxCreator, account, 'Create delegate contract', {
       initialized: () => {
         if (typeof callbacks?.initialized === 'function') callbacks.initialized();
       },
