@@ -60,6 +60,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
           [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
         },
+        optionalMethods: ['eth_signTypedData_v4'],
         metadata: {
           name: 'Maker Governance - Governance Portal',
           description:
@@ -68,7 +69,6 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
           icons: ['https://vote.makerdao.com/maker.svg']
         },
         qrModalOptions: {
-          chainImages: {},
           themeVariables: {
             '--w3m-background-color': '#1aab9b',
             '--w3m-accent-color': '#1aab9b',
