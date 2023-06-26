@@ -17,8 +17,8 @@ export async function sendTransaction(
   populatedTransaction.gasLimit = gasLimit;
 
   const signer = provider.getSigner(account);
-  const uncheckedTransaction: any = await signer.sendUncheckedTransaction(populatedTransaction);
+  const uncheckedTransaction = signer.sendUncheckedTransaction(populatedTransaction);
+  const tx = await provider.getTransaction(uncheckedTransaction);
 
-  const tx = await provider.getTransaction(uncheckedTransaction.hash);
   return tx;
 }
