@@ -330,7 +330,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             );
         },
         error: (txId, error) => {
-          console.log(error);
           setSubmissionError(error);
           setStep('tx-error');
           toast.error('Error submitting ballot');
