@@ -6,8 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
+import { Dispatch, SetStateAction } from 'react';
 import { SupportedNetworks } from '../constants/networks';
+
+export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
 
 export type TXInitialized = {
   from: string;
@@ -50,3 +52,9 @@ export type TXError = {
 };
 
 export type Transaction = TXInitialized | TXPending | TXMined | TXError;
+
+export type BaseTransactionResponse = {
+  txId: string | null;
+  setTxId: Dispatch<SetStateAction<null>>;
+  tx: Transaction | null;
+};

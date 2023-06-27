@@ -10,13 +10,14 @@ import { initializeConnector } from '@web3-react/core';
 import { Connector } from '@web3-react/types';
 import { Network } from '@web3-react/network';
 import { MetaMask } from '@web3-react/metamask';
-import { WalletConnect } from '@web3-react/walletconnect';
+import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { GnosisSafe } from '@makerdao-dux/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
 import { Connection, EIP1193Provider } from '../types/connection';
+import { config } from 'lib/config';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -46,21 +47,39 @@ export const metamaskConnection: Connection = {
 };
 
 // walletconnect
-const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<any>(
+const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletConnect>(
   actions =>
     new WalletConnect({
       actions,
       options: {
-        rpc: {
+        projectId: config.WALLETCONNECT_PROJECT_ID,
+        showQrModal: true,
+        chains: [SupportedChainId.MAINNET],
+        optionalChains: [SupportedChainId.GOERLI],
+        rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
           [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
         },
-        qrcode: true
+        optionalMethods: ['eth_signTypedData_v4'],
+        metadata: {
+          name: 'Maker Governance - Governance Portal',
+          description:
+            'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote',
+          url: 'https://vote.makerdao.com',
+          icons: ['https://vote.makerdao.com/maker.svg']
+        },
+        qrModalOptions: {
+          themeVariables: {
+            '--w3m-background-color': '#1aab9b',
+            '--w3m-accent-color': '#1aab9b',
+            '--w3m-logo-image-url': '/assets/maker_logo.svg'
+          }
+        }
       }
     })
 );
 export const walletConnectConnection: Connection = {
-  connector: web3WalletConnect as any,
+  connector: web3WalletConnect,
   hooks: web3WalletConnectHooks,
   type: ConnectionType.WALLET_CONNECT
 };
