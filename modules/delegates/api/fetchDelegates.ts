@@ -42,7 +42,7 @@ import { delegatesQuery } from 'modules/gql/queries/delegates';
 import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
-import { filterDelegateAddresses } from '../helpers/filterDelegates';
+import { filterDelegates } from '../helpers/filterDelegates';
 import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
 import { AvcWithCountAndDelegates } from '../types/avc';
 import { fetchAvcsTotalDelegated } from './fetchAvcsTotalDelegated';
@@ -455,11 +455,15 @@ export async function fetchDelegatesPaginated({
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
-  const alignedDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNamesAndLinks, null, null);
-  const filteredDelegates = filterDelegateAddresses(allDelegatesWithNamesAndLinks, avcs, searchTerm);
-  const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } = getDelegatesCounts(
-    allDelegatesWithNamesAndLinks
+  const { alignedDelegatesAddresses, filteredDelegateAddresses, filteredDelegateEntries } = filterDelegates(
+    allDelegatesWithNamesAndLinks,
+    avcs,
+    searchTerm,
+    delegateType
   );
+
+  const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
+    getDelegatesCounts(filteredDelegateEntries);
 
   const avcAndCount = allDelegatesWithNamesAndLinks
     .filter(delegate => !delegate.expired && delegate.name && delegate.avc_name)
@@ -468,8 +472,11 @@ export async function fetchDelegatesPaginated({
       if (!cur.avc_name) return acc;
 
       const prev = acc.findIndex(avc => avc.avc_name === cur.avc_name);
+      const foundInFilteredDelegates = filteredDelegateAddresses.includes(cur.voteDelegate);
       if (prev !== -1) {
-        acc[prev].count += 1;
+        if (foundInFilteredDelegates) {
+          acc[prev].count += 1;
+        }
         acc[prev].delegates.push(cur.voteDelegate);
         if (cur.picture) {
           acc[prev].picture = cur.picture;
@@ -477,7 +484,7 @@ export async function fetchDelegatesPaginated({
       } else {
         acc.push({
           avc_name: cur.avc_name,
-          count: 1,
+          count: foundInFilteredDelegates ? 1 : 0,
           delegates: [cur.voteDelegate],
           ...(cur.picture ? { picture: cur.picture } : {})
         });
@@ -488,7 +495,7 @@ export async function fetchDelegatesPaginated({
 
   let delegatesQueryFilter;
   if (delegateType !== DelegateTypeEnum.ALIGNED && delegateType !== DelegateTypeEnum.SHADOW) {
-    delegatesQueryFilter = searchTerm || avcs ? { voteDelegate: { in: filteredDelegates } } : null;
+    delegatesQueryFilter = searchTerm || avcs ? { voteDelegate: { in: filteredDelegateAddresses } } : null;
   } else {
     delegatesQueryFilter = {
       and: [
@@ -500,7 +507,8 @@ export async function fetchDelegatesPaginated({
         }
       ]
     };
-    (searchTerm || avcs) && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegates } });
+    (searchTerm || avcs) &&
+      delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegateAddresses } });
   }
 
   const delegatesQueryVariables = {

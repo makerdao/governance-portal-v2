@@ -16,6 +16,8 @@ import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 type BurnResponse = {
   txId: string | null;
@@ -28,6 +30,7 @@ export const useEsmBurn = (): BurnResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
+  const { provider } = useWeb3();
   const { esm } = useContracts();
 
   const [track, tx] = useTransactionStore(
@@ -36,7 +39,15 @@ export const useEsmBurn = (): BurnResponse => {
   );
 
   const burn = (burnAmount, callbacks) => {
-    const burnTxCreator = () => esm.join(burnAmount);
+    if (!account || !provider) {
+      return;
+    }
+
+    const burnTxCreator = async () => {
+      const populatedTransaction = await esm.populateTransaction.join(burnAmount);
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
     const txId = track(burnTxCreator, account, 'Burning MKR in Emergency Shutdown Module', {
       initialized: () => {
         if (typeof callbacks?.initialized === 'function') callbacks.initialized();

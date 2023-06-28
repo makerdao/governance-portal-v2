@@ -16,6 +16,8 @@ import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 type FreeResponse = {
   txId: string | null;
@@ -28,6 +30,7 @@ export const useFree = (): FreeResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account, voteProxyContract } = useAccount();
+  const { provider } = useWeb3();
   const { chief } = useContracts();
 
   const [track, tx] = useTransactionStore(
@@ -36,9 +39,17 @@ export const useFree = (): FreeResponse => {
   );
 
   const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
-    const freeTxCreator = voteProxyContract
-      ? () => voteProxyContract.free(mkrToWithdraw)
-      : () => chief.free(mkrToWithdraw);
+    if (!account || !provider) {
+      return;
+    }
+
+    const freeTxCreator = async () => {
+      const populatedTransaction = voteProxyContract
+        ? await voteProxyContract.populateTransaction.free(mkrToWithdraw)
+        : await chief.populateTransaction.free(mkrToWithdraw);
+
+      return sendTransaction(populatedTransaction, provider, account);
+    };
 
     const transactionId = track(freeTxCreator, account, 'Withdrawing MKR', {
       pending: () => {

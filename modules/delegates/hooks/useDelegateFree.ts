@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -16,17 +16,15 @@ import useTransactionStore, {
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
 import { BigNumber } from 'ethers';
-import { Transaction } from 'modules/web3/types/transaction';
+import { BaseTransactionResponse } from 'modules/web3/types/transaction';
 import { VoteDelegate } from '../../../types/ethers-contracts';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
-type LockResponse = {
-  txId: string | null;
-  setTxId: Dispatch<SetStateAction<null>>;
+type FreeResponse = BaseTransactionResponse & {
   free: (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => void;
-  tx: Transaction | null;
 };
 
-export const useDelegateFree = (voteDelegateAddress: string): LockResponse => {
+export const useDelegateFree = (voteDelegateAddress: string): FreeResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { chainId, provider, account } = useWeb3();
@@ -39,7 +37,15 @@ export const useDelegateFree = (voteDelegateAddress: string): LockResponse => {
   const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, provider, account);
 
   const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
-    const freeTxCreator = () => vdContract.free(mkrToWithdraw);
+    if (!account || !provider) {
+      return;
+    }
+
+    const freeTxCreator = async () => {
+      const populatedTransaction = await vdContract.populateTransaction.free(mkrToWithdraw);
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
     const txId = track(freeTxCreator, account, 'Withdrawing MKR', {
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();

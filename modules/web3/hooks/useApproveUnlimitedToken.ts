@@ -17,6 +17,8 @@ import useTransactionStore, {
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Transaction } from 'modules/web3/types/transaction';
+import { useWeb3 } from './useWeb3';
+import { sendTransaction } from '../helpers/sendTransaction';
 
 type ApproveResponse = {
   txId: string | null;
@@ -29,6 +31,7 @@ export const useApproveUnlimitedToken = (name: ContractName): ApproveResponse =>
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
+  const { provider } = useWeb3();
   const token = useContracts()[name];
 
   const [track, tx] = useTransactionStore(
@@ -37,7 +40,15 @@ export const useApproveUnlimitedToken = (name: ContractName): ApproveResponse =>
   );
 
   const approve = (addressToApprove: string, callbacks?: TxCallbacks) => {
-    const approveTxCreator = () => token['approve(address)'](addressToApprove);
+    if (!account || !provider) {
+      return;
+    }
+
+    const approveTxCreator = async () => {
+      const populatedTransaction = await token.populateTransaction['approve(address)'](addressToApprove);
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
     const txId = track(approveTxCreator, account, `Approving ${name.toUpperCase()}`, {
       pending: txHash => {
         if (typeof callbacks?.pending === 'function') callbacks.pending(txHash);
