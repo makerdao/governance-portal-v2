@@ -15,10 +15,9 @@ import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
 
 export async function fetchSinglePoll(
   network: SupportedNetworks,
-  paramPollId: number | null,
-  pollSlug: string | null
+  pollIdOrSlug: number | string
 ): Promise<Poll | null> {
-  if (!paramPollId && !pollSlug) {
+  if (!pollIdOrSlug) {
     return null;
   }
 
@@ -32,9 +31,12 @@ export async function fetchSinglePoll(
     }
 
     const pollSlugToIds = JSON.parse(pollSlugToIdsString);
-    const pollId: number | null = paramPollId
-      ? paramPollId
-      : pollSlugToIds.find(p => p[0] === pollSlug)?.[1] || null;
+
+    const parsedPollIdentifier = typeof pollIdOrSlug === 'number' ? pollIdOrSlug : parseInt(pollIdOrSlug);
+    // If it's a number, the parameter passed is a pollId. If not, it's a pollSlug
+    const pollId: number | null = !Number.isNaN(parsedPollIdentifier)
+      ? parsedPollIdentifier
+      : pollSlugToIds.find(p => p[0] === pollIdOrSlug)?.[1] || null;
 
     if (!pollId) {
       return null;
@@ -43,10 +45,12 @@ export async function fetchSinglePoll(
     const cachedPoll = await cacheGet(pollDetailsCacheKey, network, ONE_WEEK_IN_MS, 'HGET', String(pollId));
     if (cachedPoll) {
       return JSON.parse(cachedPoll);
+    } else {
+      return null;
     }
   }
 
   const { allPolls } = await refetchPolls(network, githubHash as string);
 
-  return allPolls.find(poll => (paramPollId ? poll.pollId === paramPollId : poll.slug === pollSlug)) || null;
+  return allPolls.find(poll => poll.pollId === pollIdOrSlug || poll.slug === pollIdOrSlug) || null;
 }

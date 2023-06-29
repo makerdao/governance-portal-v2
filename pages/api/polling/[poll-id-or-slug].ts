@@ -129,7 +129,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
     throw new ApiError('You must pass a poll id or slug', 400, 'You must pass a poll id or slug');
   }
 
-  const poll = await fetchSinglePoll(network, pollId, pollSlug);
+  const poll = await fetchSinglePoll(network, pollId || (pollSlug as number | string));
 
   if (!poll) {
     throw new ApiError('Poll not found', 404, 'Poll not found');
