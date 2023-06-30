@@ -169,7 +169,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   if (cachedTally) {
     tally = JSON.parse(cachedTally);
   } else {
-    const poll = await fetchSinglePoll(network, pollId, null);
+    const poll = await fetchSinglePoll(network, pollId);
 
     if (!poll) {
       throw new ApiError('Poll not found', 404, 'Poll not found');
