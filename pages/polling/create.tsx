@@ -193,7 +193,10 @@ const PollingCreate = (): React.ReactElement => {
                       )}
                       <Label>Proposal</Label>
                       <CreateText>
-                        <div dangerouslySetInnerHTML={{ __html: editMarkdown(contentHtml, poll?.title) }} />
+                        <Box
+                          sx={{ variant: 'markdown.default', p: [3, 4] }}
+                          dangerouslySetInnerHTML={{ __html: editMarkdown(contentHtml, poll?.title) }}
+                        />
                       </CreateText>
                       <Flex>
                         <Button

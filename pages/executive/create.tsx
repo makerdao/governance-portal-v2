@@ -204,7 +204,10 @@ const ExecutiveCreate = (): JSX.Element => {
                     <tr key={'Markdown'}>
                       <TD>Markdown</TD>
                       <TD>
-                        <div dangerouslySetInnerHTML={{ __html: editMarkdown(markdown) }} />
+                        <Box
+                          sx={{ variant: 'markdown.default', p: [3, 4] }}
+                          dangerouslySetInnerHTML={{ __html: editMarkdown(markdown) }}
+                        />
                       </TD>
                     </tr>
                   </tbody>
