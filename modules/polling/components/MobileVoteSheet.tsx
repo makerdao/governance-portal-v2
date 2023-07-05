@@ -83,7 +83,7 @@ export default function MobileVoteSheet({
 
   const goToNextPoll = async () => {
     const nextPollId = activePollIds.find(pollId => !ballot[pollId]);
-    const nextPoll = await fetchSinglePoll(network, nextPollId || null, null);
+    const nextPoll = nextPollId ? await fetchSinglePoll(network, nextPollId) : null;
 
     invariant(nextPoll && setPoll);
     setPoll(nextPoll);

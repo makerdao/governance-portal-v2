@@ -447,10 +447,10 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
-  const pollSlug = params?.['poll-hash'] as string;
+  const pollIdOrSlug = params?.['poll-hash'] as string;
   // invariant(pollSlug, 'getStaticProps poll hash not found in params');
 
-  const poll = await fetchSinglePoll(DEFAULT_NETWORK.network, null, pollSlug);
+  const poll = await fetchSinglePoll(DEFAULT_NETWORK.network, pollIdOrSlug);
 
   if (!poll) {
     return { revalidate: 30, props: { poll: null } };
