@@ -74,9 +74,15 @@ export default function AddressIconBox({
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
           <Flex sx={{ alignItems: 'center' }}>
             {delegate ? (
-              <Text>
-                {limitTextLength ? limitString(delegate.name, limitTextLength, '...') : delegate.name}
-              </Text>
+              limitTextLength ? (
+                <Flex sx={{ flexDirection: 'column' }}>
+                  {delegate.name.split(' - ').map((name, i) => (
+                    <Text key={delegate.name + '-' + i}>{limitString(name, limitTextLength, '...')}</Text>
+                  ))}
+                </Flex>
+              ) : (
+                <Text>{delegate.name}</Text>
+              )
             ) : (
               <Text>
                 <Address address={address} maxLength={limitTextLength} />
