@@ -12,6 +12,14 @@ import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 import { formatValue } from 'lib/string';
 import { paddedBytes32ToAddress } from 'lib/utils';
+import { BigNumber } from 'ethers';
+
+type AddressWithVotes = {
+  votes: string[];
+  slate: string;
+  address: string;
+  deposits: BigNumber;
+};
 
 export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null> {
   const filter = {
@@ -32,36 +40,48 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
     }
   });
 
-  const withDeposits = await Promise.all(
-    voters.map(voter =>
-      getChiefDeposits(voter, chief).then(deposits => ({
-        address: voter,
-        deposits
-      }))
-    )
+  // Split voters array into chunks of 1000 addresses
+  const chunkSize = 1000;
+  const voterChunks = Array.from({ length: Math.ceil(voters.length / chunkSize) }, (_, i) =>
+    voters.slice(i * chunkSize, i * chunkSize + chunkSize)
   );
 
-  const withSlates = await Promise.all(
-    withDeposits.map(addressDeposit =>
-      chief.votes(addressDeposit.address).then(slate => ({
-        ...addressDeposit,
-        slate
-      }))
-    )
-  );
+  const addressesWithVotes: AddressWithVotes[] = [];
 
-  const withVotes = await Promise.all(
-    withSlates.map(withSlate =>
-      getSlateAddresses(chief, withSlate.slate).then(addresses => ({
-        ...withSlate,
-        votes: addresses
-      }))
-    )
-  );
+  for (const chunk of voterChunks) {
+    const withDeposits = await Promise.all(
+      chunk.map(voter =>
+        getChiefDeposits(voter, chief).then(deposits => ({
+          address: voter,
+          deposits
+        }))
+      )
+    );
+
+    const withSlates = await Promise.all(
+      withDeposits.map(addressDeposit =>
+        chief.votes(addressDeposit.address).then(slate => ({
+          ...addressDeposit,
+          slate
+        }))
+      )
+    );
+
+    const withVotes = await Promise.all(
+      withSlates.map(withSlate =>
+        getSlateAddresses(chief, withSlate.slate).then(addresses => ({
+          ...withSlate,
+          votes: addresses
+        }))
+      )
+    );
+
+    addressesWithVotes.push(...withVotes);
+  }
 
   const voteTally = {};
 
-  for (const voteObj of withVotes) {
+  for (const voteObj of addressesWithVotes) {
     for (let vote of voteObj.votes) {
       vote = vote.toLowerCase();
       if (voteTally[vote] === undefined) {
