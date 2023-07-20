@@ -40,7 +40,8 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
     }
   });
 
-  // Split voters array into chunks of 1000 addresses
+  // We need to split the voters array into chunks of 1000 addresses because our
+  // Alchemy key doesn't support batch requests larger than 1000 queries each
   const chunkSize = 1000;
   const voterChunks = Array.from({ length: Math.ceil(voters.length / chunkSize) }, (_, i) =>
     voters.slice(i * chunkSize, i * chunkSize + chunkSize)

@@ -16,8 +16,8 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
-import { limitString } from 'lib/string';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import splitDelegateName from 'modules/delegates/helpers/splitDelegateName';
 
 type PropTypes = {
   address: string;
@@ -76,8 +76,8 @@ export default function AddressIconBox({
             {delegate ? (
               limitTextLength ? (
                 <Flex sx={{ flexDirection: 'column' }}>
-                  {delegate.name.split(' - ').map((name, i) => (
-                    <Text key={delegate.name + '-' + i}>{limitString(name, limitTextLength, '...')}</Text>
+                  {splitDelegateName(delegate.name, limitTextLength).map((name, i) => (
+                    <Text key={delegate.name + '-' + i}>{name}</Text>
                   ))}
                 </Flex>
               ) : (
