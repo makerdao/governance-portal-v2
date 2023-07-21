@@ -52,7 +52,6 @@ export default withApiHandler(
       );
 
       // TODO: check that the transaction is from a real polling contract
-      // console.log(transaction);
 
       const commentsToInsert: PollComment[] = body.comments.map(
         (comment): PollComment => ({
