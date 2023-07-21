@@ -26,7 +26,8 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
-const uniswapV2MkrPool = '0xC2aDdA861F89bBB333c90c492cB837741916A225';
+const uniswapV2MkrEthPool = '0xC2aDdA861F89bBB333c90c492cB837741916A225';
+const uniswapV2MkrDaiPool = '0x517f9dd285e75b599234f7221227339478d0fcc8';
 const sushiswapAddress = '0xba13afecda9beb75de5c56bbaf696b880a5a50dd';
 const compoundCTokenAddress = '0x95b4eF2869eBD94BEb4eEE400a99824BF5DC325b';
 
@@ -87,7 +88,8 @@ export default function MkrLiquiditySidebar({
   const mkrAddress = useContractAddress(Tokens.MKR);
   const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
   const { data: aaveV2 } = useTokenBalance(Tokens.MKR, aaveV2Amkr);
-  const { data: uniswapV2 } = useTokenBalance(Tokens.MKR, uniswapV2MkrPool);
+  const { data: uniswapV2MkrEth } = useTokenBalance(Tokens.MKR, uniswapV2MkrEthPool);
+  const { data: uniswapV2MkrDai } = useTokenBalance(Tokens.MKR, uniswapV2MkrDaiPool);
   const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
 
   const { data: balancer } = useSWR(
@@ -118,9 +120,10 @@ export default function MkrLiquiditySidebar({
     ],
     [
       'Uniswap',
-      uniswapV2 && uniswapV3 && uniswapV2?.add(uniswapV3),
+      uniswapV2MkrEth && uniswapV2MkrDai && uniswapV3 && uniswapV2MkrEth?.add(uniswapV2MkrDai).add(uniswapV3),
       [
-        ['Uniswap V2', uniswapV2],
+        ['Uniswap V2 (MKR/DAI)', uniswapV2MkrDai],
+        ['Uniswap V2 (MKR/ETH)', uniswapV2MkrEth],
         ['Uniswap V3', uniswapV3]
       ]
     ],
