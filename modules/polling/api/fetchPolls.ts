@@ -184,7 +184,11 @@ export async function getPolls(
 export async function checkCachedPollsValidity(
   network: SupportedNetworks
 ): Promise<{ valid: boolean; hash?: string }> {
-  const isPollsHashValid: boolean | undefined = await cacheGet(isPollsHashValidCacheKey, network);
+  const isPollsHashValid: boolean | undefined = await cacheGet(
+    isPollsHashValidCacheKey,
+    network,
+    THIRTY_MINUTES_IN_MS
+  );
 
   if (isPollsHashValid) {
     return { valid: true };
