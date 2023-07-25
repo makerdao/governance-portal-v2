@@ -238,7 +238,9 @@ export async function refetchPolls(
   cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
   cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS);
   cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
-  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
+  if (partialActivePolls.length > 0) {
+    cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
+  }
 
   const pollTags = getPollTags();
 
