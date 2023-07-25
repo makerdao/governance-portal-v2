@@ -128,5 +128,6 @@ export type PollListItem = Pick<
 
 export type PartialActivePoll = {
   pollId: number;
+  startDate: Date;
   endDate: Date;
 };

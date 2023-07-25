@@ -214,7 +214,7 @@ export async function refetchPolls(
 ): Promise<{
   pollList: PollListItem[];
   allPolls: Poll[];
-  partialActivePolls: { pollId: number; endDate: Date }[];
+  partialActivePolls: PartialActivePoll[];
 }> {
   const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL[network]);
   const allPolls = await allPollsRes.json();
@@ -236,15 +236,13 @@ export async function refetchPolls(
   });
 
   const partialActivePolls = pollList
-    .filter(poll => new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date())
-    .map(({ pollId, endDate }) => ({ pollId, endDate }));
+    .filter(poll => new Date(poll.endDate) > new Date())
+    .map(({ pollId, startDate, endDate }) => ({ pollId, startDate, endDate }));
 
   cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
   cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS);
   cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
-  if (partialActivePolls.length > 0) {
-    cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
-  }
+  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
 
   const pollTags = getPollTags();
 
@@ -296,7 +294,9 @@ export async function getActivePollIds(network: SupportedNetworks): Promise<numb
   }
 
   const activePollIds =
-    partialActivePolls?.filter(poll => new Date(poll.endDate) > new Date()).map(poll => poll.pollId) || [];
+    partialActivePolls
+      ?.filter(poll => new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date())
+      .map(poll => poll.pollId) || [];
 
   return activePollIds;
 }
