@@ -54,11 +54,11 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url: 'https://makerdux.notion.site/How-to-Calculate-Polling-Results-32a3f732d7fd481abd685e1f419d2bba'
+        url: 'https://www.notion.so/jetstreamgg/How-to-Calculate-Polling-Results-32a3f732d7fd481abd685e1f419d2bba'
       },
       {
         linkTitle: 'How to manually vote in a poll with Etherscan?',
-        url: 'https://makerdux.notion.site/How-to-manually-vote-in-a-Maker-poll-with-Etherscan-d61a8fbac15a4bfc840ecb2d5c19cd80'
+        url: 'https://www.notion.so/jetstreamgg/How-to-manually-vote-in-a-Maker-poll-with-Etherscan-d61a8fbac15a4bfc840ecb2d5c19cd80'
       },
       {
         linkTitle: 'How to vote in on-chain governance?',
