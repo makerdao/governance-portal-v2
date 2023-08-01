@@ -184,7 +184,11 @@ export async function getPolls(
 export async function checkCachedPollsValidity(
   network: SupportedNetworks
 ): Promise<{ valid: boolean; hash?: string }> {
-  const isPollsHashValid: boolean | undefined = await cacheGet(isPollsHashValidCacheKey, network);
+  const isPollsHashValid: boolean | undefined = await cacheGet(
+    isPollsHashValidCacheKey,
+    network,
+    THIRTY_MINUTES_IN_MS
+  );
 
   if (isPollsHashValid) {
     return { valid: true };
@@ -210,7 +214,7 @@ export async function refetchPolls(
 ): Promise<{
   pollList: PollListItem[];
   allPolls: Poll[];
-  partialActivePolls: { pollId: number; endDate: Date }[];
+  partialActivePolls: PartialActivePoll[];
 }> {
   const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL[network]);
   const allPolls = await allPollsRes.json();
@@ -232,8 +236,8 @@ export async function refetchPolls(
   });
 
   const partialActivePolls = pollList
-    .filter(poll => new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date())
-    .map(({ pollId, endDate }) => ({ pollId, endDate }));
+    .filter(poll => new Date(poll.endDate) > new Date())
+    .map(({ pollId, startDate, endDate }) => ({ pollId, startDate, endDate }));
 
   cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
   cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS);
@@ -275,21 +279,24 @@ export async function refetchPolls(
 export async function getActivePollIds(network: SupportedNetworks): Promise<number[]> {
   const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
 
-  let partialActivePolls: PartialActivePoll[] = [];
+  let partialActivePolls: PartialActivePoll[] | undefined;
 
   if (cachedPollsAreValid) {
     const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, ONE_WEEK_IN_MS);
     if (cachedPartialActivePolls) {
       partialActivePolls = JSON.parse(cachedPartialActivePolls);
     }
-  } else {
+  }
+
+  if (!partialActivePolls) {
     const { partialActivePolls: newPartialActivePolls } = await refetchPolls(network, githubHash as string);
     partialActivePolls = newPartialActivePolls;
   }
 
-  const activePollIds = partialActivePolls
-    .filter(poll => new Date(poll.endDate) > new Date())
-    .map(poll => poll.pollId);
+  const activePollIds =
+    partialActivePolls
+      ?.filter(poll => new Date(poll.endDate) > new Date() && new Date(poll.startDate) <= new Date())
+      .map(poll => poll.pollId) || [];
 
   return activePollIds;
 }
