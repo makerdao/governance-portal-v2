@@ -19,6 +19,14 @@ import { RepositoryInfo } from 'modules/delegates/api/getDelegatesRepositoryInfo
 import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/markdown';
 import { AvcOrderByEnum } from '../avcs.constants';
+import { fetchDelegatesPaginated } from 'modules/delegates/api/fetchDelegates';
+import {
+  DelegateOrderByEnum,
+  DelegateTypeEnum,
+  OrderDirectionEnum
+} from 'modules/delegates/delegates.constants';
+import { BigNumber } from 'ethers';
+import { formatEther, parseEther } from 'ethers/lib/utils';
 
 // Parses the information on an AVC folder in GitHub and extracts an Avc parsed object
 async function extractGithubInformationGraphQL(
@@ -107,10 +115,38 @@ export async function fetchAvcs({
           Math.random() - 0.5
     );
 
+  // Calculate AVC delegate count and MKR delegated
+  const avcsWithStats = await Promise.all(
+    filteredAvcs.map(async avc => {
+      const { delegates: avcDelegates } = await fetchDelegatesPaginated({
+        network,
+        avcs: [avc.name],
+        page: 1,
+        pageSize: 30,
+        includeExpired: false,
+        orderBy: DelegateOrderByEnum.MKR,
+        orderDirection: OrderDirectionEnum.DESC,
+        seed: null,
+        delegateType: DelegateTypeEnum.ALIGNED,
+        searchTerm: null
+      });
+
+      return {
+        ...avc,
+        delegateCount: avcDelegates.length,
+        mkrDelegated: formatEther(
+          avcDelegates.reduce((acum, cur) => {
+            return acum.add(parseEther(cur.mkrDelegated));
+          }, BigNumber.from(0))
+        )
+      };
+    })
+  );
+
   return {
     stats: {
       totalCount: avcs.length
     },
-    avcs: filteredAvcs
+    avcs: avcsWithStats
   };
 }
