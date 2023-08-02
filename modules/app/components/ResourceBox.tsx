@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-type ResourceType = 'general' | 'polling' | 'executive' | 'delegates';
+type ResourceType = 'general' | 'polling' | 'executive' | 'delegates' | 'avcs';
 
 type ResourceLink = {
   linkTitle: string;
@@ -113,6 +113,35 @@ const resources: Record<ResourceType, Resource> = {
       {
         linkTitle: 'What is an Aligned Delegate?',
         url: 'https://mips.makerdao.com/mips/details/MIP101#2-6-aligned-delegates-ads-gov6'
+      },
+      {
+        linkTitle: 'What is Maker Endgame?',
+        url: 'https://endgame.makerdao.com/endgame/overview'
+      },
+      {
+        linkTitle: "The MKR holder's guide to delegation",
+        url: 'https://manual.makerdao.com/delegation/for-mkr-holders/mkr-holder-guide'
+      }
+    ]
+  },
+  avcs: {
+    boxTitle: 'AVCs FAQs',
+    links: [
+      {
+        linkTitle: "What's an Aligned Voter Committee (AVC)?",
+        url: 'https://mips.makerdao.com/mips/details/MIP101#2-5-aligned-voter-committees-gov5'
+      },
+      {
+        linkTitle: 'What is an Aligned Delegate?',
+        url: 'https://mips.makerdao.com/mips/details/MIP101#2-6-aligned-delegates-ads-gov6'
+      },
+      {
+        linkTitle: 'What is MKR vote delegation?',
+        url: 'https://manual.makerdao.com/delegation/overview/what-is-delegation'
+      },
+      {
+        linkTitle: 'What is the Maker Atlas Immutable Alignment Artifact?',
+        url: 'https://mips.makerdao.com/mips/details/MIP101'
       },
       {
         linkTitle: 'What is Maker Endgame?',

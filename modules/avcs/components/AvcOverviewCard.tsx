@@ -1,0 +1,84 @@
+/*
+
+SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+*/
+
+import { memo } from 'react';
+import { Avc } from '../types/avc';
+import { Box, Button, Card, Flex, Text } from 'theme-ui';
+import AvcAvatarName from './AvcAvatarName';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { formatValue } from 'lib/string';
+import { parseEther } from 'ethers/lib/utils';
+
+export const AvcOverviewCard = memo(function AvcOverviewCard({ avc }: { avc: Avc }): React.ReactElement {
+  return (
+    <Card p={[3, 3, 3, 4]} data-testid="avc-card">
+      <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+        <Flex
+          sx={{
+            flexDirection: ['column', 'row'],
+            alignItems: ['flex-start', 'center'],
+            justifyContent: 'space-between'
+          }}
+        >
+          <AvcAvatarName avc={avc} />
+          <InternalLink href="/delegates" queryParams={{ avc: avc.name }} title="View delegates">
+            <Button variant="primaryLarge" data-testid="button-avc-view-delegates">
+              View Delegates
+            </Button>
+          </InternalLink>
+        </Flex>
+
+        <Text variant="secondary">{avc.description.slice(0, 100)}</Text>
+
+        <Flex sx={{ justifyContent: 'space-between', flexWrap: 'wrap-reverse' }}>
+          <InternalLink href={`/avc/${avc.id}`} title="View AVC details">
+            <Button variant="outline">View AVC details</Button>
+          </InternalLink>
+          <Flex sx={{ justifyContent: 'flex-end', gap: 4 }}>
+            <Box>
+              <Text
+                as="p"
+                variant="microHeading"
+                sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                data-testid="avc-delegates-count"
+              >
+                {avc.delegateCount}
+              </Text>
+              <Text
+                as="p"
+                variant="secondary"
+                color="onSecondary"
+                sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
+              >
+                Delegates
+              </Text>
+            </Box>
+            <Box>
+              <Text
+                as="p"
+                variant="microHeading"
+                sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
+                data-testid="avc-total-mkr-delegated"
+              >
+                {formatValue(parseEther(avc.mkrDelegated))}
+              </Text>
+              <Text
+                as="p"
+                variant="secondary"
+                color="onSecondary"
+                sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
+              >
+                Total MKR delegated
+              </Text>
+            </Box>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Card>
+  );
+});

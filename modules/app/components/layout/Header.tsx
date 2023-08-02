@@ -194,6 +194,19 @@ const Header = (): JSX.Element => {
           </Flex>
 
           <NavLink
+            href={'/avcs'}
+            title="View AVCs page"
+            p={0}
+            sx={{
+              display: ['none', 'flex'],
+              ml: [0, 4, 4, 5],
+              color: router?.asPath?.startsWith('/avcs') ? 'primary' : undefined
+            }}
+          >
+            AVCs
+          </NavLink>
+
+          <NavLink
             href={'/delegates'}
             title="View delegates page"
             p={0}

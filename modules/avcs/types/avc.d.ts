@@ -30,9 +30,11 @@ export type AvcsValidatedQueryParams = {
   searchTerm: string | null;
 };
 
+export type AvcsPageStats = {
+  totalCount: number;
+};
+
 export type AvcsAPIResponse = {
-  stats: {
-    totalCount: number;
-  };
+  stats: AvcsPageStats;
   avcs: Avc[];
 };
