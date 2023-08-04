@@ -23,12 +23,11 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { GetStaticProps } from 'next';
 import { useMemo, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
-import { Box, Button, Card, Flex, Heading, Text } from 'theme-ui';
+import { Box, Button, Flex, Heading, Text } from 'theme-ui';
 import useAvcsFiltersStore from 'modules/avcs/stores/avcsFiltersStore';
 import shallow from 'zustand/shallow';
 import { AvcsSortFilter } from 'modules/avcs/components/filters/AvcsSortFilter';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import { AvcsSystemInfo } from 'modules/avcs/components/AvcsSystemInfo';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { AvcOverviewCard } from 'modules/avcs/components/AvcOverviewCard';
@@ -151,28 +150,12 @@ const AlignedVotingCommittees = ({ avcs: propAvcs, stats }: AvcsAPIResponse) => 
           </Box>
 
           <Stack gap={3}>
-            <Box>
-              <Heading mt={3} mb={2} as="h3" variant="microHeading">
-                Join an AVC
-              </Heading>
-              <Card variant="compact">
-                <Text as="p" sx={{ mb: 3, color: 'textSecondary' }}>
-                  Interested in starting or joining an AVC?
-                </Text>
-                <InternalLink href={'https://start.makerdao.com/'} title="AVC information">
-                  <Text color="accentBlue">
-                    View Maker start page
-                    <Icon ml={2} name="arrowTopRight" size={2} />
-                  </Text>
-                </InternalLink>
-              </Card>
-            </Box>
+            <ResourceBox type="avcs" />
             {stats && (
               <ErrorBoundary componentName="Delegates System Info">
                 <AvcsSystemInfo stats={stats} />
               </ErrorBoundary>
             )}
-            <ResourceBox type="avcs" />
             <ResourceBox type="general" />
           </Stack>
         </SidebarLayout>
