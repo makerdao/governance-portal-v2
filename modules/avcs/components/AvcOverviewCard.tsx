@@ -14,6 +14,21 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { formatValue } from 'lib/string';
 import { parseEther } from 'ethers/lib/utils';
 
+const extractShortDescription = (description: string) => {
+  const characterLimit = 500;
+
+  const shortDescription = description
+    // RegExp to remove all HTML tags
+    .replace(/<\/?.+?>/gi, '')
+    .split('\n')
+    .slice(1)
+    .filter(line => line !== '')
+    .join('\n\n');
+
+  const isDescriptionLonger = shortDescription.length > characterLimit;
+  return `${shortDescription.slice(0, characterLimit)}${isDescriptionLonger ? '...' : ''}`;
+};
+
 export const AvcOverviewCard = memo(function AvcOverviewCard({ avc }: { avc: Avc }): React.ReactElement {
   return (
     <Card p={[3, 3, 3, 4]} data-testid="avc-card">
@@ -33,7 +48,9 @@ export const AvcOverviewCard = memo(function AvcOverviewCard({ avc }: { avc: Avc
           </InternalLink>
         </Flex>
 
-        <Text variant="secondary">{avc.description.slice(0, 100)}</Text>
+        <Text variant="secondary" sx={{ whiteSpace: 'pre-line' }}>
+          {extractShortDescription(avc.description)}
+        </Text>
 
         <Flex sx={{ justifyContent: 'space-between', flexWrap: 'wrap-reverse' }}>
           <InternalLink href={`/avc/${avc.id}`} title="View AVC details">
