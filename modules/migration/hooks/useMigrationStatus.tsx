@@ -11,17 +11,42 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
 import { isAboutToExpireCheck, isExpiredCheck } from '../helpers/expirationChecks';
 import BigNumber from 'bignumber.js';
+import useSWR, { useSWRConfig } from 'swr';
+import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
+import { fetchJson } from 'lib/fetchJson';
 
 export function useMigrationStatus(): {
   isDelegatedToExpiredContract: boolean;
   isDelegatedToExpiringContract: boolean;
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
+  isShadowDelegate: boolean;
 } {
   const { account: address, network } = useWeb3();
+  const { cache } = useSWRConfig();
 
   const { data: delegatedToData } = useDelegatedTo(address, network);
-  const { data: delegateContractExpirationDate } = useDelegateContractExpirationDate();
+  const {
+    data: { expiration: delegateContractExpirationDate, voteDelegateContractAddress }
+  } = useDelegateContractExpirationDate();
+
+  const dataKeyAccount = `/api/address/${voteDelegateContractAddress}?network=${network}`;
+  const { data: addressDetailData } = useSWR<AddressApiResponse>(
+    voteDelegateContractAddress ? dataKeyAccount : null,
+    fetchJson,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnMount: !cache.get(dataKeyAccount),
+      revalidateOnReconnect: false
+    }
+  );
+
+  const isShadowDelegate = voteDelegateContractAddress
+    ? addressDetailData
+      ? addressDetailData.delegateInfo?.name === 'Shadow Delegate'
+      : false
+    : false;
 
   const isDelegateContractExpiring = delegateContractExpirationDate
     ? isAboutToExpireCheck(delegateContractExpirationDate)
@@ -49,6 +74,7 @@ export function useMigrationStatus(): {
     isDelegatedToExpiredContract,
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
-    isDelegateContractExpiring
+    isDelegateContractExpiring,
+    isShadowDelegate
   };
 }

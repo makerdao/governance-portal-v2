@@ -19,7 +19,9 @@ export function useLinkedDelegateInfo(): {
 } {
   const { account: address, network } = useWeb3();
 
-  const { data: delegateContractExpirationDate } = useDelegateContractExpirationDate();
+  const {
+    data: { expiration: delegateContractExpirationDate }
+  } = useDelegateContractExpirationDate();
 
   // Means the old delegate in a mapping is connected
   const previousOwnerConnected = address ? !!getNewOwnerFromPrevious(address, network) : false;
