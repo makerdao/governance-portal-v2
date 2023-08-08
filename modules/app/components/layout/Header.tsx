@@ -354,13 +354,16 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
             <InternalLink title="View executive page" href="/executive">
               <Text sx={{ fontWeight: 'semiBold' }}>Executive</Text>
             </InternalLink>
-          </Flex>
-          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
-            <InternalLink title="View delegate page" href="/delegates">
-              <Text sx={{ fontWeight: 'semiBold' }}>Delegates</Text>
-            </InternalLink>
             <InternalLink title="View emergency shutdown page" href="/esmodule">
               <Text sx={{ fontWeight: 'semiBold' }}>ES Module</Text>
+            </InternalLink>
+          </Flex>
+          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
+            <InternalLink title="View AVCs page" href="/avcs">
+              <Text sx={{ fontWeight: 'semiBold' }}>AVCs</Text>
+            </InternalLink>
+            <InternalLink title="View delegate page" href="/delegates">
+              <Text sx={{ fontWeight: 'semiBold' }}>Delegates</Text>
             </InternalLink>
           </Flex>
         </Flex>

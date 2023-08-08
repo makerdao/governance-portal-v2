@@ -37,7 +37,8 @@ export const AvcOverviewCard = memo(function AvcOverviewCard({ avc }: { avc: Avc
           sx={{
             flexDirection: ['column', 'row'],
             alignItems: ['flex-start', 'center'],
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            gap: 2
           }}
         >
           <AvcAvatarName avc={avc} />

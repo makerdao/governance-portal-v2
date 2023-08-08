@@ -444,12 +444,12 @@ const Delegates = ({
                 </Box>
               </Card>
             </Box>
+            <ResourceBox type={'delegates'} />
             {stats && (
               <ErrorBoundary componentName="Delegates System Info">
                 <DelegatesSystemInfo stats={propStats} />
               </ErrorBoundary>
             )}
-            <ResourceBox type={'delegates'} />
             <ResourceBox type={'general'} />
           </Stack>
         </SidebarLayout>
