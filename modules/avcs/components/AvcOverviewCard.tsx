@@ -52,10 +52,7 @@ export const AvcOverviewCard = memo(function AvcOverviewCard({ avc }: { avc: Avc
           {extractShortDescription(avc.description)}
         </Text>
 
-        <Flex sx={{ justifyContent: 'space-between', flexWrap: 'wrap-reverse' }}>
-          <InternalLink href={`/avc/${avc.id}`} title="View AVC details">
-            <Button variant="outline">View AVC details</Button>
-          </InternalLink>
+        <Flex sx={{ justifyContent: 'flex-end', flexWrap: 'wrap-reverse' }}>
           <Flex sx={{ justifyContent: 'flex-end', gap: 4 }}>
             <Box>
               <Text
