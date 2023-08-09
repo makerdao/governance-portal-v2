@@ -30,14 +30,15 @@ async function main() {
   });
 
   const ethSender = await ethers.getSigner(accounts[0].address);
+  const ethAmt = '0.5';
   // Send 0.5 ETH to all addresses
   for (let i = 0; i < 50; i++) {
     await ethSender.sendTransaction({
       to: keyPairs.addresses[i],
-      value: ethers.utils.parseEther('0.5')
+      value: ethers.utils.parseEther(ethAmt)
     });
   }
-  console.log('Imported accounts have been sent 0.5 ETH');
+  console.log(`Imported accounts have been sent ${ethAmt} ETH`);
 
   await ethSender.sendTransaction({
     to: testAccount,

@@ -20,15 +20,22 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useRouter } from 'next/router';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
-import { DelegateDetail } from 'modules/delegates/components';
+import { DelegateDetail, DelegatesSystemInfo } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { DelegatesAPIStats, DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 
-const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
+const AddressView = ({
+  addressInfo,
+  delegationStats
+}: {
+  addressInfo: AddressApiResponse;
+  delegationStats: DelegatesAPIStats | undefined;
+}) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
   return (
@@ -78,19 +85,25 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               <ManageDelegation delegate={addressInfo.delegateInfo} />
             </ErrorBoundary>
           )}
-          <ErrorBoundary componentName="System Info">
-            <SystemStatsSidebar
-              fields={[
-                'polling contract v2',
-                'polling contract v1',
-                'arbitrum polling contract',
-                'savings rate',
-                'total dai',
-                'debt ceiling',
-                'system surplus'
-              ]}
-            />
-          </ErrorBoundary>
+          {addressInfo.isDelegate && delegationStats ? (
+            <ErrorBoundary componentName="Delegates System Info">
+              <DelegatesSystemInfo stats={delegationStats} />
+            </ErrorBoundary>
+          ) : (
+            <ErrorBoundary componentName="System Info">
+              <SystemStatsSidebar
+                fields={[
+                  'polling contract v2',
+                  'polling contract v1',
+                  'arbitrum polling contract',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling',
+                  'system surplus'
+                ]}
+              />
+            </ErrorBoundary>
+          )}
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
@@ -112,6 +125,18 @@ export default function AddressPage(): JSX.Element {
     revalidateOnReconnect: false
   });
 
+  const dataKeyDelegationInfo = `/api/delegates/v2?network=${network}`;
+  const { data: delegationData } = useSWR<DelegatesPaginatedAPIResponse>(
+    data?.isDelegate ? dataKeyDelegationInfo : null,
+    fetchJson,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnMount: !cache.get(dataKeyDelegationInfo),
+      revalidateOnReconnect: false
+    }
+  );
+
   if (error && error.status === 404) {
     return (
       <PrimaryLayout>
@@ -126,13 +151,13 @@ export default function AddressPage(): JSX.Element {
     );
   }
 
-  if (!data) {
+  if (!data || (data.isDelegate && !delegationData)) {
     return <PageLoadingPlaceholder />;
   }
 
   return (
     <ErrorBoundary componentName="Address Page">
-      <AddressView addressInfo={data} />
+      <AddressView addressInfo={data} delegationStats={delegationData?.stats} />
     </ErrorBoundary>
   );
 }
