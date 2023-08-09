@@ -20,9 +20,12 @@ export const allDelegatesExecSupportKey = 'all-delegates-exec-support';
 
 export const allDelegateAddressesKey = 'all-delegate-addresses';
 
+export const avcsCacheKey = 'avcs';
+
 export const executiveProposalsCacheKey = 'proposals';
 
-export const getDelegateGithubCacheKey = (address: string): string => `delegate-github-${address.toLowerCase()}`;
+export const getDelegateGithubCacheKey = (address: string): string =>
+  `delegate-github-${address.toLowerCase()}`;
 
 export const getAddressDetailCacheKey = (address: string): string => `address-${address.toLowerCase()}`;
 
@@ -35,7 +38,7 @@ export const getExecutiveProposalsCacheKey = (
 ): string => `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
 
 export const getAddressStatsCacheKey = (address: string | string[]): string =>
-  (`address-stats-${Array.isArray(address) ? address.join('-') : address}`).toLowerCase();
+  `address-stats-${Array.isArray(address) ? address.join('-') : address}`.toLowerCase();
 
 export const getAddressDelegationHistoryCacheKey = (address: string): string =>
   `address-delegation-history-${address.toLowerCase()}`;
