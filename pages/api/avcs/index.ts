@@ -86,7 +86,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
  *              type: number
  *        avcs:
  *          type: array
- *          items: $ref: '#/components/schemas/Avc'
+ *          items:
+ *            $ref: '#/components/schemas/Avc'
  */
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AvcsAPIResponse>) => {
