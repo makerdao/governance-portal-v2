@@ -34,11 +34,11 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://forum.makerdao.com/t/the-5-phases-of-endgame/20830/'
       },
       {
-        linkTitle: 'Visit the Governance Forum',
+        linkTitle: 'Governance Forum',
         url: 'https://forum.makerdao.com/'
       },
       {
-        linkTitle: 'Visit Governance Documentation',
+        linkTitle: 'Governance Documentation',
         url: 'https://manual.makerdao.com/'
       },
       {
