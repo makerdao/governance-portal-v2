@@ -42,11 +42,15 @@ export const AvcOverviewCard = memo(function AvcOverviewCard({ avc }: { avc: Avc
           }}
         >
           <AvcAvatarName avc={avc} />
-          <InternalLink href="/delegates" queryParams={{ avc: avc.name }} title="View delegates">
-            <Button variant="primaryLarge" data-testid="button-avc-view-delegates">
-              View Delegates
-            </Button>
-          </InternalLink>
+          {avc.delegateCount > 0 ? (
+            <InternalLink href="/delegates" queryParams={{ avc: avc.name }} title="View delegates">
+              <Button variant="primaryLarge" data-testid="button-avc-view-delegates">
+                View Delegates
+              </Button>
+            </InternalLink>
+          ) : (
+            <></>
+          )}
         </Flex>
 
         <Text variant="secondary" sx={{ whiteSpace: 'pre-line' }}>
