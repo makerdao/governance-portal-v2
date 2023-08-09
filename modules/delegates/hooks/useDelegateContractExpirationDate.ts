@@ -10,7 +10,10 @@ import useSWR from 'swr';
 import { useCurrentUserVoteDelegateContract } from './useCurrentUserVoteDelegateContract';
 
 type VoteDelegateAddressResponse = {
-  data?: Date | null;
+  data: {
+    expiration?: Date | null;
+    voteDelegateContractAddress?: string;
+  };
   loading: boolean;
   error: Error;
 };
@@ -19,7 +22,7 @@ type VoteDelegateAddressResponse = {
 export const useDelegateContractExpirationDate = (): VoteDelegateAddressResponse => {
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
 
-  const { data, error } = useSWR(
+  const { data: expirationData, error } = useSWR(
     voteDelegateContract ? `${voteDelegateContract}/expiration-date` : null,
     async () => {
       const expiration = await voteDelegateContract?.expiration();
@@ -28,8 +31,11 @@ export const useDelegateContractExpirationDate = (): VoteDelegateAddressResponse
     }
   );
   return {
-    data,
-    loading: !error && !data,
+    data: {
+      expiration: expirationData,
+      voteDelegateContractAddress: voteDelegateContract?.address
+    },
+    loading: !error && !expirationData,
     error
   };
 };

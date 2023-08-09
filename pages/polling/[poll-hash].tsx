@@ -61,6 +61,13 @@ const editMarkdown = (content: string) => {
   );
 };
 
+// Replaces the raw GitHub domain name, adds the 'blob' path and adds the link to the review section
+const parseRawUrl = (rawUrl: string) => {
+  const [protocol, separator, , org, repo, ...route] = rawUrl.split('/');
+  const url = [protocol, separator, 'github.com', org, repo, 'blob', ...route].join('/');
+  return url + '#review';
+};
+
 const PollView = ({ poll }: { poll: Poll }) => {
   const filteredPollData = usePollsStore(state => state.filteredPolls);
   const [prevSlug, setPrevSlug] = useState(poll.ctx?.prev?.slug);
@@ -213,12 +220,22 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     )}
                   </Flex>
 
-                  <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
+                  <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: 'column' }}>
                     {poll.discussionLink && (
                       <Box>
-                        <ExternalLink title="Discussion" href={poll.discussionLink}>
+                        <ExternalLink title="Forum Discussion" href={poll.discussionLink}>
                           <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                            Discussion
+                            Forum Discussion
+                            <Icon ml={2} name="arrowTopRight" size={2} />
+                          </Text>
+                        </ExternalLink>
+                      </Box>
+                    )}
+                    {poll.url && (
+                      <Box>
+                        <ExternalLink title="Review resources on GitHub" href={parseRawUrl(poll.url)}>
+                          <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                            Review resources on GitHub
                             <Icon ml={2} name="arrowTopRight" size={2} />
                           </Text>
                         </ExternalLink>
