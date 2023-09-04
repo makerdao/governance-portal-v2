@@ -24,15 +24,8 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
 import { Tokens } from 'modules/web3/constants/tokens';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 
-const ModalContent = ({
-  close,
-  showProxyInfo
-}: {
-  close: () => void;
-  showProxyInfo?: boolean;
-}): React.ReactElement => {
+const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const { data: mkrBalance } = useMkrBalance(account);
@@ -140,22 +133,6 @@ const ModalContent = ({
             >
               Approve
             </Button>
-            {showProxyInfo && (
-              <Text as="p" sx={{ fontSize: 2, mt: 3, color: 'textSecondary', textAlign: 'center' }}>
-                Interested in creating a proxy contract instead of depositing directly into Chief? Learn more{' '}
-                <ExternalLink
-                  href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
-                  title="Read about proxy contracts"
-                >
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
-                </ExternalLink>{' '}
-                and create one{' '}
-                <ExternalLink href="https://v1.vote.makerdao.com/proxysetup" title="Go to proxy setup">
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
-                </ExternalLink>
-                .
-              </Text>
-            )}
           </Stack>
         )}
       </Box>
@@ -163,7 +140,7 @@ const ModalContent = ({
   );
 };
 
-const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boolean }): JSX.Element => {
+const Deposit = ({ link }: { link?: string }): JSX.Element => {
   const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const [showDialog, setShowDialog] = useState(false);
 
@@ -183,7 +160,7 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent close={() => setShowDialog(false)} showProxyInfo={showProxyInfo} />
+          <ModalContent close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
       {link ? (

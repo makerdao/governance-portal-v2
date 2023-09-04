@@ -17,15 +17,9 @@ type Props = {
   lockedMkr: BigNumber;
   voteDelegate?: string;
   voteProxy?: string;
-  showProxyInfo?: boolean;
 };
 
-export const ExecutiveBalance = ({
-  lockedMkr,
-  voteDelegate,
-  voteProxy,
-  showProxyInfo
-}: Props): JSX.Element => (
+export const ExecutiveBalance = ({ lockedMkr, voteDelegate, voteProxy }: Props): JSX.Element => (
   <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
     <Flex>
       <Text sx={{ mr: 1 }}>
@@ -44,7 +38,7 @@ export const ExecutiveBalance = ({
     {!voteDelegate && (
       <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
         <Box sx={{ ml: [0, 3] }}>
-          <Deposit showProxyInfo={showProxyInfo} />
+          <Deposit />
         </Box>
         <Withdraw sx={{ ml: 3 }} />
       </Flex>

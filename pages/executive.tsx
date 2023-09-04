@@ -174,14 +174,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const { data: hat } = useHat();
 
-  const showProxyInfo =
-    lockedMkrOldChief &&
-    lockedMkrOldChief.eq(0) &&
-    !voteProxyContractAddress &&
-    lockedMkr &&
-    lockedMkr.eq(0) &&
-    !voteDelegateContractAddress;
-
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
@@ -246,8 +238,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
             <MigrationBadge>
               {lockedMkr.eq(0) ? (
                 <Text>
-                  Your vote proxy has been created. Please{' '}
-                  <Deposit link={'deposit'} showProxyInfo={showProxyInfo} /> into your new vote proxy contract
+                  Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote
+                  proxy contract
                 </Text>
               ) : (
                 'Your vote proxy has been created. You are now ready to vote.'
@@ -272,7 +264,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
           <ExecutiveBalance
             lockedMkr={lockedMkr || BigNumber.from(0)}
             voteDelegate={voteDelegateContractAddress}
-            showProxyInfo={showProxyInfo}
           />
         )}
         <Flex sx={{ alignItems: 'center' }}>
