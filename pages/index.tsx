@@ -75,8 +75,8 @@ const LandingPage = ({
 
   const activeDelegates = delegatesInfo
     .sort((a, b) => {
-      const [first] = a.combinedParticipation?.split('%') || '0';
-      const [second] = b.combinedParticipation?.split('%') || '0';
+      const [first] = a.combinedParticipation?.toString().split('%') || '0';
+      const [second] = b.combinedParticipation?.toString().split('%') || '0';
       return parseFloat(second) - parseFloat(first);
     })
     .slice(0, 5);
