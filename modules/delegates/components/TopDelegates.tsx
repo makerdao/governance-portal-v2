@@ -141,6 +141,28 @@ export default function TopDelegates({
             }}
           >
             <InternalLink
+              href={'/avcs'}
+              title="View delegates"
+              styles={{
+                borderColor: 'secondaryMuted',
+                color: 'text',
+                ':hover': {
+                  color: 'text',
+                  borderColor: 'onSecondary',
+                  backgroundColor: 'background'
+                }
+              }}
+            >
+              <Button variant="outline">See all AVCs</Button>
+            </InternalLink>
+          </Box>
+          <Box
+            sx={{
+              ml: [0, 3],
+              mr: [2, 3]
+            }}
+          >
+            <InternalLink
               href={'/delegates'}
               title="View delegates"
               styles={{
@@ -162,21 +184,20 @@ export default function TopDelegates({
               mr: [0, 3]
             }}
           >
-            <InternalLink href={'/account'} title="View account">
-              <Button
-                variant="outline"
-                sx={{
-                  borderColor: 'secondaryMuted',
+            <InternalLink
+              href={'/account'}
+              title="View account"
+              styles={{
+                borderColor: 'secondaryMuted',
+                color: 'text',
+                ':hover': {
                   color: 'text',
-                  ':hover': {
-                    color: 'text',
-                    borderColor: 'onSecondary',
-                    backgroundColor: 'background'
-                  }
-                }}
-              >
-                Become a delegate
-              </Button>
+                  borderColor: 'onSecondary',
+                  backgroundColor: 'background'
+                }
+              }}
+            >
+              <Button variant="outline">Become a delegate</Button>
             </InternalLink>
           </Box>
         </Flex>
