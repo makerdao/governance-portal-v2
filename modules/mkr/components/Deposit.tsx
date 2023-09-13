@@ -142,18 +142,20 @@ const ModalContent = ({
             </Button>
             {showProxyInfo && (
               <Text as="p" sx={{ fontSize: 2, mt: 3, color: 'textSecondary', textAlign: 'center' }}>
-                Interested in creating a proxy contract instead of depositing directly into Chief? Learn more{' '}
+                Advanced users interested in creating a{' '}
                 <ExternalLink
                   href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
                   title="Read about proxy contracts"
                 >
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
+                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>vote proxy contract</Text>
                 </ExternalLink>{' '}
-                and create one{' '}
-                <ExternalLink href="https://v1.vote.makerdao.com/proxysetup" title="Go to proxy setup">
+                instead of depositing directly into Chief can learn how to create one{' '}
+                <ExternalLink
+                  href="https://dux.makerdao.network/how-to-create-a-vote-proxy-manually-using-etherscan"
+                  title="Etherscan guide"
+                >
                   <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
                 </ExternalLink>
-                .
               </Text>
             )}
           </Stack>
