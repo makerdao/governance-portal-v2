@@ -149,11 +149,13 @@ const ModalContent = ({
                 >
                   <Text sx={{ color: 'accentBlue', fontSize: 2 }}>vote proxy contract</Text>
                 </ExternalLink>{' '}
-                instead of depositing directly into Chief can create one{' '}
-                <ExternalLink href="https://dux.makerdao.network/how-to-create-a-vote-proxy-manually-using-etherscan" title="Etherscan guide">
+                instead of depositing directly into Chief can learn how to create one{' '}
+                <ExternalLink
+                  href="https://dux.makerdao.network/how-to-create-a-vote-proxy-manually-using-etherscan"
+                  title="Etherscan guide"
+                >
                   <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
                 </ExternalLink>
-                .
               </Text>
             )}
           </Stack>
