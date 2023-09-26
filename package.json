@@ -139,7 +139,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-testing-library": "^5.10.2",
     "glob": "^8.0.3",
-    "graphql": "^16.2.0",
+    "graphql": "^16.8.1",
     "hardhat": "^2.12.1-unknown-txs.0",
     "husky": "^6.0.0",
     "istanbul-lib-coverage": "^3.2.0",
