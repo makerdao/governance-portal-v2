@@ -35,7 +35,7 @@ export async function parsePollMetadata(
   const testDoc = `---javascript
 {
   "title": "Test New Poll 1",
-  "summary": process.env.USE_CACHE,
+  "summary": "this is a summary of the poll",
   "discussion_link": "https://forum.makerdao.com/t/eth-and-wbtc-vaults-liquidations-2-0-parameters/7628",
   "vote_type": "Plurality Voting",
   "categories": [
