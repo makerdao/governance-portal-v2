@@ -32,20 +32,7 @@ export async function parsePollMetadata(
     [key: number]: string[];
   }
 ): Promise<Poll> {
-  const { data: pollMeta, content } = matterWrapper(document || '', {
-    engines: {
-      javascript: {
-        parse: function () {
-          console.log('Parsing JavaScript is not allowed');
-          return {};
-        },
-        stringify: function () {
-          console.log('Stringifying JavaScript is not allowed');
-          return '';
-        }
-      }
-    }
-  });
+  const { data: pollMeta, content } = matterWrapper(document || '');
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
   const options = pollMeta.options;
