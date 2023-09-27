@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { CMSProposal } from 'modules/executive/types';
 import { ethers } from 'ethers';
 import { slugify } from 'lib/utils';
@@ -22,7 +22,7 @@ export function parseExecutive(
   const {
     content,
     data: { title, summary, address, date }
-  } = matter(proposalDoc);
+  } = matterWrapper(proposalDoc);
   // Remove empty docs
   if (!(content && title && summary && address && date)) {
     logger.warn(

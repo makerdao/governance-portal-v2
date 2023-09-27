@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Poll, PartialPoll } from '../types/poll';
 
 import { backoffRetry, timeoutPromise } from 'lib/utils';
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { parsePollMetadata } from '../helpers/parsePollMetadata';
 import logger from 'lib/logger';
 
@@ -22,7 +22,7 @@ async function fetchPollGithubDocument(url: string): Promise<string> {
       return resp?.text();
     });
 
-    if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0)) {
+    if (!(document.length > 0 && Object.keys(matterWrapper(document).data?.options)?.length > 0)) {
       throw new Error('Invalid poll document');
     }
 
