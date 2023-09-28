@@ -122,12 +122,12 @@ export async function _getAllPolls(
   network?: SupportedNetworks,
   queryVariables?: PollsQueryVariables
 ): Promise<Poll[]> {
-  // const cacheKey = getAllPollsCacheKey(queryVariables);
+  const cacheKey = getAllPollsCacheKey(queryVariables);
 
-  // const cachedPolls = await cacheGet(cacheKey, network);
-  // if (cachedPolls) {
-  //   return JSON.parse(cachedPolls);
-  // }
+  const cachedPolls = await cacheGet(cacheKey, network);
+  if (cachedPolls) {
+    return JSON.parse(cachedPolls);
+  }
 
   const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryVariables);
 
@@ -141,7 +141,7 @@ export async function _getAllPolls(
     };
   });
 
-  // cacheSet(cacheKey, JSON.stringify(trimmedPolls), network);
+  cacheSet(cacheKey, JSON.stringify(trimmedPolls), network);
 
   return trimmedPolls;
 }

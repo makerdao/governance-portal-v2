@@ -32,27 +32,7 @@ export async function parsePollMetadata(
     [key: number]: string[];
   }
 ): Promise<Poll> {
-  const testDoc = `---javascript
-{
-  "title": "Test New Poll 1",
-  "summary": 1337+100000+"this is a summary of the poll",
-  "discussion_link": "https://forum.makerdao.com/t/eth-and-wbtc-vaults-liquidations-2-0-parameters/7628",
-  "vote_type": "Plurality Voting",
-  "categories": [
-    "Auctions",
-    "Risk Variable"
-  ],
-  "options": {
-    "0": "Abstain",
-    "1": true,
-    "2": false
-  },
-  "start_date": "2023-09-25 18:00:00 +0000",
-  "end_date": "2023-09-29 16:00:00 +0000"
-}
----
-# Poll: Add ETH-A to Liquidations 2.0 Framework - April 26, 2021`;
-  const { data: pollMeta, content } = matter(testDoc || '');
+  const { data: pollMeta, content } = matter(document || '');
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
   const options = pollMeta.options;
