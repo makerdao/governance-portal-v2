@@ -64,6 +64,7 @@ const PollingOverview = ({
   paginationInfo: propPaginationInfo,
   activePollIds
 }: PollingPageProps) => {
+  console.log('Hello world');
   const [
     { categoryFilter, pollVictoryCondition, startDate, endDate, showPollActive, showPollEnded },
     setCategoryFilter,
