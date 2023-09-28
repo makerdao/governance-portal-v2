@@ -10,7 +10,7 @@ import { parsePollMetadata, spockPollToPartialPoll } from '../parsePollMetadata'
 import pollJson327 from './__helpers__/poll-327.js';
 import pollJson431 from './__helpers__/poll-431.js';
 import fs from 'fs';
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { PollSpock } from '../../types/pollSpock';
 import { getPollTags, getPollTagsMapping } from 'modules/polling/api/getPollTags';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
@@ -76,7 +76,7 @@ describe('Parse poll metadata', () => {
       })
     );
 
-    expect(actual.content).toEqual(matter(pollMetadata431).content);
+    expect(actual.content).toEqual(matterWrapper(pollMetadata431).content);
   });
 
   test('return the expected values for an old uncategorized poll', async () => {
@@ -111,6 +111,6 @@ describe('Parse poll metadata', () => {
       })
     );
 
-    expect(actual.content).toEqual(matter(pollMetadata327).content);
+    expect(actual.content).toEqual(matterWrapper(pollMetadata327).content);
   });
 });

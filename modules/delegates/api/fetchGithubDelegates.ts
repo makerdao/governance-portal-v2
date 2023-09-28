@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
@@ -45,13 +45,13 @@ async function extractGithubInformation(
     const {
       content,
       data: { name, external_profile_url, tags, avc_name }
-    } = matter(profileMdDoc);
+    } = matterWrapper(profileMdDoc);
 
     let metricsMdDoc;
     let metricsData;
     if (metricsMd) {
       metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
-      const { data } = matter(metricsMdDoc);
+      const { data } = matterWrapper(metricsMdDoc);
       metricsData = data;
     }
 
@@ -110,10 +110,10 @@ async function extractGithubInformationGraphQL(
       const {
         content,
         data: { name, external_profile_url, tags, avc_name }
-      } = matter(profileMdDoc);
+      } = matterWrapper(profileMdDoc);
 
       const metricsMdDoc = metricsMd?.object?.text;
-      const { data } = matter(metricsMdDoc);
+      const { data } = matterWrapper(metricsMdDoc);
       const metricsData = data;
 
       let cuMember = false;

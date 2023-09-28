@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import {
   ERRORS_VALIDATE_POLL_PARAMETERS,
@@ -22,7 +22,7 @@ parameters:
 ---
         `;
 
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -39,7 +39,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -57,7 +57,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -76,7 +76,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -97,7 +97,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -120,7 +120,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -142,7 +142,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -162,7 +162,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -182,7 +182,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -202,7 +202,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -222,7 +222,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
@@ -248,7 +248,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -268,7 +268,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
@@ -293,7 +293,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -313,7 +313,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
 
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -333,7 +333,7 @@ parameters:
 # hello
 
     `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toBe(null);
@@ -355,7 +355,7 @@ parameters:
 # hello
     
         `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
@@ -384,7 +384,7 @@ parameters:
 # hello
     
         `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
@@ -413,7 +413,7 @@ parameters:
 # hello
         
             `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual(null);
@@ -434,7 +434,7 @@ parameters:
 # hello
         
             `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual(null);
@@ -455,7 +455,7 @@ parameters:
 # hello
         
             `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual(null);
@@ -478,7 +478,7 @@ parameters:
 # hello
         
             `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual(null);
@@ -503,7 +503,7 @@ parameters:
 # hello
         
             `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual(null);
@@ -525,7 +525,7 @@ parameters:
 # hello
         
             `;
-    const parametersMarkdown = matter(parameters);
+    const parametersMarkdown = matterWrapper(parameters);
     // Returns correct if is correct
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual(null);
@@ -543,7 +543,7 @@ parameters:
   //     - { type : default, options : [2] }
   //   result_display: single-vote-breakdown
   // `;
-  //     const parametersMarkdown = matter(parameters);
+  //     const parametersMarkdown = matterWrapper(parameters);
   //     // Returns correct if is correct
   //     const [parsed, errors] = validatePollParameters(parametersMarkdown.data);
   //   });

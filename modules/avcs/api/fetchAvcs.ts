@@ -16,7 +16,7 @@ import { allGithubAvcs } from 'modules/gql/queries/allGithubAvcs';
 import logger from 'lib/logger';
 import { GraphQlQueryResponseData } from '@octokit/graphql';
 import { RepositoryInfo } from 'modules/delegates/api/getDelegatesRepositoryInfo';
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { markdownToHtml } from 'lib/markdown';
 import { AvcOrderByEnum } from '../avcs.constants';
 import { fetchDelegatesPaginated } from 'modules/delegates/api/fetchDelegates';
@@ -50,7 +50,7 @@ async function extractGithubInformationGraphQL(
       const {
         content,
         data: { external_profile_url, avc_name }
-      } = matter(profileMdDoc);
+      } = matterWrapper(profileMdDoc);
       const html = await markdownToHtml(content);
       const avcDescription = html.split('<h1>$delegate_name</h1>')[0];
 
