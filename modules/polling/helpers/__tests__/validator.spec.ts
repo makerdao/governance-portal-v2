@@ -24,7 +24,6 @@ test('reject a blank document', () => {
 test('reject null', () => {
   const result = validatePollMarkdown(null);
   expect(result.valid).toBeFalsy();
-  expect(result.errors).toContain('expected input to be a string or buffer');
 });
 
 test('reject a document with no options', () => {

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
@@ -32,20 +32,7 @@ export async function parsePollMetadata(
     [key: number]: string[];
   }
 ): Promise<Poll> {
-  const { data: pollMeta, content } = matter(document || '', {
-    engines: {
-      javascript: {
-        parse: function () {
-          console.log('Parsing JavaScript is not allowed');
-          return {};
-        },
-        stringify: function () {
-          console.log('Stringifying JavaScript is not allowed');
-          return '';
-        }
-      }
-    }
-  });
+  const { data: pollMeta, content } = matterWrapper(document || '');
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
   const options = pollMeta.options;

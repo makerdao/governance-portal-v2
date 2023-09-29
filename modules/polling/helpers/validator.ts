@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import isEmpty from 'lodash/isEmpty';
 import { Poll, PartialPoll } from 'modules/polling/types';
 import { parsePollMetadata } from './parsePollMetadata';
@@ -35,7 +35,7 @@ export async function validatePollFromRawURL(url: string, poll?: PartialPoll): P
 
 export function validatePollMarkdown(text: string): ValidationResult {
   try {
-    const { data, content } = matter(text);
+    const { data, content } = matterWrapper(text);
     if (!content) return { valid: false, errors: ['Document is blank'] };
     if (isEmpty(data)) return { valid: false, errors: ['Front matter is blank'] };
     const errors: string[] = [];

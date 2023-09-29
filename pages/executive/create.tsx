@@ -11,7 +11,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import matter from 'gray-matter';
+import { matterWrapper } from 'lib/matter';
 import { markdownToHtml } from 'lib/markdown';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -54,7 +54,7 @@ const ExecutiveCreate = (): JSX.Element => {
     setFetchFinished(false);
     try {
       const rawMd = await (await fetch(url, { cache: 'no-cache' })).text();
-      const { data, content } = matter(rawMd);
+      const { data, content } = matterWrapper(rawMd);
       metadata = data;
       execMarkdown = content;
     } catch (e) {
