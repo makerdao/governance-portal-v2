@@ -85,7 +85,7 @@
     "react-qr-svg": "^2.2.2",
     "react-sticky": "^6.0.3",
     "react-toastify": "^8.1.1",
-    "recharts": "2.1.12",
+    "recharts": "2.9.0",
     "rehype-sanitize": "^5.0.1",
     "rehype-stringify": "^9.0.3",
     "remark-gfm": "^3.0.1",
