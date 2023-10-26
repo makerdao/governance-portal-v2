@@ -27,9 +27,6 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 afterEach(function onAfterEach() {
   if ((this.currentTest as Mocha.Test).state === 'failed') {
     cy.setCookie('shouldSkip', 'true');
-    Cypress.Cookies.defaults({
-      preserve: 'shouldSkip'
-    });
     //set cookie to skip tests for further specs
     // this.skip()
     // Cypress.runner.stop();
