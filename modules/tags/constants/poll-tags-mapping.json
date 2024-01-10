@@ -1025,5 +1025,22 @@
   "1047": ["high-impact", "risk-parameter"],
   "1048": ["high-impact", "risk-parameter", "spark"],
   "1049": ["high-impact", "collateral-onboard", "risk-parameter", "spark"],
-  "1050": ["high-impact", "collateral-onboard", "risk-parameter", "spark"]
+  "1050": ["high-impact", "collateral-onboard", "risk-parameter", "spark"],
+  "1051": ["medium-impact", "greenlight"],
+  "1052": ["high-impact", "risk-parameter", "spark"],
+  "1053": ["low-impact", "risk-parameter", "spark"],
+  "1054": ["medium-impact", "spark"],
+  "1055": ["high-impact", "risk-parameter", "d3m", "spark"],
+  "1056": ["high-impact", "risk-parameter", "spark"],
+  "1057": ["high-impact", "risk-parameter", "spark"],
+  "1058": ["high-impact", "ratification", "mips", "endgame"],
+  "1059": ["high-impact", "ratification", "mips", "endgame"],
+  "1060": ["high-impact", "ratification", "mips", "endgame"],
+  "1061": ["high-impact", "ratification", "mips", "endgame"],
+  "1062": ["high-impact", "risk-parameter", "spark"],
+  "1063": ["high-impact", "risk-parameter", "spark"],
+  "1064": ["high-impact", "risk-parameter", "spark"],
+  "1065": ["high-impact", "spark"],
+  "1066": ["medium-impact", "spark"],
+  "1067": ["high-impact", "risk-parameter", "spark"]
 }
