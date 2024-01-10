@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   const cspHeader = `
     default-src 'self' https://*.makerdao.com;
     script-src 'self'  ${
-      dev ? ` 'unsafe-eval' 'unsafe-inline'` : ''
+      dev ? "'unsafe-eval' 'unsafe-inline'" : ''
     } cdn.vercel-insights.com 'nonce-${nonce}'; 
     style-src 'self' 'unsafe-inline';
     frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com https://vercel.live https://verify.walletconnect.com;

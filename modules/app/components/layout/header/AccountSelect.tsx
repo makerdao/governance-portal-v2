@@ -26,6 +26,7 @@ import { getIsMetaMask } from 'modules/web3/helpers/getIsMetaMask';
 import logger from 'lib/logger';
 import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 import { DialogContent, DialogOverlay } from '../../Dialog';
+import { checkInjectedProvider } from 'modules/web3/helpers/checkInjectedProvider';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -89,6 +90,9 @@ const AccountSelect = (): React.ReactElement => {
 
       // Temporarily close the connections modal to move focus to the WalletConnect modal
       handleModalToggle(connectionType, false);
+
+      // This is needed because of this issue https://github.com/MetaMask/metamask-extension/issues/3133
+      checkInjectedProvider();
 
       await connection.connector.activate();
 
