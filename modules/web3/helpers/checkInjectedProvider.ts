@@ -3,9 +3,7 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers';
 
 export function checkInjectedProvider() {
-  if (window.ethereum) {
-    return;
-  } else {
+  if (!window.ethereum) {
     const browser = detectBrowser();
     if (browser && browser.name === 'firefox') {
       // Due to https://github.com/MetaMask/metamask-extension/issues/3133
