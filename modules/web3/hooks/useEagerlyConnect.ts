@@ -10,9 +10,13 @@ import { Connector } from '@web3-react/types';
 import { useEffect } from 'react';
 import { useOrderedConnections } from 'modules/web3/hooks/useOrderedConnections';
 import logger from 'lib/logger';
+import { checkInjectedProvider } from '../helpers/checkInjectedProvider';
 
 export async function connect(connector: Connector) {
   try {
+    // This is needed because of this issue https://github.com/MetaMask/metamask-extension/issues/3133
+    checkInjectedProvider();
+
     if (connector.connectEagerly) {
       await connector.connectEagerly();
     } else {
