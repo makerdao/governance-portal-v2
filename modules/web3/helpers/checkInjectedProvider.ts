@@ -1,12 +1,12 @@
-import * as env from 'detect-browser';
+import { detect as detectBrowser } from 'detect-browser';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers';
 
 export function checkInjectedProvider() {
-  const injectedAvailable = !!window.ethereum;
-
-  if (!injectedAvailable) {
-    const browser = env.detect();
+  if (window.ethereum) {
+    return;
+  } else {
+    const browser = detectBrowser();
     if (browser && browser.name === 'firefox') {
       // Due to https://github.com/MetaMask/metamask-extension/issues/3133
       // setup background connection

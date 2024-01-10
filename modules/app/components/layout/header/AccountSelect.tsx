@@ -91,7 +91,9 @@ const AccountSelect = (): React.ReactElement => {
       // Temporarily close the connections modal to move focus to the WalletConnect modal
       handleModalToggle(connectionType, false);
 
+      // This is needed because of this issue https://github.com/MetaMask/metamask-extension/issues/3133
       checkInjectedProvider();
+
       await connection.connector.activate();
 
       setSelectedConnection(connection.type);

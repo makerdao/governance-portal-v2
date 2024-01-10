@@ -14,7 +14,9 @@ import { checkInjectedProvider } from '../helpers/checkInjectedProvider';
 
 export async function connect(connector: Connector) {
   try {
+    // This is needed because of this issue https://github.com/MetaMask/metamask-extension/issues/3133
     checkInjectedProvider();
+
     if (connector.connectEagerly) {
       await connector.connectEagerly();
     } else {
