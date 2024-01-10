@@ -26,6 +26,7 @@ import { getIsMetaMask } from 'modules/web3/helpers/getIsMetaMask';
 import logger from 'lib/logger';
 import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 import { DialogContent, DialogOverlay } from '../../Dialog';
+import { checkInjectedProvider } from 'modules/web3/helpers/checkInjectedProvider';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -90,6 +91,7 @@ const AccountSelect = (): React.ReactElement => {
       // Temporarily close the connections modal to move focus to the WalletConnect modal
       handleModalToggle(connectionType, false);
 
+      checkInjectedProvider();
       await connection.connector.activate();
 
       setSelectedConnection(connection.type);

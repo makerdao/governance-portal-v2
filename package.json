@@ -41,6 +41,8 @@
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/i18n-helper": "^0.1.8",
+    "@metamask/post-message-stream": "^7.0.0",
+    "@metamask/providers": "^14.0.2",
     "@octokit/core": "^4.0.5",
     "@reach/dialog": "^0.16.2",
     "@reach/listbox": "^0.18.0",

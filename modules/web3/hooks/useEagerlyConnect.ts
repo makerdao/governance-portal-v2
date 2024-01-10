@@ -10,9 +10,11 @@ import { Connector } from '@web3-react/types';
 import { useEffect } from 'react';
 import { useOrderedConnections } from 'modules/web3/hooks/useOrderedConnections';
 import logger from 'lib/logger';
+import { checkInjectedProvider } from '../helpers/checkInjectedProvider';
 
 export async function connect(connector: Connector) {
   try {
+    checkInjectedProvider();
     if (connector.connectEagerly) {
       await connector.connectEagerly();
     } else {
