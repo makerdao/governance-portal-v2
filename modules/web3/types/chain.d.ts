@@ -20,6 +20,7 @@ export type SupportedChain = {
   defaultRpc: string;
   spockUrl?: string;
   type: 'gasless' | 'normal';
+  showInProduction: boolean;
   rpcs: {
     [key: string]: string;
   };

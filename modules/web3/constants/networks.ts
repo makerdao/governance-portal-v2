@@ -61,7 +61,8 @@ export const CHAIN_INFO: ChainInfo = {
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`
-    }
+    },
+    showInProduction: true
   },
   [SupportedChainId.GOERLI]: {
     blockExplorerUrl: 'goerli.etherscan.io',
@@ -75,7 +76,8 @@ export const CHAIN_INFO: ChainInfo = {
     rpcs: {
       [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-goerli.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
-    }
+    },
+    showInProduction: false
   },
   [SupportedChainId.GOERLIFORK]: {
     blockExplorerUrl: 'goerli.etherscan.io',
@@ -88,7 +90,8 @@ export const CHAIN_INFO: ChainInfo = {
     spockUrl: LOCAL_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://127.0.0.1:8545/'
-    }
+    },
+    showInProduction: false
   },
   [SupportedChainId.ARBITRUMTESTNET]: {
     blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
@@ -100,7 +103,8 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
-    }
+    },
+    showInProduction: false
   },
   [SupportedChainId.ARBITRUMTESTNETFORK]: {
     blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
@@ -113,7 +117,8 @@ export const CHAIN_INFO: ChainInfo = {
     spockUrl: LOCAL_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://127.0.0.1:8546/'
-    }
+    },
+    showInProduction: false
   },
   [SupportedChainId.ARBITRUM]: {
     blockExplorerUrl: 'arbiscan.io',
@@ -125,7 +130,8 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
-    }
+    },
+    showInProduction: false
   }
 };
 
