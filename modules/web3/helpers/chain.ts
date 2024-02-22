@@ -26,7 +26,7 @@ export const networkNameToChainId = (networkName: string): number => {
 
 export const isSupportedChain = (chainId?: number): boolean => {
   if (!chainId) return false;
-  return CHAIN_INFO[chainId] && CHAIN_INFO[chainId].type === 'normal';
+  return CHAIN_INFO[chainId] && CHAIN_INFO[chainId].type === 'normal' && (process.env.NODE_ENV !== 'production' || CHAIN_INFO[chainId].showInProduction);
 };
 
 export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks => {
