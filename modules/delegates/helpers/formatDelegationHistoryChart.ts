@@ -22,9 +22,7 @@ export const formatDelegationHistoryChart = (
 
   const years = differenceInCalendarYears(Date.now(), new Date(lockEvents[0].blockTimestamp));
 
-  const end =
-    years * 365 +
-    formatIsoDateConversion((new Date()).toISOString());
+  const end = years * 365 + formatIsoDateConversion(new Date().toISOString());
 
   const output: MKRWeightHisory[] = [];
 
