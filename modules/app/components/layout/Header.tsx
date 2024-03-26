@@ -124,6 +124,8 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
 };
 
 const Header = (): JSX.Element => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
@@ -259,7 +261,7 @@ const Header = (): JSX.Element => {
           </ExternalLink>
         )}
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        {bpi > 1 && (
+        {!isProduction && bpi > 1 && (
           <Flex mr={3}>
             <NetworkSelect />
           </Flex>
@@ -300,6 +302,8 @@ const Header = (): JSX.Element => {
 };
 
 const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -321,7 +325,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
           </IconButton>
         </InternalLink>
         <Flex sx={{ alignItems: 'center', gap: 2 }}>
-          <NetworkSelect />
+          {!isProduction && <NetworkSelect />}
           <Close sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
         </Flex>
       </Flex>
