@@ -60,12 +60,12 @@ export default function PollWinningOptionBox({
     isDefault = true;
   }
 
-    // Winner will be null if the winning conditions are not met, but we want to display the leading option too
-    const leadingOption = typeof tally.winner === 'number' ? tally.winner : tally.results[0].optionId;
-    const leadingOptionName = `${
-      typeof tally.winner === 'number' ? tally.winningOptionName : tally.results[0].optionName
-      //don't show "& n more" if isDefault since there's only ever 1 default option
-    }${!isDefault && numberOfLeadingOptions > 1 ? ` & ${numberOfLeadingOptions - 1} more` : ''}`;
+  // Winner will be null if the winning conditions are not met, but we want to display the leading option too
+  const leadingOption = typeof tally.winner === 'number' ? tally.winner : tally.results[0].optionId;
+  const leadingOptionName = `${
+    typeof tally.winner === 'number' ? tally.winningOptionName : tally.results[0].optionName
+    //don't show "& n more" if isDefault since there's only ever 1 default option
+  }${!isDefault && numberOfLeadingOptions > 1 ? ` & ${numberOfLeadingOptions - 1} more` : ''}`;
 
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
