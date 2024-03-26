@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { getRPCFromChainID } from './getRPC';
+import { chainIdToNetworkName } from './chain';
 import { SupportedChainId } from '../constants/chainID';
 import { Contract, ethers, providers } from 'ethers';
 import { DEFAULT_NETWORK } from '../constants/networks';
@@ -21,8 +22,9 @@ export const getEthersContracts = <T extends Contract>(
   readOnly?: boolean
 ): T => {
   const rcpUrl = getRPCFromChainID(chainId ?? DEFAULT_NETWORK.chainId);
+  const network = chainIdToNetworkName(chainId ?? DEFAULT_NETWORK.chainId);
 
-  const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rcpUrl) : getDefaultProvider(rcpUrl);
+  const providerToUse = readOnly ? new providers.JsonRpcBatchProvider(rcpUrl) : getDefaultProvider(network);
 
   const signerOrProvider =
     account && provider
