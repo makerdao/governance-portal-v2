@@ -51,7 +51,9 @@ export const delegateAddressLinks = {
     // Resiliency AVC - TRUE NAME
     '0xc3cd0084e63661dfdcc79f34789860752ba39831': '0x3fe3095307ff3cf0ab9de327d01a9abff6ea4a1d',
     // Regenerative Finance AVC - TRUE NAME
-    '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625'
+    '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625',
+    //
+    '0x629F1B3C94B9284dF48c19743434Ce5cDaEe7C60': '0x54881e63F225A8653c2dA91fc3d9769e35B81b1F'
   }
 };
 
