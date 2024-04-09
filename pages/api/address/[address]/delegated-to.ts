@@ -120,13 +120,14 @@ export default withApiHandler(
       delegatedTo = await fetchDelegatedTo(address, network);
     }
 
-    // filter out duplicate txs
+    // filter out duplicate txs for the same address
     const txHashes = {};
     const filtered = delegatedTo.filter(historyItem => {
       let duplicateFound = false;
       historyItem.events.forEach(event => {
-        if (txHashes[event.hash]) duplicateFound = true;
-        txHashes[event.hash] = true;
+        const uniqueKey = `${event.hash}-${historyItem.address}`;
+        if (txHashes[uniqueKey]) duplicateFound = true;
+        txHashes[uniqueKey] = true;
       });
       return !duplicateFound;
     });
