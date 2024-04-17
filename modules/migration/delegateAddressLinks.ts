@@ -51,7 +51,9 @@ export const delegateAddressLinks = {
     // Resiliency AVC - TRUE NAME
     '0xc3cd0084e63661dfdcc79f34789860752ba39831': '0x3fe3095307ff3cf0ab9de327d01a9abff6ea4a1d',
     // Regenerative Finance AVC - TRUE NAME
-    '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625'
+    '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625',
+    // Resiliency AVC - QGov
+    '0xc0311aa0790bb1f8C1bcFEE6b82d38267D415fC6': '0x4A92599433535b0E61d80085c5a90AeDf5a96467',
   }
 };
 
