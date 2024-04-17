@@ -42,18 +42,20 @@ export async function middleware(request: NextRequest) {
     img-src 'self' https: data:;
   `;
 
+  // Replace newline characters and spaces
+  const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/g, ' ').trim();
+
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);
-  requestHeaders.set(
-    'Content-Security-Policy',
-    // Replace newline characters and spaces
-    cspHeader.replace(/\s{2,}/g, ' ').trim()
-  );
+  requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue);
 
-  return NextResponse.next({
-    headers: requestHeaders,
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders
     }
   });
+
+  response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue);
+
+  return response;
 }
