@@ -54,6 +54,8 @@ export const delegateAddressLinks = {
     '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625',
     // Resiliency AVC - QGov
     '0xc0311aa0790bb1f8C1bcFEE6b82d38267D415fC6': '0x4A92599433535b0E61d80085c5a90AeDf5a96467',
+    // Regenerative Finance AVC - PBG
+    '0x93da8baB74d7210a5c66BB2c0327f8205f465fc3': '0x51C659ee6FccebF7183da4E7D42A83b652F6E741'
   }
 };
 
