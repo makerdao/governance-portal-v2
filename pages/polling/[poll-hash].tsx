@@ -51,6 +51,8 @@ import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 
+export const fetchCache = 'force-no-store';
+
 const editMarkdown = (content: string) => {
   // hide the duplicate proposal title
   return (
