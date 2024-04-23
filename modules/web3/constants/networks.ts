@@ -33,13 +33,15 @@ export enum SupportedNetworks {
   GOERLIFORK = 'goerlifork',
   ARBITRUMTESTNET = 'arbitrumTestnet',
   ARBITRUM = 'arbitrum',
-  ARBITRUMTESTNETFORK = 'arbitrumTestnetFork'
+  ARBITRUMTESTNETFORK = 'arbitrumTestnetFork',
+  TENDERLY = 'tenderly'
 }
 
 export enum NodeProviders {
   INFURA = 'infura',
   ALCHEMY = 'alchemy',
-  LOCAL = 'local'
+  LOCAL = 'local',
+  TENDERLY = 'tenderly'
 }
 
 type ChainInfo = {
@@ -130,6 +132,19 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
+    },
+    showInProduction: false
+  },
+  [SupportedChainId.TENDERLY]: {
+    blockExplorerUrl: 'dashboard.tenderly.co/explorer/vnet/969c2b60-4bf0-4036-a4e1-b320cef566d6',
+    blockExplorerName: 'Etherscan',
+    chainId: SupportedChainId.TENDERLY,
+    label: 'Tenderly',
+    type: 'normal',
+    network: SupportedNetworks.TENDERLY,
+    defaultRpc: NodeProviders.TENDERLY,
+    rpcs: {
+      [NodeProviders.TENDERLY]: `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },
     showInProduction: false
   }
