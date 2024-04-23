@@ -44,7 +44,7 @@ import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
  *        description: The network for which to fetch de delegations and delegates
  *        schema:
  *          type: string
- *          enum: [goerli, goerlifork, mainnet]
+ *          enum: [goerli, tenderly, mainnet]
  *        default: mainnet
  *    responses:
  *      200:
@@ -160,7 +160,7 @@ export default withApiHandler(
       'string',
       {
         defaultValue: null,
-        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
       },
       n => !!n,
       new ApiError('Invalid network', 400, 'Invalid network')

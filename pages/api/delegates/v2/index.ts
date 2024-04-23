@@ -35,7 +35,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           description: The network to query the delegates for. Defaults to mainnet.
  *           schema:
  *             type: string
- *             enum: [goerli, goerlifork, mainnet]
+ *             enum: [goerli, tenderly, mainnet]
  *           default: "mainnet"
  *         - name: pageSize
  *           in: query
@@ -242,7 +242,7 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<DelegatesPaginatedAPIResponse>) => {
     const network = validateQueryParam(req.query.network, 'string', {
       defaultValue: DEFAULT_NETWORK.network,
-      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
     }) as SupportedNetworks;
 
     const pageSize = validateQueryParam(req.query.pageSize, 'number', {

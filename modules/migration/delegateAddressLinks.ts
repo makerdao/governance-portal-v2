@@ -16,7 +16,7 @@ export const delegateAddressLinks = {
     '0x2DD49B0AaCbAB93D7c8327e62DD145DEF2B84C6f': '0x7C924CCE0Dc79655019B142F26fA26df62777884',
     '0x68208127C20185b2C9772FE31e970B5704cd8922': '0x772c7141cd4A961aBec1B4241641f810d6188149'
   },
-  [SupportedNetworks.GOERLIFORK]: {
+  [SupportedNetworks.TENDERLY]: {
     // Nothing
   },
   [SupportedNetworks.MAINNET]: {

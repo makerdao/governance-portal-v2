@@ -34,8 +34,8 @@ export type SignerOrProvider = Signer | providers.Provider;
 
 export type SdkGenerators = {
   mainnet: (signerOrProvider: SignerOrProvider) => MainnetSdk;
+  tenderly: (signerOrProvider: SignerOrProvider) => MainnetSdk;
   goerli: (signerOrProvider: SignerOrProvider) => GoerliSdk;
-  goerlifork: (signerOrProvider: SignerOrProvider) => GoerliSdk;
 };
 
 export type ArbitrumSdkGenerators = {

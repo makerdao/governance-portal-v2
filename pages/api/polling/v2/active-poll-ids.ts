@@ -29,7 +29,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *          description: The network to query the polls for. Defaults to mainnet.
  *          schema:
  *            type: string
- *            enum: [goerli, goerlifork, mainnet]
+ *            enum: [goerli, tenderly, mainnet]
  *          default: "mainnet"
  *      responses:
  *        200:
@@ -44,7 +44,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<number[]>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const activePollIds = await getActivePollIds(network);

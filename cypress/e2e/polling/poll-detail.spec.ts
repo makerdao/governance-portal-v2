@@ -25,9 +25,9 @@ describe('/polling detail page', async () => {
     cy.get('[data-testid="poll-vote-box"]').should('not.exist');
   });
 
-  // TODO: requires an active poll to be added to goerlifork
+  // TODO: requires an active poll to be added to tenderly
   xit('Sees the vote box if connected', () => {
-    // Goerli-fork Poll
+    // todo: use a tenderly Poll
     visitPage('/polling/QmNSjvej');
 
     setAccount(TEST_ACCOUNTS.normal, () => {

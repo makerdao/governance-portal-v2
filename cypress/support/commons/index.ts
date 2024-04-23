@@ -1,7 +1,7 @@
 import { TestAccount } from '../types/TestAccount';
 
 export function visitPage(page: string) {
-  cy.visit(`${page}?network=goerlifork`, {
+  cy.visit(`${page}?network=tenderly`, {
     onBeforeLoad: win => {
       // If an account is sent, connect with that one
     }
@@ -24,7 +24,7 @@ export async function setAccount(account: TestAccount, cb: () => void) {
   cy.window().then(win => {
     if (!('setAccount' in win)) return;
     (win as any).setAccount(account.address, account.key);
-    cy.get('[data-testid="active-network-name"]').contains(/GoerliFork/i);
+    cy.get('[data-testid="active-network-name"]').contains(/Tenderly/i);
     cb();
   });
 }

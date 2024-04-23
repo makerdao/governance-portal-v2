@@ -79,7 +79,7 @@ export default withApiHandler(
       'string',
       {
         defaultValue: null,
-        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
       },
       n => !!n,
       new ApiError('Invalid network', 400, 'Invalid network')

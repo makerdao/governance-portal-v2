@@ -17,10 +17,10 @@ import { getGaslessProvider } from 'modules/web3/helpers/chain';
 export const getArbitrumPollingContractRelayProvider = async (
   network: SupportedNetworks
 ): Promise<Contract> => {
-  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const sdkNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
 
   let signer;
-  if (network === SupportedNetworks.GOERLIFORK) {
+  if (network === SupportedNetworks.TENDERLY) {
     const provider = getGaslessProvider(network);
     // Since we can't yet run a relayer locally, we can just send the transaction from an account controlled by hardhat
     const [testSigner] = await provider.send('eth_accounts', []);

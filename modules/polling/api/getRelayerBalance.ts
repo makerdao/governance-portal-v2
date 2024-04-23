@@ -13,7 +13,7 @@ import logger from 'lib/logger';
 
 export const getRelayerBalance = async (network: SupportedNetworks): Promise<string> => {
   try {
-    const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+    const sdkNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
 
     const signer = getArbitrumRelaySigner(sdkNetwork);
     const address = await signer.getAddress();

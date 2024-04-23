@@ -14,7 +14,7 @@ export const getRelayerTx = async (
   txId: string,
   network: SupportedNetworks
 ): Promise<any> /* type this to relayer tx */ => {
-  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const sdkNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
   const relayer = new Relayer(relayerCredentials[sdkNetwork]);
   const latestTx = await relayer.query(txId);
 

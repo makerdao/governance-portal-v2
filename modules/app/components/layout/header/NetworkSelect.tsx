@@ -81,7 +81,7 @@ const NetworkSelect = (): React.ReactElement => {
 
   const networkOptions = Object.keys(CHAIN_INFO)
     .filter(
-      k => ![SupportedChainId.GOERLIFORK].includes(CHAIN_INFO[k].chainId) && CHAIN_INFO[k].type === 'normal'
+      k => CHAIN_INFO[k].type === 'normal'
     )
     .filter(k => process.env.NODE_ENV !== 'production' || CHAIN_INFO[k].showInProduction)
     .map(chainKey => (

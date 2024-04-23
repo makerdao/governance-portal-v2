@@ -18,8 +18,8 @@ import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
-  goerli: getGoerliSdk,
-  goerlifork: getGoerliSdk
+  tenderly: getMainnetSdk,
+  goerli: getGoerliSdk
 };
 
 let connectedAccount: string | undefined;
@@ -63,7 +63,6 @@ export const getContracts = (
     // Keep track of the connected account and network so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;
     if (changeNetwork) currentNetwork = network;
-
     contracts = sdkGenerators[network](signerOrProvider);
   }
 

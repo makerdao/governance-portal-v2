@@ -16,7 +16,7 @@ import { Web3ProviderContext } from '../components/Web3Provider';
 import { initializeConnector } from '@web3-react/core';
 import { EIP1193 } from '@web3-react/eip1193';
 
-export function useGoerliForkWindowBindings(): void {
+export function useTenderlyWindowBindings(): void {
   // TODO this should only run in non-prod environments
   // Define a window function that changes the account for testing purposes
 
@@ -28,7 +28,7 @@ export function useGoerliForkWindowBindings(): void {
         if (address && key) {
           try {
             const rpcUrl = 'http://127.0.0.1:8545/';
-            const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
+            const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
             const signer = new Wallet(key, provider);
             const bridge = new CustomizedBridge(signer, provider);
             bridge.setAddress(address);

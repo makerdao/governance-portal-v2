@@ -519,7 +519,7 @@ export default function PollingOverviewPage({
   if (error) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
-        <ErrorPage statusCode={500} title="Error fetching data, please try again later." />;
+        <ErrorPage statusCode={500} title="Error fetching data, please try again later." />
       </PrimaryLayout>
     );
   }

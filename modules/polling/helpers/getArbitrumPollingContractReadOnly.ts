@@ -12,7 +12,7 @@ import { getGaslessProvider } from 'modules/web3/helpers/chain';
 import { arbitrumSdkGenerators } from './relayerCredentials';
 
 export const getArbitrumPollingContractReadOnly = (network: SupportedNetworks): Contract => {
-  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const sdkNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
   const gaslessProvider = getGaslessProvider(network);
   const { polling } = arbitrumSdkGenerators[sdkNetwork](gaslessProvider);
   return polling;

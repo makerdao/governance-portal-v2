@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  * /api/executive/supporters:
  *   get:
  *     summary: Get the supporters of all executive spells
- *     description: Returns the list of supporters for each executive spell. Supports mainnet, goerli and goerlifork networks.
+ *     description: Returns the list of supporters for each executive spell. Supports mainnet, goerli and tenderly networks.
  *     tags:
  *       - executive
  *     parameters:
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *           type: string
  *         enum:
  *           - goerli
- *           - goerlifork
+ *           - tenderly
  *           - mainnet
  *     responses:
  *       '200':
@@ -72,7 +72,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     'string',
     {
       defaultValue: null,
-      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
     }
   ) as SupportedNetworks;
 

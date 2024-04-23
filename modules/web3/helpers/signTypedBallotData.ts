@@ -22,7 +22,7 @@ type BallotDataValues = {
 export function getTypedBallotData(message: BallotDataValues, network: SupportedNetworks) {
   // Chain ID must match the chain ID specified in the contract for the signature to be valid
   // e.g. https://github.com/makerdao-dux/polling-contract/blob/main/contracts/Polling.sol#L31
-  const networkForSignature = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const networkForSignature = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
   const chainId = networkNameToChainId(networkForSignature);
   return {
     types: {

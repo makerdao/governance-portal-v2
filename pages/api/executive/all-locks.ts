@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *         description: The network to fetch the data from. If not specified, will use the default network.
  *         schema:
  *           type: string
- *           enum: [goerli, goerlifork, mainnet]
+ *           enum: [goerli, tenderly, mainnet]
  *       - name: unixtimeStart
  *         in: query
  *         required: true
@@ -81,7 +81,7 @@ import invariant from 'tiny-invariant';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const unixtimeStart = validateQueryParam(req.query.unixtimeStart, 'number', {

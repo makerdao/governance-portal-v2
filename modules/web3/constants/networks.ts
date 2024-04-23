@@ -30,7 +30,6 @@ export enum SupportedConnectors {
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',
-  GOERLIFORK = 'goerlifork',
   ARBITRUMTESTNET = 'arbitrumTestnet',
   ARBITRUM = 'arbitrum',
   ARBITRUMTESTNETFORK = 'arbitrumTestnetFork',
@@ -81,20 +80,6 @@ export const CHAIN_INFO: ChainInfo = {
     },
     showInProduction: false
   },
-  [SupportedChainId.GOERLIFORK]: {
-    blockExplorerUrl: 'goerli.etherscan.io',
-    blockExplorerName: 'Etherscan',
-    chainId: SupportedChainId.GOERLIFORK,
-    label: 'GoerliFork',
-    type: 'normal',
-    network: SupportedNetworks.GOERLIFORK,
-    defaultRpc: NodeProviders.LOCAL,
-    spockUrl: LOCAL_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.LOCAL]: 'http://127.0.0.1:8545/'
-    },
-    showInProduction: false
-  },
   [SupportedChainId.ARBITRUMTESTNET]: {
     blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
     blockExplorerName: 'Arbiscan',
@@ -136,13 +121,14 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.TENDERLY]: {
-    blockExplorerUrl: 'dashboard.tenderly.co/explorer/vnet/969c2b60-4bf0-4036-a4e1-b320cef566d6',
+    blockExplorerUrl: `dashboard.tenderly.co/explorer/vnet/${config.TENDERLY_RPC_KEY}`,
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.TENDERLY,
     label: 'Tenderly',
     type: 'normal',
     network: SupportedNetworks.TENDERLY,
     defaultRpc: NodeProviders.TENDERLY,
+    spockUrl: STAGING_MAINNET_SPOCK_URL,
     rpcs: {
       [NodeProviders.TENDERLY]: `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },

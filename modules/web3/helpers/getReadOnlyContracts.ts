@@ -14,8 +14,8 @@ import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
+  tenderly: getMainnetSdk,
   goerli: getGoerliSdk,
-  goerlifork: getGoerliSdk
 };
 
 let currentNetwork: string | undefined;
