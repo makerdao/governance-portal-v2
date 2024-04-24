@@ -22,6 +22,7 @@ export function getAvcsRepositoryInformation(network: SupportedNetworks): Reposi
     page: 'delegates/templates'
   };
 
-  const avcsRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoTest;
+  const avcsRepositoryInfo =
+    network === SupportedNetworks.MAINNET || network === SupportedNetworks.TENDERLY ? repoMainnet : repoTest;
   return avcsRepositoryInfo;
 }
