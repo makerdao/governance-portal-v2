@@ -82,7 +82,7 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.ARBITRUMTESTNET]: {
-    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
+    blockExplorerUrl: 'https://sepolia.arbiscan.io/',
     blockExplorerName: 'Arbiscan',
     chainId: SupportedChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
@@ -90,7 +90,7 @@ export const CHAIN_INFO: ChainInfo = {
     network: SupportedNetworks.ARBITRUMTESTNET,
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
-      [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
+      [NodeProviders.ALCHEMY]: `https://arb-sepolia.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
     },
     showInProduction: false
   },
