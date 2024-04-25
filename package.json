@@ -18,7 +18,7 @@
     "e2e:headless": "APP_ENV=test npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "BABEL_ENV=cypress-test cypress open",
     "cypress:headless": "BABEL_ENV=cypress-test cypress run",
-    "fund": "npx hardhat run scripts/setup.js --network goerli",
+    "fund": "",
     "hardhat": "npx hardhat node --network hardhat ",
     "hardhat:goerli:config": "yarn hardhat --config hardhat-fork-goerli.config.js",
     "hardhat:arb-testnet:config": "yarn hardhat --config hardhat-fork-arbTestnet.config.js --port 8546",

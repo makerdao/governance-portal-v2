@@ -15,6 +15,7 @@ import logger from 'lib/logger';
 import { Web3ProviderContext } from '../components/Web3Provider';
 import { initializeConnector } from '@web3-react/core';
 import { EIP1193 } from '@web3-react/eip1193';
+import { config } from 'lib/config';
 
 export function useTenderlyWindowBindings(): void {
   // TODO this should only run in non-prod environments
@@ -27,7 +28,7 @@ export function useTenderlyWindowBindings(): void {
       (window as any).setAccount = (address: string, key: string) => {
         if (address && key) {
           try {
-            const rpcUrl = 'http://127.0.0.1:8545/';
+            const rpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
             const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
             const signer = new Wallet(key, provider);
             const bridge = new CustomizedBridge(signer, provider);

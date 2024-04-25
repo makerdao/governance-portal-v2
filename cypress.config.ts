@@ -4,8 +4,8 @@ export default defineConfig({
   projectId: 'uckcr1',
   viewportWidth: 1200,
   viewportHeight: 800,
-  defaultCommandTimeout: 40000,
-  pageLoadTimeout: 120000,
+  // defaultCommandTimeout: 40000,
+  // pageLoadTimeout: 120000,
   video: false,
   retries: {
     runMode: 1,

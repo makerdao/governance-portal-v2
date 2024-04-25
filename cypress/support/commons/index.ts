@@ -35,18 +35,18 @@ export function closeModal() {
 
 // Fork to a new block
 export function forkNetwork() {
-  cy.exec('npx hardhat run scripts/forkGoerliNetwork.js --network goerli')
-    // Must refund accounts after forking
-    .exec('yarn fund');
-  cy.exec('npx hardhat run scripts/forkarbTestnetNetwork.js --network arbTestnet');
+  // cy.exec('npx hardhat run scripts/forkGoerliNetwork.js --network goerli')
+  //   // Must refund accounts after forking
+  //   .exec('yarn fund');
+  // cy.exec('npx hardhat run scripts/forkarbTestnetNetwork.js --network arbTestnet');
 }
 
 export function fundAccounts(): void {
-  cy.exec('yarn fund');
+  // cy.exec('yarn fund');
 }
 
 export function resetDatabase(): void {
-  cy.exec('docker exec postgres-vulcan2x-arbitrum pg_restore -U user -d database gpdb.tar -c').exec(
-    'docker restart spock-test-container'
-  );
+  // cy.exec('docker exec postgres-vulcan2x-arbitrum pg_restore -U user -d database gpdb.tar -c').exec(
+  //   'docker restart spock-test-container'
+  // );
 }
