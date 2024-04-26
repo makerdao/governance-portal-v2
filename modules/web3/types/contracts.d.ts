@@ -34,11 +34,12 @@ export type SignerOrProvider = Signer | providers.Provider;
 
 export type SdkGenerators = {
   mainnet: (signerOrProvider: SignerOrProvider) => MainnetSdk;
-  tenderly: (signerOrProvider: SignerOrProvider) => MainnetSdk;
   goerli: (signerOrProvider: SignerOrProvider) => GoerliSdk;
+  tenderly: (signerOrProvider: SignerOrProvider) => MainnetSdk;
 };
 
 export type ArbitrumSdkGenerators = {
   mainnet: (signerOrProvider: SignerOrProvider) => ArbitrumOneSdk;
   goerli: (signerOrProvider: SignerOrProvider) => ArbitrumGoerliTestnetSdk;
+  sepolia: (signerOrProvider: SignerOrProvider) => ArbitrumSepoliaSdk;
 };
