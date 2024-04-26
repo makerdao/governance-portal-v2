@@ -26,7 +26,6 @@ const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
       actions,
       urlMap: {
         [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
-        [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI),
         [SupportedChainId.TENDERLY]: getRPCFromChainID(SupportedChainId.TENDERLY)
       },
       defaultChainId: 1
@@ -55,10 +54,10 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
         projectId: config.WALLETCONNECT_PROJECT_ID,
         showQrModal: true,
         chains: [SupportedChainId.MAINNET],
-        optionalChains: [SupportedChainId.GOERLI],
+        optionalChains: [SupportedChainId.TENDERLY],
         rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
-          [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
+          [SupportedChainId.TENDERLY]: getRPCFromChainID(SupportedChainId.TENDERLY)
         },
         optionalMethods: ['eth_signTypedData_v4'],
         metadata: {

@@ -75,16 +75,12 @@ export const POLLS_HASH_FILE_URL = {
   [SupportedNetworks.MAINNET]:
     'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/hashed-polls.json',
   [SupportedNetworks.TENDERLY]:
-    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/hashed-polls.json',
-  [SupportedNetworks.GOERLI]:
-    'https://raw.githubusercontent.com/makerdao-dux/community/polls-aggregated/governance/polls/meta/hashed-goerli-polls.json'
+    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/hashed-polls.json'
 };
 
 export const AGGREGATED_POLLS_FILE_URL = {
   [SupportedNetworks.MAINNET]:
     'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/polls.json',
   [SupportedNetworks.TENDERLY]:
-    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/polls.json',
-  [SupportedNetworks.GOERLI]:
-    'https://raw.githubusercontent.com/makerdao-dux/community/polls-aggregated/governance/polls/meta/goerli-polls.json'
+    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/polls.json'
 };

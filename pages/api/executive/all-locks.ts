@@ -81,7 +81,7 @@ import invariant from 'tiny-invariant';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const unixtimeStart = validateQueryParam(req.query.unixtimeStart, 'number', {
