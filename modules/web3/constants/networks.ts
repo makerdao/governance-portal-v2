@@ -82,7 +82,7 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.ARBITRUMTESTNET]: {
-    blockExplorerUrl: 'https://sepolia.arbiscan.io/',
+    blockExplorerUrl: 'sepolia.arbiscan.io',
     blockExplorerName: 'Arbiscan',
     chainId: SupportedChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
