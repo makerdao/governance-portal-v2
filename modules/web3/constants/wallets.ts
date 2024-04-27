@@ -14,7 +14,8 @@ export enum ConnectionType {
   COINBASE_WALLET = 'COINBASE_WALLET',
   WALLET_CONNECT = 'WALLET_CONNECT',
   NETWORK = 'NETWORK',
-  GNOSIS_SAFE = 'GNOSIS_SAFE'
+  GNOSIS_SAFE = 'GNOSIS_SAFE',
+  MOCK = 'MOCK'
 }
 
 // "Network" connector is not a wallet type and must be excluded
@@ -37,6 +38,10 @@ export const SUPPORTED_WALLETS: {
   [SupportedConnectors.GNOSIS_SAFE]: {
     name: SupportedConnectors.GNOSIS_SAFE,
     connectionType: ConnectionType.GNOSIS_SAFE
+  },
+  [SupportedConnectors.MOCK]: {
+    name: SupportedConnectors.MOCK,
+    connectionType: ConnectionType.MOCK
   }
 };
 

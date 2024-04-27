@@ -25,7 +25,8 @@ export enum SupportedConnectors {
   WALLET_CONNECT = 'WalletConnect',
   COINBASE_WALLET = 'Coinbase Wallet',
   GNOSIS_SAFE = 'Gnosis Safe',
-  NETWORK = 'Network'
+  NETWORK = 'Network',
+  MOCK = 'Mock'
 }
 
 export enum SupportedNetworks {

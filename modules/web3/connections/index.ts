@@ -16,8 +16,12 @@ import { GnosisSafe } from '@makerdao-dux/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
-import { Connection, EIP1193Provider } from '../types/connection';
+import { Connection } from '../types/connection';
 import { config } from 'lib/config';
+import { Wallet } from 'ethers';
+import { providers } from 'ethers';
+import { CustomizedBridge } from '../connections/CustomizedBridge';
+import { EIP1193 } from '@web3-react/eip1193';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -112,12 +116,32 @@ export const gnosisSafeConnection: Connection = {
   type: ConnectionType.GNOSIS_SAFE
 };
 
+//mock connector
+const address = '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B';
+const key = '89dc8729657f93064432dc2e85136b90296fedfda086d4e610dd60c7d7654c41';
+const rpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
+const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
+const signer = new Wallet(key, provider);
+const bridge = new CustomizedBridge(signer, provider);
+bridge.setAddress(address);
+
+const [web3Injected, web3InjectedHooks] = initializeConnector<EIP1193>(
+  actions => new EIP1193({ provider: bridge, actions })
+);
+const mockConnection: Connection = {
+  connector: web3Injected,
+  hooks: web3InjectedHooks,
+  type: ConnectionType.MOCK
+};
+
+
 export const orderedConnectionTypes = [
   gnosisSafeConnection.type,
   coinbaseWalletConnection.type,
   walletConnectConnection.type,
   metamaskConnection.type,
-  networkConnection.type
+  networkConnection.type,
+  mockConnection.type
 ];
 
 const CONNECTIONS = [
@@ -125,15 +149,12 @@ const CONNECTIONS = [
   coinbaseWalletConnection,
   walletConnectConnection,
   metamaskConnection,
-  networkConnection
+  networkConnection,
+  mockConnection
 ];
 
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
-    // Return the shimmed metamask connection if on tenderly
-    if ((c.provider as EIP1193Provider)?.chainId === SupportedChainId.TENDERLY) {
-      return metamaskConnection;
-    }
 
     const connection = CONNECTIONS.find(connection => connection.connector === c);
     if (!connection) {
@@ -152,6 +173,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return networkConnection;
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection;
+      case ConnectionType.MOCK:
+        return mockConnection;
       default:
         return networkConnection;
     }
@@ -170,5 +193,7 @@ export function connectorToWalletName(connector: Connector) {
       return SUPPORTED_WALLETS.WalletConnect.name;
     case ConnectionType.GNOSIS_SAFE:
       return SUPPORTED_WALLETS['Gnosis Safe'].name;
+    case ConnectionType.MOCK:
+      return SUPPORTED_WALLETS.Mock.name;
   }
 }
