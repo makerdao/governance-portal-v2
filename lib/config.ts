@@ -33,6 +33,7 @@ type SystemConfig = {
   GASLESS_BACKDOOR_SECRET: string;
   GASLESS_DISABLED: string;
   TENDERLY_RPC_KEY: string;
+  USE_MOCK_WALLET: string;
 };
 
 export const config: SystemConfig = {
@@ -61,5 +62,6 @@ export const config: SystemConfig = {
   DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || '',
   GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || '',
   GASLESS_DISABLED: process.env.GASLESS_DISABLED || '',
-  TENDERLY_RPC_KEY: process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY || ''
+  TENDERLY_RPC_KEY: process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY || '',
+  USE_MOCK_WALLET: process.env.NEXT_PUBLIC_USE_MOCK_WALLET || ''
 };

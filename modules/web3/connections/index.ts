@@ -22,6 +22,7 @@ import { Wallet } from 'ethers';
 import { providers } from 'ethers';
 import { CustomizedBridge } from '../connections/CustomizedBridge';
 import { EIP1193 } from '@web3-react/eip1193';
+import { TEST_ACCOUNTS } from '../../../cypress/support/constants/testaccounts';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -117,14 +118,12 @@ export const gnosisSafeConnection: Connection = {
 };
 
 //mock connector
-const address = '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B';
-const key = '89dc8729657f93064432dc2e85136b90296fedfda086d4e610dd60c7d7654c41';
+const { address, key } = TEST_ACCOUNTS.normal;
 const rpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
 const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
 const signer = new Wallet(key, provider);
 const bridge = new CustomizedBridge(signer, provider);
 bridge.setAddress(address);
-
 const [web3Injected, web3InjectedHooks] = initializeConnector<EIP1193>(
   actions => new EIP1193({ provider: bridge, actions })
 );
@@ -186,14 +185,14 @@ export function connectorToWalletName(connector: Connector) {
 
   switch (connection?.type) {
     case ConnectionType.METAMASK:
-      return SUPPORTED_WALLETS.MetaMask.name;
+      return SUPPORTED_WALLETS.MetaMask?.name;
     case ConnectionType.COINBASE_WALLET:
-      return SUPPORTED_WALLETS['Coinbase Wallet'].name;
+      return SUPPORTED_WALLETS['Coinbase Wallet']?.name;
     case ConnectionType.WALLET_CONNECT:
-      return SUPPORTED_WALLETS.WalletConnect.name;
+      return SUPPORTED_WALLETS.WalletConnect?.name;
     case ConnectionType.GNOSIS_SAFE:
-      return SUPPORTED_WALLETS['Gnosis Safe'].name;
+      return SUPPORTED_WALLETS['Gnosis Safe']?.name;
     case ConnectionType.MOCK:
-      return SUPPORTED_WALLETS.Mock.name;
+      return SUPPORTED_WALLETS.Mock?.name;
   }
 }

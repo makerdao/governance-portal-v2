@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { WalletInfo } from '../types/wallets';
 import { SupportedConnectors } from './networks';
+import { config } from 'lib/config';
 
 export enum ConnectionType {
   METAMASK = 'METAMASK',
@@ -20,7 +21,7 @@ export enum ConnectionType {
 
 // "Network" connector is not a wallet type and must be excluded
 export const SUPPORTED_WALLETS: {
-  [connector in Exclude<SupportedConnectors, SupportedConnectors.NETWORK>]: WalletInfo;
+  [connector in Exclude<SupportedConnectors, SupportedConnectors.NETWORK>]?: WalletInfo;
 } = {
   [SupportedConnectors.METAMASK]: {
     name: SupportedConnectors.METAMASK,
@@ -38,11 +39,14 @@ export const SUPPORTED_WALLETS: {
   [SupportedConnectors.GNOSIS_SAFE]: {
     name: SupportedConnectors.GNOSIS_SAFE,
     connectionType: ConnectionType.GNOSIS_SAFE
-  },
-  [SupportedConnectors.MOCK]: {
-    name: SupportedConnectors.MOCK,
-    connectionType: ConnectionType.MOCK
   }
 };
+
+if (config.USE_MOCK_WALLET) {
+  SUPPORTED_WALLETS[SupportedConnectors.MOCK] = {
+    name: SupportedConnectors.MOCK,
+    connectionType: ConnectionType.MOCK
+  };
+}
 
 export type WalletName = Exclude<SupportedConnectors, SupportedConnectors.NETWORK>;

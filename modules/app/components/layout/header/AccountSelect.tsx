@@ -79,7 +79,8 @@ const AccountSelect = (): React.ReactElement => {
   };
 
   // Handles the logic when clicking on a connector
-  const onClickConnection = async (connectionType: ConnectionType, name: WalletName) => {
+  const onClickConnection = async (connectionType: ConnectionType | undefined, name: WalletName) => {
+    if (!connectionType) return;
     setError(null);
     try {
       const connection = getConnection(connectionType);
@@ -143,17 +144,17 @@ const AccountSelect = (): React.ReactElement => {
       sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}
     >
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={SUPPORTED_WALLETS[connectionName].name} color="text" />
-        <Text sx={{ ml: 3 }}>{SUPPORTED_WALLETS[connectionName].name}</Text>
+        <Icon name={SUPPORTED_WALLETS[connectionName]?.name} color="text" />
+        <Text sx={{ ml: 3 }}>{SUPPORTED_WALLETS[connectionName]?.name}</Text>
       </Flex>
       <Button
         sx={{ minWidth: '120px' }}
         variant="mutedOutline"
         key={connectionName}
         onClick={
-          (isAndroid || isIOS) && !isMetaMask && SUPPORTED_WALLETS[connectionName].deeplinkUri
-            ? () => window.location.replace(SUPPORTED_WALLETS[connectionName].deeplinkUri || '')
-            : () => onClickConnection(SUPPORTED_WALLETS[connectionName].connectionType, connectionName)
+          (isAndroid || isIOS) && !isMetaMask && SUPPORTED_WALLETS[connectionName]?.deeplinkUri
+            ? () => window.location.replace(SUPPORTED_WALLETS[connectionName]?.deeplinkUri || '')
+            : () => onClickConnection(SUPPORTED_WALLETS[connectionName]?.connectionType, connectionName)
         }
       >
         {loadingConnectors[connectionName] ? 'Loading...' : 'Select'}
