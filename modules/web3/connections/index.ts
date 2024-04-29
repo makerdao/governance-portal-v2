@@ -23,6 +23,7 @@ import { providers } from 'ethers';
 import { CustomizedBridge } from '../connections/CustomizedBridge';
 import { EIP1193 } from '@web3-react/eip1193';
 import { TEST_ACCOUNTS } from '../../../cypress/support/constants/testaccounts';
+import { tenderlyTestnetData } from 'tenderlyTestnetData.json';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
