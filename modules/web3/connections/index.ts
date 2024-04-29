@@ -23,9 +23,7 @@ import { providers } from 'ethers';
 import { CustomizedBridge } from '../connections/CustomizedBridge';
 import { EIP1193 } from '@web3-react/eip1193';
 import { TEST_ACCOUNTS } from '../../../cypress/support/constants/testaccounts';
-import { tenderlyTestnetData } from '../../../tenderlyTestnetData.json';
-
-const { TENDERLY_RPC_URL } = tenderlyTestnetData;
+import tenderlyTestnetData from '../../../tenderlyTestnetData.json';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -120,9 +118,11 @@ export const gnosisSafeConnection: Connection = {
   type: ConnectionType.GNOSIS_SAFE
 };
 
+const { TENDERLY_RPC_URL } = tenderlyTestnetData;
+
 //mock connector
 const { address, key } = TEST_ACCOUNTS.normal;
-const rpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
+const rpcUrl = TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
 const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
 const signer = new Wallet(key, provider);
 const bridge = new CustomizedBridge(signer, provider);
