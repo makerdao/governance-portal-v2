@@ -1,22 +1,80 @@
 /**
- * Fork a new tenderly testnet at the start of each test file and delete it at the end of the file.
+ * Fork a new tenderly testnet at the start of each test file and delete it at the end of the file. And set balances.
  * This file has to be imported in every e2e test file that you want it to run on.
  */
 import { test } from '@playwright/test';
 import { writeFile, readFile } from 'fs/promises';
 import dotenv from 'dotenv';
+import { parseEther, parseUnits, hexlify } from 'ethers/lib/utils';
+import { TEST_ACCOUNTS } from './shared';
 
 dotenv.config();
 
 const displayName = process.env.CI ? 'ci-tests-testnet' : 'local-tests-testnet';
+
 test.beforeAll(async () => {
   await forkVnet(displayName);
+  const address = TEST_ACCOUNTS.normal.address;
+  await new Promise(resolve => setTimeout(resolve, 5000));
+  await setEthBalance(address, '100');
+  await setErc20Balance(address, '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', '100', 18); //fund MKR balance
 });
 
 test.afterAll(async () => {
   await deleteVnet();
 });
 
+export const setEthBalance = async (address: string, amount: string) => {
+  const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
+  const { TENDERLY_RPC_URL } = JSON.parse(file);
+
+  const response = await fetch(TENDERLY_RPC_URL, {
+    method: 'POST',
+    headers: {
+      accept: '*/*',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      method: 'tenderly_setBalance',
+      params: [[address], hexlify(parseEther(amount))],
+      id: 42,
+      jsonrpc: '2.0'
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  } else {
+    console.log('ETH balance set');
+  }
+};
+
+export const setErc20Balance = async (address: string, tokenAddress: string, amount: string, decimals: number = 18) => {
+  const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
+  const { TENDERLY_RPC_URL } = JSON.parse(file);
+
+  const response = await fetch(TENDERLY_RPC_URL, {
+    method: 'POST',
+    headers: {
+      accept: '*/*',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      method: 'tenderly_setErc20Balance',
+      params: [tokenAddress, [address], hexlify(parseUnits(amount, decimals))],
+      id: 42,
+      jsonrpc: '2.0'
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.statusText}`);
+  } else {
+    console.log('token balance set');
+  }
+};
+
+//TODO: update to fork the correct testnet
 const forkVnet = async (displayName: string) => {
   if (!displayName.length) {
     throw new Error('A display name is required for the virtual testnet');
