@@ -107,7 +107,7 @@ import { ApiError } from 'modules/app/api/ApiError';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegateInfo | null>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const address = await validateAddress(

@@ -195,7 +195,7 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<PollsPaginatedResponse>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const pageSize = validateQueryParam(req.query.pageSize, 'number', {

@@ -15,7 +15,6 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  GOERLI_SPOCK_URL,
   LOCAL_SPOCK_URL,
   TENDERLY_SPOCK_URL
 } from 'modules/gql/gql.constants';
@@ -30,7 +29,6 @@ export enum SupportedConnectors {
 
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
-  GOERLI = 'goerli',
   ARBITRUMTESTNET = 'arbitrumTestnet',
   ARBITRUM = 'arbitrum',
   ARBITRUMTESTNETFORK = 'arbitrumTestnetFork',
@@ -65,21 +63,6 @@ export const CHAIN_INFO: ChainInfo = {
       [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`
     },
     showInProduction: true
-  },
-  [SupportedChainId.GOERLI]: {
-    blockExplorerUrl: 'goerli.etherscan.io',
-    blockExplorerName: 'Etherscan',
-    chainId: SupportedChainId.GOERLI,
-    label: 'Goerli',
-    type: 'normal',
-    network: SupportedNetworks.GOERLI,
-    defaultRpc: NodeProviders.ALCHEMY,
-    spockUrl: GOERLI_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,
-      [NodeProviders.ALCHEMY]: `https://eth-goerli.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
-    },
-    showInProduction: false
   },
   [SupportedChainId.ARBITRUMTESTNET]: {
     blockExplorerUrl: 'sepolia.arbiscan.io',

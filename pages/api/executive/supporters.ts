@@ -72,7 +72,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     'string',
     {
       defaultValue: null,
-      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+      validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
     }
   ) as SupportedNetworks;
 
