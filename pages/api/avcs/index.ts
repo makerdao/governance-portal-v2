@@ -93,7 +93,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AvcsAPIResponse>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const orderBy = validateQueryParam(req.query.orderBy, 'string', {

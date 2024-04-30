@@ -242,7 +242,7 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<DelegatesPaginatedAPIResponse>) => {
     const network = validateQueryParam(req.query.network, 'string', {
       defaultValue: DEFAULT_NETWORK.network,
-      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+      validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
     }) as SupportedNetworks;
 
     const pageSize = validateQueryParam(req.query.pageSize, 'number', {

@@ -27,7 +27,7 @@ export default withApiHandler(
 
       const network = validateQueryParam(req.query.network, 'string', {
         defaultValue: DEFAULT_NETWORK.network,
-        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
+        validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
       }) as SupportedNetworks;
 
       const gaslessNetwork = validateQueryParam(req.query.gasless, 'string', {
