@@ -89,7 +89,7 @@ const forkVnet = async (displayName: string) => {
       ],
       method: 'POST',
       body: JSON.stringify({
-        srcContainerId: '5fdf1b3b-b584-4612-a04c-54f9fb3392df',
+        srcContainerId: '15f151cf-8db9-4eca-bb64-ff557c753605', //id for mainnet-fork (https://api.tenderly.co/api/v1/makerdao/testnets)
         dstContainerDisplayName: displayName
       })
     }
