@@ -75,6 +75,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
         },
         qrModalOptions: {
           themeVariables: {
+            // @ts-ignore
             '--w3m-background-color': '#1aab9b',
             '--w3m-accent-color': '#1aab9b',
             '--w3m-logo-image-url': '/assets/maker_logo.svg'
