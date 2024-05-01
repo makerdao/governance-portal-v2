@@ -15,8 +15,15 @@ jobs:
           - test: executives.spec
     runs-on: ubuntu-latest
     env:
-      ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
+      INFURA_KEY: ${{ secrets.INFURA_KEY }}
+      MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
+      POCKET_KEY: ${{ secrets.POCKET_KEY }}
+      ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      USE_CACHE: true
       TENDERLY_API_KEY: ${{ secrets.TENDERLY_API_KEY }}
     timeout-minutes: 10
     steps:
