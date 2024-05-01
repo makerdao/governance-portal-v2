@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  * /api/executive/supporters:
  *   get:
  *     summary: Get the supporters of all executive spells
- *     description: Returns the list of supporters for each executive spell. Supports mainnet, goerli and tenderly networks.
+ *     description: Returns the list of supporters for each executive spell. Supports mainnet and tenderly networks.
  *     tags:
  *       - executive
  *     parameters:
@@ -21,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *         schema:
  *           type: string
  *         enum:
- *           - goerli
  *           - tenderly
  *           - mainnet
  *     responses:

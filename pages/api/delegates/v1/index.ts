@@ -30,7 +30,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *          description: "Network name"
  *          required: false
  *          type: "string"
- *          enum: [goerli, mainnet]
+ *          enum: [tenderly, mainnet]
  *          default: "mainnet"
  *        - name: "sortBy"
  *          in: "query"

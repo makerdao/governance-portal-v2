@@ -22,7 +22,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *     properties:
  *       network:
  *         type: number
- *         enum: ['mainnet', 'goerli']
+ *         enum: ['mainnet', 'tenderly']
  *       spellAddress:
  *         type: string
  *       comment:

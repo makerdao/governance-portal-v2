@@ -31,7 +31,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
  *           description: The network to query the AVCs for. Defaults to mainnet.
  *           schema:
  *             type: string
- *             enum: [goerli, tenderly, mainnet]
+ *             enum: [tenderly, mainnet]
  *           default: "mainnet"
  *         - name: orderBy
  *           description: The field to sort the AVCs by. Defaults to RANDOM.

@@ -44,7 +44,7 @@ import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
  *        description: The network for which to fetch de delegations and delegates
  *        schema:
  *          type: string
- *          enum: [goerli, tenderly, mainnet]
+ *          enum: [tenderly, mainnet]
  *        default: mainnet
  *    responses:
  *      200:

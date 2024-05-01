@@ -40,7 +40,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *         required: false
  *         schema:
  *           type: string
- *           enum: [goerli, mainnet]
+ *           enum: [mainnet]
  *           default: mainnet
  *     responses:
  *       200:

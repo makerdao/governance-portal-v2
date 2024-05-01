@@ -9,7 +9,6 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.tsx', 'jest-canvas-mock'],
   testPathIgnorePatterns: [
     '/node_modules/',
-    '/cypress/',
     '/.next/',
     '/setup',
     '__tests__/helpers.tsx',

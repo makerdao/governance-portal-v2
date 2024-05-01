@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *         description: The network to fetch the data from. If not specified, will use the default network.
  *         schema:
  *           type: string
- *           enum: [goerli, tenderly, mainnet]
+ *           enum: [tenderly, mainnet]
  *       - name: unixtimeStart
  *         in: query
  *         required: true
