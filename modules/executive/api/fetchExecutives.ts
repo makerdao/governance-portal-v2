@@ -47,7 +47,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
         const path = `https://raw.githubusercontent.com/${githubRepo.owner}/${
           githubRepo.repo
         }/master/${pathParts.join('/')}/${encodeURIComponent(last)}`;
-        return parseExecutive(file.object.text, proposalIndex, path, network);
+        return parseExecutive(file.object.text, proposalIndex, path, SupportedNetworks.MAINNET); //always use mainnet proposal index for now
       } catch (e) {
         logger.error(`getGithubExecutives: network ${network}`, e);
         // Catch error and return null if failed fetching one proposal
