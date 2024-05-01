@@ -31,7 +31,7 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
  *          description: The network to query the polls for. Defaults to mainnet.
  *          schema:
  *            type: string
- *            enum: [goerli, tenderly, mainnet]
+ *            enum: [tenderly, mainnet]
  *          default: "mainnet"
  *        - name: pageSize
  *          in: query

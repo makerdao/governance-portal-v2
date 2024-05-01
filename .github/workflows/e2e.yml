@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: executive.spec
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - run: yarn exec playwright install --with-deps  
+
+      - name: Run E2E Test
+        run: yarn run e2e ${{ matrix.test }}
+        env:
+          TENDERLY_API_KEY: ${{ secrets.TENDERLY_API_KEY }}
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.test }}
+          path: playwright-report/
+          retention-days: 30
