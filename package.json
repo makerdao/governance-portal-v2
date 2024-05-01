@@ -14,7 +14,7 @@
     "export": "next export",
     "test": "jest --config=jest.config.js --runInBand --watch",
     "test:ci": "jest --runInBand --ci --coverage --detectOpenHandles --forceExit",
-    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ cypress/",
+    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/",
     "gql-generate": "graphql-codegen --config codegen.yml",
     "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
