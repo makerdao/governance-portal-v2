@@ -29,7 +29,7 @@ export enum SupportedConnectors {
 
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
-  ARBITRUMTESTNET = 'arbitrumTestnet',
+  ARBITRUMTESTNET = 'sepolia',
   ARBITRUM = 'arbitrum',
   TENDERLY = 'tenderly'
 }

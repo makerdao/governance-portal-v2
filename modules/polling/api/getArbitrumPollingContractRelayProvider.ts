@@ -16,11 +16,9 @@ import { arbitrumSdkGenerators } from '../helpers/relayerCredentials';
 export const getArbitrumPollingContractRelayProvider = async (
   network: SupportedNetworks
 ): Promise<Contract> => {
-  const sdkNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
+  const signer = getArbitrumRelaySigner(network);
 
-  const signer = getArbitrumRelaySigner(sdkNetwork);
-
-  const { polling } = arbitrumSdkGenerators[sdkNetwork](signer);
+  const { polling } = arbitrumSdkGenerators[network](signer);
 
   return polling;
 };

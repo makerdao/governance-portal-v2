@@ -12,10 +12,10 @@ import { ArbitrumSdkGenerators } from 'modules/web3/types/contracts';
 
 export const relayerCredentials = {
   mainnet: { apiKey: config.DEFENDER_API_KEY_MAINNET, apiSecret: config.DEFENDER_API_SECRET_MAINNET },
-  sepolia: { apiKey: config.DEFENDER_API_KEY_TESTNET, apiSecret: config.DEFENDER_API_SECRET_TESTNET }
+  tenderly: { apiKey: config.DEFENDER_API_KEY_TESTNET, apiSecret: config.DEFENDER_API_SECRET_TESTNET }
 };
 
 export const arbitrumSdkGenerators: ArbitrumSdkGenerators = {
   mainnet: getArbitrumOneSdk,
-  sepolia: getArbitrumSepoliaSdk
+  tenderly: getArbitrumSepoliaSdk
 };
