@@ -16,12 +16,12 @@ test('navigates to executives and can deposit into chief', async ({ page }) => {
     // Click approve contract
     await page.locator('[data-testid="deposit-approve-button"]').click();
 
-    // Wait until transaction completes
-    // Removing this check because it does not pass: await expect(page.locator('text=/Transaction Pending/')).toBeVisible();
-    // await expect(page.locator('text=/Confirm Transaction/')).toBeVisible();
+    await expect(page.locator('text=/Confirm Transaction/')).toBeVisible();
+
+    await expect(page.locator('text=/Transaction Pending/')).toBeVisible({timeout: 10000}); //tx can take some time to get signed
 
     // Deposit
-    await expect(page.locator('text=/Deposit into voting contract/')).toBeVisible();
+    await expect(page.locator('text=/Deposit into voting contract/')).toBeVisible(); 
 
     // Deposit
     await page.locator('[data-testid="mkr-input"]').fill('0.01');
@@ -29,8 +29,10 @@ test('navigates to executives and can deposit into chief', async ({ page }) => {
     // Click button
     await page.locator('[data-testid="button-deposit-mkr"]').click();
 
+    await expect(page.locator('text=/Confirm Transaction/')).toBeVisible();
+
     // Wait for tx
-    // await expect(page.locator('text=/Transaction Pending/')).toBeVisible();
+    await expect(page.locator('text=/Transaction Pending/')).toBeVisible({ timeout: 10000 }); //tx can take some time to get signed
     // await expect(page.locator('text=/Transaction Sent/')).toBeVisible();
 
     // Check MKR
@@ -39,7 +41,7 @@ test('navigates to executives and can deposit into chief', async ({ page }) => {
     // Can vote
     await page.locator('[data-testid="vote-button-exec-overview-card"]').first().click();
 
-    await page.locator('text=/Submit Vote/').click();
+    await page.locator('[data-testid="vote-modal-vote-btn"]').click();
 
     await expect(page.locator('text=/Transaction Sent/')).toBeVisible();
 });

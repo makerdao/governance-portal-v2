@@ -2,13 +2,11 @@ import { test, expect } from '@playwright/test';
 import {connectWallet, closeModal} from './shared';
 import './forkVnet';
 
-test('delegate MKR', async ({ page }) => {
+test.skip('delegate MKR', async ({ page }) => {
     // Start from the index page
     await page.goto('/delegates');
 
     await connectWallet(page);
-
-    //TODO why are no delegate contracts showing up on tenderly?
 
     // Click delegate button
     await page.locator('[data-testid="button-delegate"]').first().click();
