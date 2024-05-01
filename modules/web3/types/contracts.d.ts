@@ -39,5 +39,5 @@ export type SdkGenerators = {
 
 export type ArbitrumSdkGenerators = {
   mainnet: (signerOrProvider: SignerOrProvider) => ArbitrumOneSdk;
-  sepolia: (signerOrProvider: SignerOrProvider) => ArbitrumSepoliaSdk;
+  tenderly: (signerOrProvider: SignerOrProvider) => ArbitrumSepoliaSdk;
 };

@@ -31,9 +31,8 @@ export enum SupportedConnectors {
 
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
-  ARBITRUMTESTNET = 'arbitrumTestnet',
+  ARBITRUMTESTNET = 'sepolia',
   ARBITRUM = 'arbitrum',
-  ARBITRUMTESTNETFORK = 'arbitrumTestnetFork',
   TENDERLY = 'tenderly'
 }
 
@@ -78,20 +77,6 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-sepolia.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
-    },
-    showInProduction: false
-  },
-  [SupportedChainId.ARBITRUMTESTNETFORK]: {
-    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
-    blockExplorerName: 'Arbiscan',
-    chainId: SupportedChainId.ARBITRUMTESTNETFORK,
-    label: 'ArbitrumTestnetFork',
-    type: 'gasless',
-    network: SupportedNetworks.ARBITRUMTESTNETFORK,
-    defaultRpc: NodeProviders.LOCAL,
-    spockUrl: LOCAL_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.LOCAL]: 'http://127.0.0.1:8546/'
     },
     showInProduction: false
   },

@@ -61,9 +61,6 @@ const config: EthSdkConfig = {
     arbitrumSepolia: {
       polling: ArbitrumPollingAddressMap['sepolia']
     },
-    arbitrumGoerliTestnet: {
-      polling: ArbitrumPollingAddressMap['goerli']
-    },
     arbitrumOne: {
       polling: ArbitrumPollingAddressMap['mainnet']
     }
@@ -72,7 +69,6 @@ const config: EthSdkConfig = {
   etherscanURLs: {
     tenderly: 'https://api.etherscan.io/api',
     arbitrumSepolia: 'https://api-sepolia.arbiscan.io/api',
-    arbitrumGoerliTestnet: 'https://goerli-rollup-explorer.arbitrum.io/api',
     arbitrumOne: 'https://api.arbiscan.io/api'
   }
 };

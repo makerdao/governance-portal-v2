@@ -22,7 +22,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *     properties:
  *       network:
  *         type: number
- *         enum: ['mainnet', 'goerli']
+ *         enum: ['mainnet', 'tenderly']
  *       pollId:
  *         type: number
  *       comment:
