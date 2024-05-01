@@ -35,7 +35,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           description: The network to query the delegates for. Defaults to mainnet.
  *           schema:
  *             type: string
- *             enum: [goerli, tenderly, mainnet]
+ *             enum: [tenderly, mainnet]
  *           default: "mainnet"
  *         - name: pageSize
  *           in: query

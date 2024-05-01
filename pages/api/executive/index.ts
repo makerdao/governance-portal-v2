@@ -37,7 +37,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       items:
  *         type: "string"
  *         enum:
- *         - "goerli"
  *         - "mainnet"
  *         default: ""
  *     - name: "start"

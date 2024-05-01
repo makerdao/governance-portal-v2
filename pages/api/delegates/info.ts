@@ -28,7 +28,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *          description: The network for which to fetch the delegate names and metrics
  *          schema:
  *            type: string
- *            enum: [goerli, tenderly, mainnet]
+ *            enum: [tenderly, mainnet]
  *          default: mainnet
  *      responses:
  *        200:
