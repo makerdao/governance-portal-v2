@@ -29,5 +29,5 @@ export async function connectWallet(page) {
 }
 
 export function closeModal(page) {
-    page.get('[aria-label="close"]').click();
+    page.locator('[aria-label="close"]').click();
 }
