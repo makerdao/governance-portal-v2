@@ -74,7 +74,6 @@ export const setErc20Balance = async (address: string, tokenAddress: string, amo
   }
 };
 
-//TODO: update to fork the correct testnet
 const forkVnet = async (displayName: string) => {
   if (!displayName.length) {
     throw new Error('A display name is required for the virtual testnet');
