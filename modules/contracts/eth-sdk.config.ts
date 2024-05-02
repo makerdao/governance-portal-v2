@@ -59,7 +59,7 @@ const config: EthSdkConfig = {
       vow: '0xA950524441892A31ebddF91d3cEEFa04Bf454466'
     },
     arbitrumSepolia: {
-      polling: ArbitrumPollingAddressMap['sepolia']
+      polling: ArbitrumPollingAddressMap['tenderly']
     },
     arbitrumOne: {
       polling: ArbitrumPollingAddressMap['mainnet']
