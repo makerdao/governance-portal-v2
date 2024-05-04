@@ -13,6 +13,8 @@ jobs:
       matrix:
         include:
           - test: executives.spec
+          - test: delegates.spec
+          - test: esmodule.spec
     runs-on: ubuntu-latest
     env:
       INFURA_KEY: ${{ secrets.INFURA_KEY }}
