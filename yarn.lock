@@ -101,11 +101,12 @@
     tslib "^1.11.1"
 
 "@aws-sdk/types@^3.1.0":
-  version "3.337.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.337.0.tgz#e45a2ebe3799002f552658fd81c52bd0255e5c72"
-  integrity sha512-yR7e9iWMabUfNWkpQs05QXXBXGwp5cunkzVNeDvcAKgaxVVD2n8wY9Iocl324GvXMplJcnND9l0DvizkTak3yQ==
+  version "3.567.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.567.0.tgz#b2dc88e154140b1ff87e94f63c97447bdb1c1738"
+  integrity sha512-JBznu45cdgQb8+T/Zab7WpBmfEAh77gsk99xuF4biIb2Sw1mdseONdoGDjEJX57a25TzIv/WUJ2oABWumckz1A==
   dependencies:
-    tslib "^2.5.0"
+    "@smithy/types" "^2.12.0"
+    tslib "^2.6.2"
 
 "@aws-sdk/util-utf8-browser@^3.0.0":
   version "3.259.0"
@@ -2656,6 +2657,28 @@
   dependencies:
     "@octokit/openapi-types" "^17.2.0"
 
+"@openzeppelin/defender-base-client@1.54.1":
+  version "1.54.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/defender-base-client/-/defender-base-client-1.54.1.tgz#ed777ae56908d5a920e1f72ac735c63694e65b30"
+  integrity sha512-DRGz/7KN3ZQwu28YWMOaojrC7jjPkz/uCwkC8/C8B11qwZhA5qIVvyhYHhhFOCl0J84+E3TNdvkPD2q3p2WaJw==
+  dependencies:
+    amazon-cognito-identity-js "^6.0.1"
+    async-retry "^1.3.3"
+    axios "^1.4.0"
+    lodash "^4.17.19"
+    node-fetch "^2.6.0"
+
+"@openzeppelin/defender-relay-client@^1.54.1":
+  version "1.54.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/defender-relay-client/-/defender-relay-client-1.54.1.tgz#5dcd83873dabdd4067c1cf017357ccb9452d64aa"
+  integrity sha512-v8VK0OEPfeK81EfzfQA8ieWrXPXY38EA3fXcOrBBFkFTDMJib2zno7Ust9gnyjItvd1o5MyCY1VdxEtamAwyHw==
+  dependencies:
+    "@openzeppelin/defender-base-client" "1.54.1"
+    amazon-cognito-identity-js "^6.0.1"
+    axios "^1.4.0"
+    lodash "^4.17.19"
+    node-fetch "^2.6.0"
+
 "@peculiar/asn1-schema@^2.3.6":
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/@peculiar/asn1-schema/-/asn1-schema-2.3.6.tgz#3dd3c2ade7f702a9a94dfb395c192f5fa5d6b922"
@@ -3049,6 +3072,13 @@
   integrity sha512-OPwQlEdg40HAj5KNF8WW6q2KG4Z+cBCZb3m4ninfTZKaBmbIJodviQsDBoYMPHkOyJJMHnOJo5j2+LKDOhOACg==
   dependencies:
     "@sinonjs/commons" "^3.0.0"
+
+"@smithy/types@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@smithy/types/-/types-2.12.0.tgz#c44845f8ba07e5e8c88eda5aed7e6a0c462da041"
+  integrity sha512-QwYgloJ0sVNBeBuBs65cIkTbfzV/Q6ZNPCJ99EICFEdJYG50nGIY/uYXp+TbsdJReIuPr0a0kXmCvren3MbRRw==
+  dependencies:
+    tslib "^2.6.2"
 
 "@solana/buffer-layout@^4.0.1":
   version "4.0.1"
@@ -4761,9 +4791,9 @@ ajv@^6.10.0, ajv@^6.12.4:
     uri-js "^4.2.2"
 
 amazon-cognito-identity-js@^6.0.1:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/amazon-cognito-identity-js/-/amazon-cognito-identity-js-6.2.0.tgz#99e96666944429cb8f67b62e4cf7ad77fbe71ad0"
-  integrity sha512-9Fxrp9+MtLdsJvqOwSaE3ll+pneICeuE3pwj2yDkiyGNWuHx97b8bVLR2bOgfDmDJnY0Hq8QoeXtwdM4aaXJjg==
+  version "6.3.12"
+  resolved "https://registry.yarnpkg.com/amazon-cognito-identity-js/-/amazon-cognito-identity-js-6.3.12.tgz#af73df033094ad4c679c19cf6122b90058021619"
+  integrity sha512-s7NKDZgx336cp+oDeUtB2ZzT8jWJp/v2LWuYl+LQtMEODe22RF1IJ4nRiDATp+rp1pTffCZcm44Quw4jx2bqNg==
   dependencies:
     "@aws-crypto/sha256-js" "1.2.2"
     buffer "4.9.2"
@@ -5050,13 +5080,6 @@ axios@=1.3.6:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-axios@^0.21.2:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
-  dependencies:
-    follow-redirects "^1.14.0"
-
 axios@^0.25.0:
   version "0.25.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.25.0.tgz#349cfbb31331a9b4453190791760a8d35b093e0a"
@@ -5071,6 +5094,15 @@ axios@^0.27.2:
   dependencies:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
+
+axios@^1.4.0:
+  version "1.6.8"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.8.tgz#66d294951f5d988a00e87a0ffb955316a619ea66"
+  integrity sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axobject-query@^3.1.1:
   version "3.1.1"
@@ -6366,28 +6398,6 @@ defaults@^1.0.3:
   dependencies:
     clone "^1.0.2"
 
-defender-base-client@1.44.0:
-  version "1.44.0"
-  resolved "https://registry.yarnpkg.com/defender-base-client/-/defender-base-client-1.44.0.tgz#afe724447c0f9177b999b70b9f14dd70d61d5a7a"
-  integrity sha512-8ZgGA93+FlxNwG9LN1nu/Au5AyCKwAWJGNf0VLiPmh4GX/Nali/7kv72K+OtZgGxTLtKDKfgN4cnhEZwfrc8dg==
-  dependencies:
-    amazon-cognito-identity-js "^6.0.1"
-    async-retry "^1.3.3"
-    axios "^0.21.2"
-    lodash "^4.17.19"
-    node-fetch "^2.6.0"
-
-defender-relay-client@^1.23.0:
-  version "1.44.0"
-  resolved "https://registry.yarnpkg.com/defender-relay-client/-/defender-relay-client-1.44.0.tgz#8272a5fe734f34136a15be62f958cbfabe4c724f"
-  integrity sha512-9ohzq8wt7xm2ieoSPsCC/RvidxKOCDjEZH7aFn8R/WWfK5ehJMlDGE0daugfffoOL2eL2zqwQLVxtzNN2OSBDA==
-  dependencies:
-    amazon-cognito-identity-js "^6.0.1"
-    axios "^0.21.2"
-    defender-base-client "1.44.0"
-    lodash "^4.17.19"
-    node-fetch "^2.6.0"
-
 defer-to-connect@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/defer-to-connect/-/defer-to-connect-2.0.1.tgz#8016bdb4143e4632b77a3449c6236277de520587"
@@ -7495,7 +7505,7 @@ focus-lock@^0.11.6:
   dependencies:
     tslib "^2.0.3"
 
-follow-redirects@^1.14.0, follow-redirects@^1.14.7, follow-redirects@^1.14.9, follow-redirects@^1.15.0:
+follow-redirects@^1.14.7, follow-redirects@^1.14.9, follow-redirects@^1.15.0, follow-redirects@^1.15.6:
   version "1.15.6"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.6.tgz#7f815c0cda4249c74ff09e95ef97c23b5fd0399b"
   integrity sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==
@@ -10654,17 +10664,17 @@ node-domexception@1.0.0, node-domexception@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
 
-node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@^2.6.11, node-fetch@^2.6.7:
-  version "2.6.11"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.11.tgz#cde7fc71deef3131ef80a738919f999e6edfff25"
-  integrity sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==
-  dependencies:
-    whatwg-url "^5.0.0"
-
-node-fetch@^2.7.0:
+node-fetch@^2.6.0, node-fetch@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
+  dependencies:
+    whatwg-url "^5.0.0"
+
+node-fetch@^2.6.1, node-fetch@^2.6.11, node-fetch@^2.6.7:
+  version "2.6.11"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.11.tgz#cde7fc71deef3131ef80a738919f999e6edfff25"
+  integrity sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==
   dependencies:
     whatwg-url "^5.0.0"
 
@@ -13343,6 +13353,11 @@ tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.5.2.tgz#1b6f07185c881557b0ffa84b111a0106989e8338"
   integrity sha512-5svOrSA2w3iGFDs1HibEVBGbDrAY82bFQ3HZ3ixB+88nsbsWQoKqDRb5UBYAUPEzbBn6dAp5gRNXglySbx1MlA==
+
+tslib@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
+  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tslib@~2.4.0:
   version "2.4.1"

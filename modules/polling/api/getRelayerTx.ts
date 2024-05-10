@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { Relayer } from 'defender-relay-client';
+import { Relayer } from '@openzeppelin/defender-relay-client';
 import { relayerCredentials } from '../helpers/relayerCredentials';
 
 export const getRelayerTx = async (
