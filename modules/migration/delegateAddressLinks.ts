@@ -51,7 +51,17 @@ export const delegateAddressLinks = {
     // Resiliency AVC - TRUE NAME
     '0xc3cd0084e63661dfdcc79f34789860752ba39831': '0x3fe3095307ff3cf0ab9de327d01a9abff6ea4a1d',
     // Regenerative Finance AVC - TRUE NAME
-    '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625'
+    '0xbcb90cbf7ecb6a320e99fabd97f9403bc6662ee8': '0xa44863394e8504212ee7cb4f70044c8e6f857625',
+    // Resiliency AVC - QGov
+    '0xc0311aa0790bb1f8C1bcFEE6b82d38267D415fC6': '0x4A92599433535b0E61d80085c5a90AeDf5a96467',
+    // Regenerative Finance AVC - PBG
+    '0x93da8baB74d7210a5c66BB2c0327f8205f465fc3': '0x51C659ee6FccebF7183da4E7D42A83b652F6E741',
+    // Regenerative Finance AVC - UPMaker
+    '0x61AFeb287bbC52C49405333a05c8FC0d601a8aFB': '0xf295c242bC11F9793498c30be851Ba0a841a0B95',
+    // Resiliency AVC - UPMaker
+    '0x668fA29d3fD30179df6bc58DA5D42E04360CE27c': '0x80ae9649fC445516f4792AF77b0B8F5809C38231',
+    //Sovereign Finance AVC - Blue
+    '0x766b115d7E179Bb8980A575dfa02531245E0C4C0': '0x1a6DF5ab553E731a5DD767F44004C12dF81f02FC'
   }
 };
 
