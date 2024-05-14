@@ -15,7 +15,6 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  LOCAL_SPOCK_URL,
   TENDERLY_SPOCK_URL
 } from 'modules/gql/gql.constants';
 
