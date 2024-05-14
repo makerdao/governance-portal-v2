@@ -47,7 +47,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
         const path = `https://raw.githubusercontent.com/${githubRepo.owner}/${
           githubRepo.repo
         }/master/${pathParts.join('/')}/${encodeURIComponent(last)}`;
-        return parseExecutive(file.object.text, proposalIndex, path, network);
+        return parseExecutive(file.object.text, proposalIndex, path, SupportedNetworks.MAINNET); //always use mainnet proposal index for now
       } catch (e) {
         logger.error(`getGithubExecutives: network ${network}`, e);
         // Catch error and return null if failed fetching one proposal
@@ -102,8 +102,7 @@ export async function getExecutiveProposals({
   endDate?: number;
   network?: SupportedNetworks;
 }): Promise<Proposal[]> {
-  // Use goerli as a Key for Goerli fork. In order to pick the the current executives
-  const currentNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const currentNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
 
   const cacheKey = getExecutiveProposalsCacheKey(start, limit, sortBy, startDate, endDate);
 
@@ -161,8 +160,7 @@ export async function getExecutiveProposal(
 ): Promise<Proposal | null> {
   const net = network ? network : DEFAULT_NETWORK.network;
 
-  // Use goerli as a Key for Goerli fork. In order to pick the the current executives
-  const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
+  const currentNetwork = net === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : net;
 
   const proposals = await getGithubExecutives(currentNetwork);
 

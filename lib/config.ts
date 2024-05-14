@@ -32,6 +32,7 @@ type SystemConfig = {
   DASHBOARD_PASSWORD: string;
   GASLESS_BACKDOOR_SECRET: string;
   GASLESS_DISABLED: string;
+  TENDERLY_RPC_KEY: string;
 };
 
 export const config: SystemConfig = {
@@ -59,5 +60,6 @@ export const config: SystemConfig = {
   GASLESS_WEBHOOK_URL: process.env.GASLESS_WEBHOOK_URL || '',
   DASHBOARD_PASSWORD: process.env.DASHBOARD_PASSWORD || '',
   GASLESS_BACKDOOR_SECRET: process.env.GASLESS_BACKDOOR_SECRET || '',
-  GASLESS_DISABLED: process.env.GASLESS_DISABLED || ''
+  GASLESS_DISABLED: process.env.GASLESS_DISABLED || '',
+  TENDERLY_RPC_KEY: process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY || ''
 };

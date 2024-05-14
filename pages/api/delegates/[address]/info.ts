@@ -30,7 +30,7 @@ import { ApiError } from 'modules/app/api/ApiError';
  *          description: The network for which to fetch the delegate names and metrics
  *          schema:
  *            type: string
- *            enum: [goerli, goerlifork, mainnet]
+ *            enum: [tenderly, mainnet]
  *          default: mainnet
  *        - name: address
  *          in: url
@@ -107,7 +107,7 @@ import { ApiError } from 'modules/app/api/ApiError';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegateInfo | null>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const address = await validateAddress(

@@ -64,8 +64,7 @@ export const NetworkAlertModal = ({
               Your wallet is connected to an unsupported network, please switch it to{' '}
               {SupportedNetworks.MAINNET} to continue.
             </Text>
-            {/* <Button onClick={() => handleSwitchNetwork(SupportedNetworks.MAINNET)}>Switch to mainnet</Button>
-            <Button onClick={() => handleSwitchNetwork(SupportedNetworks.GOERLI)}>Switch to goerli</Button> */}
+            {/* <Button onClick={() => handleSwitchNetwork(SupportedNetworks.MAINNET)}>Switch to mainnet</Button>*/}
           </Flex>
         </DialogContent>
       </DialogOverlay>

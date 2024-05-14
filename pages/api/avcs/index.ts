@@ -31,7 +31,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
  *           description: The network to query the AVCs for. Defaults to mainnet.
  *           schema:
  *             type: string
- *             enum: [goerli, goerlifork, mainnet]
+ *             enum: [tenderly, mainnet]
  *           default: "mainnet"
  *         - name: orderBy
  *           description: The field to sort the AVCs by. Defaults to RANDOM.
@@ -93,7 +93,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AvcsAPIResponse>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const orderBy = validateQueryParam(req.query.orderBy, 'string', {

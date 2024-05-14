@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
-
+import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { providers } from 'ethers';
 import { CHAIN_INFO, DEFAULT_NETWORK } from '../constants/networks';
 import { SupportedChainId } from '../constants/chainID';
@@ -18,8 +17,7 @@ import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
-  goerli: getGoerliSdk,
-  goerlifork: getGoerliSdk
+  tenderly: getMainnetSdk
 };
 
 let connectedAccount: string | undefined;
@@ -63,7 +61,6 @@ export const getContracts = (
     // Keep track of the connected account and network so we know if it needs to be changed later
     if (needsSigner && changeAccount) connectedAccount = account;
     if (changeNetwork) currentNetwork = network;
-
     contracts = sdkGenerators[network](signerOrProvider);
   }
 

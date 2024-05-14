@@ -110,7 +110,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   // validate network
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const pollId = validateQueryParam(req.query['poll-id-or-slug'], 'number', {

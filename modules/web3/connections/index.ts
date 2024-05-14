@@ -26,8 +26,7 @@ const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
       actions,
       urlMap: {
         [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
-        [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI),
-        [SupportedChainId.GOERLIFORK]: getRPCFromChainID(SupportedChainId.GOERLIFORK)
+        [SupportedChainId.TENDERLY]: getRPCFromChainID(SupportedChainId.TENDERLY)
       },
       defaultChainId: 1
     })
@@ -55,10 +54,10 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
         projectId: config.WALLETCONNECT_PROJECT_ID,
         showQrModal: true,
         chains: [SupportedChainId.MAINNET],
-        optionalChains: [SupportedChainId.GOERLI],
+        optionalChains: [SupportedChainId.TENDERLY],
         rpcMap: {
           [SupportedChainId.MAINNET]: getRPCFromChainID(SupportedChainId.MAINNET),
-          [SupportedChainId.GOERLI]: getRPCFromChainID(SupportedChainId.GOERLI)
+          [SupportedChainId.TENDERLY]: getRPCFromChainID(SupportedChainId.TENDERLY)
         },
         optionalMethods: ['eth_signTypedData_v4'],
         metadata: {
@@ -130,8 +129,8 @@ const CONNECTIONS = [
 
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
-    // Return the shimmed metamask connection if on goerlifork
-    if ((c.provider as EIP1193Provider)?.chainId === SupportedChainId.GOERLIFORK) {
+    // Return the shimmed metamask connection if on tenderly
+    if ((c.provider as EIP1193Provider)?.chainId === SupportedChainId.TENDERLY) {
       return metamaskConnection;
     }
 

@@ -30,7 +30,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *          description: "Network name"
  *          required: false
  *          type: "string"
- *          enum: [goerli, mainnet]
+ *          enum: [tenderly, mainnet]
  *          default: "mainnet"
  *        - name: "sortBy"
  *          in: "query"
@@ -190,7 +190,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
   const network = validateQueryParam(req.query.network, 'string', {
     defaultValue: DEFAULT_NETWORK.network,
-    validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+    validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
   const sortBy = validateQueryParam(req.query.sortBy, 'string', {

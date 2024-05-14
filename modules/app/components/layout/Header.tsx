@@ -124,7 +124,7 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
 };
 
 const Header = (): JSX.Element => {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
 
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -302,7 +302,7 @@ const Header = (): JSX.Element => {
 };
 
 const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

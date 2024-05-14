@@ -40,7 +40,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *         required: false
  *         schema:
  *           type: string
- *           enum: [goerli, mainnet]
+ *           enum: [mainnet]
  *           default: mainnet
  *     responses:
  *       200:
@@ -91,7 +91,7 @@ export default withApiHandler(
       'string',
       {
         defaultValue: null,
-        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+        validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
       },
       n => !!n,
       new ApiError('Invalid network', 400, 'Invalid network')
