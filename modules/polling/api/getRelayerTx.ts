@@ -14,6 +14,9 @@ export const getRelayerTx = async (
   txId: string,
   network: SupportedNetworks
 ): Promise<any> /* type this to relayer tx */ => {
+  if (!Object.values(SupportedNetworks).includes(network)) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
   const relayer = new Relayer(relayerCredentials[network]);
   const latestTx = await relayer.query(txId);
 

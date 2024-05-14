@@ -12,6 +12,9 @@ import { getGaslessProvider } from 'modules/web3/helpers/chain';
 import { arbitrumSdkGenerators } from './relayerCredentials';
 
 export const getArbitrumPollingContractReadOnly = (network: SupportedNetworks): Contract => {
+  if (!Object.values(SupportedNetworks).includes(network)) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
   const gaslessProvider = getGaslessProvider(network);
   const { polling } = arbitrumSdkGenerators[network](gaslessProvider);
   return polling;
