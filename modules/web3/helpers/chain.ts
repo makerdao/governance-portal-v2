@@ -26,16 +26,15 @@ export const networkNameToChainId = (networkName: string): number => {
 
 export const isSupportedChain = (chainId?: number): boolean => {
   if (!chainId) return false;
-  return CHAIN_INFO[chainId] && CHAIN_INFO[chainId].type === 'normal' && (process.env.NODE_ENV !== 'production' || CHAIN_INFO[chainId].showInProduction);
+  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
+  return CHAIN_INFO[chainId] && CHAIN_INFO[chainId].type === 'normal' && (!isProduction || CHAIN_INFO[chainId].showInProduction);
 };
 
 export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks => {
   if (network === SupportedNetworks.MAINNET) {
     return SupportedNetworks.ARBITRUM;
-  } else if (network === SupportedNetworks.GOERLI) {
-    return SupportedNetworks.ARBITRUMTESTNET;
   } else {
-    return SupportedNetworks.ARBITRUMTESTNETFORK;
+    return SupportedNetworks.ARBITRUMTESTNET;
   }
 };
 

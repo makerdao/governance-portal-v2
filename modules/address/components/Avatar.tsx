@@ -28,7 +28,7 @@ export function Avatar({ size, address, defaultComponent, style }: AvatarProps):
     let mounted = true;
 
     const fetchAvatarUri = async () => {
-      if (library && address && chainId !== SupportedChainId.GOERLIFORK) {
+      if (library && address && chainId !== SupportedChainId.TENDERLY) {
         const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
         try {
           const ensName = await library.lookupAddress(address);

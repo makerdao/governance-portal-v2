@@ -12,8 +12,8 @@ import { Eip1193Bridge } from '@ethersproject/experimental';
 import logger from 'lib/logger';
 
 export class CustomizedBridge extends Eip1193Bridge {
-  chainId = SupportedChainId.GOERLIFORK;
-  chainIdHex = '0x7a69';
+  chainId = SupportedChainId.TENDERLY;
+  chainIdHex = '0x1df2041';
   address: string;
   // chainId = SupportedChainId.GOERLI
   // chainIdHex = '0x5'

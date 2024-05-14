@@ -15,7 +15,7 @@
     "jsx": "preserve",
     "jsxImportSource": "theme-ui",
     "strictNullChecks": true,
-    "types": ["jest", "cypress"],
+    "types": ["jest"],
     "baseUrl": "./",
     "paths": {
       "lib/*": ["lib/*"],
@@ -31,8 +31,6 @@
     "modules",
     "pages",
     "__tests__",
-    "cypress",
-    "node_modules/cypress",
     "@testing-library/jest-dom",
     "middleware.ts"
   ]
