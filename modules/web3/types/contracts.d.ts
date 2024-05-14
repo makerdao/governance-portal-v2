@@ -28,7 +28,7 @@ export type ContractName =
   | 'voteProxyFactory'
   | 'vow';
 
-export type EthSdk = MainnetSdk | ArbitrumOneSdk;
+export type EthSdk = MainnetSdk;
 
 export type SignerOrProvider = Signer | providers.Provider;
 
