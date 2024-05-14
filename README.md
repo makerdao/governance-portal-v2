@@ -14,7 +14,7 @@ While the portal is hosted by MakerDAO at https://vote.makerdao.com, it can also
 
 In order to run the project locally, you must have the following installed on the machine:
 
-- Node, version 14 or greater ([install](https://nodejs.dev/learn/how-to-install-nodejs))
+- Node, version 18.17 or greater ([install](https://nodejs.dev/learn/how-to-install-nodejs))
 
 To get started, clone the repository to the desired directory and then navigate into the project folder:
 
