@@ -13,9 +13,10 @@ import logger from 'lib/logger';
 
 export const getRelayerBalance = async (network: SupportedNetworks): Promise<string> => {
   try {
-    const sdkNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.ARBITRUMTESTNET : network;
-
-    const signer = getArbitrumRelaySigner(sdkNetwork);
+    if (!Object.values(SupportedNetworks).includes(network)) {
+      throw new Error(`Unsupported network: ${network}`);
+    }
+    const signer = getArbitrumRelaySigner(network);
     const address = await signer.getAddress();
     const balance = await signer.provider.getBalance(address);
 

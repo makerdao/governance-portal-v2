@@ -16,6 +16,10 @@ import { arbitrumSdkGenerators } from '../helpers/relayerCredentials';
 export const getArbitrumPollingContractRelayProvider = async (
   network: SupportedNetworks
 ): Promise<Contract> => {
+  if (!Object.values(SupportedNetworks).includes(network)) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
+
   const signer = getArbitrumRelaySigner(network);
 
   const { polling } = arbitrumSdkGenerators[network](signer);

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { GoerliSdk, MainnetSdk, ArbitrumOneSdk } from '@dethcrypto/eth-sdk-client';
+import { MainnetSdk, ArbitrumOneSdk } from '@dethcrypto/eth-sdk-client';
 import { providers, Signer } from 'ethers';
 
 export type ContractName =
@@ -28,7 +28,7 @@ export type ContractName =
   | 'voteProxyFactory'
   | 'vow';
 
-export type EthSdk = MainnetSdk | GoerliSdk;
+export type EthSdk = MainnetSdk;
 
 export type SignerOrProvider = Signer | providers.Provider;
 
