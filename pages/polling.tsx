@@ -224,7 +224,7 @@ const PollingOverview = ({
 
   const { account, votingAccount } = useAccount();
   const { mutate: mutateAllUserVotes } = useAllUserVotes(votingAccount);
-
+  console.log('account', account);
   // revalidate user votes if connected address changes
   useEffect(() => {
     mutateAllUserVotes();
