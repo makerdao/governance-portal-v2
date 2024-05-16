@@ -30,7 +30,6 @@ import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
 import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
 import { Web3Provider } from 'modules/web3/components/Web3Provider';
-import GaslessBanner from 'modules/polling/components/GaslessBanner';
 import React, { useMemo } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -46,7 +45,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
       <React.Fragment>
         {activeBannerContent && <Banner content={activeBannerContent.content} />}
         <MigrationBanner />
-        <GaslessBanner />
       </React.Fragment>
     );
   }, []);
