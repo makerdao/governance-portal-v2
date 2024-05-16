@@ -377,7 +377,7 @@ const PollingOverview = ({
                                 <PollOverviewCard
                                   poll={poll}
                                   allTags={tags}
-                                  showVoting={!!account}
+                                  showVoting={true}
                                   reviewPage={false}
                                   onVisitPoll={onVisitPoll}
                                 />
