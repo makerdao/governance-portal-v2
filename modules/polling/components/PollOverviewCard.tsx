@@ -65,6 +65,8 @@ const PollOverviewCard = memo(
     const bpi = useBreakpointIndex({ defaultIndex: 2 });
     const canVote = !!account && isActivePoll(poll);
     const showQuickVote = canVote && showVoting;
+    console.log('account in card', account);
+    console.log('isActivePoll(poll)', isActivePoll(poll));
     const { comments, error: errorComments } = usePollComments(poll.pollId);
     const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
 
