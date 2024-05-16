@@ -66,6 +66,7 @@ const PollOverviewCard = memo(
     const canVote = !!account && isActivePoll(poll);
     const showQuickVote = canVote && showVoting;
     console.log('account in card', account);
+    console.log('showVoting', showVoting);
     console.log('isActivePoll(poll)', isActivePoll(poll));
     console.log('showQuickVote', showQuickVote);
     const { comments, error: errorComments } = usePollComments(poll.pollId);
