@@ -67,6 +67,7 @@ const PollOverviewCard = memo(
     const showQuickVote = canVote && showVoting;
     console.log('account in card', account);
     console.log('isActivePoll(poll)', isActivePoll(poll));
+    console.log('showQuickVote', showQuickVote);
     const { comments, error: errorComments } = usePollComments(poll.pollId);
     const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
 
@@ -192,6 +193,7 @@ const PollOverviewCard = memo(
                   <Box sx={{ ml: 2, minWidth: '265px' }}>
                     <ErrorBoundary componentName="Vote in Poll">
                       <Box sx={{ maxWidth: 7 }}>
+                        <div> Quick vote </div>
                         <QuickVote poll={poll} showStatus={!reviewPage} disabled={disableVoting} />
                       </Box>
                     </ErrorBoundary>
