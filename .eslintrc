@@ -11,7 +11,6 @@
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:jest-dom/recommended",
-    "plugin:cypress/recommended"
   ],
   "globals": {
     "cy": true

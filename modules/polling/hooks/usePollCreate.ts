@@ -53,10 +53,8 @@ export const usePollCreate = (): CreateResponse => {
     }
 
     const createTxCreator = async () => {
-      const populatedTransaction = await (network === SupportedNetworks.GOERLI
-        ? polling
-        : pollingOld
-      ).populateTransaction.createPoll(startDate, endDate, multiHash, url);
+      const populatedTransaction = await pollingOld
+        .populateTransaction.createPoll(startDate, endDate, multiHash, url);
 
       return sendTransaction(populatedTransaction, provider, account);
     };

@@ -15,8 +15,7 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  GOERLI_SPOCK_URL,
-  LOCAL_SPOCK_URL
+  TENDERLY_SPOCK_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -29,17 +28,16 @@ export enum SupportedConnectors {
 
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
-  GOERLI = 'goerli',
-  GOERLIFORK = 'goerlifork',
-  ARBITRUMTESTNET = 'arbitrumTestnet',
+  ARBITRUMTESTNET = 'sepolia',
   ARBITRUM = 'arbitrum',
-  ARBITRUMTESTNETFORK = 'arbitrumTestnetFork'
+  TENDERLY = 'tenderly'
 }
 
 export enum NodeProviders {
   INFURA = 'infura',
   ALCHEMY = 'alchemy',
-  LOCAL = 'local'
+  LOCAL = 'local',
+  TENDERLY = 'tenderly'
 }
 
 type ChainInfo = {
@@ -64,37 +62,8 @@ export const CHAIN_INFO: ChainInfo = {
     },
     showInProduction: true
   },
-  [SupportedChainId.GOERLI]: {
-    blockExplorerUrl: 'goerli.etherscan.io',
-    blockExplorerName: 'Etherscan',
-    chainId: SupportedChainId.GOERLI,
-    label: 'Goerli',
-    type: 'normal',
-    network: SupportedNetworks.GOERLI,
-    defaultRpc: NodeProviders.ALCHEMY,
-    spockUrl: GOERLI_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,
-      [NodeProviders.ALCHEMY]: `https://eth-goerli.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
-    },
-    showInProduction: false
-  },
-  [SupportedChainId.GOERLIFORK]: {
-    blockExplorerUrl: 'goerli.etherscan.io',
-    blockExplorerName: 'Etherscan',
-    chainId: SupportedChainId.GOERLIFORK,
-    label: 'GoerliFork',
-    type: 'normal',
-    network: SupportedNetworks.GOERLIFORK,
-    defaultRpc: NodeProviders.LOCAL,
-    spockUrl: LOCAL_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.LOCAL]: 'http://127.0.0.1:8545/'
-    },
-    showInProduction: false
-  },
   [SupportedChainId.ARBITRUMTESTNET]: {
-    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
+    blockExplorerUrl: 'sepolia.arbiscan.io',
     blockExplorerName: 'Arbiscan',
     chainId: SupportedChainId.ARBITRUMTESTNET,
     label: 'ArbitrumTestnet',
@@ -102,21 +71,7 @@ export const CHAIN_INFO: ChainInfo = {
     network: SupportedNetworks.ARBITRUMTESTNET,
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
-      [NodeProviders.ALCHEMY]: `https://arb-goerli.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
-    },
-    showInProduction: false
-  },
-  [SupportedChainId.ARBITRUMTESTNETFORK]: {
-    blockExplorerUrl: 'goerli-rollup-explorer.arbitrum.io',
-    blockExplorerName: 'Arbiscan',
-    chainId: SupportedChainId.ARBITRUMTESTNETFORK,
-    label: 'ArbitrumTestnetFork',
-    type: 'gasless',
-    network: SupportedNetworks.ARBITRUMTESTNETFORK,
-    defaultRpc: NodeProviders.LOCAL,
-    spockUrl: LOCAL_SPOCK_URL,
-    rpcs: {
-      [NodeProviders.LOCAL]: 'http://127.0.0.1:8546/'
+      [NodeProviders.ALCHEMY]: `https://arb-sepolia.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_TESTNET_KEY}`
     },
     showInProduction: false
   },
@@ -130,6 +85,20 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
+    },
+    showInProduction: false
+  },
+  [SupportedChainId.TENDERLY]: {
+    blockExplorerUrl: `dashboard.tenderly.co/explorer/vnet/${config.TENDERLY_RPC_KEY}`,
+    blockExplorerName: 'Etherscan',
+    chainId: SupportedChainId.TENDERLY,
+    label: 'Tenderly',
+    type: 'normal',
+    network: SupportedNetworks.TENDERLY,
+    defaultRpc: NodeProviders.TENDERLY,
+    spockUrl: TENDERLY_SPOCK_URL,
+    rpcs: {
+      [NodeProviders.TENDERLY]: `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },
     showInProduction: false
   }

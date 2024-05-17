@@ -22,7 +22,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *     properties:
  *       network:
  *         type: number
- *         enum: ['mainnet', 'goerli']
+ *         enum: ['mainnet', 'tenderly']
  *       spellAddress:
  *         type: string
  *       comment:
@@ -81,7 +81,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     'string',
     {
       defaultValue: null,
-      validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+      validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
     },
     n => !!n,
     new ApiError('Invalid network', 400, 'Invalid network')

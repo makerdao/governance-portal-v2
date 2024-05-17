@@ -10,7 +10,7 @@ import React, { ReactNode } from 'react';
 import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
-import { useGoerliForkWindowBindings } from 'modules/web3/hooks/useGoerliForkWindowBindings';
+import { useTenderlyWindowBindings } from 'modules/web3/hooks/useTenderlyWindowBindings';
 import { useCurrentUserVoteProxyContract } from '../hooks/useCurrentUserVoteProxyContract';
 import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
@@ -57,8 +57,8 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
   const { data: voteProxyContract } = useCurrentUserVoteProxyContract();
   const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
 
-  // Use for tesing purposes, allow to log-in an account on the localhost network with a fork of goerli
-  useGoerliForkWindowBindings();
+  // Use for tesing purposes, allow to log-in an account on the localhost network with tenderly
+  useTenderlyWindowBindings();
 
   // In order of priority for voting: 1) Delegate contract, 2) Proxy 3) Wallet account
   const votingAccount = voteDelegateContractAddress

@@ -22,7 +22,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *     properties:
  *       network:
  *         type: number
- *         enum: ['mainnet', 'goerli']
+ *         enum: ['mainnet', 'tenderly']
  *       pollId:
  *         type: number
  *       comment:
@@ -79,7 +79,7 @@ export default withApiHandler(
       'string',
       {
         defaultValue: null,
-        validValues: [SupportedNetworks.GOERLI, SupportedNetworks.GOERLIFORK, SupportedNetworks.MAINNET]
+        validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
       },
       n => !!n,
       new ApiError('Invalid network', 400, 'Invalid network')

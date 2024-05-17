@@ -79,11 +79,13 @@ const NetworkSelect = (): React.ReactElement => {
 
   const close = () => setShowDialog(false);
 
+  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
+
   const networkOptions = Object.keys(CHAIN_INFO)
     .filter(
-      k => ![SupportedChainId.GOERLIFORK].includes(CHAIN_INFO[k].chainId) && CHAIN_INFO[k].type === 'normal'
+      k => CHAIN_INFO[k].type === 'normal'
     )
-    .filter(k => process.env.NODE_ENV !== 'production' || CHAIN_INFO[k].showInProduction)
+    .filter(k => !isProduction || CHAIN_INFO[k].showInProduction)
     .map(chainKey => (
       <Flex
         sx={walletButtonStyle}

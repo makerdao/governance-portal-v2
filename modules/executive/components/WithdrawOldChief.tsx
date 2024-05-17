@@ -27,7 +27,7 @@ import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
 // Note this only works on mainnet
 // TODO: Check that the amounts for allowance are correct
-// TODO: Test with cypress
+// TODO: Test with e2e
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
 

@@ -42,7 +42,7 @@ describe('getMKRVotingWeight', () => {
   });
 
   it('should return 0 if no MKR is locked', async () => {
-    const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.GOERLI, false);
+    const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateOwnerAddress);
     expect(result).toEqual({
       walletBalanceHot: BigNumber.from(0),
@@ -54,7 +54,7 @@ describe('getMKRVotingWeight', () => {
 
   it('should include the delegate contract weight by default', async () => {
     (getDelegateContractAddress as jest.Mock).mockReturnValue(fakeDelegateAddress);
-    const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.GOERLI, false);
+    const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateAddress);
     expect(result).toEqual({
       walletBalanceHot: BigNumber.from(100),
@@ -66,7 +66,7 @@ describe('getMKRVotingWeight', () => {
 
   it('should exclude the delegate contract weight if param is true', async () => {
     (getDelegateContractAddress as jest.Mock).mockReturnValue(fakeDelegateAddress);
-    const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.GOERLI, true);
+    const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, true);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateOwnerAddress);
     expect(result).toEqual({
       walletBalanceHot: BigNumber.from(0),
