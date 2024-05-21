@@ -16,7 +16,7 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'makerdao',
+    owner: 'boet1',
     repo: 'community',
     page: 'governance/delegates'
   };

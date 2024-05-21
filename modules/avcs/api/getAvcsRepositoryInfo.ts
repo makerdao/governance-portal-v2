@@ -11,7 +11,7 @@ import { RepositoryInfo } from 'modules/delegates/api/getDelegatesRepositoryInfo
 
 export function getAvcsRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'makerdao',
+    owner: 'boet1',
     repo: 'community',
     page: 'governance/delegates/templates'
   };
