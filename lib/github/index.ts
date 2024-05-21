@@ -51,7 +51,7 @@ const getNextToken = () => {
 
 export async function fetchGitHubPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
   const octokit = getNextToken();
-  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}?ref=boet-update', {
     mediaType: {
       format: 'raw'
     },
