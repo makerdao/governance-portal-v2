@@ -12,6 +12,9 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { DelegatePicture } from './DelegatePicture';
 import { DelegatePaginated } from '../types';
+import { DelegateModal } from './modals/DelegateModal';
+import { useState } from 'react';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function TopDelegates({
   topDelegates,
@@ -20,8 +23,21 @@ export default function TopDelegates({
   topDelegates: DelegatePaginated[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
+  const { account } = useAccount();
+  const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
+
   return (
     <Box>
+      {showDelegateModal && (
+        <DelegateModal
+          title={`Delegate to ${showDelegateModal.name}`}
+          delegate={showDelegateModal}
+          isOpen={true}
+          onDismiss={() => setShowDelegateModal(null)}
+          mutateTotalStaked={() => null}
+          mutateMKRDelegated={() => null}
+        />
+      )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
           <Heading as="h2">Top Aligned Delegates</Heading>
@@ -105,10 +121,14 @@ export default function TopDelegates({
                   }}
                 >
                   <Text as="p">{mkrDelegated ? new BigNumber(mkrDelegated).toFixed(2) : '0.00'} MKR</Text>
-                  <InternalLink
-                    href={`/address/${voteDelegateAddress}`}
-                    title="View delegates"
-                    styles={{
+                  <Button
+                    variant="outline"
+                    data-testid="button-delegate"
+                    disabled={!account}
+                    onClick={() => {
+                      setShowDelegateModal(delegate);
+                    }}
+                    sx={{
                       borderColor: 'secondaryMuted',
                       color: 'text',
                       ':hover': {
@@ -117,8 +137,8 @@ export default function TopDelegates({
                       }
                     }}
                   >
-                    <Button variant="outline">Delegate</Button>
-                  </InternalLink>
+                    Delegate
+                  </Button>
                 </Flex>
               </Flex>
             </Box>
@@ -134,28 +154,6 @@ export default function TopDelegates({
             justifyContent: 'center'
           }}
         >
-          <Box
-            sx={{
-              ml: [0, 3],
-              mr: [2, 3]
-            }}
-          >
-            <InternalLink
-              href={'/delegates'}
-              title="View delegates"
-              styles={{
-                borderColor: 'secondaryMuted',
-                color: 'text',
-                ':hover': {
-                  color: 'text',
-                  borderColor: 'onSecondary',
-                  backgroundColor: 'background'
-                }
-              }}
-            >
-              <Button variant="outline">See all delegates</Button>
-            </InternalLink>
-          </Box>
           <Box
             sx={{
               ml: [0, 3],
