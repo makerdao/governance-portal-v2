@@ -5,8 +5,6 @@ import './forkVnet';
 test('Input 150,000MKR and burn it', async ({ page }) => {
   await page.goto('/esmodule');
 
-  // Checks the info of no account connected appears
-  await expect(page.locator('text=No Account Connected')).toBeVisible();
   await expect(page.locator('text=Emergency Shutdown Module')).toBeVisible();
 
   await connectWallet(page);
