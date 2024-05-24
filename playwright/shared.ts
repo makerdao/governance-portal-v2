@@ -27,6 +27,7 @@ export async function connectWallet(page) {
     await page.getByRole('button', {name: 'Connect wallet'}).click();
     try {
       await page.waitForSelector('text="Connected with Mock"', { timeout: 2000 });
+      await closeModal(page);
     } catch (error) {
       await page.locator('div').filter({hasText: /^MockSelect$/}).getByRole('button').click();
     }
@@ -35,4 +36,3 @@ export async function connectWallet(page) {
 export function closeModal(page) {
     page.locator('[aria-label="close"]').click();
 }
-
