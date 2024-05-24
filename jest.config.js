@@ -9,6 +9,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.tsx', 'jest-canvas-mock'],
   testPathIgnorePatterns: [
     '/node_modules/',
+    '/playwright/',
     '/.next/',
     '/setup',
     '__tests__/helpers.tsx',

@@ -15,8 +15,6 @@ export class CustomizedBridge extends Eip1193Bridge {
   chainId = SupportedChainId.TENDERLY;
   chainIdHex = '0x1df2041';
   address: string;
-  // chainId = SupportedChainId.GOERLI
-  // chainIdHex = '0x5'
 
   setAddress(add: string) {
     this.address = add;

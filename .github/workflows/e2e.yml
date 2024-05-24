@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: executives.spec
+          - test: delegates.spec
+          - test: esmodule.spec
+    runs-on: ubuntu-latest
+    env:
+      INFURA_KEY: ${{ secrets.INFURA_KEY }}
+      MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
+      POCKET_KEY: ${{ secrets.POCKET_KEY }}
+      ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      USE_CACHE: true
+      TENDERLY_API_KEY: ${{ secrets.TENDERLY_API_KEY }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build sdk
+        run: yarn build-sdk
+
+      - run: yarn exec playwright install --with-deps  
+
+      - name: Run E2E Test
+        run: yarn run e2e ${{ matrix.test }}
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.test }}
+          path: playwright-report/
+          retention-days: 30

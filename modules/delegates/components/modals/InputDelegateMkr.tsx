@@ -57,6 +57,7 @@ export function InputDelegateMkr({
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
           disabled={!value || !balance || value.eq(0) || value.gt(balance)}
+          data-testid="deposit-mkr-modal-button"
         >
           {buttonLabel}
         </Button>
