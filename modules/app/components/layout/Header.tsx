@@ -124,7 +124,8 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
 };
 
 const Header = (): JSX.Element => {
-  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
+  const isProduction =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
 
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -194,19 +195,6 @@ const Header = (): JSX.Element => {
               Executive
             </NavLink>
           </Flex>
-
-          <NavLink
-            href={'/avcs'}
-            title="View AVCs page"
-            p={0}
-            sx={{
-              display: ['none', 'flex'],
-              ml: [0, 4, 4, 5],
-              color: router?.asPath?.startsWith('/avcs') ? 'primary' : undefined
-            }}
-          >
-            AVCs
-          </NavLink>
 
           <NavLink
             href={'/delegates'}
@@ -302,7 +290,8 @@ const Header = (): JSX.Element => {
 };
 
 const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
-  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
+  const isProduction =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -358,16 +347,13 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
             <InternalLink title="View executive page" href="/executive">
               <Text sx={{ fontWeight: 'semiBold' }}>Executive</Text>
             </InternalLink>
-            <InternalLink title="View emergency shutdown page" href="/esmodule">
-              <Text sx={{ fontWeight: 'semiBold' }}>ES Module</Text>
-            </InternalLink>
           </Flex>
           <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
-            <InternalLink title="View AVCs page" href="/avcs">
-              <Text sx={{ fontWeight: 'semiBold' }}>AVCs</Text>
-            </InternalLink>
             <InternalLink title="View delegate page" href="/delegates">
               <Text sx={{ fontWeight: 'semiBold' }}>Delegates</Text>
+            </InternalLink>
+            <InternalLink title="View emergency shutdown page" href="/esmodule">
+              <Text sx={{ fontWeight: 'semiBold' }}>ES Module</Text>
             </InternalLink>
           </Flex>
         </Flex>

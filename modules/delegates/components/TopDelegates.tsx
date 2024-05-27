@@ -10,23 +10,39 @@ import BigNumber from 'lib/bigNumberJs';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { AvcStats } from '../types/avc';
 import { DelegatePicture } from './DelegatePicture';
+import { DelegatePaginated } from '../types';
+import { DelegateModal } from './modals/DelegateModal';
+import { useState } from 'react';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function TopDelegates({
-  topAvcs,
+  topDelegates,
   totalMKRDelegated
 }: {
-  topAvcs: AvcStats[];
+  topDelegates: DelegatePaginated[];
   totalMKRDelegated: BigNumber;
 }): React.ReactElement {
+  const { account } = useAccount();
+  const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
+
   return (
     <Box>
+      {showDelegateModal && (
+        <DelegateModal
+          title={`Delegate to ${showDelegateModal.name}`}
+          delegate={showDelegateModal}
+          isOpen={true}
+          onDismiss={() => setShowDelegateModal(null)}
+          mutateTotalStaked={() => null}
+          mutateMKRDelegated={() => null}
+        />
+      )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
-          <Heading as="h2">Top Aligned Voting Committees</Heading>
+          <Heading as="h2">Top Aligned Delegates</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-            Aligned Voting Committees ranked by the voting weight of their supporting delegates
+            Aligned Delegates ranked by their voting power
           </Text>
         </Stack>
       </Container>
@@ -44,7 +60,7 @@ export default function TopDelegates({
         >
           <Box sx={{ width: ['25%', '40%'] }}>
             <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-              AVC Name
+              Name
             </Text>
           </Box>
           <Box sx={{ width: ['50%', '15%'], textAlign: ['right', 'left'] }}>
@@ -58,7 +74,8 @@ export default function TopDelegates({
             </Text>
           </Box>
         </Flex>
-        {topAvcs?.map(({ avc_name, mkrDelegated, picture }, index) => {
+        {topDelegates?.map((delegate, index) => {
+          const { name, voteDelegateAddress, mkrDelegated } = delegate;
           return (
             <Box key={`top-delegate-${index}`} data-testid="top-aligned-delegate">
               <Flex
@@ -73,10 +90,10 @@ export default function TopDelegates({
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>
-                  <InternalLink href={'/delegates'} title="View delegates" queryParams={{ avc: avc_name }}>
+                  <InternalLink href={`/address/${voteDelegateAddress}`} title="View delegates">
                     <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                      <DelegatePicture avcPicture={picture} showTooltip={false} />
-                      <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{avc_name}</Text>
+                      <DelegatePicture delegate={delegate} showTooltip={false} />
+                      <Text sx={{ color: 'primary', fontWeight: 'semiBold' }}>{name}</Text>
                     </Flex>
                   </InternalLink>
                 </Flex>
@@ -103,12 +120,15 @@ export default function TopDelegates({
                     display: ['none', 'flex']
                   }}
                 >
-                  <Text as="p">{mkrDelegated ? mkrDelegated.toFixed(2) : '0.00'} MKR </Text>
-                  <InternalLink
-                    href={'/delegates'}
-                    title="View delegates"
-                    queryParams={{ avc: avc_name }}
-                    styles={{
+                  <Text as="p">{mkrDelegated ? new BigNumber(mkrDelegated).toFixed(2) : '0.00'} MKR</Text>
+                  <Button
+                    variant="outline"
+                    data-testid="button-delegate"
+                    disabled={!account}
+                    onClick={() => {
+                      setShowDelegateModal(delegate);
+                    }}
+                    sx={{
                       borderColor: 'secondaryMuted',
                       color: 'text',
                       ':hover': {
@@ -117,8 +137,8 @@ export default function TopDelegates({
                       }
                     }}
                   >
-                    <Button variant="outline">Delegate</Button>
-                  </InternalLink>
+                    Delegate
+                  </Button>
                 </Flex>
               </Flex>
             </Box>
@@ -134,28 +154,6 @@ export default function TopDelegates({
             justifyContent: 'center'
           }}
         >
-          <Box
-            sx={{
-              ml: [0, 3],
-              mr: [2, 3]
-            }}
-          >
-            <InternalLink
-              href={'/avcs'}
-              title="View delegates"
-              styles={{
-                borderColor: 'secondaryMuted',
-                color: 'text',
-                ':hover': {
-                  color: 'text',
-                  borderColor: 'onSecondary',
-                  backgroundColor: 'background'
-                }
-              }}
-            >
-              <Button variant="outline">See all AVCs</Button>
-            </InternalLink>
-          </Box>
           <Box
             sx={{
               ml: [0, 3],
