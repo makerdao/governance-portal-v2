@@ -109,10 +109,6 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://manual.makerdao.com/delegation/overview/what-is-delegation'
       },
       {
-        linkTitle: "What's an Aligned Voter Committee (AVC)?",
-        url: 'https://mips.makerdao.com/mips/details/MIP101#2-5-aligned-voter-committees-gov5'
-      },
-      {
         linkTitle: 'What is the Maker Atlas Immutable Alignment Artifact?',
         url: 'https://mips.makerdao.com/mips/details/MIP101'
       },
