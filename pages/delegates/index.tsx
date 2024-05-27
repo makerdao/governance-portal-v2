@@ -28,7 +28,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
-import { DelegatesAvcFilter } from 'modules/delegates/components/filters/DelegatesAvcFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
@@ -291,7 +290,6 @@ const Delegates = ({
                   performSearchOnClear={true}
                 />
                 <DelegatesSortFilter />
-                <DelegatesAvcFilter avcs={avcs} sx={{ m: 2 }} />
                 <DelegatesStatusFilter stats={stats} />
                 <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
