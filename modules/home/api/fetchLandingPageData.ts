@@ -20,7 +20,6 @@ import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
-import { AvcStats } from 'modules/delegates/types/avc';
 import { TagCount } from 'modules/app/types/tag';
 
 export type LandingPageData = {
@@ -31,7 +30,6 @@ export type LandingPageData = {
   delegates: DelegatePaginated[];
   delegatesInfo: DelegateInfo[];
   stats?: DelegatesAPIStats;
-  avcs: AvcStats[];
   mkrOnHat?: string;
   hat?: string;
   mkrInChief?: string;
