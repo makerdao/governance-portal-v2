@@ -28,6 +28,8 @@ jobs:
       REDIS_URL: ${{ secrets.REDIS_URL }}
       USE_CACHE: true
       TENDERLY_API_KEY: ${{ secrets.TENDERLY_API_KEY }}
+      DEFENDER_API_SECRET_TESTNET: $${{ secrets.DEFENDER_API_SECRET_TESTNET}}
+      DEFENDER_API_KEY_TESTNET: ${{ secrets.DEFENDER.API_KEY_TESTNET}}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
