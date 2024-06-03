@@ -2,6 +2,25 @@ import { test, expect } from '@playwright/test';
 import {connectWallet} from './shared';
 import './forkVnet';
 
+test.beforeEach(async ({ page }) => {
+    await page.route('api/polling/precheck*', route => {
+        route.fulfill({
+          status: 201,
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          },
+          contentType: 'application/json',
+          body: JSON.stringify({
+            recentlyUsedGaslessVoting: null,
+            hasMkrRequired: true,
+            alreadyVoted: false,
+            relayBalance: '0.99766447864494'
+          })
+        });
+    });
+  });
+
+
 test('Adds polls to review and navigates to review page and votes with the legacy system', async ({ page }) => {
     await page.goto('/polling');
 
@@ -88,7 +107,7 @@ test('Adds polls to review and navigates to review page and votes with the gasle
     const selectedPollId = 1107;
     const selectChoice = page.locator('[data-testid="single-select"]');
 
-    await selectChoice.first().click();
+    await selectChoice.nth(0).click();
 
     // click on option
     await page.locator('[data-testid="single-select-option-Yes"]').first().click();
