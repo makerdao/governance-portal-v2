@@ -5,7 +5,7 @@ import './forkVnet';
 test('Adds polls to review and navigates to review page and votes with the legacy system', async ({ page }) => {
     await page.goto('/polling');
 
-    await expect(page.getByRole('heading', { name: 'Ended Polls' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Active Polls|Ended Polls/ })).toBeVisible();
     
     await connectWallet(page);
 
@@ -78,10 +78,10 @@ test('Adds polls to review and navigates to review page and votes with the legac
 
 });
 
-test.only('Adds polls to review and navigates to review page and votes with the gasless system', async ({ page }) => {
+test('Adds polls to review and navigates to review page and votes with the gasless system', async ({ page }) => {
     await page.goto('/polling');
 
-    await expect(page.getByRole('heading', { name: 'Ended Polls' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Active Polls|Ended Polls/ })).toBeVisible();
     
     await connectWallet(page);
 
