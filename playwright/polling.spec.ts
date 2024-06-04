@@ -97,6 +97,9 @@ test('Adds polls to review and navigates to review page and votes with the legac
 
 });
 
+
+//Skip this test because eth_signTypedData_v4 doesn't work with the mock connector
+//We'd need to find a way to update the CustomizedBridge to handle eth_signTypedData_v4 to get this to work.
 test.skip('Adds polls to review and navigates to review page and votes with the gasless system', async ({ page }) => {
     await page.goto('/polling');
 
