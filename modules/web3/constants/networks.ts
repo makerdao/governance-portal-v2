@@ -93,7 +93,7 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.TENDERLY]: {
-    blockExplorerUrl: `dashboard.tenderly.co/explorer/vnet/${config.TENDERLY_RPC_KEY}`,
+    blockExplorerUrl: `dashboard.tenderly.co/pullup-labs/endgame-0/testnet/c91028eb-78e1-4305-a289-5cd07adc7fb9`,
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.TENDERLY,
     label: 'Tenderly',
