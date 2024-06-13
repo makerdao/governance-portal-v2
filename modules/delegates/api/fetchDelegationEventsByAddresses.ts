@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { mkrLockedDelegateArrayTotalsV2 } from 'modules/gql/queries/mkrLockedDelegateArray';
+import { delegateHistoryArray } from 'modules/gql/queries/subgraph/delegateHistoryArray';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
@@ -20,14 +20,14 @@ export async function fetchDelegationEventsByAddresses(
   try {
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrLockedDelegateArrayTotalsV2,
+      useSubgraph: true,
+      query: delegateHistoryArray,
       variables: {
-        argAddress: addresses,
-        argUnixTimeStart: 0,
-        argUnixTimeEnd: Math.floor(Date.now() / 1000)
+        delegates: addresses
       }
     });
-    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArrayTotalsV2.nodes;
+    console.log('data', data)
+    const addressData: MKRLockedDelegateAPIResponse[] = data.delegateHistoryArray.nodes;
     return addressData;
   } catch (e) {
     logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);
