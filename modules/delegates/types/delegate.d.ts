@@ -107,7 +107,6 @@ export type DelegationHistoryEvent = {
 };
 
 export type MKRLockedDelegateAPIResponse = {
-  fromAddress: string;
   immediateCaller: string;
   delegateContractAddress: string;
   lockAmount: string;

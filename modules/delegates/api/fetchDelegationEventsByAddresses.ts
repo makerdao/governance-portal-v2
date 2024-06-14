@@ -26,9 +26,20 @@ export async function fetchDelegationEventsByAddresses(
         delegates: addresses
       }
     });
-    console.log('data', data)
-    const addressData: MKRLockedDelegateAPIResponse[] = data.delegateHistoryArray.nodes;
-    return addressData;
+    const flattenedData = data.delegates.flatMap(delegate => delegate.delegationHistory);
+
+    const addressData: MKRLockedDelegateAPIResponse[] = flattenedData.map(x => {
+      return {
+        delegateContractAddress: x.delegate.id,
+        immediateCaller: x.delegator,
+        lockAmount: x.amount,
+        blockNumber: x.blockNumber,
+        blockTimestamp: x.timestamp,
+        hash: x.txnHash,
+        callerLockTotal: x.accumulatedAmount
+      };
+    });
+    return addressData.filter(x => parseInt(x.lockAmount) !== 0);
   } catch (e) {
     logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);
     return [];
