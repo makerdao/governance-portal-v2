@@ -12,7 +12,7 @@ import logger from 'lib/logger';
 import { Query } from 'modules/gql/generated/graphql';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/allDelegates';
-import { mkrDelegatedToV2 } from 'modules/gql/queries/mkrDelegatedTo';
+import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
@@ -27,8 +27,9 @@ export async function fetchDelegatedTo(
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrDelegatedToV2,
-      variables: { argAddress: address.toLowerCase() }
+      useSubgraph: true,
+      query: delegatorHistory,
+      variables: { address: address.toLowerCase() }
     });
     // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
@@ -36,7 +37,16 @@ export async function fetchDelegatedTo(
     const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
     const delegates = delegatesData.allDelegates.nodes;
 
-    const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedToV2.nodes;
+    const res: MKRDelegatedToDAIResponse[] = data.delegationHistories.map(x => {
+      return {
+        delegateContractAddress: x.delegate.id,
+        lockAmount: x.amount,
+        blockTimestamp: x.timestamp,
+        hash: x.txnHash,
+        blockNumber: x.blockNumber,
+        immediateCaller: address
+      };
+    });
     const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === delegateContractAddress) as
         | DelegationHistoryWithExpirationDate
