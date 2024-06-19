@@ -42,6 +42,7 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
+import { fetchDelegationMetrics } from 'modules/delegates/api/fetchDelegationMetrics';
 
 const LandingPage = ({
   proposals,
@@ -130,6 +131,16 @@ const LandingPage = ({
         window.removeEventListener('hashchange', hashChangeHandler);
       };
     }
+  }, []);
+
+
+  useEffect(() => {
+    const fetchnMetrics = async () => {
+      const metrics = await fetchDelegationMetrics(SupportedNetworks.TENDERLY);
+      console.log('metrics', metrics);
+    };
+  
+    fetchnMetrics();
   }, []);
 
   return (
