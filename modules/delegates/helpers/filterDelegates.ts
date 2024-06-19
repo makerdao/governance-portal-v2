@@ -11,7 +11,6 @@ import { AllDelegatesEntryWithName } from '../types';
 
 export function filterDelegates(
   allDelegatesWithNames: AllDelegatesEntryWithName[],
-  queryAvcs: string[] | null,
   searchTerm: string | null,
   type?: DelegateTypeEnum
 ): {
@@ -22,12 +21,11 @@ export function filterDelegates(
   const alignedDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNames, null, null);
   const filteredDelegateAddresses = filterDelegateAddresses(
     allDelegatesWithNames,
-    queryAvcs,
     searchTerm,
     type
   );
   const filteredDelegateEntries =
-    !searchTerm && !queryAvcs
+    !searchTerm
       ? allDelegatesWithNames
       : allDelegatesWithNames.filter(delegate => filteredDelegateAddresses.includes(delegate.voteDelegate));
 
@@ -36,7 +34,6 @@ export function filterDelegates(
 
 export function filterDelegateAddresses(
   allDelegatesWithNames: AllDelegatesEntryWithName[],
-  queryAvcs: string[] | null,
   searchTerm: string | null,
   type?: DelegateTypeEnum
 ): string[] {
@@ -49,8 +46,7 @@ export function filterDelegateAddresses(
       (searchTerm
         ? delegate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           delegate.voteDelegate.toLowerCase().includes(searchTerm.toLowerCase())
-        : true) &&
-      (queryAvcs ? queryAvcs.find(c => c.toLowerCase() === delegate.avc_name?.toLowerCase()) : true)
+        : true)
   );
 
   return filteredDelegates.map(delegate => delegate.voteDelegate.toLowerCase());

@@ -68,9 +68,7 @@ const Delegates = ({
     sort,
     sortDirection,
     name,
-    delegateAvcs,
     fetchOnLoad,
-    setAvcFilter,
     setName,
     setFetchOnLoad,
     resetFilters
@@ -82,9 +80,7 @@ const Delegates = ({
       state.sort,
       state.sortDirection,
       state.filters.name,
-      state.filters.avcs,
       state.fetchOnLoad,
-      state.setAvcFilter,
       state.setName,
       state.setFetchOnLoad,
       state.resetFilters
@@ -121,7 +117,6 @@ const Delegates = ({
     sort,
     sortDirection,
     searchTerm: name,
-    delegateAvcs,
     showExpired,
     delegateType:
       showAligned && showShadow
@@ -136,13 +131,6 @@ const Delegates = ({
   }, []);
 
   const router = useRouter();
-
-  useEffect(() => {
-    if (router.query.avc) {
-      const avc = router.query.avc as string;
-      setAvcFilter([avc]);
-    }
-  }, [router]);
 
   useEffect(() => {
     if (shouldLoadMore) {
@@ -172,7 +160,6 @@ const Delegates = ({
           orderDirection: filters.sortDirection,
           seed,
           searchTerm: filters.searchTerm,
-          queryAvcs: delegateAvcs,
           includeExpired: filters.showExpired
         };
 
@@ -208,7 +195,6 @@ const Delegates = ({
         sort,
         sortDirection,
         searchTerm: name,
-        delegateAvcs,
         showExpired,
         delegateType:
           showAligned && showShadow
@@ -218,7 +204,7 @@ const Delegates = ({
             : DelegateTypeEnum.ALIGNED
       });
     }
-  }, [sort, sortDirection, name, delegateAvcs, showAligned, showShadow, showExpired]);
+  }, [sort, sortDirection, name, showAligned, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
@@ -527,7 +513,6 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         delegates: [],
-        avcs: [],
         stats: {},
         paginationInfo: {},
         seed: null
