@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-type ResourceType = 'general' | 'polling' | 'executive' | 'delegates' | 'avcs';
+type ResourceType = 'general' | 'polling' | 'executive' | 'delegates';
 
 type ResourceLink = {
   linkTitle: string;
@@ -126,31 +126,6 @@ const resources: Record<ResourceType, Resource> = {
       }
     ]
   },
-  avcs: {
-    boxTitle: 'Aligned Voter Committee (AVC) FAQs',
-    links: [
-      {
-        linkTitle: 'View AVC activity on the Forum',
-        url: 'https://forum.makerdao.com/c/avcs/98'
-      },
-      {
-        linkTitle: 'What are Aligned Voter Committees (AVCs)?',
-        url: 'https://mips.makerdao.com/mips/details/MIP101#aligned-voter-committee-avc-'
-      },
-      {
-        linkTitle: 'What is the role of AVCs in Maker Governance?',
-        url: 'https://mips.makerdao.com/mips/details/MIP101#2-5-aligned-voter-committees-gov5'
-      },
-      {
-        linkTitle: 'What are the processes related to AVCs?',
-        url: 'https://mips.makerdao.com/mips/details/MIP113#5-aligned-voter-committees-avcs-'
-      },
-      {
-        linkTitle: 'How to start a new AVC?',
-        url: 'https://mips.makerdao.com/mips/details/MIP101#2-5-3-aligned-voter-committee-recognition-process'
-      }
-    ]
-  }
 };
 
 export default function ResourceBox({

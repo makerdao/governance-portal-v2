@@ -56,7 +56,6 @@ const emptyStats = {
 const Delegates = ({
   delegates: propDelegates,
   stats: propStats,
-  avcs: propAvcs,
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
@@ -113,7 +112,6 @@ const Delegates = ({
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
   const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
-  const [avcs, setAvcs] = useState(fetchOnLoad ? [] : propAvcs);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [endOfList, setEndOfList] = useState(false);
@@ -182,7 +180,6 @@ const Delegates = ({
         setLoading(false);
         setDelegates(prevDelegates => [...prevDelegates, ...res.delegates]);
         setStats(res.stats);
-        setAvcs(res.avcs);
         setPaginationInfo(res.paginationInfo);
         setShouldLoadMore(false);
       };
@@ -198,10 +195,9 @@ const Delegates = ({
   useEffect(() => {
     setDelegates(fetchOnLoad ? delegates : propDelegates);
     setStats(fetchOnLoad ? stats : propStats);
-    setAvcs(fetchOnLoad ? avcs : propAvcs);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propStats, propAvcs, propPaginationInfo, propSeed, fetchOnLoad]);
+  }, [propDelegates, propStats, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
     if (!isRendering) {
@@ -460,7 +456,6 @@ const Delegates = ({
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
-  avcs: prefetchedAvcs,
   paginationInfo: prefetchedPaginationInfo,
   seed
 }: DelegatesPageProps): JSX.Element {
@@ -469,7 +464,6 @@ export default function DelegatesPage({
   const fallbackData = isDefaultNetwork(network)
     ? {
         delegates: prefetchedDelegates,
-        avcs: prefetchedAvcs,
         stats: prefetchedStats,
         paginationInfo: prefetchedPaginationInfo
       }
@@ -509,7 +503,6 @@ export default function DelegatesPage({
           totalMKRDelegated: '0',
           totalDelegators: 0
         },
-    avcs: isDefaultNetwork(network) ? prefetchedAvcs : data?.avcs || [],
     paginationInfo: isDefaultNetwork(network)
       ? prefetchedPaginationInfo
       : data?.paginationInfo || {
@@ -543,7 +536,7 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 
   const seed = Math.random() * 2 - 1;
-  const { delegates, stats, avcs, paginationInfo } = await fetchDelegatesPageData(
+  const { delegates, stats, paginationInfo } = await fetchDelegatesPageData(
     SupportedNetworks.MAINNET,
     false,
     { seed }
@@ -554,7 +547,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates,
-      avcs,
       stats,
       paginationInfo,
       seed

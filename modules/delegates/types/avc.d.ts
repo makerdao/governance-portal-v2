@@ -15,7 +15,3 @@ export type AvcAndCount = {
 export type AvcWithCountAndDelegates = AvcAndCount & {
   delegates: string[];
 };
-
-export type AvcStats = AvcAndCount & {
-  mkrDelegated: number;
-};

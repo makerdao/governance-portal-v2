@@ -50,5 +50,4 @@ export type DelegatesPaginatedAPIResponse = {
   };
   stats: DelegatesAPIStats;
   delegates: DelegatePaginated[];
-  avcs: AvcStats[];
 };

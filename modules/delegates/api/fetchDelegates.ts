@@ -45,7 +45,6 @@ import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
 import { AvcWithCountAndDelegates } from '../types/avc';
-import { fetchAvcsTotalDelegated } from './fetchAvcsTotalDelegated';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -526,7 +525,7 @@ export async function fetchDelegatesPaginated({
     delegatesQueryVariables['seed'] = seed;
   }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes, avcStats] =
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] =
     await Promise.all([
       getGithubExecutives(network),
       fetchDelegatesExecSupport(network),
@@ -538,8 +537,7 @@ export async function fetchDelegatesPaginated({
       gqlRequest<any>({
         chainId,
         query: delegationMetricsQuery
-      }),
-      fetchAvcsTotalDelegated(avcAndCount, network)
+      })
     ]);
 
   const delegatesData = {
@@ -599,7 +597,6 @@ export async function fetchDelegatesPaginated({
         next: allDelegatesEntry?.next
       };
     }) as DelegatePaginated[],
-    avcs: avcStats
   };
 
   return delegatesData;
