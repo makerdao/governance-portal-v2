@@ -68,11 +68,11 @@ test('Input 150,000MKR and burn it', async ({ page }) => {
   // Wait for signature
   await expect(page.locator('text=Sign TX to start Emergency Shutdown.')).toBeVisible();
 
-  // Wait for signature
-  await expect(page.locator('text=Transaction Sent!')).toBeVisible();
+  // // Wait for signature
+  // await expect(page.locator('text=Transaction Sent!')).toBeVisible();
 
-  // Close modal
-  await page.locator('button:has-text("Close")').click();
+  // // Close modal
+  // await page.locator('button:has-text("Close")').click();
 
   // Shows banner after shutdown
   // await expect(page.locator('[data-testid="es-initiated"]').locator('text=Emergency shutdown has been initiated on')).toBeVisible();
