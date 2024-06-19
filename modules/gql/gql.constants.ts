@@ -14,6 +14,7 @@ export const TENDERLY_SPOCK_URL = 'https://pollingdb2-tenderly-staging.makerdux.
 
 /* Subgraph URLs */
 export const TENDERLY_SUBGRAPH_URL = 'https://query-subgraph-testnet.sky.money/subgraphs/name/jetstreamgg/subgraph-testnet';
+export const MAINNET_SUBGRAPH_URL = 'https://query-subgraph-testnet.sky.money/subgraphs/name/jetstreamgg/subgraph-testnet';
 
 export enum QueryFilterNames {
   Active = 'active',
