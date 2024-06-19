@@ -20,8 +20,6 @@ export const allDelegatesExecSupportKey = 'all-delegates-exec-support';
 
 export const allDelegateAddressesKey = 'all-delegate-addresses';
 
-export const avcsCacheKey = 'avcs';
-
 export const executiveProposalsCacheKey = 'proposals';
 
 export const getDelegateGithubCacheKey = (address: string): string =>

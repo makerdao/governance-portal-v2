@@ -11,22 +11,22 @@ import { delegates } from '../mocks/delegates';
 
 describe('Filter recognized delegate addresses', () => {
   it('filterDelegateAddresses returns an array', () => {
-    const filteredDelegates = filterDelegateAddresses([], null, null);
+    const filteredDelegates = filterDelegateAddresses([], null);
     expect(filteredDelegates).toEqual([]);
   });
 
   it('filterDelegateAddresses returns a string array', () => {
-    const filteredDelegates = filterDelegateAddresses(delegates, null, null);
+    const filteredDelegates = filterDelegateAddresses(delegates, null);
     expect(filteredDelegates.every(delegate => typeof delegate === 'string')).toBe(true);
   });
 
   it('filterDelegateAddresses returns only recognized delegates', () => {
-    const filteredDelegates = filterDelegateAddresses(delegates, null, null);
+    const filteredDelegates = filterDelegateAddresses(delegates, null);
     expect(filteredDelegates).toHaveLength(7);
   });
 
   it('filterDelegateAddresses filters delegates by name', () => {
-    const filteredDelegates = filterDelegateAddresses(delegates, null, 'floP Flap DeLegATe l');
+    const filteredDelegates = filterDelegateAddresses(delegates, 'floP Flap DeLegATe l');
     expect(filteredDelegates).toEqual([
       '0xaf8aa6846539033eaf0c3ca4c9c7373e370e039b',
       '0x0f4be9f208c552a6b04d9a1222f385785f95beaa'

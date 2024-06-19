@@ -4412,5 +4412,58 @@
     "high-impact",
     "ratification",
     "mips"
+  ],
+  "1109": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1110": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1111": [
+    "high-impact",
+    "spark"
+  ],
+  "1112": [
+    "medium-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1113": [
+    "medium-impact",
+    "collateral-onboard",
+    "risk-parameter",
+    "spark"
+  ],
+  "1114": [
+    "high-impact",
+    "ratification",
+    "mips"
+  ],
+  "1115": [
+    "medium-impact",
+    "ratification",
+    "mips"
+  ],
+  "1117": [
+    "medium-impact",
+    "collateral-onboard",
+    "risk-parameter",
+    "spark"
+  ],
+  "1118": [
+    "medium-impact",
+    "collateral-offboard",
+    "risk-parameter",
+    "spark"
+  ],
+  "1119": [
+    "medium-impact",
+    "risk-parameter",
+    "d3m",
+    "spark"
   ]
 }
