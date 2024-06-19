@@ -18,7 +18,7 @@ export function filterDelegates(
   filteredDelegateAddresses: string[];
   filteredDelegateEntries: AllDelegatesEntryWithName[];
 } {
-  const alignedDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNames, null, null);
+  const alignedDelegatesAddresses = filterDelegateAddresses(allDelegatesWithNames, null);
   const filteredDelegateAddresses = filterDelegateAddresses(
     allDelegatesWithNames,
     searchTerm,
