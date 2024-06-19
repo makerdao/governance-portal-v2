@@ -445,7 +445,6 @@ export async function fetchDelegatesPaginated({
   seed,
   delegateType,
   searchTerm,
-  avcs
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
 
@@ -453,7 +452,6 @@ export async function fetchDelegatesPaginated({
 
   const { alignedDelegatesAddresses, filteredDelegateAddresses, filteredDelegateEntries } = filterDelegates(
     allDelegatesWithNamesAndLinks,
-    avcs,
     searchTerm,
     delegateType
   );
