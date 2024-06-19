@@ -39,8 +39,8 @@ export const gqlRequest = async <TQuery = any>({
       return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
     }
     const client = new GraphQLClient(url);
-    client.setHeader('Origin', 'http://localhost:3000');
-    client.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36');
+    // client.setHeader('Origin', 'http://localhost:3000');
+    // client.setHeader('Referer', 'http://localhost:3000/');
     const resp = await backoffRetry(
       3,
       () => client.request(query, variables),

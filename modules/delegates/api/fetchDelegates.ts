@@ -43,7 +43,6 @@ import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
-import { allDelegations } from 'modules/gql/queries/subgraph/allDelegations';
 import { AvcWithCountAndDelegates } from '../types/avc';
 import { fetchAvcsTotalDelegated } from './fetchAvcsTotalDelegated';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
@@ -305,7 +304,7 @@ export async function fetchDelegates(
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);
           return prev.plus(mkrDelegated);
         }, new BigNumberJS(0))
-      ).toString(),
+      ).toNumber(),
       totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
     }
   };

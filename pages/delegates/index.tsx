@@ -52,7 +52,7 @@ const emptyStats = {
   total: 0,
   shadow: 0,
   aligned: 0,
-  totalMKRDelegated: '0',
+  totalMKRDelegated: 0,
   totalDelegators: 0
 };
 
@@ -254,14 +254,14 @@ const Delegates = ({
   //   fetchDelegationEvents();
   // }, [delegates, network]);
 
-  useEffect(() => {
-    const fetchDelegatedToFunc = async () => {
-      const delegatedTo = await fetchDelegatedTo("0xbf9226345f601150f64ea4feaae7e40530763cbd", network);
-      console.log('delegatedTo', delegatedTo);
-    };
+  // useEffect(() => {
+  //   const fetchDelegatedToFunc = async () => {
+  //     const delegatedTo = await fetchDelegatedTo('0xbf9226345f601150f64ea4feaae7e40530763cbd', network);
+  //     console.log('delegatedTo', delegatedTo);
+  //   };
   
-    fetchDelegatedToFunc();
-  }, [delegates, network]);
+  //   fetchDelegatedToFunc();
+  // }, [delegates, network]);
 
   const [alignedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
     const aligned = delegates.filter(
@@ -529,7 +529,7 @@ export default function DelegatesPage({
           total: 0,
           shadow: 0,
           aligned: 0,
-          totalMKRDelegated: '0',
+          totalMKRDelegated: 0,
           totalDelegators: 0
         },
     avcs: isDefaultNetwork(network) ? prefetchedAvcs : data?.avcs || [],

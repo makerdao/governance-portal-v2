@@ -15,7 +15,7 @@ export type DelegatesAPIStats = {
   total: number;
   shadow: number;
   aligned: number;
-  totalMKRDelegated: string;
+  totalMKRDelegated: number;
   totalDelegators: number;
 };
 
