@@ -290,10 +290,6 @@ export default withApiHandler(
       defaultValue: null
     }) as string | null;
 
-    const avcs = validateQueryParam(req.query.avcs, 'array', {
-      defaultValue: null
-    }) as string[] | null;
-
     const delegates = await fetchDelegatesPaginated({
       network,
       pageSize,
@@ -304,7 +300,6 @@ export default withApiHandler(
       seed,
       delegateType,
       searchTerm,
-      avcs
     });
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

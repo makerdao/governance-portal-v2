@@ -26,23 +26,7 @@ git clone https://github.com/makerdao/governance-portal-v2.git
 cd governance-portal-v2
 ```
 
-Next, install the project's dependencies using [npm](https://docs.npmjs.com/about-npm) or [yarn](https://yarnpkg.com/getting-started):
-
-#### Using npm:
-
-```bash
-
-# installs dependencies
-npm install
-
-# builds eth-sdk for interacting with contracts
-npm run build-sdk
-
-# runs the application on localhost:3000
-npm run dev
-```
-
-#### Or, if using yarn:
+Next, install the project's dependencies using [yarn](https://yarnpkg.com/getting-started):
 
 ```bash
 
