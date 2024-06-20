@@ -39,6 +39,7 @@ import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { delegatesQuery } from 'modules/gql/queries/delegates';
+import { delegatesQuery as delegatesQuerySubgraph } from 'modules/gql/queries/subgraph/delegates';
 import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
@@ -479,7 +480,7 @@ export async function fetchDelegatesPaginated({
 
   const delegatesQueryVariables = {
     first: pageSize,
-    offset: (page - 1) * pageSize,
+    skip: (page - 1) * pageSize,
     includeExpired,
     orderBy,
     orderDirection,
