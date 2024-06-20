@@ -1,5 +1,5 @@
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { Query } from 'modules/gql/generated/graphql';
 import { allDelegatesExecSupportKey } from 'modules/cache/constants/cache-keys';
@@ -27,19 +27,23 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
   try {
     const chainId = networkNameToChainId(network);
 
-    const data = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = data.allDelegates.nodes;
+    const data = await gqlRequest({
+      chainId,
+      useSubgraph: true,
+      query: allDelegates
+    });
+    const delegates = data.delegates;
 
     const contracts = getContracts(chainId, undefined, undefined, true);
     const delegatesExecSupport = await Promise.all(
       delegates.map(async delegate => {
-        if (delegate?.voteDelegate) {
-          const votedSlate = await contracts.chief.votes(delegate.voteDelegate);
+        if (delegate?.id) {
+          const votedSlate = await contracts.chief.votes(delegate.id);
           const votedProposals =
             votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
 
           return {
-            voteDelegate: delegate.voteDelegate,
+            voteDelegate: delegate.id,
             votedProposals
           };
         }

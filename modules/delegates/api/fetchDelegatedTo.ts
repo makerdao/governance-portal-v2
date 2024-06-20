@@ -9,9 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { add } from 'date-fns';
 import { utils } from 'ethers';
 import logger from 'lib/logger';
-import { Query } from 'modules/gql/generated/graphql';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -34,8 +33,11 @@ export async function fetchDelegatedTo(
     // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
     const chainId = networkNameToChainId(network);
-    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = delegatesData.allDelegates.nodes;
+    const delegatesData = await gqlRequest({
+      chainId,
+      useSubgraph: true,
+      query: allDelegates });
+    const delegates = delegatesData.delegates;
 
     const res: MKRDelegatedToDAIResponse[] = data.delegationHistories.map(x => {
       return {
@@ -68,8 +70,9 @@ export async function fetchDelegatedTo(
 
         const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
 
-        const isAboutToExpire = isAboutToExpireCheck(expirationDate);
-        const isExpired = isExpiredCheck(expirationDate);
+        //only v1 delegate contracts expire
+        const isAboutToExpire = delegatingTo.version === "1" && isAboutToExpireCheck(expirationDate);
+        const isExpired = delegatingTo.version === "1" && isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
