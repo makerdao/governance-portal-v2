@@ -44,6 +44,9 @@ import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
 // import { fetchDelegationMetrics } from 'modules/delegates/api/fetchDelegationMetrics';
 // import { fetchChainDelegates } from 'modules/delegates/api/fetchChainDelegates';
+import { fetchDelegatesPaginated } from 'modules/delegates/api/fetchDelegates';
+import { DelegateTypeEnum } from 'modules/delegates/delegates.constants';
+import { DelegateOrderByEnum } from 'modules/delegates/delegates.constants';
 
 const LandingPage = ({
   proposals,
@@ -152,6 +155,25 @@ const LandingPage = ({
   
   //   fetchDelegates();
   // }, []);
+
+  useEffect(() => {
+    const getDelegates = async () => {
+      const paginatedDelegates = await fetchDelegatesPaginated({
+        network: SupportedNetworks.TENDERLY,
+        pageSize: 10,
+        page: 1,
+        orderBy: DelegateOrderByEnum.MKR,
+        orderDirection: 'desc',
+        includeExpired: false,
+        seed: null,
+        delegateType: DelegateTypeEnum.ALIGNED,
+        searchTerm: null,
+      });
+      console.log('paginatedDelegates', paginatedDelegates);
+    };
+  
+    getDelegates();
+  }, []);
 
   return (
     <div>
