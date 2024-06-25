@@ -30,7 +30,7 @@ export const gqlRequest = async <TQuery = any>({
   try {
     const id = chainId ?? SupportedChainId.MAINNET;
     let url;
-    if (useSubgraph && chainId === SupportedChainId.TENDERLY) { //TODO: update to use subgraph on mainnet too
+    if (useSubgraph) {
       url = CHAIN_INFO[id].subgraphUrl;
     } else {
       url = CHAIN_INFO[id].spockUrl;
@@ -38,9 +38,16 @@ export const gqlRequest = async <TQuery = any>({
     if (!url) {
       return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
     }
-    const client = new GraphQLClient(url);
-    // client.setHeader('Origin', 'http://localhost:3000');
-    // client.setHeader('Referer', 'http://localhost:3000/');
+    const contentLength = JSON.stringify({ query, variables }).length.toString();
+
+    const client = useSubgraph ? new GraphQLClient(url, {
+      headers: () => ({
+        'Host': 'localhost:3000',
+        'Origin': 'http://localhost:3000',
+        'Content-Type': 'application/json',
+        'Content-Length': contentLength,
+        })
+    }) : new GraphQLClient(url);
     const resp = await backoffRetry(
       3,
       () => client.request(query, variables),
