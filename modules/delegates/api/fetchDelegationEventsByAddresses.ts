@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { mkrLockedDelegateArrayTotalsV2 } from 'modules/gql/queries/mkrLockedDelegateArray';
+import { delegateHistoryArray } from 'modules/gql/queries/subgraph/delegateHistoryArray';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
@@ -20,15 +20,26 @@ export async function fetchDelegationEventsByAddresses(
   try {
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrLockedDelegateArrayTotalsV2,
+      useSubgraph: true,
+      query: delegateHistoryArray,
       variables: {
-        argAddress: addresses,
-        argUnixTimeStart: 0,
-        argUnixTimeEnd: Math.floor(Date.now() / 1000)
+        delegates: addresses
       }
     });
-    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArrayTotalsV2.nodes;
-    return addressData;
+    const flattenedData = data.delegates.flatMap(delegate => delegate.delegationHistory);
+
+    const addressData: MKRLockedDelegateAPIResponse[] = flattenedData.map(x => {
+      return {
+        delegateContractAddress: x.delegate.id,
+        immediateCaller: x.delegator,
+        lockAmount: x.amount,
+        blockNumber: x.blockNumber,
+        blockTimestamp: x.timestamp,
+        hash: x.txnHash,
+        callerLockTotal: x.accumulatedAmount
+      };
+    });
+    return addressData.filter(x => parseInt(x.lockAmount) !== 0);
   } catch (e) {
     logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);
     return [];

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { request, Variables, RequestDocument } from 'graphql-request';
+import { request, Variables, RequestDocument, GraphQLClient } from 'graphql-request';
 import logger from 'lib/logger';
 import { backoffRetry } from 'lib/utils';
 import { ApiError } from 'modules/app/api/ApiError';
@@ -15,6 +15,7 @@ import { CHAIN_INFO } from 'modules/web3/constants/networks';
 
 type GqlRequestProps = {
   chainId?: SupportedChainId;
+  useSubgraph?: boolean;
   query: RequestDocument;
   variables?: Variables | null;
 };
@@ -22,18 +23,34 @@ type GqlRequestProps = {
 // TODO we'll be able to remove the "any" if we update all the instances of gqlRequest to pass <Query>
 export const gqlRequest = async <TQuery = any>({
   chainId,
+  useSubgraph = false,
   query,
   variables
 }: GqlRequestProps): Promise<TQuery> => {
   try {
     const id = chainId ?? SupportedChainId.MAINNET;
-    const url = CHAIN_INFO[id].spockUrl;
+    let url;
+    if (useSubgraph) {
+      url = CHAIN_INFO[id].subgraphUrl;
+    } else {
+      url = CHAIN_INFO[id].spockUrl;
+    }
     if (!url) {
       return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
     }
+    const contentLength = JSON.stringify({ query, variables }).length.toString();
+
+    const client = useSubgraph ? new GraphQLClient(url, {
+      headers: () => ({
+        'Host': 'localhost:3000',
+        'Origin': 'http://localhost:3000',
+        'Content-Type': 'application/json',
+        'Content-Length': contentLength,
+        })
+    }) : new GraphQLClient(url);
     const resp = await backoffRetry(
       3,
-      () => request(url, query, variables),
+      () => client.request(query, variables),
       500,
       (message: string) => {
         logger.debug(`GQL Request: ${message}. --- ${query}`);
@@ -42,7 +59,7 @@ export const gqlRequest = async <TQuery = any>({
     return resp;
   } catch (e) {
     const status = e.response ? e.response.status : 500;
-    const errorMessage = status === 403 ? 'Rate limited on gov polling' : e.message;
+    const errorMessage = status === 403 ? e.message : e.message; //'Rate limited on gov polling' : e.message;
     const message = `Error on GraphQL query, Chain ID: ${chainId}, query: ${query}, message: ${errorMessage}`;
     throw new ApiError(message, status, 'Error fetching gov polling data');
   }

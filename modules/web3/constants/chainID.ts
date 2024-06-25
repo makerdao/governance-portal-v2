@@ -10,5 +10,5 @@ export enum SupportedChainId {
   MAINNET = 1,
   ARBITRUM = 42161,
   ARBITRUMTESTNET = 421614,
-  TENDERLY = 31400001
+  TENDERLY = 314311
 }
