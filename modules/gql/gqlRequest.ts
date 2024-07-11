@@ -38,16 +38,23 @@ export const gqlRequest = async <TQuery = any>({
     if (!url) {
       return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
     }
-    const contentLength = JSON.stringify({ query, variables }).length.toString();
+    //const contentLength = JSON.stringify({ query, variables }).length.toString();
 
-    const client = useSubgraph ? new GraphQLClient(url, {
-      headers: () => ({
-        'Host': 'localhost:3000',
-        'Origin': 'http://localhost:3000',
-        'Content-Type': 'application/json',
-        'Content-Length': contentLength,
-        })
-    }) : new GraphQLClient(url);
+    const client = 
+    // useSubgraph ? new GraphQLClient(url, {
+    //   headers: () => ({
+    //     'Host': 'localhost:3000',
+    //     'Origin': 'http://localhost:3000',
+    //     'Content-Type': 'application/json',
+    //     'Content-Length': contentLength,
+    //     })
+    // }) : 
+    new GraphQLClient(url);
+    console.log('url', url);
+    console.log('client', client);
+        // Determine the environment
+    const isBrowser = typeof window !== 'undefined';
+    console.log(`Running on the ${isBrowser ? 'frontend' : 'backend'}`);
     const resp = await backoffRetry(
       3,
       () => client.request(query, variables),
@@ -56,6 +63,8 @@ export const gqlRequest = async <TQuery = any>({
         logger.debug(`GQL Request: ${message}. --- ${query}`);
       }
     );
+
+    console.log('resp', resp);
     return resp;
   } catch (e) {
     const status = e.response ? e.response.status : 500;
