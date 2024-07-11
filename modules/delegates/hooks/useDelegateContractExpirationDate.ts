@@ -25,9 +25,12 @@ export const useDelegateContractExpirationDate = (): VoteDelegateAddressResponse
   const { data: expirationData, error } = useSWR(
     voteDelegateContract ? `${voteDelegateContract}/expiration-date` : null,
     async () => {
-      const expiration = await voteDelegateContract?.expiration();
-
-      return expiration ? new Date(expiration?.toNumber() * 1000) : null;
+      try {
+        const expiration = await voteDelegateContract?.expiration();
+        return expiration ? new Date(expiration?.toNumber() * 1000) : null;
+      } catch (err) {
+        return null;
+      }
     }
   );
   return {

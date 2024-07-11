@@ -18,6 +18,9 @@ query delegates($first: Int, $skip: Int, $orderBy: String, $orderDirection: Stri
       id
       delegators
       version
+      voter {
+        lastVotedTimestamp
+      }
     }
   }  
 `;

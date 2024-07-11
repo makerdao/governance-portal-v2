@@ -56,9 +56,10 @@ function mergeDelegateInfo({
   previousOnChainDelegate?: DelegateContractInformation;
   newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
-  // check if contract is expired to assing the status
-  const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
-  const isExpired = isBefore(new Date(expirationDate), new Date());
+  // check if contract is expired to assess the status
+  const hasExpiration = onChainDelegate.version === "1";
+  const expirationDate = hasExpiration ? add(new Date(onChainDelegate.blockTimestamp), { years: 1 }) : null;
+  const isExpired = !!expirationDate && isBefore(new Date(expirationDate), new Date());
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
@@ -268,7 +269,7 @@ export async function fetchDelegates(
       const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
       return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
     } else if (sortBy === 'date') {
-      return a.expirationDate > b.expirationDate ? -1 : 1;
+      return a.blockTimestamp > b.blockTimestamp ? -1 : 1;
     } else if (sortBy === 'delegators') {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
@@ -543,7 +544,7 @@ export async function fetchDelegatesPaginated({
           ? DelegateStatusEnum.aligned
           : DelegateStatusEnum.shadow,
         creationDate: new Date(delegate.blockTimestamp),
-        expirationDate: new Date(delegate.expirationDate), //TODO: calculate as 1 year after creation, but only for v1 delegates
+        expirationDate: delegate.version == "1" ? add(new Date(delegate.blockTimestamp), { years: 1 }) : null,
         expired: delegate.expired,
         isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
         picture: githubDelegate?.picture,
@@ -554,7 +555,7 @@ export async function fetchDelegatesPaginated({
         cuMember: githubDelegate?.cuMember,
         mkrDelegated: delegate.totalDelegated,
         delegatorCount: delegate.delegators,
-        lastVoteDate: delegate.lastVoted && new Date(delegate.lastVoted), //TODO: figure out how to get this from the subgraph
+        lastVoteDate: delegate.voter.lastVotedTimestamp && new Date(delegate.voter.lastVotedTimestamp),
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
