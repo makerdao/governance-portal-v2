@@ -10,6 +10,8 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegations } from 'modules/gql/queries/subgraph/allDelegations';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { BigNumberWAD } from 'modules/web3/constants/numbers';
+import { BigNumberJS } from 'lib/bigNumberJs';
 
 interface DelegationMetrics {
     totalMkrDelegated: number;
@@ -25,8 +27,7 @@ export async function fetchDelegationMetrics(
         query: allDelegations
     });
   const delegations = res.delegations;
-
-  const totalMkrDelegated = delegations.reduce((acc, cur) => acc + Number(cur.amount), 0);
+  const totalMkrDelegated = delegations.reduce((acc, cur) => acc.plus(new BigNumberJS(cur.amount).div(BigNumberWAD)), new BigNumberJS(0)).toNumber();
   const delegatorCount = delegations.filter(d => Number(d.amount) > 0).length;
 
   return {

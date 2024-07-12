@@ -9,11 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { gql } from 'graphql-request';
 
 export const allDelegations = gql`
-{delegations {
+{
+  delegations {
     delegator
     delegate {
       id
     }
     amount
-  }}
+  }
+}
 `;

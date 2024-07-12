@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { request, Variables, RequestDocument, GraphQLClient } from 'graphql-request';
+import { request, Variables, RequestDocument } from 'graphql-request';
 import logger from 'lib/logger';
 import { backoffRetry } from 'lib/utils';
 import { ApiError } from 'modules/app/api/ApiError';
@@ -30,20 +30,18 @@ export const gqlRequest = async <TQuery = any>({
   try {
     const id = chainId ?? SupportedChainId.MAINNET;
     let url;
-    if (useSubgraph && chainId === SupportedChainId.TENDERLY) { //TODO: update to use subgraph on mainnet too
+    if (useSubgraph) {
       url = CHAIN_INFO[id].subgraphUrl;
     } else {
       url = CHAIN_INFO[id].spockUrl;
     }
     if (!url) {
-      return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
+      return Promise.reject(new ApiError(`Missing ${useSubgraph ? 'subgraph' : 'spock'} url in configuration for chainId: ${id}`));
     }
-    const client = new GraphQLClient(url);
-    // client.setHeader('Origin', 'http://localhost:3000');
-    // client.setHeader('Referer', 'http://localhost:3000/');
+
     const resp = await backoffRetry(
       3,
-      () => client.request(query, variables),
+      () => request(url, query, variables),
       500,
       (message: string) => {
         logger.debug(`GQL Request: ${message}. --- ${query}`);
@@ -52,7 +50,7 @@ export const gqlRequest = async <TQuery = any>({
     return resp;
   } catch (e) {
     const status = e.response ? e.response.status : 500;
-    const errorMessage = status === 403 ? e.message : e.message; //'Rate limited on gov polling' : e.message;
+    const errorMessage = e.message;
     const message = `Error on GraphQL query, Chain ID: ${chainId}, query: ${query}, message: ${errorMessage}`;
     throw new ApiError(message, status, 'Error fetching gov polling data');
   }
