@@ -42,8 +42,6 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
-import { fetchDelegationMetrics } from 'modules/delegates/api/fetchDelegationMetrics';
-import { fetchChainDelegates } from 'modules/delegates/api/fetchChainDelegates';
 
 const LandingPage = ({
   proposals,
@@ -132,25 +130,6 @@ const LandingPage = ({
         window.removeEventListener('hashchange', hashChangeHandler);
       };
     }
-  }, []);
-
-
-  useEffect(() => {
-    const fetchMetrics = async () => {
-      const metrics = await fetchDelegationMetrics(SupportedNetworks.TENDERLY);
-      console.log('metrics', metrics);
-    };
-  
-    fetchMetrics();
-  }, []);
-
-  useEffect(() => {
-    const fetchDelegates = async () => {
-      const chainDelegates = await fetchChainDelegates(SupportedNetworks.TENDERLY);
-      console.log('chainDelegates', chainDelegates);
-    };
-  
-    fetchDelegates();
   }, []);
 
   return (
