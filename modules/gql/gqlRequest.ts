@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { request, Variables, RequestDocument, GraphQLClient } from 'graphql-request';
+import { request, Variables, RequestDocument } from 'graphql-request';
 import logger from 'lib/logger';
 import { backoffRetry } from 'lib/utils';
 import { ApiError } from 'modules/app/api/ApiError';
@@ -36,39 +36,21 @@ export const gqlRequest = async <TQuery = any>({
       url = CHAIN_INFO[id].spockUrl;
     }
     if (!url) {
-      return Promise.reject(new ApiError(`Missing spock url in configuration for chainId: ${id}`));
+      return Promise.reject(new ApiError(`Missing ${useSubgraph ? 'subgraph' : 'spock'} url in configuration for chainId: ${id}`));
     }
-    //const contentLength = JSON.stringify({ query, variables }).length.toString();
 
-    const client = 
-    // useSubgraph ? new GraphQLClient(url, {
-    //   headers: () => ({
-    //     'Host': 'localhost:3000',
-    //     'Origin': 'http://localhost:3000',
-    //     'Content-Type': 'application/json',
-    //     'Content-Length': contentLength,
-    //     })
-    // }) : 
-    new GraphQLClient(url);
-    console.log('url', url);
-    console.log('client', client);
-        // Determine the environment
-    const isBrowser = typeof window !== 'undefined';
-    console.log(`Running on the ${isBrowser ? 'frontend' : 'backend'}`);
     const resp = await backoffRetry(
       3,
-      () => client.request(query, variables),
+      () => request(url, query, variables),
       500,
       (message: string) => {
         logger.debug(`GQL Request: ${message}. --- ${query}`);
       }
     );
-
-    console.log('resp', resp);
     return resp;
   } catch (e) {
     const status = e.response ? e.response.status : 500;
-    const errorMessage = status === 403 ? e.message : e.message; //'Rate limited on gov polling' : e.message;
+    const errorMessage = e.message;
     const message = `Error on GraphQL query, Chain ID: ${chainId}, query: ${query}, message: ${errorMessage}`;
     throw new ApiError(message, status, 'Error fetching gov polling data');
   }
