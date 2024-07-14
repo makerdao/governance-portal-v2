@@ -32,6 +32,6 @@ export enum DelegateOrderByEnum {
 }
 
 export enum OrderDirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC'
+  ASC = 'asc',
+  DESC = 'desc'
 }

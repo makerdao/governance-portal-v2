@@ -505,7 +505,6 @@ export async function fetchDelegatesPaginated({
       }),
       fetchDelegationMetrics(network)
     ]);
-  console.log('delegatesQueryRes', delegatesQueryRes);
   const delegatesData = {
     paginationInfo: {
       totalCount: delegatesQueryRes.delegates.totalCount,
@@ -543,8 +542,8 @@ export async function fetchDelegatesPaginated({
           : githubDelegate
           ? DelegateStatusEnum.aligned
           : DelegateStatusEnum.shadow,
-        creationDate: new Date(delegate.blockTimestamp),
-        expirationDate: delegate.version == "1" ? add(new Date(delegate.blockTimestamp), { years: 1 }) : null,
+        creationDate: new Date(delegate.blockTimestamp * 1000),
+        expirationDate: delegate.version == "1" ? add(new Date(delegate.blockTimestamp * 1000), { years: 1 }) : null,
         expired: delegate.expired,
         isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
         picture: githubDelegate?.picture,
@@ -555,7 +554,7 @@ export async function fetchDelegatesPaginated({
         cuMember: githubDelegate?.cuMember,
         mkrDelegated: delegate.totalDelegated,
         delegatorCount: delegate.delegators,
-        lastVoteDate: delegate.voter.lastVotedTimestamp && new Date(delegate.voter.lastVotedTimestamp),
+        lastVoteDate: delegate.voter.lastVotedTimestamp && new Date(delegate.voter.lastVotedTimestamp * 1000),
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
