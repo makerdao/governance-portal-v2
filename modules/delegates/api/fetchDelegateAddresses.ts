@@ -21,7 +21,7 @@ export async function fetchDelegateAddresses(network: SupportedNetworks): Promis
       query: allDelegates
     });
     const delegates = data.delegates.map(delegate => ({
-      blockTimestamp: new Date(delegate?.blockTimestamp),
+      blockTimestamp: new Date(delegate?.blockTimestamp * 1000),
       delegate: delegate?.ownerAddress,
       voteDelegate: delegate?.id
     })) as AllDelegatesEntry[];
