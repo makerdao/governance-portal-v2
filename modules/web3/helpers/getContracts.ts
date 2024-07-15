@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getMainnetSdk, getTenderlySdk } from '@dethcrypto/eth-sdk-client';
 import { providers } from 'ethers';
 import { CHAIN_INFO, DEFAULT_NETWORK } from '../constants/networks';
 import { SupportedChainId } from '../constants/chainID';
@@ -17,7 +17,7 @@ import { EthSdk, SdkGenerators } from '../types/contracts';
 
 const sdkGenerators: SdkGenerators = {
   mainnet: getMainnetSdk,
-  tenderly: getMainnetSdk
+  tenderly: getTenderlySdk
 };
 
 let connectedAccount: string | undefined;

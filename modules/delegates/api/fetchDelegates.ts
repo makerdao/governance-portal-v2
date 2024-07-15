@@ -43,7 +43,7 @@ import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
-import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
+import { fetchDelegationMetrics } from './fetchDelegationMetrics';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -301,7 +301,7 @@ export async function fetchDelegates(
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);
           return prev.plus(mkrDelegated);
         }, new BigNumberJS(0))
-      ).toString(),
+      ).toNumber(),
       totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
     }
   };
@@ -492,7 +492,7 @@ export async function fetchDelegatesPaginated({
     delegatesQueryVariables['seed'] = seed;
   }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] =
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetrics] =
     await Promise.all([
       getGithubExecutives(network),
       fetchDelegatesExecSupport(network),
@@ -501,10 +501,7 @@ export async function fetchDelegatesPaginated({
         query: delegatesQuery,
         variables: delegatesQueryVariables
       }),
-      gqlRequest<any>({
-        chainId,
-        query: delegationMetricsQuery
-      })
+      fetchDelegationMetrics(network)
     ]);
 
   const delegatesData = {
@@ -518,8 +515,8 @@ export async function fetchDelegatesPaginated({
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
       aligned: alignedDelegatesCount,
-      totalMKRDelegated: delegationMetricsRes.delegationMetrics.totalMkrDelegated || 0,
-      totalDelegators: +delegationMetricsRes.delegationMetrics.delegatorCount || 0
+      totalMKRDelegated: delegationMetrics.totalMkrDelegated || 0,
+      totalDelegators: delegationMetrics.delegatorCount || 0
     },
     delegates: delegatesQueryRes.delegates.nodes.map(delegate => {
       const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(
