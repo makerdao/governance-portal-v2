@@ -29,7 +29,8 @@ export async function fetchChainDelegates(
       blockTimestamp: d.blockTimestamp,
       address: d.ownerAddress,
       voteDelegateAddress: d.id,
-      mkrDelegated: formatValue(BigNumber.from(d.totalDelegated), 'wad', 18, false)
+      mkrDelegated: formatValue(BigNumber.from(d.totalDelegated), 'wad', 18, false),
+      version: d.version
     }
   });
 }

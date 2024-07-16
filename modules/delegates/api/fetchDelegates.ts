@@ -58,7 +58,8 @@ function mergeDelegateInfo({
 }): Delegate {
   // check if contract is expired to assess the status
   const hasExpiration = onChainDelegate.version === "1";
-  const expirationDate = hasExpiration ? add(new Date(onChainDelegate.blockTimestamp), { years: 1 }) : null;
+  const expirationDate = hasExpiration ? add(new Date(Number(onChainDelegate.blockTimestamp) * 1000), { years: 1 }) : null;
+  
   const isExpired = !!expirationDate && isBefore(new Date(expirationDate), new Date());
 
   return {
