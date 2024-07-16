@@ -30,6 +30,7 @@ export type DelegateContractInformation = {
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   version: string;
+  lastVoteDate: number | null;
 };
 
 export type Delegate = {
