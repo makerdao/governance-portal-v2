@@ -36,14 +36,13 @@ type CollapsableRowProps = {
   totalDelegated: BigNumber;
 };
 
-const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
+const formatTotalDelegated = (num: BigNumberJS, denom: BigNumber): string => {
   try {
     // Use bignumber.js to do division because ethers BigNumber does not support decimals
-    const numB = new BigNumberJS(num.toString());
     const denomB = new BigNumberJS(denom.toString());
 
-    const weight = numB.div(denomB).times(100);
-    return formatValue(parseUnits(weight.toString()));
+    const weight = num.div(denomB).times(100);
+    return formatValue(parseUnits(weight.toString()), 'wad');
   } catch (e) {
     return '0';
   }
@@ -86,7 +85,8 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: [1, 3] }}>
-          {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
+          {/*TODO why does the lock amount have decimal places? They all end in .0 */}
+          {`${formatValue(BigNumber.from(lockAmount.split('.')[0]), 'wad')}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -107,7 +107,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${formatValue(
-                      parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
+                      BigNumber.from(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount), 'wad'
                     )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </Flex>
@@ -119,7 +119,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         {totalDelegated ? (
           <Text sx={{ fontSize: [1, 3] }}>{`${formatTotalDelegated(
-            parseUnits(lockAmount),
+            new BigNumberJS(lockAmount),
             totalDelegated
           )}%`}</Text>
         ) : (
