@@ -32,8 +32,8 @@ const uniswapV3MkrEthOnePercentPool = '0x3aFdC5e6DfC0B0a507A8e023c9Dce2CAfC31031
 const sushiswapAddress = '0xba13afecda9beb75de5c56bbaf696b880a5a50dd';
 const compoundCTokenAddress = '0x95b4eF2869eBD94BEb4eEE400a99824BF5DC325b';
 
-async function getBalancerMkr(mkrAddress: string) {
-  const resp = await fetch('https://api.thegraph.com/subgraphs/name/balancer-labs/balancer', {
+async function getBalancerV1Mkr(mkrAddress: string) {
+  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/93yusydMYauh7cfe9jEfoGABmwnX4GffHd7in8KJi1XB`, {
     method: 'post',
     body: JSON.stringify({
       query: `
@@ -53,6 +53,30 @@ async function getBalancerMkr(mkrAddress: string) {
   const balancerNum = json.data.pools
     .flatMap(pool => pool.tokens)
     .reduce((sum, token) => (token.symbol === 'MKR' ? parseFloat(token.balance) : 0) + sum, 0);
+  return parseUnits(parseInt(balancerNum).toString());
+}
+
+async function getBalancerV2Mkr(mkrAddress: string) {
+  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`, {
+    method: 'post',
+    body: JSON.stringify({
+      query: `
+          query PostsForPools {
+            pools(where: {tokensList_contains: ["${mkrAddress}"]}) {
+              tokens {
+                address
+                balance
+                symbol
+              }
+            }
+          }
+          `
+    })
+  });
+  const json = await resp.json();
+  const balancerNum = json.data.pools
+    .flatMap(pool => pool.tokens)
+    .reduce((sum, token) => (token.address === mkrAddress ? parseFloat(token.balance) : 0) + sum, 0);
   return parseUnits(parseInt(balancerNum).toString());
 }
 
@@ -84,9 +108,15 @@ export default function MkrLiquiditySidebar({
   const { data: uniswapV3MkrEthOnePercent } = useTokenBalance(Tokens.MKR, uniswapV3MkrEthOnePercentPool);
   const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
 
-  const { data: balancer } = useSWR(
-    `${mkrAddress}/mkr-liquidity-balancer`,
-    () => getBalancerMkr(mkrAddress),
+  const { data: balancerV1 } = useSWR(
+    `${mkrAddress}/mkr-liquidity-balancer-v1`,
+    () => getBalancerV1Mkr(mkrAddress),
+    { refreshInterval: 60000 }
+  );
+
+  const { data: balancerV2 } = useSWR(
+    `${mkrAddress}/mkr-liquidity-balancer-v2`,
+    () => getBalancerV2Mkr(mkrAddress),
     { refreshInterval: 60000 }
   );
 
@@ -95,7 +125,14 @@ export default function MkrLiquiditySidebar({
   });
 
   const mkrPools = [
-    ['Balancer', balancer],
+    [
+      'Balancer',
+      balancerV1 && balancerV2 && balancerV1?.add(balancerV2),
+      [
+        ['Balancer V1', balancerV1],
+        ['Balancer V2', balancerV2]
+      ]
+    ],
     [
       'Aave',
       aaveV1 && aaveV2 && aaveV1?.add(aaveV2),
