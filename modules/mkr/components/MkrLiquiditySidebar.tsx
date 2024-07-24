@@ -19,7 +19,6 @@ import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
-import { uniswapV3MkrSupply } from 'modules/gql/queries/uniswapV3MkrSupply';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -28,6 +27,8 @@ const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
 const uniswapV2MkrEthPool = '0xC2aDdA861F89bBB333c90c492cB837741916A225';
 const uniswapV2MkrDaiPool = '0x517f9dd285e75b599234f7221227339478d0fcc8';
+const uniswapV3MkrEthPointThreePercentPool = '0xe8c6c9227491C0a8156A0106A0204d881BB7E531';
+const uniswapV3MkrEthOnePercentPool = '0x3aFdC5e6DfC0B0a507A8e023c9Dce2CAfC310316';
 const sushiswapAddress = '0xba13afecda9beb75de5c56bbaf696b880a5a50dd';
 const compoundCTokenAddress = '0x95b4eF2869eBD94BEb4eEE400a99824BF5DC325b';
 
@@ -55,17 +56,6 @@ async function getBalancerMkr(mkrAddress: string) {
   return parseUnits(parseInt(balancerNum).toString());
 }
 
-async function getUniswapV3Mkr(mkrAddress: string) {
-  const resp = await request(
-    'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
-    uniswapV3MkrSupply,
-    { argMkrAddress: mkrAddress }
-  );
-  return resp?.token?.totalValueLocked
-    ? parseUnits(parseInt(resp.token.totalValueLocked).toString())
-    : BigNumber.from(0);
-}
-
 async function getCompoundMkr(network: SupportedNetworks) {
   if (network !== SupportedNetworks.MAINNET) return BigNumber.from(0);
 
@@ -90,17 +80,13 @@ export default function MkrLiquiditySidebar({
   const { data: aaveV2 } = useTokenBalance(Tokens.MKR, aaveV2Amkr);
   const { data: uniswapV2MkrEth } = useTokenBalance(Tokens.MKR, uniswapV2MkrEthPool);
   const { data: uniswapV2MkrDai } = useTokenBalance(Tokens.MKR, uniswapV2MkrDaiPool);
+  const { data: uniswapV3MkrEthPointThreePercent } = useTokenBalance(Tokens.MKR, uniswapV3MkrEthPointThreePercentPool);
+  const { data: uniswapV3MkrEthOnePercent } = useTokenBalance(Tokens.MKR, uniswapV3MkrEthOnePercentPool);
   const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
 
   const { data: balancer } = useSWR(
     `${mkrAddress}/mkr-liquidity-balancer`,
     () => getBalancerMkr(mkrAddress),
-    { refreshInterval: 60000 }
-  );
-
-  const { data: uniswapV3 } = useSWR(
-    `${mkrAddress}/mkr-liquidity-uniswapV3`,
-    () => getUniswapV3Mkr(mkrAddress),
     { refreshInterval: 60000 }
   );
 
@@ -120,11 +106,12 @@ export default function MkrLiquiditySidebar({
     ],
     [
       'Uniswap',
-      uniswapV2MkrEth && uniswapV2MkrDai && uniswapV3 && uniswapV2MkrEth?.add(uniswapV2MkrDai).add(uniswapV3),
+      uniswapV2MkrEth && uniswapV2MkrDai && uniswapV3MkrEthPointThreePercent && uniswapV3MkrEthOnePercent && uniswapV2MkrEth?.add(uniswapV2MkrDai).add(uniswapV3MkrEthPointThreePercent).add(uniswapV3MkrEthOnePercent),
       [
         ['Uniswap V2 (MKR/DAI)', uniswapV2MkrDai],
-        ['Uniswap V2 (MKR/ETH)', uniswapV2MkrEth],
-        ['Uniswap V3', uniswapV3]
+        ['Uniswap V3 (MKR/ETH 0.3%)', uniswapV3MkrEthPointThreePercent],
+        ['Uniswap V3 (MKR/ETH 1%)', uniswapV3MkrEthOnePercent],
+        ['Uniswap V2 (MKR/ETH)', uniswapV2MkrEth]
       ]
     ],
     ['Sushi', sushi],
