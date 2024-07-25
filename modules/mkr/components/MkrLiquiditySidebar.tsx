@@ -22,6 +22,7 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { config } from 'lib/config';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
@@ -33,7 +34,7 @@ const sushiswapAddress = '0xba13afecda9beb75de5c56bbaf696b880a5a50dd';
 const compoundCTokenAddress = '0x95b4eF2869eBD94BEb4eEE400a99824BF5DC325b';
 
 async function getBalancerV1Mkr(mkrAddress: string) {
-  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/93yusydMYauh7cfe9jEfoGABmwnX4GffHd7in8KJi1XB`, {
+  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${config.SUBGRAPH_API_KEY}/subgraphs/id/93yusydMYauh7cfe9jEfoGABmwnX4GffHd7in8KJi1XB`, {
     method: 'post',
     body: JSON.stringify({
       query: `
@@ -57,7 +58,7 @@ async function getBalancerV1Mkr(mkrAddress: string) {
 }
 
 async function getBalancerV2Mkr(mkrAddress: string) {
-  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`, {
+  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${config.SUBGRAPH_API_KEY}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`, {
     method: 'post',
     body: JSON.stringify({
       query: `
