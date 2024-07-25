@@ -65,5 +65,5 @@ export const config: SystemConfig = {
   GASLESS_DISABLED: process.env.GASLESS_DISABLED || '',
   TENDERLY_RPC_KEY: process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY || '',
   USE_MOCK_WALLET: process.env.NEXT_PUBLIC_USE_MOCK_WALLET || '',
-  SUBGRAPH_API_KEY: process.env.SUBGRAPH_API_KEY || ''
+  SUBGRAPH_API_KEY: process.env.NEXT_PUBLIC_SUBGRAPH_API_KEY || ''
 };
