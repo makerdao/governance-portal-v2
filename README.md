@@ -26,23 +26,7 @@ git clone https://github.com/makerdao/governance-portal-v2.git
 cd governance-portal-v2
 ```
 
-Next, install the project's dependencies using [npm](https://docs.npmjs.com/about-npm) or [yarn](https://yarnpkg.com/getting-started):
-
-#### Using npm:
-
-```bash
-
-# installs dependencies
-npm install
-
-# builds eth-sdk for interacting with contracts
-npm run build-sdk
-
-# runs the application on localhost:3000
-npm run dev
-```
-
-#### Or, if using yarn:
+Next, install the project's dependencies using [yarn](https://yarnpkg.com/getting-started):
 
 ```bash
 
@@ -119,13 +103,18 @@ The following configuration values can be added to the `.env` file:
 
 - Set `GASLESS_WEBHOOK_URL` for sending gasless vote requests to discord
 
-16. **Optional** Set `DEFENDER_API_KEY_MAINNET` and/or `DEFENDER_API_KEY_TESTNET` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
-17. **Optional** Set `DEFENDER_API_SECRET_MAINNET` and/or`DEFENDER_API_SECRET_TESTNET` to a valid OpenZeppelin Defender Relay secret
-18. **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
-19. **Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
-20. **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibility checks by anyone with the password
+**Optional** Set `DEFENDER_API_KEY_MAINNET` and/or `DEFENDER_API_KEY_TESTNET` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
+**Optional** Set `DEFENDER_API_SECRET_MAINNET` and/or`DEFENDER_API_SECRET_TESTNET` to a valid OpenZeppelin Defender Relay secret
+**Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
+**Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
+**Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibility checks by anyone with the password
 
 - Set `DASHBOARD_PASSWORD` for adding protection to the `/dashboard` route
+
+Required for e2e:
+
+- Set `NEXT_PUBLIC_TENDERLY_RPC_KEY` to the API key required to query the forked Tenderly network RPC
+- Set `TENDERLY_API_KEY` to be able to run e2e tests against forked network
 
 ### Architecture diagram
 
@@ -133,7 +122,16 @@ The following configuration values can be added to the `.env` file:
 
 ### Tests
 
-The Governance portal includes two test suites: Jest and E2E (TODO)
+The Governance portal includes two test suites: Jest and E2E
+
+To run e2e, `TENDERLY_API_KEY` and `NEXT_PUBLIC_TENDERLY_RPC_KEY` must be correcly configured.
+
+To run headless mode:
+`yarn e2e`
+
+To run in UI mode:
+`yarn dev:mock` to run the app with mock wallet
+`yarn e2e:ui` to open playwright UI
 
 Jest tests under the folder `__tests__` currently execute unit tests of the platform.
 

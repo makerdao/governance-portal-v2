@@ -16,7 +16,6 @@ type StoreDelegates = {
     showAligned: boolean;
     showExpired: boolean;
     name: string | null;
-    avcs: string[];
   };
   sort: DelegateOrderByEnum;
   sortDirection: OrderDirectionEnum;
@@ -26,7 +25,6 @@ type StoreDelegates = {
   setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: DelegateOrderByEnum) => void;
   setSortDirection: (sortDirection: OrderDirectionEnum) => void;
-  setAvcFilter: (avc: string[]) => void;
   setName: (text: string) => void;
   resetFilters: () => void;
   resetSort: () => void;
@@ -42,7 +40,6 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     showAligned: true,
     showExpired: false,
     name: null,
-    avcs: []
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
@@ -101,15 +98,6 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setAvcFilter: avcs => {
-    set({
-      filters: {
-        ...get().filters,
-        avcs
-      }
-    });
-  },
-
   resetFilters: () => {
     set({
       filters: {
@@ -118,7 +106,6 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         showShadow: true,
         showAligned: true,
         showExpired: false,
-        avcs: []
       },
       sort: DelegateOrderByEnum.RANDOM,
       sortDirection: OrderDirectionEnum.DESC

@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { config } from 'lib/config';
 import { SupportedChain } from '../types/chain';
 import { SupportedChainId } from './chainID';
+import tenderlyTestnetData from '../../../tenderlyTestnetData.json';
 
 export const NetworkContextName = 'NETWORK';
 
@@ -23,7 +24,8 @@ export enum SupportedConnectors {
   WALLET_CONNECT = 'WalletConnect',
   COINBASE_WALLET = 'Coinbase Wallet',
   GNOSIS_SAFE = 'Gnosis Safe',
-  NETWORK = 'Network'
+  NETWORK = 'Network',
+  MOCK = 'Mock'
 }
 
 export enum SupportedNetworks {
@@ -43,6 +45,8 @@ export enum NodeProviders {
 type ChainInfo = {
   [key in SupportedChainId]: SupportedChain;
 };
+
+const { TENDERLY_RPC_URL } = tenderlyTestnetData;
 
 //todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
@@ -98,7 +102,7 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.TENDERLY,
     spockUrl: TENDERLY_SPOCK_URL,
     rpcs: {
-      [NodeProviders.TENDERLY]: `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
+      [NodeProviders.TENDERLY]: TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },
     showInProduction: false
   }

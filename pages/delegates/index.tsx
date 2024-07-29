@@ -56,7 +56,6 @@ const emptyStats = {
 const Delegates = ({
   delegates: propDelegates,
   stats: propStats,
-  avcs: propAvcs,
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
@@ -69,9 +68,7 @@ const Delegates = ({
     sort,
     sortDirection,
     name,
-    delegateAvcs,
     fetchOnLoad,
-    setAvcFilter,
     setName,
     setFetchOnLoad,
     resetFilters
@@ -83,9 +80,7 @@ const Delegates = ({
       state.sort,
       state.sortDirection,
       state.filters.name,
-      state.filters.avcs,
       state.fetchOnLoad,
-      state.setAvcFilter,
       state.setName,
       state.setFetchOnLoad,
       state.resetFilters
@@ -113,7 +108,6 @@ const Delegates = ({
   const [shouldLoadMore, setShouldLoadMore] = useState(false);
   const [delegates, setDelegates] = useState(fetchOnLoad ? [] : propDelegates);
   const [stats, setStats] = useState(fetchOnLoad ? emptyStats : propStats);
-  const [avcs, setAvcs] = useState(fetchOnLoad ? [] : propAvcs);
   const [paginationInfo, setPaginationInfo] = useState(propPaginationInfo);
   const [seed, setSeed] = useState(propSeed);
   const [endOfList, setEndOfList] = useState(false);
@@ -123,7 +117,6 @@ const Delegates = ({
     sort,
     sortDirection,
     searchTerm: name,
-    delegateAvcs,
     showExpired,
     delegateType:
       showAligned && showShadow
@@ -138,13 +131,6 @@ const Delegates = ({
   }, []);
 
   const router = useRouter();
-
-  useEffect(() => {
-    if (router.query.avc) {
-      const avc = router.query.avc as string;
-      setAvcFilter([avc]);
-    }
-  }, [router]);
 
   useEffect(() => {
     if (shouldLoadMore) {
@@ -174,7 +160,6 @@ const Delegates = ({
           orderDirection: filters.sortDirection,
           seed,
           searchTerm: filters.searchTerm,
-          queryAvcs: delegateAvcs,
           includeExpired: filters.showExpired
         };
 
@@ -182,7 +167,6 @@ const Delegates = ({
         setLoading(false);
         setDelegates(prevDelegates => [...prevDelegates, ...res.delegates]);
         setStats(res.stats);
-        setAvcs(res.avcs);
         setPaginationInfo(res.paginationInfo);
         setShouldLoadMore(false);
       };
@@ -198,10 +182,9 @@ const Delegates = ({
   useEffect(() => {
     setDelegates(fetchOnLoad ? delegates : propDelegates);
     setStats(fetchOnLoad ? stats : propStats);
-    setAvcs(fetchOnLoad ? avcs : propAvcs);
     setPaginationInfo(propPaginationInfo);
     setSeed(propSeed);
-  }, [propDelegates, propStats, propAvcs, propPaginationInfo, propSeed, fetchOnLoad]);
+  }, [propDelegates, propStats, propPaginationInfo, propSeed, fetchOnLoad]);
 
   useEffect(() => {
     if (!isRendering) {
@@ -212,7 +195,6 @@ const Delegates = ({
         sort,
         sortDirection,
         searchTerm: name,
-        delegateAvcs,
         showExpired,
         delegateType:
           showAligned && showShadow
@@ -222,7 +204,7 @@ const Delegates = ({
             : DelegateTypeEnum.ALIGNED
       });
     }
-  }, [sort, sortDirection, name, delegateAvcs, showAligned, showShadow, showExpired]);
+  }, [sort, sortDirection, name, showAligned, showShadow, showExpired]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
@@ -460,7 +442,6 @@ const Delegates = ({
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
   stats: prefetchedStats,
-  avcs: prefetchedAvcs,
   paginationInfo: prefetchedPaginationInfo,
   seed
 }: DelegatesPageProps): JSX.Element {
@@ -469,7 +450,6 @@ export default function DelegatesPage({
   const fallbackData = isDefaultNetwork(network)
     ? {
         delegates: prefetchedDelegates,
-        avcs: prefetchedAvcs,
         stats: prefetchedStats,
         paginationInfo: prefetchedPaginationInfo
       }
@@ -509,7 +489,6 @@ export default function DelegatesPage({
           totalMKRDelegated: '0',
           totalDelegators: 0
         },
-    avcs: isDefaultNetwork(network) ? prefetchedAvcs : data?.avcs || [],
     paginationInfo: isDefaultNetwork(network)
       ? prefetchedPaginationInfo
       : data?.paginationInfo || {
@@ -534,7 +513,6 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         delegates: [],
-        avcs: [],
         stats: {},
         paginationInfo: {},
         seed: null
@@ -543,7 +521,7 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 
   const seed = Math.random() * 2 - 1;
-  const { delegates, stats, avcs, paginationInfo } = await fetchDelegatesPageData(
+  const { delegates, stats, paginationInfo } = await fetchDelegatesPageData(
     SupportedNetworks.MAINNET,
     false,
     { seed }
@@ -554,7 +532,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates,
-      avcs,
       stats,
       paginationInfo,
       seed

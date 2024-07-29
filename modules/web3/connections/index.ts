@@ -16,8 +16,14 @@ import { GnosisSafe } from '@makerdao-dux/gnosis-safe';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { SUPPORTED_WALLETS, ConnectionType } from '../constants/wallets';
-import { Connection, EIP1193Provider } from '../types/connection';
+import { Connection } from '../types/connection';
 import { config } from 'lib/config';
+import { Wallet } from 'ethers';
+import { providers } from 'ethers';
+import { CustomizedBridge } from '../connections/CustomizedBridge';
+import { EIP1193 } from '@web3-react/eip1193';
+import { TEST_ACCOUNTS } from '../../../playwright/shared';
+import tenderlyTestnetData from '../../../tenderlyTestnetData.json';
 
 // network
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -69,6 +75,7 @@ const [web3WalletConnect, web3WalletConnectHooks] = initializeConnector<WalletCo
         },
         qrModalOptions: {
           themeVariables: {
+            // @ts-ignore
             '--w3m-background-color': '#1aab9b',
             '--w3m-accent-color': '#1aab9b',
             '--w3m-logo-image-url': '/assets/maker_logo.svg'
@@ -111,12 +118,32 @@ export const gnosisSafeConnection: Connection = {
   type: ConnectionType.GNOSIS_SAFE
 };
 
+const { TENDERLY_RPC_URL } = tenderlyTestnetData;
+
+//mock connector
+const { address, key } = TEST_ACCOUNTS.normal;
+const rpcUrl = TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
+const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
+const signer = new Wallet(key, provider);
+const bridge = new CustomizedBridge(signer, provider);
+bridge.setAddress(address);
+const [web3Injected, web3InjectedHooks] = initializeConnector<EIP1193>(
+  actions => new EIP1193({ provider: bridge, actions })
+);
+const mockConnection: Connection = {
+  connector: web3Injected,
+  hooks: web3InjectedHooks,
+  type: ConnectionType.MOCK
+};
+
+
 export const orderedConnectionTypes = [
   gnosisSafeConnection.type,
   coinbaseWalletConnection.type,
   walletConnectConnection.type,
   metamaskConnection.type,
-  networkConnection.type
+  networkConnection.type,
+  mockConnection.type
 ];
 
 const CONNECTIONS = [
@@ -124,15 +151,12 @@ const CONNECTIONS = [
   coinbaseWalletConnection,
   walletConnectConnection,
   metamaskConnection,
-  networkConnection
+  networkConnection,
+  mockConnection
 ];
 
 export function getConnection(c: Connector | ConnectionType): Connection {
   if (c instanceof Connector) {
-    // Return the shimmed metamask connection if on tenderly
-    if ((c.provider as EIP1193Provider)?.chainId === SupportedChainId.TENDERLY) {
-      return metamaskConnection;
-    }
 
     const connection = CONNECTIONS.find(connection => connection.connector === c);
     if (!connection) {
@@ -151,6 +175,8 @@ export function getConnection(c: Connector | ConnectionType): Connection {
         return networkConnection;
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection;
+      case ConnectionType.MOCK:
+        return mockConnection;
       default:
         return networkConnection;
     }
@@ -162,12 +188,14 @@ export function connectorToWalletName(connector: Connector) {
 
   switch (connection?.type) {
     case ConnectionType.METAMASK:
-      return SUPPORTED_WALLETS.MetaMask.name;
+      return SUPPORTED_WALLETS.MetaMask?.name;
     case ConnectionType.COINBASE_WALLET:
-      return SUPPORTED_WALLETS['Coinbase Wallet'].name;
+      return SUPPORTED_WALLETS['Coinbase Wallet']?.name;
     case ConnectionType.WALLET_CONNECT:
-      return SUPPORTED_WALLETS.WalletConnect.name;
+      return SUPPORTED_WALLETS.WalletConnect?.name;
     case ConnectionType.GNOSIS_SAFE:
-      return SUPPORTED_WALLETS['Gnosis Safe'].name;
+      return SUPPORTED_WALLETS['Gnosis Safe']?.name;
+    case ConnectionType.MOCK:
+      return SUPPORTED_WALLETS.Mock?.name;
   }
 }
