@@ -118,23 +118,25 @@ export const gnosisSafeConnection: Connection = {
   type: ConnectionType.GNOSIS_SAFE
 };
 
-const { TENDERLY_RPC_URL } = tenderlyTestnetData;
-
 //mock connector
-const { address, key } = TEST_ACCOUNTS.normal;
-const rpcUrl = TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
-const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
-const signer = new Wallet(key, provider);
-const bridge = new CustomizedBridge(signer, provider);
-bridge.setAddress(address);
-const [web3Injected, web3InjectedHooks] = initializeConnector<EIP1193>(
-  actions => new EIP1193({ provider: bridge, actions })
-);
-const mockConnection: Connection = {
-  connector: web3Injected,
-  hooks: web3InjectedHooks,
-  type: ConnectionType.MOCK
-};
+let mockConnection: Connection | undefined = undefined;
+if (config.USE_MOCK_WALLET && process.env.NODE_ENV !== 'production') {
+  const { TENDERLY_RPC_URL } = tenderlyTestnetData;
+  const { address, key } = TEST_ACCOUNTS.normal;
+  const rpcUrl = TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`;
+  const provider = new providers.JsonRpcProvider(rpcUrl, SupportedChainId.TENDERLY);
+  const signer = new Wallet(key, provider);
+  const bridge = new CustomizedBridge(signer, provider);
+  bridge.setAddress(address);
+  const [web3Injected, web3InjectedHooks] = initializeConnector<EIP1193>(
+    actions => new EIP1193({ provider: bridge, actions })
+  );
+  mockConnection = {
+    connector: web3Injected,
+    hooks: web3InjectedHooks,
+    type: ConnectionType.MOCK
+  };
+}
 
 
 export const orderedConnectionTypes = [
@@ -143,7 +145,7 @@ export const orderedConnectionTypes = [
   walletConnectConnection.type,
   metamaskConnection.type,
   networkConnection.type,
-  mockConnection.type
+  ...(mockConnection ? [mockConnection.type] : [])
 ];
 
 const CONNECTIONS = [
@@ -152,7 +154,7 @@ const CONNECTIONS = [
   walletConnectConnection,
   metamaskConnection,
   networkConnection,
-  mockConnection
+  ...(mockConnection ? [mockConnection] : [])
 ];
 
 export function getConnection(c: Connector | ConnectionType): Connection {
@@ -176,7 +178,7 @@ export function getConnection(c: Connector | ConnectionType): Connection {
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection;
       case ConnectionType.MOCK:
-        return mockConnection;
+       return mockConnection || networkConnection;
       default:
         return networkConnection;
     }

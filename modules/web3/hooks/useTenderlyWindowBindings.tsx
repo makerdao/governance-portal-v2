@@ -18,13 +18,12 @@ import { EIP1193 } from '@web3-react/eip1193';
 import { config } from 'lib/config';
 
 export function useTenderlyWindowBindings(): void {
-  // TODO this should only run in non-prod environments
   // Define a window function that changes the account for testing purposes
 
   const { addConnector } = useContext(Web3ProviderContext);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && config.USE_MOCK_WALLET && process.env.NODE_ENV !== 'production') {
       (window as any).setAccount = (address: string, key: string) => {
         if (address && key) {
           try {
