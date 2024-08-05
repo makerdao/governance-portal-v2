@@ -23,7 +23,7 @@ export function useTenderlyWindowBindings(): void {
   const { addConnector } = useContext(Web3ProviderContext);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+    if (typeof window !== 'undefined' && config.USE_MOCK_WALLET && process.env.NODE_ENV !== 'production') {
       (window as any).setAccount = (address: string, key: string) => {
         if (address && key) {
           try {

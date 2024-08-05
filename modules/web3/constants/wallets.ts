@@ -42,7 +42,7 @@ export const SUPPORTED_WALLETS: {
   }
 };
 
-if (config.USE_MOCK_WALLET) {
+if (config.USE_MOCK_WALLET && process.env.NODE_ENV !== 'production') {
   SUPPORTED_WALLETS[SupportedConnectors.MOCK] = {
     name: SupportedConnectors.MOCK,
     connectionType: ConnectionType.MOCK
