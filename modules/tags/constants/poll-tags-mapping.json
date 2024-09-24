@@ -4465,5 +4465,119 @@
     "risk-parameter",
     "d3m",
     "spark"
+  ],
+  "1120": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1121": [
+    "high-impact",
+    "mips"
+  ],
+  "1122": [
+    "high-impact",
+    "mips"
+  ],
+  "1124": [
+    "high-impact",
+    "collateral-onboard",
+    "risk-parameter",
+    "psm"
+  ],
+  "1125": [
+    "medium-impact",
+    "collateral-onboard",
+    "risk-parameter",
+    "d3m",
+    "spark"
+  ],
+  "1126": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1127": [
+    "high-impact",
+    "mips"
+  ],
+  "1128": [
+    "high-impact",
+    "risk-parameter",
+    "psm"
+  ],
+  "1129": [
+    "high-impact",
+    "ratification",
+    "mips"
+  ],
+  "1130": [
+    "high-impact",
+    "mips"
+  ],
+  "1131": [
+    "medium-impact",
+    "spark"
+  ],
+  "1132": [
+    "high-impact",
+    "oracle",
+    "spark"
+  ],
+  "1133": [
+    "high-impact",
+    "misc-governance",
+    "risk-parameter",
+    "endgame"
+  ],
+  "1134": [
+    "high-impact",
+    "technical",
+    "endgame",
+    "spark"
+  ],
+  "1135": [
+    "high-impact",
+    "collateral-offboard"
+  ],
+  "1136": [
+    "high-impact",
+    "collateral-offboard"
+  ],
+  "1137": [
+    "high-impact",
+    "collateral-offboard"
+  ],
+  "1138": [
+    "high-impact",
+    "collateral-offboard"
+  ],
+  "1139": [
+    "high-impact",
+    "collateral-offboard"
+  ],
+  "1140": [
+    "high-impact",
+    "risk-parameter"
+  ],
+  "1141": [
+    "high-impact",
+    "collateral-onboard",
+    "spark"
+  ],
+  "1142": [
+    "high-impact",
+    "mips"
+  ],
+  "1143": [
+    "high-impact",
+    "collateral-onboard",
+    "collateral-offboard",
+    "risk-parameter",
+    "psm"
+  ],
+  "1144": [
+    "high-impact",
+    "endgame"
   ]
 }
