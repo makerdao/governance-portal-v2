@@ -27,7 +27,7 @@ test.afterAll(async () => {
 export const setEthBalance = async (address: string, amount: string) => {
   const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
   const { TENDERLY_RPC_URL } = JSON.parse(file);
-
+  const hexAmount = hexlify(parseEther(amount)).replace(/^0x0/, '0x');
   const response = await fetch(TENDERLY_RPC_URL, {
     method: 'POST',
     headers: {
@@ -36,7 +36,7 @@ export const setEthBalance = async (address: string, amount: string) => {
     },
     body: JSON.stringify({
       method: 'tenderly_setBalance',
-      params: [[address], hexlify(parseEther(amount))],
+      params: [[address], hexAmount],
       id: 42,
       jsonrpc: '2.0'
     })
