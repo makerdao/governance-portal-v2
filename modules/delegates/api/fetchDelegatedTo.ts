@@ -63,10 +63,11 @@ export async function fetchDelegatedTo(
         existing.events.push({ lockAmount, blockTimestamp, hash });
       } else {
         const delegatingTo = delegates.find(
-          i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
+          i => i?.voteDelegate?.toLowerCase() === delegateContractAddress?.toLowerCase()
         );
 
         const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
+
         // Get the expiration date of the delegate
 
         const expirationDate = add(new Date(Number(delegatingTo?.blockTimestamp) * 1000), { years: 1 });
@@ -80,7 +81,7 @@ export async function fetchDelegatedTo(
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
 
         const newRenewedContract = newOwnerAddress
-          ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress.toLowerCase())
+          ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress?.toLowerCase())
           : null;
 
         acc.push({

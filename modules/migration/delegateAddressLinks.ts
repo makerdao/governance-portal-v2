@@ -86,5 +86,5 @@ export const getNewOwnerFromPrevious = (address: string, network: SupportedNetwo
     };
   }, {});
 
-  return prevToNewMap[address.toLowerCase()];
+  return prevToNewMap[address?.toLowerCase()];
 };
