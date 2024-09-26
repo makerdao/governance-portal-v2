@@ -17,7 +17,7 @@ export const TENDERLY_SPOCK_URL = 'https://pollingdb2-tenderly-staging.makerdao.
 const usePrivateSubgraph = process.env.USE_PRIVATE_SUBGRAPH === 'true';
 const permission = usePrivateSubgraph ? 'private' : 'public';
 export const TENDERLY_SUBGRAPH_URL = `https://query-subgraph-staging.sky.money/${permission}/subgraphs/name/jetstreamgg/subgraph-testnet`;
-export const MAINNET_SUBGRAPH_URL = `https://query-subgraph-staging.sky.money/${permission}/private/subgraphs/name/jetstreamgg/subgraph-testnet`;
+export const MAINNET_SUBGRAPH_URL = `https://query-subgraph-staging.sky.money/${permission}/subgraphs/name/jetstreamgg/subgraph-mainnet`;
 
 export enum QueryFilterNames {
   Active = 'active',

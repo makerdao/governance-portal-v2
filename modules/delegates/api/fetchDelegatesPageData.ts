@@ -30,7 +30,7 @@ export async function fetchDelegatesPageData(
   const pageSize = 30;
   const page = queryParams?.page || 1;
   const includeExpired = queryParams?.includeExpired || false;
-  const orderBy = queryParams?.orderBy || DelegateOrderByEnum.RANDOM;
+  const orderBy = queryParams?.orderBy || DelegateOrderByEnum.MKR; //TODO: change to random?
   const orderDirection = queryParams?.orderDirection || OrderDirectionEnum.DESC;
   const seed = queryParams?.seed || null;
   const delegateType = queryParams?.delegateType || DelegateTypeEnum.ALL;

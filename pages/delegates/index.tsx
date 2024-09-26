@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
@@ -40,9 +39,6 @@ import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
-import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegationHistory';
-import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 
 type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
   seed: number;
@@ -133,8 +129,6 @@ const Delegates = ({
     setIsRendering(false);
   }, []);
 
-  const router = useRouter();
-
   useEffect(() => {
     if (shouldLoadMore) {
       if (shadowDelegates.length >= 15 && !loadAllDelegates) {
@@ -224,26 +218,6 @@ const Delegates = ({
     },
     '0px'
   );
-
-  // useEffect(() => {
-  //   const fetchDelegationEvents = async () => {
-  //     const delegationEvents = await fetchDelegationEventsByAddresses(delegates.map(delegate => delegate.voteDelegateAddress), network);
-  //     console.log('delegationEvents', delegationEvents);
-  //     const delegationHistory = formatDelegationHistory(delegationEvents);
-  //     console.log('delegationHistory', delegationHistory);
-  //   };
-  
-  //   fetchDelegationEvents();
-  // }, [delegates, network]);
-
-  // useEffect(() => {
-  //   const fetchDelegatedToFunc = async () => {
-  //     const delegatedTo = await fetchDelegatedTo('0xbf9226345f601150f64ea4feaae7e40530763cbd', network);
-  //     console.log('delegatedTo', delegatedTo);
-  //   };
-  
-  //   fetchDelegatedToFunc();
-  // }, [delegates, network]);
 
   const [alignedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
     const aligned = delegates.filter(

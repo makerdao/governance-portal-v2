@@ -18,7 +18,7 @@ export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
   const chainId = networkNameToChainId(network);
-  const data = await gqlRequest({ 
+  const data = await gqlRequest({
     chainId,
     useSubgraph: true,
     query: allDelegates
@@ -29,7 +29,9 @@ export async function fetchChainDelegates(
       blockTimestamp: d.blockTimestamp,
       address: d.ownerAddress,
       voteDelegateAddress: d.id,
-      mkrDelegated: formatValue(BigNumber.from(d.totalDelegated), 'wad', 18, false)
-    }
+      mkrDelegated: formatValue(BigNumber.from(d.totalDelegated), 'wad', 18, false),
+      version: d.version,
+      lastVoteDate: d.voter?.lastVotedTimestamp ? Number(d.voter.lastVotedTimestamp) : null
+    };
   });
 }

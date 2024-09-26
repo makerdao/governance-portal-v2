@@ -36,7 +36,8 @@ export async function fetchDelegatedTo(
     const delegatesData = await gqlRequest({
       chainId,
       useSubgraph: true,
-      query: allDelegates });
+      query: allDelegates
+    });
     const delegates = delegatesData.delegates;
 
     const res: MKRDelegatedToDAIResponse[] = data.delegationHistories.map(x => {
@@ -68,11 +69,12 @@ export async function fetchDelegatedTo(
         const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
         // Get the expiration date of the delegate
 
-        const expirationDate = add(new Date(delegatingTo?.blockTimestamp * 1000), { years: 1 });
+        const expirationDate = add(new Date(Number(delegatingTo?.blockTimestamp) * 1000), { years: 1 });
 
-        //only v1 delegate contracts expire
-        const isAboutToExpire = delegatingTo.version === "1" && isAboutToExpireCheck(expirationDate);
-        const isExpired = delegatingTo.version === "1" && isExpiredCheck(expirationDate);
+        const hasExpiration = delegatingTo?.version === '1';
+
+        const isAboutToExpire = hasExpiration && isAboutToExpireCheck(expirationDate);
+        const isExpired = hasExpiration && isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);

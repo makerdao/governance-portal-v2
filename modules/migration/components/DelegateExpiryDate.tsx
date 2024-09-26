@@ -46,9 +46,9 @@ export default function DelegateExpiryDate({
       <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>
-            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'EXPIRING' : 'EXPIRES'}
+            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'EXPIRING' : delegate.expirationDate ? 'EXPIRES' : 'NO EXPIRATION'}
           </Text>{' '}
-          <DateWithHover date={delegate.expirationDate} />
+          {delegate.expirationDate && <DateWithHover date={delegate.expirationDate} />}
         </Flex>
       </Text>
       <Flex
