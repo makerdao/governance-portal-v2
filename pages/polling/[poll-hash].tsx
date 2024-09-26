@@ -11,7 +11,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Box, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';

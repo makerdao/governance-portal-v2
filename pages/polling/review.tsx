@@ -54,8 +54,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
     setShowMarkdownModal(!showMarkdownModal);
   };
 
-  const { ballot, ballotStep, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
-    useContext(BallotContext);
+  const { ballot, previousBallot, transaction, ballotCount } = useContext(BallotContext);
 
   const { account } = useAccount();
 
