@@ -17,6 +17,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getNewOwnerFromPrevious } from 'modules/migration/delegateAddressLinks';
+import { Query, AllDelegatesRecord } from 'modules/gql/generated/graphql';
 
 export async function fetchDelegatedTo(
   address: string,
@@ -33,23 +34,11 @@ export async function fetchDelegatedTo(
     // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
     const chainId = networkNameToChainId(network);
-    const delegatesData = await gqlRequest({
-      chainId,
-      useSubgraph: true,
-      query: allDelegates
-    });
-    const delegates = delegatesData.delegates;
+    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
+    const delegates = delegatesData.allDelegates.nodes;
 
-    const res: MKRDelegatedToResponse[] = data.delegationHistories.map(x => {
-      return {
-        delegateContractAddress: x.delegate.id,
-        lockAmount: x.amount,
-        blockTimestamp: x.timestamp,
-        hash: x.txnHash,
-        blockNumber: x.blockNumber,
-        immediateCaller: address
-      };
-    });
+    const res: MKRDelegatedToResponse[] = data.mkrDelegatedToV2.nodes;
+
     const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === delegateContractAddress) as
         | DelegationHistoryWithExpirationDate
@@ -64,7 +53,11 @@ export async function fetchDelegatedTo(
       } else {
         const delegatingTo = delegates.find(
           i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
-        );
+        ) as (AllDelegatesRecord & { version: string }) | undefined;
+
+        if (!delegatingTo) {
+          return acc;
+        }
 
         const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
         // Get the expiration date of the delegate
