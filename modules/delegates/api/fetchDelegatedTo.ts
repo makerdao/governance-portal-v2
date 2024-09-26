@@ -10,7 +10,7 @@ import { add } from 'date-fns';
 import { utils } from 'ethers';
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
+import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
