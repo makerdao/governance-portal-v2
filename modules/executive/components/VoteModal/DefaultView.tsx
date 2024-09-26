@@ -226,7 +226,7 @@ export default function DefaultVoteModalView({
         </Box>
       </Grid>
 
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%', marginTop: 3 }}>
         <Button
           variant="primaryLarge"
           sx={{ width: '100%' }}
