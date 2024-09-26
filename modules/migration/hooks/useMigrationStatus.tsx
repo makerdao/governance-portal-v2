@@ -21,6 +21,8 @@ export function useMigrationStatus(): {
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
   isShadowDelegate: boolean;
+  isDelegateContractV1: boolean;
+  isDelegatedToV1Contract: boolean;
 } {
   const { account: address, network } = useWeb3();
   const { cache } = useSWRConfig();
@@ -48,6 +50,8 @@ export function useMigrationStatus(): {
       : false
     : false;
 
+  const isDelegateContractV1 = !!delegateContractExpirationDate; // TODO: update with version === '1' when available
+
   const isDelegateContractExpiring = delegateContractExpirationDate
     ? isAboutToExpireCheck(delegateContractExpirationDate)
     : false;
@@ -70,11 +74,19 @@ export function useMigrationStatus(): {
       }, false)
     : false;
 
+  const isDelegatedToV1Contract = delegatedToData
+    ? delegatedToData.delegatedTo.reduce((acc, cur) => {
+        return acc || !!cur.expirationDate;
+      }, false)
+    : false;
+
   return {
     isDelegatedToExpiredContract,
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
     isDelegateContractExpiring,
-    isShadowDelegate
+    isShadowDelegate,
+    isDelegateContractV1,
+    isDelegatedToV1Contract
   };
 }

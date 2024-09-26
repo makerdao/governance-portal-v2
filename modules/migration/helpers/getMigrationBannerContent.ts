@@ -10,12 +10,16 @@ export const getMigrationBannerContent = ({
   isDelegateContractExpired,
   isDelegateContractExpiring,
   isDelegatedToExpiredContract,
-  isDelegatedToExpiringContract
+  isDelegatedToExpiringContract,
+  isDelegateContractV1,
+  isDelegatedToV1Contract
 }: {
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
   isDelegatedToExpiredContract: boolean;
   isDelegatedToExpiringContract: boolean;
+  isDelegateContractV1: boolean;
+  isDelegatedToV1Contract: boolean;
 }): { variant: string; href: string; copy: string } => {
   // a delegate having an expired contract is
   if (isDelegateContractExpired) {
@@ -35,6 +39,14 @@ export const getMigrationBannerContent = ({
     };
   }
 
+  if (isDelegateContractV1) {
+    return {
+      variant: 'bannerNotice',
+      href: '/migration/delegate',
+      copy: 'Your delegate contract needs to be migrated to v2. Please visit the migration page to migrate it.'
+    };
+  }
+
   // next check if user has delegated to an expired contract
   if (isDelegatedToExpiredContract) {
     return {
@@ -50,6 +62,15 @@ export const getMigrationBannerContent = ({
       variant: 'bannerNotice',
       href: '/migration/delegator',
       copy: 'You have MKR delegated to a contract that is expiring soon. Please visit the migration page to delegate your MKR to a new delegate contract.'
+    };
+  }
+
+  // next check if user has delegated to a v1 contract
+  if (isDelegatedToV1Contract) {
+    return {
+      variant: 'bannerNotice',
+      href: '/migration/delegator',
+      copy: 'You have MKR delegated to a v1 delegate contract. Please visit the migration page to migrate your MKR to a v2 delegate contract.'
     };
   }
 
