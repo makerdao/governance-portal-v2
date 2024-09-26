@@ -22,7 +22,6 @@ import { PollListItem } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
-import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
@@ -30,7 +29,6 @@ import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
-import Markdown from 'modules/app/components/Makrdown';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { fetchPollingReviewPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -137,10 +135,9 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
         );
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
-      const comment = previousBallot[poll.pollId]?.comment;
+
       markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
       if (option) markdown += `Voted: ${option}  \n`;
-      markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
       markdown += '  \n';
     });
     return markdown;
@@ -169,7 +166,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
               <Flex sx={{ alignItems: 'center', gap: 1 }}>
                 <Icon name="info" color="textSecondary" />
                 <Text as="p" variant="secondary">
-                  Your vote and comment may take a few minutes to appear in the Voting Portal.
+                  Your vote may take a few minutes to appear in the Voting Portal.
                 </Text>
               </Flex>
               {transaction?.hash && (
@@ -253,22 +250,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
                             reviewPage={true}
                             showVoting={true}
                             disableVoting={true}
-                          >
-                            {previousBallot[poll.pollId]?.comment && (
-                              <Box mt={[1, 3]}>
-                                <Flex sx={{ alignItems: 'center', mb: [0, 2] }}>
-                                  <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mr: 1 }}>
-                                    Your comment
-                                  </Text>
-                                </Flex>
-                                <Box sx={{ bg: 'onSurfaceAlt', py: 1, px: 3, borderRadius: 'medium' }}>
-                                  <Text as="p">
-                                    <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
-                                  </Text>
-                                </Box>
-                              </Box>
-                            )}
-                          </PollOverviewCard>
+                          />
                         </Box>
                       );
                     })}
@@ -279,24 +261,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
                     {votedPolls.map(poll => {
                       return (
                         <Box key={poll.slug} sx={{ mb: 3 }}>
-                          <PollOverviewCard poll={poll} allTags={tags} reviewPage={true} showVoting={true}>
-                            <Box sx={{ pt: 2 }}>
-                              <CommentTextBox
-                                onChange={(val: string) => {
-                                  updateVoteFromBallot(poll.pollId, {
-                                    comment: val
-                                  });
-                                }}
-                                value={ballot[poll.pollId].comment || ''}
-                                disabled={
-                                  transaction?.status === 'pending' ||
-                                  transaction?.status === 'initialized' ||
-                                  ballotStep === 'submitting' ||
-                                  ballotStep === 'awaiting-relayer'
-                                }
-                              />
-                            </Box>
-                          </PollOverviewCard>
+                          <PollOverviewCard poll={poll} allTags={tags} reviewPage={true} showVoting={true} />
                         </Box>
                       );
                     })}
