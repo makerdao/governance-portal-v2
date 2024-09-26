@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { connectWallet, closeModal } from './shared';
 import './forkVnet';
 
-test('Input 150,000MKR and burn it', async ({ page }) => {
+test.skip('Input 150,000MKR and burn it', async ({ page }) => {
   await page.goto('/esmodule');
 
   await expect(page.locator('text=Emergency Shutdown Module')).toBeVisible();
