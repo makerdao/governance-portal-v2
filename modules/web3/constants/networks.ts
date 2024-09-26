@@ -95,7 +95,8 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.TENDERLY]: {
-    blockExplorerUrl: `dashboard.tenderly.co/pullup-labs/endgame-0/testnet/c91028eb-78e1-4305-a289-5cd07adc7fb9`,
+    blockExplorerUrl:
+      'dashboard.tenderly.co/pullup-labs/endgame-0/testnet/c91028eb-78e1-4305-a289-5cd07adc7fb9',
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.TENDERLY,
     label: 'Tenderly',
@@ -105,7 +106,8 @@ export const CHAIN_INFO: ChainInfo = {
     spockUrl: TENDERLY_SPOCK_URL,
     subgraphUrl: TENDERLY_SUBGRAPH_URL,
     rpcs: {
-      [NodeProviders.TENDERLY]: TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
+      [NodeProviders.TENDERLY]:
+        TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },
     showInProduction: false
   }
