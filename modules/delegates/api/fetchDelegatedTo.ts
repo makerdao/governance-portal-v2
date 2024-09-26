@@ -36,7 +36,8 @@ export async function fetchDelegatedTo(
     const delegatesData = await gqlRequest({
       chainId,
       useSubgraph: true,
-      query: allDelegates });
+      query: allDelegates
+    });
     const delegates = delegatesData.delegates;
 
     const res: MKRDelegatedToDAIResponse[] = data.delegationHistories.map(x => {
@@ -70,7 +71,7 @@ export async function fetchDelegatedTo(
 
         const expirationDate = add(new Date(Number(delegatingTo?.blockTimestamp) * 1000), { years: 1 });
 
-        const hasExpiration = delegatingTo?.version === "1";
+        const hasExpiration = delegatingTo?.version === '1';
 
         const isAboutToExpire = hasExpiration && isAboutToExpireCheck(expirationDate);
         const isExpired = hasExpiration && isExpiredCheck(expirationDate);
