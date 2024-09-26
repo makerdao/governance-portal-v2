@@ -116,7 +116,7 @@ export type MKRLockedDelegateAPIResponse = {
   hash: string;
 };
 
-export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
+export type MKRDelegatedToResponse = MKRLockedDelegateAPIResponse & {
   hash: string;
   immediateCaller: string;
 };
