@@ -107,7 +107,9 @@ export const CHAIN_INFO: ChainInfo = {
     subgraphUrl: TENDERLY_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.TENDERLY]:
-        TENDERLY_RPC_URL || `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
+        config.USE_MOCK_WALLET && TENDERLY_RPC_URL
+          ? TENDERLY_RPC_URL
+          : `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },
     showInProduction: false
   }
