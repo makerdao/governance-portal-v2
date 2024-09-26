@@ -15,7 +15,7 @@ import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory'
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
-import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
+import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getNewOwnerFromPrevious } from 'modules/migration/delegateAddressLinks';
 
 export async function fetchDelegatedTo(
@@ -40,7 +40,7 @@ export async function fetchDelegatedTo(
     });
     const delegates = delegatesData.delegates;
 
-    const res: MKRDelegatedToDAIResponse[] = data.delegationHistories.map(x => {
+    const res: MKRDelegatedToResponse[] = data.delegationHistories.map(x => {
       return {
         delegateContractAddress: x.delegate.id,
         lockAmount: x.amount,
