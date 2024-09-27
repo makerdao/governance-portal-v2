@@ -162,8 +162,8 @@ const Header = (): JSX.Element => {
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
         <InternalLink href={'/'} title="View homepage">
-          <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
-            <Icon name="maker" size="40px" color="text" sx={{ cursor: 'pointer' }} />
+          <IconButton aria-label="Sky home" sx={{ width: '70px', height: 4, p: 0 }}>
+            <Icon name="sky" size="auto" sx={{ width: '70px', cursor: 'pointer' }} />
           </IconButton>
         </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
@@ -309,8 +309,8 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
         }}
       >
         <InternalLink href={'/'} title="View homepage">
-          <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
-            <Icon name="maker" size="40px" color="text" sx={{ cursor: 'pointer' }} />
+          <IconButton aria-label="Sky home" sx={{ width: '70px', height: 4, p: 0 }}>
+            <Icon name="sky" size="auto" sx={{ width: '70px', cursor: 'pointer' }} />
           </IconButton>
         </InternalLink>
         <Flex sx={{ alignItems: 'center', gap: 2 }}>

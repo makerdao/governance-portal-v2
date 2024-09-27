@@ -41,7 +41,7 @@ const ContactSection = ({ heading, logos, icon }) => {
           </ExternalLink>
         ))}
       </Flex>
-      <Icon name={icon} size={4} sx={{ my: [0, 0, 4] }} />
+      <Icon name={icon} size="auto" sx={{ my: [0, 0, 4], width: '76px' }} />
     </Flex>
   );
 };
@@ -142,7 +142,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           pb: 5
         }}
       >
-        <ContactSection heading="Official Community Channels" icon="maker" logos={logos.sky} />
+        <ContactSection heading="Official Community Channels" icon="sky" logos={logos.sky} />
         <Flex
           sx={{
             justifyContent: 'space-between',
