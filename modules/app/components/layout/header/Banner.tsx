@@ -8,6 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Text, Alert } from 'theme-ui';
 import { keyframes } from '@emotion/react';
+import { ExternalLink } from '../../ExternalLink';
+import React from 'react';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 const scroll = keyframes({
   from: { transform: 'translate(60vw, 0)' },
@@ -16,11 +19,16 @@ const scroll = keyframes({
 
 const Banner = ({
   content,
-  variant = 'banner'
+  variant = 'banner',
+  href
 }: {
   content: string | React.ReactElement;
   variant?: string;
+  href?: string;
 }): React.ReactElement => {
+  const Link = href ? ExternalLink : React.Fragment;
+  const arrow = href ? <Icon name="chevron_right" size={2} ml={2} /> : null;
+  const linkProps = href ? { href, title: '', color: 'white' } : {};
   return (
     <Alert
       variant={variant}
@@ -34,14 +42,17 @@ const Banner = ({
       }}
     >
       {typeof content === 'string' ? (
-        <Text
-          as="p"
-          sx={{
-            animation: `${scroll} 30s linear infinite`
-          }}
-        >
-          {content}
-        </Text>
+        <Link {...linkProps}>
+          <Text
+            as="p"
+            sx={{
+              animation: `${scroll} 30s linear infinite`,
+              color: href ? 'white' : undefined
+            }}
+          >
+            {content} {arrow}
+          </Text>
+        </Link>
       ) : (
         content
       )}
