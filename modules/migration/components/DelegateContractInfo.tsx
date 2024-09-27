@@ -43,6 +43,9 @@ export default function DelegateExpiryDate({
       }}
       onClick={openModal}
     >
+      <Text variant="caps" color="onSecondary" sx={{ mr: 1 }}>
+        V1 |
+      </Text>
       <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>

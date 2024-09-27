@@ -14,7 +14,7 @@ import { DelegateInfo } from 'modules/delegates/types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import DelegateExpiryDate from './DelegateExpiryDate';
+import DelegateContractInfo from './DelegateContractInfo';
 
 type PropTypes = {
   delegate: DelegateInfo;
@@ -40,7 +40,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
     >
       <Box px={[3, 4]} pb={3} pt={3}>
         <Flex sx={{ mb: 2, justifyContent: 'flex-end' }}>
-          <DelegateExpiryDate delegate={delegate} />
+          <DelegateContractInfo delegate={delegate} />
         </Flex>
 
         <Flex
