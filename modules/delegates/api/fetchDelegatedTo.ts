@@ -24,6 +24,12 @@ export async function fetchDelegatedTo(
   network: SupportedNetworks
 ): Promise<DelegationHistoryWithExpirationDate[]> {
   try {
+    // We fetch the delegates information from the DB to extract the expiry date of each delegate
+    // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
+    const chainId = networkNameToChainId(network);
+    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
+    const delegates = delegatesData.allDelegates.nodes;
+
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
@@ -31,13 +37,16 @@ export async function fetchDelegatedTo(
       query: delegatorHistory,
       variables: { address: address.toLowerCase() }
     });
-    // We fetch the delegates information from the DB to extract the expiry date of each delegate
-    // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
-    const chainId = networkNameToChainId(network);
-    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = delegatesData.allDelegates.nodes;
-
-    const res: MKRDelegatedToResponse[] = data.mkrDelegatedToV2.nodes;
+    const res: MKRDelegatedToResponse[] = data.delegationHistories.map(x => {
+      return {
+        delegateContractAddress: x.delegate.id,
+        lockAmount: x.amount,
+        blockTimestamp: x.timestamp,
+        hash: x.txnHash,
+        blockNumber: x.blockNumber,
+        immediateCaller: address
+      };
+    });
 
     const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === delegateContractAddress) as
@@ -46,9 +55,7 @@ export async function fetchDelegatedTo(
 
       // We sum the total of lockAmounts in different events to calculate the current delegated amount
       if (existing) {
-        existing.lockAmount = utils.formatEther(
-          utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
-        );
+        existing.lockAmount = utils.formatEther(utils.parseEther(existing.lockAmount).add(lockAmount));
         existing.events.push({ lockAmount, blockTimestamp, hash });
       } else {
         const delegatingTo = delegates.find(
@@ -80,7 +87,7 @@ export async function fetchDelegatedTo(
           expirationDate,
           isExpired,
           isAboutToExpire: !isExpired && isAboutToExpire,
-          lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
+          lockAmount: utils.formatEther(lockAmount),
           isRenewed: !!newRenewedContract,
           events: [{ lockAmount, blockTimestamp, hash }]
         } as DelegationHistoryWithExpirationDate);
