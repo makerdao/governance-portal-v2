@@ -21,19 +21,25 @@ export function MigrationBanner(): React.ReactElement | null {
     isDelegatedToExpiredContract,
     isDelegateContractExpired,
     isDelegateContractExpiring,
-    isShadowDelegate
+    isShadowDelegate,
+    isDelegateV1Contract,
+    isDelegatedToV1Contract
   } = useMigrationStatus();
   const showDelegationMigrationBanner =
     (isDelegateContractExpired && !isShadowDelegate) ||
     (isDelegateContractExpiring && !isShadowDelegate) ||
+    (isDelegateV1Contract && !isShadowDelegate) ||
     isDelegatedToExpiringContract ||
-    isDelegatedToExpiredContract;
+    isDelegatedToExpiredContract ||
+    isDelegatedToV1Contract;
 
   const { variant, href, copy } = getMigrationBannerContent({
     isDelegatedToExpiredContract,
     isDelegateContractExpired: isDelegateContractExpired && !isShadowDelegate,
     isDelegatedToExpiringContract,
-    isDelegateContractExpiring: isDelegateContractExpiring && !isShadowDelegate
+    isDelegateContractExpiring: isDelegateContractExpiring && !isShadowDelegate,
+    isDelegateV1Contract,
+    isDelegatedToV1Contract
   });
 
   return showDelegationMigrationBanner ? (
