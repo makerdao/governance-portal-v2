@@ -59,86 +59,41 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
 
   const links = [
     {
-      header: t('Governance'),
+      header: t('Participate'),
       list: [
         {
           url: 'https://forum.makerdao.com/',
-          title: t('Forum')
-        },
-        {
-          url: 'https://manual.makerdao.com/',
-          title: t('Operational Manual')
-        },
-        {
-          url: 'https://manual.makerdao.com/',
-          title: t('Governance FAQs')
-        },
-        {
-          url: 'https://docs.google.com/spreadsheets/d/1LWNlv6hr8oXebk8rvXZBPRVDjN-3OrzI0IgLwBVk0vM/edit#gid=0',
-          title: t('Gov Tracking Sheet')
-        },
-        {
-          url: 'https://manual.makerdao.com/governance/governance-cycle/monthly-governance-cycle',
-          title: t('Monthly Gov Cycle')
-        },
-        {
-          url: 'https://manual.makerdao.com/governance/governance-cycle/weekly-governance-cycle',
-          title: t('Weekly Gov Cycle')
+          title: t('Community')
         }
       ]
     },
     {
-      header: t('Products & Tools'),
+      header: t('Ecosystem'),
       list: [
         {
-          url: 'https://makerdao.statuspage.io/',
-          title: t('Service Status')
-        },
-
-        {
-          url: 'https://auctions.makerdao.network/',
-          title: t('Auctions Dashboard')
+          url: 'https://sky.money/',
+          title: t('sky.money')
         },
         {
-          url: 'https://migrate.makerdao.com/',
-          title: t('Migrate Dashboard')
+          url: 'https://web3-growth.notion.site/Sky-Brand-Kit-ec871fa39f9d41bf9cc4446e7d1f6997?p=ebe95d12947642b6bf69cbac9d09c972&pm=c',
+          title: t('Brand Guidelines')
         },
         {
-          url: 'https://makerburn.com/',
-          title: t('MakerBurn')
+          url: 'https://www.notion.so/Sky-Brand-Kit-ec871fa39f9d41bf9cc4446e7d1f6997?pvs=4',
+          title: t('Media Assets')
         },
         {
-          url: 'https://daistats.com/',
-          title: t('DAI Stats')
-        },
-        {
-          url: 'https://vote.makerdao.com/terms',
-          title: t('Terms')
+          url: 'https://sky.money/faq',
+          title: t('FAQs')
         }
       ]
     },
     {
-      header: t('Developer'),
+      header: t('Build'),
       list: [
         {
-          url: 'https://makerdao.com/whitepaper',
-          title: t('Whitepaper')
-        },
-        {
-          url: 'https://docs.makerdao.com/',
-          title: t('Technical Docs')
-        },
-        {
-          url: 'https://vote.makerdao.com/api-docs',
-          title: t('API Docs')
-        },
-        {
-          url: 'https://github.com/makerdao/developerguides',
-          title: t('Developer Guides')
-        },
-        {
-          url: 'https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4',
-          title: t('Brand Assets')
+          url: 'https://developers.sky.money/',
+          title: t('Developer Documentation')
         }
       ]
     }
