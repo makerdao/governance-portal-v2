@@ -11,14 +11,14 @@ export const getMigrationBannerContent = ({
   isDelegateContractExpiring,
   isDelegatedToExpiredContract,
   isDelegatedToExpiringContract,
-  isDelegateContractV1,
+  isDelegateV1Contract,
   isDelegatedToV1Contract
 }: {
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
   isDelegatedToExpiredContract: boolean;
   isDelegatedToExpiringContract: boolean;
-  isDelegateContractV1: boolean;
+  isDelegateV1Contract: boolean;
   isDelegatedToV1Contract: boolean;
 }): { variant: string; href: string; copy: string } => {
   // a delegate having an expired contract is
@@ -39,7 +39,7 @@ export const getMigrationBannerContent = ({
     };
   }
 
-  if (isDelegateContractV1) {
+  if (isDelegateV1Contract) {
     return {
       variant: 'bannerNotice',
       href: '/migration/delegate',

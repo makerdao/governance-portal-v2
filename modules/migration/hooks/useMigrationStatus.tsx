@@ -21,7 +21,7 @@ export function useMigrationStatus(): {
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
   isShadowDelegate: boolean;
-  isDelegateContractV1: boolean;
+  isDelegateV1Contract: boolean;
   isDelegatedToV1Contract: boolean;
 } {
   const { account: address, network } = useWeb3();
@@ -50,7 +50,7 @@ export function useMigrationStatus(): {
       : false
     : false;
 
-  const isDelegateContractV1 = !!delegateContractExpirationDate; // TODO: update with version === '1' when available
+  const isDelegateV1Contract = !!delegateContractExpirationDate; // TODO: update with version === '1' when available
 
   const isDelegateContractExpiring = delegateContractExpirationDate
     ? isAboutToExpireCheck(delegateContractExpirationDate)
@@ -86,7 +86,7 @@ export function useMigrationStatus(): {
     isDelegateContractExpired,
     isDelegateContractExpiring,
     isShadowDelegate,
-    isDelegateContractV1,
+    isDelegateV1Contract,
     isDelegatedToV1Contract
   };
 }
