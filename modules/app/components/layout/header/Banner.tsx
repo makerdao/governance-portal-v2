@@ -26,9 +26,19 @@ const Banner = ({
   variant?: string;
   href?: string;
 }): React.ReactElement => {
-  const Link = href ? ExternalLink : React.Fragment;
   const arrow = href ? <Icon name="chevron_right" size={2} ml={2} /> : null;
-  const linkProps = href ? { href, title: '', color: 'white' } : {};
+  const textComponent = (
+    <Text
+      as="p"
+      sx={{
+        animation: `${scroll} 30s linear infinite`,
+        color: 'white'
+      }}
+    >
+      {content} {arrow}
+    </Text>
+  );
+
   return (
     <Alert
       variant={variant}
@@ -42,17 +52,13 @@ const Banner = ({
       }}
     >
       {typeof content === 'string' ? (
-        <Link {...linkProps}>
-          <Text
-            as="p"
-            sx={{
-              animation: `${scroll} 30s linear infinite`,
-              color: href ? 'white' : undefined
-            }}
-          >
-            {content} {arrow}
-          </Text>
-        </Link>
+        href ? (
+          <ExternalLink href={href} title="" styles={{ color: 'white' }}>
+            {textComponent}
+          </ExternalLink>
+        ) : (
+          <div>{textComponent}</div>
+        )
       ) : (
         content
       )}
