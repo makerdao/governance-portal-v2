@@ -268,7 +268,7 @@ export async function fetchDelegates(
       const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
       return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
     } else if (sortBy === 'date') {
-      return a.expirationDate > b.expirationDate ? -1 : 1;
+      return a.expirationDate && b.expirationDate ? (a.expirationDate > b.expirationDate ? -1 : 1) : 0;
     } else if (sortBy === 'delegators') {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
@@ -444,7 +444,7 @@ export async function fetchDelegatesPaginated({
   orderDirection,
   seed,
   delegateType,
-  searchTerm,
+  searchTerm
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
   const chainId = networkNameToChainId(network);
 
@@ -473,8 +473,7 @@ export async function fetchDelegatesPaginated({
         }
       ]
     };
-    (searchTerm) &&
-      delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegateAddresses } });
+    searchTerm && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegateAddresses } });
   }
 
   const delegatesQueryVariables = {
@@ -492,8 +491,8 @@ export async function fetchDelegatesPaginated({
     delegatesQueryVariables['seed'] = seed;
   }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] =
-    await Promise.all([
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] = await Promise.all(
+    [
       getGithubExecutives(network),
       fetchDelegatesExecSupport(network),
       gqlRequest<any>({
@@ -505,7 +504,8 @@ export async function fetchDelegatesPaginated({
         chainId,
         query: delegationMetricsQuery
       })
-    ]);
+    ]
+  );
 
   const delegatesData = {
     paginationInfo: {
@@ -562,7 +562,7 @@ export async function fetchDelegatesPaginated({
         previous: allDelegatesEntry?.previous,
         next: allDelegatesEntry?.next
       };
-    }) as DelegatePaginated[],
+    }) as DelegatePaginated[]
   };
 
   return delegatesData;
