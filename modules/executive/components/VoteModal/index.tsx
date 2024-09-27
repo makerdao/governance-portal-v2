@@ -60,7 +60,7 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
               <Flex sx={{ alignItems: 'center', mt: 1 }}>
                 <Icon name="info" color="textSecondary" />
                 <Text as="p" variant="secondary" sx={{ ml: 1 }}>
-                  Your vote and comment may take a few minutes to appear in the Voting Portal
+                  Your vote may take a few minutes to appear in the Voting Portal
                 </Text>
               </Flex>
             }
