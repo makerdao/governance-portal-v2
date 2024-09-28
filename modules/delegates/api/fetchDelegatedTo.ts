@@ -56,7 +56,7 @@ export async function fetchDelegatedTo(
       // We sum the total of lockAmounts in different events to calculate the current delegated amount
       if (existing) {
         existing.lockAmount = utils.formatEther(utils.parseEther(existing.lockAmount).add(lockAmount));
-        existing.events.push({ lockAmount, blockTimestamp, hash });
+        existing.events.push({ lockAmount: utils.formatEther(lockAmount), blockTimestamp, hash });
       } else {
         const delegatingTo = delegates.find(
           i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
@@ -89,7 +89,7 @@ export async function fetchDelegatedTo(
           isAboutToExpire: !isExpired && isAboutToExpire,
           lockAmount: utils.formatEther(lockAmount),
           isRenewed: !!newRenewedContract,
-          events: [{ lockAmount, blockTimestamp, hash }]
+          events: [{ lockAmount: utils.formatEther(lockAmount), blockTimestamp, hash }]
         } as DelegationHistoryWithExpirationDate);
       }
 
