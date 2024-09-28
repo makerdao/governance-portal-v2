@@ -7,7 +7,7 @@ import { gql } from 'graphql-request';
 
 export const allDelegations = gql`
   {
-    delegations {
+    delegations(first: 1000) {
       delegator
       delegate {
         id
