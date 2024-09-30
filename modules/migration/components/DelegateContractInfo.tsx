@@ -26,7 +26,7 @@ export default function DelegateContractInfo({
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
-    if (!delegate.isAboutToExpire && !delegate.expired) {
+    if (delegate.version === '2' || (!delegate.isAboutToExpire && !delegate.expired)) {
       return;
     }
     setModalOpen(true);
@@ -43,15 +43,23 @@ export default function DelegateContractInfo({
       }}
       onClick={openModal}
     >
-      <Text variant="caps" color="onSecondary" sx={{ mr: 1 }}>
-        V1 |
-      </Text>
+      {delegate.version !== '2' && (
+        <Text variant="caps" color="onSecondary" sx={{ mr: 1 }}>
+          V1 |
+        </Text>
+      )}
       <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>
-            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'EXPIRING' : 'EXPIRES'}
+            {delegate.version === '2'
+              ? 'NO EXPIRATION'
+              : delegate.expired
+              ? 'EXPIRED'
+              : delegate.isAboutToExpire
+              ? 'EXPIRING'
+              : 'EXPIRES'}
           </Text>{' '}
-          <DateWithHover date={delegate.expirationDate} />
+          {delegate.version !== '2' && <DateWithHover date={delegate.expirationDate} />}
         </Flex>
       </Text>
       <Flex
