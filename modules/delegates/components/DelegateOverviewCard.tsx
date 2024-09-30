@@ -22,7 +22,7 @@ import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import Icon from 'modules/app/components/Icon';
 import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
-import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
+import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { BigNumber } from 'ethers';
@@ -141,7 +141,7 @@ export const DelegateOverviewCard = memo(
               />
             </Flex>
             <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
-              <DelegateExpiryDate delegate={delegate} />
+              <DelegateContractInfo delegate={delegate} />
               {delegate.cuMember && (
                 <Flex sx={{ mt: 1 }}>
                   <CoreUnitButton handleInfoClick={handleInfoClick} />

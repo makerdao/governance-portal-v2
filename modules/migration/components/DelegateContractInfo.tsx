@@ -16,7 +16,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
-export default function DelegateExpiryDate({
+export default function DelegateContractInfo({
   delegate,
   reverse
 }: {
@@ -43,6 +43,9 @@ export default function DelegateExpiryDate({
       }}
       onClick={openModal}
     >
+      <Text variant="caps" color="onSecondary" sx={{ mr: 1 }}>
+        V1 |
+      </Text>
       <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>
