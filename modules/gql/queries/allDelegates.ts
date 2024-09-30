@@ -15,6 +15,7 @@ export const allDelegates = gql`
         delegate
         voteDelegate
         blockTimestamp
+        version
       }
     }
   }

@@ -74,7 +74,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
         i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
       );
       return (
-        !delegate.expirationDate || (!delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate)
+        delegate.version === '2' || (!delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate)
       );
     });
   }, [addressDelegations, delegatesThatAreAboutToExpiry]);
