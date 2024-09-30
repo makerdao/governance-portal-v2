@@ -142,7 +142,11 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           pb: 5
         }}
       >
-        <ContactSection heading="Official Community Channels" icon="sky" logos={logos.sky} />
+        <ContactSection
+          heading="Official Community Channels"
+          icon={mode === 'dark' ? 'sky_white' : 'sky'}
+          logos={logos.sky}
+        />
         <Flex
           sx={{
             justifyContent: 'space-between',
