@@ -17,7 +17,8 @@ import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
   TENDERLY_SPOCK_URL,
-  TENDERLY_SUBGRAPH_URL
+  TENDERLY_SUBGRAPH_URL,
+  MAINNET_SUBGRAPH_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -62,7 +63,7 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl:
       process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
-    subgraphUrl: TENDERLY_SUBGRAPH_URL,
+    subgraphUrl: MAINNET_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`

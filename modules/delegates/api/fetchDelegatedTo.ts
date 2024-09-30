@@ -56,7 +56,7 @@ export async function fetchDelegatedTo(
       // We sum the total of lockAmounts in different events to calculate the current delegated amount
       if (existing) {
         existing.lockAmount = utils.formatEther(utils.parseEther(existing.lockAmount).add(lockAmount));
-        existing.events.push({ lockAmount, blockTimestamp, hash });
+        existing.events.push({ lockAmount: utils.formatEther(lockAmount), blockTimestamp, hash });
       } else {
         const delegatingTo = delegates.find(
           i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
@@ -69,11 +69,11 @@ export async function fetchDelegatedTo(
         const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
         // Get the expiration date of the delegate
 
-        const expirationDate = add(new Date(delegatingTo?.blockTimestamp * 1000), { years: 1 });
+        const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
 
         //only v1 delegate contracts expire
-        const isAboutToExpire = delegatingTo.version === '1' && isAboutToExpireCheck(expirationDate);
-        const isExpired = delegatingTo.version === '1' && isExpiredCheck(expirationDate);
+        const isAboutToExpire = delegatingTo.version !== '2' && isAboutToExpireCheck(expirationDate);
+        const isExpired = delegatingTo.version !== '2' && isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
@@ -89,7 +89,7 @@ export async function fetchDelegatedTo(
           isAboutToExpire: !isExpired && isAboutToExpire,
           lockAmount: utils.formatEther(lockAmount),
           isRenewed: !!newRenewedContract,
-          events: [{ lockAmount, blockTimestamp, hash }]
+          events: [{ lockAmount: utils.formatEther(lockAmount), blockTimestamp, hash }]
         } as DelegationHistoryWithExpirationDate);
       }
 
