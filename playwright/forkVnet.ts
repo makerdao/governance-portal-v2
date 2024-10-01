@@ -27,7 +27,7 @@ test.afterAll(async () => {
 export const setEthBalance = async (address: string, amount: string) => {
   const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
   const { TENDERLY_RPC_URL } = JSON.parse(file);
-
+  const hexAmount = hexlify(parseEther(amount)).replace(/^0x0/, '0x');
   const response = await fetch(TENDERLY_RPC_URL, {
     method: 'POST',
     headers: {
@@ -36,7 +36,7 @@ export const setEthBalance = async (address: string, amount: string) => {
     },
     body: JSON.stringify({
       method: 'tenderly_setBalance',
-      params: [[address], hexlify(parseEther(amount))],
+      params: [[address], hexAmount],
       id: 42,
       jsonrpc: '2.0'
     })
@@ -88,7 +88,7 @@ const forkVnet = async (displayName: string) => {
       ],
       method: 'POST',
       body: JSON.stringify({
-        srcContainerId: '15f151cf-8db9-4eca-bb64-ff557c753605', //id for mainnet-fork (https://api.tenderly.co/api/v1/makerdao/testnets)
+        srcContainerId: 'a3cdcbc9-56a7-4583-bb2d-705f3bd58e43', //id for e2e-testing-aug-28-fork
         dstContainerDisplayName: displayName
       })
     }

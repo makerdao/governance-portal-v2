@@ -13,7 +13,8 @@ import logger from 'lib/logger';
 
 export class CustomizedBridge extends Eip1193Bridge {
   chainId = SupportedChainId.TENDERLY;
-  chainIdHex = '0x1df2041';
+  chainIdHex = `0x${this.chainId.toString(16)}`;
+
   address: string;
 
   setAddress(add: string) {
