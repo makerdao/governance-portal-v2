@@ -144,7 +144,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
       >
         <ContactSection
           heading="Official Community Channels"
-          icon={mode === 'dark' ? 'sky_white' : 'sky'}
+          icon={renderedMode === 'dark' ? 'sky_white' : 'sky'}
           logos={logos.sky}
         />
         <Flex
