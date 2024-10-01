@@ -112,7 +112,7 @@ export type MKRLockedDelegateAPIResponse = {
   delegateContractAddress: string;
   lockAmount: string;
   blockNumber: number;
-  blockTimestamp: Date;
+  blockTimestamp: string;
   lockTotal: string;
   callerLockTotal: string;
   hash: string;

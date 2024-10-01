@@ -35,7 +35,7 @@ export async function fetchDelegationEventsByAddresses(
         immediateCaller: x.delegator,
         lockAmount: utils.formatEther(x.amount),
         blockNumber: x.blockNumber,
-        blockTimestamp: new Date(x.timestamp * 1000),
+        blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
         hash: x.txnHash,
         callerLockTotal: utils.formatEther(x.accumulatedAmount)
       };
