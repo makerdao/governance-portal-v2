@@ -570,7 +570,7 @@ export async function fetchDelegatesPaginated({
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
         next: allDelegatesEntry?.next,
-        version: delegate.version
+        version: delegate.delegateVersion
       };
     }) as DelegatePaginated[]
   };
