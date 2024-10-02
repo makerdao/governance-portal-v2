@@ -41,7 +41,7 @@ export async function fetchDelegatedTo(
       return {
         delegateContractAddress: x.delegate.id,
         lockAmount: x.amount,
-        blockTimestamp: x.timestamp,
+        blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
         hash: x.txnHash,
         blockNumber: x.blockNumber,
         immediateCaller: address
