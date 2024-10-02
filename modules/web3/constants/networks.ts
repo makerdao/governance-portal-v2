@@ -16,7 +16,8 @@ export const NetworkContextName = 'NETWORK';
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
-  TENDERLY_SPOCK_URL
+  TENDERLY_SPOCK_URL,
+  TENDERLY_SUBGRAPH_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -60,6 +61,7 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl:
       process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
+    subgraphUrl: TENDERLY_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`
@@ -93,7 +95,8 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.TENDERLY]: {
-    blockExplorerUrl: `dashboard.tenderly.co/explorer/vnet/${config.TENDERLY_RPC_KEY}`,
+    blockExplorerUrl:
+      'dashboard.tenderly.co/pullup-labs/endgame-0/testnet/c91028eb-78e1-4305-a289-5cd07adc7fb9',
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.TENDERLY,
     label: 'Tenderly',
@@ -101,8 +104,12 @@ export const CHAIN_INFO: ChainInfo = {
     network: SupportedNetworks.TENDERLY,
     defaultRpc: NodeProviders.TENDERLY,
     spockUrl: TENDERLY_SPOCK_URL,
+    subgraphUrl: TENDERLY_SUBGRAPH_URL,
     rpcs: {
-      [NodeProviders.TENDERLY]: config.USE_MOCK_WALLET && TENDERLY_RPC_URL ? TENDERLY_RPC_URL : `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
+      [NodeProviders.TENDERLY]:
+        config.USE_MOCK_WALLET && TENDERLY_RPC_URL
+          ? TENDERLY_RPC_URL
+          : `https://virtual.mainnet.rpc.tenderly.co/${config.TENDERLY_RPC_KEY}`
     },
     showInProduction: false
   }

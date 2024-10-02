@@ -9,14 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { add } from 'date-fns';
 import { utils } from 'ethers';
 import logger from 'lib/logger';
-import { Query } from 'modules/gql/generated/graphql';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
-import { mkrDelegatedToV2 } from 'modules/gql/queries/mkrDelegatedTo';
+import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
+import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
-import { DelegationHistoryWithExpirationDate, MKRDelegatedToDAIResponse } from '../types';
+import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getNewOwnerFromPrevious } from 'modules/migration/delegateAddressLinks';
 
 export async function fetchDelegatedTo(
@@ -27,16 +26,30 @@ export async function fetchDelegatedTo(
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrDelegatedToV2,
-      variables: { argAddress: address.toLowerCase() }
+      useSubgraph: true,
+      query: delegatorHistory,
+      variables: { address: address.toLowerCase() }
     });
     // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
     const chainId = networkNameToChainId(network);
-    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = delegatesData.allDelegates.nodes;
+    const delegatesData = await gqlRequest({
+      chainId,
+      useSubgraph: true,
+      query: allDelegates
+    });
+    const delegates = delegatesData.delegates;
 
-    const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedToV2.nodes;
+    const res: MKRDelegatedToResponse[] = data.delegationHistories.map(x => {
+      return {
+        delegateContractAddress: x.delegate.id,
+        lockAmount: x.amount,
+        blockTimestamp: x.timestamp,
+        hash: x.txnHash,
+        blockNumber: x.blockNumber,
+        immediateCaller: address
+      };
+    });
     const delegatedTo = res.reduce((acc, { delegateContractAddress, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === delegateContractAddress) as
         | DelegationHistoryWithExpirationDate
@@ -50,22 +63,25 @@ export async function fetchDelegatedTo(
         existing.events.push({ lockAmount, blockTimestamp, hash });
       } else {
         const delegatingTo = delegates.find(
-          i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
+          i => i?.voteDelegate?.toLowerCase() === delegateContractAddress?.toLowerCase()
         );
 
         const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
+
         // Get the expiration date of the delegate
 
-        const expirationDate = add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
+        const expirationDate = add(new Date(Number(delegatingTo?.blockTimestamp) * 1000), { years: 1 });
 
-        const isAboutToExpire = isAboutToExpireCheck(expirationDate);
-        const isExpired = isExpiredCheck(expirationDate);
+        const hasExpiration = delegatingTo?.version === '1';
+
+        const isAboutToExpire = hasExpiration && isAboutToExpireCheck(expirationDate);
+        const isExpired = hasExpiration && isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
 
         const newRenewedContract = newOwnerAddress
-          ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress.toLowerCase())
+          ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress?.toLowerCase())
           : null;
 
         acc.push({

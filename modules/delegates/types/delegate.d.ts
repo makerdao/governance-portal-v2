@@ -29,6 +29,8 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
+  version: string;
+  lastVoteDate: number | null;
 };
 
 export type Delegate = {
@@ -42,7 +44,7 @@ export type Delegate = {
   lastVoteDate: number | null;
   expired: boolean;
   isAboutToExpire: boolean;
-  expirationDate: Date;
+  expirationDate: Date | null;
   externalUrl?: string;
   combinedParticipation?: string;
   pollParticipation?: string;
@@ -105,7 +107,6 @@ export type DelegationHistoryEvent = {
 };
 
 export type MKRLockedDelegateAPIResponse = {
-  fromAddress: string;
   immediateCaller: string;
   delegateContractAddress: string;
   lockAmount: string;
@@ -116,7 +117,7 @@ export type MKRLockedDelegateAPIResponse = {
   hash: string;
 };
 
-export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
+export type MKRDelegatedToResponse = MKRLockedDelegateAPIResponse & {
   hash: string;
   immediateCaller: string;
 };

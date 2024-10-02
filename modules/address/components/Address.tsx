@@ -8,9 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { limitString } from 'lib/string';
 import { formatAddress } from 'lib/utils';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { getENS } from 'modules/web3/helpers/ens';
 import React, { useEffect, useState } from 'react';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export const Address = React.memo(function Address({
   address,
@@ -19,15 +20,15 @@ export const Address = React.memo(function Address({
   address: string;
   maxLength?: number;
 }): React.ReactElement {
-  const { provider } = useWeb3();
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
   async function fetchENSName() {
-    if (!address || !provider) {
+    if (!address) {
       return;
     }
 
-    const ens = await getENS({ address, provider });
+    const provider = getDefaultProvider(SupportedNetworks.MAINNET);
+    const ens = await getENS({ address, provider: provider });
 
     ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }

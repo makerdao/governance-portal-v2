@@ -8,8 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { gql } from 'graphql-request';
 
-export const totalMkrDelegatedToGroup = gql`
-  query totalMkrDelegatedToGroup($delegates: [String]!) {
-    totalMkrDelegatedToGroup(delegates: $delegates)
+export const allDelegates = gql`
+{
+    delegates {
+      blockTimestamp
+      ownerAddress
+      id
+      totalDelegated
+      version
+    }
   }
 `;
