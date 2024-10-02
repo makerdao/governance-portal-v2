@@ -59,11 +59,13 @@ export const delegateAddressLinks = {
     // Sovereign Finance AVC - Cloaky
     '0x86F8A04FbAF5c8eD0465624c355c1E3C073213cA': '0xe676e1Aa2419b22699aCCFc12C11761F009dDAF0',
     // BLUE
-    '0xE5a7023f78c3c0b7B098e8f4aCE7031B3D9aFBaB': '0xe9e3951535053AF603cbE53b0753361459b74D76'
+    '0xE5a7023f78c3c0b7B098e8f4aCE7031B3D9aFBaB': '0xe9e3951535053AF603cbE53b0753361459b74D76',
+    // testing out a double link for blue
+    '0xe9e3951535053AF603cbE53b0753361459b74D76': '0x1465B90e15d0356E5A609633C99291F57B596Ae3'
   }
 };
 
-export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
+export const getOnePreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network] || {};
 
   const newToPrevMap = Object.keys(networkData).reduce((acc, cur) => {
@@ -76,7 +78,19 @@ export const getPreviousOwnerFromNew = (address: string, network: SupportedNetwo
   return newToPrevMap[address.toLowerCase()];
 };
 
-export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
+export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string => {
+  let currentAddress = address.toLowerCase();
+  let previousAddress = getOnePreviousOwnerFromNew(currentAddress, network);
+
+  while (previousAddress) {
+    currentAddress = previousAddress;
+    previousAddress = getOnePreviousOwnerFromNew(currentAddress, network);
+  }
+
+  return currentAddress;
+};
+
+export const getOneNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network] || {};
 
   const prevToNewMap = Object.keys(networkData).reduce((acc, cur) => {
@@ -87,4 +101,16 @@ export const getNewOwnerFromPrevious = (address: string, network: SupportedNetwo
   }, {});
 
   return prevToNewMap[address.toLowerCase()];
+};
+
+export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string => {
+  let currentAddress = address.toLowerCase();
+  let newAddress = getOneNewOwnerFromPrevious(currentAddress, network);
+
+  while (newAddress) {
+    currentAddress = newAddress;
+    newAddress = getOneNewOwnerFromPrevious(currentAddress, network);
+  }
+
+  return currentAddress;
 };
