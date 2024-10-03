@@ -29,7 +29,7 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
-  version?: string | null;
+  version?: number | null;
   lastVoteDate: number | null;
 };
 
@@ -56,7 +56,7 @@ export type Delegate = {
   execSupported: CMSProposal | undefined;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
-  version?: string | null;
+  version?: number | null;
   previous?: {
     address: string;
     voteDelegateAddress: string;
@@ -133,7 +133,7 @@ export type AllDelegatesEntry = {
   blockTimestamp: Date;
   delegate: string;
   voteDelegate: string;
-  version?: string | null;
+  version?: number | null;
 };
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
@@ -169,5 +169,5 @@ export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'descri
     address: string;
     voteDelegateAddress: string;
   };
-  version?: string | null;
+  version?: number | null;
 };
