@@ -60,7 +60,7 @@ export async function fetchDelegatedTo(
       } else {
         const delegatingTo = delegates.find(
           i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
-        ) as (AllDelegatesRecord & { version: string }) | undefined;
+        ) as (AllDelegatesRecord & { version: number }) | undefined;
 
         if (!delegatingTo) {
           return acc;
