@@ -57,8 +57,14 @@ function mergeDelegateInfo({
   newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
   // check if contract is expired to assing the status
-  const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
-  const isExpired = isBefore(new Date(expirationDate), new Date());
+  const expirationDate =
+    onChainDelegate.delegateVersion === 2
+      ? undefined
+      : add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
+  const isExpired =
+    onChainDelegate.delegateVersion === 2 ? false : isBefore(new Date(expirationDate!), new Date());
+  const isAboutToExpire =
+    onChainDelegate.delegateVersion === 2 ? false : isAboutToExpireCheck(expirationDate);
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
@@ -70,7 +76,7 @@ function mergeDelegateInfo({
       : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
-    isAboutToExpire: isAboutToExpireCheck(expirationDate),
+    isAboutToExpire,
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
     picture: githubDelegate?.picture || '',
@@ -98,7 +104,8 @@ function mergeDelegateInfo({
         address: newOnChainDelegate.address,
         voteDelegateAddress: newOnChainDelegate.voteDelegateAddress
       }
-    })
+    }),
+    delegateVersion: onChainDelegate.delegateVersion || 1
   };
 }
 
@@ -332,15 +339,18 @@ export async function fetchAndMergeDelegates(
       )
     );
 
-    const expirationDate = add(new Date(delegate.blockTimestamp), { years: 1 });
-
+    const expirationDate =
+      delegate.delegateVersion === 2 ? undefined : add(new Date(delegate.blockTimestamp), { years: 1 });
+    const expired =
+      delegate.delegateVersion === 2 ? false : expirationDate && expirationDate > new Date() ? false : true;
+    const isAboutToExpire = delegate.delegateVersion === 2 ? false : isAboutToExpireCheck(expirationDate);
     return {
       ...delegate,
       delegateType: ghDelegate ? DelegateTypeEnum.ALIGNED : DelegateTypeEnum.SHADOW,
       blockTimestamp: delegate.blockTimestamp,
       expirationDate,
-      expired: expirationDate > new Date() ? false : true,
-      isAboutToExpire: isAboutToExpireCheck(expirationDate),
+      expired,
+      isAboutToExpire,
       name: ghDelegate?.name,
       picture: ghDelegate?.picture,
       previous:
@@ -389,7 +399,8 @@ export async function fetchSingleDelegateInfo(
     expired: foundDelegate.expired,
     isAboutToExpire: foundDelegate.isAboutToExpire,
     previous: foundDelegate.previous,
-    next: foundDelegate.next
+    next: foundDelegate.next,
+    delegateVersion: foundDelegate.delegateVersion
   };
 }
 
@@ -428,7 +439,8 @@ export async function fetchDelegatesInfo(
         expired: delegate.expired,
         isAboutToExpire: delegate.isAboutToExpire,
         previous: delegate.previous,
-        next: delegate.next
+        next: delegate.next,
+        delegateVersion: delegate.delegateVersion
       };
     });
 
@@ -545,9 +557,10 @@ export async function fetchDelegatesPaginated({
           ? DelegateStatusEnum.aligned
           : DelegateStatusEnum.shadow,
         creationDate: new Date(delegate.creationDate),
-        expirationDate: new Date(delegate.expirationDate),
+        expirationDate: delegate.delegateVersion === 2 ? undefined : new Date(delegate.expirationDate),
         expired: delegate.expired,
-        isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
+        isAboutToExpire:
+          delegate.delegateVersion === 2 ? false : isAboutToExpireCheck(new Date(delegate.expirationDate)),
         picture: githubDelegate?.picture,
         communication: githubDelegate?.communication,
         combinedParticipation: githubDelegate?.combinedParticipation,
@@ -560,7 +573,8 @@ export async function fetchDelegatesPaginated({
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
-        next: allDelegatesEntry?.next
+        next: allDelegatesEntry?.next,
+        delegateVersion: delegate.delegateVersion
       };
     }) as DelegatePaginated[]
   };
