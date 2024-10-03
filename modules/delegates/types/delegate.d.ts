@@ -169,5 +169,5 @@ export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'descri
     address: string;
     voteDelegateAddress: string;
   };
-  version?: string | null;
+  version?: number | null;
 };

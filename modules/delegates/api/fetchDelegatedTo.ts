@@ -70,13 +70,13 @@ export async function fetchDelegatedTo(
         // Get the expiration date of the delegate
 
         const expirationDate =
-          delegatingTo.version === '2'
+          delegatingTo.version === 2
             ? undefined
             : add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
 
         //only v1 delegate contracts expire
-        const isAboutToExpire = delegatingTo.version !== '2' && isAboutToExpireCheck(expirationDate);
-        const isExpired = delegatingTo.version !== '2' && isExpiredCheck(expirationDate);
+        const isAboutToExpire = delegatingTo.version !== 2 && isAboutToExpireCheck(expirationDate);
+        const isExpired = delegatingTo.version !== 2 && isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
         const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
