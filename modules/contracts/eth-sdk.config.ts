@@ -31,7 +31,7 @@ const config: EthSdkConfig = {
       pollingOld: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D',
       pot: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
       vat: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B',
-      voteDelegateFactory: '0xD897F108670903D1d6070fcf818f9db3615AF272',
+      voteDelegateFactory: '0x093d305366218d6d09ba10448922f10814b031dd',
       voteProxyFactory: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408',
       voteProxyFactoryOld: '0xa63E145309cadaa6A903a19993868Ef7E85058BE',
       vow: '0xA950524441892A31ebddF91d3cEEFa04Bf454466'
@@ -53,7 +53,7 @@ const config: EthSdkConfig = {
       pollingOld: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D',
       pot: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
       vat: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B',
-      voteDelegateFactory: '0x4E76FbE44fa5Dae076a7f4f676250e7941421fbA',
+      voteDelegateFactory: '0x093d305366218d6d09ba10448922f10814b031dd',
       voteProxyFactory: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408',
       voteProxyFactoryOld: '0xa63E145309cadaa6A903a19993868Ef7E85058BE',
       vow: '0xA950524441892A31ebddF91d3cEEFa04Bf454466'
