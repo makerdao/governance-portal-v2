@@ -29,7 +29,7 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
-  version: string;
+  delegateVersion?: number | null;
   lastVoteDate: number | null;
 };
 
@@ -44,7 +44,7 @@ export type Delegate = {
   lastVoteDate: number | null;
   expired: boolean;
   isAboutToExpire: boolean;
-  expirationDate: Date | null;
+  expirationDate?: Date | null;
   externalUrl?: string;
   combinedParticipation?: string;
   pollParticipation?: string;
@@ -56,6 +56,7 @@ export type Delegate = {
   execSupported: CMSProposal | undefined;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
+  delegateVersion?: number | null;
   previous?: {
     address: string;
     voteDelegateAddress: string;
@@ -94,7 +95,7 @@ export type DelegationHistory = {
 };
 
 export type DelegationHistoryWithExpirationDate = DelegationHistory & {
-  expirationDate: Date;
+  expirationDate?: Date | null;
   isAboutToExpire: boolean;
   isExpired: boolean;
   isRenewed: boolean;
@@ -132,6 +133,7 @@ export type AllDelegatesEntry = {
   blockTimestamp: Date;
   delegate: string;
   voteDelegate: string;
+  delegateVersion?: number | null;
 };
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
@@ -139,7 +141,7 @@ export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   picture?: string;
   delegateType: DelegateTypeEnum;
   blockTimestamp: Date;
-  expirationDate: Date;
+  expirationDate?: Date | null;
   expired: boolean;
   isAboutToExpire: boolean;
   previous?: {
@@ -156,7 +158,7 @@ export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'descri
   address: string;
   status: DelegateStatusEnum;
   blockTimestamp: Date;
-  expirationDate: Date;
+  expirationDate?: Date | null;
   expired: boolean;
   isAboutToExpire: boolean;
   previous?: {
@@ -167,4 +169,5 @@ export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'descri
     address: string;
     voteDelegateAddress: string;
   };
+  delegateVersion?: number | null;
 };

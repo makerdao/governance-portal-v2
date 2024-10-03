@@ -52,14 +52,16 @@ export function useMigrationStatus(): {
 
   const isDelegateV1Contract = !!delegateContractExpirationDate; // TODO: update with version === '1' when available
 
-  const isDelegateContractExpiring = delegateContractExpirationDate
-    ? isAboutToExpireCheck(delegateContractExpirationDate)
-    : false;
+  const isDelegateContractExpiring =
+    isDelegateV1Contract && delegateContractExpirationDate
+      ? isAboutToExpireCheck(delegateContractExpirationDate)
+      : false;
 
   // check if is delegating to an expired contract, independently of its renewal status
-  const isDelegateContractExpired = delegateContractExpirationDate
-    ? isExpiredCheck(delegateContractExpirationDate)
-    : false;
+  const isDelegateContractExpired =
+    isDelegateV1Contract && delegateContractExpirationDate
+      ? isExpiredCheck(delegateContractExpirationDate)
+      : false;
 
   // Checks if its delegating to an expiring contract that is already renewed.
   const isDelegatedToExpiringContract = delegatedToData

@@ -35,7 +35,7 @@ import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
+import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 type PropTypes = {
@@ -185,7 +185,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
               date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
               styles={{ my: 1 }}
             />
-            <DelegateExpiryDate delegate={delegate} />
+            <DelegateContractInfo delegate={delegate} />
           </Flex>
         </Flex>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>

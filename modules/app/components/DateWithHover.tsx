@@ -16,7 +16,7 @@ export function DateWithHover({
   timeago,
   label
 }: {
-  date: Date | string | number | null;
+  date?: Date | string | number | null;
   timeago?: boolean;
   label?: string;
 }): React.ReactElement {

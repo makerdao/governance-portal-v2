@@ -16,7 +16,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
-export default function DelegateExpiryDate({
+export default function DelegateContractInfo({
   delegate,
   reverse
 }: {
@@ -26,7 +26,7 @@ export default function DelegateExpiryDate({
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
-    if (!delegate.isAboutToExpire && !delegate.expired) {
+    if (delegate.delegateVersion === 2 || (!delegate.isAboutToExpire && !delegate.expired)) {
       return;
     }
     setModalOpen(true);
@@ -43,12 +43,23 @@ export default function DelegateExpiryDate({
       }}
       onClick={openModal}
     >
+      {delegate.delegateVersion !== 2 && (
+        <Text variant="caps" color="onSecondary" sx={{ mr: 1 }}>
+          V1 |
+        </Text>
+      )}
       <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>
-            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'EXPIRING' : 'EXPIRES'}
+            {delegate.delegateVersion === 2
+              ? 'NO EXPIRATION'
+              : delegate.expired
+              ? 'EXPIRED'
+              : delegate.isAboutToExpire
+              ? 'EXPIRING'
+              : 'EXPIRES'}
           </Text>{' '}
-          <DateWithHover date={delegate.expirationDate} />
+          {delegate.delegateVersion !== 2 && <DateWithHover date={delegate.expirationDate} />}
         </Flex>
       </Text>
       <Flex

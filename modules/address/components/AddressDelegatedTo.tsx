@@ -37,7 +37,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
-  const formattedDate = formatDateWithTime(delegate.expirationDate);
+  const formattedDate = delegate.expirationDate ? formatDateWithTime(delegate.expirationDate) : '';
   const dateText = delegate.isExpired
     ? `This contract expired ${formattedDate}`
     : `This contract will expire ${formattedDate}`;
