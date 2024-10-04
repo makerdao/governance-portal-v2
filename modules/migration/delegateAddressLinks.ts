@@ -11,7 +11,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export const delegateAddressLinks = {
   // Format: Old Address -> new address
   [SupportedNetworks.TENDERLY]: {
-    '0x7fe5dbbbd3c3c56061db04ca6f01c8c390325994': '0xE5da2412D11200D478F77b0E881e7b5Dbd190295',
+    '0x14341f81dF14cA86E1420eC9e6Abd343Fb1c5bfC': '0x8e73B1922B336202E83eB458db8f60A905742193'
   },
   [SupportedNetworks.MAINNET]: {
     // schuppi
@@ -76,12 +76,12 @@ export const getOnePreviousOwnerFromNew = (address: string, network: SupportedNe
   return newToPrevMap[address.toLowerCase()];
 };
 
-export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | null => {
+export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
   let currentAddress = address.toLowerCase();
   let previousAddress = getOnePreviousOwnerFromNew(currentAddress, network);
 
   if (!previousAddress) {
-    return null; // No previous address found
+    return undefined; // No previous address found
   }
 
   while (previousAddress) {
@@ -105,12 +105,12 @@ export const getOneNewOwnerFromPrevious = (address: string, network: SupportedNe
   return prevToNewMap[address.toLowerCase()];
 };
 
-export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | null => {
+export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
   let currentAddress = address.toLowerCase();
   let newAddress = getOneNewOwnerFromPrevious(currentAddress, network);
 
   if (!newAddress) {
-    return null; // No new address found
+    return undefined; // No new address found
   }
 
   while (newAddress) {
