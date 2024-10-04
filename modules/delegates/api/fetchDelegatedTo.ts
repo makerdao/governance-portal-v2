@@ -16,7 +16,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
-import { getNewOwnerFromPrevious } from 'modules/migration/delegateAddressLinks';
+import { getLatestOwnerFromOld } from 'modules/migration/delegateAddressLinks';
 import { Query, AllDelegatesRecord } from 'modules/gql/generated/graphql';
 
 export async function fetchDelegatedTo(
@@ -79,10 +79,10 @@ export async function fetchDelegatedTo(
         const isExpired = delegatingTo.delegateVersion !== 2 && isExpiredCheck(expirationDate);
 
         // If it has a new owner address, check if it has renewed the contract
-        const newOwnerAddress = getNewOwnerFromPrevious(delegatingToWalletAddress as string, network);
+        const latestOwnerAddress = getLatestOwnerFromOld(delegatingToWalletAddress as string, network);
 
-        const newRenewedContract = newOwnerAddress
-          ? delegates.find(d => d?.delegate?.toLowerCase() === newOwnerAddress.toLowerCase())
+        const newRenewedContract = latestOwnerAddress
+          ? delegates.find(d => d?.delegate?.toLowerCase() === latestOwnerAddress.toLowerCase())
           : null;
 
         acc.push({

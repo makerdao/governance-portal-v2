@@ -49,7 +49,7 @@ type ChainInfo = {
 };
 
 const { TENDERLY_RPC_URL } = tenderlyTestnetData;
-const TENDERLY_CONTAINER_ID = 'c91028eb-78e1-4305-a289-5cd07adc7fb9';
+const TENDERLY_CONTAINER_ID = 'c8bf3399-e510-4836-9ab1-4112e8b93aad';
 
 //todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {

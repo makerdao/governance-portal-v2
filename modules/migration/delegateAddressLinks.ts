@@ -11,7 +11,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export const delegateAddressLinks = {
   // Format: Old Address -> new address
   [SupportedNetworks.TENDERLY]: {
-    // Nothing
+    '0x14341f81dF14cA86E1420eC9e6Abd343Fb1c5bfC': '0x8e73B1922B336202E83eB458db8f60A905742193'
   },
   [SupportedNetworks.MAINNET]: {
     // schuppi
@@ -59,7 +59,7 @@ export const delegateAddressLinks = {
     // Sovereign Finance AVC - Cloaky
     '0x86F8A04FbAF5c8eD0465624c355c1E3C073213cA': '0xe676e1Aa2419b22699aCCFc12C11761F009dDAF0',
     // BLUE
-    '0xE5a7023f78c3c0b7B098e8f4aCE7031B3D9aFBaB': '0xe9e3951535053AF603cbE53b0753361459b74D76'
+    '0xE5a7023f78c3c0b7B098e8f4aCE7031B3D9aFBaB': '0xe9e3951535053AF603cbE53b0753361459b74D76',
   }
 };
 
@@ -76,6 +76,22 @@ export const getPreviousOwnerFromNew = (address: string, network: SupportedNetwo
   return newToPrevMap[address.toLowerCase()];
 };
 
+export const getOriginalOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
+  let currentAddress = address.toLowerCase();
+  let previousAddress = getPreviousOwnerFromNew(currentAddress, network);
+
+  if (!previousAddress) {
+    return undefined; // No previous address found
+  }
+
+  while (previousAddress) {
+    currentAddress = previousAddress;
+    previousAddress = getPreviousOwnerFromNew(currentAddress, network);
+  }
+
+  return currentAddress;
+};
+
 export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network] || {};
 
@@ -87,4 +103,20 @@ export const getNewOwnerFromPrevious = (address: string, network: SupportedNetwo
   }, {});
 
   return prevToNewMap[address.toLowerCase()];
+};
+
+export const getLatestOwnerFromOld = (address: string, network: SupportedNetworks): string | undefined => {
+  let currentAddress = address.toLowerCase();
+  let newAddress = getNewOwnerFromPrevious(currentAddress, network);
+
+  if (!newAddress) {
+    return undefined; // No new address found
+  }
+
+  while (newAddress) {
+    currentAddress = newAddress;
+    newAddress = getNewOwnerFromPrevious(currentAddress, network);
+  }
+
+  return currentAddress;
 };

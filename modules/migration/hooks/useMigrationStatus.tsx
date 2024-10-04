@@ -47,10 +47,10 @@ export function useMigrationStatus(): {
   const isShadowDelegate = voteDelegateContractAddress
     ? addressDetailData
       ? addressDetailData.delegateInfo?.name === 'Shadow Delegate'
-      : false
-    : false;
+      : true
+    : true;
 
-  const isDelegateV1Contract = !!delegateContractExpirationDate; // TODO: update with version === '1' when available
+  const isDelegateV1Contract = !!delegateContractExpirationDate;
 
   const isDelegateContractExpiring =
     isDelegateV1Contract && delegateContractExpirationDate

@@ -31,14 +31,14 @@ export default function DelegateMigrationPage(): React.ReactElement {
     useMigrationStatus();
 
   const {
-    newOwnerAddress,
-    newOwnerConnected,
-    previousOwnerAddress,
-    previousOwnerConnected,
-    newOwnerHasDelegateContract
+    latestOwnerAddress,
+    latestOwnerConnected,
+    originalOwnerAddress,
+    originalOwnerConnected,
+    latestOwnerHasDelegateContract
   } = useLinkedDelegateInfo();
 
-  const connectedAddressFound = !!previousOwnerAddress || !!newOwnerAddress;
+  const connectedAddressFound = !!originalOwnerAddress || !!latestOwnerAddress;
 
   // the user should be shown the steps to take action if:
   // a - the connected account has an expired/expiring contract or needs to migrate to v2
@@ -51,7 +51,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     isDelegateContractExpired ||
     isDelegateV1Contract ||
     // b
-    (!!newOwnerAddress && !newOwnerHasDelegateContract);
+    (!!latestOwnerAddress && !latestOwnerHasDelegateContract);
 
   const getCurrentStep = useMemo((): string => {
     // delegate contract is either expired or expiring and we don't have
@@ -80,13 +80,13 @@ export default function DelegateMigrationPage(): React.ReactElement {
     if (
       (isDelegateContractExpiring || isDelegateContractExpired || isDelegateV1Contract) &&
       connectedAddressFound &&
-      previousOwnerConnected
+      originalOwnerConnected
     ) {
       return STEPS.CONNECT_WALLET;
     }
 
     // user has connected with the address they requested to migrate to
-    if (connectedAddressFound && newOwnerConnected && !newOwnerHasDelegateContract) {
+    if (connectedAddressFound && latestOwnerConnected && !latestOwnerHasDelegateContract) {
       return STEPS.NEW_DELEGATE_CONTRACT;
     }
 
@@ -96,12 +96,12 @@ export default function DelegateMigrationPage(): React.ReactElement {
     isDelegateContractExpired,
     isDelegateContractExpiring,
     isDelegateV1Contract,
-    previousOwnerAddress,
-    newOwnerAddress,
-    newOwnerHasDelegateContract,
+    originalOwnerAddress,
+    latestOwnerAddress,
+    latestOwnerHasDelegateContract,
     migrationInfoAcknowledged,
-    previousOwnerConnected,
-    newOwnerConnected
+    originalOwnerConnected,
+    latestOwnerConnected
   ]);
 
   const handleSubmitNewAddress = async (newAddress: string) => {
@@ -144,7 +144,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
             {((!isDelegateV1Contract &&
               !isDelegateContractExpired &&
               !isDelegateContractExpiring &&
-              newOwnerHasDelegateContract) ||
+              latestOwnerHasDelegateContract) ||
               !actionNeeded) &&
               'No contract migration is necessary at this time'}
           </Heading>
