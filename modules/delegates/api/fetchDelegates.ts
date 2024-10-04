@@ -148,7 +148,6 @@ export async function fetchDelegate(
     ? onChainDelegates.find(i => i.address.toLowerCase() === newOwnerAddress.toLowerCase())
     : undefined;
 
-  // note: this will only go back one contract relationship
   // TODO: create a helper to fetch the earliest contract address
   // fetch github info for delegate (if they have a link to prev contract, prev contract is the info directory key)
   const { data: githubDelegate } = await fetchGithubDelegate(
@@ -187,8 +186,6 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
       ? onChainDelegates.find(i => i.address.toLowerCase() === newOwnerAddress.toLowerCase())
       : undefined;
 
-    // note: this will only go back one contract relationship
-    // TODO: create a helper to fetch the earliest contract address
     const githubDelegate = gitHubDelegates
       ? gitHubDelegates.find(
           i =>
