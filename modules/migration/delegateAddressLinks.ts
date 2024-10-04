@@ -63,7 +63,7 @@ export const delegateAddressLinks = {
   }
 };
 
-export const getOnePreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
+export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network] || {};
 
   const newToPrevMap = Object.keys(networkData).reduce((acc, cur) => {
@@ -76,9 +76,9 @@ export const getOnePreviousOwnerFromNew = (address: string, network: SupportedNe
   return newToPrevMap[address.toLowerCase()];
 };
 
-export const getPreviousOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
+export const getOriginalOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
   let currentAddress = address.toLowerCase();
-  let previousAddress = getOnePreviousOwnerFromNew(currentAddress, network);
+  let previousAddress = getPreviousOwnerFromNew(currentAddress, network);
 
   if (!previousAddress) {
     return undefined; // No previous address found
@@ -86,13 +86,13 @@ export const getPreviousOwnerFromNew = (address: string, network: SupportedNetwo
 
   while (previousAddress) {
     currentAddress = previousAddress;
-    previousAddress = getOnePreviousOwnerFromNew(currentAddress, network);
+    previousAddress = getPreviousOwnerFromNew(currentAddress, network);
   }
 
   return currentAddress;
 };
 
-export const getOneNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
+export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network] || {};
 
   const prevToNewMap = Object.keys(networkData).reduce((acc, cur) => {
@@ -105,9 +105,9 @@ export const getOneNewOwnerFromPrevious = (address: string, network: SupportedNe
   return prevToNewMap[address.toLowerCase()];
 };
 
-export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
+export const getLatestOwnerFromOld = (address: string, network: SupportedNetworks): string | undefined => {
   let currentAddress = address.toLowerCase();
-  let newAddress = getOneNewOwnerFromPrevious(currentAddress, network);
+  let newAddress = getNewOwnerFromPrevious(currentAddress, network);
 
   if (!newAddress) {
     return undefined; // No new address found
@@ -115,7 +115,7 @@ export const getNewOwnerFromPrevious = (address: string, network: SupportedNetwo
 
   while (newAddress) {
     currentAddress = newAddress;
-    newAddress = getOneNewOwnerFromPrevious(currentAddress, network);
+    newAddress = getNewOwnerFromPrevious(currentAddress, network);
   }
 
   return currentAddress;
