@@ -41,9 +41,8 @@ test('delegate MKR', async ({ page }) => {
     // Close modal
     await closeModal(page);
 
-    //Commenting this out because we now fetch this from the subgraph
     // Checks that the delegated amount has appeared. Note: we round UP to two decimals places in the UI.
-    // await expect(page.locator('[data-testid="mkr-delegated-by-you"]').first()).toHaveText('2.0');
+    await expect(page.locator('[data-testid="mkr-delegated-by-you"]').first()).toHaveText('2.0');
 
     // Find the undelegate button
     await page.locator('[data-testid="button-undelegate"]').first().click();
