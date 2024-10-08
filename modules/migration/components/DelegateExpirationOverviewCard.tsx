@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text } from 'theme-ui';
 import { formatValue } from 'lib/string';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { DelegateInfo } from 'modules/delegates/types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
@@ -26,7 +26,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-  const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
+  const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
     account,
     delegate.voteDelegateAddress
   );

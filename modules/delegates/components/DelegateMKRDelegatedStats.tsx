@@ -29,7 +29,7 @@ export function DelegateMKRDelegatedStats({
   const { account } = useAccount();
   // TODO: Fetch addresses suporting through API fetching
 
-  const { data: mkrStaked } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
+  const { data: mkrDelegated } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
   const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
 
   return (
@@ -67,7 +67,7 @@ export function DelegateMKRDelegatedStats({
       />
       {account && (
         <StatBox
-          value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0'}
+          value={typeof mkrDelegated !== 'undefined' ? formatValue(mkrDelegated) : '0'}
           label={'MKR delegated by you'}
         />
       )}
