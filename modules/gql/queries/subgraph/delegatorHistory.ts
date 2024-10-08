@@ -17,6 +17,7 @@ export const delegatorHistory = gql`
       timestamp
       txnHash
       blockNumber
+      isLockstake
     }
   }
 `;

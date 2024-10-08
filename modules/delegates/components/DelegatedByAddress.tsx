@@ -50,8 +50,10 @@ const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
 };
 
 const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: CollapsableRowProps) => {
+  const { account } = useWeb3();
   const [expanded, setExpanded] = useState(false);
   const { address, lockAmount, events } = delegator;
+  const isUser = account?.toLowerCase() === address?.toLowerCase();
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
   return (
     <tr>
@@ -90,7 +92,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
-            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+            {sortedEvents.map(({ blockTimestamp, lockAmount, isLockstake }) => {
               return (
                 <Flex
                   key={blockTimestamp}
@@ -109,6 +111,9 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     {`${formatValue(
                       parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
+                  </Text>
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {isLockstake && !!isUser ? '(Seal module)' : ''}
                   </Text>
                 </Flex>
               );
