@@ -30,7 +30,7 @@ export const useMkrDelegatedByUser = (
       data: undefined,
       loading: false,
       error: new Error('No account found'),
-      mutate: () => {}
+      mutate: () => undefined
     };
   }
   const network = chainIdToNetworkName(chainId);
