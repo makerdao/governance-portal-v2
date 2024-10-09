@@ -37,7 +37,8 @@ export async function fetchDelegationEventsByAddresses(
         blockNumber: x.blockNumber,
         blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
         hash: x.txnHash,
-        callerLockTotal: utils.formatEther(x.accumulatedAmount)
+        callerLockTotal: utils.formatEther(x.accumulatedAmount),
+        isLockstake: x.isLockstake
       };
     });
     return addressData;

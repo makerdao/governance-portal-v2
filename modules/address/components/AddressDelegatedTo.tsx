@@ -84,7 +84,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
-            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+            {sortedEvents.map(({ blockTimestamp, lockAmount, isLockstake }) => {
               return (
                 <Flex
                   key={blockTimestamp}
@@ -103,6 +103,10 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     {`${formatValue(
                       parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
+                  </Text>
+
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {isLockstake ? '(Seal)' : ''}
                   </Text>
                 </Flex>
               );

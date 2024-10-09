@@ -16,8 +16,12 @@ import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import { VoteDelegate } from 'types/ethers-contracts';
 import { config } from 'lib/config';
 
-type TokenAllowanceResponse = {
-  data: BigNumber | undefined;
+type DelegatedByUserResponse = {
+  data: {
+    directDelegationAmount: BigNumber | undefined;
+    sealDelegationAmount: BigNumber | undefined;
+    totalDelegationAmount: BigNumber | undefined;
+  } | undefined;
   loading: boolean;
   error?: Error;
   mutate: () => void;
@@ -27,7 +31,7 @@ type TokenAllowanceResponse = {
 export const useMkrDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
-): TokenAllowanceResponse => {
+): DelegatedByUserResponse => {
   const { chainId, provider, account } = useWeb3();
   if (!voteDelegateAddress) {
     return {
@@ -39,7 +43,7 @@ export const useMkrDelegatedByUser = (
   }
   const network = chainIdToNetworkName(chainId);
 
-  const fetchFromChain = (userAddress: string | undefined, voteDelegateAddress: string | undefined) => {
+  const fetchFromChain = async(userAddress: string | undefined, voteDelegateAddress: string | undefined) => {
     const contract = getEthersContracts<VoteDelegate>(
       voteDelegateAddress as string,
       abi,
@@ -49,7 +53,13 @@ export const useMkrDelegatedByUser = (
       true
     );
   
-    return contract.stake(userAddress as string);
+    const directDelegated = await contract.stake(userAddress as string);
+
+    return {
+      directDelegationAmount: directDelegated,
+      sealDelegationAmount: undefined,
+      totalDelegationAmount: directDelegated
+    };
   };
 
   const { data, error, mutate } = useSWR(
@@ -60,18 +70,28 @@ export const useMkrDelegatedByUser = (
       }
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
+        console.log('data', data);
         const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
-        let mkrDelegated = BigNumber.from(0);
+        let sealDelegated = BigNumber.from(0);
+        let directDelegated = BigNumber.from(0); // Calculate this as needed
         for (let i = 0; i < delegations.length; i++) {
           try {
             const curr = delegations[i];
             const lockAmount = BigNumber.from(ethers.utils.parseUnits(curr.lockAmount.toString(), 18));
-            mkrDelegated = mkrDelegated.add(lockAmount);
+            if (curr.isLockstake) {
+              sealDelegated = sealDelegated.add(lockAmount);
+            } else {
+              directDelegated = directDelegated.add(lockAmount);
+            }
           } catch (innerError) {
             console.error(`Error processing delegation ${i + 1}:`, innerError);
           }
         }
-        return mkrDelegated;
+        return {
+          directDelegationAmount: directDelegated,
+          sealDelegationAmount: sealDelegated,
+          totalDelegationAmount: sealDelegated.add(directDelegated)
+        };
       } catch (outerError) {
         console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);
         return fetchFromChain(userAddress, voteDelegateAddress);

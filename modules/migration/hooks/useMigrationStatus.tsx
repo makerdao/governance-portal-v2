@@ -78,7 +78,7 @@ export function useMigrationStatus(): {
 
   const isDelegatedToV1Contract = delegatedToData
     ? delegatedToData.delegatedTo.reduce((acc, cur) => {
-        return acc || !!cur.expirationDate;
+        return acc || (!!cur.expirationDate && new BigNumber(cur.lockAmount).gt(0));
       }, false)
     : false;
 

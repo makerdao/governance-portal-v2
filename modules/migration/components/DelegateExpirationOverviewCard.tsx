@@ -26,10 +26,11 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-  const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
+  const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
     account,
     delegate.voteDelegateAddress
   );
+  const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
 
   return (
     <Card
