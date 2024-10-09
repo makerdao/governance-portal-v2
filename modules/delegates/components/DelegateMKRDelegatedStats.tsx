@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import BigNumber from 'lib/bigNumberJs';
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -29,7 +29,7 @@ export function DelegateMKRDelegatedStats({
   const { account } = useAccount();
   // TODO: Fetch addresses suporting through API fetching
 
-  const { data: mkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
+  const { data: mkrDelegated } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
   const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
 
   return (
@@ -67,7 +67,7 @@ export function DelegateMKRDelegatedStats({
       />
       {account && (
         <StatBox
-          value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0'}
+          value={typeof mkrDelegated !== 'undefined' ? formatValue(mkrDelegated) : '0'}
           label={'MKR delegated by you'}
         />
       )}

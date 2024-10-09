@@ -11,9 +11,9 @@ import { Card, Box, Flex, Button, Text, Heading } from 'theme-ui';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { DelegatePaginated } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
@@ -88,7 +88,7 @@ export const DelegateOverviewCard = memo(
       setShowCoreUnitModal(!showCoreUnitModal);
     };
 
-    const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
+    const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );

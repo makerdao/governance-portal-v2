@@ -43,16 +43,14 @@ export default function DelegateContractInfo({
       }}
       onClick={openModal}
     >
-      {delegate.delegateVersion !== 2 && (
-        <Text variant="caps" color="onSecondary" sx={{ mr: 1 }}>
-          V1 |
-        </Text>
-      )}
-      <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
+      <Text variant="caps" color="onSecondary" sx={{ mr: delegate.delegateVersion === 2 ? 0 : 1 }}>
+        {delegate.delegateVersion === 2 ? 'V2' : 'V1 | '}
+      </Text>
+      <Text variant="caps" color={'onSecondary'} sx={{ mr: delegate.delegateVersion === 2 ? 0 : 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>
             {delegate.delegateVersion === 2
-              ? 'NO EXPIRATION'
+              ? ''
               : delegate.expired
               ? 'EXPIRED'
               : delegate.isAboutToExpire
@@ -68,7 +66,7 @@ export default function DelegateContractInfo({
           mr: reverse ? 2 : [2, 0]
         }}
       >
-        {!delegate.expired && !delegate.isAboutToExpire && (
+        {delegate.delegateVersion !== 2 && !delegate.expired && !delegate.isAboutToExpire && (
           <LocalIcon
             name="calendarcross"
             sx={{

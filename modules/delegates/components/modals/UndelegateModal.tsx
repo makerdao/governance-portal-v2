@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Box } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
@@ -44,7 +44,7 @@ export const UndelegateModal = ({
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
 
-  const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
+  const { data: mkrStaked } = useMkrDelegatedByUser(account, voteDelegateAddress);
   const { data: iouAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
     parseUnits('100000000'),
