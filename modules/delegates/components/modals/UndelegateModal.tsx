@@ -22,6 +22,8 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { formatValue } from 'lib/string';
 import DelegateAvatarName from '../DelegateAvatarName';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { Text } from '@theme-ui/components';
 
 type Props = {
   isOpen: boolean;
@@ -103,6 +105,15 @@ export const UndelegateModal = ({
                         });
                       }}
                       showAlert={false}
+                      disclaimer={
+                        <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
+                          Any MKR delegated through the Seal module must be undelegated from the{' '}
+                          <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
+                            <span>Sky app</span>
+                          </ExternalLink>
+                          .
+                        </Text>
+                      }
                     />
                   ) : (
                     <ApprovalContent
