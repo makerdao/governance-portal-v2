@@ -46,7 +46,9 @@ export const UndelegateModal = ({
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
 
-  const { data: mkrStaked } = useMkrDelegatedByUser(account, voteDelegateAddress);
+  const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, voteDelegateAddress);
+  const sealDelegated = mkrDelegatedData?.sealDelegationAmount;
+  const directDelegated = mkrDelegatedData?.directDelegationAmount;
   const { data: iouAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
     parseUnits('100000000'),
@@ -87,12 +89,12 @@ export const UndelegateModal = ({
                 </TxDisplay>
               ) : (
                 <>
-                  {mkrStaked && iouAllowance ? (
+                  {directDelegated && iouAllowance ? (
                     <InputDelegateMkr
                       title="Withdraw from delegate contract"
                       description="Input the amount of MKR to withdraw from the delegate contract."
                       onChange={setMkrToWithdraw}
-                      balance={mkrStaked}
+                      balance={directDelegated}
                       buttonLabel="Undelegate MKR"
                       onClick={() => {
                         free(mkrToWithdraw, {
@@ -106,13 +108,16 @@ export const UndelegateModal = ({
                       }}
                       showAlert={false}
                       disclaimer={
-                        <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
-                          Any MKR delegated through the Seal module must be undelegated from the{' '}
-                          <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
-                            <span>Sky app</span>
-                          </ExternalLink>
-                          .
-                        </Text>
+                        sealDelegated &&
+                        sealDelegated.gt(0) ? (
+                          <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
+                            Your {formatValue(sealDelegated)} MKR delegated through the Seal module must be undelegated from the{' '}
+                            <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
+                              <span>Sky app</span>
+                            </ExternalLink>
+                            .
+                          </Text>
+                        ) : undefined
                       }
                     />
                   ) : (
