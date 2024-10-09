@@ -11,6 +11,10 @@ import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { BigNumber, ethers } from 'ethers';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
+import abi from 'modules/contracts/ethers/voteDelegate.json';
+import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
+import { VoteDelegate } from 'types/ethers-contracts';
+import { config } from 'lib/config';
 
 type TokenAllowanceResponse = {
   data: BigNumber | undefined;
@@ -24,7 +28,7 @@ export const useMkrDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): TokenAllowanceResponse => {
-  const { chainId } = useWeb3();
+  const { chainId, provider, account } = useWeb3();
   if (!voteDelegateAddress) {
     return {
       data: undefined,
@@ -34,9 +38,26 @@ export const useMkrDelegatedByUser = (
     };
   }
   const network = chainIdToNetworkName(chainId);
+
+  const fetchFromChain = (userAddress: string | undefined, voteDelegateAddress: string | undefined) => {
+    const contract = getEthersContracts<VoteDelegate>(
+      voteDelegateAddress as string,
+      abi,
+      chainId,
+      provider,
+      account,
+      true
+    );
+  
+    return contract.stake(userAddress as string);
+  };
+
   const { data, error, mutate } = useSWR(
     userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
     async () => {
+      if (config.USE_MOCK_WALLET) {
+        return fetchFromChain(userAddress, voteDelegateAddress);
+      }
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
         const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
@@ -52,8 +73,8 @@ export const useMkrDelegatedByUser = (
         }
         return mkrDelegated;
       } catch (outerError) {
-        console.error('Error in useMkrDelegatedByUser:', outerError);
-        throw outerError;
+        console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);
+        return fetchFromChain(userAddress, voteDelegateAddress);
       }
     },
     {
