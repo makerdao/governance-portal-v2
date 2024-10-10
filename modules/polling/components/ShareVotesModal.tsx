@@ -53,7 +53,7 @@ export const ShareVotesModal = ({
           <Flex sx={{ flexDirection: 'column' }}>
             <Heading sx={{ textAlign: 'center', mb: 3 }}>Share your votes</Heading>
             <Text sx={{ mb: 3, color: 'onSecondary', textAlign: 'center' }}>
-              Your recent votes and comments are formatted below
+              Your recent votes are formatted below
             </Text>
             <Box sx={{ bg: 'background', px: 3, overflowY: 'scroll', maxHeight: ['200px', '100%'] }}>
               <div dangerouslySetInnerHTML={{ __html: html || '' }} />

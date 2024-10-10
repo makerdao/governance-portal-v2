@@ -25,6 +25,7 @@ export type ContractName =
   | 'pot'
   | 'vat'
   | 'voteDelegateFactory'
+  | 'voteDelegateFactoryOld'
   | 'voteProxyFactory'
   | 'vow';
 

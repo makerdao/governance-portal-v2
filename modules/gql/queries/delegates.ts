@@ -47,6 +47,7 @@ export const delegatesQuery = gql`
         lastVoted
         delegatorCount
         totalMkr
+        delegateVersion
       }
     }
   }

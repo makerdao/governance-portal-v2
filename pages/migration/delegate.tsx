@@ -27,20 +27,21 @@ export default function DelegateMigrationPage(): React.ReactElement {
   const { account, provider } = useWeb3();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
-  const { isDelegateContractExpiring, isDelegateContractExpired } = useMigrationStatus();
+  const { isDelegateContractExpiring, isDelegateContractExpired, isDelegateV1Contract } =
+    useMigrationStatus();
 
   const {
-    newOwnerAddress,
-    newOwnerConnected,
-    previousOwnerAddress,
-    previousOwnerConnected,
-    newOwnerHasDelegateContract
+    latestOwnerAddress,
+    latestOwnerConnected,
+    originalOwnerAddress,
+    originalOwnerConnected,
+    latestOwnerHasDelegateContract
   } = useLinkedDelegateInfo();
 
-  const connectedAddressFound = !!previousOwnerAddress || !!newOwnerAddress;
+  const connectedAddressFound = !!originalOwnerAddress || !!latestOwnerAddress;
 
   // the user should be shown the steps to take action if:
-  // a - the connected account has an expired/expiring contract
+  // a - the connected account has an expired/expiring contract or needs to migrate to v2
   //      or
   // b - the connected count is the new account of a previous delegate
   //     and has not created the delegate contract yet
@@ -48,14 +49,15 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // a
     isDelegateContractExpiring ||
     isDelegateContractExpired ||
+    isDelegateV1Contract ||
     // b
-    (!!newOwnerAddress && !newOwnerHasDelegateContract);
+    (!!latestOwnerAddress && !latestOwnerHasDelegateContract);
 
   const getCurrentStep = useMemo((): string => {
     // delegate contract is either expired or expiring and we don't have
     // a request to migrate the address yet, show migration info
     if (
-      (isDelegateContractExpired || isDelegateContractExpiring) &&
+      (isDelegateContractExpired || isDelegateContractExpiring || isDelegateV1Contract) &&
       !connectedAddressFound &&
       !migrationInfoAcknowledged
     ) {
@@ -65,26 +67,26 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // same status as above, but user has acknowledged migration info,
     // show new address step
     if (
-      (isDelegateContractExpiring || isDelegateContractExpired) &&
+      (isDelegateContractExpiring || isDelegateContractExpired || isDelegateV1Contract) &&
       !connectedAddressFound &&
       migrationInfoAcknowledged
     ) {
       return STEPS.NEW_ADDRESS;
     }
 
-    // delegate contract is either expired or expiring
+    // delegate contract is either expired or expiring or needs to migrate to v2
     // and we have processed the request to migrate
     // but user is connected with old address
     if (
-      (isDelegateContractExpiring || isDelegateContractExpired) &&
+      (isDelegateContractExpiring || isDelegateContractExpired || isDelegateV1Contract) &&
       connectedAddressFound &&
-      previousOwnerConnected
+      originalOwnerConnected
     ) {
       return STEPS.CONNECT_WALLET;
     }
 
     // user has connected with the address they requested to migrate to
-    if (connectedAddressFound && newOwnerConnected && !newOwnerHasDelegateContract) {
+    if (connectedAddressFound && latestOwnerConnected && !latestOwnerHasDelegateContract) {
       return STEPS.NEW_DELEGATE_CONTRACT;
     }
 
@@ -93,12 +95,13 @@ export default function DelegateMigrationPage(): React.ReactElement {
   }, [
     isDelegateContractExpired,
     isDelegateContractExpiring,
-    previousOwnerAddress,
-    newOwnerAddress,
-    newOwnerHasDelegateContract,
+    isDelegateV1Contract,
+    originalOwnerAddress,
+    latestOwnerAddress,
+    latestOwnerHasDelegateContract,
     migrationInfoAcknowledged,
-    previousOwnerConnected,
-    newOwnerConnected
+    originalOwnerConnected,
+    latestOwnerConnected
   ]);
 
   const handleSubmitNewAddress = async (newAddress: string) => {
@@ -133,12 +136,21 @@ export default function DelegateMigrationPage(): React.ReactElement {
             {isDelegateContractExpiring &&
               !isDelegateContractExpired &&
               'Your delegate contract is expiring soon. Please migrate as soon as possible.'}
-            {((!isDelegateContractExpired && !isDelegateContractExpiring && newOwnerHasDelegateContract) ||
+            {/* TODO: Add the right message for v2 migration when decided */}
+            {isDelegateV1Contract &&
+              !isDelegateContractExpired &&
+              !isDelegateContractExpiring &&
+              'Your delegate contract needs to be migrated to v2.'}
+            {((!isDelegateV1Contract &&
+              !isDelegateContractExpired &&
+              !isDelegateContractExpiring &&
+              latestOwnerHasDelegateContract) ||
               !actionNeeded) &&
               'No contract migration is necessary at this time'}
           </Heading>
 
           {isDelegateContractExpired ||
+            isDelegateV1Contract ||
             (isDelegateContractExpiring && (
               <Text
                 as="h3"

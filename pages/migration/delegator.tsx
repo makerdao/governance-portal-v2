@@ -73,7 +73,10 @@ export default function DelegateMigrationPage(): React.ReactElement {
       const isPreviousDelegate = delegatesThatAreAboutToExpiry.find(
         i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
       );
-      return !delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate;
+      return (
+        delegate.delegateVersion === 2 ||
+        (!delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate)
+      );
     });
   }, [addressDelegations, delegatesThatAreAboutToExpiry]);
 

@@ -12,7 +12,7 @@ import { Delegate } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function ManageDelegation({
@@ -29,7 +29,7 @@ export default function ManageDelegation({
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
   const { mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { mutate: mutateMkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
+  const { mutate: mutateMkrStaked } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
 
   return (
     <Box>

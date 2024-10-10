@@ -25,7 +25,7 @@ export function MigrationInfo({
     <Flex>
       <Flex sx={{ flexDirection: 'column' }}>
         <Text as="p" variant="secondary">
-          Maker delegate contracts are{' '}
+          Maker v1 delegate contracts are{' '}
           <ExternalLink
             href="https://manual.makerdao.com/delegation/delegate-expiration 
 "
@@ -36,6 +36,7 @@ export function MigrationInfo({
             </Text>
           </ExternalLink>{' '}
           in order to protect the Maker protocol against stale MKR tokens participating in Maker governance.
+          The new v2 delegate contracts, however, do not expire.
         </Text>
 
         <Text as="p" variant="secondary" sx={{ mt: 3 }}>

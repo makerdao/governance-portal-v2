@@ -16,12 +16,15 @@ export function DateWithHover({
   timeago,
   label
 }: {
-  date: Date | string | number;
+  date?: Date | string | number | null;
   timeago?: boolean;
   label?: string;
 }): React.ReactElement {
+  if (!date) {
+    return <Text>N/A</Text>;
+  }
   return (
-    <Tooltip label={label ? label : formatDateWithTime(date ?? '')}>
+    <Tooltip label={label ? label : formatDateWithTime(date)}>
       <Text>{timeago ? `${formatTimeAgo(date ?? '')}` : `${formatDateWithTime(date ?? '')}`}</Text>
     </Tooltip>
   );

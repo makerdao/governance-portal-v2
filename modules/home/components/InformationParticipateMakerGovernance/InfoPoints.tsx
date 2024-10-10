@@ -112,8 +112,8 @@ export const infoPoints: InfoPoint[] = [
         Next,{' '}
         <InternalLink href="/polling" title="Polls" styles={{ fontWeight: 'semiBold' }}>
           <Text>start voting on the active governance polls</Text>
-        </InternalLink>{' '}
-        and don&apos;t forget to add comments to your votes.
+        </InternalLink>
+        .
       </Text>
     )
   }
