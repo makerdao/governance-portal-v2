@@ -106,7 +106,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                   </Text>
 
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
-                    {isLockstake ? '(Seal module)' : ''}
+                    {isLockstake ? '(Seal)' : ''}
                   </Text>
                 </Flex>
               );

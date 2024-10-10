@@ -88,10 +88,11 @@ export const DelegateOverviewCard = memo(
       setShowCoreUnitModal(!showCoreUnitModal);
     };
 
-    const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
+    const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );
+    const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
     const hasMkrDelegated = account && mkrDelegated?.gt(0);
 
     const mutateDelegateTotalMkr = (amount: BigNumber) => {

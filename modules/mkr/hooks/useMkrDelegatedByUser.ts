@@ -12,8 +12,12 @@ import { BigNumber, ethers } from 'ethers';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
 
-type TokenAllowanceResponse = {
-  data: BigNumber | undefined;
+type DelegatedByUserResponse = {
+  data: {
+    directDelegationAmount: BigNumber | undefined;
+    sealDelegationAmount: BigNumber | undefined;
+    totalDelegationAmount: BigNumber | undefined;
+  } | undefined;
   loading: boolean;
   error?: Error;
   mutate: () => void;
@@ -23,7 +27,7 @@ type TokenAllowanceResponse = {
 export const useMkrDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
-): TokenAllowanceResponse => {
+): DelegatedByUserResponse => {
   const { chainId } = useWeb3();
   if (!voteDelegateAddress) {
     return {
@@ -39,18 +43,28 @@ export const useMkrDelegatedByUser = (
     async () => {
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
+        console.log('data', data);
         const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
-        let mkrDelegated = BigNumber.from(0);
+        let sealDelegated = BigNumber.from(0);
+        let directDelegated = BigNumber.from(0); // Calculate this as needed
         for (let i = 0; i < delegations.length; i++) {
           try {
             const curr = delegations[i];
             const lockAmount = BigNumber.from(ethers.utils.parseUnits(curr.lockAmount.toString(), 18));
-            mkrDelegated = mkrDelegated.add(lockAmount);
+            if (curr.isLockstake) {
+              sealDelegated = sealDelegated.add(lockAmount);
+            } else {
+              directDelegated = directDelegated.add(lockAmount);
+            }
           } catch (innerError) {
             console.error(`Error processing delegation ${i + 1}:`, innerError);
           }
         }
-        return mkrDelegated;
+        return {
+          directDelegationAmount: directDelegated,
+          sealDelegationAmount: sealDelegated,
+          totalDelegationAmount: sealDelegated.add(directDelegated)
+        };
       } catch (outerError) {
         console.error('Error in useMkrDelegatedByUser:', outerError);
         throw outerError;
