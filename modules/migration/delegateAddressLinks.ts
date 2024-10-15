@@ -11,7 +11,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export const delegateAddressLinks = {
   // Format: Old Address -> new address
   [SupportedNetworks.TENDERLY]: {
-    '0x14341f81dF14cA86E1420eC9e6Abd343Fb1c5bfC': '0x8e73B1922B336202E83eB458db8f60A905742193'
+    //for testing, linking stonewill to a random tenderly delegate contract
+    '0xeecc9ebd4c7538c13d4438260ea59e9a8640335c': '0xe5da2412d11200d478f77b0e881e7b5dbd190295'
   },
   [SupportedNetworks.MAINNET]: {
     // schuppi
