@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Flex, Text, Label, Checkbox, Button, Box } from 'theme-ui';
 import { CircleIcon } from 'modules/app/components/CircleIcon';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export function MigrationInfo({
   setMigrationInfoAcknowledged
@@ -24,28 +23,13 @@ export function MigrationInfo({
   return (
     <Flex>
       <Flex sx={{ flexDirection: 'column' }}>
-        <Text as="p" variant="secondary">
-          Maker v1 delegate contracts are{' '}
-          <ExternalLink
-            href="https://manual.makerdao.com/delegation/delegate-expiration 
-"
-            title="Delegate expiration information"
-          >
-            <Text variant="secondary" sx={{ color: 'accentBlue' }}>
-              designed to expire annually
-            </Text>
-          </ExternalLink>{' '}
-          in order to protect the Maker protocol against stale MKR tokens participating in Maker governance.
-          The new v2 delegate contracts, however, do not expire.
+        <Text as="p" variant="secondary" sx={{ mt: 3 }}>
+          Complete the migration flow to create a v2 delegate contract and establish a link between the v1
+          and v2 contract, in order to preserve your voting history & delegate metrics in the Voting Portal.{' '}
         </Text>
 
         <Text as="p" variant="secondary" sx={{ mt: 3 }}>
-          Complete the migration flow to create a new delegate contract and establish a link between the old
-          and new contract, in order to preserve your voting history & delegate metrics in the Voting Portal.{' '}
-        </Text>
-
-        <Text as="p" variant="secondary" sx={{ mt: 3 }}>
-          Completing the migration will also assist your delegators in migrating their MKR to your new
+          Completing the migration will also assist your delegators in migrating their MKR to your v2
           delegate contract address.
         </Text>
         <Text as="p" variant="secondary" sx={{ mt: 3, fontWeight: 'bold' }}>
@@ -75,7 +59,7 @@ export function MigrationInfo({
             </Box>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text as="h3" variant="microHeading">
-                You need to use a different wallet address for generating your new delegate contract
+                You need to use a different wallet address for generating your v2 delegate contract
               </Text>
               <Text as="p" variant="secondary" sx={{ mt: 2 }}>
                 Make sure the address you enter in the next step is different from the currently connected

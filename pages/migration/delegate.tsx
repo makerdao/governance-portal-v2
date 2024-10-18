@@ -27,7 +27,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
   const { account, provider } = useWeb3();
   const [migrationInfoAcknowledged, setMigrationInfoAcknowledged] = useState(false);
 
-  const { isDelegateContractExpiring, isDelegateContractExpired, isDelegateV1Contract } =
+  const { isDelegateV1Contract } =
     useMigrationStatus();
 
   const {
@@ -47,8 +47,6 @@ export default function DelegateMigrationPage(): React.ReactElement {
   //     and has not created the delegate contract yet
   const actionNeeded =
     // a
-    isDelegateContractExpiring ||
-    isDelegateContractExpired ||
     isDelegateV1Contract ||
     // b
     (!!latestOwnerAddress && !latestOwnerHasDelegateContract);
@@ -57,7 +55,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // delegate contract is either expired or expiring and we don't have
     // a request to migrate the address yet, show migration info
     if (
-      (isDelegateContractExpired || isDelegateContractExpiring || isDelegateV1Contract) &&
+      (isDelegateV1Contract) &&
       !connectedAddressFound &&
       !migrationInfoAcknowledged
     ) {
@@ -67,7 +65,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // same status as above, but user has acknowledged migration info,
     // show new address step
     if (
-      (isDelegateContractExpiring || isDelegateContractExpired || isDelegateV1Contract) &&
+      (isDelegateV1Contract) &&
       !connectedAddressFound &&
       migrationInfoAcknowledged
     ) {
@@ -78,7 +76,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // and we have processed the request to migrate
     // but user is connected with old address
     if (
-      (isDelegateContractExpiring || isDelegateContractExpired || isDelegateV1Contract) &&
+      (isDelegateV1Contract) &&
       connectedAddressFound &&
       originalOwnerConnected
     ) {
@@ -93,8 +91,6 @@ export default function DelegateMigrationPage(): React.ReactElement {
     // no other conditions were met, show first step by default
     return STEPS.MIGRATION_INFO;
   }, [
-    isDelegateContractExpired,
-    isDelegateContractExpiring,
     isDelegateV1Contract,
     originalOwnerAddress,
     latestOwnerAddress,
@@ -131,27 +127,11 @@ export default function DelegateMigrationPage(): React.ReactElement {
       {account && (
         <Stack gap={3}>
           <Heading mb={2} as="h4" sx={{ textAlign: 'center' }}>
-            {isDelegateContractExpired &&
-              'Your delegate contract has expired! Please migrate as soon as possible.'}
-            {isDelegateContractExpiring &&
-              !isDelegateContractExpired &&
-              'Your delegate contract is expiring soon. Please migrate as soon as possible.'}
-            {/* TODO: Add the right message for v2 migration when decided */}
-            {isDelegateV1Contract &&
-              !isDelegateContractExpired &&
-              !isDelegateContractExpiring &&
-              'Your delegate contract needs to be migrated to v2.'}
-            {((!isDelegateV1Contract &&
-              !isDelegateContractExpired &&
-              !isDelegateContractExpiring &&
-              latestOwnerHasDelegateContract) ||
-              !actionNeeded) &&
-              'No contract migration is necessary at this time'}
+            {isDelegateV1Contract && 'Your delegate contract needs to be migrated to v2.'}
           </Heading>
-
-          {isDelegateContractExpired ||
-            isDelegateV1Contract ||
-            (isDelegateContractExpiring && (
+          {
+            isDelegateV1Contract
+            && (
               <Text
                 as="h3"
                 sx={{ textAlign: 'center', fontWeight: 'semiBold', maxWidth: '550px', margin: '0 auto' }}
@@ -159,7 +139,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 Finish migration in order to remain active as a delegate and preserve your voting history
                 &amp; metrics.
               </Text>
-            ))}
+            )}
 
           {actionNeeded && (
             <Flex sx={{ flexDirection: 'column', width: '880px', alignSelf: 'center' }}>

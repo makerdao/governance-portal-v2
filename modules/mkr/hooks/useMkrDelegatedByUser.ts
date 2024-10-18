@@ -70,7 +70,6 @@ export const useMkrDelegatedByUser = (
       }
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
-        console.log('data', data);
         const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
         let sealDelegated = BigNumber.from(0);
         let directDelegated = BigNumber.from(0); // Calculate this as needed
