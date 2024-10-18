@@ -17,27 +17,14 @@ export function MigrationBanner(): React.ReactElement | null {
   const link = <Icon name="chevron_right" size={2} ml={2} />;
 
   const {
-    isDelegatedToExpiringContract,
-    isDelegatedToExpiredContract,
-    isDelegateContractExpired,
-    isDelegateContractExpiring,
     isShadowDelegate,
     isDelegateV1Contract,
     isDelegatedToV1Contract
   } = useMigrationStatus();
-  const showDelegationMigrationBanner =
-    (isDelegateContractExpired && !isShadowDelegate) ||
-    (isDelegateContractExpiring && !isShadowDelegate) ||
-    (isDelegateV1Contract && !isShadowDelegate) ||
-    isDelegatedToExpiringContract ||
-    isDelegatedToExpiredContract ||
-    isDelegatedToV1Contract;
+  //TODO: uncomment the isDelegatedToV1Contract code once we're ready for the delegator migration
+  const showDelegationMigrationBanner = (isDelegateV1Contract && !isShadowDelegate) ;//|| isDelegatedToV1Contract;
 
   const { variant, href, copy } = getMigrationBannerContent({
-    isDelegatedToExpiredContract,
-    isDelegateContractExpired: isDelegateContractExpired && !isShadowDelegate,
-    isDelegatedToExpiringContract,
-    isDelegateContractExpiring: isDelegateContractExpiring && !isShadowDelegate,
     isDelegateV1Contract,
     isDelegatedToV1Contract
   });
