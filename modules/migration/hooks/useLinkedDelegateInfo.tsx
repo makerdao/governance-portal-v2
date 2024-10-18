@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
-import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import { getLatestOwnerFromOld, getOriginalOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 
 export function useLinkedDelegateInfo(): {
-  newOwnerAddress?: string;
-  newOwnerConnected: boolean;
-  previousOwnerAddress?: string;
-  previousOwnerConnected: boolean;
-  newOwnerHasDelegateContract: boolean;
+  latestOwnerAddress?: string;
+  latestOwnerConnected: boolean;
+  originalOwnerAddress?: string;
+  originalOwnerConnected: boolean;
+  latestOwnerHasDelegateContract: boolean;
 } {
   const { account: address, network } = useWeb3();
 
@@ -24,7 +24,7 @@ export function useLinkedDelegateInfo(): {
   } = useDelegateContractExpirationDate();
 
   // Means the old delegate in a mapping is connected
-  const previousOwnerConnected = address ? !!getNewOwnerFromPrevious(address, network) : false;
+  const originalOwnerConnected = address ? !!getLatestOwnerFromOld(address, network) : false;
 
   // Means the new delegate in a mapping is connected (we need to check also that the previous owner is not connected, since an address can be, after one year, both the previous and new delegates)
   /* For example: 
@@ -34,30 +34,30 @@ export function useLinkedDelegateInfo(): {
   }
   0x2 is both a new delegate for 0x1 and a previous delegate for 0x3
   */
-  const newOwnerConnected = address
-    ? !!getPreviousOwnerFromNew(address, network) && !previousOwnerConnected
+  const latestOwnerConnected = address
+    ? !!getOriginalOwnerFromNew(address, network) && !originalOwnerConnected
     : false;
 
-  const previousOwnerAddress = previousOwnerConnected
+  const originalOwnerAddress = originalOwnerConnected
     ? address
     : address
-    ? getPreviousOwnerFromNew(address, network)
+    ? getOriginalOwnerFromNew(address, network)
     : undefined;
 
-  const newOwnerAddress =
-    newOwnerConnected && !previousOwnerConnected
+  const latestOwnerAddress =
+    latestOwnerConnected && !originalOwnerConnected
       ? address
       : address
-      ? getNewOwnerFromPrevious(address, network)
+      ? getLatestOwnerFromOld(address, network)
       : undefined;
 
-  const newOwnerHasDelegateContract = !!delegateContractExpirationDate;
+  const latestOwnerHasDelegateContract = !!delegateContractExpirationDate;
 
   return {
-    newOwnerAddress,
-    newOwnerConnected,
-    previousOwnerAddress,
-    previousOwnerConnected,
-    newOwnerHasDelegateContract
+    latestOwnerAddress,
+    latestOwnerConnected,
+    originalOwnerAddress,
+    originalOwnerConnected,
+    latestOwnerHasDelegateContract
   };
 }
