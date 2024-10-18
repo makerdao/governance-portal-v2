@@ -79,7 +79,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
               </Text>
             </Box>
             <Box>
-              {(delegate.isAboutToExpire || delegate.expired) && (
+              {(delegate.delegateVersion !== 2) && (
                 <Button
                   variant="primaryOutline"
                   disabled={!account}
@@ -92,7 +92,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
                   Undelegate
                 </Button>
               )}
-              {!delegate.expired && !delegate.isAboutToExpire && (
+              {delegate.delegateVersion === 2 && (
                 <Button
                   variant="primaryLarge"
                   data-testid="button-delegate"
