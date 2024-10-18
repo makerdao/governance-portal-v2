@@ -11,7 +11,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export const delegateAddressLinks = {
   // Format: Old Address -> new address
   [SupportedNetworks.TENDERLY]: {
-    '0x3c85c3f4b0d610fd29cc132a2073f85c15f83f2b': '0xe5da2412d11200d478f77b0e881e7b5dbd190295'
+    '0x3c85c3f4b0d610fd29cc132a2073f85c15f83f2b': '0xe5da2412d11200d478f77b0e881e7b5dbd190295',
+    '0x3eB576f858B20085419Fd3f09DEE38E2cA372Cd6': '0x4C033196bbDfae26e186f32b058AEe7610a84171'
   },
   [SupportedNetworks.MAINNET]: {
     // schuppi
