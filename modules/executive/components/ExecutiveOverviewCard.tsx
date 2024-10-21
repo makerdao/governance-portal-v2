@@ -197,7 +197,7 @@ export default function ExecutiveOverviewCard({
 
       {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
-      <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
+      <Flex sx={{ flexDirection: 'column' }}>
         <Divider my={0} />
         <Flex sx={{ py: 2, justifyContent: 'center' }}>
           <StatusText testId="proposal-status">
