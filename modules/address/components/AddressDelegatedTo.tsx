@@ -37,7 +37,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
-  const formattedDate = formatDateWithTime(delegate.expirationDate);
+  const formattedDate = delegate.expirationDate ? formatDateWithTime(delegate.expirationDate) : '';
   const dateText = delegate.isExpired
     ? `This contract expired ${formattedDate}`
     : `This contract will expire ${formattedDate}`;
@@ -84,7 +84,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
-            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+            {sortedEvents.map(({ blockTimestamp, lockAmount, isLockstake }) => {
               return (
                 <Flex
                   key={blockTimestamp}
@@ -103,6 +103,10 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     {`${formatValue(
                       parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
+                  </Text>
+
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {isLockstake ? '(Seal)' : ''}
                   </Text>
                 </Flex>
               );

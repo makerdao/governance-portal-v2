@@ -11,9 +11,9 @@ import { Card, Box, Flex, Button, Text, Heading } from 'theme-ui';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { DelegatePaginated } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
@@ -22,7 +22,7 @@ import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import Icon from 'modules/app/components/Icon';
 import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
-import DelegateExpiryDate from 'modules/migration/components/DelegateExpiryDate';
+import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { BigNumber } from 'ethers';
@@ -88,10 +88,11 @@ export const DelegateOverviewCard = memo(
       setShowCoreUnitModal(!showCoreUnitModal);
     };
 
-    const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
+    const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );
+    const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
     const hasMkrDelegated = account && mkrDelegated?.gt(0);
 
     const mutateDelegateTotalMkr = (amount: BigNumber) => {
@@ -141,7 +142,7 @@ export const DelegateOverviewCard = memo(
               />
             </Flex>
             <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
-              <DelegateExpiryDate delegate={delegate} />
+              <DelegateContractInfo delegate={delegate} />
               {delegate.cuMember && (
                 <Flex sx={{ mt: 1 }}>
                   <CoreUnitButton handleInfoClick={handleInfoClick} />

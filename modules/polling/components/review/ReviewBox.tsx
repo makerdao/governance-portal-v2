@@ -45,9 +45,6 @@ export default function ReviewBox({
     ballotStep,
     setStep,
     ballotCount,
-    commentsCount,
-    signComments,
-    commentsSignature,
     transaction,
     submissionMethod,
     setSubmissionMethod,
@@ -80,11 +77,10 @@ export default function ReviewBox({
     !precheckData?.alreadyVoted &&
     relayFunded;
 
-  // Detect if the current user is using a gnosis safe, and change the UI for comments and signatures
+  // Detect if the current user is using a gnosis safe, and change the UI for signatures
   const isGnosisSafe = getConnection(connector).type === ConnectionType.GNOSIS_SAFE;
 
   const canUseGasless = !isGnosisSafe && validationPassed;
-  const canUseComments = !isGnosisSafe;
 
   useEffect(() => {
     if (!canUseGasless) {
@@ -95,8 +91,6 @@ export default function ReviewBox({
       setSubmissionMethod('gasless');
     }
   }, [canUseGasless]);
-
-  const [commentsLoading, setCommentsLoading] = useState(false);
 
   // Done on the first step, we decide which is the appropiate selected method
   const onClickSubmitBallot = () => {
@@ -109,66 +103,23 @@ export default function ReviewBox({
     setStep('method-select');
   };
 
-  const handleCommentsStep = async () => {
-    setCommentsLoading(true);
-    try {
-      setStep('signing-comments');
-      await signComments();
-    } catch (err) {
-      setStep('initial');
-      toast.error('Something went wrong signing your comments. Please try again.');
-      logger.error(`signComments: ${err}`);
-    }
-    setCommentsLoading(false);
-  };
-
   const displayError = submissionError || 'Something went wrong with your transaction.';
 
   return (
     <Box>
       {ballotStep === 'initial' && (
         <ActivePollsBox activePollCount={activePollCount} activePollIds={activePollIds}>
-          {commentsCount > 0 && canUseComments ? (
-            <Box p={3}>
-              <StackLayout gap={2}>
-                <Button
-                  variant="primaryOutline"
-                  data-testid="sign-comments-button"
-                  onClick={handleCommentsStep}
-                  disabled={!!commentsSignature || commentsLoading}
-                  sx={{ width: '100%', mt: 3 }}
-                >
-                  <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                    {!!commentsSignature && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
-                    <Text>1 - Sign comment{commentsCount > 1 ? 's' : ''}</Text>
-                    {commentsLoading && <Spinner sx={{ ml: 2 }} size={'16px'} />}
-                  </Flex>
-                </Button>
-                <Button
-                  onClick={onClickSubmitBallot}
-                  data-testid="submit-ballot-button"
-                  variant="primaryLarge"
-                  disabled={!ballotCount || !commentsSignature}
-                  sx={{ width: '100%' }}
-                >
-                  2 - Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
-                </Button>
-              </StackLayout>
-            </Box>
-          ) : (
-            <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
-              <Button
-                onClick={onClickSubmitBallot}
-                data-testid="submit-ballot-button"
-                variant="primaryLarge"
-                disabled={!ballotCount || ballotStep !== 'initial'}
-                sx={{ width: '100%' }}
-              >
-                Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
-              </Button>
-            </Flex>
-          )}
-
+          <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
+            <Button
+              onClick={onClickSubmitBallot}
+              data-testid="submit-ballot-button"
+              variant="primaryLarge"
+              disabled={!ballotCount || ballotStep !== 'initial'}
+              sx={{ width: '100%' }}
+            >
+              Submit Your Ballot ({ballotCount} vote{ballotCount === 1 ? '' : 's'})
+            </Button>
+          </Flex>
           <Box>
             <ExternalLink
               href="https://manual.makerdao.com/governance/voting-in-makerdao/gasless-poll-voting"
@@ -435,35 +386,6 @@ export default function ReviewBox({
               sx={{ color: 'secondaryEmphasis', textAlign: 'center', fontSize: 12 }}
             >
               Cancel vote submission
-            </Button>
-          </Flex>
-        </Card>
-      )}
-
-      {ballotStep === 'signing-comments' && (
-        <Card variant="compact" p={3}>
-          <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-            <TxIndicators.Pending sx={{ width: 6 }} />
-          </Flex>
-          <Text
-            mt={3}
-            as="p"
-            sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-          >
-            Please use your wallet to sign your {commentsCount > 0 ? 'comments' : 'comment'}
-          </Text>
-          <Flex sx={{ justifyContent: 'center' }}>
-            <Button
-              mt={3}
-              mb={4}
-              onClick={() => {
-                setStep('initial');
-                setCommentsLoading(false);
-              }}
-              variant="textual"
-              sx={{ color: 'secondaryEmphasis', textAlign: 'center', fontSize: 12 }}
-            >
-              Cancel signing comments
             </Button>
           </Flex>
         </Card>

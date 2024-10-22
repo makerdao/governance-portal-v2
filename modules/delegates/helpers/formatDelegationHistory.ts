@@ -11,18 +11,18 @@ import { DelegationHistory, MKRLockedDelegateAPIResponse } from '../types/delega
 
 export const formatDelegationHistory = (lockEvents: MKRLockedDelegateAPIResponse[]): DelegationHistory[] => {
   const delegators = lockEvents.reduce<DelegationHistory[]>(
-    (acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
+    (acc, { immediateCaller, lockAmount, blockTimestamp, hash, isLockstake }) => {
       const existing = acc.find(({ address }) => address === immediateCaller);
       if (existing) {
         existing.lockAmount = utils.formatEther(
           utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
         );
-        existing.events.push({ lockAmount, blockTimestamp, hash });
+        existing.events.push({ lockAmount, blockTimestamp, hash, isLockstake });
       } else {
         acc.push({
           address: immediateCaller,
           lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
-          events: [{ lockAmount, blockTimestamp, hash }]
+          events: [{ lockAmount, blockTimestamp, hash, isLockstake }]
         });
       }
 
