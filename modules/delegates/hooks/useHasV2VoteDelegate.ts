@@ -10,7 +10,7 @@ import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
-type VoteDelegateAddressResponse = {
+type HasV1VoteDelegateResponse = {
   data?: boolean | undefined;
   loading: boolean;
   error: Error;
@@ -18,9 +18,8 @@ type VoteDelegateAddressResponse = {
 };
 
 // Returns whether the address has a v1 vote delegate contract
-export const useHasV1VoteDelegate = (account?: string): VoteDelegateAddressResponse => {
+export const useHasV1VoteDelegate = (account?: string): HasV1VoteDelegateResponse => {
   const { voteDelegateFactoryOld } = useContracts();
-  console.log('voteDelegateFactory', voteDelegateFactoryOld);
   const { data, error, mutate } = useSWR(account ? `${account}/has-v1-vote-delegate-address` : null, async () => {
     if (!account) return false;
     const newVdAddress = await voteDelegateFactoryOld.delegates(account);
