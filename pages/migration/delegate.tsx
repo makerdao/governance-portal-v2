@@ -22,6 +22,7 @@ import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
 import { NewDelegateContract } from 'modules/migration/components/NewDelegateContract';
 import { sign } from 'modules/web3/helpers/sign';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
+import { useHasV1VoteDelegate } from 'modules/delegates/hooks/useHasV2VoteDelegate';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account, provider } = useWeb3();
@@ -38,7 +39,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
     latestOwnerHasDelegateContract
   } = useLinkedDelegateInfo();
 
-  const connectedAddressFound = !!originalOwnerAddress || !!latestOwnerAddress;
+  //if latest is a v1 delegate contract, then they still haven't started the v2 linking process
+  const { data: latestIsV1Delegate } = useHasV1VoteDelegate(latestOwnerAddress);
+  const connectedAddressFound = (!!originalOwnerAddress || !!latestOwnerAddress) && !latestIsV1Delegate;
 
   // the user should be shown the steps to take action if:
   // a - the connected account needs to migrate to v2
@@ -53,7 +56,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
 
   const getCurrentStep = useMemo((): string => {
     // delegate contract is v1 and we don't have
-    // a request to migrate the address yet, show migration info
+    // a request to migrate the address to v2 yet, show migration info
     if (
       (isDelegateV1Contract) &&
       !connectedAddressFound &&
@@ -72,7 +75,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
       return STEPS.NEW_ADDRESS;
     }
 
-    // delegate contract is either expired or expiring or needs to migrate to v2
+    // delegate contract needs to migrate to v2
     // and we have processed the request to migrate
     // but user is connected with old address
     if (
