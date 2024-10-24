@@ -168,7 +168,7 @@ export async function getExecutiveProposal(
     proposal =>
       trimProposalKey(proposal.key) === proposalId ||
       proposal.key === proposalId ||
-      proposal.address === proposalId
+      proposal.address.toLowerCase() === proposalId.toLowerCase()
   );
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
