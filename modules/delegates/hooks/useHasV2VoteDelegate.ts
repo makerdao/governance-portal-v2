@@ -17,7 +17,7 @@ type VoteDelegateAddressResponse = {
   mutate: () => void;
 };
 
-// Returns whether the address has a v2 vote delegate contract
+// Returns whether the address has a v1 vote delegate contract
 export const useHasV1VoteDelegate = (account?: string): VoteDelegateAddressResponse => {
   const { voteDelegateFactoryOld } = useContracts();
   console.log('voteDelegateFactory', voteDelegateFactoryOld);
