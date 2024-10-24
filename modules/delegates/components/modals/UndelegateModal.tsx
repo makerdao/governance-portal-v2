@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Box } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
@@ -22,6 +22,8 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { formatValue } from 'lib/string';
 import DelegateAvatarName from '../DelegateAvatarName';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { Text } from '@theme-ui/components';
 
 type Props = {
   isOpen: boolean;
@@ -44,7 +46,9 @@ export const UndelegateModal = ({
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
 
-  const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
+  const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, voteDelegateAddress);
+  const sealDelegated = mkrDelegatedData?.sealDelegationAmount;
+  const directDelegated = mkrDelegatedData?.directDelegationAmount;
   const { data: iouAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
     parseUnits('100000000'),
@@ -85,12 +89,12 @@ export const UndelegateModal = ({
                 </TxDisplay>
               ) : (
                 <>
-                  {mkrStaked && iouAllowance ? (
+                  {directDelegated && iouAllowance ? (
                     <InputDelegateMkr
                       title="Withdraw from delegate contract"
                       description="Input the amount of MKR to withdraw from the delegate contract."
                       onChange={setMkrToWithdraw}
-                      balance={mkrStaked}
+                      balance={directDelegated}
                       buttonLabel="Undelegate MKR"
                       onClick={() => {
                         free(mkrToWithdraw, {
@@ -103,6 +107,18 @@ export const UndelegateModal = ({
                         });
                       }}
                       showAlert={false}
+                      disclaimer={
+                        sealDelegated &&
+                        sealDelegated.gt(0) ? (
+                          <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
+                            Your {formatValue(sealDelegated)} MKR delegated through the Seal module must be undelegated from the{' '}
+                            <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
+                              <span>Sky app</span>
+                            </ExternalLink>
+                            .
+                          </Text>
+                        ) : undefined
+                      }
                     />
                   ) : (
                     <ApprovalContent

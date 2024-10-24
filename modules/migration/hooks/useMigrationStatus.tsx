@@ -21,6 +21,8 @@ export function useMigrationStatus(): {
   isDelegateContractExpired: boolean;
   isDelegateContractExpiring: boolean;
   isShadowDelegate: boolean;
+  isDelegateV1Contract: boolean;
+  isDelegatedToV1Contract: boolean;
 } {
   const { account: address, network } = useWeb3();
   const { cache } = useSWRConfig();
@@ -45,17 +47,21 @@ export function useMigrationStatus(): {
   const isShadowDelegate = voteDelegateContractAddress
     ? addressDetailData
       ? addressDetailData.delegateInfo?.name === 'Shadow Delegate'
-      : false
-    : false;
+      : true
+    : true;
 
-  const isDelegateContractExpiring = delegateContractExpirationDate
-    ? isAboutToExpireCheck(delegateContractExpirationDate)
-    : false;
+  const isDelegateV1Contract = !!delegateContractExpirationDate;
+
+  const isDelegateContractExpiring =
+    isDelegateV1Contract && delegateContractExpirationDate
+      ? isAboutToExpireCheck(delegateContractExpirationDate)
+      : false;
 
   // check if is delegating to an expired contract, independently of its renewal status
-  const isDelegateContractExpired = delegateContractExpirationDate
-    ? isExpiredCheck(delegateContractExpirationDate)
-    : false;
+  const isDelegateContractExpired =
+    isDelegateV1Contract && delegateContractExpirationDate
+      ? isExpiredCheck(delegateContractExpirationDate)
+      : false;
 
   // Checks if its delegating to an expiring contract that is already renewed.
   const isDelegatedToExpiringContract = delegatedToData
@@ -70,11 +76,19 @@ export function useMigrationStatus(): {
       }, false)
     : false;
 
+  const isDelegatedToV1Contract = delegatedToData
+    ? delegatedToData.delegatedTo.reduce((acc, cur) => {
+        return acc || (!!cur.expirationDate && cur.isRenewed &&new BigNumber(cur.lockAmount).gt(0));
+      }, false)
+    : false;
+
   return {
     isDelegatedToExpiredContract,
     isDelegatedToExpiringContract,
     isDelegateContractExpired,
     isDelegateContractExpiring,
-    isShadowDelegate
+    isShadowDelegate,
+    isDelegateV1Contract,
+    isDelegatedToV1Contract
   };
 }
