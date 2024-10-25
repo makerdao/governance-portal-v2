@@ -98,7 +98,8 @@ export async function fetchDelegatedTo(
             isExpired,
             isAboutToExpire: !isExpired && isAboutToExpire,
             lockAmount: utils.formatEther(lockAmount),
-            isRenewed: !!newRenewedContract,
+            // @ts-ignore: Property 'delegateVersion' might not exist on type 'AllDelegatesRecord'
+            isRenewedToV2: !!newRenewedContract && newRenewedContract.delegateVersion === 2,
             events: [{ lockAmount: utils.formatEther(lockAmount), blockTimestamp, hash, isLockstake }]
           } as DelegationHistoryWithExpirationDate);
         }
