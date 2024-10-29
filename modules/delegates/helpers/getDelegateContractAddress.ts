@@ -14,5 +14,10 @@ export async function getDelegateContractAddress(
   address: string
 ): Promise<string | undefined> {
   const voteDelegateAdress = await contracts.voteDelegateFactory.delegates(address);
-  return voteDelegateAdress !== ZERO_ADDRESS ? voteDelegateAdress : undefined;
+  const v1VoteDelegateAddress = await contracts.voteDelegateFactoryOld.delegates(address);
+  return v1VoteDelegateAddress !== ZERO_ADDRESS
+    ? v1VoteDelegateAddress
+    : voteDelegateAdress !== ZERO_ADDRESS
+    ? voteDelegateAdress
+    : undefined;
 }
