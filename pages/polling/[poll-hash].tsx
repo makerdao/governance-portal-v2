@@ -11,7 +11,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, Box, Button } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
@@ -36,6 +36,8 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'lib/bigNumberJs';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
+import { usePollComments } from 'modules/comments/hooks/usePollComments';
+import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
@@ -83,6 +85,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
   const { tally } = usePollTally(poll.pollId, 60000);
+  const { comments, error: errorComments } = usePollComments(poll.pollId);
 
   useEffect(() => {
     if (filteredPollData && filteredPollData.length > 0) {
@@ -245,8 +248,12 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
-              tabTitles={['Vote Breakdown', 'Poll Detail']}
-              tabRoutes={['Vote Breakdown', 'Poll Detail']}
+              tabTitles={[
+                'Vote Breakdown',
+                'Poll Detail',
+                `Comments${comments ? ` (${comments.length})` : ''}`
+              ]}
+              tabRoutes={['Vote Breakdown', 'Poll Detail', 'Comments']}
               tabPanels={[
                 !tally ? (
                   <Box sx={{ m: 4 }} key={1}>
@@ -351,6 +358,24 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
                   />
+                </div>,
+                <div key={3}>
+                  {!errorComments && <PollComments comments={comments} tally={tally} poll={poll} />}
+                  {errorComments && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 3
+                      }}
+                    >
+                      Error loading comments
+                    </Badge>
+                  )}
                 </div>
               ]}
               banner={

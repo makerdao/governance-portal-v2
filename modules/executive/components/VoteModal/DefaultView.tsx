@@ -10,6 +10,8 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fetchJson } from 'lib/fetchJson';
 import { sortBytesArray } from 'lib/utils';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import CommentTextBox from 'modules/comments/components/CommentTextBox';
+import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
@@ -26,6 +28,9 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber, utils } from 'ethers';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { sign } from 'modules/web3/helpers/sign';
+import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
+import logger from 'lib/logger';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function DefaultVoteModalView({
@@ -47,8 +52,8 @@ export default function DefaultVoteModalView({
 }): React.ReactElement {
   const bpi = useBreakpointIndex();
 
-  const { voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
-  const { network } = useWeb3();
+  const { account, voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
+  const { network, provider } = useWeb3();
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
 
   const spellAddress = proposal ? proposal.address : address ? address : '';
@@ -63,6 +68,32 @@ export default function DefaultVoteModalView({
 
   const [hatChecked, setHatChecked] = useState(true);
   const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
+  const { mutate: mutateComments } = useExecutiveComments(spellAddress);
+
+  const [comment, setComment] = useState('');
+  const [signedMessage, setSignedMessage] = useState('');
+  const [isFetchingNonce, setIsFetcingNonce] = useState(false);
+
+  const signComment = async () => {
+    if (!provider) return;
+    try {
+      setIsFetcingNonce(true);
+      const data = await fetchJson('/api/comments/nonce', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          address: account?.toLowerCase()
+        })
+      });
+      setIsFetcingNonce(false);
+      const signed = await sign(account?.toLowerCase() as string, data.nonce, provider);
+      setSignedMessage(signed);
+    } catch (e) {
+      setIsFetcingNonce(false);
+    }
+  };
 
   const { data: allSlates } = useAllSlates();
   const { mutate: mutateMkrOnHat } = useMkrOnHat();
@@ -98,6 +129,28 @@ export default function DefaultVoteModalView({
     const callbacks = {
       initialized: txId => onTransactionCreated(txId),
       pending: async txHash => {
+        // if comment included, add to comments db
+        if (comment.length > 0) {
+          const requestBody: ExecutiveCommentsRequestBody = {
+            voterAddress: votingAccount || '',
+            hotAddress: account || '',
+            comment: comment,
+            signedMessage: signedMessage,
+            txHash,
+            addressLockedMKR: votingAccount || ''
+          };
+          fetchJson(`/api/comments/executive/add/${spellAddress}?network=${network}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          })
+            .then(() => {
+              mutateComments();
+            })
+            .catch(() => logger.error('POST executive comments: failed to add comment'));
+        }
         onTransactionPending();
       },
       mined: () => {
@@ -225,20 +278,57 @@ export default function DefaultVoteModalView({
           )}
         </Box>
       </Grid>
-
-      <Box sx={{ width: '100%', marginTop: 3 }}>
-        <Button
-          variant="primaryLarge"
-          sx={{ width: '100%' }}
-          onClick={() => {
-            vote(hatChecked);
+      <Box sx={{ width: '100%', my: 3 }}>
+        <CommentTextBox
+          onChange={(val: string) => {
+            setComment(val);
+            setSignedMessage('');
           }}
-          data-testid="vote-modal-vote-btn"
-          disabled={!hasVotingWeight}
-        >
-          {votingMessage}
-        </Button>
-
+          value={comment}
+        />
+      </Box>
+      <Box sx={{ width: '100%' }}>
+        {comment.length > 0 ? (
+          <Box>
+            <Button
+              onClick={() => {
+                // sign comments
+                signComment();
+              }}
+              variant="primaryOutline"
+              disabled={
+                comment.length > 1500 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
+              }
+              sx={{ width: '100%' }}
+            >
+              {!isFetchingNonce ? '1 - Sign your comment' : 'Loading...'}
+            </Button>
+            <Button
+              mt={2}
+              onClick={() => {
+                vote(hatChecked);
+              }}
+              variant="primaryLarge"
+              data-testid="vote-modal-vote-btn"
+              disabled={comment.length > 1500 || !hasVotingWeight || !signedMessage}
+              sx={{ width: '100%' }}
+            >
+              2 - {votingMessage}
+            </Button>
+          </Box>
+        ) : (
+          <Button
+            variant="primaryLarge"
+            sx={{ width: '100%' }}
+            onClick={() => {
+              vote(hatChecked);
+            }}
+            data-testid="vote-modal-vote-btn"
+            disabled={!hasVotingWeight}
+          >
+            {votingMessage}
+          </Button>
+        )}
         {showHatCheckbox ? (
           <Label
             sx={{

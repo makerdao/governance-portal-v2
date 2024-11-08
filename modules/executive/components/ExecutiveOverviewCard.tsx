@@ -22,6 +22,8 @@ import { CardTitle } from 'modules/app/components/Card/CardTitle';
 import { CardSummary } from 'modules/app/components/Card/CardSummary';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
+import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
+import CommentCount from 'modules/comments/components/CommentCount';
 import { StatusText } from 'modules/app/components/StatusText';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
@@ -42,6 +44,7 @@ export default function ExecutiveOverviewCard({
 }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
   const [postedDateString, setPostedDateString] = useState('');
+  const { comments } = useExecutiveComments(proposal.address);
 
   useEffect(() => {
     setPostedDateString(`posted ${formatDateWithoutTime(proposal.date)}`);
@@ -115,6 +118,13 @@ export default function ExecutiveOverviewCard({
         </Flex>
 
         <Flex sx={{ flexDirection: 'column' }}>
+          <Box sx={{ mt: 2, mb: 1 }}>
+            {comments && comments.length > 0 && (
+              <InternalLink href={`/executive/${proposal.key}`} title="View Comments" hash="comments">
+                <CommentCount count={comments.length} />
+              </InternalLink>
+            )}
+          </Box>
           <Flex
             sx={{
               alignItems: ['flex-end', 'center'],
