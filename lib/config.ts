@@ -13,6 +13,8 @@ type SystemConfig = {
   ETHERSCAN_KEY: string;
   POCKET_KEY: string;
   TRACING_RPC_NODE: string;
+  MONGODB_URI: string;
+  MONGODB_COMMENTS_DB: string;
   NODE_ENV: 'development' | 'production' | 'test';
   GITHUB_TOKEN: string;
   GITHUB_TOKEN_2: string;
@@ -42,6 +44,8 @@ export const config: SystemConfig = {
   ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
   POCKET_KEY: process.env.POCKET_KEY || '',
   TRACING_RPC_NODE: process.env.TRACING_RPC_NODE || '',
+  MONGODB_URI: process.env.MONGODB_URI || '',
+  MONGODB_COMMENTS_DB: process.env.MONGODB_COMMENTS_DB || '',
   NODE_ENV: process.env.NODE_ENV || 'development',
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
   GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',

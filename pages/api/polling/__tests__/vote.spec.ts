@@ -33,6 +33,7 @@ jest.mock('modules/polling/api/fetchPolls');
 jest.mock('modules/web3/helpers/verifyTypedSignature');
 jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 jest.mock('modules/polling/api/fetchAddressPollVoteHistory');
+jest.mock('modules/db/helpers/connectToDatabase');
 jest.mock('modules/app/api/postRequestToDiscord');
 jest.mock('modules/app/helpers/getVoteProxyAddresses');
 jest.mock('modules/delegates/helpers/getDelegateContractAddress');

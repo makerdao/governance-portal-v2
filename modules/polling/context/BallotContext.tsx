@@ -9,6 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { fetchJson } from 'lib/fetchJson';
 import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
+import { sign } from 'modules/web3/helpers/sign';
 import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useContracts } from 'modules/web3/hooks/useContracts';
@@ -33,6 +35,7 @@ type BallotSteps =
   | 'initial'
   | 'method-select'
   | 'submitting'
+  | 'signing-comments'
   | 'awaiting-relayer'
   | 'in-relayer-queue'
   | 'stuck-in-queue'
@@ -61,6 +64,9 @@ interface ContextProps {
   clearBallot: () => void;
   isPollOnBallot: (pollId: number) => boolean;
   ballotCount: number;
+  signComments: () => void;
+  commentsSignature: string;
+  commentsCount: number;
   setStep: (step: BallotSteps) => void;
   ballotStep: BallotSteps;
   submissionError?: string;
@@ -80,6 +86,9 @@ export const BallotContext = React.createContext<ContextProps>({
   submitBallotGasless: () => null,
   isPollOnBallot: (pollId: number) => false,
   ballotCount: 0,
+  signComments: () => null,
+  commentsSignature: '',
+  commentsCount: 0,
   setStep: (step: BallotSteps) => null,
   submissionError: undefined,
   ballotStep: 'initial',
@@ -98,6 +107,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Used to track the active transaction
   const [txId, setTxId] = useState<string | null>(null);
 
+  // Used to track the signature of the comments API call
+  const [commentsSignature, setCommentSignature] = useState('');
+
   const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
 
   const [submissionError, setSubmissionError] = useState<string | undefined>();
@@ -107,6 +119,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
+  // Determines which address will be use to save the comments
   const { account, voteDelegateContract, votingAccount } = useAccount();
 
   const { network, provider } = useWeb3();
@@ -115,6 +128,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const { mutate: mutatePreviousVotes } = useAllUserVotes(votingAccount);
 
   const clearBallot = () => {
+    setCommentSignature('');
     updateBallot({});
   };
 
@@ -165,6 +179,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const addVoteToBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
+    setCommentSignature('');
     setStep('initial');
     const newBallot = {
       ...ballot,
@@ -177,6 +192,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const removeVoteFromBallot = (pollId: number) => {
     setTxId(null);
+    setCommentSignature('');
     setStep('initial');
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
@@ -185,6 +201,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
+    setCommentSignature('');
     setStep('initial');
     const newBallot = {
       ...ballot,
@@ -200,6 +217,42 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const isPollOnBallot = (pollId: number): boolean => {
     // Checks that the option voted is not null or undefined
     return ballot[pollId] && typeof ballot[pollId].option !== 'undefined' && ballot[pollId].option !== null;
+  };
+
+  // Comments signing
+  const getComments = (): Partial<PollComment>[] => {
+    return Object.keys(ballot)
+      .filter(key => isPollOnBallot(parseInt(key)))
+      .map(key => {
+        return {
+          pollId: parseInt(key),
+          ...ballot[parseInt(key)]
+        };
+      })
+      .filter(c => !!c.comment);
+  };
+
+  const commentsCount = getComments().length;
+
+  const signComments = async () => {
+    if (!account || !provider) {
+      return;
+    }
+    const comments = getComments();
+
+    const data = await fetchJson('/api/comments/nonce', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        address: account.toLowerCase()
+      })
+    });
+
+    const signature = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
+    setCommentSignature(signature);
+    setStep('initial');
   };
 
   // Ballot submission
@@ -231,6 +284,34 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
           updateBallot({
             ...votes
           });
+
+          const comments = getComments();
+          // if comment included, add to comments db
+          if (comments.length > 0) {
+            const commentsRequest: PollsCommentsRequestBody = {
+              voterAddress: votingAccount || '',
+              hotAddress: account || '',
+              comments: comments,
+              signedMessage: commentsSignature,
+              txHash
+            };
+
+            fetchJson(
+              `/api/comments/polling/add?network=${network}${
+                gaslessNetwork ? `&gasless=${gaslessNetwork}` : ''
+              }`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(commentsRequest)
+              }
+            ).catch(() => {
+              logger.error('POST Polling Comments: failed to add comment');
+              toast.error('Unable to store comments');
+            });
+          }
         },
         mined: (txId, txHash) => {
           // Set previous ballot
@@ -382,6 +463,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   };
 
   const close = () => {
+    setCommentSignature('');
     setTxId(null);
     setStep('initial');
     setSubmissionMethod(null);
@@ -405,6 +487,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         transaction,
         isPollOnBallot,
         ballotCount: Object.keys(ballot).length,
+        signComments,
+        commentsSignature,
+        commentsCount,
         setStep,
         ballotStep,
         submissionError,

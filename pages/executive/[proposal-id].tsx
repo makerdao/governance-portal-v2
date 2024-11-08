@@ -35,6 +35,8 @@ import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/t
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
+import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -101,6 +103,8 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { data: mkrOnHat } = useMkrOnHat();
   const { data: hat } = useHat();
   const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
+
+  const { comments, error: commentsError } = useExecutiveComments(proposal.address, 60000);
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
@@ -241,8 +245,12 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             {'about' in proposal ? (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}
-                tabTitles={['Proposal Detail', 'Spell Details']}
-                tabRoutes={['Proposal Detail', 'Spell Details']}
+                tabTitles={[
+                  'Proposal Detail',
+                  'Spell Details',
+                  `Comments ${comments ? `(${comments.length})` : ''}`
+                ]}
+                tabRoutes={['Proposal Detail', 'Spell Details', 'Comments']}
                 tabPanels={[
                   <Box
                     key={'about'}
@@ -251,6 +259,15 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                   />,
                   <Box key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} spellDiffs={spellDiffs} />
+                  </Box>,
+                  <Box key={'comments'} sx={{ p: [3, 4] }}>
+                    {comments ? (
+                      <ExecutiveComments comments={comments} />
+                    ) : (
+                      <Flex sx={{ alignItems: 'center' }}>
+                        {commentsError ? 'Unable to fetch comments' : <Spinner size={20} ml={2} />}
+                      </Flex>
+                    )}
                   </Box>
                 ]}
                 banner={

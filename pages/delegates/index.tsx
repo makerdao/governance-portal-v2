@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
@@ -128,6 +129,8 @@ const Delegates = ({
   useEffect(() => {
     setIsRendering(false);
   }, []);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (shouldLoadMore) {
