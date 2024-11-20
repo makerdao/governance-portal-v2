@@ -21,7 +21,7 @@ export function MigrationBanner(): React.ReactElement | null {
     isDelegateV1Contract,
     isDelegatedToV1Contract
   } = useMigrationStatus();
-  const showDelegationMigrationBanner = (isDelegateV1Contract) || isDelegatedToV1Contract;
+  const showDelegationMigrationBanner = (isDelegateV1Contract && !isShadowDelegate) || isDelegatedToV1Contract;
 
   const { variant, href, copy } = getMigrationBannerContent({
     isDelegateV1Contract,
