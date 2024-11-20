@@ -16,10 +16,7 @@ import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { fetchJson } from 'lib/fetchJson';
 
 export function useMigrationStatus(): {
-  isDelegatedToExpiredContract: boolean;
-  isDelegatedToExpiringContract: boolean;
   isDelegateContractExpired: boolean;
-  isDelegateContractExpiring: boolean;
   isShadowDelegate: boolean;
   isDelegateV1Contract: boolean;
   isDelegatedToV1Contract: boolean;
@@ -52,41 +49,20 @@ export function useMigrationStatus(): {
 
   const isDelegateV1Contract = !!delegateContractExpirationDate;
 
-  const isDelegateContractExpiring =
-    isDelegateV1Contract && delegateContractExpirationDate
-      ? isAboutToExpireCheck(delegateContractExpirationDate)
-      : false;
-
   // check if is delegating to an expired contract, independently of its renewal status
   const isDelegateContractExpired =
     isDelegateV1Contract && delegateContractExpirationDate
       ? isExpiredCheck(delegateContractExpirationDate)
       : false;
 
-  // Checks if its delegating to an expiring contract that is already renewed.
-  const isDelegatedToExpiringContract = delegatedToData
-    ? delegatedToData.delegatedTo.reduce((acc, cur) => {
-        return acc || (cur.isAboutToExpire && cur.isRenewed && new BigNumber(cur.lockAmount).gt(0));
-      }, false)
-    : false;
-
-  const isDelegatedToExpiredContract = delegatedToData
-    ? delegatedToData.delegatedTo.reduce((acc, cur) => {
-        return acc || (cur.isExpired && new BigNumber(cur.lockAmount).gt(0));
-      }, false)
-    : false;
-
   const isDelegatedToV1Contract = delegatedToData
     ? delegatedToData.delegatedTo.reduce((acc, cur) => {
-        return acc || (!!cur.expirationDate && cur.isRenewed &&new BigNumber(cur.lockAmount).gt(0));
+        return acc || (!!cur.expirationDate && cur.isRenewedToV2 && new BigNumber(cur.lockAmount).gt(0));
       }, false)
     : false;
 
   return {
-    isDelegatedToExpiredContract,
-    isDelegatedToExpiringContract,
     isDelegateContractExpired,
-    isDelegateContractExpiring,
     isShadowDelegate,
     isDelegateV1Contract,
     isDelegatedToV1Contract
