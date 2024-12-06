@@ -12,7 +12,6 @@ import { Text, Button, Box, Flex } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
-import lottie from 'lottie-web';
 import { Poll } from 'modules/polling/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useRouter } from 'next/router';
@@ -198,14 +197,23 @@ export default function MobileVoteSheet({
 
 const AddingView = ({ done }: { done: () => void }) => {
   useEffect(() => {
-    const animation = lottie.loadAnimation({
-      container: document.getElementById('ballot-animation-container') as HTMLElement,
-      loop: false,
-      autoplay: true,
-      animationData: ballotAnimation
-    });
+    const loadLottie = async () => {
+      const lottie = await import('lottie-web');
+      const animation = lottie.default.loadAnimation({
+        container: document.getElementById('ballot-animation-container') as HTMLElement,
+        loop: false,
+        autoplay: true,
+        animationData: ballotAnimation
+      });
 
-    animation.addEventListener('complete', () => setTimeout(done, 200));
+      animation.addEventListener('complete', () => setTimeout(done, 200));
+
+      return () => {
+        animation.destroy();
+      };
+    };
+
+    loadLottie();
   }, []);
 
   return (

@@ -55,11 +55,30 @@ export const cacheDel = (name: string, network: SupportedNetworks, expiryMs?: nu
   if (redisCacheEnabled()) {
     // if clearing proposals, we need to find all of them first
     if (name === 'proposals') {
-      redis?.keys('*proposals*').then(keys => {
-        keys.forEach(key => {
-          logger.debug('cacheDel key: ', key);
-          redis?.del(key);
-        });
+      const deleteProposalKeys = async () => {
+        let cursor = '0';
+        do {
+          const pipeline = (redis as Redis).pipeline();
+          const [nextCursor, keys] = await (redis as Redis).scan(
+            cursor,
+            'MATCH',
+            '*proposals*',
+            'COUNT',
+            '100'
+          );
+
+          if (keys.length > 0) {
+            logger.debug('cacheDel pattern: *proposals* ', cursor, keys.length);
+            pipeline.del(...keys);
+          }
+
+          await pipeline.exec();
+          cursor = nextCursor;
+        } while (cursor !== '0');
+      };
+
+      deleteProposalKeys().catch(error => {
+        logger.error('Error deleting proposal keys:', error);
       });
     } else {
       // otherwise just delete the file based on path
@@ -90,8 +109,8 @@ export const getCacheInfo = async (name: string, network: SupportedNetworks): Pr
       // if fetching proposals cache info, there are likely multiple keys cached due to different query params
       // we'll return the ttl for first proposals key we find
       if (name === executiveProposalsCacheKey) {
-        const keys = await redis?.keys('*proposals*');
-        if (keys && keys.length > 0) {
+        const [, keys] = await (redis as Redis).scan('0', 'MATCH', '*proposals*', 'COUNT', '1');
+        if (keys.length > 0) {
           const ttl = await redis?.ttl(keys[0]);
           return ttl;
         }
