@@ -66,7 +66,7 @@
     "lottie-web": "^5.7.1",
     "mersenne-twister": "^1.1.0",
     "mongodb": "^3.6.2",
-    "next": "^14.2.10",
+    "next": "^14.2.21",
     "next-swagger-doc": "^0.1.10",
     "nextjs-progressbar": "^0.0.13",
     "react": "^18.3.1",
@@ -142,5 +142,8 @@
     "typechain": "^8.1.0",
     "typescript": "^4.9.5",
     "wait-for-expect": "^3.0.2"
+  },
+  "resolutions": {
+    "elliptic": "^6.6.1"
   }
 }
