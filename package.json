@@ -50,6 +50,7 @@
     "@web3-react/network": "^8.2.0",
     "@web3-react/types": "^8.2.0",
     "@web3-react/walletconnect-v2": "^8.3.5",
+    "babel-plugin-superjson-next": "^0.3.0",
     "color": "^4.2.3",
     "d3-hierarchy": "^3.0.1",
     "d3-selection": "^3.0.0",
