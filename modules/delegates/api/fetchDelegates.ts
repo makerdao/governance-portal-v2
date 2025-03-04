@@ -532,9 +532,59 @@ export async function fetchDelegatesPaginated({
       const execSupported = githubExecutives.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
-      const creationDate = new Date(delegate.blockTimestamp * 1000);
-      const expirationDate =
-        delegate.version == '1' ? add(new Date(Number(delegate.blockTimestamp) * 1000), { years: 1 }) : null;
+
+      // Ensure blockTimestamp is a valid number
+      const blockTimestampNum = delegate.blockTimestamp ? Number(delegate.blockTimestamp) : 0;
+      let creationDate;
+      try {
+        creationDate = new Date(blockTimestampNum * 1000);
+        // Validate the date is valid
+        creationDate.toISOString();
+      } catch (e) {
+        // If date is invalid, use current date as fallback
+        creationDate = new Date();
+      }
+
+      let expirationDate: Date | null = null;
+      if (delegate.version == '1') {
+        try {
+          const tempExpDate = add(new Date(blockTimestampNum * 1000), { years: 1 });
+          // Validate the date is valid
+          tempExpDate.toISOString();
+          expirationDate = tempExpDate;
+        } catch (e) {
+          // If date is invalid, use null as fallback
+          expirationDate = null;
+        }
+      }
+
+      // Handle creationDate from delegate object
+      let finalCreationDate;
+      try {
+        finalCreationDate = delegate.creationDate ? new Date(delegate.creationDate) : creationDate;
+        // Validate the date is valid
+        finalCreationDate.toISOString();
+      } catch (e) {
+        // If date is invalid, use the previously calculated creationDate as fallback
+        finalCreationDate = creationDate;
+      }
+
+      // Handle expirationDate from delegate object
+      let finalExpirationDate: Date | null = null;
+      if (delegate.delegateVersion !== 2 && delegate.expirationDate) {
+        try {
+          const tempDate = new Date(delegate.expirationDate);
+          // Validate the date is valid
+          tempDate.toISOString();
+          finalExpirationDate = tempDate;
+        } catch (e) {
+          // If date is invalid, use the previously calculated expirationDate as fallback
+          finalExpirationDate = expirationDate;
+        }
+      } else if (expirationDate) {
+        finalExpirationDate = expirationDate;
+      }
+
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.id,
@@ -544,11 +594,15 @@ export async function fetchDelegatesPaginated({
           : githubDelegate
           ? DelegateStatusEnum.aligned
           : DelegateStatusEnum.shadow,
-        creationDate: new Date(delegate.creationDate),
-        expirationDate: delegate.delegateVersion === 2 ? undefined : new Date(delegate.expirationDate),
+        creationDate: finalCreationDate,
+        expirationDate: delegate.delegateVersion === 2 ? undefined : finalExpirationDate,
         expired: delegate.expired,
         isAboutToExpire:
-          delegate.delegateVersion === 2 ? false : isAboutToExpireCheck(new Date(delegate.expirationDate)),
+          delegate.delegateVersion === 2
+            ? false
+            : finalExpirationDate
+            ? isAboutToExpireCheck(finalExpirationDate)
+            : false,
         picture: githubDelegate?.picture,
         communication: githubDelegate?.communication,
         combinedParticipation: githubDelegate?.combinedParticipation,
