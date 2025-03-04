@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { mockIntersectionObserver } from '../__tests__/helpers';
-import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { config } from 'lib/config';
 
@@ -40,11 +39,6 @@ jest.mock('modules/address/components/AddressIcon', () => {
 ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
 beforeAll(async () => {
-  (useWeb3React as jest.Mock).mockReturnValue({
-    account: '',
-    activate: () => null
-  });
-
   if (typeof window !== 'undefined') {
     // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
     Object.defineProperty(window, 'matchMedia', {

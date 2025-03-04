@@ -9,11 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import BigNumber from 'lib/bigNumberJs';
 import { Card, Text, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;
@@ -21,7 +22,8 @@ type Props = {
 
 const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Card mt={3} p={3} pb={4}>

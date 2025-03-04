@@ -37,7 +37,6 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
@@ -49,6 +48,8 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -78,7 +79,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     voteProxyOldContractAddress,
     votingAccount
   } = useAccount();
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
@@ -446,7 +448,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 export default function ExecutiveOverviewPage({
   proposals: prefetchedProposals
 }: ExecutivePageData): JSX.Element {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const fallbackData = isDefaultNetwork(network)
     ? {

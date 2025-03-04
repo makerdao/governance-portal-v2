@@ -20,9 +20,10 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ClientRenderOnly } from '../ClientRenderOnly';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const MenuItemContent = ({ label, icon }: { label: React.ReactNode; icon: string }) => {
   return (
@@ -131,7 +132,8 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
   const { data: gas } = useGasPrice({ network });
   const [mode, setMode] = useColorMode();
   const [renderedMode, setRenderedMode] = useState('light');

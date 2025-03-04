@@ -10,22 +10,23 @@ import { useState } from 'react';
 import { Flex, Text, Box, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatAddress } from 'lib/utils';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AddressIcon from 'modules/address/components/AddressIcon';
-import { WalletName } from 'modules/web3/constants/wallets';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   address: string;
-  accountName?: WalletName;
+  accountName?: string;
   change: () => void;
   disconnect: () => void;
 };
 
 const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.Element => {
   const [copied, setCopied] = useState(false);
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>

@@ -8,10 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Button, Flex, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   mkrToDeposit: BigNumber;
@@ -22,7 +23,8 @@ type Props = {
 
 export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
   const { address, voteDelegateAddress } = delegate;
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>

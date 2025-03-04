@@ -19,13 +19,14 @@ import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogOverlay, DialogContent } from './Dialog';
 import BoxWithClose from './BoxWithClose';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type StatField =
   | 'chief contract'
@@ -83,7 +84,8 @@ export default function SystemStatsSidebar({
   fields: StatField[];
   className?: string;
 }): JSX.Element {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const statsMap = {
     'chief contract': key => {

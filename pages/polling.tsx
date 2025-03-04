@@ -35,7 +35,6 @@ import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -46,6 +45,8 @@ import PollsSort from 'modules/polling/components/filters/PollsSort';
 import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export type PollingPageProps = PollsPaginatedResponse & {
   activePollIds: number[];
@@ -107,7 +108,8 @@ const PollingOverview = ({
   }, [router]);
 
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const [loading, setLoading] = useState(fetchOnLoad);
   const [isRendering, setIsRendering] = useState(true);
@@ -489,7 +491,8 @@ export default function PollingOverviewPage({
   paginationInfo: prefetchedPaginationInfo,
   activePollIds: prefetchedActivePollIds
 }: PollingPageProps): JSX.Element {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const fallbackData = isDefaultNetwork(network)
     ? {

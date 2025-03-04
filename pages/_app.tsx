@@ -10,7 +10,6 @@ import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import { ThemeProvider, Flex, Box } from 'theme-ui';
 import { Global } from '@emotion/core';
-import { ethers } from 'ethers';
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
@@ -29,15 +28,21 @@ import debug from 'debug';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
 import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
-import { Web3Provider } from 'modules/web3/components/Web3Provider';
 import React, { useMemo } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import { WagmiProvider } from 'wagmi';
+import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Web3Provider } from 'modules/web3/components/Web3Provider';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
-  ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
+  const isProduction =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
+  const wagmiConfig = isProduction ? wagmiConfigProd : wagmiConfigDev;
+  const queryClient = new QueryClient();
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
   const banners = useMemo(() => {
@@ -55,60 +60,64 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     );
   }, []);
   return (
-    <Web3Provider>
-      {/* @ts-ignore */}
-      <ThemeProvider theme={theme}>
-        <Analytics />
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <Web3Provider>
+          {/* @ts-ignore */}
+          <ThemeProvider theme={theme}>
+            <Analytics />
 
-        <NextNprogress
-          color="#1aab9b"
-          startPosition={0.3}
-          stopDelayMs={200}
-          height={3}
-          showOnShallow={true}
-          options={{ showSpinner: false }}
-        />
-        <AccountProvider>
-          <BallotProvider>
-            <HeadComponent />
-            <SWRConfig
-              value={{
-                // default to 60 second refresh intervals
-                refreshInterval: 60000,
-                revalidateOnMount: true,
-                fetcher: url => fetchJson(url)
-              }}
-            >
-              <Global
-                styles={{
-                  '*': {
-                    WebkitFontSmoothing: 'antialiased',
-                    MozOsxFontSmoothing: 'grayscale'
-                  }
-                }}
-              />
+            <NextNprogress
+              color="#1aab9b"
+              startPosition={0.3}
+              stopDelayMs={200}
+              height={3}
+              showOnShallow={true}
+              options={{ showSpinner: false }}
+            />
+            <AccountProvider>
+              <BallotProvider>
+                <HeadComponent />
+                <SWRConfig
+                  value={{
+                    // default to 60 second refresh intervals
+                    refreshInterval: 60000,
+                    revalidateOnMount: true,
+                    fetcher: url => fetchJson(url)
+                  }}
+                >
+                  <Global
+                    styles={{
+                      '*': {
+                        WebkitFontSmoothing: 'antialiased',
+                        MozOsxFontSmoothing: 'grayscale'
+                      }
+                    }}
+                  />
 
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  variant: 'layout.root',
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      variant: 'layout.root',
 
-                  paddingTop: 5,
-                  overflowX: 'hidden'
-                }}
-              >
-                {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
-                <Box sx={{ px: [3, 4] }}>
-                  <Component {...pageProps} />
-                </Box>
-                <Header />
-              </Flex>
-            </SWRConfig>
-          </BallotProvider>
-        </AccountProvider>
-        <ToastContainer position="top-right" theme="light" />
-      </ThemeProvider>
-    </Web3Provider>
+                      paddingTop: 5,
+                      overflowX: 'hidden'
+                    }}
+                  >
+                    {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
+                    <Box sx={{ px: [3, 4] }}>
+                      <Component {...pageProps} />
+                    </Box>
+                    <Header />
+                  </Flex>
+                </SWRConfig>
+              </BallotProvider>
+            </AccountProvider>
+            <ToastContainer position="top-right" theme="light" />
+          </ThemeProvider>
+        </Web3Provider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 

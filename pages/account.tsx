@@ -20,7 +20,6 @@ import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
@@ -34,9 +33,12 @@ import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const AccountPage = (): React.ReactElement => {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
   const {
     account,
     mutate: mutateAccount,
@@ -45,7 +47,8 @@ const AccountPage = (): React.ReactElement => {
     votingAccount
   } = useAccount();
 
-  const { latestOwnerConnected, latestOwnerHasDelegateContract, originalOwnerAddress } = useLinkedDelegateInfo();
+  const { latestOwnerConnected, latestOwnerHasDelegateContract, originalOwnerAddress } =
+    useLinkedDelegateInfo();
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
   const { data: originalOwnerContractAddress } = useVoteDelegateAddress(originalOwnerAddress);
   const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
