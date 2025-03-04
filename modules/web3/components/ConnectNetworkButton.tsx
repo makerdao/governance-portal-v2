@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Button, Flex, Text } from 'theme-ui';
 
 type Props = {
@@ -46,7 +46,7 @@ export default function ConnectNetworkButton({
     >
       <Flex sx={{ alignItems: 'center' }}>
         <Flex sx={{ mr: [1, 2] }}>
-          <Icon name={activeNetwork} sx={{ width: '22px', height: '22px' }} />
+          <Icon name="ethereum" sx={{ width: '22px', height: '22px' }} />
         </Flex>
         <Text data-testid="active-network-name">{activeNetwork}</Text>
       </Flex>

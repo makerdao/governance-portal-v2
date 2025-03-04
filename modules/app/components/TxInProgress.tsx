@@ -9,8 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Text, Box } from '@theme-ui/components';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'modules/web3/types/transaction';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   tx: any;
@@ -19,7 +20,8 @@ type Props = {
 };
 
 export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>

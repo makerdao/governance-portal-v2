@@ -6,16 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import { DelegateInfo } from 'modules/delegates/types';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export const useLandingPageDelegates = (): [
   SWRResponse<DelegatesPaginatedAPIResponse>,
   SWRResponse<DelegateInfo[]>
 ] => {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
   const { cache } = useSWRConfig();
   const delegatesDataKey = `/api/delegates/v2?network=${network}&delegateType=ALIGNED&pageSize=5&orderBy=MKR&orderDirection=DESC`;
   const delegatesInfoDataKey = `/api/delegates/info?network=${network}`;

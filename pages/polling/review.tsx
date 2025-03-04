@@ -23,7 +23,6 @@ import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
@@ -36,6 +35,8 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { TagCount } from 'modules/app/types/tag';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export type PollingReviewPageProps = {
   polls: PollListItem[];
@@ -45,7 +46,8 @@ export type PollingReviewPageProps = {
 
 const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingReviewPageProps) => {
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
@@ -338,7 +340,8 @@ export default function PollingReviewPage({
   activePollIds: prefetchedActivePollIds,
   tags: prefetchedTags
 }: PollingReviewPageProps): JSX.Element {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const fallbackData = isDefaultNetwork(network)
     ? {

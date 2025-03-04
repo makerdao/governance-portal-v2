@@ -14,9 +14,10 @@ import { DelegatesAPIStats } from '../types';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export function DelegatesSystemInfo({
   stats,
@@ -27,7 +28,8 @@ export function DelegatesSystemInfo({
 }): React.ReactElement {
   const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
   const oldDelegateFactoryAddress = useContractAddress('voteDelegateFactoryOld');
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const { data: totalMkr } = useTotalSupply(Tokens.MKR);
 

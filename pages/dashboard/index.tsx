@@ -11,7 +11,6 @@ import { Box, Button, Card, Flex, Heading, Text, Input } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchJson } from 'lib/fetchJson';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import {
@@ -26,9 +25,12 @@ import {
 import { invalidateCache } from 'modules/cache/invalidateCache';
 import { toast } from 'react-toastify';
 import { getCacheInfo } from 'modules/cache/getCacheInfo';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const DashboardPage = (): React.ReactElement => {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
   const [loading, setLoading] = useState(false);
   const [pollId, setPollId] = useState('');
   const [password, setPassword] = useState('');

@@ -8,8 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useSWR, { useSWRConfig } from 'swr';
 import { SpellData } from 'modules/executive/types/spellData';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchJson } from 'lib/fetchJson';
+import { useChainId } from 'wagmi';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type SpellDataResponse = {
   data?: SpellData;
@@ -19,7 +20,8 @@ type SpellDataResponse = {
 };
 
 export const useSpellData = (proposalAddress: string): SpellDataResponse => {
-  const { network } = useWeb3();
+  const chainId = useChainId();
+  const network = chainIdToNetworkName(chainId);
 
   const dataKey = proposalAddress
     ? `/api/executive/analyze-spell/${proposalAddress}?network=${network}`

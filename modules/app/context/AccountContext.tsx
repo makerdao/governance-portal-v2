@@ -15,7 +15,7 @@ import { useCurrentUserVoteProxyContract } from '../hooks/useCurrentUserVoteProx
 import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi';
 
 interface AccountContextProps {
   account?: string;
@@ -46,7 +46,7 @@ type PropTypes = {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
 
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
   const { data: voteDelegateContractAddress, mutate: mutateVoteDelegate } = useVoteDelegateAddress(account);
