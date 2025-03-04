@@ -11,7 +11,9 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export const delegateAddressLinks = {
   // Format: Old Address -> new address
   [SupportedNetworks.TENDERLY]: {
-    // Nothing
+    '0x3c85c3f4b0d610fd29cc132a2073f85c15f83f2b': '0xe5da2412d11200d478f77b0e881e7b5dbd190295',
+    '0x3eB576f858B20085419Fd3f09DEE38E2cA372Cd6': '0x4C033196bbDfae26e186f32b058AEe7610a84171',
+    '0x008C9Ef7bEF55E6731eE5ce466b18eE99A6D3eeD': '0x932adcc9c79EdaC2bb5A98733Fe90e1f4e91E5e5'
   },
   [SupportedNetworks.MAINNET]: {
     // schuppi
@@ -59,7 +61,27 @@ export const delegateAddressLinks = {
     // Sovereign Finance AVC - Cloaky
     '0x86F8A04FbAF5c8eD0465624c355c1E3C073213cA': '0xe676e1Aa2419b22699aCCFc12C11761F009dDAF0',
     // BLUE
-    '0xE5a7023f78c3c0b7B098e8f4aCE7031B3D9aFBaB': '0xe9e3951535053AF603cbE53b0753361459b74D76'
+    '0xE5a7023f78c3c0b7B098e8f4aCE7031B3D9aFBaB': '0xe9e3951535053AF603cbE53b0753361459b74D76',
+    // BLUE V2
+    '0xe9e3951535053AF603cbE53b0753361459b74D76': '0x73056E27D9cc08f963d41664C705392f305cFE7d',
+    // BONAPUBLICA V2
+    '0x694C1Dc8abE434e4b46Fc545B4680cdA1F524F21': '0x79bc4725A6A48C18D94E90C7002b8aF37F20919a',
+    // Cloaky V2
+    '0xe676e1Aa2419b22699aCCFc12C11761F009dDAF0': '0xd352A360CCCB06FB23a8681c44E6b12A999AE7A0',
+    // JuliaChang V2
+    '0x42540F1b8Fd386b8993ED8b38DDa98ED68b73d8A': '0xd0b44469d0f230fc67d2e6d2e8d239699ed76bb5',
+    // QGov V2
+    '0x4A92599433535b0E61d80085c5a90AeDf5a96467': '0x3B42d3C0F5c8f14A57C59f8BeA69b7cb02cEd1D5',
+    // WBC V2
+    '0x3C85C3F4B0d610Fd29cc132A2073f85C15F83f2b': '0x4C2134ABe86109dB784A5d0a34C98251Bb82a859',
+    // byteron V2
+    '0x539400956A0B79963268fB7Ef4f95E9D618d58A6': '0x0f90ca538839d9354f987381bFc4151C4e0624B2',
+    // PBG V2
+    '0x51C659ee6FccebF7183da4E7D42A83b652F6E741': '0x1989BC38403A8c7f3c9A6699c5366d9AF6301dD6',
+    // UPMaker V2
+    '0x80ae9649fC445516f4792AF77b0B8F5809C38231': '0xB1b92313d93137E32FA2bE06455Cae5AEd78f33D',
+    // vigilant V2
+    '0x37D58532a985c2aD7a84EC61b0413Cc4B2c48977': '0xFE67Cbec68B6e00D9327B4ECf32C0d526b60668D'
   }
 };
 
@@ -76,6 +98,22 @@ export const getPreviousOwnerFromNew = (address: string, network: SupportedNetwo
   return newToPrevMap[address.toLowerCase()];
 };
 
+export const getOriginalOwnerFromNew = (address: string, network: SupportedNetworks): string | undefined => {
+  let currentAddress = address.toLowerCase();
+  let previousAddress = getPreviousOwnerFromNew(currentAddress, network);
+
+  if (!previousAddress) {
+    return undefined; // No previous address found
+  }
+
+  while (previousAddress) {
+    currentAddress = previousAddress;
+    previousAddress = getPreviousOwnerFromNew(currentAddress, network);
+  }
+
+  return currentAddress;
+};
+
 export const getNewOwnerFromPrevious = (address: string, network: SupportedNetworks): string | undefined => {
   const networkData = delegateAddressLinks[network] || {};
 
@@ -87,4 +125,20 @@ export const getNewOwnerFromPrevious = (address: string, network: SupportedNetwo
   }, {});
 
   return prevToNewMap[address?.toLowerCase()];
+};
+
+export const getLatestOwnerFromOld = (address: string, network: SupportedNetworks): string | undefined => {
+  let currentAddress = address.toLowerCase();
+  let newAddress = getNewOwnerFromPrevious(currentAddress, network);
+
+  if (!newAddress) {
+    return undefined; // No new address found
+  }
+
+  while (newAddress) {
+    currentAddress = newAddress;
+    newAddress = getNewOwnerFromPrevious(currentAddress, network);
+  }
+
+  return currentAddress;
 };

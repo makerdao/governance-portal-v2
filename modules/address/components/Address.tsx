@@ -28,7 +28,8 @@ export const Address = React.memo(function Address({
     }
 
     const provider = getDefaultProvider(SupportedNetworks.MAINNET);
-    const ens = await getENS({ address, provider: provider });
+
+    const ens = await getENS({ address, provider });
 
     ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }

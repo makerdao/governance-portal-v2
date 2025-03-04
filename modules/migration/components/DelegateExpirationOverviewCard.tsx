@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text } from 'theme-ui';
 import { formatValue } from 'lib/string';
-import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { DelegateInfo } from 'modules/delegates/types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import DelegateExpiryDate from './DelegateExpiryDate';
+import DelegateContractInfo from './DelegateContractInfo';
 
 type PropTypes = {
   delegate: DelegateInfo;
@@ -26,10 +26,11 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-  const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
+  const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
     account,
     delegate.voteDelegateAddress
   );
+  const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
 
   return (
     <Card
@@ -40,7 +41,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
     >
       <Box px={[3, 4]} pb={3} pt={3}>
         <Flex sx={{ mb: 2, justifyContent: 'flex-end' }}>
-          <DelegateExpiryDate delegate={delegate} />
+          <DelegateContractInfo delegate={delegate} />
         </Flex>
 
         <Flex
@@ -78,7 +79,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
               </Text>
             </Box>
             <Box>
-              {(delegate.isAboutToExpire || delegate.expired) && (
+              {(delegate.delegateVersion !== 2) && (
                 <Button
                   variant="primaryOutline"
                   disabled={!account}
@@ -91,7 +92,7 @@ export function DelegateExpirationOverviewCard({ delegate }: PropTypes): React.R
                   Undelegate
                 </Button>
               )}
-              {!delegate.expired && !delegate.isAboutToExpire && (
+              {delegate.delegateVersion === 2 && (
                 <Button
                   variant="primaryLarge"
                   data-testid="button-delegate"

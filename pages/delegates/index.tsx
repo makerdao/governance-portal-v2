@@ -524,11 +524,52 @@ export const getStaticProps: GetStaticProps = async () => {
     { seed }
   );
 
+  // Convert Date objects to ISO strings with validation
+  const serializedDelegates = delegates.map(delegate => {
+    // Create a new object with all properties from delegate
+    const serialized = { ...delegate };
+
+    // Handle creationDate
+    if (serialized.creationDate instanceof Date) {
+      try {
+        // Test if the date is valid
+        serialized.creationDate.toISOString();
+      } catch (e) {
+        // If invalid date, use current date
+        serialized.creationDate = new Date();
+      }
+    }
+
+    // Handle expirationDate
+    if (serialized.expirationDate instanceof Date) {
+      try {
+        // Test if the date is valid
+        serialized.expirationDate.toISOString();
+      } catch (e) {
+        // If invalid date, set to undefined
+        serialized.expirationDate = undefined;
+      }
+    }
+
+    // Handle lastVoteDate
+    if (serialized.lastVoteDate instanceof Date) {
+      try {
+        // Test if the date is valid
+        serialized.lastVoteDate.toISOString();
+      } catch (e) {
+        // If invalid date, set to undefined
+        serialized.lastVoteDate = undefined;
+      }
+    }
+
+    return serialized;
+  });
+
   return {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
-      delegates,
+      delegates: serializedDelegates,
       stats,
       paginationInfo,
       seed

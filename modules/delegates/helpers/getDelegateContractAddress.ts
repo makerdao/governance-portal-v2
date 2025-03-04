@@ -13,6 +13,11 @@ export async function getDelegateContractAddress(
   contracts: EthSdk,
   address: string
 ): Promise<string | undefined> {
-  const voteDelegateAdress = await contracts.voteDelegateFactory.delegates(address);
-  return voteDelegateAdress !== ZERO_ADDRESS ? voteDelegateAdress : undefined;
+  const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);
+  const voteDelegateAddressOld = await contracts.voteDelegateFactoryOld.delegates(address);
+  return voteDelegateAddressOld !== ZERO_ADDRESS
+    ? voteDelegateAddressOld
+    : voteDelegateAddress !== ZERO_ADDRESS
+    ? voteDelegateAddress
+    : undefined;
 }

@@ -29,8 +29,6 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { CardTitle } from 'modules/app/components/Card/CardTitle';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
 import { CardSummary } from 'modules/app/components/Card/CardSummary';
-import CommentCount from 'modules/comments/components/CommentCount';
-import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { ListVoteSummary } from './vote-summary/ListVoteSummary';
@@ -65,15 +63,7 @@ const PollOverviewCard = memo(
     const bpi = useBreakpointIndex({ defaultIndex: 2 });
     const canVote = !!account && isActivePoll(poll);
     const showQuickVote = canVote && showVoting;
-    const { comments, error: errorComments } = usePollComments(poll.pollId);
     const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
-
-    const myComment = comments?.find(c => {
-      return c.comment.hotAddress.toLowerCase() === account?.toLowerCase();
-    });
-
-    const hasPollComments = comments && comments.length > 0;
-    const hasUserComments = hasPollComments && myComment;
 
     return (
       <Card
@@ -151,38 +141,6 @@ const PollOverviewCard = memo(
                           <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
                         </ErrorBoundary>
                       </Box>
-                      <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
-                        {hasPollComments && (
-                          <InternalLink href={`/polling/${poll.slug}`} title="View comments" hash="comments">
-                            <CommentCount count={comments.length} />
-                          </InternalLink>
-                        )}
-                        {hasUserComments && (
-                          <InternalLink href={`/polling/${poll.slug}`} title="Your Comment" hash="comments">
-                            <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                              <Icon name="yourComment" color="primary" size={3} />
-                              <Text variant="caps" color="primary">
-                                Your Comment
-                              </Text>
-                            </Flex>
-                          </InternalLink>
-                        )}
-                        {errorComments && (
-                          <Badge
-                            variant="warning"
-                            sx={{
-                              color: 'warning',
-                              borderColor: 'warning',
-                              textTransform: 'uppercase',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              m: 1
-                            }}
-                          >
-                            Error loading comments
-                          </Badge>
-                        )}
-                      </Flex>
                     </Flex>
                   )}
                 </Flex>

@@ -88,7 +88,7 @@ const forkVnet = async (displayName: string) => {
       ],
       method: 'POST',
       body: JSON.stringify({
-        srcContainerId: 'a3cdcbc9-56a7-4583-bb2d-705f3bd58e43', //id for e2e-testing-aug-28-fork
+        srcContainerId: '6dd34974-e28e-4f28-bbd8-13898714f275', //id for e2e sep 30 fork
         dstContainerDisplayName: displayName
       })
     }

@@ -26,6 +26,7 @@ export function DelegatesSystemInfo({
   className?: string;
 }): React.ReactElement {
   const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
+  const oldDelegateFactoryAddress = useContractAddress('voteDelegateFactoryOld');
   const { network } = useWeb3();
 
   const { data: totalMkr } = useTotalSupply(Tokens.MKR);
@@ -64,7 +65,7 @@ export function DelegatesSystemInfo({
       )
     },
     {
-      title: 'Total Delegators',
+      title: 'Total delegators',
       id: 'total-delegators-system-info',
       value: stats.totalDelegators
     }
@@ -78,9 +79,19 @@ export function DelegatesSystemInfo({
       <Card variant="compact">
         <StackLayout gap={3}>
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
+            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>V2 delegate factory</Text>
             {delegateFactoryAddress ? (
               <EtherscanLink type="address" showAddress hash={delegateFactoryAddress} network={network} />
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <SkeletonThemed />
+              </Box>
+            )}
+          </Flex>
+          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>V1 delegate factory</Text>
+            {oldDelegateFactoryAddress ? (
+              <EtherscanLink type="address" showAddress hash={oldDelegateFactoryAddress} network={network} />
             ) : (
               <Box sx={{ width: 6 }}>
                 <SkeletonThemed />

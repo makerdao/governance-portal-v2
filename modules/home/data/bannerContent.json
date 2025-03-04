@@ -2,5 +2,11 @@
   {
     "active": false,
     "content": "Warning: The hat is going to expire soon, please vote on the latest executive"
+  },
+  {
+    "active": true,
+    "content": "MakerDAO is now Sky — the next evolution of DeFi. Explore Sky.money and get rewarded for saving without giving up control.",
+    "href": "https://sky.money",
+    "variant": "alerts.primary"
   }
 ]
