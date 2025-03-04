@@ -12,6 +12,7 @@ import { delegateHistoryArray } from 'modules/gql/queries/subgraph/delegateHisto
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
+import { utils } from 'ethers';
 
 export async function fetchDelegationEventsByAddresses(
   addresses: string[],
@@ -32,14 +33,15 @@ export async function fetchDelegationEventsByAddresses(
       return {
         delegateContractAddress: x.delegate.id,
         immediateCaller: x.delegator,
-        lockAmount: x.amount,
+        lockAmount: utils.formatEther(x.amount),
         blockNumber: x.blockNumber,
-        blockTimestamp: x.timestamp,
+        blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
         hash: x.txnHash,
-        callerLockTotal: x.accumulatedAmount
+        callerLockTotal: utils.formatEther(x.accumulatedAmount),
+        isLockstake: x.isLockstake
       };
     });
-    return addressData.filter(x => parseInt(x.lockAmount) !== 0);
+    return addressData;
   } catch (e) {
     logger.error('fetchDelegationEventsByAddresses: Error fetching delegation events', e.message);
     return [];

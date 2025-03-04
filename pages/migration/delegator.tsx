@@ -20,15 +20,14 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import Link from 'next/link';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { account, network } = useWeb3();
 
   const addressDelegations = useAddressDelegations(account, network);
 
-  // List of delegates that are about to expiry, the user has to undelegate from them
-  const delegatesThatAreAboutToExpiryWithMKRDelegated = useMemo(() => {
+  // List of delegates that are v1 and have been replaced by a v2, the user has to undelegate from them
+  const delegatesThatAreV1WithMKRDelegated = useMemo(() => {
     if (!addressDelegations) {
       return [];
     }
@@ -41,12 +40,12 @@ export default function DelegateMigrationPage(): React.ReactElement {
       if (!delegatedToDelegate || parseFloat(delegatedToDelegate.lockAmount) === 0) {
         return false;
       }
-      return delegate.expired || delegate.isAboutToExpire;
+      return delegate.delegateVersion !== 2 && !!delegate.next;
     });
   }, [addressDelegations]);
 
-  // Historical list of delegates that the user interacted with that are about to expiry (no need to have current MKR delegated to them)
-  const delegatesThatAreAboutToExpiry = useMemo(() => {
+  // Historical list of delegates that the user interacted with that are v1 and replaced by a v2 (no need to have current MKR delegated to them)
+  const delegatesThatAreV1 = useMemo(() => {
     if (!addressDelegations) {
       return [];
     }
@@ -59,35 +58,37 @@ export default function DelegateMigrationPage(): React.ReactElement {
       if (!delegatedToDelegate) {
         return false;
       }
-      return delegate.expired || delegate.isAboutToExpire;
+      return delegate.delegateVersion !== 2 && !!delegate.next;
     });
   }, [addressDelegations]);
 
   // List of new delegates that can be renewed, the user has to delegate to them
-  const delegatesThatAreNotExpired = useMemo(() => {
+  const delegatesThatAreNotV1 = useMemo(() => {
     if (!addressDelegations) {
       return [];
     }
 
     return addressDelegations.delegates.filter(delegate => {
-      const isPreviousDelegate = delegatesThatAreAboutToExpiry.find(
+      const isPreviousDelegate = delegatesThatAreV1.find(
         i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
       );
-      return !delegate.expired && !delegate.isAboutToExpire && isPreviousDelegate;
+      return (
+        delegate.delegateVersion === 2
+      );
     });
-  }, [addressDelegations, delegatesThatAreAboutToExpiry]);
+  }, [addressDelegations, delegatesThatAreV1]);
 
   // UI loading states
   const { isLoading, isEmpty } = useMemo(() => {
     const isLoading = !addressDelegations;
     const isEmpty =
-      delegatesThatAreAboutToExpiryWithMKRDelegated.length === 0 && delegatesThatAreNotExpired.length === 0;
+      delegatesThatAreV1WithMKRDelegated.length === 0 && delegatesThatAreNotV1.length === 0;
 
     return {
       isLoading,
       isEmpty
     };
-  }, [addressDelegations, delegatesThatAreAboutToExpiryWithMKRDelegated, delegatesThatAreNotExpired]);
+  }, [addressDelegations, delegatesThatAreV1WithMKRDelegated, delegatesThatAreNotV1]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -113,15 +114,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   Action required: Migrate your delegated MKR
                 </Heading>
                 <Text as="p" variant="secondary">
-                  One or more of your MakerDAO delegate&lsquo;s contracts are expiring.{' '}
-                  <ExternalLink
-                    href="https://manual.makerdao.com/delegation/delegate-expiration"
-                    title="Read more about delegate expiration"
-                  >
-                    <Text as={'span'} sx={{ color: 'accentBlue' }}>
-                      Read more about delegate expiration.
-                    </Text>
-                  </ExternalLink>
+                  One or more of your MakerDAO delegate&lsquo;s contracts have been replaced by v2 delegate contracts.{' '}
                 </Text>
               </Box>
 
@@ -131,15 +124,10 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 </Box>
                 <Box>
                   <Text as="p" sx={{ fontWeight: '600' }}>
-                    Maker delegate contracts expire after 1 year.
+                    V2 Maker delegate contracts do not expire.
                   </Text>
                   <Text as="p" variant="secondary" sx={{ mt: 2 }}>
-                    Please migrate your MKR by undelegating from the expiring/expired contracts and
-                    redelegating to the new contracts.
-                  </Text>
-                  <Text as="p" variant="secondary">
-                    On this page you&apos;ll find your delegates that require migrating your delegated MKR due
-                    to expiration.
+                    This means the annual migration will no longer be necessary after fully migrating to V2.
                   </Text>
                 </Box>
               </Card>
@@ -147,7 +135,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
               <Box>
                 <Box>
                   <Text as="h2" variant="heading">
-                    MKR delegated to expiring/expired delegate contracts
+                    MKR delegated to v1 delegate contracts
                   </Text>
                   <Text as="p" variant="secondary" sx={{ mt: 2 }}>
                     Please undelegate your MKR from the old contracts below, one by one.
@@ -158,9 +146,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   </Text>
                 </Box>
 
-                {delegatesThatAreAboutToExpiryWithMKRDelegated.length > 0 && (
+                {delegatesThatAreV1WithMKRDelegated.length > 0 && (
                   <Box>
-                    {delegatesThatAreAboutToExpiryWithMKRDelegated.map(delegate => {
+                    {delegatesThatAreV1WithMKRDelegated.map(delegate => {
                       return (
                         <Box key={`delegated-about-to-expiry-${delegate.address}`} sx={{ mb: 3 }}>
                           <DelegateExpirationOverviewCard delegate={delegate} />
@@ -169,7 +157,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                     })}
                   </Box>
                 )}
-                {delegatesThatAreAboutToExpiryWithMKRDelegated.length === 0 && (
+                {delegatesThatAreV1WithMKRDelegated.length === 0 && (
                   <Box
                     sx={{
                       textAlign: 'center',
@@ -195,7 +183,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                       <LocalIcon name="calendarcross" size={3} color="text" />
                     </Box>
                     <Text as="p" variant="secondary">
-                      None of your delegates contracts are expired or about to expire.
+                      None of your delegates contracts have been replaced by v2 delegate contracts.
                     </Text>
                     <Text>No further action needed!</Text>
                   </Box>
@@ -205,10 +193,10 @@ export default function DelegateMigrationPage(): React.ReactElement {
               <Box>
                 <Box>
                   <Text as="h2" variant="heading">
-                    Renewed contracts of your previous delegates
+                    V2 delegate contracts of your previous delegates
                   </Text>
                   <Text as="p" variant="secondary" sx={{ mt: 2 }}>
-                    Please delegate your MKR to the renewed contracts below, one by one.
+                    Please delegate your MKR to the v2 delegate contracts below, one by one.
                   </Text>
                   <Text as="p" variant="secondary">
                     An approval transaction will be required if this is your first time delegating to this
@@ -217,15 +205,15 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 </Box>
 
                 <Box>
-                  {delegatesThatAreNotExpired.length > 0 &&
-                    delegatesThatAreNotExpired.map(delegate => {
+                  {delegatesThatAreNotV1.length > 0 &&
+                    delegatesThatAreNotV1.map(delegate => {
                       return (
                         <Box key={`delegated-about-to-expiry-${delegate.address}`} sx={{ mb: 3 }}>
                           <DelegateExpirationOverviewCard delegate={delegate} />
                         </Box>
                       );
                     })}
-                  {delegatesThatAreNotExpired.length === 0 && (
+                  {delegatesThatAreNotV1.length === 0 && (
                     <Box
                       sx={{
                         textAlign: 'center',
@@ -269,7 +257,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   No action required
                 </Text>
                 <Text as="p" mb={2} variant="secondary">
-                  You don&apos;t have any MKR delegated to expiring/expired delegate contracts
+                  You don&apos;t have any MKR delegated to replaced v1 delegate contracts
                 </Text>
                 <Link href="/delegates">
                   <Button sx={{ mt: 2, mb: 2 }}>Go to delegates page</Button>

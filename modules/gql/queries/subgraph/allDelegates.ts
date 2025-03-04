@@ -9,13 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { gql } from 'graphql-request';
 
 export const allDelegates = gql`
-{
-    delegates {
-      blockTimestamp
-      ownerAddress
-      id
-      totalDelegated
-      version
+  query allDelegates {
+    allDelegates {
+      nodes {
+        delegate
+        voteDelegate
+        blockTimestamp
+        delegateVersion
+      }
     }
   }
 `;

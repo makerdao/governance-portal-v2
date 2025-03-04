@@ -20,7 +20,6 @@ import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-import AccountComments from 'modules/comments/components/AccountComments';
 import Tabs from 'modules/app/components/Tabs';
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -43,7 +42,7 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
 
   const { data: delegatedToData } = useDelegatedTo(addressInfo.address, network);
 
-  const tabTitles = ['Account Details', 'Comments'];
+  const tabTitles = ['Account Details'];
 
   const tabPanels = [
     <Box key="account-detail">
@@ -134,9 +133,6 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
           <PollingParticipationOverview votes={statsData.pollVoteHistory} />
         </ErrorBoundary>
       )}
-    </Box>,
-    <Box key="account-comments" sx={{ p: [3, 4] }}>
-      <AccountComments address={addressInfo.address} />
     </Box>
   ];
 

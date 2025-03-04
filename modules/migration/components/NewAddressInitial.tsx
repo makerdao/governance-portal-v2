@@ -36,8 +36,8 @@ export function NewAddressInitial({
           </Text>
           <Text as="p" variant="secondary" sx={{ mt: 2 }}>
             Clicking ’submit address’ spawns a message you are required to sign using your current connected
-            wallet. DUX team will verify the message and establish a link between your old and renewed
-            delegate contracts.
+            wallet. DUX team will verify the message and establish a link between your current contract and your new v2
+            delegate contract.
           </Text>
         </Flex>
         <Flex sx={{ width: '40%' }}>
