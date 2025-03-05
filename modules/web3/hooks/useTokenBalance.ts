@@ -6,16 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { BigNumber } from 'ethers';
-import { useAccount } from 'wagmi';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useAccount, useChainId, useReadContract } from 'wagmi';
 import { TokenName } from 'modules/web3/types/tokens';
+import { tokenNameToConfig } from '../helpers/tokenNameToConfig.';
 
 type UseTokenBalanceResponse = {
-  data?: BigNumber | undefined;
+  data?: bigint | undefined;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
   mutate: () => void;
 };
 
@@ -26,19 +24,27 @@ export const useTokenBalance = (token: TokenName, address?: string): UseTokenBal
   const { address: connectedAddress } = useAccount();
   const account = address || connectedAddress;
 
-  const contracts = useContracts();
-  const tokenContract = contracts[token];
+  const chainId = useChainId();
+  const tokenConfig = tokenNameToConfig(token);
 
-  const { data, error, mutate } = useSWR(`${tokenContract.address}/${token}-balance/${account}`, async () => {
-    if (!account) {
-      return BigNumber.from(0);
+  const {
+    data,
+    error,
+    refetch: mutate
+  } = useReadContract({
+    address: tokenConfig?.address[chainId],
+    abi: tokenConfig?.abi,
+    chainId,
+    functionName: 'balanceOf',
+    args: [account as `0x${string}`],
+    scopeKey: `${tokenConfig?.address[chainId]}/${token}-balance-${account}-${chainId}`,
+    query: {
+      enabled: !!account
     }
-
-    return await tokenContract.balanceOf(account);
   });
 
   return {
-    data,
+    data: data as bigint | undefined,
     loading: !error && !data,
     error,
     mutate

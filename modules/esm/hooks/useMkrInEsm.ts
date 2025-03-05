@@ -6,29 +6,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber } from 'ethers';
+import { useChainId, useReadContract } from 'wagmi';
+import { esmAbi, esmAddress } from 'modules/contracts/generated';
 
 type MkrInEsmByAddressResponse = {
-  data?: BigNumber | undefined;
+  data?: bigint | undefined;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
   mutate: () => void;
 };
 
 export const useMkrInEsmByAddress = (address?: string): MkrInEsmByAddressResponse => {
-  const { esm } = useContracts();
+  const chainId = useChainId();
 
-  const { data, error, mutate } = useSWR(`${esm.address}/mkr-in-esm/${address}`, async () => {
-    if (!address) {
-      return BigNumber.from(0);
+  const {
+    data,
+    error,
+    refetch: mutate
+  } = useReadContract({
+    address: esmAddress[chainId],
+    abi: esmAbi,
+    chainId,
+    functionName: 'sum',
+    args: [address as `0x${string}`],
+    scopeKey: `mkr-in-esm-${address}-${chainId}`,
+    query: {
+      enabled: !!address
     }
-    return await esm.sum(address);
   });
 
   return {
-    data,
+    data: address ? data : 0n,
     loading: !error && !data,
     error,
     mutate

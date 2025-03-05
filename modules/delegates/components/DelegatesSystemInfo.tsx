@@ -11,12 +11,16 @@ import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { Box, Card, Flex, Heading, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
 import { Tokens } from 'modules/web3/constants/tokens';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import {
+  voteDelegateFactoryAddress as voteDelegateFactoryAddressMapping,
+  voteDelegateFactoryOldAddress as voteDelegateFactoryOldAddressMapping
+} from 'modules/contracts/generated';
+import { useChainId } from 'wagmi';
 
 export function DelegatesSystemInfo({
   stats,
@@ -25,8 +29,9 @@ export function DelegatesSystemInfo({
   stats: DelegatesAPIStats;
   className?: string;
 }): React.ReactElement {
-  const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
-  const oldDelegateFactoryAddress = useContractAddress('voteDelegateFactoryOld');
+  const chainId = useChainId();
+  const delegateFactoryAddress = voteDelegateFactoryAddressMapping[chainId];
+  const oldDelegateFactoryAddress = voteDelegateFactoryOldAddressMapping[chainId];
   const network = useNetwork();
 
   const { data: totalMkr } = useTotalSupply(Tokens.MKR);

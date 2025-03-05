@@ -25,9 +25,10 @@ import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import Toggle from '../Toggle';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { useChainId } from 'wagmi';
+import { esmAddress as esmAddressMapping } from 'modules/contracts/generated';
 
 const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }) => {
   const bpi = useBreakpointIndex();
@@ -104,8 +105,9 @@ const ConfirmBurn = ({
   const changeTerms = e => {
     setTermsAccepted(e.target.checked);
   };
+  const chainId = useChainId();
 
-  const esmAddress = useContractAddress('esm');
+  const esmAddress = esmAddressMapping[chainId];
   const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
     Tokens.MKR,
     burnAmount,

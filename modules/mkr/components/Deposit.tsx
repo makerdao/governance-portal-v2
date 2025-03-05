@@ -18,13 +18,14 @@ import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { useChainId } from 'wagmi';
+import { chiefAddress } from 'modules/contracts/generated';
 
 const ModalContent = ({
   close,
@@ -35,16 +36,16 @@ const ModalContent = ({
 }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
+  const chainId = useChainId();
   const { data: mkrBalance } = useMkrBalance(account);
 
   const { mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
-  const { chief } = useContracts();
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.MKR,
     parseUnits('100000000'),
     account,
-    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chief.address
+    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefAddress[chainId]
   );
 
   const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
@@ -130,7 +131,7 @@ const ModalContent = ({
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
-                approve(voteProxyContractAddress || chief.address, {
+                approve(voteProxyContractAddress || chiefAddress[chainId], {
                   mined: () => {
                     mutateTokenAllowance();
                   }
