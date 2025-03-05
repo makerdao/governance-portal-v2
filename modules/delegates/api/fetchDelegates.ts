@@ -59,7 +59,7 @@ function mergeDelegateInfo({
   const expirationDate =
     onChainDelegate.delegateVersion === 2
       ? undefined
-      : add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
+      : add(new Date(Number(onChainDelegate.blockTimestamp || 0) * 1000), { years: 1 });
   const isExpired =
     onChainDelegate.delegateVersion === 2 ? false : isBefore(new Date(expirationDate!), new Date());
   const isAboutToExpire =
@@ -327,13 +327,13 @@ export async function fetchAndMergeDelegates(
     const newContractAddress = allDelegateAddresses.find(del => del.delegate === latestOwner)?.voteDelegate;
 
     const ghDelegate = githubDelegates?.find(del =>
-      [delegate.voteDelegate, oldContractAddress, newContractAddress].includes(
+      [delegate.voteDelegate.toLowerCase(), oldContractAddress?.toLowerCase(), newContractAddress?.toLowerCase()].includes(
         del.voteDelegateAddress.toLowerCase()
       )
     );
 
     const expirationDate =
-      delegate.delegateVersion === 2 ? undefined : add(new Date(delegate.blockTimestamp), { years: 1 });
+      delegate.delegateVersion === 2 ? undefined : add(new Date(Number(delegate.blockTimestamp || 0) * 1000), { years: 1 });
     const expired =
       delegate.delegateVersion === 2 ? false : expirationDate && expirationDate > new Date() ? false : true;
     const isAboutToExpire = delegate.delegateVersion === 2 ? false : isAboutToExpireCheck(expirationDate);
@@ -585,24 +585,28 @@ export async function fetchDelegatesPaginated({
         finalExpirationDate = expirationDate;
       }
 
+      const isExpired = delegate.delegateVersion === 2 
+        ? false 
+        : finalExpirationDate ? isBefore(new Date(finalExpirationDate), new Date()) : false;
+
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.id,
         address: delegate.ownerAddress,
-        status: delegate.expired
+        status: isExpired
           ? DelegateStatusEnum.expired
           : githubDelegate
-          ? DelegateStatusEnum.aligned
-          : DelegateStatusEnum.shadow,
+            ? DelegateStatusEnum.aligned
+            : DelegateStatusEnum.shadow,
         creationDate: finalCreationDate,
         expirationDate: delegate.delegateVersion === 2 ? undefined : finalExpirationDate,
-        expired: delegate.expired,
+        expired: isExpired,
         isAboutToExpire:
           delegate.delegateVersion === 2
             ? false
             : finalExpirationDate
-            ? isAboutToExpireCheck(finalExpirationDate)
-            : false,
+              ? isAboutToExpireCheck(finalExpirationDate)
+              : false,
         picture: githubDelegate?.picture,
         communication: githubDelegate?.communication,
         combinedParticipation: githubDelegate?.combinedParticipation,

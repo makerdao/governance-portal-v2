@@ -83,7 +83,7 @@ export async function fetchDelegatedTo(
           const expirationDate =
             delegatingTo.delegateVersion === 2
               ? undefined
-              : add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
+              : add(new Date(Number(delegatingTo?.blockTimestamp || 0) * 1000), { years: 1 });
 
           //only v1 delegate contracts expire
           const isAboutToExpire = delegatingTo.delegateVersion !== 2 && isAboutToExpireCheck(expirationDate);

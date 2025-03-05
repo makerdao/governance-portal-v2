@@ -22,7 +22,7 @@ export async function fetchDelegateAddresses(network: SupportedNetworks): Promis
     });
     
     const delegates = data.delegates.map(delegate => ({
-      blockTimestamp: new Date(delegate?.blockTimestamp),
+      blockTimestamp: new Date(Number(delegate?.blockTimestamp || 0) * 1000),
       delegate: delegate?.ownerAddress,
       voteDelegate: delegate?.id,
       delegateVersion: delegate?.version ? parseInt(delegate.version) : 1
