@@ -612,7 +612,9 @@ export async function fetchDelegatesPaginated({
         mkrDelegated: delegate.totalDelegated,
         delegatorCount: delegate.delegators,
         lastVoteDate:
-          delegate.voter.lastVotedTimestamp && new Date(Number(delegate.voter.lastVotedTimestamp) * 1000),
+          delegate.voter.lastVotedTimestamp && Number(delegate.voter.lastVotedTimestamp) > 0
+            ? new Date(Number(delegate.voter.lastVotedTimestamp) * 1000)
+            : null,
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
