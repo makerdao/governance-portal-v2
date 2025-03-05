@@ -2,6 +2,7 @@ import { createConfig, createStorage, fallback, http, noopStorage } from 'wagmi'
 import { mainnet } from 'wagmi/chains';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { coinbaseWallet, metaMask, safe, walletConnect } from 'wagmi/connectors';
+import { createPublicClient } from 'viem';
 
 export const tenderly = {
   id: SupportedChainId.TENDERLY as const,
@@ -62,4 +63,17 @@ export const wagmiConfigProd = createConfig({
     ])
   },
   multiInjectedProviderDiscovery: false
+});
+
+export const mainnetPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: fallback([
+    http(`https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`),
+    http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`)
+  ])
+});
+
+export const tenderlyPublicClient = createPublicClient({
+  chain: tenderly,
+  transport: http(`https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`)
 });

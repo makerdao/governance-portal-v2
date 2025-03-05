@@ -13,6 +13,7 @@ import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
 
 export async function ballotIncludesAlreadyVoted(
   voter: string,
@@ -21,10 +22,11 @@ export async function ballotIncludesAlreadyVoted(
 ): Promise<boolean> {
   try {
     const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+    const chainId = networkNameToChainId(network);
 
     const [voteDelegateAddress, voteProxyAddress] = await Promise.all([
       getDelegateContractAddress(contracts, voter),
-      getVoteProxyAddresses(contracts.voteProxyFactory, voter, network)
+      getVoteProxyAddresses(voteProxyFactoryAddress[chainId], voteProxyFactoryAbi, voter, network)
     ]);
 
     const addressToUseAsVoter = voteDelegateAddress

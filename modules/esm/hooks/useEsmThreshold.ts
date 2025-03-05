@@ -6,21 +6,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber } from 'ethers';
+import { useChainId, useReadContract } from 'wagmi';
+import { esmAbi, esmAddress } from 'modules/contracts/generated';
 
 type EsmThresholdResponse = {
-  data?: BigNumber | undefined;
+  data?: bigint;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
 };
 
 export const useEsmThreshold = (): EsmThresholdResponse => {
-  const { esm } = useContracts();
+  const chainId = useChainId();
 
-  const { data, error } = useSWR(`${esm.address}/esm-threshold`, async () => {
-    return await esm.min();
+  const { data, error } = useReadContract({
+    address: esmAddress[chainId],
+    abi: esmAbi,
+    chainId,
+    functionName: 'min',
+    scopeKey: `/esm-threshold-${chainId}`
   });
 
   return {

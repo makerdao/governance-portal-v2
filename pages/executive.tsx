@@ -38,8 +38,6 @@ import { Proposal } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -49,6 +47,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { useChainId, useReadContract } from 'wagmi';
+import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -79,13 +79,13 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     votingAccount
   } = useAccount();
   const network = useNetwork();
+  const chainId = useChainId();
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
   const { data: lockedMkr } = useLockedMkr(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-  const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
   const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
@@ -152,10 +152,18 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   }, [startDate, endDate]);
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
-  const { data: lockedMkrOldChief } = useSWR(
-    lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
-    () => chiefOld.deposits(lockedMkrKeyOldChief as string)
-  );
+
+  const { data: lockedMkrOldChief } = useReadContract({
+    address: chiefOldAddress[chainId],
+    abi: chiefOldAbi,
+    chainId,
+    functionName: 'deposits',
+    args: [lockedMkrKeyOldChief as `0x${string}`],
+    scopeKey: `/user/mkr-locked-old-chief/${lockedMkrKeyOldChief}`,
+    query: {
+      enabled: !!lockedMkrKeyOldChief
+    }
+  });
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
@@ -176,7 +184,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const showProxyInfo =
     lockedMkrOldChief &&
-    lockedMkrOldChief.eq(0) &&
+    lockedMkrOldChief === 0n &&
     !voteProxyContractAddress &&
     lockedMkr &&
     lockedMkr.eq(0) &&
