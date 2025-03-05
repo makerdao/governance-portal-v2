@@ -13,8 +13,7 @@ import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;
@@ -22,8 +21,7 @@ type Props = {
 
 const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Card mt={3} p={3} pb={4}>

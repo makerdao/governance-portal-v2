@@ -38,8 +38,7 @@ import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
   seed: number;
@@ -59,8 +58,7 @@ const Delegates = ({
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { voteDelegateContractAddress } = useAccount();
   const [
     showAligned,
@@ -444,8 +442,7 @@ export default function DelegatesPage({
   paginationInfo: prefetchedPaginationInfo,
   seed
 }: DelegatesPageProps): JSX.Element {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

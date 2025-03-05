@@ -22,8 +22,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -190,8 +189,7 @@ type AddressDelegatedToProps = {
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Box>

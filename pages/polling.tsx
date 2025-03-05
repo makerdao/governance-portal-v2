@@ -45,8 +45,7 @@ import PollsSort from 'modules/polling/components/filters/PollsSort';
 import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
 import { PollOrderByEnum, PollStatusEnum } from 'modules/polling/polling.constants';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export type PollingPageProps = PollsPaginatedResponse & {
   activePollIds: number[];
@@ -108,8 +107,7 @@ const PollingOverview = ({
   }, [router]);
 
   const bpi = useBreakpointIndex();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const [loading, setLoading] = useState(fetchOnLoad);
   const [isRendering, setIsRendering] = useState(true);
@@ -491,8 +489,7 @@ export default function PollingOverviewPage({
   paginationInfo: prefetchedPaginationInfo,
   activePollIds: prefetchedActivePollIds
 }: PollingPageProps): JSX.Element {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

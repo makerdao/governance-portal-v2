@@ -27,8 +27,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesAPIStats, DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const AddressView = ({
   addressInfo,
@@ -115,8 +114,7 @@ const AddressView = ({
 export default function AddressPage(): JSX.Element {
   const router = useRouter();
   const { address } = router.query;
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const dataKeyAccount = `/api/address/${address}?network=${network}`;

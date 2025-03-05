@@ -22,8 +22,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -178,8 +177,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const [sortBy, setSortBy] = useState({
     type: 'mkr',

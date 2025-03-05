@@ -33,12 +33,10 @@ import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const AccountPage = (): React.ReactElement => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const {
     account,
     mutate: mutateAccount,

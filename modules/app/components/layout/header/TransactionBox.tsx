@@ -11,8 +11,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { Transaction } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   tx: Transaction;
@@ -23,8 +22,7 @@ type MainProps = {
   txs: Transaction[];
 };
 const TransactionRow = ({ tx, index }: Props): JSX.Element => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Flex

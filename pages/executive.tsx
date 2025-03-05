@@ -48,8 +48,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -79,8 +78,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     voteProxyOldContractAddress,
     votingAccount
   } = useAccount();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
@@ -448,8 +446,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 export default function ExecutiveOverviewPage({
   proposals: prefetchedProposals
 }: ExecutivePageData): JSX.Element {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

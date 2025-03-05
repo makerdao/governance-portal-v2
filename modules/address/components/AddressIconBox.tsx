@@ -17,8 +17,7 @@ import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegate
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import splitDelegateName from 'modules/delegates/helpers/splitDelegateName';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type PropTypes = {
   address: string;
@@ -33,8 +32,7 @@ export default function AddressIconBox({
   width = 41,
   limitTextLength = 0
 }: PropTypes): React.ReactElement {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
   const { data: delegate } = useSingleDelegateInfo(address);

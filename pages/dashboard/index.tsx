@@ -25,12 +25,10 @@ import {
 import { invalidateCache } from 'modules/cache/invalidateCache';
 import { toast } from 'react-toastify';
 import { getCacheInfo } from 'modules/cache/getCacheInfo';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const DashboardPage = (): React.ReactElement => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const [loading, setLoading] = useState(false);
   const [pollId, setPollId] = useState('');
   const [password, setPassword] = useState('');

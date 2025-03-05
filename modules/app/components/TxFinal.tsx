@@ -10,8 +10,7 @@ import { Box, Button, Flex, Text } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { Transaction, TXMined } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from '../hooks/useNetwork';
 
 export const TxFinal = ({
   title,
@@ -30,8 +29,7 @@ export const TxFinal = ({
   success: boolean;
   children?: React.ReactNode;
 }): React.ReactElement => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
