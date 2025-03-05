@@ -20,6 +20,7 @@
     "gql-generate": "graphql-codegen --config codegen.yml",
     "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
     "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\"",
+    "generate": "wagmi generate",
     "e2e": "playwright test --trace on",
     "e2e:ui": "playwright test --ui"
   },
@@ -118,6 +119,7 @@
     "@types/testing-library__jest-dom": "^5.14.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
+    "@wagmi/cli": "^2.2.0",
     "babel-plugin-istanbul": "^6.1.1",
     "bignumber.js": "^9.0.1",
     "dotenv": "^8.2.0",
