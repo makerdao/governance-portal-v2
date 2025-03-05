@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useSWR from 'swr';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useAccount, useChainId } from 'wagmi';
 import { BigNumber, ethers } from 'ethers';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
@@ -17,11 +18,13 @@ import { VoteDelegate } from 'types/ethers-contracts';
 import { config } from 'lib/config';
 
 type DelegatedByUserResponse = {
-  data: {
-    directDelegationAmount: BigNumber | undefined;
-    sealDelegationAmount: BigNumber | undefined;
-    totalDelegationAmount: BigNumber | undefined;
-  } | undefined;
+  data:
+    | {
+        directDelegationAmount: BigNumber | undefined;
+        sealDelegationAmount: BigNumber | undefined;
+        totalDelegationAmount: BigNumber | undefined;
+      }
+    | undefined;
   loading: boolean;
   error?: Error;
   mutate: () => void;
@@ -32,7 +35,9 @@ export const useMkrDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): DelegatedByUserResponse => {
-  const { chainId, provider, account } = useWeb3();
+  const { provider } = useWeb3();
+  const chainId = useChainId();
+  const { address: account } = useAccount();
   if (!voteDelegateAddress) {
     return {
       data: undefined,
@@ -43,7 +48,7 @@ export const useMkrDelegatedByUser = (
   }
   const network = chainIdToNetworkName(chainId);
 
-  const fetchFromChain = async(userAddress: string | undefined, voteDelegateAddress: string | undefined) => {
+  const fetchFromChain = async (userAddress: string | undefined, voteDelegateAddress: string | undefined) => {
     const contract = getEthersContracts<VoteDelegate>(
       voteDelegateAddress as string,
       abi,
@@ -52,7 +57,7 @@ export const useMkrDelegatedByUser = (
       account,
       true
     );
-  
+
     const directDelegated = await contract.stake(userAddress as string);
 
     return {

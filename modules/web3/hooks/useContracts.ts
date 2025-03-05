@@ -13,6 +13,7 @@ import { SupportedChainId } from '../constants/chainID';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import { EthSdk } from '../types/contracts';
 import { providers } from 'ethers';
+import { useAccount, useChainId } from 'wagmi';
 
 type Props = {
   chainId?: SupportedChainId;
@@ -21,7 +22,9 @@ type Props = {
 };
 
 export const useContracts = (): EthSdk => {
-  const { chainId, provider, account }: Props = useWeb3();
+  const { provider }: Props = useWeb3();
+  const chainId = useChainId();
+  const { address: account } = useAccount();
 
   const sdk = useMemo(
     () =>

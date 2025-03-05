@@ -11,6 +11,7 @@ import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import useTransactionsStore, {
   transactionsApi,
@@ -109,7 +110,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const { account, voteDelegateContract, votingAccount } = useAccount();
 
-  const { network, provider } = useWeb3();
+  const { provider } = useWeb3();
+  const network = useNetwork();
 
   // Import the hook with the current user votes to mutate after voting.
   const { mutate: mutatePreviousVotes } = useAllUserVotes(votingAccount);
