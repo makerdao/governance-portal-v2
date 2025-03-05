@@ -11,8 +11,7 @@ import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   mkrToDeposit: BigNumber;
@@ -23,8 +22,7 @@ type Props = {
 
 export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
   const { address, voteDelegateAddress } = delegate;
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>

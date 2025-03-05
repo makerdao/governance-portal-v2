@@ -10,8 +10,7 @@ import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type MkrOnHatResponse = {
   data?: BigNumber;
@@ -21,8 +20,7 @@ type MkrOnHatResponse = {
 };
 
 export const useMkrOnHat = (): MkrOnHatResponse => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { chief } = useContracts();
 
   const { data, error, mutate } = useSWR(`${chief.address}/mkr-on-hat`, async () => {

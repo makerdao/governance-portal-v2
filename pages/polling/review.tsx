@@ -35,8 +35,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { TagCount } from 'modules/app/types/tag';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export type PollingReviewPageProps = {
   polls: PollListItem[];
@@ -46,8 +45,7 @@ export type PollingReviewPageProps = {
 
 const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingReviewPageProps) => {
   const bpi = useBreakpointIndex();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
   const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
@@ -340,8 +338,7 @@ export default function PollingReviewPage({
   activePollIds: prefetchedActivePollIds,
   tags: prefetchedTags
 }: PollingReviewPageProps): JSX.Element {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

@@ -8,8 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useSWR, { useSWRConfig } from 'swr';
 import { DelegateInfo } from '../types';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type DelegateInfoResponse = {
   data: DelegateInfo | null;
@@ -18,8 +17,7 @@ type DelegateInfoResponse = {
 };
 
 export const useSingleDelegateInfo = (address: string): DelegateInfoResponse => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { cache } = useSWRConfig();
   const dataKey = `/api/delegates/${address}/info?network=${network}`;
 

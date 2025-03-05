@@ -18,16 +18,14 @@ import { SpellData } from 'modules/executive/types';
 import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
 import logger from 'lib/logger';
 import { toast } from 'react-toastify';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export default function CustomSpell(): JSX.Element {
   const [spellAddress, setSpellAddress] = useState<string | null>(null);
   const [spellData, setSpellData] = useState<SpellData | null | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [voting, setVoting] = useState(false);
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { account, votingAccount } = useAccount();
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();

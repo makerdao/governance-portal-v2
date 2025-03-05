@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useSWR from 'swr';
 import { BigNumber } from 'ethers';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useAccount } from 'wagmi';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { TokenName } from 'modules/web3/types/tokens';
 
@@ -23,14 +23,8 @@ type UseTokenBalanceResponse = {
 // other than for a connected account
 // if no address passed, assume we want connected account balance
 export const useTokenBalance = (token: TokenName, address?: string): UseTokenBalanceResponse => {
-  let account;
-
-  if (address) {
-    account = address;
-  } else {
-    const activeWeb3 = useWeb3();
-    account = activeWeb3.account;
-  }
+  const { address: connectedAddress } = useAccount();
+  const account = address || connectedAddress;
 
   const contracts = useContracts();
   const tokenContract = contracts[token];

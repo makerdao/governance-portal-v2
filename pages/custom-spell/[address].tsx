@@ -18,8 +18,7 @@ import { SpellData } from 'modules/executive/types';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   spellAddress: string;
@@ -28,8 +27,7 @@ type Props = {
 
 export default function CustomSpellAddress({ spellAddress, spellDetails }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { account, votingAccount } = useAccount();
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();

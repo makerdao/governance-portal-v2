@@ -22,12 +22,10 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Tabs from 'modules/app/components/Tabs';
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse }): React.ReactElement {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { data: statsData } = useSWR<AddressAPIStats>(
     addressInfo
       ? `/api/address/stats?address=${

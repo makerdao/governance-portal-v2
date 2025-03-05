@@ -12,8 +12,7 @@ import { getVoteProxyAddresses, VoteProxyAddresses } from '../helpers/getVotePro
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from './useNetwork';
 
 type VoteProxyAddressResponse = {
   data?: VoteProxyAddresses;
@@ -23,8 +22,7 @@ type VoteProxyAddressResponse = {
 
 export const useVoteProxyOldAddress = (account?: string): VoteProxyAddressResponse => {
   const { voteProxyFactoryOld } = useContracts() as MainnetSdk;
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const { data, error } = useSWR(
     account && network !== SupportedNetworks.MAINNET ? `${account}/vote-proxy-address` : null,

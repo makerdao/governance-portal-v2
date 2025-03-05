@@ -44,8 +44,7 @@ import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
 import { parseUnits } from 'ethers/lib/utils';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   proposal: Proposal;
@@ -87,8 +86,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { account } = useAccount();
 
   const bpi = useBreakpointIndex();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
@@ -421,8 +419,7 @@ export default function ProposalPage({
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
   // const spellAddress = prefetchedProposal?.address;

@@ -25,8 +25,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogOverlay, DialogContent } from './Dialog';
 import BoxWithClose from './BoxWithClose';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from '../hooks/useNetwork';
 
 type StatField =
   | 'chief contract'
@@ -84,8 +83,7 @@ export default function SystemStatsSidebar({
   fields: StatField[];
   className?: string;
 }): JSX.Element {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   const statsMap = {
     'chief contract': key => {

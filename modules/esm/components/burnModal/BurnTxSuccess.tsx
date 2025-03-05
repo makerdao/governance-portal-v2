@@ -10,12 +10,10 @@ import { Flex, Button, Text, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { TXMined } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const BurnTxSuccess = ({ tx, close }) => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

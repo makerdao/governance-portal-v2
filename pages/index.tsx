@@ -41,8 +41,7 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const LandingPage = ({
   proposals,
@@ -294,8 +293,7 @@ export default function Index({
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const [delegatesData, delegatesInfo] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {

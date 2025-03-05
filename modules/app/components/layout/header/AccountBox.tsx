@@ -13,8 +13,7 @@ import { formatAddress } from 'lib/utils';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   address: string;
@@ -25,8 +24,7 @@ type Props = {
 
 const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.Element => {
   const [copied, setCopied] = useState(false);
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>

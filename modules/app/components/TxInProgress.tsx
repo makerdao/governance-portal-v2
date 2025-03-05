@@ -10,8 +10,7 @@ import { Flex, Text, Box } from '@theme-ui/components';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from '../hooks/useNetwork';
 
 type Props = {
   tx: any;
@@ -20,8 +19,7 @@ type Props = {
 };
 
 export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => {
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>

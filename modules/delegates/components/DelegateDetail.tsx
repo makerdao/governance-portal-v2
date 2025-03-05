@@ -36,8 +36,7 @@ import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type PropTypes = {
   delegate: Delegate;
@@ -45,8 +44,7 @@ type PropTypes = {
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { cache } = useSWRConfig();
   const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
 

@@ -26,8 +26,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber, utils } from 'ethers';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -49,8 +48,7 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const { voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
 
   const spellAddress = proposal ? proposal.address : address ? address : '';

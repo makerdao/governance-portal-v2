@@ -47,8 +47,7 @@ import usePollsStore from 'modules/polling/stores/polls';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
-import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const editMarkdown = (content: string) => {
   // hide the duplicate proposal title
@@ -397,8 +396,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const chainId = useChainId();
-  const network = chainIdToNetworkName(chainId);
+  const network = useNetwork();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
