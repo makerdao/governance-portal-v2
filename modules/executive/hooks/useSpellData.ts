@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useSWR, { useSWRConfig } from 'swr';
 import { SpellData } from 'modules/executive/types/spellData';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchJson } from 'lib/fetchJson';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type SpellDataResponse = {
   data?: SpellData;
@@ -19,7 +19,7 @@ type SpellDataResponse = {
 };
 
 export const useSpellData = (proposalAddress: string): SpellDataResponse => {
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   const dataKey = proposalAddress
     ? `/api/executive/analyze-spell/${proposalAddress}?network=${network}`

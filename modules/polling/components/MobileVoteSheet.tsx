@@ -19,11 +19,11 @@ import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import QuickVote from './poll-vote-input/QuickVote';
 import { BallotContext } from '../context/BallotContext';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { fetchSinglePoll } from '../api/fetchPollBy';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 enum ViewState {
   START,
@@ -47,7 +47,7 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   const { ballot, ballotCount } = useContext(BallotContext);
 

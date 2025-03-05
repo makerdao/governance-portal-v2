@@ -13,7 +13,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { screen } from '@testing-library/react';
 import Header from '../layout/Header';
 import { renderWithTheme as render } from '../../../../__tests__/helpers';
-import { useWeb3React } from '@web3-react/core';
 import { formatAddress } from 'lib/utils';
 import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -43,9 +42,6 @@ jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null
 
 describe('Header component', () => {
   beforeEach(() => {
-    (useWeb3React as jest.Mock).mockReturnValue({
-      account: ''
-    });
     (useSingleDelegateInfo as jest.Mock).mockReturnValue({ data: null });
     (useAccount as jest.Mock).mockReturnValue({
       account: ''
@@ -65,10 +61,6 @@ describe('Header component', () => {
   test('display account when connected', async () => {
     const address = '0x477b8D5eF7C2C42DB84deB555419cd817c336b6J';
 
-    (useWeb3React as jest.Mock).mockReturnValue({
-      account: address,
-      activate: () => null
-    });
     (useAccount as jest.Mock).mockReturnValue({
       account: address
     });

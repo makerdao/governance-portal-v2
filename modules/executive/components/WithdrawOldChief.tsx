@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert } from 'theme-ui';
-import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import TxIndicators from 'modules/app/components/TxIndicators';
 
@@ -16,28 +15,27 @@ import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useOldChiefFree } from 'modules/mkr/hooks/useOldChiefFree';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useContracts } from 'modules/web3/hooks/useContracts';
 import { formatValue } from 'lib/string';
-import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { useChainId, useReadContract } from 'wagmi';
+import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
 
 // Note this only works on mainnet
 // TODO: Check that the amounts for allowance are correct
 // TODO: Test with e2e
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
-
-  const { chiefOld } = useContracts() as MainnetSdk;
+  const chainId = useChainId();
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU_OLD,
     parseUnits('100000000'),
     account,
-    voteProxyOldContractAddress ? undefined : chiefOld.address
+    voteProxyOldContractAddress ? undefined : chiefOldAddress[chainId]
   );
 
   const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU_OLD);
@@ -46,9 +44,17 @@ const ModalContent = ({ close, ...props }) => {
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
 
-  const { data: lockedMkr } = useSWR(account ? `/user/mkr-locked-old-chief/${account}` : null, () =>
-    chiefOld.deposits(lockedMkrKeyOldChief as string)
-  );
+  const { data: lockedMkr } = useReadContract({
+    address: chiefOldAddress[chainId],
+    abi: chiefOldAbi,
+    chainId,
+    functionName: 'deposits',
+    args: [lockedMkrKeyOldChief as `0x${string}`],
+    scopeKey: `/user/mkr-locked-old-chief/${lockedMkrKeyOldChief}`,
+    query: {
+      enabled: !!lockedMkrKeyOldChief
+    }
+  });
 
   const { free, tx: freeTx, setTxId: resetFree } = useOldChiefFree();
 
@@ -125,7 +131,7 @@ const ModalContent = ({ close, ...props }) => {
               data-testid="button-approve-voting-contract"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
-                approve(chiefOld.address, {
+                approve(chiefOldAddress[chainId], {
                   mined: () => mutateTokenAllowance()
                 });
               }}

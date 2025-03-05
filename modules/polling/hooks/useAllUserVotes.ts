@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import useSWR from 'swr';
 import { PollTallyVote } from 'modules/polling/types';
 import { fetchAllCurrentVotes } from '../api/fetchAllCurrentVotes';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type AllUserVotesResponse = {
   data?: PollTallyVote[];
@@ -19,7 +19,7 @@ type AllUserVotesResponse = {
 };
 
 export const useAllUserVotes = (address?: string): AllUserVotesResponse => {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { data, error, mutate } = useSWR<PollTallyVote[]>(
     address ? `/user/voting-for/${address}` : null,
     () => {

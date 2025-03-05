@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useAccount, useChainId } from 'wagmi';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
@@ -27,7 +28,9 @@ type LockResponse = BaseTransactionResponse & {
 export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { chainId, provider, account } = useWeb3();
+  const { provider } = useWeb3();
+  const chainId = useChainId();
+  const { address: account } = useAccount();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

@@ -8,12 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Button, Text, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { TXMined } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const BurnTxSuccess = ({ tx, close }) => {
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

@@ -10,7 +10,6 @@ import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'lib/bigNumberJs';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
@@ -23,6 +22,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -192,7 +192,7 @@ type AddressDelegatedToProps = {
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   return (
     <Box>

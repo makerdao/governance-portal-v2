@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { fetchJson } from 'lib/fetchJson';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 import useSWR from 'swr';
 import { PollTally } from '../types';
 
@@ -19,7 +19,7 @@ type UsePollTallyResponse = {
 };
 
 export function usePollTally(pollId: number, refreshInterval = 0): UsePollTallyResponse {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const {
     data: tallyData,
     mutate,

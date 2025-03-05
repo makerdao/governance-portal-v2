@@ -20,21 +20,22 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { parseUnits } from 'ethers/lib/utils';
-import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useFree } from '../hooks/useFree';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { useChainId } from 'wagmi';
+import { chiefAddress } from 'modules/contracts/generated';
 
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
+  const chainId = useChainId();
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
-  const { chief } = useContracts();
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
     parseUnits('100000000'),
     account,
-    voteProxyContract ? undefined : chief.address
+    voteProxyContract ? undefined : chiefAddress[chainId]
   );
 
   const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU);
@@ -134,7 +135,7 @@ const ModalContent = ({ close, ...props }) => {
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
-                approve(chief.address, {
+                approve(chiefAddress[chainId], {
                   mined: () => {
                     mutateTokenAllowance();
                     resetApprove(null);

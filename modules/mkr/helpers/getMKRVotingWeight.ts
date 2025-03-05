@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { BigNumber } from 'ethers';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -29,6 +30,7 @@ export async function getMKRVotingWeight(
   excludeDelegateOwnerBalance: boolean
 ): Promise<MKRVotingWeightResponse> {
   const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+  const chainId = networkNameToChainId(network);
 
   // first check if the address is a delegate contract and if so return the balance locked in the delegate contract
   const voteDelegateAddress = !excludeDelegateOwnerBalance
@@ -46,7 +48,12 @@ export async function getMKRVotingWeight(
   }
 
   // next check if address is part of a proxy set up
-  const voteProxyAddresses = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
+  const voteProxyAddresses = await getVoteProxyAddresses(
+    voteProxyFactoryAddress[chainId],
+    voteProxyFactoryAbi,
+    address,
+    network
+  );
 
   if (
     voteProxyAddresses.hasProxy &&

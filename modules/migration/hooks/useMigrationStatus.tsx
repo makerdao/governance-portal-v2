@@ -7,13 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
-import { isAboutToExpireCheck, isExpiredCheck } from '../helpers/expirationChecks';
+import { isExpiredCheck } from '../helpers/expirationChecks';
 import BigNumber from 'bignumber.js';
 import useSWR, { useSWRConfig } from 'swr';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { fetchJson } from 'lib/fetchJson';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { useAccount } from 'wagmi';
 
 export function useMigrationStatus(): {
   isDelegateContractExpired: boolean;
@@ -21,7 +22,8 @@ export function useMigrationStatus(): {
   isDelegateV1Contract: boolean;
   isDelegatedToV1Contract: boolean;
 } {
-  const { account: address, network } = useWeb3();
+  const { address } = useAccount();
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const { data: delegatedToData } = useDelegatedTo(address, network);

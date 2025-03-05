@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useAccount, useChainId } from 'wagmi';
 import { useVoteProxyOldAddress } from './useVoteProxyOldAddress';
 import { VoteProxy } from '../../../types/ethers-contracts';
 
@@ -20,7 +21,9 @@ type VoteDelegateResponse = {
 };
 
 export const useCurrentUserVoteProxyOldContract = (): VoteDelegateResponse => {
-  const { chainId, provider, account } = useWeb3();
+  const { provider } = useWeb3();
+  const chainId = useChainId();
+  const { address: account } = useAccount();
 
   const { data } = useVoteProxyOldAddress(account);
 

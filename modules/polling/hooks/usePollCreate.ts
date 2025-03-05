@@ -16,7 +16,6 @@ import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
@@ -37,10 +36,10 @@ export const usePollCreate = (): CreateResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
-  const { network, provider } = useWeb3();
+  const { provider } = useWeb3();
 
   // We want to use the original polling contract deployment for creating polls to avoid pollId collisions
-  const { pollingOld, polling } = useContracts() as MainnetSdk;
+  const { pollingOld } = useContracts() as MainnetSdk;
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -53,8 +52,12 @@ export const usePollCreate = (): CreateResponse => {
     }
 
     const createTxCreator = async () => {
-      const populatedTransaction = await pollingOld
-        .populateTransaction.createPoll(startDate, endDate, multiHash, url);
+      const populatedTransaction = await pollingOld.populateTransaction.createPoll(
+        startDate,
+        endDate,
+        multiHash,
+        url
+      );
 
       return sendTransaction(populatedTransaction, provider, account);
     };

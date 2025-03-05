@@ -15,7 +15,6 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
 import { formatDateWithTime } from 'lib/datetime';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
@@ -23,6 +22,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -107,7 +107,8 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${formatValue(
-                      BigNumber.from(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount), 'wad'
+                      BigNumber.from(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount),
+                      'wad'
                     )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
@@ -176,7 +177,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   const [sortBy, setSortBy] = useState({
     type: 'mkr',

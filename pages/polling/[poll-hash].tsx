@@ -37,7 +37,6 @@ import BigNumber from 'lib/bigNumberJs';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -48,6 +47,7 @@ import usePollsStore from 'modules/polling/stores/polls';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const editMarkdown = (content: string) => {
   // hide the duplicate proposal title
@@ -396,7 +396,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {

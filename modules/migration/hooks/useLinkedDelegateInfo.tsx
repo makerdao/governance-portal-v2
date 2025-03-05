@@ -6,9 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
 import { getLatestOwnerFromOld, getOriginalOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import { useAccount } from 'wagmi';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export function useLinkedDelegateInfo(): {
   latestOwnerAddress?: string;
@@ -17,7 +18,8 @@ export function useLinkedDelegateInfo(): {
   originalOwnerConnected: boolean;
   latestOwnerHasDelegateContract: boolean;
 } {
-  const { account: address, network } = useWeb3();
+  const network = useNetwork();
+  const { address } = useAccount();
 
   const {
     data: { expiration: delegateContractExpirationDate }

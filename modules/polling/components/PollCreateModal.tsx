@@ -13,7 +13,7 @@ import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { usePollCreate } from '../hooks/usePollCreate';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
@@ -125,7 +125,7 @@ const Signing = ({ close }) => (
 );
 
 const Pending = ({ tx, close }) => {
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

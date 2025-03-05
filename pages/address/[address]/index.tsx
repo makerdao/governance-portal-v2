@@ -23,11 +23,11 @@ import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { DelegateDetail, DelegatesSystemInfo } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesAPIStats, DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const AddressView = ({
   addressInfo,
@@ -114,7 +114,7 @@ const AddressView = ({
 export default function AddressPage(): JSX.Element {
   const router = useRouter();
   const { address } = router.query;
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const dataKeyAccount = `/api/address/${address}?network=${network}`;

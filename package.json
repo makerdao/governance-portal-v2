@@ -20,6 +20,7 @@
     "gql-generate": "graphql-codegen --config codegen.yml",
     "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
     "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\"",
+    "generate": "wagmi generate",
     "e2e": "playwright test --trace on",
     "e2e:ui": "playwright test --ui"
   },
@@ -34,11 +35,13 @@
     "@metamask/post-message-stream": "^7.0.0",
     "@metamask/providers": "^14.0.2",
     "@octokit/core": "^4.0.5",
+    "@rainbow-me/rainbowkit": "^2.2.4",
     "@reach/dialog": "^0.16.2",
     "@reach/listbox": "^0.18.0",
     "@reach/menu-button": "^0.16.2",
     "@reach/tabs": "^0.10.3",
     "@reach/tooltip": "^0.16.2",
+    "@tanstack/react-query": "^5.67.1",
     "@theme-ui/color": "^0.14.4",
     "@theme-ui/css": "^0.12.0",
     "@theme-ui/match-media": "^0.12.0",
@@ -90,6 +93,8 @@
     "unified": "^10.1.2",
     "uuid": "^8.3.0",
     "valid-url": "^1.0.9",
+    "viem": "^2.23.6",
+    "wagmi": "^2.14.12",
     "zustand": "^2.2.3"
   },
   "devDependencies": {
@@ -114,6 +119,7 @@
     "@types/testing-library__jest-dom": "^5.14.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
+    "@wagmi/cli": "^2.2.0",
     "babel-plugin-istanbul": "^6.1.1",
     "bignumber.js": "^9.0.1",
     "dotenv": "^8.2.0",
