@@ -10,7 +10,6 @@ import { useState } from 'react';
 import { Card, Flex, Text, Box, Heading, IconButton } from 'theme-ui';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { request } from 'graphql-request';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
@@ -19,11 +18,11 @@ import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { config } from 'lib/config';
 import { useChainId } from 'wagmi';
-import { mkrAddress as mkrAddressMapping } from 'modules/contracts/generated';
+import { mkrAbi, mkrAddress as mkrAddressMapping } from 'modules/contracts/generated';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
@@ -92,8 +91,14 @@ async function getCompoundMkr(network: SupportedNetworks) {
   if (network !== SupportedNetworks.MAINNET) return BigNumber.from(0);
 
   const chainId = networkNameToChainId(network);
-  const { mkr: mkrContract } = getContracts(chainId);
-  const compoundMkr = await mkrContract.balanceOf(compoundCTokenAddress);
+  const publicClient = getPublicClient(chainId);
+
+  const compoundMkr = await publicClient.readContract({
+    address: mkrAddressMapping[chainId],
+    abi: mkrAbi,
+    functionName: 'balanceOf',
+    args: [compoundCTokenAddress]
+  });
 
   return compoundMkr;
 }

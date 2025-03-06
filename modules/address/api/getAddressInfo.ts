@@ -10,7 +10,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
 import { AddressApiResponse } from '../types/addressApiResponse';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { getAddressDetailCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
@@ -28,7 +27,6 @@ export async function getAddressInfo(
     return JSON.parse(cachedAddressInfo);
   }
 
-  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
   const chainId = networkNameToChainId(network);
 
   // Find the voty proxy for the address (in case there's one)
@@ -43,7 +41,7 @@ export async function getAddressInfo(
   const delegate = await fetchDelegate(address, network);
 
   // Find the delegate contract address if the address is a normal wallet
-  const voteDelegateAdress = await getDelegateContractAddress(contracts, address);
+  const voteDelegateAdress = await getDelegateContractAddress(address, chainId);
 
   const response: AddressApiResponse = {
     isDelegate: !!delegate,

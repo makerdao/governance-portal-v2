@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchAllCurrentVotes } from 'modules/polling/api/fetchAllCurrentVotes';
 import logger from 'lib/logger';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
@@ -21,11 +20,10 @@ export async function ballotIncludesAlreadyVoted(
   pollIds: string[]
 ): Promise<boolean> {
   try {
-    const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
     const chainId = networkNameToChainId(network);
 
     const [voteDelegateAddress, voteProxyAddress] = await Promise.all([
-      getDelegateContractAddress(contracts, voter),
+      getDelegateContractAddress(voter, chainId),
       getVoteProxyAddresses(voteProxyFactoryAddress[chainId], voteProxyFactoryAbi, voter, network)
     ]);
 

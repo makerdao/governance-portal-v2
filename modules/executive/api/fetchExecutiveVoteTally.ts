@@ -6,30 +6,33 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Chief } from '.dethcrypto/eth-sdk-client/esm/types';
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
-import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 import { formatValue } from 'lib/string';
 import { paddedBytes32ToAddress } from 'lib/utils';
-import { BigNumber } from 'ethers';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 type AddressWithVotes = {
   votes: string[];
-  slate: string;
+  slate: `0x${string}`;
   address: string;
-  deposits: BigNumber;
+  deposits: bigint;
 };
 
-export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null> {
-  const filter = {
-    fromBlock: DEPLOYMENT_BLOCK[chief.address],
+export async function fetchExecutiveVoteTally(network: SupportedNetworks): Promise<any | null> {
+  const chainId = networkNameToChainId(network);
+  const publicClient = getPublicClient(chainId);
+
+  const locks = await publicClient.getLogs({
+    fromBlock: DEPLOYMENT_BLOCK[chiefAddress[chainId]],
     toBlock: 'latest',
-    address: chief.address,
-    // TODO: get the encoded function signature from ethers
-    topics: ['0xdd46706400000000000000000000000000000000000000000000000000000000']
-  };
-  const locks = await chief.provider.getLogs(filter);
+    address: chiefAddress[chainId],
+    event: chiefAbi[2],
+    args: { sig: '0xdd46706400000000000000000000000000000000000000000000000000000000' }
+  });
   const voters: string[] = [];
 
   // get unique voters
@@ -52,25 +55,39 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
   for (const chunk of voterChunks) {
     const withDeposits = await Promise.all(
       chunk.map(voter =>
-        getChiefDeposits(voter, chief).then(deposits => ({
-          address: voter,
-          deposits
-        }))
+        publicClient
+          .readContract({
+            address: chiefAddress[chainId],
+            abi: chiefAbi,
+            functionName: 'deposits',
+            args: [voter as `0x${string}`]
+          })
+          .then(deposits => ({
+            address: voter,
+            deposits
+          }))
       )
     );
 
     const withSlates = await Promise.all(
       withDeposits.map(addressDeposit =>
-        chief.votes(addressDeposit.address).then(slate => ({
-          ...addressDeposit,
-          slate
-        }))
+        publicClient
+          .readContract({
+            address: chiefAddress[chainId],
+            abi: chiefAbi,
+            functionName: 'votes',
+            args: [addressDeposit.address as `0x${string}`]
+          })
+          .then(slate => ({
+            ...addressDeposit,
+            slate
+          }))
       )
     );
 
     const withVotes = await Promise.all(
       withSlates.map(withSlate =>
-        getSlateAddresses(chief, withSlate.slate).then(addresses => ({
+        getSlateAddresses(chainId, chiefAddress[chainId], chiefAbi, withSlate.slate).then(addresses => ({
           ...withSlate,
           votes: addresses
         }))

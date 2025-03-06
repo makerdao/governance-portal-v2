@@ -8,12 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getMKRVotingWeight } from './getMKRVotingWeight';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { BigNumber } from 'ethers';
 
-jest.mock('modules/web3/helpers/getContracts');
 jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 jest.mock('modules/app/helpers/getVoteProxyAddresses');
 
@@ -27,15 +25,6 @@ describe('getMKRVotingWeight', () => {
     return Promise.resolve(BigNumber.from(0));
   });
   beforeAll(() => {
-    (getContracts as jest.Mock).mockReturnValue({
-      mkr: {
-        balanceOf: balanceMock
-      },
-      chief: {
-        deposits: () => Promise.resolve(BigNumber.from(0))
-      }
-    });
-
     (getDelegateContractAddress as jest.Mock).mockReturnValue(undefined);
 
     (getVoteProxyAddresses as jest.Mock).mockReturnValue({});
