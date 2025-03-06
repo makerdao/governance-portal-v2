@@ -625,7 +625,7 @@ export async function fetchDelegatesPaginated({
         next: allDelegatesEntry?.next,
         delegateVersion: delegate.version ? parseInt(delegate.version) : 1
       };
-    }) as DelegatePaginated[]
+    }).filter(delegate => includeExpired || !delegate.expired) as DelegatePaginated[]
   };
 
   return delegatesData;
