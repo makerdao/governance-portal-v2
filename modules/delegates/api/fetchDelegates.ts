@@ -25,7 +25,6 @@ import {
   DelegateInfo
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
@@ -44,6 +43,8 @@ import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -220,7 +221,9 @@ export async function fetchDelegates(
   // This contains all the delegates including info merged with aligned delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
+  const chainId = networkNameToChainId(currentNetwork);
+  const publicClient = getPublicClient(chainId);
+
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
@@ -230,9 +233,16 @@ export async function fetchDelegates(
 
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
-      const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
+      const votedSlate = await publicClient.readContract({
+        address: chiefAddress[chainId],
+        abi: chiefAbi,
+        functionName: 'votes',
+        args: [delegate.voteDelegateAddress as `0x${string}`]
+      });
       const votedProposals =
-        votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
+        votedSlate !== ZERO_SLATE_HASH
+          ? await getSlateAddresses(chainId, chiefAddress[chainId], chiefAbi, votedSlate)
+          : [];
       const proposalsSupported: number = votedProposals?.length || 0;
       const execSupported: CMSProposal | undefined = executives?.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
