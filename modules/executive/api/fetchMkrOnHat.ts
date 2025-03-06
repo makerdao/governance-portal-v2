@@ -10,11 +10,10 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
-import { BigNumber } from 'ethers';
 
 export type MkrOnHatResponse = {
   hat: string;
-  mkrOnHat: BigNumber;
+  mkrOnHat: bigint;
 };
 
 export async function fetchMkrOnHat(network?: SupportedNetworks): Promise<MkrOnHatResponse> {
