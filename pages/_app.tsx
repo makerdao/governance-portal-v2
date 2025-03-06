@@ -43,7 +43,13 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const banners = useMemo(() => {
     return (
       <React.Fragment>
-        {activeBannerContent && <Banner content={activeBannerContent.content} />}
+        {activeBannerContent && (
+          <Banner
+            content={activeBannerContent.content}
+            href={activeBannerContent.href}
+            variant={activeBannerContent.variant}
+          />
+        )}
         <MigrationBanner />
       </React.Fragment>
     );

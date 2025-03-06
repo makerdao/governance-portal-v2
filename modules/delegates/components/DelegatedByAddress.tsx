@@ -86,11 +86,11 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: [1, 3] }}>
           {/*TODO why does the lock amount have decimal places? They all end in .0 */}
-          {`${formatValue(BigNumber.from(lockAmount.split('.')[0]), 'wad')}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
-            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+            {sortedEvents.map(({ blockTimestamp, lockAmount, isLockstake }) => {
               return (
                 <Flex
                   key={blockTimestamp}
@@ -107,8 +107,11 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${formatValue(
-                      BigNumber.from(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount), 'wad'
+                      parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
+                  </Text>
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {isLockstake ? '(Seal)' : ''}
                   </Text>
                 </Flex>
               );

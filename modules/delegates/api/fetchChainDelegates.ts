@@ -25,8 +25,11 @@ export async function fetchChainDelegates(
   });
 
   return data.delegates.map(d => {
+    // Ensure blockTimestamp is a valid number
+    const blockTimestamp = d.blockTimestamp ? Number(d.blockTimestamp) : 0;
+
     return {
-      blockTimestamp: d.blockTimestamp,
+      blockTimestamp,
       address: d.ownerAddress,
       voteDelegateAddress: d.id,
       mkrDelegated: formatValue(BigNumber.from(d.totalDelegated), 'wad', 18, false),

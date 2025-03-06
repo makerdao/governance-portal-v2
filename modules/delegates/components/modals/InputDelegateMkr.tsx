@@ -20,6 +20,7 @@ import { parseUnits } from 'ethers/lib/utils';
 type Props = {
   title: string;
   description: string;
+  disclaimer?: JSX.Element;
   onChange: (val: BigNumber) => void;
   balance?: BigNumber;
   buttonLabel: string;
@@ -34,7 +35,8 @@ export function InputDelegateMkr({
   balance,
   buttonLabel,
   onClick,
-  showAlert
+  showAlert,
+  disclaimer
 }: Props): React.ReactElement {
   const [value, setValue] = useState(BigNumber.from(0));
   const { account, voteProxyContractAddress } = useAccount();
@@ -61,6 +63,7 @@ export function InputDelegateMkr({
         >
           {buttonLabel}
         </Button>
+        {disclaimer}
       </Box>
       {showAlert && lockedMkr && lockedMkr.gte(parseUnits('0.1')) && balance && balance.gt(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>

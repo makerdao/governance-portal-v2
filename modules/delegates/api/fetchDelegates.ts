@@ -32,7 +32,7 @@ import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegationHistory';
 import { CMSProposal } from 'modules/executive/types';
 import { isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
-import { getNewOwnerFromPrevious, getPreviousOwnerFromNew } from 'modules/migration/delegateAddressLinks';
+import { getLatestOwnerFromOld, getOriginalOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
@@ -46,22 +46,24 @@ import { fetchDelegationMetrics } from './fetchDelegationMetrics';
 
 function mergeDelegateInfo({
   onChainDelegate,
-  previousOnChainDelegate,
+  originalOnChainDelegate,
   newOnChainDelegate,
   githubDelegate
 }: {
   onChainDelegate: DelegateContractInformation;
   githubDelegate?: DelegateRepoInformation;
-  previousOnChainDelegate?: DelegateContractInformation;
+  originalOnChainDelegate?: DelegateContractInformation;
   newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
-  // check if contract is expired to assess the status
-  const hasExpiration = onChainDelegate.version === '1';
-  const expirationDate = hasExpiration
-    ? add(new Date(Number(onChainDelegate.blockTimestamp) * 1000), { years: 1 })
-    : null;
-
-  const isExpired = !!expirationDate && isBefore(new Date(expirationDate), new Date());
+  // check if contract is expired to assing the status
+  const expirationDate =
+    onChainDelegate.delegateVersion === 2
+      ? undefined
+      : add(new Date(Number(onChainDelegate.blockTimestamp || 0) * 1000), { years: 1 });
+  const isExpired =
+    onChainDelegate.delegateVersion === 2 ? false : isBefore(new Date(expirationDate!), new Date());
+  const isAboutToExpire =
+    onChainDelegate.delegateVersion === 2 ? false : isAboutToExpireCheck(expirationDate);
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
@@ -73,7 +75,7 @@ function mergeDelegateInfo({
       : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate,
-    isAboutToExpire: isAboutToExpireCheck(expirationDate),
+    isAboutToExpire,
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || 'Shadow Delegate',
     picture: githubDelegate?.picture || '',
@@ -90,10 +92,10 @@ function mergeDelegateInfo({
     execSupported: undefined,
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp,
-    ...(previousOnChainDelegate && {
+    ...(originalOnChainDelegate && {
       previous: {
-        address: previousOnChainDelegate.address,
-        voteDelegateAddress: previousOnChainDelegate.voteDelegateAddress
+        address: originalOnChainDelegate.address,
+        voteDelegateAddress: originalOnChainDelegate.voteDelegateAddress
       }
     }),
     ...(newOnChainDelegate && {
@@ -101,7 +103,8 @@ function mergeDelegateInfo({
         address: newOnChainDelegate.address,
         voteDelegateAddress: newOnChainDelegate.voteDelegateAddress
       }
-    })
+    }),
+    delegateVersion: onChainDelegate.delegateVersion || 1
   };
 }
 
@@ -129,32 +132,30 @@ export async function fetchDelegate(
   onChainDelegate.mkrLockedDelegate = delegationEvents;
 
   // check if delegate owner has link to a previous contract
-  const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
+  const originalOwnerAddress = getOriginalOwnerFromNew(onChainDelegate.address, currentNetwork);
 
-  // fetch the previous contract if so
-  const previousOnChainDelegate = previousOwnerAddress
-    ? onChainDelegates.find(i => i.address.toLowerCase() === previousOwnerAddress.toLowerCase())
+  // fetch the original contract if so
+  const originalOnChainDelegate = originalOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === originalOwnerAddress.toLowerCase())
     : undefined;
 
   // check if delegate owner has a link to a newer contract
-  const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
+  const latestOwnerAddress = getLatestOwnerFromOld(onChainDelegate.address, currentNetwork);
 
   // fetch the newer contract if so
-  const newOnChainDelegate = newOwnerAddress
-    ? onChainDelegates.find(i => i.address.toLowerCase() === newOwnerAddress.toLowerCase())
+  const newOnChainDelegate = latestOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === latestOwnerAddress.toLowerCase())
     : undefined;
 
-  // note: this will only go back one contract relationship
-  // TODO: create a helper to fetch the earliest contract address
   // fetch github info for delegate (if they have a link to prev contract, prev contract is the info directory key)
   const { data: githubDelegate } = await fetchGithubDelegate(
-    previousOnChainDelegate
-      ? previousOnChainDelegate.voteDelegateAddress
+    originalOnChainDelegate
+      ? originalOnChainDelegate.voteDelegateAddress
       : onChainDelegate.voteDelegateAddress,
     currentNetwork
   );
 
-  return mergeDelegateInfo({ onChainDelegate, previousOnChainDelegate, githubDelegate, newOnChainDelegate });
+  return mergeDelegateInfo({ onChainDelegate, originalOnChainDelegate, githubDelegate, newOnChainDelegate });
 }
 
 // Returns the delegate info without the chain data about votes
@@ -168,34 +169,32 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
   // Map all the raw delegates info and map it to Delegate structure with the github info
   const mergedDelegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
     // check if delegate owner has link to a previous contract
-    const previousOwnerAddress = getPreviousOwnerFromNew(onChainDelegate.address, currentNetwork);
+    const originalOwnerAddress = getOriginalOwnerFromNew(onChainDelegate.address, currentNetwork);
 
-    // fetch the previous contract if so
-    const previousOnChainDelegate = previousOwnerAddress
-      ? onChainDelegates.find(i => i.address.toLowerCase() === previousOwnerAddress.toLowerCase())
+    // fetch the original contract if so
+    const originalOnChainDelegate = originalOwnerAddress
+      ? onChainDelegates.find(i => i.address.toLowerCase() === originalOwnerAddress.toLowerCase())
       : undefined;
 
     // check if delegate owner has a link to a newer contract
-    const newOwnerAddress = getNewOwnerFromPrevious(onChainDelegate.address, currentNetwork);
+    const latestOwnerAddress = getLatestOwnerFromOld(onChainDelegate.address, currentNetwork);
 
     // fetch the newer contract if so
-    const newOnChainDelegate = newOwnerAddress
-      ? onChainDelegates.find(i => i.address.toLowerCase() === newOwnerAddress.toLowerCase())
+    const newOnChainDelegate = latestOwnerAddress
+      ? onChainDelegates.find(i => i.address.toLowerCase() === latestOwnerAddress.toLowerCase())
       : undefined;
 
-    // note: this will only go back one contract relationship
-    // TODO: create a helper to fetch the earliest contract address
     const githubDelegate = gitHubDelegates
       ? gitHubDelegates.find(
           i =>
             i.voteDelegateAddress.toLowerCase() ===
-            (previousOnChainDelegate ?? onChainDelegate).voteDelegateAddress.toLowerCase()
+            (originalOnChainDelegate ?? onChainDelegate).voteDelegateAddress.toLowerCase()
         )
       : undefined;
 
     return mergeDelegateInfo({
       onChainDelegate,
-      previousOnChainDelegate,
+      originalOnChainDelegate,
       githubDelegate,
       newOnChainDelegate
     });
@@ -269,7 +268,7 @@ export async function fetchDelegates(
       const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
       return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
     } else if (sortBy === 'date') {
-      return a.blockTimestamp > b.blockTimestamp ? -1 : 1;
+      return a.expirationDate && b.expirationDate ? (a.expirationDate > b.expirationDate ? -1 : 1) : 0;
     } else if (sortBy === 'delegators') {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
@@ -321,36 +320,39 @@ export async function fetchAndMergeDelegates(
   ]);
 
   const allDelegatesWithNamesAndLinks = allDelegateAddresses.map(delegate => {
-    const oldOwner = getPreviousOwnerFromNew(delegate.delegate, network);
-    const newOwner = getNewOwnerFromPrevious(delegate.delegate, network);
+    const originalOwner = getOriginalOwnerFromNew(delegate.delegate, network);
+    const latestOwner = getLatestOwnerFromOld(delegate.delegate, network);
 
-    const oldContractAddress = allDelegateAddresses.find(del => del.delegate === oldOwner)?.voteDelegate;
-    const newContractAddress = allDelegateAddresses.find(del => del.delegate === newOwner)?.voteDelegate;
+    const oldContractAddress = allDelegateAddresses.find(del => del.delegate === originalOwner)?.voteDelegate;
+    const newContractAddress = allDelegateAddresses.find(del => del.delegate === latestOwner)?.voteDelegate;
 
     const ghDelegate = githubDelegates?.find(del =>
-      [delegate.voteDelegate, oldContractAddress, newContractAddress].includes(
+      [delegate.voteDelegate.toLowerCase(), oldContractAddress?.toLowerCase(), newContractAddress?.toLowerCase()].includes(
         del.voteDelegateAddress.toLowerCase()
       )
     );
 
-    const expirationDate = add(new Date(delegate.blockTimestamp), { years: 1 });
-
+    const expirationDate =
+      delegate.delegateVersion === 2 ? undefined : add(new Date(Number(delegate.blockTimestamp || 0) * 1000), { years: 1 });
+    const expired =
+      delegate.delegateVersion === 2 ? false : expirationDate && expirationDate > new Date() ? false : true;
+    const isAboutToExpire = delegate.delegateVersion === 2 ? false : isAboutToExpireCheck(expirationDate);
     return {
       ...delegate,
       delegateType: ghDelegate ? DelegateTypeEnum.ALIGNED : DelegateTypeEnum.SHADOW,
       blockTimestamp: delegate.blockTimestamp,
       expirationDate,
-      expired: expirationDate > new Date() ? false : true,
-      isAboutToExpire: isAboutToExpireCheck(expirationDate),
+      expired,
+      isAboutToExpire,
       name: ghDelegate?.name,
       picture: ghDelegate?.picture,
       previous:
-        oldOwner && oldContractAddress
-          ? { address: oldOwner, voteDelegateAddress: oldContractAddress }
+        originalOwner && oldContractAddress
+          ? { address: originalOwner, voteDelegateAddress: oldContractAddress }
           : undefined,
       next:
-        newOwner && newContractAddress
-          ? { address: newOwner, voteDelegateAddress: newContractAddress }
+        latestOwner && newContractAddress
+          ? { address: latestOwner, voteDelegateAddress: newContractAddress }
           : undefined
     };
   });
@@ -390,7 +392,8 @@ export async function fetchSingleDelegateInfo(
     expired: foundDelegate.expired,
     isAboutToExpire: foundDelegate.isAboutToExpire,
     previous: foundDelegate.previous,
-    next: foundDelegate.next
+    next: foundDelegate.next,
+    delegateVersion: foundDelegate.delegateVersion
   };
 }
 
@@ -429,7 +432,8 @@ export async function fetchDelegatesInfo(
         expired: delegate.expired,
         isAboutToExpire: delegate.isAboutToExpire,
         previous: delegate.previous,
-        next: delegate.next
+        next: delegate.next,
+        delegateVersion: delegate.delegateVersion
       };
     });
 
@@ -528,22 +532,81 @@ export async function fetchDelegatesPaginated({
       const execSupported = githubExecutives.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
-      const creationDate = new Date(delegate.blockTimestamp * 1000);
-      const expirationDate =
-        delegate.version == '1' ? add(new Date(Number(delegate.blockTimestamp) * 1000), { years: 1 }) : null;
+
+      // Ensure blockTimestamp is a valid number
+      const blockTimestampNum = delegate.blockTimestamp ? Number(delegate.blockTimestamp) : 0;
+      let creationDate;
+      try {
+        creationDate = new Date(blockTimestampNum * 1000);
+        // Validate the date is valid
+        creationDate.toISOString();
+      } catch (e) {
+        // If date is invalid, use current date as fallback
+        creationDate = new Date();
+      }
+
+      let expirationDate: Date | null = null;
+      if (delegate.version == '1') {
+        try {
+          const tempExpDate = add(new Date(blockTimestampNum * 1000), { years: 1 });
+          // Validate the date is valid
+          tempExpDate.toISOString();
+          expirationDate = tempExpDate;
+        } catch (e) {
+          // If date is invalid, use null as fallback
+          expirationDate = null;
+        }
+      }
+
+      // Handle creationDate from delegate object
+      let finalCreationDate;
+      try {
+        finalCreationDate = delegate.creationDate ? new Date(delegate.creationDate) : creationDate;
+        // Validate the date is valid
+        finalCreationDate.toISOString();
+      } catch (e) {
+        // If date is invalid, use the previously calculated creationDate as fallback
+        finalCreationDate = creationDate;
+      }
+
+      // Handle expirationDate from delegate object
+      let finalExpirationDate: Date | null = null;
+      if (delegate.delegateVersion !== 2 && delegate.expirationDate) {
+        try {
+          const tempDate = new Date(delegate.expirationDate);
+          // Validate the date is valid
+          tempDate.toISOString();
+          finalExpirationDate = tempDate;
+        } catch (e) {
+          // If date is invalid, use the previously calculated expirationDate as fallback
+          finalExpirationDate = expirationDate;
+        }
+      } else if (expirationDate) {
+        finalExpirationDate = expirationDate;
+      }
+
+      const isExpired = delegate.delegateVersion === 2 
+        ? false 
+        : finalExpirationDate ? isBefore(new Date(finalExpirationDate), new Date()) : false;
+
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.id,
         address: delegate.ownerAddress,
-        status: delegate.expired
+        status: isExpired
           ? DelegateStatusEnum.expired
           : githubDelegate
-          ? DelegateStatusEnum.aligned
-          : DelegateStatusEnum.shadow,
-        creationDate,
-        expirationDate,
-        expired: expirationDate && expirationDate < new Date(),
-        isAboutToExpire: isAboutToExpireCheck(new Date(delegate.expirationDate)),
+            ? DelegateStatusEnum.aligned
+            : DelegateStatusEnum.shadow,
+        creationDate: finalCreationDate,
+        expirationDate: delegate.delegateVersion === 2 ? undefined : finalExpirationDate,
+        expired: isExpired,
+        isAboutToExpire:
+          delegate.delegateVersion === 2
+            ? false
+            : finalExpirationDate
+              ? isAboutToExpireCheck(finalExpirationDate)
+              : false,
         picture: githubDelegate?.picture,
         communication: githubDelegate?.communication,
         combinedParticipation: githubDelegate?.combinedParticipation,
@@ -553,11 +616,14 @@ export async function fetchDelegatesPaginated({
         mkrDelegated: delegate.totalDelegated,
         delegatorCount: delegate.delegators,
         lastVoteDate:
-          delegate.voter.lastVotedTimestamp && new Date(Number(delegate.voter.lastVotedTimestamp) * 1000),
+          delegate.voter.lastVotedTimestamp && Number(delegate.voter.lastVotedTimestamp) > 0
+            ? new Date(Number(delegate.voter.lastVotedTimestamp) * 1000)
+            : null,
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
-        next: allDelegatesEntry?.next
+        next: allDelegatesEntry?.next,
+        delegateVersion: delegate.version ? parseInt(delegate.version) : 1
       };
     }) as DelegatePaginated[]
   };

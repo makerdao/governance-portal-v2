@@ -19,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       INFURA_KEY: ${{ secrets.INFURA_KEY }}
-      MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
       POCKET_KEY: ${{ secrets.POCKET_KEY }}
@@ -43,12 +41,12 @@ jobs:
       - name: Build sdk
         run: yarn build-sdk
 
-      - run: yarn exec playwright install --with-deps  
+      - run: yarn exec playwright install --with-deps
 
       - name: Run E2E Test
         run: yarn run e2e ${{ matrix.test }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-${{ matrix.test }}

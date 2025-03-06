@@ -16,7 +16,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
-export default function DelegateExpiryDate({
+export default function DelegateContractInfo({
   delegate,
   reverse
 }: {
@@ -26,7 +26,7 @@ export default function DelegateExpiryDate({
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
-    if (!delegate.isAboutToExpire && !delegate.expired) {
+    if (delegate.delegateVersion === 2 || (!delegate.isAboutToExpire && !delegate.expired)) {
       return;
     }
     setModalOpen(true);
@@ -43,12 +43,21 @@ export default function DelegateExpiryDate({
       }}
       onClick={openModal}
     >
-      <Text variant="caps" color={'onSecondary'} sx={{ mr: 2 }}>
+      <Text variant="caps" color="onSecondary" sx={{ mr: delegate.delegateVersion === 2 ? 0 : 1 }}>
+        {delegate.delegateVersion === 2 ? 'V2' : 'V1 | '}
+      </Text>
+      <Text variant="caps" color={'onSecondary'} sx={{ mr: delegate.delegateVersion === 2 ? 0 : 2 }}>
         <Flex>
           <Text sx={{ mr: 1 }}>
-            {delegate.expired ? 'EXPIRED' : delegate.isAboutToExpire ? 'EXPIRING' : delegate.expirationDate ? 'EXPIRES' : 'NO EXPIRATION'}
+            {delegate.delegateVersion === 2
+              ? ''
+              : delegate.expired
+              ? 'EXPIRED'
+              : delegate.isAboutToExpire
+              ? 'EXPIRING'
+              : 'EXPIRES'}
           </Text>{' '}
-          {delegate.expirationDate && <DateWithHover date={delegate.expirationDate} />}
+          {delegate.delegateVersion !== 2 && <DateWithHover date={delegate.expirationDate} />}
         </Flex>
       </Text>
       <Flex
@@ -57,7 +66,7 @@ export default function DelegateExpiryDate({
           mr: reverse ? 2 : [2, 0]
         }}
       >
-        {!delegate.expired && !delegate.isAboutToExpire && (
+        {delegate.delegateVersion !== 2 && !delegate.expired && !delegate.isAboutToExpire && (
           <LocalIcon
             name="calendarcross"
             sx={{

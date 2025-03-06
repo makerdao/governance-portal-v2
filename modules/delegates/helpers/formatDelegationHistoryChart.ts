@@ -18,7 +18,8 @@ export const formatDelegationHistoryChart = (
 ): MKRWeightHisory[] => {
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
-  const start = formatIsoDateConversion(new Date(Number(lockEvents[0].blockTimestamp) * 1000).toISOString());
+
+  const start = formatIsoDateConversion(lockEvents[0].blockTimestamp);
 
   const years = differenceInCalendarYears(Date.now(), new Date(lockEvents[0].blockTimestamp));
 

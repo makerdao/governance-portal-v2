@@ -17,7 +17,9 @@ import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,
   TENDERLY_SPOCK_URL,
-  TENDERLY_SUBGRAPH_URL
+  TENDERLY_SUBGRAPH_URL,
+  MAINNET_STAGING_SUBGRAPH_URL,
+  MAINNET_PROD_SUBGRAPH_URL
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -48,6 +50,7 @@ type ChainInfo = {
 };
 
 const { TENDERLY_RPC_URL } = tenderlyTestnetData;
+const TENDERLY_CONTAINER_ID = 'c8bf3399-e510-4836-9ab1-4112e8b93aad';
 
 //todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
@@ -61,7 +64,10 @@ export const CHAIN_INFO: ChainInfo = {
     defaultRpc: NodeProviders.ALCHEMY,
     spockUrl:
       process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
-    subgraphUrl: TENDERLY_SUBGRAPH_URL,
+    subgraphUrl:
+      process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
+        ? MAINNET_STAGING_SUBGRAPH_URL
+        : MAINNET_PROD_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-mainnet.g.alchemy.com/v2/${config.ALCHEMY_KEY}`
@@ -95,8 +101,7 @@ export const CHAIN_INFO: ChainInfo = {
     showInProduction: false
   },
   [SupportedChainId.TENDERLY]: {
-    blockExplorerUrl:
-      'dashboard.tenderly.co/pullup-labs/endgame-0/testnet/c91028eb-78e1-4305-a289-5cd07adc7fb9',
+    blockExplorerUrl: `dashboard.tenderly.co/pullup-labs/endgame-0/testnet/${TENDERLY_CONTAINER_ID}`,
     blockExplorerName: 'Etherscan',
     chainId: SupportedChainId.TENDERLY,
     label: 'Tenderly',

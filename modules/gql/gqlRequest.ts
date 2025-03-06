@@ -36,7 +36,9 @@ export const gqlRequest = async <TQuery = any>({
       url = CHAIN_INFO[id].spockUrl;
     }
     if (!url) {
-      return Promise.reject(new ApiError(`Missing ${useSubgraph ? 'subgraph' : 'spock'} url in configuration for chainId: ${id}`));
+      return Promise.reject(
+        new ApiError(`Missing ${useSubgraph ? 'subgraph' : 'spock'} url in configuration for chainId: ${id}`)
+      );
     }
 
     const resp = await backoffRetry(

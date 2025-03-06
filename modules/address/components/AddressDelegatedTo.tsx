@@ -38,7 +38,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
   const hasExpiration = !!delegate.expirationDate;
-  const formattedDate = formatDateWithTime(delegate.expirationDate);
+  const formattedDate = delegate.expirationDate ? formatDateWithTime(delegate.expirationDate) : '';
   const dateText = delegate.isExpired
     ? `This contract expired ${formattedDate}`
     : `This contract will expire ${formattedDate}`;
@@ -85,7 +85,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
-            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+            {sortedEvents.map(({ blockTimestamp, lockAmount, isLockstake }) => {
               return (
                 <Flex
                   key={blockTimestamp}
@@ -104,6 +104,10 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     {`${formatValue(
                       parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
+                  </Text>
+
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {isLockstake ? '(Seal)' : ''}
                   </Text>
                 </Flex>
               );
@@ -126,11 +130,13 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           )}
         </Flex>
       </Box>
-      {hasExpiration && <Box as="td" sx={{ verticalAlign: 'top', pt: 2, display: bpi > 1 ? 'table-cell' : 'none' }}>
-        <Text variant="caps" sx={{ color: 'inherit' }}>
-          <DateWithHover label={dateText} date={delegate.expirationDate} />
-        </Text>
-      </Box>}
+      {hasExpiration && (
+        <Box as="td" sx={{ verticalAlign: 'top', pt: 2, display: bpi > 1 ? 'table-cell' : 'none' }}>
+          <Text variant="caps" sx={{ color: 'inherit' }}>
+            <DateWithHover label={dateText} date={delegate.expirationDate} />
+          </Text>
+        </Box>
+      )}
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
