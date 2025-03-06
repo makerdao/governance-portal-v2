@@ -142,3 +142,19 @@ export const getLatestOwnerFromOld = (address: string, network: SupportedNetwork
 
   return currentAddress;
 };
+
+export const getLatestOwnerFromOld = (address: string, network: SupportedNetworks): string | undefined => {
+  let currentAddress = address.toLowerCase();
+  let newAddress = getNewOwnerFromPrevious(currentAddress, network);
+
+  if (!newAddress) {
+    return undefined; // No new address found
+  }
+
+  while (newAddress) {
+    currentAddress = newAddress;
+    newAddress = getNewOwnerFromPrevious(currentAddress, network);
+  }
+
+  return currentAddress;
+};
