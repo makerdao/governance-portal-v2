@@ -70,14 +70,15 @@ export async function fetchDelegatedTo(
           });
         } else {
           const delegatingTo = delegates.find(
-            i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
+            i => i?.id?.toLowerCase() === delegateContractAddress.toLowerCase()
           ) as (AllDelegatesRecord & { delegateVersion: number }) | undefined;
 
           if (!delegatingTo) {
             return acc;
           }
 
-          const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
+          //TODO: rerun the schema type generation
+          const delegatingToWalletAddress = delegatingTo?.ownerAddress?.toLowerCase();
           // Get the expiration date of the delegate
 
           const expirationDate =
