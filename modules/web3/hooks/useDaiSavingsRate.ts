@@ -6,32 +6,33 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumberJS } from 'lib/bigNumberJs';
 import { SECONDS_PER_YEAR } from 'lib/datetime';
-import { BigNumberRAY } from '../constants/numbers';
+import { useChainId, useReadContract } from 'wagmi';
+import { potAbi, potAddress } from 'modules/contracts/generated';
+import { formatUnits } from 'viem';
 
 BigNumberJS.config({ POW_PRECISION: 100 });
 
 type DaiSavingsRateResponse = {
-  data?: BigNumberJS | undefined;
+  data?: number | undefined;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
 };
 
 export const useDaiSavingsRate = (): DaiSavingsRateResponse => {
-  const { pot } = useContracts();
+  const chainId = useChainId();
 
-  const { data, error } = useSWR(`${pot.address}/dai-savings-rate`, async () => {
-    const dsr = await pot.dsr();
-    const annualDsr = new BigNumberJS(dsr._hex).div(BigNumberRAY).pow(SECONDS_PER_YEAR).minus(1).times(100);
-
-    return annualDsr;
+  const { data, error } = useReadContract({
+    address: potAddress[chainId],
+    abi: potAbi,
+    chainId,
+    functionName: 'dsr',
+    scopeKey: `dai-savings-rate-${chainId}`
   });
 
   return {
-    data,
+    data: !data ? undefined : (Number(formatUnits(data, 27)) ** SECONDS_PER_YEAR - 1) * 100,
     loading: !error && !data,
     error
   };
