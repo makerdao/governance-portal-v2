@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { getMessageFromCode, errorCodes } from 'eth-rpc-errors';
+import { WaitForTransactionReceiptErrorType } from 'viem';
 
 export const TX_NOT_ENOUGH_FUNDS = "Sender doesn't have enough funds to send the transaction";
 export const USER_REJECTED = 'User rejected the transaction';
@@ -35,4 +36,14 @@ export function parseTxError(error: Error): string {
   }
 
   return message;
+}
+
+export function isRevertedError(failureReason: WaitForTransactionReceiptErrorType | null): boolean {
+  if (
+    failureReason?.toString().toLowerCase().includes('revert') ||
+    failureReason?.toString().toLowerCase().includes('execution')
+  ) {
+    return true;
+  }
+  return false;
 }

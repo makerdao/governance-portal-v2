@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { WalletInfo } from '../types/wallets';
+import { SupportedChainId } from './chainID';
 import { SupportedConnectors } from './networks';
 import { config } from 'lib/config';
 
@@ -50,3 +51,12 @@ if (config.USE_MOCK_WALLET && process.env.NODE_ENV !== 'production') {
 }
 
 export type WalletName = Exclude<SupportedConnectors, SupportedConnectors.NETWORK>;
+
+export const SAFE_CONNECTOR_ID = 'safe';
+
+export const SAFE_TRANSACTION_SERVICE_URL: Record<number, string> = {
+  [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
+  [SupportedChainId.ARBITRUM]: 'https://safe-transaction-arbitrum.safe.global',
+  [SupportedChainId.TENDERLY]: 'https://safe-transaction-mainnet.safe.global',
+  [SupportedChainId.ARBITRUMTESTNET]: 'https://safe-transaction-arbitrum.safe.global'
+};

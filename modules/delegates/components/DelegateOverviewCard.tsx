@@ -93,7 +93,7 @@ export const DelegateOverviewCard = memo(
       delegate.voteDelegateAddress
     );
     const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-    const hasMkrDelegated = account && mkrDelegated?.gt(0);
+    const hasMkrDelegated = account && mkrDelegated && mkrDelegated > 0n;
 
     const mutateDelegateTotalMkr = (amount: BigNumber) => {
       setStateDelegates(prevDelegates => {
@@ -297,7 +297,7 @@ export const DelegateOverviewCard = memo(
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                       data-testid="total-mkr-delegated"
                     >
-                      {formatValue(BigNumber.from(delegate.mkrDelegated), 'wad')}
+                      {formatValue(BigInt(delegate.mkrDelegated), 'wad')}
                     </Text>
                     <Text
                       as="p"

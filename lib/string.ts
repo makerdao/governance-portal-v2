@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { BigNumber } from 'ethers';
-import { commify, formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from 'viem';
 
 export function limitString(str: string, length: number, overflow: string): string {
   return (str || '').length <= length ? str : `${(str || '').substr(0, length - 1)}${overflow}`;
@@ -18,29 +17,52 @@ export function cutMiddle(text = '', left = 6, right = 4): string {
   return `${text.substring(0, left)}...${text.substring(text.length - right, text.length)}`;
 }
 
-const builtInUnits = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether'];
+function commify(value: string) {
+  const match = value.match(/^(-?)([0-9]*)(\.?)([0-9]*)$/);
+  if (!match || (!match[2] && !match[4])) {
+    throw new Error(`bad formatted number: ${JSON.stringify(value)}`);
+  }
+
+  const neg = match[1];
+  const whole = BigInt(match[2] || 0).toLocaleString('en-us');
+  const frac = match[4] ? match[4].match(/^(.*?)0*$/)?.[1] : '0';
+
+  return `${neg}${whole}.${frac}`;
+}
 
 export function formatValue(
-  value: BigNumber,
+  value: bigint,
   type: string | number = 'wad',
   dp = 2,
   withCommas = true,
   roundDown = false
 ): string {
   if (typeof type === 'string') {
-    if (!builtInUnits.includes(type)) {
-      switch (type) {
-        case 'wad':
-          return formatValue(value, 18, dp, withCommas, roundDown);
-        case 'ray':
-          return formatValue(value, 27, dp, withCommas, roundDown);
-        case 'rad':
-          return formatValue(value, 45, dp, withCommas, roundDown);
-      }
+    switch (type) {
+      case 'ray':
+        return formatValue(value, 27, dp, withCommas, roundDown);
+      case 'rad':
+        return formatValue(value, 45, dp, withCommas, roundDown);
+      case 'wei':
+        return formatValue(value, 0, dp, withCommas, roundDown);
+      case 'kwei':
+        return formatValue(value, 3, dp, withCommas, roundDown);
+      case 'mwei':
+        return formatValue(value, 6, dp, withCommas, roundDown);
+      case 'gwei':
+        return formatValue(value, 9, dp, withCommas, roundDown);
+      case 'szabo':
+        return formatValue(value, 12, dp, withCommas, roundDown);
+      case 'finney':
+        return formatValue(value, 15, dp, withCommas, roundDown);
+      case 'ether':
+      case 'wad':
+      default:
+        return formatValue(value, 18, dp, withCommas, roundDown);
     }
   }
 
-  if (value.eq(0)) {
+  if (value === 0n) {
     return '0';
   }
   const formatted = formatUnits(value, type);
