@@ -17,19 +17,6 @@ export function cutMiddle(text = '', left = 6, right = 4): string {
   return `${text.substring(0, left)}...${text.substring(text.length - right, text.length)}`;
 }
 
-function commify(value: string) {
-  const match = value.match(/^(-?)([0-9]*)(\.?)([0-9]*)$/);
-  if (!match || (!match[2] && !match[4])) {
-    throw new Error(`bad formatted number: ${JSON.stringify(value)}`);
-  }
-
-  const neg = match[1];
-  const whole = BigInt(match[2] || 0).toLocaleString('en-us');
-  const frac = match[4] ? match[4].match(/^(.*?)0*$/)?.[1] : '0';
-
-  return `${neg}${whole}.${frac}`;
-}
-
 export function formatValue(
   value: bigint,
   type: string | number = 'wad',
@@ -69,6 +56,6 @@ export function formatValue(
   if (+formatted > 999) dp = 0;
   const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
   if (+fixed < 0.01 && roundDown) return '≈0.00';
-  const finished = withCommas ? commify(fixed) : fixed;
+  const finished = withCommas ? (+fixed).toLocaleString() : fixed;
   return finished;
 }

@@ -38,7 +38,6 @@ import { Proposal } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
@@ -278,7 +277,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       <Stack>
         {account && (
           <ExecutiveBalance
-            lockedMkr={lockedMkr || BigNumber.from(0)}
+            lockedMkr={lockedMkr || 0n}
             voteDelegate={voteDelegateContractAddress}
             showProxyInfo={showProxyInfo}
           />

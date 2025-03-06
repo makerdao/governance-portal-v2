@@ -13,9 +13,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -57,7 +56,7 @@ async function getBalancerV1Mkr(mkrAddress: string) {
   const balancerNum = json.data.pools
     .flatMap(pool => pool.tokens)
     .reduce((sum, token) => (token.symbol === 'MKR' ? parseFloat(token.balance) : 0) + sum, 0);
-  return parseUnits(parseInt(balancerNum).toString());
+  return parseEther(parseInt(balancerNum).toString());
 }
 
 async function getBalancerV2Mkr(mkrAddress: string) {
@@ -84,11 +83,11 @@ async function getBalancerV2Mkr(mkrAddress: string) {
   const balancerNum = json.data.pools
     .flatMap(pool => pool.tokens)
     .reduce((sum, token) => (token.address === mkrAddress ? parseFloat(token.balance) : 0) + sum, 0);
-  return parseUnits(parseInt(balancerNum).toString());
+  return parseEther(parseInt(balancerNum).toString());
 }
 
 async function getCompoundMkr(network: SupportedNetworks) {
-  if (network !== SupportedNetworks.MAINNET) return BigNumber.from(0);
+  if (network !== SupportedNetworks.MAINNET) return 0n;
 
   const chainId = networkNameToChainId(network);
   const publicClient = getPublicClient(chainId);
@@ -144,7 +143,7 @@ export default function MkrLiquiditySidebar({
   const mkrPools = [
     [
       'Balancer',
-      balancerV1 && balancerV2 && balancerV1?.add(balancerV2),
+      balancerV1 && balancerV2 && balancerV1 + balancerV2,
       [
         ['Balancer V1', balancerV1],
         ['Balancer V2', balancerV2]
@@ -152,7 +151,7 @@ export default function MkrLiquiditySidebar({
     ],
     [
       'Aave',
-      aaveV1 && aaveV2 && aaveV1?.add(aaveV2),
+      aaveV1 && aaveV2 && aaveV1 + aaveV2,
       [
         ['Aave V1', aaveV1],
         ['Aave V2', aaveV2]
@@ -164,10 +163,7 @@ export default function MkrLiquiditySidebar({
         uniswapV2MkrDai &&
         uniswapV3MkrEthPointThreePercent &&
         uniswapV3MkrEthOnePercent &&
-        uniswapV2MkrEth
-          ?.add(uniswapV2MkrDai)
-          .add(uniswapV3MkrEthPointThreePercent)
-          .add(uniswapV3MkrEthOnePercent),
+        uniswapV2MkrEth + uniswapV2MkrDai + uniswapV3MkrEthPointThreePercent + uniswapV3MkrEthOnePercent,
       [
         ['Uniswap V2 (MKR/DAI)', uniswapV2MkrDai],
         ['Uniswap V3 (MKR/ETH 0.3%)', uniswapV3MkrEthPointThreePercent],
@@ -177,10 +173,10 @@ export default function MkrLiquiditySidebar({
     ],
     ['Sushi', sushi],
     ['Compound', compound]
-  ].sort((a, b) => (a[1] && b[1] ? ((a[1] as BigNumber).gt(b[1] as BigNumber) ? -1 : 1) : 0));
+  ].sort((a, b) => (a[1] && b[1] ? (a[1] > b[1] ? -1 : 1) : 0));
 
   const totalLiquidity = `${formatValue(
-    mkrPools.reduce((acc, cur) => acc.add((cur[1] as BigNumber) || 0), BigNumber.from(0))
+    mkrPools.reduce((acc, cur) => acc + ((cur[1] as bigint | undefined) || 0n), 0n)
   )} MKR`;
 
   const PoolComponent = pool => {
