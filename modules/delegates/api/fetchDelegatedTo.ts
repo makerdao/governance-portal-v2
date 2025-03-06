@@ -17,7 +17,6 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getLatestOwnerFromOld } from 'modules/migration/delegateAddressLinks';
-import { Query, AllDelegatesRecord } from 'modules/gql/generated/graphql';
 
 export async function fetchDelegatedTo(
   address: string,
@@ -71,13 +70,12 @@ export async function fetchDelegatedTo(
         } else {
           const delegatingTo = delegates.find(
             i => i?.id?.toLowerCase() === delegateContractAddress.toLowerCase()
-          ) as (AllDelegatesRecord & { delegateVersion: number }) | undefined;
+          );
 
           if (!delegatingTo) {
             return acc;
           }
 
-          //TODO: rerun the schema type generation
           const delegatingToWalletAddress = delegatingTo?.ownerAddress?.toLowerCase();
           // Get the expiration date of the delegate
 
