@@ -464,30 +464,30 @@ export async function fetchDelegatesPaginated({
   const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
     getDelegatesCounts(filteredDelegateEntries);
 
-  let delegatesQueryFilter;
-  if (delegateType !== DelegateTypeEnum.ALIGNED && delegateType !== DelegateTypeEnum.SHADOW) {
-    delegatesQueryFilter = searchTerm ? { voteDelegate: { in: filteredDelegateAddresses } } : null;
-  } else {
-    delegatesQueryFilter = {
-      and: [
-        {
-          voteDelegate:
-            delegateType === DelegateTypeEnum.ALIGNED
-              ? { in: alignedDelegatesAddresses }
-              : { notIn: alignedDelegatesAddresses }
-        }
-      ]
-    };
-    searchTerm && delegatesQueryFilter.and.push({ voteDelegate: { in: filteredDelegateAddresses } });
+  let delegatesQueryFilter: any = {};
+  if (delegateType !== DelegateTypeEnum.ALIGNED && delegateType !== DelegateTypeEnum.SHADOW && searchTerm) {
+    //filter by search term
+    delegatesQueryFilter.id_in = filteredDelegateAddresses;
+  } else if (delegateType === DelegateTypeEnum.ALIGNED && !searchTerm ) {
+    //filter for aligned delegates
+    delegatesQueryFilter.id_in = alignedDelegatesAddresses;
+  } else if (delegateType === DelegateTypeEnum.SHADOW && !searchTerm) {
+    //filter for shadow delegates
+    delegatesQueryFilter.id_not_in = alignedDelegatesAddresses;
+  } else if (delegateType === DelegateTypeEnum.ALIGNED && searchTerm) {
+    //filter for aligned delegates with search term
+    delegatesQueryFilter.and = [{ id_in: alignedDelegatesAddresses }, { id_in: filteredDelegateAddresses }];
+  } else if (delegateType === DelegateTypeEnum.SHADOW && searchTerm) {
+    //filter for shadow delegates with search term
+    delegatesQueryFilter.and = [{ id_not_in: alignedDelegatesAddresses }, { id_in: filteredDelegateAddresses }];
   }
 
   const delegatesQueryVariables = {
     first: pageSize,
     skip: (page - 1) * pageSize,
-    includeExpired,
     orderBy,
     orderDirection,
-    constitutionalDelegates: alignedDelegatesAddresses
+    alignedDelegates: alignedDelegatesAddresses
   };
   if (delegatesQueryFilter) {
     delegatesQueryVariables['filter'] = delegatesQueryFilter;
