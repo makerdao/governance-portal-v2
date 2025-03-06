@@ -33,7 +33,6 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { BigNumber } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -65,7 +64,7 @@ const ProposalTimingBanner = ({
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
-  mkrOnHat?: BigNumber;
+  mkrOnHat?: bigint;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
@@ -226,7 +225,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 renderAsDiv
               />
               <StatBox
-                value={spellData && spellData.mkrSupport && formatValue(BigNumber.from(spellData.mkrSupport))}
+                value={spellData && spellData.mkrSupport && formatValue(BigInt(spellData.mkrSupport))}
                 label="MKR Support"
               />
               <StatBox

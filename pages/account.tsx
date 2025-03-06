@@ -198,7 +198,7 @@ const AccountPage = (): React.ReactElement => {
                     </Button>
                   </Box>
                 )}
-                {chiefBalance?.gt(0) && (
+                {chiefBalance && chiefBalance > 0n && (
                   <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 5 }}>
                     <Text as="p">
                       You have a DSChief balance of{' '}

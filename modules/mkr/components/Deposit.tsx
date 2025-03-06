@@ -18,8 +18,6 @@ import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
 import { Tokens } from 'modules/web3/constants/tokens';
@@ -34,7 +32,11 @@ const ModalContent = ({
   close: () => void;
   showProxyInfo?: boolean;
 }): React.ReactElement => {
-  const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState(0n);
+  const [txStatus, setTxStatus] = useState<'idle' | 'initialized' | 'pending' | 'confirmed' | 'error'>(
+    'idle'
+  );
+
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const chainId = useChainId();
   const { data: mkrBalance } = useMkrBalance(account);
@@ -43,31 +45,41 @@ const ModalContent = ({
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.MKR,
-    parseUnits('100000000'),
+    100000000n,
     account,
     account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefAddress[chainId]
   );
 
   const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
 
-  const { lock, tx: lockTx, setTxId: resetLock } = useLock();
-
-  const [tx, resetTx] = chiefAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
+  const lock = useLock({
+    mkrToDeposit,
+    onStart: () => {
+      setTxStatus('pending');
+    },
+    onSuccess: () => {
+      mutateLocked();
+      close();
+    },
+    onError: () => {
+      close();
+    }
+  });
 
   return (
     <BoxWithClose close={close}>
       <Box>
-        {tx && (
+        {txStatus !== 'idle' && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text as="p" variant="microHeading">
-              {tx.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
+              {txStatus === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {tx.status !== 'pending' && (
+            {txStatus !== 'pending' && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
@@ -75,7 +87,7 @@ const ModalContent = ({
                 <Text
                   as="p"
                   sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => resetTx(null)}
+                  onClick={() => setTxStatus('idle')}
                 >
                   Cancel
                 </Text>
@@ -83,7 +95,7 @@ const ModalContent = ({
             )}
           </Stack>
         )}
-        {!tx && chiefAllowance && (
+        {txStatus === 'idle' && chiefAllowance && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading">
@@ -101,23 +113,19 @@ const ModalContent = ({
             <Button
               data-testid="button-deposit-mkr"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
+              disabled={
+                mkrToDeposit === 0n || mkrToDeposit > (mkrBalance || 0n) || lock.isLoading || !lock.prepared
+              }
               onClick={() => {
-                lock(mkrToDeposit, {
-                  mined: () => {
-                    // Mutate locked state
-                    mutateLocked();
-                    close();
-                  },
-                  error: () => close()
-                });
+                setTxStatus('initialized');
+                lock.execute();
               }}
             >
               Deposit MKR
             </Button>
           </Stack>
         )}
-        {!tx && !chiefAllowance && (
+        {txStatus === 'idle' && !chiefAllowance && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading">
