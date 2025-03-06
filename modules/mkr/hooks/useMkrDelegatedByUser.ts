@@ -7,22 +7,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR from 'swr';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import { useAccount, useChainId } from 'wagmi';
-import { BigNumber, ethers } from 'ethers';
+import { useChainId } from 'wagmi';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
-import abi from 'modules/contracts/ethers/voteDelegate.json';
-import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
-import { VoteDelegate } from 'types/ethers-contracts';
 import { config } from 'lib/config';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
+import { parseEther } from 'viem';
 
 type DelegatedByUserResponse = {
   data:
     | {
-        directDelegationAmount: BigNumber | undefined;
-        sealDelegationAmount: BigNumber | undefined;
-        totalDelegationAmount: BigNumber | undefined;
+        directDelegationAmount: bigint | undefined;
+        sealDelegationAmount: bigint | undefined;
+        totalDelegationAmount: bigint | undefined;
       }
     | undefined;
   loading: boolean;
@@ -35,10 +33,9 @@ export const useMkrDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): DelegatedByUserResponse => {
-  const { provider } = useWeb3();
   const chainId = useChainId();
-  const { address: account } = useAccount();
-  if (!voteDelegateAddress) {
+
+  if (!voteDelegateAddress || !userAddress) {
     return {
       data: undefined,
       loading: false,
@@ -48,17 +45,14 @@ export const useMkrDelegatedByUser = (
   }
   const network = chainIdToNetworkName(chainId);
 
-  const fetchFromChain = async (userAddress: string | undefined, voteDelegateAddress: string | undefined) => {
-    const contract = getEthersContracts<VoteDelegate>(
-      voteDelegateAddress as string,
-      abi,
-      chainId,
-      provider,
-      account,
-      true
-    );
-
-    const directDelegated = await contract.stake(userAddress as string);
+  const fetchFromChain = async (userAddress: string, voteDelegateAddress: string) => {
+    const publicClient = getPublicClient(chainId);
+    const directDelegated = await publicClient.readContract({
+      address: voteDelegateAddress as `0x${string}`,
+      abi: voteDelegateAbi,
+      functionName: 'stake',
+      args: [userAddress as `0x${string}`]
+    });
 
     return {
       directDelegationAmount: directDelegated,
@@ -76,16 +70,16 @@ export const useMkrDelegatedByUser = (
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
         const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
-        let sealDelegated = BigNumber.from(0);
-        let directDelegated = BigNumber.from(0); // Calculate this as needed
+        let sealDelegated = 0n;
+        let directDelegated = 0n; // Calculate this as needed
         for (let i = 0; i < delegations.length; i++) {
           try {
             const curr = delegations[i];
-            const lockAmount = BigNumber.from(ethers.utils.parseUnits(curr.lockAmount.toString(), 18));
+            const lockAmount = parseEther(curr.lockAmount.toString());
             if (curr.isLockstake) {
-              sealDelegated = sealDelegated.add(lockAmount);
+              sealDelegated = sealDelegated + lockAmount;
             } else {
-              directDelegated = directDelegated.add(lockAmount);
+              directDelegated = directDelegated + lockAmount;
             }
           } catch (innerError) {
             console.error(`Error processing delegation ${i + 1}:`, innerError);
@@ -94,7 +88,7 @@ export const useMkrDelegatedByUser = (
         return {
           directDelegationAmount: directDelegated,
           sealDelegationAmount: sealDelegated,
-          totalDelegationAmount: sealDelegated.add(directDelegated)
+          totalDelegationAmount: sealDelegated + directDelegated
         };
       } catch (outerError) {
         console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);

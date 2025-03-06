@@ -12,8 +12,9 @@ import { DelegateContractInformation } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { Query } from 'modules/gql/generated/graphql';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
@@ -23,13 +24,18 @@ export async function fetchChainDelegates(
 
   const delegates = data.allDelegates.nodes;
 
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const publicClient = getPublicClient(chainId);
 
   const delegatesWithMkrStaked: DelegateContractInformation[] = await Promise.all(
     delegates.map(async (delegate): Promise<DelegateContractInformation> => {
       if (delegate?.voteDelegate && delegate.delegate) {
         // Get MKR delegated to each contract
-        const mkr = await contracts.chief.deposits(delegate.voteDelegate);
+        const mkr = await publicClient.readContract({
+          address: chiefAddress[chainId],
+          abi: chiefAbi,
+          functionName: 'deposits',
+          args: [delegate.voteDelegate as `0x${string}`]
+        });
 
         const chainDelegate: DelegateContractInformation = {
           ...(delegate as DelegateContractInformation),
