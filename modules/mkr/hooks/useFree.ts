@@ -6,66 +6,48 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Dispatch, SetStateAction, useState } from 'react';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
-import { shallow } from 'zustand/shallow';
-import { BigNumber } from 'ethers';
-import { Transaction } from 'modules/web3/types/transaction';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useChainId } from 'wagmi';
+import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
+import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
-import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
+import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 
-type FreeResponse = {
-  txId: string | null;
-  setTxId: Dispatch<SetStateAction<null>>;
-  free: (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => void;
-  tx: Transaction | null;
-};
+export const useFree = ({
+  mkrToWithdraw,
+  gas,
+  enabled: paramEnabled = true,
+  onSuccess,
+  onError,
+  onStart
+}: WriteHookParams & {
+  mkrToWithdraw: bigint;
+}): WriteHook => {
+  const chainId = useChainId();
+  const { voteProxyContractAddress } = useAccount();
 
-export const useFree = (): FreeResponse => {
-  const [txId, setTxId] = useState<string | null>(null);
+  const commonParams = {
+    functionName: 'free',
+    args: [mkrToWithdraw],
+    chainId,
+    enabled: paramEnabled,
+    gas,
+    onSuccess,
+    onError,
+    onStart
+  } as const;
 
-  const { account, voteProxyContract } = useAccount();
-  const { provider } = useWeb3();
-  const { chief } = useContracts();
+  const useWriteContractFlowResponseProxy = useWriteContractFlow({
+    address: voteProxyContractAddress as `0x${string}` | undefined,
+    abi: voteProxyAbi,
+    ...commonParams
+  });
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const useWriteContractFlowResponseChief = useWriteContractFlow({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
+    ...commonParams
+  });
 
-  const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
-    if (!account || !provider) {
-      return;
-    }
-
-    const freeTxCreator = async () => {
-      const populatedTransaction = voteProxyContract
-        ? await voteProxyContract.populateTransaction.free(mkrToWithdraw)
-        : await chief.populateTransaction.free(mkrToWithdraw);
-
-      return sendTransaction(populatedTransaction, provider, account);
-    };
-
-    const transactionId = track(freeTxCreator, account, 'Withdrawing MKR', {
-      pending: () => {
-        if (typeof callbacks?.pending === 'function') callbacks.pending();
-      },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
-        if (typeof callbacks?.mined === 'function') callbacks.mined();
-      },
-      error: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdraw failed');
-        if (typeof callbacks?.error === 'function') callbacks.error();
-      }
-    });
-    setTxId(transactionId);
-  };
-
-  return { txId, setTxId, free, tx };
+  return voteProxyContractAddress ? useWriteContractFlowResponseProxy : useWriteContractFlowResponseChief;
 };
