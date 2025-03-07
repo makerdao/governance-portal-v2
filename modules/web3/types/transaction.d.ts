@@ -9,8 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Dispatch, SetStateAction } from 'react';
 import { SupportedNetworks } from '../constants/networks';
 
-export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
-
 export type TXInitialized = {
   from: string;
   status: 'initialized';

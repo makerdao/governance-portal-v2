@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { TokenName } from 'modules/web3/types/tokens';
-import { tokenNameToConfig } from '../helpers/tokenNameToConfig.';
+import { tokenNameToConfig } from '../helpers/tokenNameToConfig';
 import { useChainId, useReadContract } from 'wagmi';
 
 type UseTotalSupplyResponse = {

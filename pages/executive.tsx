@@ -186,14 +186,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     lockedMkrOldChief === 0n &&
     !voteProxyContractAddress &&
     lockedMkr &&
-    lockedMkr.eq(0) &&
+    lockedMkr === 0n &&
     !voteDelegateContractAddress;
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
 
-      {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
+      {lockedMkrOldChief && lockedMkrOldChief > 0 && (
         <>
           <ProgressBar step={0} />
           <MigrationBadge py={[2]}>
@@ -244,14 +244,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       {votedProposals &&
         !votingForSomething &&
         lockedMkrOldChief &&
-        lockedMkrOldChief.eq(0) &&
+        lockedMkrOldChief === 0n &&
         voteProxyContractAddress &&
         lockedMkr &&
         !voteDelegateContractAddress && (
           <>
-            <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
+            <ProgressBar step={lockedMkr === 0n ? 1 : 2} />
             <MigrationBadge>
-              {lockedMkr.eq(0) ? (
+              {lockedMkr === 0n ? (
                 <Text>
                   Your vote proxy has been created. Please{' '}
                   <Deposit link={'deposit'} showProxyInfo={showProxyInfo} /> into your new vote proxy contract
@@ -265,10 +265,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       {votedProposals &&
         !votingForSomething &&
         lockedMkrOldChief &&
-        lockedMkrOldChief.eq(0) &&
+        lockedMkrOldChief === 0n &&
         !voteProxyContractAddress &&
         lockedMkr &&
-        lockedMkr.gt(0) && (
+        lockedMkr > 0n && (
           <>
             <ProgressBar step={2} />
             <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>

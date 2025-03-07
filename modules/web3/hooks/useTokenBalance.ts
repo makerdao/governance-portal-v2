@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 import { TokenName } from 'modules/web3/types/tokens';
-import { tokenNameToConfig } from '../helpers/tokenNameToConfig.';
+import { tokenNameToConfig } from '../helpers/tokenNameToConfig';
 
 type UseTokenBalanceResponse = {
   data?: bigint | undefined;

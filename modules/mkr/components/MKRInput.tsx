@@ -43,7 +43,7 @@ export function MKRInput({
     setCurrentValueStr(newValueStr);
 
     try {
-      const newValue = BigInt(newValueStr || '0');
+      const newValue = parseEther(newValueStr || '0');
 
       const invalidValue = newValue < min || (!!max && newValue > max);
       if (invalidValue) {
