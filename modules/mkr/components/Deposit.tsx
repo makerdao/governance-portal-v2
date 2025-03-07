@@ -24,6 +24,7 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { useChainId } from 'wagmi';
 import { chiefAddress } from 'modules/contracts/generated';
+import { TxStatus } from 'modules/web3/constants/transaction';
 
 const ModalContent = ({
   close,
@@ -33,9 +34,7 @@ const ModalContent = ({
   showProxyInfo?: boolean;
 }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(0n);
-  const [txStatus, setTxStatus] = useState<'idle' | 'initialized' | 'pending' | 'confirmed' | 'error'>(
-    'idle'
-  );
+  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const chainId = useChainId();
@@ -50,36 +49,53 @@ const ModalContent = ({
     account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefAddress[chainId]
   );
 
-  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
+  const approve = useApproveUnlimitedToken({
+    name: Tokens.MKR,
+    addressToApprove: voteProxyContractAddress || chiefAddress[chainId],
+    onStart: () => {
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: () => {
+      // Once the approval is successful, return to tx idle so we can lock
+      setTxStatus(TxStatus.IDLE);
+      mutateTokenAllowance();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    }
+  });
 
   const lock = useLock({
     mkrToDeposit,
     onStart: () => {
-      setTxStatus('pending');
+      setTxStatus(TxStatus.LOADING);
     },
     onSuccess: () => {
+      setTxStatus(TxStatus.SUCCESS);
       mutateLocked();
       close();
     },
     onError: () => {
+      setTxStatus(TxStatus.ERROR);
       close();
-    }
+    },
+    enabled: !!chiefAllowance
   });
 
   return (
     <BoxWithClose close={close}>
       <Box>
-        {txStatus !== 'idle' && (
+        {txStatus !== TxStatus.IDLE && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text as="p" variant="microHeading">
-              {txStatus === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
+              {txStatus === TxStatus.LOADING ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {txStatus !== 'pending' && (
+            {txStatus !== TxStatus.LOADING && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
@@ -87,7 +103,7 @@ const ModalContent = ({
                 <Text
                   as="p"
                   sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => setTxStatus('idle')}
+                  onClick={() => setTxStatus(TxStatus.IDLE)}
                 >
                   Cancel
                 </Text>
@@ -95,7 +111,7 @@ const ModalContent = ({
             )}
           </Stack>
         )}
-        {txStatus === 'idle' && chiefAllowance && (
+        {txStatus === TxStatus.IDLE && chiefAllowance && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading">
@@ -117,7 +133,7 @@ const ModalContent = ({
                 mkrToDeposit === 0n || mkrToDeposit > (mkrBalance || 0n) || lock.isLoading || !lock.prepared
               }
               onClick={() => {
-                setTxStatus('initialized');
+                setTxStatus(TxStatus.INITIALIZED);
                 lock.execute();
               }}
             >
@@ -125,7 +141,7 @@ const ModalContent = ({
             </Button>
           </Stack>
         )}
-        {txStatus === 'idle' && !chiefAllowance && (
+        {txStatus === TxStatus.IDLE && !chiefAllowance && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading">
@@ -138,12 +154,10 @@ const ModalContent = ({
 
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+              disabled={approve.isLoading || !approve.prepared}
               onClick={() => {
-                approve(voteProxyContractAddress || chiefAddress[chainId], {
-                  mined: () => {
-                    mutateTokenAllowance();
-                  }
-                });
+                setTxStatus(TxStatus.INITIALIZED);
+                approve.execute();
               }}
               data-testid="deposit-approve-button"
             >
