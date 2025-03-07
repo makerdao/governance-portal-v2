@@ -110,9 +110,9 @@ export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
 
-export const sortBytesArray = _array =>
+export const sortBytesArray = (_array: string[]) =>
   [..._array].sort((a, b) => {
-    return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;
+    return BigInt(a.toLowerCase()) > BigInt(b.toLowerCase()) ? 1 : -1;
   });
 
 export const formatRound = (num, decimals = 2) =>
