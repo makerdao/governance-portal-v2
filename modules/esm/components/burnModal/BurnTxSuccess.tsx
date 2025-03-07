@@ -8,11 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Button, Text, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { TXMined } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
-const BurnTxSuccess = ({ tx, close }) => {
+const BurnTxSuccess = ({ txHash, close }: { txHash: `0x${string}` | undefined; close: () => void }) => {
   const network = useNetwork();
 
   return (
@@ -32,7 +31,7 @@ const BurnTxSuccess = ({ tx, close }) => {
         </Text>
         <Icon name="burnSuccess" size={7} sx={{ my: 4 }} />
 
-        <EtherscanLink type="transaction" hash={(tx as TXMined).hash} network={network} />
+        {txHash && <EtherscanLink type="transaction" hash={txHash} network={network} />}
 
         <Button
           onClick={close}

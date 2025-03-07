@@ -27,7 +27,7 @@ export const useEsmTotalStaked = (): EsmTotalStakedResponse => {
     address: esmAddress[chainId],
     abi: esmAbi,
     chainId,
-    functionName: 'sum',
+    functionName: 'Sum',
     scopeKey: `/esm-total-staked-${chainId}`
   });
 
