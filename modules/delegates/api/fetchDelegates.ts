@@ -476,10 +476,18 @@ export async function fetchDelegatesPaginated({
   } else if (delegateType === DelegateTypeEnum.SHADOW) {
     baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddresses });
   }
+  if (!includeExpired) {
+    baseDelegatesQueryFilter.and.push({ 
+      or: [
+        { version: '2'},
+        { and: [{ version: '1', blockTimestamp_gt: Math.floor(Date.now()/1000 - 365*24*60*60) }] }
+      ] 
+    });
+  }
 
   //get all aligned delegates (that match the filter)for the first page
   const alignedFilterFirstPage = { 
-    and: [...(baseDelegatesQueryFilter.and || []), { id_in: alignedDelegatesAddresses }] 
+    and: [...(baseDelegatesQueryFilter.and || []), { id_in: alignedDelegatesAddresses }]
   };
   //use this for subsequent pages as well as part of the first page
   const shadowFilterFirstPage = { 
@@ -527,7 +535,7 @@ export async function fetchDelegatesPaginated({
       totalCount: delegatesQueryRes.delegates.totalCount,
       page,
       numPages: Math.ceil(delegatesQueryRes.delegates.totalCount / pageSize),
-      hasNextPage: true //TODO: update
+      hasNextPage: true
     },
     stats: {
       total: totalDelegatesCount,
@@ -640,7 +648,7 @@ export async function fetchDelegatesPaginated({
         next: allDelegatesEntry?.next,
         delegateVersion: delegate.version ? parseInt(delegate.version) : 1
       };
-    }).filter(delegate => includeExpired || !delegate.expired) as DelegatePaginated[]
+    }) as DelegatePaginated[]
   };
 
   return delegatesData;

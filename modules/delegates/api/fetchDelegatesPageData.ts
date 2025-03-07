@@ -27,10 +27,10 @@ export async function fetchDelegatesPageData(
   useApi = false,
   queryParams?: DelegatesQueryParams
 ): Promise<DelegatesPaginatedAPIResponse> {
-  const pageSize = 30;
+  const pageSize = 10;
   const page = queryParams?.page || 1;
   const includeExpired = queryParams?.includeExpired || false;
-  const orderBy = queryParams?.orderBy || DelegateOrderByEnum.MKR; //TODO: change to random?
+  const orderBy = queryParams?.orderBy || DelegateOrderByEnum.MKR; //TODO: change to random? or remove random option
   const orderDirection = queryParams?.orderDirection || OrderDirectionEnum.DESC;
   const seed = queryParams?.seed || null;
   const delegateType = queryParams?.delegateType || DelegateTypeEnum.ALL;
