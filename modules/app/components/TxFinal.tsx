@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Button, Flex, Text } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { Transaction, TXMined } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from '../hooks/useNetwork';
 
@@ -17,7 +16,7 @@ export const TxFinal = ({
   description,
   buttonLabel,
   onClick,
-  tx,
+  txHash,
   success,
   children
 }: {
@@ -25,7 +24,7 @@ export const TxFinal = ({
   description: string | JSX.Element;
   buttonLabel: string;
   onClick: () => void;
-  tx: Transaction;
+  txHash: `0x${string}` | undefined;
   success: boolean;
   children?: React.ReactNode;
 }): React.ReactElement => {
@@ -48,14 +47,16 @@ export const TxFinal = ({
       </Flex>
       {children}
 
-      <Box my={3}>
-        <EtherscanLink
-          hash={(tx as TXMined).hash}
-          type="transaction"
-          network={network}
-          styles={{ justifyContent: 'center' }}
-        />
-      </Box>
+      {txHash && (
+        <Box my={3}>
+          <EtherscanLink
+            hash={txHash}
+            type="transaction"
+            network={network}
+            styles={{ justifyContent: 'center' }}
+          />
+        </Box>
+      )}
 
       <Button data-testid="txfinal-btn" onClick={onClick} sx={{ width: '100%', mt: 3 }}>
         {buttonLabel}

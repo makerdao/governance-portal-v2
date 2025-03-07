@@ -45,8 +45,6 @@ const ESModule = (): React.ReactElement => {
 
   const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked >= thresholdAmount;
 
-  console.log({ totalStaked });
-
   const DesktopView = () => {
     return (
       <>

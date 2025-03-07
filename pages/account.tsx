@@ -34,6 +34,7 @@ import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { TxStatus } from 'modules/web3/constants/transaction';
 
 const AccountPage = (): React.ReactElement => {
   const network = useNetwork();
@@ -48,13 +49,31 @@ const AccountPage = (): React.ReactElement => {
   const { latestOwnerConnected, latestOwnerHasDelegateContract, originalOwnerAddress } =
     useLinkedDelegateInfo();
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
-  const { data: originalOwnerContractAddress } = useVoteDelegateAddress(originalOwnerAddress);
+  const { data: originalOwnerContractAddress } = useVoteDelegateAddress(
+    originalOwnerAddress as `0x${string}` | undefined
+  );
   const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
+  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
-  const { create, tx, setTxId } = useDelegateCreate();
+  const createDelegate = useDelegateCreate({
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.SUCCESS);
+      mutateAccount?.();
+      setModalOpen(false);
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    }
+  });
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -145,7 +164,7 @@ const AccountPage = (): React.ReactElement => {
                         ? 'Create a new delegate contract'
                         : 'No vote delegate contract detected'}
                     </Label>
-                    {tx && (
+                    {txStatus !== TxStatus.IDLE && (
                       <DialogOverlay
                         isOpen={modalOpen}
                         onDismiss={() => {
@@ -154,8 +173,10 @@ const AccountPage = (): React.ReactElement => {
                       >
                         <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
                           <TxDisplay
-                            tx={tx}
-                            setTxId={setTxId}
+                            txStatus={txStatus}
+                            setTxStatus={setTxStatus}
+                            txHash={txHash}
+                            setTxHash={setTxHash}
                             onDismiss={() => {
                               setModalOpen(false);
                             }}
@@ -181,15 +202,11 @@ const AccountPage = (): React.ReactElement => {
                       I understand
                     </Label>
                     <Button
-                      disabled={!warningRead}
+                      disabled={!warningRead || createDelegate.isLoading || !createDelegate.prepared}
                       onClick={() => {
-                        create({
-                          initialized: () => setModalOpen(true),
-                          mined: () => {
-                            mutateAccount && mutateAccount();
-                            setModalOpen(false);
-                          }
-                        });
+                        setTxStatus(TxStatus.INITIALIZED);
+                        setModalOpen(true);
+                        createDelegate.execute();
                       }}
                       sx={{ mt: 3, mb: 1 }}
                       data-testid="create-button"
