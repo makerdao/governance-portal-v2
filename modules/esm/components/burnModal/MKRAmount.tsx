@@ -8,15 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Alert, Flex, Box, Button, Text, Grid, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { BigNumber } from 'ethers';
 
 import { MKRInput } from 'modules/mkr/components/MKRInput';
 import { formatValue } from 'lib/string';
 
 type Props = {
-  setBurnAmount: (burnAmount: BigNumber) => void;
-  burnAmount: BigNumber;
-  mkrBalance?: BigNumber;
+  setBurnAmount: (burnAmount: bigint) => void;
+  burnAmount: bigint;
+  mkrBalance?: bigint;
 };
 
 const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
@@ -32,12 +31,12 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
 };
 
 type MKRAmountProps = {
-  lockedInChief: BigNumber;
-  setBurnAmount: (burnAmount: BigNumber) => void;
-  burnAmount: BigNumber;
+  lockedInChief: bigint;
+  setBurnAmount: (burnAmount: bigint) => void;
+  burnAmount: bigint;
   setShowDialog: (bool: boolean) => void;
   setStep: (step: string) => void;
-  mkrBalance?: BigNumber;
+  mkrBalance?: bigint;
 };
 
 const MKRAmount = ({
@@ -78,7 +77,7 @@ const MKRAmount = ({
         </Button>
         <Button
           onClick={() => setStep('confirm')}
-          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance))}
+          disabled={burnAmount <= 0 || (!!mkrBalance && burnAmount > mkrBalance)}
           variant="outline"
           sx={{
             color: 'onNotice',

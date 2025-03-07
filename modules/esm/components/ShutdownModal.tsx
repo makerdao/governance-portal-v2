@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { TXMined } from 'modules/web3/types/transaction';
-import { BigNumber } from 'ethers';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
@@ -21,7 +20,7 @@ const ModalContent = ({
   thresholdAmount
 }: {
   setShowDialog: (value: boolean) => void;
-  thresholdAmount?: BigNumber;
+  thresholdAmount?: bigint;
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
   const network = useNetwork();

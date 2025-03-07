@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
   Flex,
   Box,
@@ -21,7 +21,6 @@ import {
   Divider
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import Toggle from '../Toggle';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
@@ -30,7 +29,19 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { useChainId } from 'wagmi';
 import { esmAddress as esmAddressMapping } from 'modules/contracts/generated';
 
-const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }) => {
+const ConfirmBurnView = ({
+  passValue,
+  value,
+  setValue,
+  burnAmount,
+  totalStaked
+}: {
+  passValue: string;
+  value: string;
+  setValue: Dispatch<SetStateAction<string>>;
+  burnAmount: bigint;
+  totalStaked: bigint;
+}) => {
   const bpi = useBreakpointIndex();
   return (
     <>
@@ -58,7 +69,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         }}
       >
         <Text>New ESM total</Text>
-        <Text>{formatValue(burnAmount.add(totalStaked), 'wad', 6)} MKR</Text>
+        <Text>{formatValue(burnAmount + totalStaked, 'wad', 6)} MKR</Text>
       </Flex>
       <Text
         variant="microHeading"
@@ -83,11 +94,12 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
 };
 
 type ConfirmBurnProps = {
-  burnAmount: BigNumber;
+  burnAmount: bigint;
   account?: string;
   setShowDialog: (arg: boolean) => void;
   burn: () => void;
-  totalStaked: BigNumber;
+  burnDisabled: boolean;
+  totalStaked: bigint;
 };
 
 const ConfirmBurn = ({
@@ -95,6 +107,7 @@ const ConfirmBurn = ({
   account,
   setShowDialog,
   burn,
+  burnDisabled,
   totalStaked
 }: ConfirmBurnProps): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -114,7 +127,17 @@ const ConfirmBurn = ({
     account,
     esmAddress
   );
-  const approveMKR = useApproveUnlimitedToken(Tokens.MKR);
+  const approveMKR = useApproveUnlimitedToken({
+    name: Tokens.MKR,
+    addressToApprove: esmAddress,
+    onSuccess: () => {
+      mutateAllowance();
+      setMkrApprovePending(false);
+    },
+    onError: () => {
+      setMkrApprovePending(false);
+    }
+  });
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>
@@ -144,18 +167,10 @@ const ConfirmBurn = ({
       )}
       <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
         <Toggle
-          active={allowance}
+          active={allowance && !approveMKR.isLoading && approveMKR.prepared}
           onClick={() => {
             setMkrApprovePending(true);
-            approveMKR.approve(esmAddress, {
-              mined: () => {
-                mutateAllowance();
-                setMkrApprovePending(false);
-              },
-              error: () => {
-                setMkrApprovePending(false);
-              }
-            });
+            approveMKR.execute();
           }}
           disabled={mkrApprovePending}
         />
@@ -188,7 +203,7 @@ const ConfirmBurn = ({
         <Button
           data-testid="continue-burn"
           onClick={burn}
-          disabled={!allowance || !termsAccepted || passValue !== value || !account}
+          disabled={!allowance || !termsAccepted || passValue !== value || !account || burnDisabled}
           variant="outline"
           sx={{ color: 'onNotice', borderColor: 'notice' }}
         >
