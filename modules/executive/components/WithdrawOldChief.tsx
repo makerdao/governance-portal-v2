@@ -23,6 +23,7 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { useChainId, useReadContract } from 'wagmi';
 import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
+import { TxStatus } from 'modules/web3/constants/transaction';
 
 // Note this only works on mainnet
 // TODO: Check that the amounts for allowance are correct
@@ -30,15 +31,30 @@ import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
   const chainId = useChainId();
+  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU_OLD,
-    parseUnits('100000000'),
+    100000000n,
     account,
     voteProxyOldContractAddress ? undefined : chiefOldAddress[chainId]
   );
 
-  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU_OLD);
+  const approve = useApproveUnlimitedToken({
+    name: Tokens.IOU_OLD,
+    addressToApprove: chiefOldAddress[chainId],
+    onStart: () => {
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: () => {
+      // Once the approval is successful, return to tx idle so we can free
+      setTxStatus(TxStatus.IDLE);
+      mutateTokenAllowance();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    }
+  });
 
   const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
 
@@ -56,31 +72,43 @@ const ModalContent = ({ close, ...props }) => {
     }
   });
 
-  const { free, tx: freeTx, setTxId: resetFree } = useOldChiefFree();
-
-  const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
+  const free = useOldChiefFree({
+    mkrToWithdraw: lockedMkr || 0n,
+    onStart: () => {
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: () => {
+      setTxStatus(TxStatus.SUCCESS);
+      close();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+      close();
+    },
+    enabled: !!lockedMkr
+  });
 
   return (
     <BoxWithClose close={close} {...props}>
       <Box>
-        {transaction && (
+        {txStatus !== TxStatus.IDLE && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text variant="microHeading">
-              {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
+              {txStatus === TxStatus.LOADING ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {transaction.status !== 'pending' && (
+            {txStatus !== TxStatus.LOADING && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
                   sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => resetTransaction(null)}
+                  onClick={() => setTxStatus(TxStatus.IDLE)}
                 >
                   Cancel
                 </Text>
@@ -88,7 +116,7 @@ const ModalContent = ({ close, ...props }) => {
             )}
           </Stack>
         )}
-        {!transaction && allowanceOk && (
+        {txStatus === TxStatus.IDLE && allowanceOk && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading">Withdraw MKR from Chief</Text>
@@ -104,19 +132,17 @@ const ModalContent = ({ close, ...props }) => {
             )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={!lockedMkr}
+              disabled={!lockedMkr || free.isLoading || !free.prepared}
               onClick={() => {
-                free(lockedMkr as BigNumber, {
-                  mined: () => close(),
-                  error: () => close()
-                });
+                setTxStatus(TxStatus.INITIALIZED);
+                free.execute();
               }}
             >
               Withdraw MKR
             </Button>
           </Stack>
         )}
-        {!transaction && !allowanceOk && (
+        {txStatus === TxStatus.IDLE && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading" mb={2}>
@@ -130,10 +156,10 @@ const ModalContent = ({ close, ...props }) => {
             <Button
               data-testid="button-approve-voting-contract"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+              disabled={approve.isLoading || !approve.prepared}
               onClick={() => {
-                approve(chiefOldAddress[chainId], {
-                  mined: () => mutateTokenAllowance()
-                });
+                setTxStatus(TxStatus.INITIALIZED);
+                approve.execute();
               }}
             >
               Approve
