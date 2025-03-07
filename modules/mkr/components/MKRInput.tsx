@@ -112,7 +112,7 @@ export function MKRInput({
           {balanceText}&nbsp;
         </Text>
 
-        {balance ? (
+        {balance !== undefined ? (
           <Text
             sx={{ cursor: 'pointer', fontSize: 2, mt: 2 }}
             onClick={onClickSetMax}
