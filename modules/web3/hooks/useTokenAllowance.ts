@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useChainId, useReadContract } from 'wagmi';
 import { TokenName } from '../types/tokens';
-import { tokenNameToConfig } from '../helpers/tokenNameToConfig.';
+import { tokenNameToConfig } from '../helpers/tokenNameToConfig';
 
 type TokenAllowanceResponse = {
   data?: boolean;
