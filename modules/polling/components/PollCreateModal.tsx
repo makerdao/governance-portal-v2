@@ -11,7 +11,6 @@ import { Button, Flex, Close, Text, Box, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
-import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { usePollCreate } from '../hooks/usePollCreate';
@@ -20,32 +19,31 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 type Props = {
   close: () => void;
   poll: Poll | undefined;
-  setPoll: (any) => void;
+  setPoll: (poll: Poll | undefined) => void;
 };
 
 const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
-  const { createPoll, tx } = usePollCreate();
-
   const [step, setStep] = useState('confirm');
-  const onPollCreate = () => {
-    if (!poll) return;
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
-    createPoll(
-      poll.startDate.getTime() / 1000,
-      poll.endDate.getTime() / 1000,
-      poll.multiHash,
-      poll.url || '',
-      {
-        initialized: () => setStep('signing'),
-        pending: () => setStep('pending'),
-        mined: () => {
-          setPoll(undefined);
-          close();
-        },
-        error: () => setStep('failed')
-      }
-    );
-  };
+  const createPoll = usePollCreate({
+    startDate: poll && BigInt(poll.startDate.getTime() / 1000),
+    endDate: poll && BigInt(poll.endDate.getTime() / 1000),
+    multiHash: poll && poll.multiHash,
+    url: poll && poll.url,
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setStep('pending');
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setPoll(undefined);
+      close();
+    },
+    onError: () => {
+      setStep('failed');
+    }
+  });
 
   const Default = () => {
     return (
@@ -76,7 +74,15 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
           </Box>
         </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
-          <Button variant="primaryLarge" sx={{ width: '100%' }} onClick={onPollCreate}>
+          <Button
+            variant="primaryLarge"
+            sx={{ width: '100%' }}
+            disabled={!poll || createPoll.isLoading || !createPoll.prepared}
+            onClick={() => {
+              setStep('signing');
+              createPoll.execute();
+            }}
+          >
             Create Poll
           </Button>
         </Box>
@@ -91,11 +97,11 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
       case 'signing':
         return <Signing close={close} />;
       case 'pending':
-        return <Pending tx={tx} close={close} />;
+        return <Pending txHash={txHash} close={close} />;
       case 'failed':
         return <Error close={close} />;
     }
-  }, [step, tx]);
+  }, [step, txHash, createPoll.isLoading, createPoll.prepared, createPoll.execute]);
 
   return (
     <DialogOverlay isOpen onDismiss={close}>
@@ -124,7 +130,7 @@ const Signing = ({ close }) => (
   </Flex>
 );
 
-const Pending = ({ tx, close }) => {
+const Pending = ({ txHash, close }: { txHash: `0x${string}` | undefined; close: () => void }) => {
   const network = useNetwork();
 
   return (
@@ -144,7 +150,7 @@ const Pending = ({ tx, close }) => {
           Poll will be created once the transaction has been confirmed.
         </Text>
 
-        <EtherscanLink type="transaction" hash={(tx as TXMined).hash} network={network} />
+        {txHash && <EtherscanLink type="transaction" hash={txHash} network={network} />}
 
         <Button
           onClick={close}
