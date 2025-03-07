@@ -9,16 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { useChainId } from 'wagmi';
-import { WriteHook } from 'modules/web3/types/hooks';
-
-type Params = {
-  mkrToDeposit: bigint;
-  enabled?: boolean;
-  gas?: bigint;
-  onSuccess?: () => void;
-  onError?: () => void;
-  onStart?: () => void;
-};
+import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 
 export const useLock = ({
   mkrToDeposit,
@@ -27,12 +20,13 @@ export const useLock = ({
   onSuccess,
   onError,
   onStart
-}: Params): WriteHook => {
+}: WriteHookParams & {
+  mkrToDeposit: bigint;
+}): WriteHook => {
   const chainId = useChainId();
+  const { voteProxyContractAddress } = useAccount();
 
-  return useWriteContractFlow({
-    address: chiefAddress[chainId],
-    abi: chiefAbi,
+  const commonParams = {
     functionName: 'lock',
     args: [mkrToDeposit],
     chainId,
@@ -41,5 +35,19 @@ export const useLock = ({
     onSuccess,
     onError,
     onStart
+  } as const;
+
+  const useWriteContractFlowResponseProxy = useWriteContractFlow({
+    address: voteProxyContractAddress as `0x${string}` | undefined,
+    abi: voteProxyAbi,
+    ...commonParams
   });
+
+  const useWriteContractFlowResponseChief = useWriteContractFlow({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
+    ...commonParams
+  });
+
+  return voteProxyContractAddress ? useWriteContractFlowResponseProxy : useWriteContractFlowResponseChief;
 };
