@@ -10,7 +10,6 @@ import { Flex, Button, Text, Grid, Close, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { TXMined } from 'modules/web3/types/transaction';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
@@ -23,8 +22,22 @@ const ModalContent = ({
   thresholdAmount?: bigint;
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+
   const network = useNetwork();
-  const { shutdown, tx } = useEsmShutdown();
+  const shutdown = useEsmShutdown({
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setStep('pending');
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      close(); // TBD maybe show a separate "done" dialog,
+    },
+    onError: () => {
+      setStep('failed');
+    }
+  });
 
   const close = () => {
     setShowDialog(false);
@@ -47,13 +60,10 @@ const ModalContent = ({
           Cancel
         </Button>
         <Button
+          disabled={shutdown.isLoading || !shutdown.prepared}
           onClick={() => {
-            shutdown({
-              initialized: () => setStep('signing'),
-              pending: () => setStep('pending'),
-              mined: () => close(), // TBD maybe show a separate "done" dialog,
-              error: () => setStep('failed')
-            });
+            setStep('signing');
+            shutdown.execute();
           }}
           variant="outline"
           sx={{ color: 'onNotice', borderColor: 'notice' }}
@@ -104,7 +114,7 @@ const ModalContent = ({
           Shutdown will update once the transaction has been confirmed.
         </Text>
 
-        <EtherscanLink hash={(tx as TXMined).hash} type="transaction" network={network} />
+        {txHash && <EtherscanLink hash={txHash} type="transaction" network={network} />}
 
         <Button
           onClick={close}
