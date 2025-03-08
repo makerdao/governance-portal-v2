@@ -333,7 +333,8 @@ export async function fetchAndMergeDelegates(
     );
 
     const expirationDate =
-      delegate.delegateVersion === 2 ? undefined : add(new Date(Number(delegate.blockTimestamp || 0) * 1000), { years: 1 });
+      //don't multiply by 1000 since blockTimestamp is in iso format
+      delegate.delegateVersion === 2 ? undefined : add(new Date(delegate.blockTimestamp), { years: 1 });
     const expired =
       delegate.delegateVersion === 2 ? false : expirationDate && expirationDate > new Date() ? false : true;
     const isAboutToExpire = delegate.delegateVersion === 2 ? false : isAboutToExpireCheck(expirationDate);
