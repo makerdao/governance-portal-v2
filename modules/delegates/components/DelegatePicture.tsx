@@ -23,7 +23,6 @@ export function DelegatePicture({
   width?: number;
   showTooltip?: boolean;
 }): React.ReactElement {
-
   // if delegate is passed in, return delegate picture
   if (delegate) {
     return (

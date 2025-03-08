@@ -297,7 +297,7 @@ export const DelegateOverviewCard = memo(
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                       data-testid="total-mkr-delegated"
                     >
-                      {formatValue(parseEther(delegate.mkrDelegated))}
+                      {formatValue(BigNumber.from(delegate.mkrDelegated), 'wad')}
                     </Text>
                     <Text
                       as="p"

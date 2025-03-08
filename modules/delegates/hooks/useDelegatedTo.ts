@@ -18,7 +18,7 @@ export function useDelegatedTo(
   data: MKRDelegatedToAPIResponse | undefined;
 } {
   const { data } = useSWR<MKRDelegatedToAPIResponse>(
-    address ? `/api/address/${address}/delegated-to?network=${network}` : null,
+    !!address && !!network ? `/api/address/${address}/delegated-to?network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,

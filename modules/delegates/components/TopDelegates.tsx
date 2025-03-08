@@ -106,7 +106,7 @@ export default function TopDelegates({
                 >
                   <Text>
                     {mkrDelegated
-                      ? new BigNumber(mkrDelegated).div(totalMKRDelegated).multipliedBy(100).toFixed(2)
+                      ? new BigNumber(mkrDelegated).div(totalMKRDelegated).div(10**18).multipliedBy(100).toFixed(2)
                       : '0.00'}
                     %
                   </Text>
@@ -120,7 +120,7 @@ export default function TopDelegates({
                     display: ['none', 'flex']
                   }}
                 >
-                  <Text as="p">{mkrDelegated ? new BigNumber(mkrDelegated).toFixed(2) : '0.00'} MKR</Text>
+                  <Text as="p">{mkrDelegated ? new BigNumber(mkrDelegated).div(10**18).toFixed(2) : '0.00'} MKR</Text>
                   <Button
                     variant="outline"
                     data-testid="button-delegate"

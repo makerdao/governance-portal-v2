@@ -36,14 +36,15 @@ type CollapsableRowProps = {
   totalDelegated: BigNumber;
 };
 
-const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
+const formatTotalDelegated = (num: BigNumberJS, denom: BigNumber): string => {
   try {
-    // Use bignumber.js to do division because ethers BigNumber does not support decimals
-    const numB = new BigNumberJS(num.toString());
-    const denomB = new BigNumberJS(denom.toString());
+    const numAsWad = parseUnits(num.toString());
 
-    const weight = numB.div(denomB).times(100);
-    return formatValue(parseUnits(weight.toString()));
+    const percentage = new BigNumberJS(numAsWad.toString())
+      .div(denom.toString())
+      .times(100);
+
+    return percentage.toFixed(2);
   } catch (e) {
     return '0';
   }
@@ -122,7 +123,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         {totalDelegated ? (
           <Text sx={{ fontSize: [1, 3] }}>{`${formatTotalDelegated(
-            parseUnits(lockAmount),
+            new BigNumberJS(lockAmount),
             totalDelegated
           )}%`}</Text>
         ) : (
