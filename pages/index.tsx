@@ -337,7 +337,7 @@ export default function Index({
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
     pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
-    delegates: delegatesData.data?.delegates ?? [],
+    delegates: delegatesData.data?.delegates?.slice(0, 5) ?? [],
     delegatesInfo: delegatesInfo.data ?? [],
     stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
