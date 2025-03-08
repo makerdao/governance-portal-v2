@@ -28,7 +28,7 @@ export enum DelegateOrderByEnum {
   DATE = 'blockTimestamp',
   MKR = 'totalDelegated',
   DELEGATORS = 'delegators',
-  RANDOM = ''
+  RANDOM = 'random'
 }
 
 export enum OrderDirectionEnum {

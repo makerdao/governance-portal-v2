@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { fetchChainDelegates } from './fetchChainDelegates';
-import { DelegateStatusEnum, DelegateTypeEnum } from 'modules/delegates/delegates.constants';
+import { DelegateOrderByEnum, DelegateStatusEnum, DelegateTypeEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { add, isBefore } from 'date-fns';
@@ -495,29 +495,24 @@ export async function fetchDelegatesPaginated({
     and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddresses }] 
   };
 
-
+  const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.MKR : orderBy;
+  
   const delegatesQueryFirstPageVariables = {
     first: pageSize,
-    orderBy,
+    orderBy: queryOrderBy,
     orderDirection,
     alignedFilter: alignedFilterFirstPage,
     shadowFilter: shadowFilterFirstPage,
     alignedDelegates: alignedDelegatesAddresses
   };
-  if (seed) {
-    delegatesQueryFirstPageVariables['seed'] = seed;
-  }
-
+  
   const delegatesQuerySubsequentPagesVariables = {
     first: pageSize,
     skip: (page - 1) * pageSize,
-    orderBy,
+    orderBy: queryOrderBy,
     orderDirection,
     filter: shadowFilterFirstPage
   };
-  if (seed) {
-    delegatesQuerySubsequentPagesVariables['seed'] = seed;
-  }
 
   const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetrics] = await Promise.all([
     getGithubExecutives(network),
@@ -530,7 +525,14 @@ export async function fetchDelegatesPaginated({
     }),
     fetchDelegationMetrics(network)
   ]);
-  const combinedDelegates = [ ...(delegatesQueryRes.alignedDelegates || []), ...(delegatesQueryRes.delegates || [])];
+  
+  let combinedDelegates = [ ...(delegatesQueryRes.alignedDelegates || []), ...(delegatesQueryRes.delegates || [])];
+  
+  // Apply random sorting on the frontend if orderBy is RANDOM
+  if (orderBy === DelegateOrderByEnum.RANDOM) {
+    combinedDelegates = combinedDelegates.sort(() => Math.random() - 0.5);
+  }
+  
   const delegatesData = {
     paginationInfo: {
       totalCount: delegatesQueryRes.delegates.totalCount,
