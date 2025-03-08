@@ -150,4 +150,4 @@ export const DECODED_SPELL_ENDPOINT = (hash: string): string =>
 export const AVG_BLOCKS_PER_DAY = 6500;
 
 export const GASNOW_ENDPOINT = 'https://beaconcha.in/api/v1/execution/gasnow';
-export const GASNOW_URL = 'https://www.etherchain.org/tools/gasnow';
+export const GASNOW_URL = 'https://beaconcha.in/gasnow';
