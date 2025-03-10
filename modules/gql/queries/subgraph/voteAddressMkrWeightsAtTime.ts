@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { gql } from 'graphql-request';
 
+//TODO: update this to get 1 entry per voter, not just one entry per query
 export const voteAddressMkrWeightsAtTime = gql`
   query voteAddressMkrWeightsAtTime($argVoters: [String!]!, $argUnix: BigInt!) {
     executiveVotingPowerChanges(

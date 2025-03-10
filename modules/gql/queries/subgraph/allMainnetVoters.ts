@@ -20,6 +20,7 @@ export const allMainnetVoters = gql`
         }
         blockTime
         choice
+        txnHash
       }
     }
   }
