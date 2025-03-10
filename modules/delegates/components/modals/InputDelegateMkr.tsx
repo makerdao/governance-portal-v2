@@ -14,15 +14,14 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 
 type Props = {
   title: string;
   description: string;
   disclaimer?: JSX.Element;
-  onChange: (val: BigNumber) => void;
-  balance?: BigNumber;
+  onChange: (val: bigint) => void;
+  balance?: bigint;
   buttonLabel: string;
   onClick: () => void;
   showAlert: boolean;
@@ -38,10 +37,10 @@ export function InputDelegateMkr({
   showAlert,
   disclaimer
 }: Props): React.ReactElement {
-  const [value, setValue] = useState(BigNumber.from(0));
+  const [value, setValue] = useState(0n);
   const { account, voteProxyContractAddress } = useAccount();
   const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
-  function handleChange(val: BigNumber): void {
+  function handleChange(val: bigint): void {
     setValue(val);
     onChange(val);
   }
@@ -58,14 +57,14 @@ export function InputDelegateMkr({
         <Button
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
-          disabled={!value || !balance || value.eq(0) || value.gt(balance)}
+          disabled={!value || !balance || value === 0n || value > balance}
           data-testid="deposit-mkr-modal-button"
         >
           {buttonLabel}
         </Button>
         {disclaimer}
       </Box>
-      {showAlert && lockedMkr && lockedMkr.gte(parseUnits('0.1')) && balance && balance.gt(0) && (
+      {showAlert && lockedMkr && lockedMkr >= parseEther('0.1') && balance && balance > 0n && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {`You have ${formatValue(lockedMkr)} additional MKR locked in the voting contract. `}
@@ -74,7 +73,7 @@ export function InputDelegateMkr({
           </Text>
         </Alert>
       )}
-      {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.eq(0) && (
+      {showAlert && lockedMkr && lockedMkr > 0n && balance && balance === 0n && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {'You must '}

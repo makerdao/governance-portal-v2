@@ -19,18 +19,17 @@ import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { formatValue } from 'lib/string';
 import DelegateAvatarName from '../DelegateAvatarName';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { TxStatus } from 'modules/web3/constants/transaction';
 
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   delegate: Delegate | DelegatePaginated | DelegateInfo;
-  mutateTotalStaked: (amount?: BigNumber) => void;
+  mutateTotalStaked: (amount?: bigint) => void;
   mutateMKRDelegated: () => void;
   title?: string;
   refetchOnDelegation?: boolean;
@@ -48,26 +47,62 @@ export const DelegateModal = ({
   const { account } = useAccount();
 
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(BigNumber.from(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState(0n);
   const [confirmStep, setConfirmStep] = useState(false);
+  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(account);
 
   const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.MKR,
-    parseUnits('100000000'),
+    100000000n,
     account,
     voteDelegateAddress
   );
 
-  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
+  const approve = useApproveUnlimitedToken({
+    name: Tokens.MKR,
+    addressToApprove: voteDelegateAddress,
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: () => {
+      // Once the approval is successful, return to tx idle so we can lock
+      setTxStatus(TxStatus.IDLE);
+      setTxHash(undefined);
+      mutateTokenAllowance();
+      lock.retryPrepare();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    }
+  });
 
-  const { lock, tx: lockTx, setTxId: resetLock } = useDelegateLock(voteDelegateAddress);
-
-  const [tx, resetTx] = mkrAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
+  const lock = useDelegateLock({
+    voteDelegateAddress,
+    mkrToDeposit,
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.SUCCESS);
+      refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToDeposit);
+      mutateMKRDelegated();
+      mutateMkrBalance();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    },
+    enabled: !!mkrAllowance || !mkrToDeposit
+  });
 
   const onClose = () => {
-    resetTx(null);
+    setTxStatus(TxStatus.IDLE);
+    setTxHash(undefined);
     onDismiss();
   };
 
@@ -82,10 +117,12 @@ export const DelegateModal = ({
         <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
           <BoxWithClose close={onClose}>
             <Box>
-              {tx ? (
+              {txStatus !== TxStatus.IDLE ? (
                 <TxDisplay
-                  tx={tx}
-                  setTxId={resetTx}
+                  txStatus={txStatus}
+                  setTxStatus={setTxStatus}
+                  txHash={txHash}
+                  setTxHash={setTxHash}
                   onDismiss={onClose}
                   title={`Delegating to ${delegate.name}`}
                   description={`Congratulations, you delegated ${formatValue(
@@ -106,14 +143,15 @@ export const DelegateModal = ({
                         mkrToDeposit={mkrToDeposit}
                         delegate={delegate}
                         onClick={() => {
-                          lock(mkrToDeposit, {
-                            mined: () => {
-                              refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToDeposit);
-                              mutateMKRDelegated();
-                              mutateMkrBalance();
-                            }
-                          });
+                          setTxStatus(TxStatus.INITIALIZED);
+                          lock.execute();
                         }}
+                        disabled={
+                          mkrToDeposit === 0n ||
+                          mkrToDeposit > (mkrBalance || 0n) ||
+                          lock.isLoading ||
+                          !lock.prepared
+                        }
                         onBack={() => setConfirmStep(false)}
                       />
                     ) : (
@@ -129,13 +167,11 @@ export const DelegateModal = ({
                     )
                   ) : (
                     <ApprovalContent
-                      onClick={() =>
-                        approve(voteDelegateAddress, {
-                          mined: () => {
-                            mutateTokenAllowance();
-                          }
-                        })
-                      }
+                      onClick={() => {
+                        setTxStatus(TxStatus.INITIALIZED);
+                        approve.execute();
+                      }}
+                      disabled={approve.isLoading || !approve.prepared}
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={

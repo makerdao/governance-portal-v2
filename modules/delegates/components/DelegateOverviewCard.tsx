@@ -25,8 +25,7 @@ import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { BigNumber } from 'ethers';
-import { formatEther, parseEther } from 'ethers/lib/utils';
+import { formatEther, parseEther } from 'viem';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -95,13 +94,13 @@ export const DelegateOverviewCard = memo(
     const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
     const hasMkrDelegated = account && mkrDelegated && mkrDelegated > 0n;
 
-    const mutateDelegateTotalMkr = (amount: BigNumber) => {
+    const mutateDelegateTotalMkr = (amount: bigint) => {
       setStateDelegates(prevDelegates => {
         const mutatedDelegateArray = prevDelegates.map(d => {
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              mkrDelegated: formatEther(parseEther(d.mkrDelegated).add(amount))
+              mkrDelegated: (BigInt(d.mkrDelegated) + amount).toString()
             };
           }
           return d;
