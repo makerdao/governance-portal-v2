@@ -25,7 +25,6 @@ import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { formatEther, parseEther } from 'viem';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -267,7 +266,7 @@ export const DelegateOverviewCard = memo(
                 <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
                   {account && (
                     <Box>
-                      {mkrDelegated ? (
+                      {typeof mkrDelegated === 'bigint' ? (
                         <Text
                           as="p"
                           variant="microHeading"

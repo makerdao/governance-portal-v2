@@ -67,8 +67,6 @@ const ModalContent = ({
     enabled: !!allowance
   });
 
-  console.log({ burnAmount, error: burn.error, prepareError: burn.prepareError });
-
   const close = () => setShowDialog(false);
 
   switch (step) {

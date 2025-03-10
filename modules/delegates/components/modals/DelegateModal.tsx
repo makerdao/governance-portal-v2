@@ -97,7 +97,7 @@ export const DelegateModal = ({
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     },
-    enabled: !!mkrAllowance || !mkrToDeposit
+    enabled: !!mkrAllowance && !!mkrToDeposit
   });
 
   const onClose = () => {

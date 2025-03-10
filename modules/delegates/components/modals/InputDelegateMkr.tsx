@@ -24,6 +24,7 @@ type Props = {
   balance?: bigint;
   buttonLabel: string;
   onClick: () => void;
+  disabled?: boolean;
   showAlert: boolean;
 };
 
@@ -34,6 +35,7 @@ export function InputDelegateMkr({
   balance,
   buttonLabel,
   onClick,
+  disabled = false,
   showAlert,
   disclaimer
 }: Props): React.ReactElement {
@@ -57,7 +59,7 @@ export function InputDelegateMkr({
         <Button
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
-          disabled={!value || !balance || value === 0n || value > balance}
+          disabled={!value || !balance || value === 0n || value > balance || disabled}
           data-testid="deposit-mkr-modal-button"
         >
           {buttonLabel}
