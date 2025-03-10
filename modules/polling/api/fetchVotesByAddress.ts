@@ -10,36 +10,52 @@ import BigNumber from 'lib/bigNumberJs';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
+import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/subgraph/voteAddressMkrWeightsAtTime';
+import { allMainnetVoters } from 'modules/gql/queries/subgraph/allMainnetVoters';
+import { allArbitrumVoters } from 'modules/gql/queries/subgraph/allArbitrumVoters';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
-import { SpockVote } from '../types/pollTally';
+import { formatUnits } from 'ethers/lib/utils';
 
 export async function fetchVotesByAddressForPoll(
   pollId: number,
   endUnix: number,
   network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
-  const data = await gqlRequest({
+  const mainnetVotersResponse = await gqlRequest({
+    chainId: networkNameToChainId(network),
+    query: allMainnetVoters,
+    useSubgraph: true,
+    variables: {
+      argPollId: pollId.toString()
+    }
+  });
+
+  //TODO: filter out votes with timestamps out of range
+  const mainnetVotes = mainnetVotersResponse.polls[0].votes
+  const mainnetVoterAddresses = mainnetVotes.map(vote => vote.voter.id);
+
+  //TODO: get list of arbitrum voters, and combine them (mapping delegate owners to their delegate contracts)
+
+  const mkrWeightsResponse = await gqlRequest({
     chainId: networkNameToChainId(network),
     query: voteAddressMkrWeightsAtTime,
-    variables: { argPollId: pollId, argUnix: endUnix }
+    useSubgraph: true,
+    variables: { argVoters: mainnetVoterAddresses, argUnix: endUnix }
   });
-
-  const results: SpockVote[] = data.voteAddressMkrWeightsAtTime.nodes;
-
-  if (!results) return [];
-
-  const votes = results.map(vote => {
-    const ballot = parseRawOptionId(vote.optionIdRaw.toString());
-
+  const voteWeights = mkrWeightsResponse.executiveVotingPowerChanges;
+  const votesWithWeights = mainnetVotes.map(vote => {
+    const weightObj = voteWeights.find(weight => weight.voter.id === vote.voter.id);
+    const weight = weightObj ? formatUnits(weightObj.newBalance) : formatUnits('0');
+    const ballot = parseRawOptionId(vote.choice.toString());
     return {
-      ...vote,
-      optionIdRaw: vote.optionIdRaw.toString(),
+      mkrSupport: weight,
       ballot,
-      pollId
+      pollId,
+      voter: vote.voter.id,
+      chainId: networkNameToChainId(network),
+      blockTimestamp: vote.blockTimestamp
     };
   });
-
-  return votes.sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
+  return votesWithWeights.sort((a, b) => (new BigNumber(a.weight).lt(new BigNumber(b.weight)) ? 1 : -1));
 }
