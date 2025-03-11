@@ -11,7 +11,6 @@ import { gql } from 'graphql-request';
 export const allMainnetVoters = gql`
   query allMainnetVoters($argPollId: String) {
     polls(where: {id: $argPollId}) {
-			id
       startDate
       endDate
       votes {
