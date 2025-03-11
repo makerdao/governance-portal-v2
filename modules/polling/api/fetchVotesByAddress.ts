@@ -43,13 +43,19 @@ export async function fetchVotesByAddressForPoll(
     useSubgraph: true,
     variables: { argVoters: mainnetVoterAddresses, argUnix: endUnix }
   });
-  const voteWeights = mkrWeightsResponse.executiveVotingPowerChanges;
+  
+  const votersWithWeights = mkrWeightsResponse.voters || [];
+  
   const votesWithWeights = mainnetVotes.map(vote => {
-    const weightObj = voteWeights.find(weight => weight.voter.id === vote.voter.id);
-    const weight = weightObj ? formatUnits(weightObj.newBalance) : formatUnits('0');
+    const voterData = votersWithWeights.find(voter => voter.id === vote.voter.id);
+    const votingPowerChanges = voterData?.votingPowerChanges || [];
+    const mkrSupport = votingPowerChanges.length > 0 
+      ? formatUnits(votingPowerChanges[0].newBalance) 
+      : formatUnits('0');
+    
     const ballot = parseRawOptionId(vote.choice.toString());
     return {
-      mkrSupport: weight,
+      mkrSupport,
       ballot,
       pollId,
       voter: vote.voter.id,
@@ -58,5 +64,6 @@ export async function fetchVotesByAddressForPoll(
       hash: vote.txnHash
     };
   });
-  return votesWithWeights.sort((a, b) => (new BigNumber(a.weight).lt(new BigNumber(b.weight)) ? 1 : -1));
+  
+  return votesWithWeights.sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
 }
