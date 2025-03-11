@@ -18,7 +18,6 @@ import { formatUnits } from 'ethers/lib/utils';
 
 export async function fetchVotesByAddressForPoll(
   pollId: number,
-  endUnix: number,
   network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
   const mainnetVotersResponse = await gqlRequest({
@@ -30,9 +29,12 @@ export async function fetchVotesByAddressForPoll(
     }
   });
 
-  //TODO: filter out votes with timestamps out of range
+  const startUnix = mainnetVotersResponse.polls[0].startDate;
+  const endUnix = mainnetVotersResponse.polls[0].endDate;
+
   const mainnetVotes = mainnetVotersResponse.polls[0].votes
-  const mainnetVoterAddresses = mainnetVotes.map(vote => vote.voter.id);
+  const mainnetVoterAddresses = mainnetVotes.filter(vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix).map(vote => vote.voter.id);
+
 
   //TODO: get list of arbitrum voters, and combine them (mapping delegate owners to their delegate contracts), only keeping latest vote if there's multiple votes
   const mkrWeightsResponse = await gqlRequest({

@@ -62,9 +62,7 @@ export function findWinner(condition: VictoryCondition, votes: PollTallyVote[], 
 
 export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   // Fetch spock votes for the poll
-  const endUnix = new Date(poll.endDate).getTime() / 1000;
-
-  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
+  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, network);
 
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
