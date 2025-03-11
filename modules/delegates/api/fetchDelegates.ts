@@ -465,7 +465,7 @@ export async function fetchDelegatesPaginated({
   const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
     getDelegatesCounts(filteredDelegateEntries);
 
-  let baseDelegatesQueryFilter: any = { and: [] };
+  const baseDelegatesQueryFilter: any = { and: [] };
   if (searchTerm) {
     baseDelegatesQueryFilter.and.push({ id_in: filteredDelegateAddresses });
     if (delegateType === DelegateTypeEnum.ALIGNED) {
