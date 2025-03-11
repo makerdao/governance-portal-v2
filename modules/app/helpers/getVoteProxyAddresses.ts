@@ -76,12 +76,14 @@ export const getVoteProxyAddresses = async (
       publicClient.readContract({
         address: voteProxyFactory,
         abi: voteProxyFactoryAbi,
-        functionName: 'coldMap'
+        functionName: 'coldMap',
+        args: [account]
       }),
       publicClient.readContract({
         address: voteProxyFactory,
         abi: voteProxyFactoryAbi,
-        functionName: 'hotMap'
+        functionName: 'hotMap',
+        args: [account]
       })
     ]);
 

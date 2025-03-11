@@ -9,10 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { create } from 'zustand';
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
-import { ContractTransaction } from 'ethers';
+import { Transaction as ViemTransaction } from 'viem';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
 import { SupportedNetworks } from '../constants/networks';
+import { getPublicClient } from '../helpers/getPublicClient';
 
 export type TxCallbacks = {
   initialized?: (txId: string) => void;
@@ -29,13 +30,13 @@ type Store = {
   setMined: (txId: string) => void;
   setError: (txId: string, error?: Error) => void;
   track: (
-    txCreator: () => Promise<ContractTransaction>,
+    txCreator: () => Promise<ViemTransaction>,
     account?: string,
     message?: string,
     callbacks?: TxCallbacks,
     gaslessNetwork?: SupportedNetworks
   ) => string | null;
-  listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: TxCallbacks) => void;
+  listen: (promise: Promise<ViemTransaction>, txId: string, callbacks?: TxCallbacks) => void;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -141,7 +142,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   },
 
   listen: async (txPromise, txId, callbacks) => {
-    let tx;
+    let tx: ViemTransaction;
     try {
       tx = await txPromise;
     } catch (e) {
@@ -153,16 +154,24 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     get().setPending(txId, tx.hash);
     if (typeof callbacks?.pending === 'function') callbacks.pending(tx.hash);
 
-    // Handle mined or error txns
-    tx.wait()
-      .then(() => {
-        get().setMined(txId);
-        if (typeof callbacks?.mined === 'function') callbacks.mined(txId, tx.hash);
-      })
-      .catch(e => {
-        get().setError(txId, e);
-        if (typeof callbacks?.error === 'function') callbacks.error(txId, parseTxError(e));
-      });
+    if (tx.chainId) {
+      const publicClient = getPublicClient(tx.chainId);
+      // Handle mined or error txns
+      publicClient
+        .waitForTransactionReceipt({ hash: tx.hash })
+        .then(() => {
+          get().setMined(txId);
+          if (typeof callbacks?.mined === 'function') callbacks.mined(txId, tx.hash);
+        })
+        .catch(e => {
+          get().setError(txId, e);
+          if (typeof callbacks?.error === 'function') callbacks.error(txId, parseTxError(e));
+        });
+    } else {
+      const e = new Error('Transaction chainId is not defined');
+      get().setError(txId, e);
+      if (typeof callbacks?.error === 'function') callbacks.error(txId, parseTxError(e));
+    }
   }
 }));
 

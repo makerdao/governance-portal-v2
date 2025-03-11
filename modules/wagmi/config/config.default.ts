@@ -1,5 +1,5 @@
 import { createConfig, createStorage, fallback, http, noopStorage } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
+import { arbitrum, arbitrumSepolia, mainnet } from 'wagmi/chains';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { coinbaseWallet, metaMask, safe, walletConnect } from 'wagmi/connectors';
 import { createPublicClient } from 'viem';
@@ -76,4 +76,16 @@ export const mainnetPublicClient = createPublicClient({
 export const tenderlyPublicClient = createPublicClient({
   chain: tenderly,
   transport: http(`https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`)
+});
+
+export const arbitrumPublicClient = createPublicClient({
+  chain: arbitrum,
+  transport: http(`https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY}`)
+});
+
+export const arbitrumTestnetPublicClient = createPublicClient({
+  chain: arbitrumSepolia,
+  transport: http(
+    `https://arb-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY}`
+  )
 });
