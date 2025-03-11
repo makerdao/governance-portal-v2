@@ -23,7 +23,7 @@ import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
-import { parseEther } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function ReviewBox({
@@ -65,7 +65,7 @@ export default function ReviewBox({
     precheckData?.recentlyUsedGaslessVoting &&
     Date.now() - parseInt(precheckData?.recentlyUsedGaslessVoting) > GASLESS_RATE_LIMIT_IN_MS;
   const relayFunded =
-    parseEther(precheckData?.relayBalance || '0').gt(0) &&
+    parseEther(precheckData?.relayBalance || '0') > 0n &&
     !(precheckData?.gaslessDisabled?.toString().toLowerCase() === 'true');
 
   const validationPassed =
@@ -443,12 +443,14 @@ export default function ReviewBox({
             Transaction Pending
           </Text>
 
-          <EtherscanLink
-            type="transaction"
-            hash={(transaction as TXMined).hash}
-            network={transaction?.gaslessNetwork ?? network}
-            styles={{ justifyContent: 'center', width: '100%' }}
-          />
+          {transaction && (
+            <EtherscanLink
+              type="transaction"
+              hash={(transaction as TXMined).hash}
+              network={transaction?.gaslessNetwork ?? network}
+              styles={{ justifyContent: 'center', width: '100%' }}
+            />
+          )}
         </Card>
       )}
 
