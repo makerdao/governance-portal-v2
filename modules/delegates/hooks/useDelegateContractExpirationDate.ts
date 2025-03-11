@@ -6,8 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useCurrentUserVoteDelegateContract } from './useCurrentUserVoteDelegateContract';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useChainId, useReadContract } from 'wagmi';
+import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
 
 type VoteDelegateAddressResponse = {
   data: {
@@ -15,28 +16,29 @@ type VoteDelegateAddressResponse = {
     voteDelegateContractAddress?: string;
   };
   loading: boolean;
-  error: Error;
+  error: Error | null;
 };
 
 // Returns the vote delegate contract address for a account
 export const useDelegateContractExpirationDate = (): VoteDelegateAddressResponse => {
-  const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
+  const { voteDelegateContractAddress } = useAccount();
+  const chainId = useChainId();
 
-  const { data: expirationData, error } = useSWR(
-    voteDelegateContract ? `${voteDelegateContract}/expiration-date` : null,
-    async () => {
-      try {
-        const expiration = await voteDelegateContract?.expiration();
-        return expiration ? new Date(expiration?.toNumber() * 1000) : null;
-      } catch (err) {
-        return null;
-      }
+  const { data: expirationData, error } = useReadContract({
+    address: voteDelegateContractAddress as `0x${string}` | undefined,
+    abi: voteDelegateAbi,
+    functionName: 'expiration',
+    chainId,
+    scopeKey: `${voteDelegateContractAddress}/expiration-date/${chainId}`,
+    query: {
+      enabled: !!voteDelegateContractAddress
     }
-  );
+  });
+
   return {
     data: {
-      expiration: expirationData,
-      voteDelegateContractAddress: voteDelegateContract?.address
+      expiration: expirationData ? new Date(Number(expirationData) * 1000) : null,
+      voteDelegateContractAddress
     },
     loading: !error && !expirationData,
     error

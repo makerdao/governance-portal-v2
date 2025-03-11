@@ -33,9 +33,6 @@ Next, install the project's dependencies using [yarn](https://yarnpkg.com/gettin
 # installs dependencies
 yarn
 
-# builds eth-sdk for interacting with contracts
-yarn build-sdk
-
 # runs the application on localhost:3000
 yarn dev
 
