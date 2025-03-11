@@ -16,9 +16,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { BigNumber } from 'ethers';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
@@ -40,7 +39,7 @@ jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
     (getArbitrumPollingContractRelayProvider as jest.Mock).mockReturnValue({
-      nonces: () => Promise.resolve(BigNumber.from('3')),
+      nonces: () => Promise.resolve(3n),
       vote: () => Promise.resolve(null),
       'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
     });
@@ -204,7 +203,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: BigNumber.from(0)
+        total: 0n
       })
     );
     const { req, res } = mockRequestResponse('POST', {
@@ -230,7 +229,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: parseUnits('0.2')
+        total: parseEther('0.2')
       })
     );
     (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([]));
@@ -257,7 +256,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: parseUnits('0.2')
+        total: parseEther('0.2')
       })
     );
     (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
@@ -289,7 +288,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: parseUnits('0.2')
+        total: parseEther('0.2')
       })
     );
     (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));

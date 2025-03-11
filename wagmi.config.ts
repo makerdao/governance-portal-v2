@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from '@wagmi/cli';
 import { etherscan } from '@wagmi/cli/plugins';
 import { arbitrum, mainnet } from 'wagmi/chains';
 import { contracts, arbitrumContracts } from './modules/contracts/contracts';
-import { dsSpell, voteDelegate, voteProxy } from './modules/contracts/ethers/abis';
+import { dsSpellAbi, voteDelegateAbi, voteProxyAbi } from './modules/contracts/ethers/abis';
 
 export default defineConfig(() => {
   const env = loadEnv({
@@ -15,15 +15,15 @@ export default defineConfig(() => {
     contracts: [
       {
         name: 'voteProxy',
-        abi: voteProxy
+        abi: voteProxyAbi
       },
       {
         name: 'voteDelegate',
-        abi: voteDelegate
+        abi: voteDelegateAbi
       },
       {
         name: 'dsSpell',
-        abi: dsSpell
+        abi: dsSpellAbi
       }
     ],
     plugins: [

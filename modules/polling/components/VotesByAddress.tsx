@@ -13,7 +13,7 @@ import { PollTally, Poll, PollTallyVote } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
 import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
@@ -61,9 +61,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     switch (sortBy.type) {
       case 'mkr':
         sorted = votes?.sort((a, b) => {
-          const aMKR = parseUnits(a.mkrSupport.toString());
-          const bMKR = parseUnits(b.mkrSupport.toString());
-          return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
+          const aMKR = parseEther(a.mkrSupport.toString());
+          const bMKR = parseEther(b.mkrSupport.toString());
+          return sortBy.order === 1 ? (aMKR > bMKR ? -1 : 1) : aMKR > bMKR ? 1 : -1;
         });
         break;
       case 'address':
@@ -215,7 +215,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     data-testid={`vote-mkr-${v.voter}`}
                     sx={{ textAlign: ['right', 'right', 'left'], pb: 2, fontSize: [1, 3] }}
                   >
-                    {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
+                    {`${formatValue(parseEther(v.mkrSupport.toString()), undefined, undefined, true, true)}${
                       bpi > 3 ? ' MKR' : ''
                     }`}
                   </Text>

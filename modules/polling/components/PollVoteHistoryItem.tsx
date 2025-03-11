@@ -13,7 +13,7 @@ import { formatDateWithTime } from 'lib/datetime';
 import { isInputFormatRankFree } from '../helpers/utils';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import VotedOption from './VotedOption';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -101,7 +101,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
                 fontWeight: 'semiBold'
               }}
             >
-              {formatValue(parseUnits(vote.mkrSupport.toString()), undefined, undefined, true, true)} MKR
+              {formatValue(parseEther(vote.mkrSupport.toString()), undefined, undefined, true, true)} MKR
             </Text>
           </Box>
         </Box>

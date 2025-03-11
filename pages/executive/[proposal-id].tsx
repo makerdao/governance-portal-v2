@@ -42,7 +42,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
@@ -375,7 +375,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                           <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
                             <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
                             <Text color="onSecondary" sx={{ fontSize: 2 }}>
-                              {formatValue(parseUnits(supporter.deposits), undefined, undefined, true, true)}{' '}
+                              {formatValue(parseEther(supporter.deposits), undefined, undefined, true, true)}{' '}
                               MKR
                             </Text>
                           </Flex>

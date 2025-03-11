@@ -5,7 +5,7 @@
 import { test } from '@playwright/test';
 import { writeFile, readFile } from 'fs/promises';
 import dotenv from 'dotenv';
-import { parseEther, parseUnits, hexlify } from 'ethers/lib/utils';
+import { parseEther, parseUnits, toHex } from 'viem';
 import { TEST_ACCOUNTS } from './shared';
 
 dotenv.config();
@@ -27,7 +27,7 @@ test.afterAll(async () => {
 export const setEthBalance = async (address: string, amount: string) => {
   const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
   const { TENDERLY_RPC_URL } = JSON.parse(file);
-  const hexAmount = hexlify(parseEther(amount)).replace(/^0x0/, '0x');
+  const hexAmount = toHex(parseEther(amount)).replace(/^0x0/, '0x');
   const response = await fetch(TENDERLY_RPC_URL, {
     method: 'POST',
     headers: {
@@ -49,7 +49,12 @@ export const setEthBalance = async (address: string, amount: string) => {
   }
 };
 
-export const setErc20Balance = async (address: string, tokenAddress: string, amount: string, decimals: number = 18) => {
+export const setErc20Balance = async (
+  address: string,
+  tokenAddress: string,
+  amount: string,
+  decimals = 18
+) => {
   const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
   const { TENDERLY_RPC_URL } = JSON.parse(file);
 
@@ -61,7 +66,7 @@ export const setErc20Balance = async (address: string, tokenAddress: string, amo
     },
     body: JSON.stringify({
       method: 'tenderly_setErc20Balance',
-      params: [tokenAddress, [address], hexlify(parseUnits(amount, decimals))],
+      params: [tokenAddress, [address], toHex(parseUnits(amount, decimals))],
       id: 42,
       jsonrpc: '2.0'
     })

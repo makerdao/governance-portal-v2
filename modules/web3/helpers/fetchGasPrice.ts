@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { fetchJson } from 'lib/fetchJson';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits, gweiUnits } from 'viem';
 import { GASNOW_ENDPOINT } from '../constants/networks';
 import logger from 'lib/logger';
 
@@ -17,7 +17,7 @@ export const fetchGasPrice = async (
   try {
     const jsonResponse = await fetchJson(GASNOW_ENDPOINT);
 
-    return parseInt(formatUnits(jsonResponse.data[speed], 'gwei'));
+    return parseInt(formatUnits(BigInt(jsonResponse.data[speed]), gweiUnits.wei));
   } catch (e) {
     logger.error('fetchGasPrice: Error fetching gas price', e.message);
     throw e;

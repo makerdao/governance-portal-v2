@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Text, useThemeUI, get } from 'theme-ui';
 import { Tooltip, XAxis, YAxis, ResponsiveContainer, Legend, AreaChart, Area } from 'recharts';
 import { format, sub } from 'date-fns';
-import { commify } from 'ethers/lib/utils';
 import { AllLocksResponse } from '../types/participation';
 
 const getPastMonths = (numMonths: number): string[] => {
@@ -61,7 +60,7 @@ const ParticipationChart = ({
     return (
       <Box>
         {monthMKR && <Text as="p">{format(new Date(monthMKR.blockTimestamp), 'LLL yyyy')}</Text>}
-        {monthMKR && <Text as="p">{commify(parseInt(monthMKR.lockTotal).toFixed(0))} MKR</Text>}
+        {monthMKR && <Text as="p">{parseInt(monthMKR.lockTotal).toLocaleString()} MKR</Text>}
       </Box>
     );
   };
