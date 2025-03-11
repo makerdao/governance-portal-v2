@@ -25,7 +25,7 @@ import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
 const ModalContent = ({ close, ...props }) => {
-  const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
+  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const chainId = useChainId();
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
@@ -35,7 +35,7 @@ const ModalContent = ({ close, ...props }) => {
     Tokens.IOU,
     100000000n,
     account,
-    voteProxyContract ? undefined : chiefAddress[chainId]
+    voteProxyContractAddress ? undefined : chiefAddress[chainId]
   );
 
   const approve = useApproveUnlimitedToken({
@@ -54,7 +54,7 @@ const ModalContent = ({ close, ...props }) => {
     }
   });
 
-  const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
+  const allowanceOk = voteProxyContractAddress ? true : allowance; // no need for IOU approval when using vote proxy
 
   const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
 
@@ -124,7 +124,7 @@ const ModalContent = ({ close, ...props }) => {
               />
             </Box>
 
-            {voteProxyContract && account === voteProxyHotAddress && (
+            {voteProxyContractAddress && account === voteProxyHotAddress && (
               <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
                 You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
               </Alert>

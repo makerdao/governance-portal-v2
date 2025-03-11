@@ -16,8 +16,6 @@ import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimited
 import { useOldChiefFree } from 'modules/mkr/hooks/useOldChiefFree';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
@@ -29,7 +27,7 @@ import { TxStatus } from 'modules/web3/constants/transaction';
 // TODO: Check that the amounts for allowance are correct
 // TODO: Test with e2e
 const ModalContent = ({ close, ...props }) => {
-  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
+  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress } = useAccount();
   const chainId = useChainId();
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
@@ -56,7 +54,7 @@ const ModalContent = ({ close, ...props }) => {
     }
   });
 
-  const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
+  const allowanceOk = voteProxyOldContractAddress ? true : allowance; // no need for IOU approval when using vote proxy
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
 
