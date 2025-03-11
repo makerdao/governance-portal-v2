@@ -11,7 +11,6 @@ import { formatAddress } from 'lib/utils';
 import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { getENS } from 'modules/web3/helpers/ens';
 import React, { useEffect, useState } from 'react';
-import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export const Address = React.memo(function Address({
@@ -28,9 +27,7 @@ export const Address = React.memo(function Address({
       return;
     }
 
-    const provider = getDefaultProvider(SupportedNetworks.MAINNET);
-
-    const ens = await getENS({ address, provider });
+    const ens = await getENS({ address, network: SupportedNetworks.MAINNET });
 
     ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }

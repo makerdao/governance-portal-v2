@@ -18,7 +18,7 @@ import {
 } from '../helpers/utils';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { StatusText } from 'modules/app/components/StatusText';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { PollVictoryConditions } from '../polling.constants';
@@ -34,7 +34,7 @@ export default function PollWinningOptionBox({
 
   const numberOfLeadingOptions = tally.results.filter(
     result =>
-      parseUnits(tally.results[0].mkrSupport as string).gt(0) &&
+      parseEther(tally.results[0].mkrSupport as string) > 0n &&
       result.mkrSupport === tally.results[0].mkrSupport
   ).length;
 
@@ -53,7 +53,7 @@ export default function PollWinningOptionBox({
   const comparisonText =
     hasComparison.length > 0 &&
     hasComparison[0].comparator === '>=' &&
-    ` Requires ${formatValue(parseUnits(hasComparison[0].value.toString()))} MKR participation. `;
+    ` Requires ${formatValue(parseEther(hasComparison[0].value.toString()))} MKR participation. `;
 
   if (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) {
     textWin = `No winner condition met.${comparisonText ? comparisonText : ' '}Defaulting to`;
@@ -70,7 +70,7 @@ export default function PollWinningOptionBox({
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {parseUnits(tally.totalMkrActiveParticipation as string).gt(0) ||
+        {parseEther(tally.totalMkrActiveParticipation as string) > 0n ||
         (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) ? (
           <>
             {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
@@ -87,7 +87,7 @@ export default function PollWinningOptionBox({
                       isInputFormatChooseFree(poll.parameters)) &&
                     ' with ' +
                       formatValue(
-                        parseUnits(
+                        parseEther(
                           tally.results
                             .find(({ optionId }) => optionId === leadingOption)
                             ?.mkrSupport.toString() || '0'
@@ -98,7 +98,7 @@ export default function PollWinningOptionBox({
                     isInputFormatRankFree(poll.parameters) &&
                     ' with ' +
                       formatValue(
-                        parseUnits(
+                        parseEther(
                           tally.results
                             .find(({ optionId }) => optionId === leadingOption)
                             ?.mkrSupport.toString() || '0'

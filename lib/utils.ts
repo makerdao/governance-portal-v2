@@ -12,10 +12,10 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'lib/bigNumberJs';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { hexZeroPad, stripZeros } from 'ethers/lib/utils';
 
 import round from 'lodash/round';
 import logger from './logger';
+import { pad, trim } from 'viem';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -184,7 +184,7 @@ export const fromBuffer = (buf, opts) => {
 };
 
 export const paddedBytes32ToAddress = (hex: string): string =>
-  hex.length > 42 ? hexZeroPad(stripZeros(hex), 20) : hex;
+  hex.length > 42 ? pad(trim(hex as `0x${string}`), { size: 20 }) : hex;
 
 export const objectToGetParams = (object: { [key: string]: string | number | undefined | null }): string => {
   const params = Object.entries(object)

@@ -10,7 +10,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getMKRVotingWeight } from './getMKRVotingWeight';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
-import { BigNumber } from 'ethers';
 
 jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 jest.mock('modules/app/helpers/getVoteProxyAddresses');
@@ -20,9 +19,9 @@ describe('getMKRVotingWeight', () => {
   const fakeDelegateAddress = '0x1234567890123456789012345678901234567890';
   const balanceMock = jest.fn().mockImplementation(address => {
     if (address === fakeDelegateAddress) {
-      return Promise.resolve(BigNumber.from(100));
+      return Promise.resolve(100n);
     }
-    return Promise.resolve(BigNumber.from(0));
+    return Promise.resolve(0n);
   });
   beforeAll(() => {
     (getDelegateContractAddress as jest.Mock).mockReturnValue(undefined);
@@ -34,10 +33,10 @@ describe('getMKRVotingWeight', () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateOwnerAddress);
     expect(result).toEqual({
-      walletBalanceHot: BigNumber.from(0),
-      chiefBalanceHot: BigNumber.from(0),
-      chiefTotal: BigNumber.from(0),
-      total: BigNumber.from(0)
+      walletBalanceHot: 0n,
+      chiefBalanceHot: 0n,
+      chiefTotal: 0n,
+      total: 0n
     });
   });
 
@@ -46,10 +45,10 @@ describe('getMKRVotingWeight', () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateAddress);
     expect(result).toEqual({
-      walletBalanceHot: BigNumber.from(100),
-      chiefBalanceHot: BigNumber.from(0),
-      chiefTotal: BigNumber.from(0),
-      total: BigNumber.from(100)
+      walletBalanceHot: 100n,
+      chiefBalanceHot: 0n,
+      chiefTotal: 0n,
+      total: 100n
     });
   });
 
@@ -58,10 +57,10 @@ describe('getMKRVotingWeight', () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, true);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateOwnerAddress);
     expect(result).toEqual({
-      walletBalanceHot: BigNumber.from(0),
-      chiefBalanceHot: BigNumber.from(0),
-      chiefTotal: BigNumber.from(0),
-      total: BigNumber.from(0)
+      walletBalanceHot: 0n,
+      chiefBalanceHot: 0n,
+      chiefTotal: 0n,
+      total: 0n
     });
   });
 });
