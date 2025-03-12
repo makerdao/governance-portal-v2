@@ -35,7 +35,7 @@ export const useMkrDelegatedByUser = (
 ): DelegatedByUserResponse => {
   const chainId = useChainId();
 
-  if (!voteDelegateAddress || !userAddress) {
+  if (!voteDelegateAddress) {
     return {
       data: undefined,
       loading: false,
@@ -45,7 +45,9 @@ export const useMkrDelegatedByUser = (
   }
   const network = chainIdToNetworkName(chainId);
 
-  const fetchFromChain = async (userAddress: string, voteDelegateAddress: string) => {
+  const fetchFromChain = async (userAddress: string | undefined, voteDelegateAddress: string) => {
+    if (!userAddress) return undefined;
+
     const publicClient = getPublicClient(chainId);
     const directDelegated = await publicClient.readContract({
       address: voteDelegateAddress as `0x${string}`,
@@ -65,7 +67,7 @@ export const useMkrDelegatedByUser = (
     userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
     async () => {
       if (config.USE_MOCK_WALLET) {
-        return fetchFromChain(userAddress, voteDelegateAddress);
+        return fetchFromChain(userAddress as string, voteDelegateAddress);
       }
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);

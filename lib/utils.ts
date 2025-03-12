@@ -6,27 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
-import BigNumber from 'lib/bigNumberJs';
-import { CurrencyObject } from 'modules/app/types/currency';
 
 import round from 'lodash/round';
 import logger from './logger';
 import { pad, trim } from 'viem';
-
-export function bigNumberKFormat(num: CurrencyObject): string {
-  invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
-  const units = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
-  let typeIndex = Math.floor(num.div(10).toFixed(0).length / 3) - 1;
-  typeIndex = typeIndex >= units.length ? 7 : typeIndex; // if the number out of range
-  const noUnit = typeIndex < 0; // if the number is smaller than 1,000
-  const value = noUnit ? num : num.div(Math.pow(1000, typeIndex + 1));
-  invariant(value, 'bigNumberKFormat value undefined');
-  return `${value.toBigNumber().toFixed(2)}${noUnit ? '' : units[typeIndex]}`;
-}
 
 export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -123,12 +109,8 @@ export const paddedArray = (k, value) =>
     .map(() => 0)
     .concat(...value);
 
-export const toBuffer = (number, opts) => {
-  let hex = new BigNumber(number).toString(16);
-
-  if (!opts) {
-    opts = {};
-  }
+export const toBuffer = (number: string, opts) => {
+  let hex = BigInt(number).toString(16);
 
   const endian = { 1: 'big', '-1': 'little' }[opts.endian] || opts.endian || 'big';
 
@@ -180,7 +162,7 @@ export const fromBuffer = (buf, opts) => {
 
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
-  return new BigNumber(hex.join(''), 16);
+  return BigInt('0x' + hex.join(''));
 };
 
 export const paddedBytes32ToAddress = (hex: string): string =>
@@ -255,4 +237,9 @@ export function openWindowWithUrl(url: string): void {
 
 export function isExponential(numberToCheck: number): boolean {
   return numberToCheck.toString().includes('e');
+}
+
+export function calculatePercentage(value: bigint, total: bigint, decimals = 0): number {
+  const percentage = (value * 100n * BigInt(10 ** decimals)) / total;
+  return Number(percentage) / 10 ** decimals;
 }

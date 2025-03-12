@@ -10,7 +10,6 @@ import React, { useState } from 'react';
 import { Alert, Box, Text, Flex, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tabs from 'modules/app/components/Tabs';
-import BigNumber from 'lib/bigNumberJs';
 import {
   DelegatePicture,
   DelegateCredentials,
@@ -37,6 +36,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { parseEther } from 'viem';
 
 type PropTypes = {
   delegate: Delegate;
@@ -66,7 +66,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateContractAddress } = useAccount();
   const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
 
-  const activeDelegators = delegationHistory.filter(({ lockAmount }) => new BigNumber(lockAmount).gt(0));
+  const activeDelegators = delegationHistory.filter(({ lockAmount }) => parseEther(lockAmount) > 0n);
   const delegatorCount = activeDelegators.length;
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 

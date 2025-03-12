@@ -18,7 +18,6 @@ import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegate
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 jest.mock('modules/delegates/hooks/useSingleDelegateInfo');
-jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
 jest.mock('next/router', () => ({
   useRouter() {

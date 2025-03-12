@@ -6,13 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { BigNumberJS } from 'lib/bigNumberJs';
 import { SECONDS_PER_YEAR } from 'lib/datetime';
 import { useChainId, useReadContract } from 'wagmi';
 import { potAbi, potAddress } from 'modules/contracts/generated';
 import { formatUnits } from 'viem';
-
-BigNumberJS.config({ POW_PRECISION: 100 });
 
 type DaiSavingsRateResponse = {
   data?: number | undefined;

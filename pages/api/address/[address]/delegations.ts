@@ -13,7 +13,6 @@ import {
   DelegationHistory,
   DelegationHistoryWithExpirationDate
 } from 'modules/delegates/types';
-import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -24,6 +23,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
 import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
 import { voteProxyFactoryAddress } from 'modules/contracts/generated';
 import { voteProxyAbi } from 'modules/contracts/ethers/abis';
+import { formatEther, parseEther } from 'viem';
 
 /**
  * @swagger
@@ -224,12 +224,12 @@ export default withApiHandler(
     ];
 
     const totalDelegated = filtered.reduce((prev, next) => {
-      return prev.plus(next.lockAmount);
-    }, new BigNumber(0));
+      return prev + parseEther(next.lockAmount);
+    }, 0n);
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
     res.status(200).json({
-      totalDelegated: totalDelegated.toNumber(),
+      totalDelegated: +formatEther(totalDelegated),
       delegatedTo: filtered,
       delegates: delegatesAndNextContracts
     });

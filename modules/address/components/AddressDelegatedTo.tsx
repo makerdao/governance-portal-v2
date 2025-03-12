@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import BigNumber from 'lib/bigNumberJs';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
@@ -23,6 +22,7 @@ import { formatValue } from 'lib/string';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { calculatePercentage } from 'lib/utils';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -121,7 +121,11 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
             <Text>{`${
               totalDelegated === 0
                 ? '0'
-                : new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)
+                : calculatePercentage(
+                    parseEther(lockAmount),
+                    parseEther(totalDelegated.toString()),
+                    1
+                  ).toLocaleString()
             }%`}</Text>
           ) : (
             <Box sx={{ width: '100%' }}>
