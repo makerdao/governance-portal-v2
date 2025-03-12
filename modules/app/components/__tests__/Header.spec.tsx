@@ -38,8 +38,6 @@ jest.mock('next/router', () => ({
   }
 }));
 
-jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
-
 describe('Header component', () => {
   beforeEach(() => {
     (useSingleDelegateInfo as jest.Mock).mockReturnValue({ data: null });

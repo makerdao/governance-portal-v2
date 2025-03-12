@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { mockIntersectionObserver } from '../__tests__/helpers';
-import { ethers } from 'ethers';
 import { config } from 'lib/config';
 
 // Node/Jest don't have 'fetch' bc it's injected by next.js into global
@@ -35,8 +34,6 @@ jest.mock('modules/address/components/AddressIcon', () => {
     }
   };
 });
-
-ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
 beforeAll(async () => {
   if (typeof window !== 'undefined') {

@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { ReactNode } from 'react';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
-import { useTenderlyWindowBindings } from 'modules/web3/hooks/useTenderlyWindowBindings';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
 import { useAccount } from 'wagmi';
@@ -45,9 +44,6 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
 
   const { data: voteProxyResponse } = useVoteProxyAddress(account);
   const { data: voteProxyOldResponse } = useVoteProxyOldAddress(account);
-
-  // Use for tesing purposes, allow to log-in an account on the localhost network with tenderly
-  useTenderlyWindowBindings();
 
   // In order of priority for voting: 1) Delegate contract, 2) Proxy 3) Wallet account
   const votingAccount = voteDelegateContractAddress
