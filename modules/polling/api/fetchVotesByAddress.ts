@@ -19,6 +19,7 @@ import { formatUnits } from 'ethers/lib/utils';
 
 export async function fetchVotesByAddressForPoll(
   pollId: number,
+  delegateOwnerToAddress: Record<string, string>,
   network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
   const mainnetVotersResponse = await gqlRequest({
@@ -36,8 +37,10 @@ export async function fetchVotesByAddressForPoll(
   const mainnetVotes = mainnetVotersResponse.polls[0].votes
   const mainnetVoterAddresses = mainnetVotes.filter(vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix).map(vote => vote.voter.id);
 
+  const arbitrumChainId = networkNameToChainId('arbitrum');//update if we ever want to support an arbitrum sepolia subgraph
+
   const arbitrumVotersResponse = await gqlRequest({
-    chainId: networkNameToChainId('arbitrum'), //TODO: setup a arbitrum sepolia subgraph and handle the testnet case
+    chainId: arbitrumChainId,
     query: allArbitrumVoters,
     useSubgraph: true,
     variables: {
@@ -46,13 +49,33 @@ export async function fetchVotesByAddressForPoll(
   });
 
   const arbitrumVotes = arbitrumVotersResponse.arbitrumPollVotes;
-  const arbitrumVoterAddresses = arbitrumVotes.filter(vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix).map(vote => vote.voter.id);
-
-  //TODO: account for delegate contracts
+  
+  const mapToDelegateAddress = voterAddress => delegateOwnerToAddress[voterAddress] || voterAddress;
+  
+  const isVoteWithinPollTimeframe = vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix;
+  
+  const arbitrumVoterAddresses = arbitrumVotes
+    .filter(isVoteWithinPollTimeframe)
+    .map(vote => mapToDelegateAddress(vote.voter.id));
+  
   const allVoterAddresses = [...mainnetVoterAddresses, ...arbitrumVoterAddresses];
-  const allVotes = [...mainnetVotes, ...arbitrumVotes];
-
-
+  
+  const addChainIdToVote = (vote, chainId) => ({...vote, chainId});
+  
+  const mainnetVotesWithChainId = mainnetVotes.map(vote => 
+    addChainIdToVote(vote, networkNameToChainId(network))
+  );
+  
+  const arbitrumVotesTaggedWithChainId = arbitrumVotes.map(vote => {
+    const mappedAddress = mapToDelegateAddress(vote.voter.id);
+    return {
+      ...vote, 
+      chainId: arbitrumChainId,
+      voter: { ...vote.voter, id: mappedAddress }
+    };
+  });
+  
+  const allVotes = [...mainnetVotesWithChainId, ...arbitrumVotesTaggedWithChainId];
 
   const mkrWeightsResponse = await gqlRequest({
     chainId: networkNameToChainId(network),
@@ -76,11 +99,10 @@ export async function fetchVotesByAddressForPoll(
       ballot,
       pollId,
       voter: vote.voter.id,
-      chainId: networkNameToChainId(network),
+      chainId: vote.chainId,
       blockTimestamp: vote.blockTime,
       hash: vote.txnHash,
       optionIdRaw: vote.choice
-      //add something to distinguish maiinet from arbitrum votes
     };
   });
   return votesWithWeights.sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));

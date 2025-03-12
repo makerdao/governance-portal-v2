@@ -20,6 +20,8 @@ import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
 import { isExponential } from 'lib/utils';
+import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
+
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -61,8 +63,37 @@ export function findWinner(condition: VictoryCondition, votes: PollTallyVote[], 
 }
 
 export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
-  // Fetch spock votes for the poll
-  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, network);
+  const allDelegates = await fetchDelegateAddresses(network);
+  
+  const filteredDelegates = allDelegates.filter(delegate => {
+    const delegateVersion = delegate.delegateVersion ?? 1;
+    // Filter out v1 delegates created over a year ago
+    if (delegateVersion === 1) {
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const delegateCreatedAt = new Date(delegate.blockTimestamp);
+      if (delegateCreatedAt < oneYearAgo) {
+        return false;
+      }
+    }
+    // Filter out delegates that have been replaced by newer versions
+    const newerVersionExists = allDelegates.some(otherDelegate => 
+      otherDelegate.delegate === delegate.delegate &&
+      (otherDelegate.delegateVersion ?? 1) > delegateVersion
+    );
+    return !newerVersionExists;
+  });
+
+  // Create a mapping from owner addresses to delegate addresses
+  const ownerToDelegateMap: Record<string, string> = {};
+  filteredDelegates.forEach(delegate => {
+    if (delegate.voteDelegate && delegate.delegate) {
+      ownerToDelegateMap[delegate.delegate.toLowerCase()] = delegate.voteDelegate.toLowerCase();
+    }
+  });
+
+  // Fetch votes for the poll
+  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, ownerToDelegateMap, network);
 
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
