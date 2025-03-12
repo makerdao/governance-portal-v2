@@ -216,7 +216,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -243,7 +243,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -272,7 +272,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
 
     await voteAPIHandler(req, res);
 
@@ -295,7 +295,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
 
     const { req, res } = mockRequestResponse('POST', {
       voter: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
