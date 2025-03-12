@@ -8,7 +8,6 @@ import { config } from 'lib/config';
 // see: https://github.com/vercel/next.js/discussions/13678#discussioncomment-22383
 require('next');
 
-jest.mock('@web3-react/core');
 jest.mock('modules/web3/helpers/ens');
 
 jest.mock('remark-gfm', () => () => null);

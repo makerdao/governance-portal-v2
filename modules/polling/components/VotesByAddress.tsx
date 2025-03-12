@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Button, Flex, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'lib/bigNumberJs';
 import { PollTally, Poll, PollTallyVote } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
@@ -204,8 +203,14 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   {bpi > 3 && (
                     <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
                       {`${
-                        new BigNumber(v.mkrSupport).isGreaterThan(0)
-                          ? new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)
+                        parseEther(v.mkrSupport.toString()) > 0n
+                          ? // Multiple by 1000n and then divide the number by 10 to get the equivalent of 1 decimal place in the percentage
+                            (
+                              Number(
+                                (parseEther(v.mkrSupport.toString()) * 1000n) /
+                                  parseEther(totalMkrParticipation.toString())
+                              ) / 10
+                            ).toFixed(1)
                           : 0
                       }%`}
                     </Text>

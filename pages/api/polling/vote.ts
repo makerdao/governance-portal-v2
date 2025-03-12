@@ -163,7 +163,7 @@ export default withApiHandler(
 
       //verify address has a poll weight > 0.1 MKR
       if (!hasMkrRequired) {
-        //ether's bignumber library doesnt handle decimals
+        // BigInt doesnt handle decimals
         await throwError({
           error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED,
           body: req.body,

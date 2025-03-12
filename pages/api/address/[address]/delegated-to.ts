@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
-import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -18,6 +17,7 @@ import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
 import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
+import { formatEther, parseEther } from 'viem';
 /**
  * @swagger
  * /api/address/[address]/delegated-to:
@@ -127,6 +127,7 @@ export default withApiHandler(
 
     // filter out duplicate txs for the same address
     const txHashes = {};
+    console.log({ delegatedTo });
     const filtered = delegatedTo.filter(historyItem => {
       let duplicateFound = false;
       historyItem.events.forEach(event => {
@@ -138,13 +139,13 @@ export default withApiHandler(
     });
 
     const totalDelegated = filtered.reduce((prev, next) => {
-      return prev.plus(next.lockAmount);
-    }, new BigNumber(0));
+      return prev + parseEther(next.lockAmount);
+    }, 0n);
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
     res.status(200).json({
       delegatedTo: filtered,
-      totalDelegated: totalDelegated.toNumber()
+      totalDelegated: +formatEther(totalDelegated)
     });
   }
 );

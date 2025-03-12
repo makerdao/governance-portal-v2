@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
 import { Card, Text, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatRound } from 'lib/utils';
@@ -14,6 +13,7 @@ import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { formatEther, parseEther } from 'viem';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;
@@ -64,7 +64,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                   },
                   i
                 ) => {
-                  const amount = new BigNumber(action.joinAmount);
+                  const amount = parseEther(action.joinAmount);
                   return (
                     <tr
                       key={i}
@@ -93,9 +93,9 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                         }}
                       >
                         <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
-                          {amount.gte(0.1)
-                            ? formatRound(amount.toNumber())
-                            : formatRound(amount.toNumber(), 3)}{' '}
+                          {amount >= parseEther('0.1')
+                            ? formatRound(Number(formatEther(amount)))
+                            : formatRound(Number(formatEther(amount)), 3)}{' '}
                           MKR
                         </Text>
                       </td>

@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
 import { format } from 'date-fns';
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
@@ -32,7 +31,7 @@ export default async function fetchAllLocksSummed(
 
     const locks: AllLocksResponse[] = data?.allLocksSummed?.nodes.map(x => {
       x.unixDate = Math.floor(new Date(x.blockTimestamp).getTime() / 1000);
-      x.total = new BigNumber(x.lockTotal).div(1000).toFixed(0);
+      x.total = (Number(x.lockTotal) / 1000).toFixed(0);
       x.month = format(new Date(x.blockTimestamp), 'M');
       return x;
     });
