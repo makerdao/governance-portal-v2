@@ -11,8 +11,6 @@ import { SupportedChain } from '../types/chain';
 import { SupportedChainId } from './chainID';
 import tenderlyTestnetData from '../../../tenderlyTestnetData.json';
 
-export const NetworkContextName = 'NETWORK';
-
 import {
   MAINNET_SPOCK_URL,
   STAGING_MAINNET_SPOCK_URL,

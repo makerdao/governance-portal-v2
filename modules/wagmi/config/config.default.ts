@@ -8,7 +8,6 @@ export const tenderly = {
   id: SupportedChainId.TENDERLY as const,
   name: 'mainnet_sep_30_0',
   network: 'tenderly',
-  // This is used by RainbowKit to display a chain icon for small screens
   iconUrl: 'tokens/weth.svg',
   nativeCurrency: {
     decimals: 18,
@@ -70,22 +69,30 @@ export const mainnetPublicClient = createPublicClient({
   transport: fallback([
     http(`https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`),
     http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`)
-  ])
+  ]),
+  key: 'mainnet-public-client',
+  name: 'Mainnet public client'
 });
 
 export const tenderlyPublicClient = createPublicClient({
   chain: tenderly,
-  transport: http(`https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`)
+  transport: http(`https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`),
+  key: 'tenderly-public-client',
+  name: 'Tenderly public client'
 });
 
 export const arbitrumPublicClient = createPublicClient({
   chain: arbitrum,
-  transport: http(`https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY}`)
+  transport: http(`https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY}`),
+  key: 'arbitrum-public-client',
+  name: 'Arbitrum public client'
 });
 
 export const arbitrumTestnetPublicClient = createPublicClient({
   chain: arbitrumSepolia,
   transport: http(
     `https://arb-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY}`
-  )
+  ),
+  key: 'arbitrum-testnet-public-client',
+  name: 'Arbitrum Testnet public client'
 });
