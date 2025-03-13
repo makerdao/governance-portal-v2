@@ -17,12 +17,57 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { formatUnits } from 'ethers/lib/utils';
 
+interface VoterData {
+  id: string;
+}
+
+interface VoteData {
+  voter: VoterData;
+  choice: string;
+  blockTime: number;
+  txnHash: string;
+}
+
+interface MainnetPollData {
+  startDate: number;
+  endDate: number;
+  votes: VoteData[];
+}
+
+interface MainnetVotersResponse {
+  polls: MainnetPollData[];
+}
+
+interface ArbitrumVoteData {
+  voter: VoterData;
+  choice: string;
+  blockTime: number;
+  txnHash: string;
+}
+
+interface ArbitrumVotersResponse {
+  arbitrumPollVotes: ArbitrumVoteData[];
+}
+
+interface VotingPowerChange {
+  newBalance: string;
+}
+
+interface VoterWithWeight {
+  id: string;
+  votingPowerChanges: VotingPowerChange[];
+}
+
+interface MkrWeightsResponse {
+  voters: VoterWithWeight[];
+}
+
 export async function fetchVotesByAddressForPoll(
   pollId: number,
   delegateOwnerToAddress: Record<string, string>,
   network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
-  const mainnetVotersResponse = await gqlRequest({
+  const mainnetVotersResponse = await gqlRequest<MainnetVotersResponse>({
     chainId: networkNameToChainId(network),
     query: allMainnetVoters,
     useSubgraph: true,
@@ -39,7 +84,7 @@ export async function fetchVotesByAddressForPoll(
 
   const arbitrumChainId = networkNameToChainId('arbitrum');//update if we ever want to support an arbitrum sepolia subgraph
 
-  const arbitrumVotersResponse = await gqlRequest({
+  const arbitrumVotersResponse = await gqlRequest<ArbitrumVotersResponse>({
     chainId: arbitrumChainId,
     query: allArbitrumVoters,
     useSubgraph: true,
@@ -86,7 +131,7 @@ export async function fetchVotesByAddressForPoll(
     }, {} as Record<string, typeof allVotes[0]>)
   );
 
-  const mkrWeightsResponse = await gqlRequest({
+  const mkrWeightsResponse = await gqlRequest<MkrWeightsResponse>({
     chainId: networkNameToChainId(network),
     query: voteAddressMkrWeightsAtTime,
     useSubgraph: true,
@@ -95,7 +140,7 @@ export async function fetchVotesByAddressForPoll(
   
   const votersWithWeights = mkrWeightsResponse.voters || [];
   
-  const votesWithWeights = dedupedVotes.map(vote => {
+  const votesWithWeights = dedupedVotes.map((vote: typeof allVotes[0]) => {
     const voterData = votersWithWeights.find(voter => voter.id === vote.voter.id);
     const votingPowerChanges = voterData?.votingPowerChanges || [];
     const mkrSupport = votingPowerChanges.length > 0 
@@ -111,7 +156,6 @@ export async function fetchVotesByAddressForPoll(
       chainId: vote.chainId,
       blockTimestamp: vote.blockTime,
       hash: vote.txnHash,
-      optionIdRaw: vote.choice
     };
   });
   return votesWithWeights.sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));

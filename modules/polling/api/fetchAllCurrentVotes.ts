@@ -15,6 +15,29 @@ import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { PollTallyVote } from '../types';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 
+interface PollVoteResponse {
+  poll: {
+    id: string;
+  };
+  choice: string;
+  blockTime: string;
+  txnHash: string;
+}
+
+interface MainnetVotesResponse {
+  pollVotes: PollVoteResponse[];
+}
+
+interface ArbitrumPollVoteResponse extends PollVoteResponse {
+  voter: {
+    id: string;
+  };
+}
+
+interface ArbitrumVotesResponse {
+  arbitrumPollVotes: ArbitrumPollVoteResponse[];
+}
+
 export async function fetchAllCurrentVotes(
   address: string,
   network: SupportedNetworks
@@ -23,13 +46,13 @@ export async function fetchAllCurrentVotes(
   const delegateOwnerAddress = addressInfo?.delegateInfo?.address;
   const arbitrumChainId = networkNameToChainId('arbitrum'); //update if we ever add support for arbitrum sepolia
   const [mainnetVotes, arbitrumVotes] = await Promise.all([
-    gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: allMainnetVotes,
-    useSubgraph: true,
-    variables: { argAddress: address.toLowerCase() }
-  }),
-    gqlRequest({
+    gqlRequest<MainnetVotesResponse>({
+      chainId: networkNameToChainId(network),
+      query: allMainnetVotes,
+      useSubgraph: true,
+      variables: { argAddress: address.toLowerCase() }
+    }),
+    gqlRequest<ArbitrumVotesResponse>({
       chainId: arbitrumChainId,
       query: allArbitrumVotes,
       useSubgraph: true,
@@ -56,14 +79,13 @@ export async function fetchAllCurrentVotes(
   const res: PollTallyVote[] = dedupedVotes.map(o => {
     const ballot = parseRawOptionId(o.choice);
     return {
-      pollId: o.poll.id,
+      pollId: Number(o.poll.id),
       ballot,
       voter: address,
       hash: o.txnHash,
       blockTimestamp: Number(o.blockTime) * 1000,
       mkrSupport: 0, //TODO: fetch mkr support (or remove support for now)
       chainId: o.chainId,
-      optionIdRaw: o.choice //TODO update type so this isnt needed
     };
   });
   return res;
