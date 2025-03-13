@@ -74,8 +74,17 @@ export async function fetchVotesByAddressForPoll(
       voter: { ...vote.voter, id: mappedAddress }
     };
   });
-  
+
   const allVotes = [...mainnetVotesWithChainId, ...arbitrumVotesTaggedWithChainId];
+  const dedupedVotes = Object.values(
+    allVotes.reduce((acc, vote) => {
+      const voter = vote.voter.id;
+      if (!acc[voter] || Number(vote.blockTime) > Number(acc[voter].blockTime)) {
+        acc[voter] = vote;
+      }
+      return acc;
+    }, {} as Record<string, typeof allVotes[0]>)
+  );
 
   const mkrWeightsResponse = await gqlRequest({
     chainId: networkNameToChainId(network),
@@ -86,7 +95,7 @@ export async function fetchVotesByAddressForPoll(
   
   const votersWithWeights = mkrWeightsResponse.voters || [];
   
-  const votesWithWeights = allVotes.map(vote => {
+  const votesWithWeights = dedupedVotes.map(vote => {
     const voterData = votersWithWeights.find(voter => voter.id === vote.voter.id);
     const votingPowerChanges = voterData?.votingPowerChanges || [];
     const mkrSupport = votingPowerChanges.length > 0 

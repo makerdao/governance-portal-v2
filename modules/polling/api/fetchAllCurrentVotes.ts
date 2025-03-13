@@ -39,8 +39,21 @@ export async function fetchAllCurrentVotes(
   const mainnetVotesWithChainId = mainnetVotes.pollVotes.map(vote => ({...vote, chainId: networkNameToChainId(network)}));
   const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({...vote, chainId: arbitrumChainId}));
   const combinedVotes = [...mainnetVotesWithChainId, ...arbitrumVotesWithChainId];
+
+  const dedupedVotes = Object.values(
+    combinedVotes.reduce((acc, vote) => {
+      const pollId = vote.poll.id;
+      if (!acc[pollId] || Number(vote.blockTime) > Number(acc[pollId].blockTime)) {
+        acc[pollId] = vote;
+      }
+      return acc;
+    }, {} as Record<string, typeof combinedVotes[0]>)
+  );
+  
+  //TODO: only include valid votes based on time of poll
+
   // Parse the rankedChoice option
-  const res: PollTallyVote[] = combinedVotes.map(o => {
+  const res: PollTallyVote[] = dedupedVotes.map(o => {
     const ballot = parseRawOptionId(o.choice);
     return {
       pollId: o.poll.id,
