@@ -243,3 +243,26 @@ export function calculatePercentage(value: bigint, total: bigint, decimals = 0):
   const percentage = (value * 100n * BigInt(10 ** decimals)) / total;
   return Number(percentage) / 10 ** decimals;
 }
+
+export function splitBlockRange(
+  startBlockParam: bigint,
+  endBlockParam: bigint,
+  chunkSize = 5000000n
+): { startBlock: bigint; endBlock: bigint }[] {
+  const ranges: { startBlock: bigint; endBlock: bigint }[] = [];
+
+  // Iterate from startBlock to endBlock in increments of chunkSize
+  for (let current = startBlockParam; current <= endBlockParam; current += chunkSize) {
+    // Calculate the end of the current chunk.
+    // Subtract 1 because the range is inclusive.
+    const chunkEnd = current + chunkSize - 1n;
+
+    // If the calculated chunkEnd exceeds endBlock, use endBlock instead.
+    ranges.push({
+      startBlock: current,
+      endBlock: chunkEnd > endBlockParam ? endBlockParam : chunkEnd
+    });
+  }
+
+  return ranges;
+}

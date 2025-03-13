@@ -127,7 +127,6 @@ export default withApiHandler(
 
     // filter out duplicate txs for the same address
     const txHashes = {};
-    console.log({ delegatedTo });
     const filtered = delegatedTo.filter(historyItem => {
       let duplicateFound = false;
       historyItem.events.forEach(event => {

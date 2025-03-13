@@ -9,11 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 import { formatValue } from 'lib/string';
-import { paddedBytes32ToAddress } from 'lib/utils';
+import { calculatePercentage, paddedBytes32ToAddress, splitBlockRange } from 'lib/utils';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import contractInfo from '../../web3/helpers/contract-info.json';
+const chiefInfo = contractInfo.chief;
 
 type AddressWithVotes = {
   votes: string[];
@@ -26,18 +28,27 @@ export async function fetchExecutiveVoteTally(network: SupportedNetworks): Promi
   const chainId = networkNameToChainId(network);
   const publicClient = getPublicClient(chainId);
 
-  const locks = await publicClient.getLogs({
-    fromBlock: DEPLOYMENT_BLOCK[chiefAddress[chainId]],
-    toBlock: 'latest',
-    address: chiefAddress[chainId],
-    event: chiefAbi[2],
-    args: { sig: '0xdd46706400000000000000000000000000000000000000000000000000000000' }
-  });
+  const currentBlock = await publicClient.getBlockNumber();
+
+  const blockChunks = splitBlockRange(DEPLOYMENT_BLOCK[chiefAddress[chainId]], currentBlock);
+
+  const locksRes = await Promise.all(
+    blockChunks.map(({ startBlock, endBlock }) =>
+      publicClient.getLogs({
+        fromBlock: startBlock,
+        toBlock: endBlock,
+        address: chiefAddress[chainId]
+      })
+    )
+  );
+
+  const locks = locksRes.flat().filter(lock => lock.topics[0] === chiefInfo.events.lock && !!lock.topics[1]);
+
   const voters: string[] = [];
 
   // get unique voters
   locks.forEach(lock => {
-    const voter = paddedBytes32ToAddress(lock.topics[1]);
+    const voter = paddedBytes32ToAddress(lock.topics[1] as `0x${string}`);
     if (!voters.includes(voter)) {
       voters.push(voter);
     }
@@ -108,7 +119,7 @@ export async function fetchExecutiveVoteTally(network: SupportedNetworks): Promi
           addresses: [{ address: voteObj.address, deposits: voteObj.deposits }]
         };
       } else {
-        voteTally[vote].approvals = voteTally[vote].approvals.add(voteObj.deposits);
+        voteTally[vote].approvals = voteTally[vote].approvals + voteObj.deposits;
         voteTally[vote].addresses.push({
           address: voteObj.address,
           deposits: voteObj.deposits
@@ -127,7 +138,7 @@ export async function fetchExecutiveVoteTally(network: SupportedNetworks): Promi
     const withPercentages = sortedAddresses.map(shapedVoteObj => ({
       ...shapedVoteObj,
       deposits: formatValue(shapedVoteObj.deposits, 'wad', 6, false),
-      percent: ((shapedVoteObj.deposits * 100) / approvals).toFixed(2)
+      percent: approvals === 0n ? '0' : calculatePercentage(shapedVoteObj.deposits, approvals, 2).toFixed(2)
     }));
     voteTally[key] = withPercentages;
   }
