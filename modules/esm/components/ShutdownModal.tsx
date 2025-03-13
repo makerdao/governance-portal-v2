@@ -86,7 +86,7 @@ const ModalContent = ({
         Sign TX to start Emergency Shutdown.
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+        <Spinner size={60} sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
           Please use your wallet to sign this transaction.
         </Text>

@@ -23,6 +23,7 @@
     "e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/i18n-helper": "^0.1.8",
@@ -33,9 +34,9 @@
     "@reach/tabs": "^0.10.3",
     "@reach/tooltip": "^0.16.2",
     "@tanstack/react-query": "^5.67.1",
-    "@theme-ui/color": "^0.14.4",
-    "@theme-ui/css": "^0.12.0",
-    "@theme-ui/match-media": "^0.12.0",
+    "@theme-ui/color": "^0.16.0",
+    "@theme-ui/css": "^0.16.0",
+    "@theme-ui/match-media": "^0.16.0",
     "@vercel/analytics": "^0.1.11",
     "babel-plugin-superjson-next": "^0.3.0",
     "color": "^4.2.3",
@@ -71,7 +72,7 @@
     "superjson": "^1.8.1",
     "swagger-ui-react": "^4.11.0",
     "swr": "^1.0.1",
-    "theme-ui": "^0.12.0",
+    "theme-ui": "^0.16.0",
     "tiny-invariant": "^1.1.0",
     "unified": "^10.1.2",
     "uuid": "^8.3.0",
@@ -123,7 +124,7 @@
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",
     "typechain": "^8.1.0",
-    "typescript": "^4.9.5",
+    "typescript": "^5.1.2",
     "wait-for-expect": "^3.0.2"
   },
   "resolutions": {
