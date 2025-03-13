@@ -36,9 +36,5 @@ export const Address = React.memo(function Address({
     }
   }, [address]);
 
-  return (
-    <React.Fragment>
-      {maxLength ? limitString(addressFormated, maxLength, '...') : addressFormated}
-    </React.Fragment>
-  );
+  return <>{maxLength ? limitString(addressFormated, maxLength, '...') : addressFormated}</>;
 });

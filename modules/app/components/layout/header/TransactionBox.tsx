@@ -37,7 +37,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
       <Flex sx={{ alignItems: 'center' }}>
         {tx.status === 'pending' && (
           <Spinner
-            size={'16px'}
+            size={16}
             sx={{
               color: 'orangeAttention',
               alignSelf: 'center'

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
-import { ThemeProvider, Flex, Box } from 'theme-ui';
+import { ThemeUIProvider, Flex, Box } from 'theme-ui';
 import { Global } from '@emotion/core';
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
@@ -64,8 +64,8 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        {/* @ts-ignore */}
-        <ThemeProvider theme={theme}>
+        {/* @ts-expect-error - Incompatible pointer events */}
+        <ThemeUIProvider theme={theme}>
           <Analytics />
 
           <NextNprogress
@@ -115,7 +115,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
             </BallotProvider>
           </AccountProvider>
           <ToastContainer position="top-right" theme="light" />
-        </ThemeProvider>
+        </ThemeUIProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

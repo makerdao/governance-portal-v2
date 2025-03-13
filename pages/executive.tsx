@@ -181,13 +181,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const { data: hat } = useHat();
 
-  const showProxyInfo =
+  const showProxyInfo = Boolean(
     lockedMkrOldChief &&
-    lockedMkrOldChief === 0n &&
-    !voteProxyContractAddress &&
-    lockedMkr &&
-    lockedMkr === 0n &&
-    !voteDelegateContractAddress;
+      lockedMkrOldChief === 0n &&
+      !voteProxyContractAddress &&
+      lockedMkr &&
+      lockedMkr === 0n &&
+      !voteDelegateContractAddress
+  );
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
