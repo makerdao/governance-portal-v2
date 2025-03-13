@@ -36,14 +36,7 @@ export function AddressMKRDelegatedStats({
     >
       <StatBox
         value={votingWeight ? formatValue(votingWeight.total, undefined, undefined, true) : '0'}
-        label={'Total MKR Balance'}
-        tooltip={
-          <Tooltip label={getDescription({ votingWeight, isDelegate: false })}>
-            <Box>
-              <Icon sx={{ ml: 1 }} name="question" />
-            </Box>
-          </Tooltip>
-        }
+        label={'Voting weight'}
       />
 
       <StatBox
