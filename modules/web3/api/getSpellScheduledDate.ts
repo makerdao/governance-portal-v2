@@ -10,7 +10,7 @@ import { DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from '../helpers/chain';
 import contractInfo from '../helpers/contract-info.json';
 import { getPublicClient } from '../helpers/getPublicClient';
-import { dssSpellAbi, pauseAbi, pauseAddress } from 'modules/contracts/generated';
+import { dssSpellAbi, pauseAddress } from 'modules/contracts/generated';
 const pauseInfo = contractInfo.pause;
 
 export const getSpellScheduledDate = async (
@@ -32,13 +32,19 @@ export const getSpellScheduledDate = async (
 
   const paddedSpellAddress = '0x' + string.padStart(64, '0');
 
-  const [execEvent] = await publicClient.getLogs({
+  const logs = await publicClient.getLogs({
     fromBlock: BigInt(pauseInfo.inception_block[network || DEFAULT_NETWORK.network]),
     toBlock: 'latest',
-    address: pauseAddress[chainId],
-    event: pauseAbi[1],
-    args: { sig: pauseInfo.events.plot as `0x${string}`, guy: paddedSpellAddress as `0x${string}` }
+    address: pauseAddress[chainId]
   });
+
+  const execEvent = logs.find(
+    log =>
+      log.topics[0] === pauseInfo.events.plot &&
+      log.topics[1]?.toLowerCase() === paddedSpellAddress.toLowerCase()
+  );
+
+  if (!execEvent) return undefined;
 
   const { timestamp } = await publicClient.getBlock({
     blockNumber: execEvent.blockNumber
