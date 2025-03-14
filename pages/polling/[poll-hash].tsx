@@ -47,6 +47,7 @@ import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { formatEther } from 'viem';
 
 const editMarkdown = (content: string) => {
   // hide the duplicate proposal title
@@ -287,7 +288,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         <Text sx={{ color: 'textSecondary' }}>Total Voting Power</Text>
                         {tally ? (
                           <Text>
-                            {parseFloat(tally.totalMkrParticipation.toString()).toLocaleString(undefined, {
+                            {Number(
+                              formatEther(BigInt(tally.totalMkrParticipation.toString()))
+                            ).toLocaleString(undefined, {
                               maximumFractionDigits: 3
                             })}{' '}
                             MKR

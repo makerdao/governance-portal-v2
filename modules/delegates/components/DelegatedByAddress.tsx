@@ -17,10 +17,11 @@ import { DelegationHistory } from 'modules/delegates/types';
 import { formatDateWithTime } from 'lib/datetime';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
-import { formatEther, parseEther } from 'viem';
+import { parseEther } from 'viem';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { calculatePercentage } from 'lib/utils';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -36,11 +37,7 @@ type CollapsableRowProps = {
 
 const formatTotalDelegated = (num: bigint, denom: bigint): string => {
   try {
-    const parsedNum = Number(formatEther(num));
-    const parsedDenom = Number(formatEther(denom));
-    const weight = (parsedNum / parsedDenom) * 100;
-
-    return formatValue(parseEther(weight.toString()), 'wad');
+    return calculatePercentage(num, denom, 2).toString();
   } catch (e) {
     return '0';
   }
