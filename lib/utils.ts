@@ -240,7 +240,11 @@ export function isExponential(numberToCheck: number): boolean {
 }
 
 export function calculatePercentage(value: bigint, total: bigint, decimals = 0): number {
-  const percentage = (value * 100n * BigInt(10 ** decimals)) / total;
+  const scale = BigInt(10 ** decimals);
+  // Multiply first, then add half of total amount to fix the truncating issue with big ints.
+  // Adding `total / 2n` is mathematically equivalent to adding `0.5` to the result. Which
+  // after the truncation is equivalent to rounding the result.
+  const percentage = (value * 100n * scale + total / 2n) / total;
   return Number(percentage) / 10 ** decimals;
 }
 

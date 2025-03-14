@@ -67,9 +67,9 @@ export default function VoteBreakdown({
                         textAlign: 'right'
                       }}
                     >
-                      {`${formatValue(parseEther(mkrSupport.toString()))} MKR Voting`}
+                      {`${formatValue(BigInt(mkrSupport.toString()))} MKR Voting`}
                       {!isResultDisplayApprovalBreakdown(poll.parameters)
-                        ? ` (${formatValue(parseEther(tallyResult.firstPct.toString()))}%)`
+                        ? ` (${formatValue(BigInt(tallyResult.firstPct.toString()))}%)`
                         : ''}
                     </Text>
                   </React.Fragment>
@@ -81,7 +81,7 @@ export default function VoteBreakdown({
               </Flex>
 
               {tally && tallyResult ? (
-                <Tooltip label={`First choice ${formatValue(parseEther(mkrSupport.toString()))}`}>
+                <Tooltip label={`First choice ${formatValue(BigInt(mkrSupport.toString()))}`}>
                   <Box my={2}>
                     <Progress
                       sx={{
@@ -131,9 +131,7 @@ export default function VoteBreakdown({
                         textAlign: ['left', 'right']
                       }}
                     >
-                      {`${formatValue(
-                        parseEther((firstChoice + transfer).toString())
-                      )} MKR Voting (${formatValue(
+                      {`${formatValue(BigInt((firstChoice + transfer).toString()))} MKR Voting (${formatValue(
                         parseEther(
                           (BigInt(tallyResult.firstPct) + BigInt(tallyResult?.transferPct || 0)).toString()
                         )
@@ -213,7 +211,7 @@ export default function VoteBreakdown({
                       textAlign: 'right'
                     }}
                   >
-                    {`${formatValue(parseEther(mkrSupport.toString()))} MKR Voting (${formatValue(
+                    {`${formatValue(BigInt(mkrSupport.toString()))} MKR Voting (${formatValue(
                       parseEther(tallyResult.firstPct.toString())
                     )}%)`}
                   </Text>
@@ -225,7 +223,7 @@ export default function VoteBreakdown({
               </Flex>
 
               {tally && tallyResult ? (
-                <Tooltip label={`First choice ${formatValue(parseEther(mkrSupport.toString()))}`}>
+                <Tooltip label={`First choice ${formatValue(BigInt(mkrSupport.toString()))}`}>
                   <Box my={2}>
                     <Progress
                       sx={{

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useChainId, useReadContract } from 'wagmi';
-import { vatAbi, vatAddress } from 'modules/contracts/generated';
+import { vatAbi, vatAddress, vowAddress } from 'modules/contracts/generated';
 
 type SystemSurplusResponse = {
   data?: bigint | undefined;
@@ -23,6 +23,7 @@ export const useSystemSurplus = (): SystemSurplusResponse => {
     abi: vatAbi,
     chainId,
     functionName: 'dai',
+    args: [vowAddress[chainId]],
     scopeKey: `/system-surplus-dai-${chainId}`
   });
 
@@ -31,6 +32,7 @@ export const useSystemSurplus = (): SystemSurplusResponse => {
     abi: vatAbi,
     chainId,
     functionName: 'sin',
+    args: [vowAddress[chainId]],
     scopeKey: `/system-surplus-sin-${chainId}`
   });
 

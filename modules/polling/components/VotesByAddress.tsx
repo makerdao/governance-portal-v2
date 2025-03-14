@@ -19,6 +19,7 @@ import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import VotedOption from './VotedOption';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { calculatePercentage } from 'lib/utils';
 
 type Props = {
   tally: PollTally;
@@ -205,12 +206,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       {`${
                         parseEther(v.mkrSupport.toString()) > 0n
                           ? // Multiple by 1000n and then divide the number by 10 to get the equivalent of 1 decimal place in the percentage
-                            (
-                              Number(
-                                (parseEther(v.mkrSupport.toString()) * 1000n) /
-                                  parseEther(totalMkrParticipation.toString())
-                              ) / 10
-                            ).toFixed(1)
+                            calculatePercentage(
+                              parseEther(v.mkrSupport.toString()),
+                              BigInt(totalMkrParticipation.toString()),
+                              1
+                            )
                           : 0
                       }%`}
                     </Text>

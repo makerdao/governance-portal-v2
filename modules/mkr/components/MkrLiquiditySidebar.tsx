@@ -82,7 +82,11 @@ async function getBalancerV2Mkr(mkrAddress: string) {
   const json = await resp.json();
   const balancerNum = json.data.pools
     .flatMap(pool => pool.tokens)
-    .reduce((sum, token) => (token.address === mkrAddress ? parseFloat(token.balance) : 0) + sum, 0);
+    .reduce(
+      (sum, token) =>
+        (token.address.toLowerCase() === mkrAddress.toLowerCase() ? parseFloat(token.balance) : 0) + sum,
+      0
+    );
   return parseEther(parseInt(balancerNum).toString());
 }
 
