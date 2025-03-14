@@ -121,6 +121,12 @@ export function useWriteContractFlow<
     }
   }, [isSuccess, miningError, failureReason, txHash, txReverted]);
 
+  useEffect(() => {
+    if (writeError) console.log({ writeError });
+    if (miningError) console.log({ miningError });
+    if (simulationError) console.log({ simulationError });
+  }, [writeError, miningError, simulationError]);
+
   return {
     execute: () => {
       if (simulationData?.request) {

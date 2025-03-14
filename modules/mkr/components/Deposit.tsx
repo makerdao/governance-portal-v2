@@ -15,7 +15,6 @@ import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
@@ -28,10 +27,12 @@ import { TxStatus } from 'modules/web3/constants/transaction';
 
 const ModalContent = ({
   close,
-  showProxyInfo
+  showProxyInfo,
+  mutateLockedMkr
 }: {
   close: () => void;
   showProxyInfo?: boolean;
+  mutateLockedMkr?: () => void;
 }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
@@ -39,8 +40,6 @@ const ModalContent = ({
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const chainId = useChainId();
   const { data: mkrBalance } = useMkrBalance(account);
-
-  const { mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.MKR,
@@ -72,12 +71,10 @@ const ModalContent = ({
     },
     onSuccess: () => {
       setTxStatus(TxStatus.SUCCESS);
-      mutateLocked();
-      close();
+      mutateLockedMkr?.();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
-      close();
     },
     enabled: !!chiefAllowance
   });
@@ -88,14 +85,26 @@ const ModalContent = ({
         {txStatus !== TxStatus.IDLE && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text as="p" variant="microHeading">
-              {txStatus === TxStatus.LOADING ? 'Transaction Pending' : 'Confirm Transaction'}
+              {txStatus === TxStatus.LOADING
+                ? 'Transaction Pending'
+                : txStatus === TxStatus.SUCCESS
+                ? 'Transaction Successful'
+                : txStatus === TxStatus.ERROR
+                ? 'Transaction Error'
+                : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
-              <TxIndicators.Pending sx={{ width: 6 }} />
+              {txStatus === TxStatus.SUCCESS ? (
+                <TxIndicators.Success sx={{ width: 6 }} />
+              ) : txStatus === TxStatus.ERROR ? (
+                <TxIndicators.Failed sx={{ width: 6 }} />
+              ) : (
+                <TxIndicators.Pending sx={{ width: 6 }} />
+              )}
             </Flex>
 
-            {txStatus !== TxStatus.LOADING && (
+            {txStatus === TxStatus.INITIALIZED && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
@@ -188,7 +197,15 @@ const ModalContent = ({
   );
 };
 
-const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boolean }): JSX.Element => {
+const Deposit = ({
+  link,
+  showProxyInfo,
+  mutateLockedMkr
+}: {
+  link?: string;
+  showProxyInfo?: boolean;
+  mutateLockedMkr?: () => void;
+}): JSX.Element => {
   const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const [showDialog, setShowDialog] = useState(false);
 
@@ -208,7 +225,11 @@ const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boole
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent close={() => setShowDialog(false)} showProxyInfo={showProxyInfo} />
+          <ModalContent
+            close={() => setShowDialog(false)}
+            showProxyInfo={showProxyInfo}
+            mutateLockedMkr={mutateLockedMkr}
+          />
         </DialogContent>
       </DialogOverlay>
       {link ? (

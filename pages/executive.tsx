@@ -82,7 +82,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
-  const { data: lockedMkr } = useLockedMkr(votingAccount);
+  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { data: mkrOnHat } = useMkrOnHat();
@@ -279,6 +279,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
         {account && (
           <ExecutiveBalance
             lockedMkr={lockedMkr || 0n}
+            mutateLockedMkr={mutateLockedMkr}
             voteDelegate={voteDelegateContractAddress}
             showProxyInfo={showProxyInfo}
           />

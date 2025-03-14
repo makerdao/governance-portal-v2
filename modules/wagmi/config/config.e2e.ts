@@ -1,4 +1,4 @@
-import { http } from 'viem';
+import { createPublicClient, http } from 'viem';
 import { createConfig, createStorage, noopStorage } from 'wagmi';
 import { getTestTenderlyChain } from './testTenderlyChain';
 import { mock } from 'wagmi/connectors';
@@ -23,4 +23,11 @@ export const mockWagmiConfig = createConfig({
     storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
     key: 'wagmi-mock'
   })
+});
+
+export const mockPublicClient = createPublicClient({
+  chain: tenderlyMainnet,
+  transport: http(),
+  key: 'mock-public-client',
+  name: 'Mock public client'
 });

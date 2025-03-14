@@ -24,7 +24,7 @@ import { useChainId } from 'wagmi';
 import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
-const ModalContent = ({ close, ...props }) => {
+const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
   const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const chainId = useChainId();
 
@@ -56,7 +56,7 @@ const ModalContent = ({ close, ...props }) => {
 
   const allowanceOk = voteProxyContractAddress ? true : allowance; // no need for IOU approval when using vote proxy
 
-  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
+  const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
 
   const free = useFree({
     mkrToWithdraw,
@@ -65,12 +65,10 @@ const ModalContent = ({ close, ...props }) => {
     },
     onSuccess: () => {
       setTxStatus(TxStatus.SUCCESS);
-      mutateLocked();
-      close();
+      mutateLockedMkr?.();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
-      close();
     },
     enabled: !!allowanceOk
   });
@@ -81,14 +79,26 @@ const ModalContent = ({ close, ...props }) => {
         {txStatus !== TxStatus.IDLE && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text as="p" variant="microHeading">
-              {txStatus === TxStatus.LOADING ? 'Transaction Pending' : 'Confirm Transaction'}
+              {txStatus === TxStatus.LOADING
+                ? 'Transaction Pending'
+                : txStatus === TxStatus.SUCCESS
+                ? 'Transaction Successful'
+                : txStatus === TxStatus.ERROR
+                ? 'Transaction Error'
+                : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
-              <TxIndicators.Pending sx={{ width: 6 }} />
+              {txStatus === TxStatus.SUCCESS ? (
+                <TxIndicators.Success sx={{ width: 6 }} />
+              ) : txStatus === TxStatus.ERROR ? (
+                <TxIndicators.Failed sx={{ width: 6 }} />
+              ) : (
+                <TxIndicators.Pending sx={{ width: 6 }} />
+              )}
             </Flex>
 
-            {txStatus !== TxStatus.LOADING && (
+            {txStatus === TxStatus.INITIALIZED && (
               <Box>
                 <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
@@ -183,7 +193,11 @@ const Withdraw = (props): JSX.Element => {
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
+          <ModalContent
+            sx={{ px: [3, null] }}
+            close={() => setShowDialog(false)}
+            mutateLockedMkr={props.mutateLockedMkr}
+          />
         </DialogContent>
       </DialogOverlay>
       {props.link ? (

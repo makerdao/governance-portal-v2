@@ -5,9 +5,15 @@ import {
   tenderly,
   tenderlyPublicClient
 } from 'modules/wagmi/config/config.default';
+import { mockPublicClient } from 'modules/wagmi/config/config.e2e';
 import { arbitrum, arbitrumSepolia } from 'viem/chains';
 
 export const getPublicClient = (chainId: number) => {
+  const useMockWallet =
+    process.env.NEXT_PUBLIC_USE_MOCK_WALLET === 'true' && process.env.NODE_ENV !== 'production';
+
+  if (useMockWallet) return mockPublicClient;
+
   return chainId === tenderly.id
     ? tenderlyPublicClient
     : chainId === arbitrumSepolia.id
