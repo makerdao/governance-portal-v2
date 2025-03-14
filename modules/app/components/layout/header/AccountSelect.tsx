@@ -103,6 +103,7 @@ const AccountSelect = (): React.ReactElement => {
         variant="mutedOutline"
         key={connector.id}
         onClick={() => connect({ connector })}
+        data-testid={`select-wallet-${connector.id}`}
       >
         Select
       </Button>

@@ -1,12 +1,13 @@
+import { Page } from '@playwright/test';
+
 type TestAccount = {
-    name: string;
-    address: string;
-    key: string;
-  };
-  
+  name: string;
+  address: string;
+  key: string;
+};
 
 enum TestAccountsEnum {
-  normal = 'normal',
+  normal = 'normal'
 }
 
 interface TestAccounts {
@@ -21,18 +22,21 @@ export const TEST_ACCOUNTS: TestAccounts = {
   }
 };
 
-
-
-export async function connectWallet(page) {
-    await page.getByRole('button', {name: 'Connect wallet'}).click();
-    try {
-      await page.waitForSelector('text="Connected with Mock"', { timeout: 2000 });
-      await closeModal(page);
-    } catch (error) {
-      await page.locator('div').filter({hasText: /^MockSelect$/}).getByRole('button').click();
-    }
+export async function connectWallet(page: Page) {
+  await page.getByRole('button', { name: 'Connect wallet' }).click();
+  try {
+    await page.waitForSelector('text="Connected with Mock"', { timeout: 2000 });
+    await closeModal(page);
+  } catch (error) {
+    await page.getByTestId('select-wallet-mock').click();
+    await page
+      .locator('div')
+      .filter({ hasText: /^MockSelect$/ })
+      .getByRole('button')
+      .click();
+  }
 }
 
 export function closeModal(page) {
-    page.locator('[aria-label="close"]').click();
+  page.locator('[aria-label="close"]').click();
 }
