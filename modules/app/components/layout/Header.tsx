@@ -235,7 +235,7 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {bpi > 1 && account && network === SupportedNetworks.MAINNET && gas && (
+        {bpi > 1 && account && network === SupportedNetworks.MAINNET && gas !== undefined && (
           <ExternalLink
             title="Ethereum Gas Price"
             href={GASNOW_URL}

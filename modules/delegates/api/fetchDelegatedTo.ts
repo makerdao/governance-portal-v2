@@ -17,7 +17,6 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getLatestOwnerFromOld } from 'modules/migration/delegateAddressLinks';
-import { AllDelegatesRecord } from 'modules/gql/generated/graphql';
 
 export async function fetchDelegatedTo(
   address: string,
@@ -70,20 +69,20 @@ export async function fetchDelegatedTo(
           });
         } else {
           const delegatingTo = delegates.find(
-            i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
-          ) as (AllDelegatesRecord & { delegateVersion: number }) | undefined;
+            i => i?.id?.toLowerCase() === delegateContractAddress.toLowerCase()
+          );
 
           if (!delegatingTo) {
             return acc;
           }
 
-          const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
+          const delegatingToWalletAddress = delegatingTo?.ownerAddress?.toLowerCase();
           // Get the expiration date of the delegate
 
           const expirationDate =
             delegatingTo.delegateVersion === 2
               ? undefined
-              : add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
+              : add(new Date(Number(delegatingTo?.blockTimestamp || 0) * 1000), { years: 1 });
 
           //only v1 delegate contracts expire
           const isAboutToExpire = delegatingTo.delegateVersion !== 2 && isAboutToExpireCheck(expirationDate);

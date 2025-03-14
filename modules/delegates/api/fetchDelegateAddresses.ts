@@ -20,13 +20,12 @@ export async function fetchDelegateAddresses(network: SupportedNetworks): Promis
       useSubgraph: true,
       query: allDelegates
     });
-    const delegates = data.allDelegates.nodes.map(delegate => ({
-      ...delegate,
-      blockTimestamp: new Date(delegate?.blockTimestamp),
-      delegate: delegate?.delegate,
-      voteDelegate: delegate?.voteDelegate,
-      // @ts-ignore: Property 'delegateVersion' might not exist on type 'AllDelegatesRecord'
-      delegateVersion: delegate?.delegateVersion
+    
+    const delegates = data.delegates.map(delegate => ({
+      blockTimestamp: new Date(Number(delegate?.blockTimestamp || 0) * 1000),
+      delegate: delegate?.ownerAddress,
+      voteDelegate: delegate?.id,
+      delegateVersion: delegate?.version ? parseInt(delegate.version) : 1
     })) as AllDelegatesEntry[];
 
     cacheSet(allDelegateAddressesKey, JSON.stringify(delegates), network, ONE_HOUR_IN_MS);

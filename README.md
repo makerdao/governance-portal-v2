@@ -95,8 +95,6 @@ The following configuration values can be added to the `.env` file:
 
 - Set `GASLESS_WEBHOOK_URL` for sending gasless vote requests to discord
 
-- Set `USE_PRIVATE_SUBGRAPH` to `true` to connect to the subgraph privately
-
 **Optional** Set `DEFENDER_API_KEY_MAINNET` and/or `DEFENDER_API_KEY_TESTNET` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
 **Optional** Set `DEFENDER_API_SECRET_MAINNET` and/or`DEFENDER_API_SECRET_TESTNET` to a valid OpenZeppelin Defender Relay secret
 **Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network

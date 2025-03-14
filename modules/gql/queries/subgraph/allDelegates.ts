@@ -10,7 +10,7 @@ import { gql } from 'graphql-request';
 
 export const allDelegates = gql`
   {
-    delegates {
+    delegates(first: 1000) {
       blockTimestamp
       ownerAddress
       id
