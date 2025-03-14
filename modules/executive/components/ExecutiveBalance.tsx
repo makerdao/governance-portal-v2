@@ -13,6 +13,7 @@ import { formatValue } from 'lib/string';
 
 type Props = {
   lockedMkr: bigint;
+  mutateLockedMkr?: () => void;
   voteDelegate?: string;
   voteProxy?: string;
   showProxyInfo?: boolean;
@@ -20,6 +21,7 @@ type Props = {
 
 export const ExecutiveBalance = ({
   lockedMkr,
+  mutateLockedMkr,
   voteDelegate,
   voteProxy,
   showProxyInfo
@@ -36,9 +38,9 @@ export const ExecutiveBalance = ({
     {!voteDelegate && (
       <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
         <Box sx={{ ml: [0, 3] }}>
-          <Deposit showProxyInfo={showProxyInfo} />
+          <Deposit showProxyInfo={showProxyInfo} mutateLockedMkr={mutateLockedMkr} />
         </Box>
-        <Withdraw sx={{ ml: 3 }} />
+        <Withdraw sx={{ ml: 3 }} mutateLockedMkr={mutateLockedMkr} />
       </Flex>
     )}
   </Flex>

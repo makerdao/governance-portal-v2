@@ -3,7 +3,6 @@ import { Page } from '@playwright/test';
 type TestAccount = {
   name: string;
   address: string;
-  key: string;
 };
 
 enum TestAccountsEnum {
@@ -14,11 +13,11 @@ interface TestAccounts {
   [key: string]: TestAccount;
 }
 
+//this address is able to send transactions on the tenderly vnet via the wagmi mock
 export const TEST_ACCOUNTS: TestAccounts = {
   [TestAccountsEnum.normal]: {
     name: 'Default test account',
-    address: '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B',
-    key: '89dc8729657f93064432dc2e85136b90296fedfda086d4e610dd60c7d7654c41'
+    address: '0xFebC63589D8a3bc5CD97E86C174A836c9caa6DEe'
   }
 };
 

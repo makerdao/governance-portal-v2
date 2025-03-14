@@ -7,6 +7,7 @@ import { writeFile, readFile } from 'fs/promises';
 import dotenv from 'dotenv';
 import { parseEther, parseUnits, toHex } from 'viem';
 import { TEST_ACCOUNTS } from './shared';
+import { mockRpcCalls } from './mock-rpc-call';
 
 dotenv.config();
 
@@ -20,9 +21,13 @@ test.beforeAll(async () => {
   await setErc20Balance(address, '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', '150001', 18); //fund MKR balance
 });
 
-test.afterAll(async () => {
-  await deleteVnet();
+test.beforeEach(async ({ page }) => {
+  await page.route('https://virtual.mainnet.rpc.tenderly.co/**', mockRpcCalls);
 });
+
+// test.afterAll(async () => {
+//   await deleteVnet();
+// });
 
 export const setEthBalance = async (address: string, amount: string) => {
   const file = await readFile('./tenderlyTestnetData.json', 'utf-8');
