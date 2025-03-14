@@ -79,7 +79,7 @@ export async function fetchVotesByAddressForPoll(
   const startUnix = mainnetVotersResponse.polls[0].startDate;
   const endUnix = mainnetVotersResponse.polls[0].endDate;
 
-  const mainnetVotes = mainnetVotersResponse.polls[0].votes
+  const mainnetVotes = mainnetVotersResponse.polls[0].votes;
   const mainnetVoterAddresses = mainnetVotes.filter(vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix).map(vote => vote.voter.id);
 
   const arbitrumChainId = networkNameToChainId('arbitrum');//update if we ever want to support an arbitrum sepolia subgraph
