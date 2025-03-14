@@ -111,10 +111,6 @@ Required for e2e:
 - Set `NEXT_PUBLIC_TENDERLY_RPC_KEY` to the API key required to query the forked Tenderly network RPC
 - Set `TENDERLY_API_KEY` to be able to run e2e tests against forked network
 
-### Architecture diagram
-
-![](./architecture-diagram.png)
-
 ### Tests
 
 The Governance portal includes two test suites: Jest and E2E
