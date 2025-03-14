@@ -6,11 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Box, Flex, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
-import Tooltip from 'modules/app/components/Tooltip';
+import { Flex, Text } from 'theme-ui';
 import { MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
-import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
@@ -29,9 +26,7 @@ export const getDescription = ({
           {'Balance of delegated MKR: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}
         </Text>
       );
-    } else if (
-      votingWeight.chiefBalanceCold
-    ) {
+    } else if (votingWeight.chiefBalanceCold) {
       return (
         <>
           <Text as="p">

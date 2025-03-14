@@ -15,6 +15,7 @@ import { hasVictoryConditionInstantRunOff } from '../../helpers/utils';
 import { fetchVotesByAddressForPollWithSpock } from './fetchVotesByAddressWithSpock';
 import { isExponential } from 'lib/utils';
 import { InstantRunoffResults } from '../../types/instantRunoff';
+import { findWinner } from '../fetchPollTally';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
