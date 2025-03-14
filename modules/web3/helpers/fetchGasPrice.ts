@@ -17,7 +17,8 @@ export const fetchGasPrice = async (
   try {
     const jsonResponse = await fetchJson(GASNOW_ENDPOINT);
 
-    return parseInt(formatUnits(jsonResponse.data[speed], 'gwei'));
+    const gweiValue = parseFloat(formatUnits(jsonResponse.data[speed], 'gwei')).toFixed(2);
+    return parseFloat(gweiValue);
   } catch (e) {
     logger.error('fetchGasPrice: Error fetching gas price', e.message);
     throw e;
