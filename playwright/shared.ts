@@ -29,11 +29,6 @@ export async function connectWallet(page: Page) {
     await closeModal(page);
   } catch (error) {
     await page.getByTestId('select-wallet-mock').click();
-    await page
-      .locator('div')
-      .filter({ hasText: /^MockSelect$/ })
-      .getByRole('button')
-      .click();
   }
 }
 
