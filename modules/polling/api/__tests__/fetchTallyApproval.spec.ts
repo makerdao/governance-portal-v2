@@ -10,7 +10,7 @@ import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modul
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { fetchPollTally } from '../fetchPollTally';
+import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
 jest.mock('modules/gql/gqlRequest');
 
 describe('Fetch tally approval', () => {
@@ -66,7 +66,7 @@ describe('Fetch tally approval', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -124,7 +124,7 @@ describe('Fetch tally approval', () => {
   });
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as jest.Mock).mockResolvedValue({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -147,7 +147,7 @@ describe('Fetch tally approval', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -216,7 +216,7 @@ describe('Fetch tally approval', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
