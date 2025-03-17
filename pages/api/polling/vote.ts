@@ -122,7 +122,7 @@ export default withApiHandler(
     }
 
     //get arbitrum polling contract with relayer's signer
-    const { signer, pollingAddress } = await getArbitrumPollingContractRelayProvider(network);
+    const { relayer, pollingAddress } = await getArbitrumPollingContractRelayProvider(network);
     const publicClient = getGaslessPublicClient(networkNameToChainId(network));
 
     //verify valid nonce and expiry date
@@ -204,9 +204,20 @@ export default withApiHandler(
         functionName: 'vote',
         args: [voter, nonce, BigInt(expiry), parsedPollIds, parsedOptionIds, +(v as bigint).toString(), r, s]
       });
-      tx = await signer.sendTransaction({
+
+      const relayerInstance = await relayer.getRelayer();
+      const address = relayerInstance.address;
+      const estimatedGas = await publicClient.estimateGas({
         to: pollingAddress,
-        data
+        data,
+        account: address as `0x${string}`
+      });
+
+      tx = await relayer.sendTransaction({
+        to: pollingAddress,
+        data,
+        speed: 'fastest', // 'safeLow' | 'average' | 'fast' | 'fastest',
+        gasLimit: estimatedGas.toString()
       });
     } catch (err) {
       //don't rate limit if tx didn't succeed
