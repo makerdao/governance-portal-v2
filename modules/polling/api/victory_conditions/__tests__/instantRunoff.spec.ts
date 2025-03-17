@@ -169,7 +169,6 @@ describe('Instant runoff calculation', () => {
     const votes: PollTallyVote[] = [
       {
         mkrSupport: '60.025',
-        optionIdRaw: fromBuffer([1, 3].reverse()),
         ballot: [1, 3],
         blockTimestamp: 1,
         chainId: 1,
@@ -179,7 +178,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: '102.598801867883985831',
-        optionIdRaw: fromBuffer([3, 1].reverse()),
         ballot: [3, 1],
         blockTimestamp: 1,
         chainId: 1,
@@ -189,7 +187,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: '64.068823529411764706',
-        optionIdRaw: fromBuffer([2, 3].reverse()),
         ballot: [2, 3],
         blockTimestamp: 1,
         chainId: 1,
@@ -199,7 +196,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: 4,
-        optionIdRaw: fromBuffer([4, 1].reverse()),
         ballot: [4, 1],
         blockTimestamp: 1,
         chainId: 1,
@@ -248,7 +244,6 @@ describe('Instant runoff calculation', () => {
     const votes: PollTallyVote[] = [
       {
         mkrSupport: '60.025',
-        optionIdRaw: fromBuffer([1, 3].reverse()),
         ballot: [1, 3],
         blockTimestamp: 1,
         chainId: 1,
@@ -258,7 +253,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: '102.598801867883985831',
-        optionIdRaw: fromBuffer([3, 1].reverse()),
         ballot: [3, 1],
         blockTimestamp: 1,
         chainId: 1,
@@ -268,7 +262,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: '54.068823529411764706',
-        optionIdRaw: fromBuffer([2, 4].reverse()),
         ballot: [2, 4],
         blockTimestamp: 1,
         chainId: 1,
@@ -278,7 +271,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: 4,
-        optionIdRaw: fromBuffer([4, 1].reverse()),
         ballot: [4, 1],
         blockTimestamp: 1,
         chainId: 1,
@@ -327,7 +319,6 @@ describe('Instant runoff calculation', () => {
     const votes: PollTallyVote[] = [
       {
         mkrSupport: '101',
-        optionIdRaw: fromBuffer([1].reverse()),
         ballot: [1],
         blockTimestamp: 1,
         chainId: 1,
@@ -337,7 +328,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: '100',
-        optionIdRaw: fromBuffer([2, 1].reverse()),
         ballot: [2, 1],
         blockTimestamp: 1,
         chainId: 1,
@@ -347,7 +337,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: '50',
-        optionIdRaw: fromBuffer([3].reverse()),
         ballot: [3],
         blockTimestamp: 1,
         chainId: 1,
@@ -357,7 +346,6 @@ describe('Instant runoff calculation', () => {
       },
       {
         mkrSupport: 49,
-        optionIdRaw: fromBuffer([4, 3].reverse()),
         ballot: [4, 3],
         blockTimestamp: 1,
         chainId: 1,
@@ -405,7 +393,6 @@ describe('Instant runoff calculation', () => {
   it('Does not break with only 1 vote without mkr', () => {
     const votes: PollTallyVote[] = [
       {
-        optionIdRaw: '1',
         mkrSupport: '0',
         ballot: [1],
         blockTimestamp: 1,
