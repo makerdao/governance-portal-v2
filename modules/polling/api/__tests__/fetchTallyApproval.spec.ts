@@ -11,7 +11,9 @@ import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchPollTally } from '../fetchPollTally';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 describe('Fetch tally approval', () => {
   const mockPoll: Poll = {
@@ -39,7 +41,7 @@ describe('Fetch tally approval', () => {
   } as any as Poll;
 
   it('gives first option as winner if it has most mkr', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -124,7 +126,7 @@ describe('Fetch tally approval', () => {
   });
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -205,7 +207,7 @@ describe('Fetch tally approval', () => {
   });
 
   it('Ignores abstain', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {

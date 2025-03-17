@@ -11,7 +11,9 @@ import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchPollTally } from '../fetchPollTally';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 describe('Fetch tally plurality', () => {
   const mockPoll: Poll = {
@@ -39,7 +41,7 @@ describe('Fetch tally plurality', () => {
   } as any as Poll;
 
   it('gives expected results', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -124,7 +126,7 @@ describe('Fetch tally plurality', () => {
   });
 
   it('gives expected results for adjusted data', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -217,7 +219,7 @@ describe('Fetch tally plurality', () => {
   });
 
   it('parses correctly a plurality with no votes', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: []
       }
@@ -282,7 +284,7 @@ describe('Fetch tally plurality', () => {
   });
 
   it('gives expected results for tally with abstain majority', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {

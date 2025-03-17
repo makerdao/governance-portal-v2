@@ -14,10 +14,11 @@ import { render, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseEther } from 'viem';
 import { MKRInput, MKRInputProps } from '../MKRInput';
+import { vi } from 'vitest';
 
 function renderMKRInput(props: Partial<MKRInputProps> = {}) {
   const defaultProps: MKRInputProps = {
-    onChange: jest.fn(),
+    onChange: vi.fn(),
     value: parseEther('0')
   };
 
@@ -56,7 +57,7 @@ describe('MKRInput', () => {
     const props: Partial<MKRInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('0.1'),
-      onChange: jest.fn()
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
@@ -74,7 +75,7 @@ describe('MKRInput', () => {
     const props: Partial<MKRInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('0'),
-      onChange: jest.fn()
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
@@ -89,7 +90,7 @@ describe('MKRInput', () => {
     const props: Partial<MKRInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('-0.1'),
-      onChange: jest.fn()
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
@@ -103,7 +104,7 @@ describe('MKRInput', () => {
     const props: Partial<MKRInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('34'),
-      onChange: jest.fn()
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
