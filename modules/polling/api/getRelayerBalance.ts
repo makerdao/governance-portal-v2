@@ -19,10 +19,11 @@ export const getRelayerBalance = async (network: SupportedNetworks): Promise<str
       throw new Error(`Unsupported network: ${network}`);
     }
 
-    const signer = getArbitrumRelaySigner(network);
+    const relayer = getArbitrumRelaySigner(network);
     const gaslessPublicClient = getGaslessPublicClient(networkNameToChainId(network));
 
-    const address = await signer.getAddress();
+    const relayerInstance = await relayer.getRelayer();
+    const address = relayerInstance.address;
     const balance = await gaslessPublicClient.getBalance({ address: address as `0x${string}` });
 
     return formatEther(balance);
