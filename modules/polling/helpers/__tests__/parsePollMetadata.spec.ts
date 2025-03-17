@@ -14,14 +14,15 @@ import { matterWrapper } from 'lib/matter';
 import { PollSpock } from '../../types/pollSpock';
 import { getPollTags, getPollTagsMapping } from 'modules/polling/api/getPollTags';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
+import { Mock, vi } from 'vitest';
 
-jest.mock('modules/polling/api/getPollTags');
+vi.mock('modules/polling/api/getPollTags');
 
 const pollMetadata327 = fs.readFileSync(__dirname + '/__helpers__/poll-327.md').toString();
 const pollMetadata431 = fs.readFileSync(__dirname + '/__helpers__/poll-431.md').toString();
 describe('Parse poll metadata', () => {
   beforeAll(() => {
-    (getPollTags as jest.Mock).mockReturnValue([
+    (getPollTags as Mock).mockReturnValue([
       {
         id: 'risk',
         shortname: 'risk',
@@ -30,7 +31,7 @@ describe('Parse poll metadata', () => {
       }
     ]);
 
-    (getPollTagsMapping as jest.Mock).mockReturnValue(
+    (getPollTagsMapping as Mock).mockReturnValue(
       Promise.resolve({
         431: ['risk']
       })

@@ -11,7 +11,9 @@ import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../gql/gqlRequest';
 import { fetchPollTally } from '../fetchPollTally';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 const fromBuffer = (buf, opts?) => {
   if (!opts) {
@@ -77,7 +79,7 @@ describe('Fetch tally combined with other options', () => {
   } as any as Poll;
 
   it('Does not find winner if it doesnt pass the majority percent, and it defaults to 3', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -146,7 +148,7 @@ describe('Fetch tally combined with other options', () => {
   });
 
   it('Does find a winner if it pass the majority percent', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -252,7 +254,7 @@ describe('Fetch tally combined with other options', () => {
   } as any as Poll;
 
   it('ranked choice + majority when majority is not met', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -335,7 +337,7 @@ describe('Fetch tally combined with other options', () => {
   });
 
   it('ranked choice + majority when majority is  met', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -465,7 +467,7 @@ describe('Fetch tally combined with other options', () => {
   } as any as Poll;
 
   it('ranked choice + majority when majority is  met + comparison not met', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -552,7 +554,7 @@ describe('Fetch tally combined with other options', () => {
   });
 
   it('ranked choice + majority when majority is met + comparison met', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {

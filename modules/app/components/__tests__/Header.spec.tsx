@@ -16,31 +16,32 @@ import { renderWithTheme as render } from '../../../../__tests__/helpers';
 import { formatAddress } from 'lib/utils';
 import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { vi, Mock } from 'vitest';
 
-jest.mock('modules/delegates/hooks/useSingleDelegateInfo');
-jest.mock('modules/app/hooks/useAccount');
-jest.mock('next/router', () => ({
+vi.mock('modules/delegates/hooks/useSingleDelegateInfo');
+vi.mock('modules/app/hooks/useAccount');
+vi.mock('next/router', () => ({
   useRouter() {
     return {
       route: '/',
       pathname: '',
       query: '',
       asPath: '',
-      push: jest.fn(),
+      push: vi.fn(),
       events: {
-        on: jest.fn(),
-        off: jest.fn()
+        on: vi.fn(),
+        off: vi.fn()
       },
-      beforePopState: jest.fn(() => null),
-      prefetch: jest.fn(() => null)
+      beforePopState: vi.fn(() => null),
+      prefetch: vi.fn(() => null)
     };
   }
 }));
 
 describe('Header component', () => {
   beforeEach(() => {
-    (useSingleDelegateInfo as jest.Mock).mockReturnValue({ data: null });
-    (useAccount as jest.Mock).mockReturnValue({
+    (useSingleDelegateInfo as Mock).mockReturnValue({ data: null });
+    (useAccount as Mock).mockReturnValue({
       account: ''
     });
   });
@@ -58,7 +59,7 @@ describe('Header component', () => {
   test('display account when connected', async () => {
     const address = '0x477b8D5eF7C2C42DB84deB555419cd817c336b6J';
 
-    (useAccount as jest.Mock).mockReturnValue({
+    (useAccount as Mock).mockReturnValue({
       account: address
     });
 

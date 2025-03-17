@@ -11,7 +11,9 @@ import { fetchPollTally } from '../fetchPollTally';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 const fromBuffer = (buf, opts?) => {
   if (!opts) {
@@ -65,7 +67,7 @@ describe('Fetch tally ranked', () => {
   } as any as Poll;
 
   it('gives expected results for a tally with majority', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -147,7 +149,7 @@ describe('Fetch tally ranked', () => {
     expect(result).toEqual(expect.objectContaining(expectedResult));
   });
   it('gives expected results for a tally with no  majority', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -232,7 +234,7 @@ describe('Fetch tally ranked', () => {
   });
 
   it('gives expected results for a tally with multiple rounds', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -322,7 +324,7 @@ describe('Fetch tally ranked', () => {
   });
 
   it('ranked choice tally verify eliminated options cant get votes', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -423,7 +425,7 @@ describe('Fetch tally ranked', () => {
   // option 1: 201, option 2: 0, option 3: 0, option 4: 0, total: 300
   // winner: option 1
   it('ranked choice tally stop when 1 remains', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {

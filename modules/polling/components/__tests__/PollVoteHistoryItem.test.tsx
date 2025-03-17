@@ -16,11 +16,13 @@ import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryI
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { usePollTally } from '../../hooks/usePollTally';
-jest.mock('../../hooks/usePollTally');
+import { Mock, vi } from 'vitest';
+
+vi.mock('../../hooks/usePollTally');
 
 describe('Poll vote history item', () => {
   beforeAll(() => {
-    (usePollTally as jest.Mock).mockReturnValue({
+    (usePollTally as Mock).mockReturnValue({
       tally: {
         rounds: 1,
         winner: 1,

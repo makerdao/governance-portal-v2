@@ -10,30 +10,31 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import waitForExpect from 'wait-for-expect';
 
 import { TX_NOT_ENOUGH_FUNDS } from '../../helpers/errors';
+import { vi } from 'vitest';
 
 waitForExpect.defaults.interval = 1;
 
 let transactionsApi, transactionsSelectors;
 describe('Transactions', () => {
   beforeAll(async () => {
-    jest.setTimeout(30000);
+    vi.setConfig({ testTimeout: 30000 });
   });
 
   beforeEach(async () => {
-    jest.resetModules();
+    vi.resetModules();
     ({ transactionsApi, transactionsSelectors } = require('../transactions'));
   });
 
   test('should call initTx, setPending, and setMined for successful transactions', async () => {
     const address = '0x000000';
 
-    const initTxMock = (transactionsApi.getState().initTx = jest.fn(transactionsApi.getState().initTx));
+    const initTxMock = (transactionsApi.getState().initTx = vi.fn(transactionsApi.getState().initTx));
 
-    const setPendingMock = (transactionsApi.getState().setPending = jest.fn(
+    const setPendingMock = (transactionsApi.getState().setPending = vi.fn(
       transactionsApi.getState().setPending
     ));
 
-    const setMinedMock = (transactionsApi.getState().setMined = jest.fn(transactionsApi.getState().setMined));
+    const setMinedMock = (transactionsApi.getState().setMined = vi.fn(transactionsApi.getState().setMined));
 
     const txCreator = () => {
       return Promise.resolve({
@@ -77,7 +78,7 @@ describe('Transactions', () => {
           })
       });
     };
-    const mockPendingHook = jest.fn();
+    const mockPendingHook = vi.fn();
     await transactionsApi.getState().track(txCreator, address, '', { pending: mockPendingHook });
     await waitForExpect(() => expect(mockPendingHook.mock.calls.length).toBe(1));
   });

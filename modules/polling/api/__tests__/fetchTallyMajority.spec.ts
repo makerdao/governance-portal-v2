@@ -11,7 +11,9 @@ import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchPollTally } from '../fetchPollTally';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 describe('Fetch tally majority', () => {
   const mockPoll: Poll = {
@@ -39,7 +41,7 @@ describe('Fetch tally majority', () => {
   } as any as Poll;
 
   it('Does not find winner if it doesnt pass the majority percent', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -108,7 +110,7 @@ describe('Fetch tally majority', () => {
   });
 
   it('Does find a winner if it pass the majority percent', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
