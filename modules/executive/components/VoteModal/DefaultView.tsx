@@ -133,7 +133,7 @@ export default function DefaultVoteModalView({
           <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
             Your voting weight
           </Text>
-          {lockedMkr ? (
+          {lockedMkr !== undefined ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
               {formatValue(lockedMkr, 'wad', 6)} MKR
             </Text>
@@ -147,7 +147,7 @@ export default function DefaultVoteModalView({
           <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
             MKR supporting
           </Text>
-          {spellData ? (
+          {spellData !== undefined ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
               {formatValue(mkrSupporting)} MKR
             </Text>
@@ -161,7 +161,7 @@ export default function DefaultVoteModalView({
           <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
             After vote cast
           </Text>
-          {lockedMkr && spellData ? (
+          {lockedMkr !== undefined && spellData !== undefined ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
               {formatValue(afterVote)} MKR
             </Text>
