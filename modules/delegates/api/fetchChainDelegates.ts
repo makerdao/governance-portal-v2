@@ -33,7 +33,7 @@ export async function fetchChainDelegates(
       address: d.ownerAddress,
       voteDelegateAddress: d.id,
       mkrDelegated: formatValue(BigNumber.from(d.totalDelegated), 'wad', 18, false),
-      version: d.version,
+      delegateVersion: Number(d.version),
       lastVoteDate: d.voter?.lastVotedTimestamp ? Number(d.voter.lastVotedTimestamp) : null
     };
   });
