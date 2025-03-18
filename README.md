@@ -107,7 +107,7 @@ Required for e2e:
 
 ### Tests
 
-The Governance portal includes two test suites: Jest and E2E
+The Governance portal includes two test suites: Vitest and E2E
 
 To run e2e, `TENDERLY_API_KEY` and `NEXT_PUBLIC_TENDERLY_RPC_KEY` must be correcly configured.
 
@@ -118,17 +118,17 @@ To run in UI mode:
 `yarn dev:mock` to run the app with mock wallet
 `yarn e2e:ui` to open playwright UI
 
-Jest tests under the folder `__tests__` currently execute unit tests of the platform.
+Vitest tests under the folder `__tests__` currently execute unit tests of the platform.
 
 #### Test commands
 
-jest:
+Vitest:
 
 ```bash
-# runs jest tests on live-reload mode
+# runs Vitest tests on live-reload mode
 npm run test
 
-# runs all the jest tests
+# runs all the Vitest tests
 npm run test:ci
 ```
 
@@ -140,7 +140,7 @@ After each push the system will execute:
 
 - Lint, verify type consistency
 
-- Unit test, execute Jest test suite
+- Unit test, execute Vitest test suite
 
 ```bash
 npm run start:ci
