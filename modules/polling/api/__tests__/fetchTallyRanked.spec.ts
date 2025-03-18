@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { fetchPollTally } from '../fetchPollTally';
+import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
 import BigNumber from 'lib/bigNumberJs';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
@@ -85,7 +85,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
     const expectedResult = {
       parameters: mockPoll.parameters,
       rounds: 1,
@@ -167,7 +167,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -256,7 +256,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -347,7 +347,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -447,7 +447,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,

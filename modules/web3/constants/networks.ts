@@ -19,7 +19,9 @@ import {
   TENDERLY_SPOCK_URL,
   TENDERLY_SUBGRAPH_URL,
   MAINNET_STAGING_SUBGRAPH_URL,
-  MAINNET_PROD_SUBGRAPH_URL
+  MAINNET_PROD_SUBGRAPH_URL,
+  ARBITRUM_PROD_SUBGRAPH_URL,
+  ARBITRUM_STAGING_SUBGRAPH_URL,
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
@@ -95,6 +97,10 @@ export const CHAIN_INFO: ChainInfo = {
     type: 'gasless',
     network: SupportedNetworks.ARBITRUM,
     defaultRpc: NodeProviders.ALCHEMY,
+    subgraphUrl:
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
+      ? ARBITRUM_STAGING_SUBGRAPH_URL
+      : ARBITRUM_PROD_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
     },

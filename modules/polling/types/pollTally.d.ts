@@ -25,7 +25,6 @@ export type PollTallyVote = {
   chainId: number;
   blockTimestamp: number;
   hash: string;
-  optionIdRaw: string | number;
 };
 
 export type PollTallyOption = {

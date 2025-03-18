@@ -10,7 +10,7 @@ import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modul
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { fetchPollTally } from '../fetchPollTally';
+import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
 jest.mock('modules/gql/gqlRequest');
 
 describe('Fetch tally majority', () => {
@@ -58,7 +58,7 @@ describe('Fetch tally majority', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -127,7 +127,7 @@ describe('Fetch tally majority', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,

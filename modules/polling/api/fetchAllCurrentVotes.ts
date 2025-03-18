@@ -7,31 +7,86 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allCurrentVotes } from 'modules/gql/queries/allCurrentVotes';
+import { allMainnetVotes } from 'modules/gql/queries/subgraph/allMainnetVotes';
+import { allArbitrumVotes } from 'modules/gql/queries/subgraph/allArbitrumVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { PollTallyVote } from '../types';
+import { getAddressInfo } from 'modules/address/api/getAddressInfo';
+
+interface PollVoteResponse {
+  poll: {
+    id: string;
+  };
+  choice: string;
+  blockTime: string;
+  txnHash: string;
+}
+
+interface MainnetVotesResponse {
+  pollVotes: PollVoteResponse[];
+}
+
+interface ArbitrumPollVoteResponse extends PollVoteResponse {
+  voter: {
+    id: string;
+  };
+}
+
+interface ArbitrumVotesResponse {
+  arbitrumPollVotes: ArbitrumPollVoteResponse[];
+}
 
 export async function fetchAllCurrentVotes(
   address: string,
   network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: allCurrentVotes,
-    variables: { argAddress: address.toLowerCase() }
-  });
+  const addressInfo = await getAddressInfo(address, network);
+  const delegateOwnerAddress = addressInfo?.delegateInfo?.address;
+  const arbitrumChainId = networkNameToChainId('arbitrum'); //update if we ever add support for arbitrum sepolia
+  const [mainnetVotes, arbitrumVotes] = await Promise.all([
+    gqlRequest<MainnetVotesResponse>({
+      chainId: networkNameToChainId(network),
+      query: allMainnetVotes,
+      useSubgraph: true,
+      variables: { argAddress: address.toLowerCase() }
+    }),
+    gqlRequest<ArbitrumVotesResponse>({
+      chainId: arbitrumChainId,
+      query: allArbitrumVotes,
+      useSubgraph: true,
+      variables: { argAddress: delegateOwnerAddress ? delegateOwnerAddress.toLowerCase() : address.toLowerCase() }
+    })
+  ]);
+  const mainnetVotesWithChainId = mainnetVotes.pollVotes.map(vote => ({...vote, chainId: networkNameToChainId(network)}));
+  const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({...vote, chainId: arbitrumChainId}));
+  const combinedVotes = [...mainnetVotesWithChainId, ...arbitrumVotesWithChainId];
+
+  const dedupedVotes = Object.values(
+    combinedVotes.reduce((acc, vote) => {
+      const pollId = vote.poll.id;
+      if (!acc[pollId] || Number(vote.blockTime) > Number(acc[pollId].blockTime)) {
+        acc[pollId] = vote;
+      }
+      return acc;
+    }, {} as Record<string, typeof combinedVotes[0]>)
+  );
+  
+  //TODO: only include valid votes based on time of poll
 
   // Parse the rankedChoice option
-  const res: PollTallyVote[] = data.allCurrentVotes.nodes.map(o => {
-    const ballot = parseRawOptionId(o.optionIdRaw);
+  const res: PollTallyVote[] = dedupedVotes.map(o => {
+    const ballot = parseRawOptionId(o.choice);
     return {
-      ...o,
+      pollId: Number(o.poll.id),
       ballot,
-      voter: address
+      voter: address,
+      hash: o.txnHash,
+      blockTimestamp: Number(o.blockTime) * 1000,
+      mkrSupport: 0, //TODO: fetch mkr support (or remove support for now)
+      chainId: o.chainId,
     };
   });
-
   return res;
 }
