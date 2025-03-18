@@ -7,10 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import { getVoteProxyAddresses, VoteProxyAddresses } from '../helpers/getVoteProxyAddresses';
-import { useNetwork } from './useNetwork';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 
 type VoteProxyAddressResponse = {
   data?: VoteProxyAddresses;
@@ -19,16 +18,11 @@ type VoteProxyAddressResponse = {
 };
 
 export const useVoteProxyAddress = (account?: string): VoteProxyAddressResponse => {
-  const network = useNetwork();
-  const chainId = networkNameToChainId(network);
+  const { voteProxyFactory } = useContracts();
+  const { network } = useWeb3();
 
   const { data, error } = useSWR(account ? `${account}/vote-proxy-address` : null, async () => {
-    return await getVoteProxyAddresses(
-      voteProxyFactoryAddress[chainId],
-      voteProxyFactoryAbi,
-      account as string,
-      network
-    );
+    return await getVoteProxyAddresses(voteProxyFactory, account as string, network);
   });
 
   return {

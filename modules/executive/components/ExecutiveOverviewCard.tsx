@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState, useEffect } from 'react';
 import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { BigNumber } from 'ethers';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
@@ -29,7 +30,7 @@ type Props = {
   isHat: boolean;
   account?: string;
   votedProposals: string[];
-  mkrOnHat?: bigint;
+  mkrOnHat?: BigNumber;
 };
 
 export default function ExecutiveOverviewCard({
@@ -184,7 +185,7 @@ export default function ExecutiveOverviewCard({
                 </Box>
               ) : (
                 <StatBox
-                  value={formatValue(BigInt(proposal.spellData?.mkrSupport))}
+                  value={formatValue(BigNumber.from(proposal.spellData?.mkrSupport))}
                   label="MKR Supporting"
                   styles={{ textAlign: 'right' }}
                 />

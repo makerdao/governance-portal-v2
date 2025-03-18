@@ -20,6 +20,7 @@ import { PlayButton } from 'modules/home/components/PlayButton';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -27,6 +28,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
+import BigNumber from 'lib/bigNumberJs';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -40,8 +42,6 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { parseEther } from 'viem';
 
 const LandingPage = ({
   proposals,
@@ -245,7 +245,7 @@ const LandingPage = ({
               <Box ref={delegateRef} />
               <TopDelegates
                 topDelegates={delegates}
-                totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
+                totalMKRDelegated={new BigNumber(stats?.totalMKRDelegated || 0)}
               />
             </section>
 
@@ -293,7 +293,7 @@ export default function Index({
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
-  const network = useNetwork();
+  const { network } = useWeb3();
   const [delegatesData, delegatesInfo] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {

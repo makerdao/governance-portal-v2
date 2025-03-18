@@ -7,45 +7,52 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { fetchJson } from 'lib/fetchJson';
+import { sortBytesArray } from 'lib/utils';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
+import { useHat } from 'modules/executive/hooks/useHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { Proposal } from 'modules/executive/types';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
+import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
+import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
+import { useVoteProxyVote } from 'modules/executive/hooks/useVoteProxyVote';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
+import { BigNumber, utils } from 'ethers';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export default function DefaultVoteModalView({
   proposal,
+  address,
   close,
-  vote,
-  voteDisabled,
-  currentSlate,
-  isHat,
-  spellAddress,
-  hatChecked,
-  showHatCheckbox,
-  setHatChecked
+  onTransactionPending,
+  onTransactionMined,
+  onTransactionCreated,
+  onTransactionFailed
 }: {
   proposal?: Proposal;
+  address?: string;
   close: () => void;
-  vote: () => void;
-  voteDisabled: boolean;
-  currentSlate: string[];
-  isHat: boolean;
-  spellAddress: string;
-  hatChecked: boolean;
-  showHatCheckbox: boolean;
-  setHatChecked: Dispatch<SetStateAction<boolean>>;
+  onTransactionPending: () => void;
+  onTransactionMined: () => void;
+  onTransactionFailed: () => void;
+  onTransactionCreated: (txId: string) => void;
 }): React.ReactElement {
   const bpi = useBreakpointIndex();
-  const network = useNetwork();
 
-  const { votingAccount } = useAccount();
+  const { voteProxyContractAddress, voteDelegateContractAddress, votingAccount } = useAccount();
+  const { network } = useWeb3();
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
+
+  const spellAddress = proposal ? proposal.address : address ? address : '';
+
   const { data: spellData, mutate: mutateSpellData } = useSpellData(spellAddress);
 
   // revalidate on mount
@@ -54,15 +61,61 @@ export default function DefaultVoteModalView({
     mutateSpellData();
   }, []);
 
-  const mkrSupporting = spellData ? BigInt(spellData.mkrSupport) : 0n;
-  const hasVotingWeight = !!lockedMkr && lockedMkr > 0n;
+  const [hatChecked, setHatChecked] = useState(true);
+  const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
 
+  const { data: allSlates } = useAllSlates();
+  const { mutate: mutateMkrOnHat } = useMkrOnHat();
+
+  const { data: hat } = useHat();
+
+  const { vote: delegateVote } = useDelegateVote();
+  const { vote: proxyVote } = useVoteProxyVote();
+  const { vote: chiefVote } = useChiefVote();
+
+  const isHat = hat && hat === spellAddress;
+  const showHatCheckbox =
+    hat && spellAddress !== hat && currentSlate.includes(hat) && !currentSlate.includes(spellAddress);
+  const hasVotingWeight = lockedMkr?.gt(0);
+  const mkrSupporting = spellData ? BigNumber.from(spellData.mkrSupport) : BigNumber.from(0);
   const afterVote =
     currentSlate && currentSlate.includes(spellAddress)
       ? mkrSupporting
       : lockedMkr && spellData
-      ? lockedMkr + BigInt(spellData.mkrSupport)
-      : 0n;
+      ? lockedMkr.add(BigNumber.from(spellData.mkrSupport))
+      : BigNumber.from(0);
+
+  const vote = hatChecked => {
+    const proposals = hatChecked && showHatCheckbox ? sortBytesArray([hat, spellAddress]) : [spellAddress];
+
+    const encoder = new utils.AbiCoder();
+    const encodedParam = encoder.encode(['address[]'], [proposals]);
+
+    const slate = utils.keccak256('0x' + encodedParam.slice(-64 * proposals.length)) as any;
+    const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
+    const slateOrProposals = slateAlreadyExists ? slate : proposals;
+
+    const callbacks = {
+      initialized: txId => onTransactionCreated(txId),
+      pending: async txHash => {
+        onTransactionPending();
+      },
+      mined: () => {
+        mutateVotedProposals();
+        mutateMkrOnHat();
+        onTransactionMined();
+      },
+      error: () => onTransactionFailed()
+    };
+
+    if (voteDelegateContractAddress) {
+      delegateVote(slateOrProposals, callbacks);
+    } else if (voteProxyContractAddress) {
+      proxyVote(slateOrProposals, callbacks);
+    } else {
+      chiefVote(slateOrProposals, callbacks);
+    }
+  };
 
   const GridBox = ({ bpi, children }) => (
     <Box
@@ -133,7 +186,7 @@ export default function DefaultVoteModalView({
           <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
             Your voting weight
           </Text>
-          {lockedMkr !== undefined ? (
+          {lockedMkr ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
               {formatValue(lockedMkr, 'wad', 6)} MKR
             </Text>
@@ -147,7 +200,7 @@ export default function DefaultVoteModalView({
           <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
             MKR supporting
           </Text>
-          {spellData !== undefined ? (
+          {spellData ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
               {formatValue(mkrSupporting)} MKR
             </Text>
@@ -161,7 +214,7 @@ export default function DefaultVoteModalView({
           <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
             After vote cast
           </Text>
-          {lockedMkr !== undefined && spellData !== undefined ? (
+          {lockedMkr && spellData ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
               {formatValue(afterVote)} MKR
             </Text>
@@ -178,10 +231,10 @@ export default function DefaultVoteModalView({
           variant="primaryLarge"
           sx={{ width: '100%' }}
           onClick={() => {
-            vote();
+            vote(hatChecked);
           }}
           data-testid="vote-modal-vote-btn"
-          disabled={!hasVotingWeight || voteDisabled}
+          disabled={!hasVotingWeight}
         >
           {votingMessage}
         </Button>

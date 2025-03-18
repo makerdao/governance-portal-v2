@@ -37,7 +37,11 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
@@ -45,9 +49,6 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { useChainId, useReadContract } from 'wagmi';
-import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -77,14 +78,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     voteProxyOldContractAddress,
     votingAccount
   } = useAccount();
-  const network = useNetwork();
-  const chainId = useChainId();
+  const { network } = useWeb3();
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
-  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
+  const { data: lockedMkr } = useLockedMkr(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+  const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
   const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
@@ -151,18 +152,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   }, [startDate, endDate]);
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
-
-  const { data: lockedMkrOldChief } = useReadContract({
-    address: chiefOldAddress[chainId],
-    abi: chiefOldAbi,
-    chainId,
-    functionName: 'deposits',
-    args: [lockedMkrKeyOldChief as `0x${string}`],
-    scopeKey: `/user/mkr-locked-old-chief/${lockedMkrKeyOldChief}`,
-    query: {
-      enabled: !!lockedMkrKeyOldChief
-    }
-  });
+  const { data: lockedMkrOldChief } = useSWR(
+    lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
+    () => chiefOld.deposits(lockedMkrKeyOldChief as string)
+  );
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
@@ -181,20 +174,19 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const { data: hat } = useHat();
 
-  const showProxyInfo = Boolean(
+  const showProxyInfo =
     lockedMkrOldChief &&
-      lockedMkrOldChief === 0n &&
-      !voteProxyContractAddress &&
-      lockedMkr &&
-      lockedMkr === 0n &&
-      !voteDelegateContractAddress
-  );
+    lockedMkrOldChief.eq(0) &&
+    !voteProxyContractAddress &&
+    lockedMkr &&
+    lockedMkr.eq(0) &&
+    !voteDelegateContractAddress;
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
 
-      {lockedMkrOldChief && lockedMkrOldChief > 0 && (
+      {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
         <>
           <ProgressBar step={0} />
           <MigrationBadge py={[2]}>
@@ -245,14 +237,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       {votedProposals &&
         !votingForSomething &&
         lockedMkrOldChief &&
-        lockedMkrOldChief === 0n &&
+        lockedMkrOldChief.eq(0) &&
         voteProxyContractAddress &&
         lockedMkr &&
         !voteDelegateContractAddress && (
           <>
-            <ProgressBar step={lockedMkr === 0n ? 1 : 2} />
+            <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
             <MigrationBadge>
-              {lockedMkr === 0n ? (
+              {lockedMkr.eq(0) ? (
                 <Text>
                   Your vote proxy has been created. Please{' '}
                   <Deposit link={'deposit'} showProxyInfo={showProxyInfo} /> into your new vote proxy contract
@@ -266,10 +258,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       {votedProposals &&
         !votingForSomething &&
         lockedMkrOldChief &&
-        lockedMkrOldChief === 0n &&
+        lockedMkrOldChief.eq(0) &&
         !voteProxyContractAddress &&
         lockedMkr &&
-        lockedMkr > 0n && (
+        lockedMkr.gt(0) && (
           <>
             <ProgressBar step={2} />
             <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
@@ -278,8 +270,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       <Stack>
         {account && (
           <ExecutiveBalance
-            lockedMkr={lockedMkr || 0n}
-            mutateLockedMkr={mutateLockedMkr}
+            lockedMkr={lockedMkr || BigNumber.from(0)}
             voteDelegate={voteDelegateContractAddress}
             showProxyInfo={showProxyInfo}
           />
@@ -455,7 +446,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 export default function ExecutiveOverviewPage({
   proposals: prefetchedProposals
 }: ExecutivePageData): JSX.Element {
-  const network = useNetwork();
+  const { network } = useWeb3();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

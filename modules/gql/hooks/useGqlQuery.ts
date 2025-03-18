@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR from 'swr';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { gqlRequest } from '../gqlRequest';
-import { useChainId } from 'wagmi';
 
 type GqlQueryResponse = {
   data: any;
@@ -25,7 +25,7 @@ export const useGqlQuery = ({
   variables?: Record<string, string>;
   cacheKey: string;
 }): GqlQueryResponse => {
-  const chainId = useChainId();
+  const { chainId } = useWeb3();
 
   const { data, error } = useSWR(`gql-query/${chainId}/${cacheKey}`, async () => {
     return await gqlRequest({ chainId, query, variables });

@@ -6,64 +6,35 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
-import { useChainId, useReadContract } from 'wagmi';
-import {
-  voteDelegateFactoryAbi,
-  voteDelegateFactoryAddress,
-  voteDelegateFactoryOldAbi,
-  voteDelegateFactoryOldAddress
-} from 'modules/contracts/generated';
 
 type VoteDelegateAddressResponse = {
-  data?: `0x${string}` | undefined;
+  data?: string | undefined;
   loading: boolean;
-  error: Error | null;
+  error: Error;
   mutate: () => void;
 };
 
 // Returns the vote delegate contract address for a account
-export const useVoteDelegateAddress = (account?: `0x${string}`): VoteDelegateAddressResponse => {
-  const chainId = useChainId();
+export const useVoteDelegateAddress = (account?: string): VoteDelegateAddressResponse => {
+  const { voteDelegateFactory, voteDelegateFactoryOld } = useContracts();
 
-  const voteDelegateResponse = useReadContract({
-    address: voteDelegateFactoryAddress[chainId],
-    abi: voteDelegateFactoryAbi,
-    chainId,
-    functionName: 'delegates',
-    args: [account as `0x${string}`],
-    scopeKey: `${account}/vote-delegate-address`,
-    query: {
-      enabled: !!account
-    }
+  const { data, error, mutate } = useSWR(account ? `${account}/vote-delegate-address` : null, async () => {
+    const [newVdAddress, oldVdAddress] = await Promise.all([
+      voteDelegateFactory.delegates(account as string),
+      voteDelegateFactoryOld.delegates(account as string)
+    ]);
+
+    if (newVdAddress !== ZERO_ADDRESS) return newVdAddress;
+    if (oldVdAddress !== ZERO_ADDRESS) return oldVdAddress;
+    return undefined;
   });
-
-  const voteDelegateOldResponse = useReadContract({
-    address: voteDelegateFactoryOldAddress[chainId],
-    abi: voteDelegateFactoryOldAbi,
-    chainId,
-    functionName: 'delegates',
-    args: [account as `0x${string}`],
-    scopeKey: `${account}/vote-delegate-address`,
-    query: {
-      enabled: !!account
-    }
-  });
-
-  const error = voteDelegateResponse.error || voteDelegateOldResponse.error;
-
   return {
-    data:
-      voteDelegateResponse.data !== ZERO_ADDRESS
-        ? voteDelegateResponse.data
-        : voteDelegateOldResponse.data !== ZERO_ADDRESS
-        ? voteDelegateOldResponse.data
-        : undefined,
-    loading: voteDelegateResponse.isLoading || voteDelegateOldResponse.isLoading,
+    data,
+    loading: !error && !data,
     error,
-    mutate: () => {
-      voteDelegateResponse.refetch();
-      voteDelegateOldResponse.refetch();
-    }
+    mutate
   };
 };

@@ -9,15 +9,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
+import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
+import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
-import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
-import { formatEther, parseEther } from 'viem';
 /**
  * @swagger
  * /api/address/[address]/delegated-to:
@@ -102,14 +102,9 @@ export default withApiHandler(
       req.query.address as string,
       new ApiError('Invalid address', 400, 'Invalid address')
     );
-    const chainId = networkNameToChainId(network);
+    const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
-    const proxyInfo = await getVoteProxyAddresses(
-      voteProxyFactoryAddress[chainId],
-      voteProxyFactoryAbi,
-      address,
-      network
-    );
+    const proxyInfo = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
     // if hasProxy, we need to combine the delegation history of hot, cold, proxy
     let delegatedTo: DelegationHistoryWithExpirationDate[];
@@ -138,13 +133,13 @@ export default withApiHandler(
     });
 
     const totalDelegated = filtered.reduce((prev, next) => {
-      return prev + parseEther(next.lockAmount);
-    }, 0n);
+      return prev.plus(next.lockAmount);
+    }, new BigNumber(0));
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
     res.status(200).json({
       delegatedTo: filtered,
-      totalDelegated: +formatEther(totalDelegated)
+      totalDelegated: totalDelegated.toNumber()
     });
   }
 );

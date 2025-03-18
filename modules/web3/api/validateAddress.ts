@@ -1,4 +1,4 @@
-import { isAddress } from 'viem';
+import { isAddress } from 'ethers/lib/utils';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { resolveENS } from '../helpers/ens';

@@ -7,20 +7,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React, { ReactNode } from 'react';
+import { ethers } from 'ethers';
+import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
+import { useTenderlyWindowBindings } from 'modules/web3/hooks/useTenderlyWindowBindings';
+import { useCurrentUserVoteProxyContract } from '../hooks/useCurrentUserVoteProxyContract';
+import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
 import { useVoteProxyOldAddress } from '../hooks/useVoteProxyOldAddress';
-import { useAccount } from 'wagmi';
+import { useWeb3React } from '@web3-react/core';
 
 interface AccountContextProps {
   account?: string;
 
+  voteDelegateContract?: ethers.Contract;
   voteDelegateContractAddress?: string;
 
+  voteProxyContract?: ethers.Contract;
   voteProxyContractAddress?: string;
   voteProxyHotAddress?: string;
   voteProxyColdAddress?: string;
 
+  voteProxyOldContract?: ethers.Contract;
   voteProxyOldContractAddress?: string;
   voteProxyOldHotAddress?: string;
   voteProxyOldColdAddress?: string;
@@ -38,12 +46,19 @@ type PropTypes = {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  const { address: account } = useAccount();
+  const { account } = useWeb3React();
 
+  const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
   const { data: voteDelegateContractAddress, mutate: mutateVoteDelegate } = useVoteDelegateAddress(account);
 
   const { data: voteProxyResponse } = useVoteProxyAddress(account);
   const { data: voteProxyOldResponse } = useVoteProxyOldAddress(account);
+
+  const { data: voteProxyContract } = useCurrentUserVoteProxyContract();
+  const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
+
+  // Use for tesing purposes, allow to log-in an account on the localhost network with tenderly
+  useTenderlyWindowBindings();
 
   // In order of priority for voting: 1) Delegate contract, 2) Proxy 3) Wallet account
   const votingAccount = voteDelegateContractAddress
@@ -57,12 +72,15 @@ export const AccountProvider = ({ children }: PropTypes): React.ReactElement => 
       value={{
         account,
 
+        voteDelegateContract,
         voteDelegateContractAddress,
 
+        voteProxyContract,
         voteProxyContractAddress: voteProxyResponse?.voteProxyAddress,
         voteProxyHotAddress: voteProxyResponse?.hotAddress,
         voteProxyColdAddress: voteProxyResponse?.coldAddress,
 
+        voteProxyOldContract,
         voteProxyOldContractAddress: voteProxyOldResponse?.voteProxyAddress,
         voteProxyOldHotAddress: voteProxyOldResponse?.hotAddress,
         voteProxyOldColdAddress: voteProxyOldResponse?.coldAddress,

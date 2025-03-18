@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Text, Flex, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
+import BigNumber from 'lib/bigNumberJs';
 
 import {
   CartesianGrid,
@@ -72,9 +73,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     return (
       <Box>
         {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
-        <Text as="p">
-          MKR Weight: {(monthMKR?.MKR || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-        </Text>
+        <Text as="p">MKR Weight: {new BigNumber(monthMKR?.MKR || 0).toFormat(2)}</Text>
       </Box>
     );
   }

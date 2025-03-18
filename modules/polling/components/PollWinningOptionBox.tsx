@@ -18,7 +18,7 @@ import {
 } from '../helpers/utils';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { formatValue } from 'lib/string';
-import { parseEther } from 'viem';
+import { parseUnits } from 'ethers/lib/utils';
 import { StatusText } from 'modules/app/components/StatusText';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { PollVictoryConditions } from '../polling.constants';
@@ -34,7 +34,7 @@ export default function PollWinningOptionBox({
 
   const numberOfLeadingOptions = tally.results.filter(
     result =>
-      parseEther(tally.results[0].mkrSupport as string) > 0n &&
+      parseUnits(tally.results[0].mkrSupport as string).gt(0) &&
       result.mkrSupport === tally.results[0].mkrSupport
   ).length;
 
@@ -53,7 +53,7 @@ export default function PollWinningOptionBox({
   const comparisonText =
     hasComparison.length > 0 &&
     hasComparison[0].comparator === '>=' &&
-    ` Requires ${formatValue(parseEther(hasComparison[0].value.toString()))} MKR participation. `;
+    ` Requires ${formatValue(parseUnits(hasComparison[0].value.toString()))} MKR participation. `;
 
   if (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) {
     textWin = `No winner condition met.${comparisonText ? comparisonText : ' '}Defaulting to`;
@@ -67,13 +67,10 @@ export default function PollWinningOptionBox({
     //don't show "& n more" if isDefault since there's only ever 1 default option
   }${!isDefault && numberOfLeadingOptions > 1 ? ` & ${numberOfLeadingOptions - 1} more` : ''}`;
 
-  const leadingOptionSupport =
-    tally.results.find(({ optionId }) => optionId === leadingOption)?.mkrSupport.toString() || '0';
-
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {parseEther(tally.totalMkrActiveParticipation as string) > 0n ||
+        {parseUnits(tally.totalMkrActiveParticipation as string).gt(0) ||
         (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) ? (
           <>
             {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}
@@ -90,18 +87,22 @@ export default function PollWinningOptionBox({
                       isInputFormatChooseFree(poll.parameters)) &&
                     ' with ' +
                       formatValue(
-                        leadingOptionSupport.indexOf('.') !== -1
-                          ? parseEther(leadingOptionSupport)
-                          : BigInt(leadingOptionSupport)
+                        parseUnits(
+                          tally.results
+                            .find(({ optionId }) => optionId === leadingOption)
+                            ?.mkrSupport.toString() || '0'
+                        )
                       ) +
                       ' MKR supporting.'}
                   {!isDefault &&
                     isInputFormatRankFree(poll.parameters) &&
                     ' with ' +
                       formatValue(
-                        leadingOptionSupport.indexOf('.') !== -1
-                          ? parseEther(leadingOptionSupport)
-                          : BigInt(leadingOptionSupport)
+                        parseUnits(
+                          tally.results
+                            .find(({ optionId }) => optionId === leadingOption)
+                            ?.mkrSupport.toString() || '0'
+                        )
                       ) +
                       ' MKR supporting as first choice.'}
                   {isDefault && '.'}

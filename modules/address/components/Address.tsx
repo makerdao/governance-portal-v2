@@ -10,6 +10,7 @@ import { limitString } from 'lib/string';
 import { formatAddress } from 'lib/utils';
 import { getENS } from 'modules/web3/helpers/ens';
 import React, { useEffect, useState } from 'react';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export const Address = React.memo(function Address({
@@ -26,7 +27,9 @@ export const Address = React.memo(function Address({
       return;
     }
 
-    const ens = await getENS({ address, network: SupportedNetworks.MAINNET });
+    const provider = getDefaultProvider(SupportedNetworks.MAINNET);
+
+    const ens = await getENS({ address, provider });
 
     ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }
@@ -36,5 +39,9 @@ export const Address = React.memo(function Address({
     }
   }, [address]);
 
-  return <>{maxLength ? limitString(addressFormated, maxLength, '...') : addressFormated}</>;
+  return (
+    <React.Fragment>
+      {maxLength ? limitString(addressFormated, maxLength, '...') : addressFormated}
+    </React.Fragment>
+  );
 });

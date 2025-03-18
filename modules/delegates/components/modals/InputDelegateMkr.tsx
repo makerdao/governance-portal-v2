@@ -14,17 +14,17 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { parseEther } from 'viem';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   title: string;
   description: string;
   disclaimer?: JSX.Element;
-  onChange: (val: bigint) => void;
-  balance?: bigint;
+  onChange: (val: BigNumber) => void;
+  balance?: BigNumber;
   buttonLabel: string;
   onClick: () => void;
-  disabled?: boolean;
   showAlert: boolean;
 };
 
@@ -35,14 +35,13 @@ export function InputDelegateMkr({
   balance,
   buttonLabel,
   onClick,
-  disabled = false,
   showAlert,
   disclaimer
 }: Props): React.ReactElement {
-  const [value, setValue] = useState(0n);
+  const [value, setValue] = useState(BigNumber.from(0));
   const { account, voteProxyContractAddress } = useAccount();
   const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
-  function handleChange(val: bigint): void {
+  function handleChange(val: BigNumber): void {
     setValue(val);
     onChange(val);
   }
@@ -59,14 +58,14 @@ export function InputDelegateMkr({
         <Button
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
-          disabled={!value || !balance || value === 0n || value > balance || disabled}
+          disabled={!value || !balance || value.eq(0) || value.gt(balance)}
           data-testid="deposit-mkr-modal-button"
         >
           {buttonLabel}
         </Button>
         {disclaimer}
       </Box>
-      {showAlert && lockedMkr && lockedMkr >= parseEther('0.1') && balance && balance > 0n && (
+      {showAlert && lockedMkr && lockedMkr.gte(parseUnits('0.1')) && balance && balance.gt(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {`You have ${formatValue(lockedMkr)} additional MKR locked in the voting contract. `}
@@ -75,7 +74,7 @@ export function InputDelegateMkr({
           </Text>
         </Alert>
       )}
-      {showAlert && lockedMkr && lockedMkr > 0n && balance && balance === 0n && (
+      {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.eq(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {'You must '}

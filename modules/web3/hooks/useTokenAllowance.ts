@@ -6,45 +6,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useChainId, useReadContract } from 'wagmi';
-import { TokenName } from '../types/tokens';
-import { tokenNameToConfig } from '../helpers/tokenNameToConfig';
+import { BigNumber, ethers } from 'ethers';
+import useSWR from 'swr';
+import { ContractName } from '../types/contracts';
+import { useContracts } from './useContracts';
 
 type TokenAllowanceResponse = {
   data?: boolean;
   loading: boolean;
-  error?: Error | null;
+  error?: Error;
   mutate: () => void;
 };
 
 // Checks if the user allowed the spending of a token and contract address
 export const useTokenAllowance = (
-  name: TokenName,
-  amount: bigint,
+  name: ContractName,
+  amount: BigNumber,
   userAddress?: string,
   contractAddress?: string
 ): TokenAllowanceResponse => {
-  const chainId = useChainId();
-  const tokenConfig = tokenNameToConfig(name);
+  const token: ethers.Contract = useContracts()[name];
 
-  const {
-    data,
-    error,
-    refetch: mutate
-  } = useReadContract({
-    address: tokenConfig?.address[chainId],
-    abi: tokenConfig?.abi,
-    chainId,
-    functionName: 'allowance',
-    args: [userAddress as `0x${string}`, contractAddress as `0x${string}`],
-    scopeKey: `token-allowance-${name}-${userAddress}-${contractAddress}-${chainId}`,
-    query: {
-      enabled: !!userAddress && !!contractAddress
+  const { data, error, mutate } = useSWR(
+    userAddress && contractAddress ? ['token-balance', token.address, userAddress, contractAddress] : null,
+    async (_, tokenAddress, userAddress, contractAddress) => {
+      const ethersBn: BigNumber = await token.allowance(userAddress, contractAddress);
+      return ethersBn.gt(amount);
     }
-  });
+  );
 
   return {
-    data: data ? (data as bigint) > amount : undefined,
+    data,
     loading: !error && !data,
     error,
     mutate

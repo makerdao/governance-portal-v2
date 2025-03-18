@@ -6,82 +6,47 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { BigNumber } from 'ethers';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
-import {
-  chiefAbi,
-  chiefAddress,
-  mkrAbi,
-  mkrAddress,
-  voteProxyFactoryAbi,
-  voteProxyFactoryAddress
-} from 'modules/contracts/generated';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import { getContracts } from 'modules/web3/helpers/getContracts';
 
 export type MKRVotingWeightResponse = {
-  walletBalanceHot: bigint;
-  walletBalanceCold?: bigint;
-  chiefBalanceHot: bigint;
-  chiefBalanceCold?: bigint;
-  chiefBalanceProxy?: bigint;
-  chiefTotal: bigint;
-  total: bigint;
+  walletBalanceHot: BigNumber;
+  walletBalanceCold?: BigNumber;
+  chiefBalanceHot: BigNumber;
+  chiefBalanceCold?: BigNumber;
+  chiefBalanceProxy?: BigNumber;
+  chiefTotal: BigNumber;
+  total: BigNumber;
 };
-
-const getMKRBalanceOf = async (chainId: number, address: string): Promise<bigint> => {
-  const publicClient = getPublicClient(chainId);
-  const mkrBalance = await publicClient.readContract({
-    address: mkrAddress[chainId],
-    abi: mkrAbi,
-    functionName: 'balanceOf',
-    args: [address as `0x${string}`]
-  });
-  return mkrBalance;
-};
-
-const getChiefDeposits = async (chainId: number, address: string): Promise<bigint> => {
-  const publicClient = getPublicClient(chainId);
-  const chiefDeposits = await publicClient.readContract({
-    address: chiefAddress[chainId],
-    abi: chiefAbi,
-    functionName: 'deposits',
-    args: [address as `0x${string}`]
-  });
-  return chiefDeposits;
-};
-
 // returns the voting weight for an address
 export async function getMKRVotingWeight(
   address: string,
   network: SupportedNetworks,
   excludeDelegateOwnerBalance: boolean
 ): Promise<MKRVotingWeightResponse> {
-  const chainId = networkNameToChainId(network);
+  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
   // first check if the address is a delegate contract and if so return the balance locked in the delegate contract
   const voteDelegateAddress = !excludeDelegateOwnerBalance
-    ? await getDelegateContractAddress(address, chainId)
+    ? await getDelegateContractAddress(contracts, address)
     : undefined;
   if (voteDelegateAddress) {
-    const mkrDelegate = await getMKRBalanceOf(chainId, voteDelegateAddress);
-    const mkrChiefDelegate = await getChiefDeposits(chainId, voteDelegateAddress);
+    const mkrDelegate = await contracts.mkr.balanceOf(voteDelegateAddress);
+    const mkrChiefDelegate = await contracts.chief.deposits(voteDelegateAddress);
     return {
       walletBalanceHot: mkrDelegate,
       chiefBalanceHot: mkrChiefDelegate,
       chiefTotal: mkrChiefDelegate,
-      total: mkrDelegate + mkrChiefDelegate
+      total: mkrDelegate.add(mkrChiefDelegate)
     };
   }
 
   // next check if address is part of a proxy set up
-  const voteProxyAddresses = await getVoteProxyAddresses(
-    voteProxyFactoryAddress[chainId],
-    voteProxyFactoryAbi,
-    address,
-    network
-  );
+  const voteProxyAddresses = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
   if (
     voteProxyAddresses.hasProxy &&
@@ -91,11 +56,11 @@ export async function getMKRVotingWeight(
   ) {
     const [walletBalanceHot, walletBalanceCold, chiefBalanceHot, chiefBalanceCold, chiefBalanceProxy] =
       await Promise.all([
-        await getMKRBalanceOf(chainId, voteProxyAddresses.hotAddress),
-        await getMKRBalanceOf(chainId, voteProxyAddresses.coldAddress),
-        await getChiefDeposits(chainId, voteProxyAddresses.hotAddress),
-        await getChiefDeposits(chainId, voteProxyAddresses.coldAddress),
-        await getChiefDeposits(chainId, voteProxyAddresses.voteProxyAddress)
+        await contracts.mkr.balanceOf(voteProxyAddresses.hotAddress),
+        await contracts.mkr.balanceOf(voteProxyAddresses.coldAddress),
+        await contracts.chief.deposits(voteProxyAddresses.hotAddress),
+        await contracts.chief.deposits(voteProxyAddresses.coldAddress),
+        await contracts.chief.deposits(voteProxyAddresses.voteProxyAddress)
       ]);
 
     return {
@@ -104,18 +69,22 @@ export async function getMKRVotingWeight(
       chiefBalanceHot,
       chiefBalanceCold,
       chiefBalanceProxy,
-      chiefTotal: chiefBalanceHot + chiefBalanceCold + chiefBalanceProxy,
-      total: walletBalanceHot + walletBalanceCold + chiefBalanceHot + chiefBalanceCold + chiefBalanceProxy
+      chiefTotal: chiefBalanceHot.add(chiefBalanceCold).add(chiefBalanceProxy),
+      total: walletBalanceHot
+        .add(walletBalanceCold)
+        .add(chiefBalanceHot)
+        .add(chiefBalanceCold)
+        .add(chiefBalanceProxy)
     };
   }
 
   // otherwise, not proxy or delegate, get connected wallet balances
-  const walletBalanceHot = await getMKRBalanceOf(chainId, address);
-  const chiefBalanceHot = await getChiefDeposits(chainId, address);
+  const walletBalanceHot = await contracts.mkr.balanceOf(address);
+  const chiefBalanceHot = await contracts.chief.deposits(address);
   return {
     walletBalanceHot,
     chiefBalanceHot,
     chiefTotal: chiefBalanceHot,
-    total: walletBalanceHot + chiefBalanceHot
+    total: walletBalanceHot.add(chiefBalanceHot)
   };
 }

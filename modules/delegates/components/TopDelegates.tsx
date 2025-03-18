@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import BigNumber from 'lib/bigNumberJs';
 import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -14,15 +15,13 @@ import { DelegatePaginated } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { useState } from 'react';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { calculatePercentage } from 'lib/utils';
-import { formatEther } from 'viem';
 
 export default function TopDelegates({
   topDelegates,
   totalMKRDelegated
 }: {
   topDelegates: DelegatePaginated[];
-  totalMKRDelegated: bigint;
+  totalMKRDelegated: BigNumber;
 }): React.ReactElement {
   const { account } = useAccount();
   const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
@@ -107,7 +106,7 @@ export default function TopDelegates({
                 >
                   <Text>
                     {mkrDelegated
-                      ? calculatePercentage(BigInt(mkrDelegated), totalMKRDelegated, 2).toString()
+                      ? new BigNumber(mkrDelegated).div(totalMKRDelegated).div(10**18).multipliedBy(100).toFixed(2)
                       : '0.00'}
                     %
                   </Text>
@@ -121,9 +120,7 @@ export default function TopDelegates({
                     display: ['none', 'flex']
                   }}
                 >
-                  <Text as="p">
-                    {mkrDelegated ? parseFloat(formatEther(BigInt(mkrDelegated))).toFixed(2) : '0.00'} MKR
-                  </Text>
+                  <Text as="p">{mkrDelegated ? new BigNumber(mkrDelegated).div(10**18).toFixed(2) : '0.00'} MKR</Text>
                   <Button
                     variant="outline"
                     data-testid="button-delegate"

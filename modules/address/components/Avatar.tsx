@@ -6,9 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useCallback, useState, ReactChild, CSSProperties } from 'react';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useEffect, useCallback, useState, ReactChild, CSSProperties } from 'react';
+import { AvatarResolver } from '@ensdomains/ens-avatar';
 import Jazzicon from './Jazzicon';
-import { useEnsAvatar, useEnsName } from 'wagmi';
+import logger from 'lib/logger';
 
 export interface AvatarProps {
   size: number;
@@ -18,10 +21,34 @@ export interface AvatarProps {
 }
 
 export function Avatar({ size, address, defaultComponent, style }: AvatarProps): JSX.Element {
-  const { data: ensName } = useEnsName({ address: address as `0x${string}` });
-  const { data: avatarUri } = useEnsAvatar({
-    name: ensName || undefined
-  });
+  const { chainId, provider: library } = useWeb3();
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchAvatarUri = async () => {
+      if (library && address && chainId !== SupportedChainId.TENDERLY) {
+        const avt = new AvatarResolver(library, { cache: 3600 /* cache for an hour */ });
+        try {
+          const ensName = await library.lookupAddress(address);
+          if (ensName) {
+            const uri = await avt.getAvatar(ensName, {});
+            if (uri && mounted) {
+              setAvatarUri(uri);
+            }
+          }
+        } catch (err) {
+          logger.error(err);
+        }
+      }
+    };
+
+    fetchAvatarUri();
+    return () => {
+      mounted = false;
+    };
+  }, [address, library]);
 
   const [loaded, setLoaded] = useState(false);
 

@@ -8,41 +8,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Text, Box } from '@theme-ui/components';
 import TxIndicators from 'modules/app/components/TxIndicators';
+import { TXMined } from 'modules/web3/types/transaction';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useNetwork } from '../hooks/useNetwork';
-import { TxStatus } from 'modules/web3/constants/transaction';
-import { Dispatch, SetStateAction } from 'react';
 
 type Props = {
-  txStatus: TxStatus;
-  setTxStatus: Dispatch<SetStateAction<TxStatus>>;
-  txHash: `0x${string}` | undefined;
-  setTxHash: Dispatch<SetStateAction<`0x${string}` | undefined>>;
+  tx: any;
+  txPending: boolean;
+  setTxId: any;
 };
 
-export const TxInProgress = ({ txStatus, setTxStatus, txHash, setTxHash }: Props): JSX.Element => {
-  const network = useNetwork();
+export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => {
+  const { network } = useWeb3();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
-      <Text variant="microHeading">
-        {txStatus === TxStatus.LOADING ? 'Transaction Pending' : 'Confirm Transaction'}
-      </Text>
+      <Text variant="microHeading">{txPending ? 'Transaction Pending' : 'Confirm Transaction'}</Text>
 
       <Flex sx={{ justifyContent: 'center', mt: 4 }}>
         <TxIndicators.Pending sx={{ width: 6 }} />
       </Flex>
 
-      {txHash && (
+      {txPending && (
         <EtherscanLink
-          hash={txHash}
+          hash={(tx as TXMined).hash}
           type="transaction"
           network={network}
           styles={{ justifyContent: 'center' }}
         />
       )}
 
-      {txStatus !== TxStatus.LOADING && (
+      {!txPending && (
         <Box sx={{ mt: 4 }}>
           <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
             Please use your wallet to confirm this transaction.
@@ -50,10 +46,7 @@ export const TxInProgress = ({ txStatus, setTxStatus, txHash, setTxHash }: Props
           <Text
             as="p"
             sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
-            onClick={() => {
-              setTxStatus(TxStatus.IDLE);
-              setTxHash(undefined);
-            }}
+            onClick={() => setTxId(null)}
           >
             Cancel
           </Text>

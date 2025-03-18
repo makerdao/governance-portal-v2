@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import BigNumberJS from 'lib/bigNumberJs';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -36,7 +37,7 @@ const fromBuffer = (buf, opts?) => {
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
 
-  return BigInt('0x' + hex.join(''));
+  return new BigNumberJS(hex.join(''), 16);
 };
 
 describe('Fetch tally combined with other options', () => {

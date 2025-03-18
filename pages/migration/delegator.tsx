@@ -10,8 +10,7 @@ import { Box, Button, Card, Heading, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { useAccount } from 'wagmi';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useMemo } from 'react';
 import { useAddressDelegations } from 'modules/delegates/hooks/useAddressDelegations';
@@ -23,8 +22,7 @@ import Link from 'next/link';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 
 export default function DelegateMigrationPage(): React.ReactElement {
-  const network = useNetwork();
-  const { address: account } = useAccount();
+  const { account, network } = useWeb3();
 
   const addressDelegations = useAddressDelegations(account, network);
 
@@ -74,14 +72,17 @@ export default function DelegateMigrationPage(): React.ReactElement {
       const isPreviousDelegate = delegatesThatAreV1.find(
         i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
       );
-      return delegate.delegateVersion === 2;
+      return (
+        delegate.delegateVersion === 2
+      );
     });
   }, [addressDelegations, delegatesThatAreV1]);
 
   // UI loading states
   const { isLoading, isEmpty } = useMemo(() => {
     const isLoading = !addressDelegations;
-    const isEmpty = delegatesThatAreV1WithMKRDelegated.length === 0 && delegatesThatAreNotV1.length === 0;
+    const isEmpty =
+      delegatesThatAreV1WithMKRDelegated.length === 0 && delegatesThatAreNotV1.length === 0;
 
     return {
       isLoading,
@@ -113,8 +114,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   Action required: Migrate your delegated MKR
                 </Heading>
                 <Text as="p" variant="secondary">
-                  One or more of your MakerDAO delegate&lsquo;s contracts have been replaced by v2 delegate
-                  contracts.{' '}
+                  One or more of your MakerDAO delegate&lsquo;s contracts have been replaced by v2 delegate contracts.{' '}
                 </Text>
               </Box>
 

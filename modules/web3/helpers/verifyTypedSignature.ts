@@ -6,15 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { verifyTypedData } from 'viem';
+import { ethers } from 'ethers';
 
-export function verifyTypedSignature(
-  address: `0x${string}`,
-  domain,
-  types,
-  message,
-  primaryType,
-  signature
-): Promise<boolean> {
-  return verifyTypedData({ domain, types, message, primaryType, signature, address });
+export function verifyTypedSignature(domain, types, message, signature) {
+  return ethers.utils.verifyTypedData(domain, types, message, signature);
 }

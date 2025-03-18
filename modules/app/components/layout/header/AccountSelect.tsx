@@ -15,13 +15,18 @@ import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { NetworkAlertModal, ChainIdError } from 'modules/web3/components/NetworkAlertModal';
+import { useWeb3React } from '@web3-react/core';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
+import { isAndroid, isIOS } from 'react-device-detect';
+import { SUPPORTED_WALLETS, WalletName, ConnectionType } from 'modules/web3/constants/wallets';
+import { connectorToWalletName, getConnection } from 'modules/web3/connections';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
+import { getIsMetaMask } from 'modules/web3/helpers/getIsMetaMask';
 import logger from 'lib/logger';
+import useSelectedConnectionStore from 'modules/app/stores/selectedConnection';
 import { DialogContent, DialogOverlay } from '../../Dialog';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { SupportedConnectors } from 'modules/web3/constants/networks';
+import { checkInjectedProvider } from 'modules/web3/helpers/checkInjectedProvider';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -34,28 +39,7 @@ const closeButtonStyle: ThemeUICSSObject = {
 
 const AccountSelect = (): React.ReactElement => {
   const router = useRouter();
-  const { connectors, connect } = useConnect({
-    mutation: {
-      onSuccess: () => {
-        close();
-      },
-      onError: (e, { connector }) => {
-        logger.error(e);
-        let message = '';
-
-        if ('id' in connector && e.toString().includes('ProviderNotFoundError') && connector.id === 'safe') {
-          message = 'Please try connecting from within the Safe{Wallet} app.';
-        } else {
-          message = 'Something went wrong. Select an option to connect.';
-        }
-
-        setError(message);
-      }
-    }
-  });
-
-  const { disconnect } = useDisconnect();
-  const { address, connector: connectedConnector, chainId } = useAccount();
+  const { account: address, connector, chainId } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -63,15 +47,72 @@ const AccountSelect = (): React.ReactElement => {
   ]);
 
   const [showDialog, setShowDialog] = useState(false);
+  const [accountName, setAccountName] = useState<WalletName>();
   const [changeWallet, setChangeWallet] = useState(false);
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
+  const setSelectedConnection = useSelectedConnectionStore(state => state.setSelectedConnection);
 
   const close = () => {
     setShowDialog(false);
     setError(null);
   };
 
+  const handleModalToggle = (connectionType: ConnectionType, shouldOpenModal: boolean) => {
+    if (connectionType === ConnectionType.WALLET_CONNECT) {
+      shouldOpenModal ? setShowDialog(true) : setTimeout(() => setShowDialog(false), 1500);
+    }
+  };
+
+  // Handles UI state for loading
+  const [loadingConnectors, setLoadingConnectors] = useState({});
   const [error, setError] = useState<string | null>(null);
+
+  const handleError = e => {
+    logger.error(e);
+    let message = '';
+    if (e.toString().includes('NoSafeContext') || e.toString().includes('safe context')) {
+      message = 'Please try connecting from within the Gnosis Safe app.';
+    } else {
+      message = 'Something went wrong. Select an option to connect.';
+    }
+    setError(message);
+  };
+
+  // Handles the logic when clicking on a connector
+  const onClickConnection = async (connectionType: ConnectionType | undefined, name: WalletName) => {
+    if (!connectionType) return;
+    setError(null);
+    try {
+      const connection = getConnection(connectionType);
+
+      setLoadingConnectors({
+        [name]: true
+      });
+
+      // Temporarily close the connections modal to move focus to the WalletConnect modal
+      handleModalToggle(connectionType, false);
+
+      // This is needed because of this issue https://github.com/MetaMask/metamask-extension/issues/3133
+      checkInjectedProvider();
+
+      await connection.connector.activate();
+
+      setSelectedConnection(connection.type);
+
+      setChangeWallet(false);
+
+      setLoadingConnectors({
+        [name]: false
+      });
+    } catch (e) {
+      handleError(e);
+      setLoadingConnectors({
+        [name]: false
+      });
+      // Open modal again after failed WalletConnect connection to display the error
+      handleModalToggle(connectionType, true);
+    }
+  };
 
   useEffect(() => {
     setShowDialog(false);
@@ -86,26 +127,37 @@ const AccountSelect = (): React.ReactElement => {
     }
   }, [chainId]);
 
-  const walletOptions = connectors.map((connector, index) => (
+  const isMetaMask = getIsMetaMask();
+
+  const disconnect = () => {
+    setError(null);
+    if (connector?.deactivate) {
+      void connector.deactivate();
+    } else {
+      void connector.resetState();
+    }
+  };
+
+  const walletOptions = Object.keys(SUPPORTED_WALLETS).map((connectionName: WalletName, index) => (
     <Flex
-      key={connector.id}
+      key={connectionName}
       sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}
     >
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon
-          name={connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name}
-          color="text"
-        />
-        <Text sx={{ ml: 3 }}>{connector.name}</Text>
+        <Icon name={SUPPORTED_WALLETS[connectionName]?.name} color="text" />
+        <Text sx={{ ml: 3 }}>{SUPPORTED_WALLETS[connectionName]?.name}</Text>
       </Flex>
       <Button
         sx={{ minWidth: '120px' }}
         variant="mutedOutline"
-        key={connector.id}
-        onClick={() => connect({ connector })}
-        data-testid={`select-wallet-${connector.id}`}
+        key={connectionName}
+        onClick={
+          (isAndroid || isIOS) && !isMetaMask && SUPPORTED_WALLETS[connectionName]?.deeplinkUri
+            ? () => window.location.replace(SUPPORTED_WALLETS[connectionName]?.deeplinkUri || '')
+            : () => onClickConnection(SUPPORTED_WALLETS[connectionName]?.connectionType, connectionName)
+        }
       >
-        Select
+        {loadingConnectors[connectionName] ? 'Loading...' : 'Select'}
       </Button>
     </Flex>
   ));
@@ -119,6 +171,12 @@ const AccountSelect = (): React.ReactElement => {
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
+
+  useEffect(() => {
+    if (connector) {
+      setAccountName(connectorToWalletName(connector));
+    }
+  }, [address]);
 
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
@@ -154,7 +212,7 @@ const AccountSelect = (): React.ReactElement => {
                   <ErrorBoundary componentName="Account Details">
                     <AccountBox
                       address={address}
-                      accountName={connectedConnector?.name}
+                      accountName={accountName}
                       change={() => setChangeWallet(true)}
                       disconnect={disconnect}
                     />

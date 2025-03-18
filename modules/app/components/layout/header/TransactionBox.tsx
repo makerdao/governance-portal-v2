@@ -10,8 +10,8 @@ import { Flex, Text, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { Transaction } from 'modules/web3/types/transaction';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   tx: Transaction;
@@ -22,7 +22,7 @@ type MainProps = {
   txs: Transaction[];
 };
 const TransactionRow = ({ tx, index }: Props): JSX.Element => {
-  const network = useNetwork();
+  const { network } = useWeb3();
 
   return (
     <Flex
@@ -37,7 +37,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
       <Flex sx={{ alignItems: 'center' }}>
         {tx.status === 'pending' && (
           <Spinner
-            size={16}
+            size={'16px'}
             sx={{
               color: 'orangeAttention',
               alignSelf: 'center'

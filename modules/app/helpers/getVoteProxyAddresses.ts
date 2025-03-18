@@ -6,14 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { Contract } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
-import { voteProxyAbi } from 'modules/contracts/ethers/abis';
+import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
+import abi from 'modules/contracts/ethers/voteProxy.json';
+import { VoteProxy } from '../../../types/ethers-contracts/VoteProxy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { ONE_HOUR_IN_MS } from '../constants/time';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { Abi } from 'viem';
 
 export type VoteProxyAddresses = {
   hotAddress?: string;
@@ -23,8 +24,7 @@ export type VoteProxyAddresses = {
 };
 
 export const getVoteProxyAddresses = async (
-  voteProxyFactory: `0x${string}`,
-  voteProxyFactoryAbi: Abi,
+  voteProxyFactory: Contract,
   account: string,
   network: SupportedNetworks
 ): Promise<VoteProxyAddresses> => {
@@ -40,25 +40,20 @@ export const getVoteProxyAddresses = async (
     return JSON.parse(cachedProxyInfo);
   }
 
-  const chainId = networkNameToChainId(network);
-  const publicClient = getPublicClient(chainId);
-
   // first check if account is a proxy contract
   try {
-    // assume account is a proxy contrac
+    // assume account is a proxy contract
+    const vpContract = getEthersContracts<VoteProxy>(
+      account,
+      abi,
+      networkNameToChainId(network),
+      undefined,
+      undefined,
+      true
+    );
+
     // this will fail if vpContract is not an instance of vote proxy
-    const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-      publicClient.readContract({
-        address: account as `0x${string}`,
-        abi: voteProxyAbi,
-        functionName: 'cold'
-      }),
-      publicClient.readContract({
-        address: account as `0x${string}`,
-        abi: voteProxyAbi,
-        functionName: 'hot'
-      })
-    ]);
+    const [proxyAddressCold, proxyAddressHot] = await Promise.all([vpContract.cold(), vpContract.hot()]);
 
     // if the calls above didn't fail, account is a proxy contract, so set values
     hotAddress = proxyAddressHot;
@@ -73,18 +68,8 @@ export const getVoteProxyAddresses = async (
   // if account is not a proxy, check if it is a hot or cold address
   if (!hasProxy) {
     const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-      publicClient.readContract({
-        address: voteProxyFactory,
-        abi: voteProxyFactoryAbi,
-        functionName: 'coldMap',
-        args: [account]
-      }),
-      publicClient.readContract({
-        address: voteProxyFactory,
-        abi: voteProxyFactoryAbi,
-        functionName: 'hotMap',
-        args: [account]
-      })
+      voteProxyFactory.coldMap(account),
+      voteProxyFactory.hotMap(account)
     ]);
 
     // if account belongs to a hot or cold map, get proxy contract address
@@ -98,20 +83,16 @@ export const getVoteProxyAddresses = async (
 
     // found proxy contract, now determine hot and cold addresses
     if (voteProxyAddress) {
-      hotAddress =
-        hotAddress ??
-        (await publicClient.readContract({
-          address: account as `0x${string}`,
-          abi: voteProxyAbi,
-          functionName: 'hot'
-        }));
-      coldAddress =
-        coldAddress ??
-        (await publicClient.readContract({
-          address: account as `0x${string}`,
-          abi: voteProxyAbi,
-          functionName: 'cold'
-        }));
+      const vpContract = getEthersContracts(
+        voteProxyAddress,
+        abi,
+        networkNameToChainId(network),
+        undefined,
+        undefined,
+        true
+      );
+      hotAddress = hotAddress ?? (await vpContract.hot());
+      coldAddress = coldAddress ?? (await vpContract.cold());
       hasProxy = true;
     }
   }

@@ -1,5 +1,7 @@
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
+import { getContracts } from 'modules/web3/helpers/getContracts';
+import { Query } from 'modules/gql/generated/graphql';
 import { allDelegatesExecSupportKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -9,8 +11,6 @@ import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { DelegateExecSupport } from '../types';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 export async function fetchDelegatesExecSupport(network: SupportedNetworks): Promise<{
   error: boolean;
@@ -26,7 +26,6 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
 
   try {
     const chainId = networkNameToChainId(network);
-    const publicClient = getPublicClient(chainId);
 
     const data = await gqlRequest({
       chainId,
@@ -35,19 +34,13 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
     });
     const delegates = data.delegates;
 
+    const contracts = getContracts(chainId, undefined, undefined, true);
     const delegatesExecSupport = await Promise.all(
       delegates.map(async delegate => {
         if (delegate?.id) {
-          const votedSlate = await publicClient.readContract({
-            address: chiefAddress[chainId],
-            abi: chiefAbi,
-            functionName: 'votes',
-            args: [delegate.id]
-          });
+          const votedSlate = await contracts.chief.votes(delegate.id);
           const votedProposals =
-            votedSlate !== ZERO_SLATE_HASH
-              ? await getSlateAddresses(chainId, chiefAddress[chainId], chiefAbi, votedSlate)
-              : [];
+            votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
 
           return {
             voteDelegate: delegate.id,

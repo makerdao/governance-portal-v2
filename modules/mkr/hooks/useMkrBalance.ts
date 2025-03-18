@@ -6,35 +6,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useChainId, useReadContract } from 'wagmi';
-import { mkrAbi, mkrAddress } from 'modules/contracts/generated';
+import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
 
 type MkrBalanceResponse = {
-  data?: bigint;
+  data?: BigNumber;
   loading?: boolean;
-  error?: Error | null;
+  error?: Error;
   mutate: () => void;
 };
 
 export const useMkrBalance = (address?: string): MkrBalanceResponse => {
-  const chainId = useChainId();
-
-  const {
-    data,
-    error,
-    refetch: mutate
-  } = useReadContract({
-    address: mkrAddress[chainId],
-    abi: mkrAbi,
-    chainId,
-    functionName: 'balanceOf',
-    args: [address as `0x${string}`],
-    scopeKey: `/mkr-balance-${address}-${chainId}`,
-    query: {
-      enabled: !!address,
-      refetchOnMount: true
-    }
-  });
+  const { mkr } = useContracts();
+  const { data, error, mutate } = useSWR(
+    address ? ['/user/mkr-balance', address] : null,
+    (_, address) => mkr.balanceOf(address),
+    { revalidateOnMount: true }
+  );
 
   return {
     data: data,

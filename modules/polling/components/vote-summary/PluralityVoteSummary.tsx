@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { parseEther } from 'viem';
+import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
 import { Box } from 'theme-ui';
 import { PollTally } from '../../types';
@@ -28,9 +28,9 @@ export function PluralityVoteSummary({
   return (
     <Box>
       <YesNoAbstainBar
-        yesPercent={formatValue(parseEther(yesPercent.toString()), undefined, 0)}
-        noPercent={formatValue(parseEther(noPercent.toString()), undefined, 0)}
-        abstainPercent={formatValue(parseEther(abstainPercent.toString()), undefined, 0)}
+        yesPercent={formatValue(parseUnits(yesPercent.toString()), undefined, 0)}
+        noPercent={formatValue(parseUnits(noPercent.toString()), undefined, 0)}
+        abstainPercent={formatValue(parseUnits(abstainPercent.toString()), undefined, 0)}
         showTitles={showTitles}
       />
     </Box>

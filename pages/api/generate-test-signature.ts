@@ -11,41 +11,20 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { ApiError } from 'modules/app/api/ApiError';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
-import { createWalletClient, fallback, http } from 'viem';
+import { ethers } from 'ethers';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
-import { privateKeyToAccount } from 'viem/accounts';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { tenderly } from 'modules/wagmi/config/config.default';
-import { mainnet } from 'viem/chains';
 
-const genRanHex = (size: number) =>
-  [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+  const privateKey = Buffer.from(genRanHex(64), 'hex');
+  const wallet = new ethers.Wallet(privateKey);
+  const voter = wallet.address;
   const { network } = req.query;
   if (typeof network !== 'string' || !network || !isSupportedNetwork(network)) {
     const error = 'Invalid or missing network query param';
     throw new ApiError(error, 400, error);
   }
-
-  const isTestnet = network === SupportedNetworks.TENDERLY;
-  const chain = isTestnet ? tenderly : mainnet;
-  const privateKey = '0x' + genRanHex(64);
-  const account = privateKeyToAccount(privateKey as `0x${string}`);
-
-  const client = createWalletClient({
-    account,
-    chain,
-    transport: isTestnet
-      ? http(`https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`)
-      : fallback([
-          http(`https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`),
-          http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`)
-        ])
-  });
-
-  const voter = account.address;
-
   const pollIds = ['1'];
   const optionIds = ['0'];
   const nonce = 0;
@@ -57,8 +36,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     nonce,
     expiry
   };
-  const { domain, types, message, primaryType } = getTypedBallotData(signatureValues, network);
+  const typedData = getTypedBallotData(signatureValues, network);
 
-  const signature = await client.signTypedData({ domain, types, message, primaryType });
+  const signature = await wallet._signTypedData(typedData.domain, typedData.types, typedData.message);
   res.status(200).json({ signature, voter, nonce, expiry, pollIds, optionIds, network });
 });

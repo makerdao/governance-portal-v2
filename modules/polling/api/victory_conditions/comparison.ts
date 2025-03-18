@@ -7,23 +7,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 // Receives the currentVotes and the percentage required to be determined winner
+import BigNumber from 'lib/bigNumberJs';
 import { PollTallyVote } from 'modules/polling/types';
-import { parseEther } from 'viem';
 
-function passComparator(value: bigint, comparator: string, threshold: number) {
-  const thresholdBigInt = parseEther(threshold.toString());
+function passComparator(value: BigNumber, comparator: string, threshold: number) {
   switch (comparator) {
     case '>':
-      return value > thresholdBigInt;
+      return value.isGreaterThan(threshold);
     case '>=':
-      return value >= thresholdBigInt;
+      return value.isGreaterThanOrEqualTo(threshold);
     case '<':
-      return value < thresholdBigInt;
+      return value.isLessThan(threshold);
     case '<=':
-      return value <= thresholdBigInt;
+      return value.isLessThanOrEqualTo(threshold);
     case '=':
     default:
-      return value === thresholdBigInt;
+      return value.isEqualTo(threshold);
   }
 }
 
@@ -34,14 +33,14 @@ export function extractSatisfiesComparison(
   value: number
 ): number[] {
   // Group votes by MKR support, remember that each vote has a ballot with possible many multiple options
-  const votes: { [key: number]: bigint } = {};
+  const votes: { [key: number]: BigNumber } = {};
 
   currentVotes.forEach(vote => {
     vote.ballot.forEach(votedOption => {
       if (votes[votedOption]) {
-        votes[votedOption] = votes[votedOption] + parseEther(vote.mkrSupport.toString());
+        votes[votedOption] = votes[votedOption].plus(vote.mkrSupport);
       } else {
-        votes[votedOption] = parseEther(vote.mkrSupport.toString());
+        votes[votedOption] = new BigNumber(vote.mkrSupport);
       }
     });
   });
@@ -55,7 +54,7 @@ export function extractSatisfiesComparison(
       };
     })
     .sort((prev, next) => {
-      return prev.mkrSupport > next.mkrSupport ? -1 : 1;
+      return prev.mkrSupport.isGreaterThan(next.mkrSupport) ? -1 : 1;
     });
 
   // Extract the first option that passes the comparator.

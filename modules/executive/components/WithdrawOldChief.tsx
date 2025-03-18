@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert } from 'theme-ui';
+import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import TxIndicators from 'modules/app/components/TxIndicators';
 
@@ -15,98 +16,65 @@ import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useOldChiefFree } from 'modules/mkr/hooks/useOldChiefFree';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import { formatValue } from 'lib/string';
+import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
-import { useChainId, useReadContract } from 'wagmi';
-import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
-import { TxStatus } from 'modules/web3/constants/transaction';
 
 // Note this only works on mainnet
 // TODO: Check that the amounts for allowance are correct
 // TODO: Test with e2e
 const ModalContent = ({ close, ...props }) => {
-  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress } = useAccount();
-  const chainId = useChainId();
-  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
+  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
+
+  const { chiefOld } = useContracts() as MainnetSdk;
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU_OLD,
-    100000000n,
+    parseUnits('100000000'),
     account,
-    voteProxyOldContractAddress ? undefined : chiefOldAddress[chainId]
+    voteProxyOldContractAddress ? undefined : chiefOld.address
   );
 
-  const approve = useApproveUnlimitedToken({
-    name: Tokens.IOU_OLD,
-    addressToApprove: chiefOldAddress[chainId],
-    onStart: () => {
-      setTxStatus(TxStatus.LOADING);
-    },
-    onSuccess: () => {
-      // Once the approval is successful, return to tx idle so we can free
-      setTxStatus(TxStatus.IDLE);
-      mutateTokenAllowance();
-    },
-    onError: () => {
-      setTxStatus(TxStatus.ERROR);
-    }
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU_OLD);
 
-  const allowanceOk = voteProxyOldContractAddress ? true : allowance; // no need for IOU approval when using vote proxy
+  const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
 
-  const { data: lockedMkr } = useReadContract({
-    address: chiefOldAddress[chainId],
-    abi: chiefOldAbi,
-    chainId,
-    functionName: 'deposits',
-    args: [lockedMkrKeyOldChief as `0x${string}`],
-    scopeKey: `/user/mkr-locked-old-chief/${lockedMkrKeyOldChief}`,
-    query: {
-      enabled: !!lockedMkrKeyOldChief
-    }
-  });
+  const { data: lockedMkr } = useSWR(account ? `/user/mkr-locked-old-chief/${account}` : null, () =>
+    chiefOld.deposits(lockedMkrKeyOldChief as string)
+  );
 
-  const free = useOldChiefFree({
-    mkrToWithdraw: lockedMkr || 0n,
-    onStart: () => {
-      setTxStatus(TxStatus.LOADING);
-    },
-    onSuccess: () => {
-      setTxStatus(TxStatus.SUCCESS);
-      close();
-    },
-    onError: () => {
-      setTxStatus(TxStatus.ERROR);
-      close();
-    },
-    enabled: !!lockedMkr
-  });
+  const { free, tx: freeTx, setTxId: resetFree } = useOldChiefFree();
+
+  const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
 
   return (
     <BoxWithClose close={close} {...props}>
       <Box>
-        {txStatus !== TxStatus.IDLE && (
+        {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text variant="microHeading">
-              {txStatus === TxStatus.LOADING ? 'Transaction Pending' : 'Confirm Transaction'}
+              {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {txStatus !== TxStatus.LOADING && (
+            {transaction.status !== 'pending' && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
                   sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => setTxStatus(TxStatus.IDLE)}
+                  onClick={() => resetTransaction(null)}
                 >
                   Cancel
                 </Text>
@@ -114,7 +82,7 @@ const ModalContent = ({ close, ...props }) => {
             )}
           </Stack>
         )}
-        {txStatus === TxStatus.IDLE && allowanceOk && (
+        {!transaction && allowanceOk && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading">Withdraw MKR from Chief</Text>
@@ -130,17 +98,19 @@ const ModalContent = ({ close, ...props }) => {
             )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={!lockedMkr || free.isLoading || !free.prepared}
+              disabled={!lockedMkr}
               onClick={() => {
-                setTxStatus(TxStatus.INITIALIZED);
-                free.execute();
+                free(lockedMkr as BigNumber, {
+                  mined: () => close(),
+                  error: () => close()
+                });
               }}
             >
               Withdraw MKR
             </Button>
           </Stack>
         )}
-        {txStatus === TxStatus.IDLE && !allowanceOk && (
+        {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading" mb={2}>
@@ -154,10 +124,10 @@ const ModalContent = ({ close, ...props }) => {
             <Button
               data-testid="button-approve-voting-contract"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={approve.isLoading || !approve.prepared}
               onClick={() => {
-                setTxStatus(TxStatus.INITIALIZED);
-                approve.execute();
+                approve(chiefOld.address, {
+                  mined: () => mutateTokenAllowance()
+                });
               }}
             >
               Approve

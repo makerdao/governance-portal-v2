@@ -18,19 +18,14 @@ import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogOverlay, DialogContent } from './Dialog';
 import BoxWithClose from './BoxWithClose';
-import { useNetwork } from '../hooks/useNetwork';
-import { useChainId } from 'wagmi';
-import {
-  chiefAddress as chiefAddressMapping,
-  pollingAddress as pollingAddressMapping,
-  pollingOldAddress as pollingOldAddressMapping
-} from 'modules/contracts/generated';
 
 type StatField =
   | 'chief contract'
@@ -88,12 +83,11 @@ export default function SystemStatsSidebar({
   fields: StatField[];
   className?: string;
 }): JSX.Element {
-  const network = useNetwork();
-  const chainId = useChainId();
+  const { network } = useWeb3();
 
   const statsMap = {
     'chief contract': key => {
-      const chiefAddress = chiefAddressMapping[chainId];
+      const chiefAddress = useContractAddress('chief');
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -111,7 +105,7 @@ export default function SystemStatsSidebar({
       );
     },
     'mkr in chief': key => {
-      const chiefAddress = chiefAddressMapping[chainId];
+      const chiefAddress = useContractAddress('chief');
       const { data: chiefBalance } = useTokenBalance(Tokens.MKR, chiefAddress);
 
       return (
@@ -131,7 +125,7 @@ export default function SystemStatsSidebar({
     },
 
     'polling contract v2': key => {
-      const pollingAddress = pollingAddressMapping[chainId];
+      const pollingAddress = useContractAddress('polling');
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -153,7 +147,7 @@ export default function SystemStatsSidebar({
     },
 
     'polling contract v1': key => {
-      const pollingAddress = pollingOldAddressMapping[chainId];
+      const pollingAddress = useContractAddress('pollingOld');
 
       return pollingAddress ? (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>

@@ -6,25 +6,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
-import { useChainId, useReadContract } from 'wagmi';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import useSWR from 'swr';
 
 type HatResponse = {
   data?: string;
   loading: boolean;
-  error?: Error | null;
+  error?: Error;
 };
 
 export const useHat = (): HatResponse => {
-  const chainId = useChainId();
+  const { chief } = useContracts();
 
-  const { data, error } = useReadContract({
-    address: chiefAddress[chainId],
-    abi: chiefAbi,
-    chainId,
-    functionName: 'hat',
-    scopeKey: `executive-hat-${chainId}`
-  });
+  const { data, error } = useSWR<string>('/executive/hat', () => chief.hat());
 
   return {
     data,

@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ArbitrumPollingAddressMap } from '../constants/addresses';
-import { SignTypedDataData, SignTypedDataMutateAsync } from 'wagmi/query';
 
 type BallotDataValues = {
   voter: string;
@@ -61,10 +61,11 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
 
 export async function signTypedBallotData(
   message: BallotDataValues,
-  signTypedDataAsync: SignTypedDataMutateAsync,
+  provider: JsonRpcProvider | Web3Provider,
   network: SupportedNetworks
-): Promise<SignTypedDataData> {
-  const { domain, types, message: typedMessage, primaryType } = getTypedBallotData(message, network);
+): Promise<string> {
+  const signer = provider.getSigner();
+  const typedData = getTypedBallotData(message, network);
 
-  return signTypedDataAsync({ domain, types, message: typedMessage, primaryType });
+  return signer._signTypedData(typedData.domain, typedData.types, typedData.message);
 }

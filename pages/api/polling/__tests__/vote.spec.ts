@@ -16,8 +16,9 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
+import { BigNumber } from 'ethers';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
-import { parseEther } from 'viem';
+import { parseUnits } from 'ethers/lib/utils';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
@@ -39,7 +40,7 @@ jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 describe('/api/polling/vote API Endpoint', () => {
   beforeAll(() => {
     (getArbitrumPollingContractRelayProvider as jest.Mock).mockReturnValue({
-      nonces: () => Promise.resolve(3n),
+      nonces: () => Promise.resolve(BigNumber.from('3')),
       vote: () => Promise.resolve(null),
       'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
     });
@@ -203,7 +204,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: 0n
+        total: BigNumber.from(0)
       })
     );
     const { req, res } = mockRequestResponse('POST', {
@@ -216,7 +217,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -229,7 +230,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: parseEther('0.2')
+        total: parseUnits('0.2')
       })
     );
     (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([]));
@@ -243,7 +244,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -256,7 +257,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: parseEther('0.2')
+        total: parseUnits('0.2')
       })
     );
     (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
@@ -272,7 +273,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
 
     await voteAPIHandler(req, res);
 
@@ -288,14 +289,14 @@ describe('/api/polling/vote API Endpoint', () => {
 
     (getMKRVotingWeight as jest.Mock).mockReturnValue(
       Promise.resolve({
-        total: parseEther('0.2')
+        total: parseUnits('0.2')
       })
     );
     (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
 
     (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue(true);
+    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
 
     const { req, res } = mockRequestResponse('POST', {
       voter: '0xc0ffee254729296a45a3885639AC7E10F9d54979',

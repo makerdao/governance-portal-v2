@@ -6,11 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { getContracts } from 'modules/web3/helpers/getContracts';
 import { DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from '../helpers/chain';
+import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 import contractInfo from '../helpers/contract-info.json';
-import { getPublicClient } from '../helpers/getPublicClient';
-import { dssSpellAbi, pauseAddress } from 'modules/contracts/generated';
+import { getDefaultProvider } from '../helpers/getDefaultProvider';
 const pauseInfo = contractInfo.pause;
 
 export const getSpellExecutionDate = async (
@@ -18,37 +19,30 @@ export const getSpellExecutionDate = async (
   network?: SupportedNetworks
 ): Promise<Date | undefined> => {
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
-  const publicClient = getPublicClient(chainId);
+  const contracts = getContracts(chainId, undefined, undefined, true);
 
-  const done = await publicClient.readContract({
-    address: spellAddress as `0x${string}`,
-    abi: dssSpellAbi,
-    functionName: 'done'
-  });
+  const provider = getDefaultProvider(network);
+
+  const spellContract = getSpellContract(spellAddress, network || DEFAULT_NETWORK.network);
+
+  const done = await spellContract.done();
 
   if (!done) return undefined;
+
+  const pauseContract = contracts['pause'];
 
   const string = spellAddress.replace(/^0x/, '');
 
   const paddedSpellAddress = '0x' + string.padStart(64, '0');
 
-  const logs = await publicClient.getLogs({
-    fromBlock: BigInt(pauseInfo.inception_block[network || DEFAULT_NETWORK.network]),
+  const [execEvent] = await provider.getLogs({
+    fromBlock: parseInt(pauseInfo.inception_block[network || DEFAULT_NETWORK.network]),
     toBlock: 'latest',
-    address: pauseAddress[chainId]
+    address: pauseContract.address,
+    topics: [pauseInfo.events.exec, paddedSpellAddress]
   });
 
-  const execEvent = logs.find(
-    log =>
-      log.topics[0] === pauseInfo.events.exec &&
-      log.topics[1]?.toLowerCase() === paddedSpellAddress.toLowerCase()
-  );
+  const { timestamp } = await provider.getBlock(execEvent.blockNumber);
 
-  if (!execEvent) return undefined;
-
-  const { timestamp } = await publicClient.getBlock({
-    blockNumber: execEvent.blockNumber
-  });
-
-  return new Date(Number(timestamp) * 1000);
+  return new Date(timestamp * 1000);
 };

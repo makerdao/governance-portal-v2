@@ -17,88 +17,50 @@ import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { parseUnits } from 'ethers/lib/utils';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useFree } from '../hooks/useFree';
 import { Tokens } from 'modules/web3/constants/tokens';
-import { useChainId } from 'wagmi';
-import { chiefAddress } from 'modules/contracts/generated';
-import { TxStatus } from 'modules/web3/constants/transaction';
 
-const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
-  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
-  const chainId = useChainId();
+const ModalContent = ({ close, ...props }) => {
+  const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
-  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
+  const { chief } = useContracts();
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
-    100000000n,
+    parseUnits('100000000'),
     account,
-    voteProxyContractAddress ? undefined : chiefAddress[chainId]
+    voteProxyContract ? undefined : chief.address
   );
 
-  const approve = useApproveUnlimitedToken({
-    name: Tokens.IOU,
-    addressToApprove: chiefAddress[chainId],
-    onStart: () => {
-      setTxStatus(TxStatus.LOADING);
-    },
-    onSuccess: () => {
-      // Once the approval is successful, return to tx idle so we can free
-      setTxStatus(TxStatus.IDLE);
-      mutateTokenAllowance();
-    },
-    onError: () => {
-      setTxStatus(TxStatus.ERROR);
-    }
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU);
 
-  const allowanceOk = voteProxyContractAddress ? true : allowance; // no need for IOU approval when using vote proxy
+  const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
 
-  const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
+  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(voteProxyContractAddress || account);
 
-  const free = useFree({
-    mkrToWithdraw,
-    onStart: () => {
-      setTxStatus(TxStatus.LOADING);
-    },
-    onSuccess: () => {
-      setTxStatus(TxStatus.SUCCESS);
-      mutateLockedMkr?.();
-    },
-    onError: () => {
-      setTxStatus(TxStatus.ERROR);
-    },
-    enabled: !!allowanceOk
-  });
+  const { free, tx: freeTx, setTxId: resetFree } = useFree();
+
+  const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
 
   return (
     <BoxWithClose close={close} {...props}>
       <Box>
-        {txStatus !== TxStatus.IDLE && (
+        {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text as="p" variant="microHeading">
-              {txStatus === TxStatus.LOADING
-                ? 'Transaction Pending'
-                : txStatus === TxStatus.SUCCESS
-                ? 'Transaction Successful'
-                : txStatus === TxStatus.ERROR
-                ? 'Transaction Error'
-                : 'Confirm Transaction'}
+              {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
-              {txStatus === TxStatus.SUCCESS ? (
-                <TxIndicators.Success sx={{ width: 6 }} />
-              ) : txStatus === TxStatus.ERROR ? (
-                <TxIndicators.Failed sx={{ width: 6 }} />
-              ) : (
-                <TxIndicators.Pending sx={{ width: 6 }} />
-              )}
+              <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {txStatus === TxStatus.INITIALIZED && (
+            {transaction.status !== 'pending' && (
               <Box>
                 <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
@@ -106,7 +68,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
                 <Text
                   as="p"
                   sx={{ color: 'secondary', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => setTxStatus(TxStatus.IDLE)}
+                  onClick={() => resetTransaction(null)}
                 >
                   Cancel
                 </Text>
@@ -114,7 +76,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
             )}
           </Stack>
         )}
-        {txStatus === TxStatus.IDLE && allowanceOk && (
+        {!transaction && allowanceOk && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" mb={2}>
@@ -134,31 +96,31 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
               />
             </Box>
 
-            {voteProxyContractAddress && account === voteProxyHotAddress && (
+            {voteProxyContract && account === voteProxyHotAddress && (
               <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
                 You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
               </Alert>
             )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
-              disabled={
-                mkrToWithdraw === 0n ||
-                !lockedMkr ||
-                mkrToWithdraw > lockedMkr ||
-                free.isLoading ||
-                !free.prepared
-              }
+              disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
               data-testid="button-withdraw-mkr"
               onClick={() => {
-                setTxStatus(TxStatus.INITIALIZED);
-                free.execute();
+                free(mkrToWithdraw, {
+                  mined: () => {
+                    // Mutate locked state
+                    mutateLocked();
+                    close();
+                  },
+                  error: () => close()
+                });
               }}
             >
               Withdraw MKR
             </Button>
           </Stack>
         )}
-        {txStatus === TxStatus.IDLE && !allowanceOk && (
+        {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" mb={2}>
@@ -171,10 +133,16 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
 
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={approve.isLoading || !approve.prepared}
               onClick={() => {
-                setTxStatus(TxStatus.INITIALIZED);
-                approve.execute();
+                approve(chief.address, {
+                  mined: () => {
+                    mutateTokenAllowance();
+                    resetApprove(null);
+                  },
+                  error: () => {
+                    resetApprove(null);
+                  }
+                });
               }}
               data-testid="withdraw-approve-button"
             >
@@ -193,11 +161,7 @@ const Withdraw = (props): JSX.Element => {
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent
-            sx={{ px: [3, null] }}
-            close={() => setShowDialog(false)}
-            mutateLockedMkr={props.mutateLockedMkr}
-          />
+          <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
       {props.link ? (

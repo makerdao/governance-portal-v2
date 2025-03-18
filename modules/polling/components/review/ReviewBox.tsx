@@ -6,24 +6,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Box, Button, Card, Divider, Flex, Text } from 'theme-ui';
+import { Box, Button, Card, Divider, Flex, Text, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ActivePollsBox from './ActivePollsBox';
-import { useContext, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { BallotContext } from '../../context/BallotContext';
 import LocalIcon from 'modules/app/components/Icon';
+import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { useAccount } from 'wagmi';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/polling.constants';
+import logger from 'lib/logger';
+import { toast } from 'react-toastify';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { getConnection } from 'modules/web3/connections';
+import { ConnectionType } from 'modules/web3/constants/wallets';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
-import { parseEther } from 'viem';
+import { parseEther } from 'ethers/lib/utils';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 
 export default function ReviewBox({
@@ -48,8 +52,7 @@ export default function ReviewBox({
     submitBallotGasless,
     submissionError
   } = useContext(BallotContext);
-  const network = useNetwork();
-  const { connector } = useAccount();
+  const { network, connector } = useWeb3();
 
   const { data: precheckData } = useSWR(
     account && ballotPollIds && ballotPollIds.length > 0 && network
@@ -65,7 +68,7 @@ export default function ReviewBox({
     precheckData?.recentlyUsedGaslessVoting &&
     Date.now() - parseInt(precheckData?.recentlyUsedGaslessVoting) > GASLESS_RATE_LIMIT_IN_MS;
   const relayFunded =
-    parseEther(precheckData?.relayBalance || '0') > 0n &&
+    parseEther(precheckData?.relayBalance || '0').gt(0) &&
     !(precheckData?.gaslessDisabled?.toString().toLowerCase() === 'true');
 
   const validationPassed =
@@ -75,7 +78,7 @@ export default function ReviewBox({
     relayFunded;
 
   // Detect if the current user is using a gnosis safe, and change the UI for signatures
-  const isGnosisSafe = connector?.id === 'safe';
+  const isGnosisSafe = getConnection(connector).type === ConnectionType.GNOSIS_SAFE;
 
   const canUseGasless = !isGnosisSafe && validationPassed;
 
@@ -443,14 +446,12 @@ export default function ReviewBox({
             Transaction Pending
           </Text>
 
-          {transaction && (
-            <EtherscanLink
-              type="transaction"
-              hash={(transaction as TXMined).hash}
-              network={transaction?.gaslessNetwork ?? network}
-              styles={{ justifyContent: 'center', width: '100%' }}
-            />
-          )}
+          <EtherscanLink
+            type="transaction"
+            hash={(transaction as TXMined).hash}
+            network={transaction?.gaslessNetwork ?? network}
+            styles={{ justifyContent: 'center', width: '100%' }}
+          />
         </Card>
       )}
 

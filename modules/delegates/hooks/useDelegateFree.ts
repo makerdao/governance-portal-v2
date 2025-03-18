@@ -6,35 +6,61 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useChainId } from 'wagmi';
-import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
-import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
-import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
+import { useState } from 'react';
+import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
+import abi from 'modules/contracts/ethers/voteDelegate.json';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import useTransactionStore, {
+  transactionsSelectors,
+  transactionsApi
+} from 'modules/web3/stores/transactions';
+import { shallow } from 'zustand/shallow';
+import { BigNumber } from 'ethers';
+import { BaseTransactionResponse } from 'modules/web3/types/transaction';
+import { VoteDelegate } from '../../../types/ethers-contracts';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
-export const useDelegateFree = ({
-  voteDelegateAddress,
-  mkrToWithdraw,
-  gas,
-  enabled: paramEnabled = true,
-  onSuccess,
-  onError,
-  onStart
-}: WriteHookParams & {
-  voteDelegateAddress: string;
-  mkrToWithdraw: bigint;
-}): WriteHook => {
-  const chainId = useChainId();
+type FreeResponse = BaseTransactionResponse & {
+  free: (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => void;
+};
 
-  return useWriteContractFlow({
-    address: voteDelegateAddress as `0x${string}`,
-    abi: voteDelegateAbi,
-    functionName: 'free',
-    args: [mkrToWithdraw],
-    chainId,
-    enabled: paramEnabled,
-    gas,
-    onSuccess,
-    onError,
-    onStart
-  });
+export const useDelegateFree = (voteDelegateAddress: string): FreeResponse => {
+  const [txId, setTxId] = useState<string | null>(null);
+
+  const { chainId, provider, account } = useWeb3();
+
+  const [track, tx] = useTransactionStore(
+    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
+    shallow
+  );
+
+  const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, provider, account);
+
+  const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
+    if (!account || !provider) {
+      return;
+    }
+
+    const freeTxCreator = async () => {
+      const populatedTransaction = await vdContract.populateTransaction.free(mkrToWithdraw);
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
+    const txId = track(freeTxCreator, account, 'Withdrawing MKR', {
+      pending: () => {
+        if (typeof callbacks?.pending === 'function') callbacks.pending();
+      },
+      mined: txId => {
+        transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
+        if (typeof callbacks?.mined === 'function') callbacks.mined();
+      },
+      error: txId => {
+        transactionsApi.getState().setMessage(txId, 'MKR withdrawal failed');
+        if (typeof callbacks?.error === 'function') callbacks.error();
+      }
+    });
+    setTxId(txId);
+  };
+
+  return { txId, setTxId, free, tx };
 };

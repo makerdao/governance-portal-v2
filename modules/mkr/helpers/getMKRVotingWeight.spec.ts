@@ -8,9 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getMKRVotingWeight } from './getMKRVotingWeight';
+import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { BigNumber } from 'ethers';
 
+jest.mock('modules/web3/helpers/getContracts');
 jest.mock('modules/delegates/helpers/getDelegateContractAddress');
 jest.mock('modules/app/helpers/getVoteProxyAddresses');
 
@@ -19,11 +22,20 @@ describe('getMKRVotingWeight', () => {
   const fakeDelegateAddress = '0x1234567890123456789012345678901234567890';
   const balanceMock = jest.fn().mockImplementation(address => {
     if (address === fakeDelegateAddress) {
-      return Promise.resolve(100n);
+      return Promise.resolve(BigNumber.from(100));
     }
-    return Promise.resolve(0n);
+    return Promise.resolve(BigNumber.from(0));
   });
   beforeAll(() => {
+    (getContracts as jest.Mock).mockReturnValue({
+      mkr: {
+        balanceOf: balanceMock
+      },
+      chief: {
+        deposits: () => Promise.resolve(BigNumber.from(0))
+      }
+    });
+
     (getDelegateContractAddress as jest.Mock).mockReturnValue(undefined);
 
     (getVoteProxyAddresses as jest.Mock).mockReturnValue({});
@@ -33,10 +45,10 @@ describe('getMKRVotingWeight', () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateOwnerAddress);
     expect(result).toEqual({
-      walletBalanceHot: 0n,
-      chiefBalanceHot: 0n,
-      chiefTotal: 0n,
-      total: 0n
+      walletBalanceHot: BigNumber.from(0),
+      chiefBalanceHot: BigNumber.from(0),
+      chiefTotal: BigNumber.from(0),
+      total: BigNumber.from(0)
     });
   });
 
@@ -45,10 +57,10 @@ describe('getMKRVotingWeight', () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateAddress);
     expect(result).toEqual({
-      walletBalanceHot: 100n,
-      chiefBalanceHot: 0n,
-      chiefTotal: 0n,
-      total: 100n
+      walletBalanceHot: BigNumber.from(100),
+      chiefBalanceHot: BigNumber.from(0),
+      chiefTotal: BigNumber.from(0),
+      total: BigNumber.from(100)
     });
   });
 
@@ -57,10 +69,10 @@ describe('getMKRVotingWeight', () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, true);
     expect(balanceMock).toHaveBeenLastCalledWith(fakeDelegateOwnerAddress);
     expect(result).toEqual({
-      walletBalanceHot: 0n,
-      chiefBalanceHot: 0n,
-      chiefTotal: 0n,
-      total: 0n
+      walletBalanceHot: BigNumber.from(0),
+      chiefBalanceHot: BigNumber.from(0),
+      chiefTotal: BigNumber.from(0),
+      total: BigNumber.from(0)
     });
   });
 });

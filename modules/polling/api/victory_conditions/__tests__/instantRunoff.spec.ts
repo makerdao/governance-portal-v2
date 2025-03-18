@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { extractWinnerInstantRunoff } from '../instantRunoff';
+import BigNumber from 'lib/bigNumberJs';
 import { PollTallyVote } from 'modules/polling/types';
 
 const fromBuffer = (buf, opts?) => {
@@ -32,7 +33,7 @@ const fromBuffer = (buf, opts?) => {
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
 
-  return BigInt('0x' + hex.join('')).toString();
+  return new BigNumber(hex.join(''), 16).toString();
 };
 
 describe('Instant runoff calculation', () => {

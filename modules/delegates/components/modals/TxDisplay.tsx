@@ -8,56 +8,48 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
-import { TxStatus } from 'modules/web3/constants/transaction';
-import { Dispatch, SetStateAction } from 'react';
-
+import { Transaction } from 'modules/web3/types/transaction';
 export const TxDisplay = ({
-  txStatus,
-  setTxStatus,
-  txHash,
-  setTxHash,
+  tx,
+  setTxId,
   onDismiss,
   children,
   title = 'Transaction Sent',
   description = 'Delegate contract will update once the transaction has been confirmed.'
 }: {
-  txStatus: TxStatus;
-  setTxStatus: Dispatch<SetStateAction<TxStatus>>;
-  txHash: `0x${string}` | undefined;
-  setTxHash: Dispatch<SetStateAction<`0x${string}` | undefined>>;
+  tx: Transaction | null;
   children?: React.ReactNode;
+  setTxId: (txId: null) => void;
   onDismiss: () => void;
   title?: string;
   description?: string;
 }): React.ReactElement => {
-  switch (txStatus) {
-    case TxStatus.SUCCESS:
+  switch (tx?.status) {
+    case 'mined':
       return (
         <TxFinal
           title={title}
           description={description}
           buttonLabel="Close"
           onClick={onDismiss}
-          txHash={txHash}
+          tx={tx}
           success={true}
         >
           {children}
         </TxFinal>
       );
-    case TxStatus.ERROR:
+    case 'error':
       return (
         <TxFinal
           title="Transaction Failed"
           description="An error occured. Please check the link below for more information."
           buttonLabel="Close"
           onClick={onDismiss}
-          txHash={txHash}
+          tx={tx}
           success={false}
         />
       );
     default:
-      return (
-        <TxInProgress txStatus={txStatus} setTxStatus={setTxStatus} txHash={txHash} setTxHash={setTxHash} />
-      );
+      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
   }
 };

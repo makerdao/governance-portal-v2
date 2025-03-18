@@ -6,24 +6,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useChainId, useReadContract } from 'wagmi';
-import { vatAbi, vatAddress } from 'modules/contracts/generated';
+import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
 
 type TotalDaiResponse = {
-  data?: bigint | undefined;
+  data?: BigNumber | undefined;
   loading: boolean;
-  error?: Error | null;
+  error?: Error;
 };
 
 export const useTotalDai = (): TotalDaiResponse => {
-  const chainId = useChainId();
+  const { vat } = useContracts();
 
-  const { data, error } = useReadContract({
-    address: vatAddress[chainId],
-    abi: vatAbi,
-    chainId,
-    functionName: 'debt',
-    scopeKey: `/total-dai-vat-${chainId}`
+  const { data, error } = useSWR(`${vat.address}/total-dai`, async () => {
+    return await vat.debt();
   });
 
   return {

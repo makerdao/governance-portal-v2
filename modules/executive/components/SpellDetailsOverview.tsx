@@ -10,6 +10,7 @@ import { Box, Flex, Text } from 'theme-ui';
 import { formatDateWithTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
 import { SpellData } from '../types';
+import { BigNumber } from 'ethers';
 
 type Props = {
   spellDetails: SpellData;
@@ -74,7 +75,7 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
           MKR support:
         </Text>
         <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>
-          {formatValue(BigInt(spellDetails?.mkrSupport))} MKR
+          {formatValue(BigNumber.from(spellDetails?.mkrSupport))} MKR
         </Text>
       </Flex>
       <Flex sx={{ mt: 3, flexDirection: ['column', 'row'] }}>

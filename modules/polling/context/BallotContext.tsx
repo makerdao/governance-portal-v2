@@ -10,7 +10,8 @@ import { fetchJson } from 'lib/fetchJson';
 import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import useTransactionsStore, {
   transactionsApi,
   transactionsSelectors
@@ -22,9 +23,10 @@ import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 import { parsePollOptions } from 'modules/polling/helpers/parsePollOptions';
 import logger from 'lib/logger';
-import { Transaction as ViemTransaction } from 'viem';
-import { getGaslessNetwork } from 'modules/web3/helpers/chain';
+import { ContractTransaction } from 'ethers';
+import { getGaslessNetwork, getGaslessProvider } from 'modules/web3/helpers/chain';
 import { getGaslessTransaction } from 'modules/web3/helpers/getGaslessTransaction';
+import { getArbitrumPollingContractReadOnly } from 'modules/polling/helpers/getArbitrumPollingContractReadOnly';
 import { isBefore, sub } from 'date-fns';
 
 type BallotSteps =
@@ -45,17 +47,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ONE_DAY_IN_MS } from 'modules/app/constants/time';
 import { parseTxError } from 'modules/web3/helpers/errors';
 import { backoffRetry } from 'lib/utils';
-import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
-import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
-import { useChainId, usePublicClient, useSignTypedData } from 'wagmi';
-import {
-  pollingAbi,
-  pollingAddress,
-  pollingArbitrumAbi,
-  pollingArbitrumAddress
-} from 'modules/contracts/generated';
-import { getGaslessPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { sendTransaction } from 'modules/web3/helpers/sendTransaction';
 
 interface ContextProps {
   ballot: Ballot;
@@ -115,11 +107,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
-  const { account, voteDelegateContractAddress, votingAccount } = useAccount();
+  const { account, voteDelegateContract, votingAccount } = useAccount();
 
-  const publicClient = usePublicClient();
-  const network = useNetwork();
-  const chainId = useChainId();
+  const { network, provider } = useWeb3();
 
   // Import the hook with the current user votes to mutate after voting.
   const { mutate: mutatePreviousVotes } = useAllUserVotes(votingAccount);
@@ -142,14 +132,13 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         Object.keys(parsed).forEach(async pollId => {
           const vote = parsed[pollId] as BallotVote;
 
-          // https://viem.sh/docs/actions/public/getTransactionReceipt#gettransactionreceipt
+          // https://docs.ethers.io/v5/api/providers/provider/#Provider-getTransactionReceipt
           const tx = vote.transactionHash
-            ? await publicClient?.getTransactionReceipt({ hash: vote.transactionHash as `0x${string}` })
+            ? await provider?.getTransactionReceipt(vote.transactionHash)
             : null;
 
           // If the vote has a confirmed transaction, do not add it to the ballot. If the transactionReceipt is null it means it has not been mined.
-          tx?.type;
-          if (!tx) {
+          if (!tx || tx.confirmations === 0) {
             votes[pollId] = parsed[pollId];
           }
         });
@@ -219,39 +208,10 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     shallow
   );
 
-  const onPendingHandler = (txHash: string) => {
-    setStep('tx-pending');
-    // Update ballot to include the txHash
-    const votes = {};
-    Object.keys(ballot).forEach(pollId => {
-      votes[pollId] = ballot[pollId];
-      votes[pollId].transactionHash = txHash;
-    });
-
-    updateBallot({
-      ...votes
-    });
-  };
-
-  const onMinedHandler = () => {
-    // Set previous ballot
-    setPreviousBallot({
-      ...previousBallot,
-      ...ballot
-    });
-
-    clearBallot();
-    mutatePreviousVotes();
-  };
-
-  const onErrorHandler = (error: string | undefined) => {
-    setSubmissionError(error);
-    setStep('tx-error');
-    toast.error('Error submitting ballot');
-  };
+  const { polling } = useContracts();
 
   const trackPollVote = (
-    voteTxCreator: () => Promise<ViemTransaction>,
+    voteTxCreator: () => Promise<ContractTransaction>,
     gaslessNetwork?: SupportedNetworks
   ) => {
     const txId = track(
@@ -260,10 +220,27 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       `Voting on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`,
       {
         pending: txHash => {
-          onPendingHandler(txHash);
+          setStep('tx-pending');
+          // Update ballot to include the txHash
+          const votes = {};
+          Object.keys(ballot).forEach(pollId => {
+            votes[pollId] = ballot[pollId];
+            votes[pollId].transactionHash = txHash;
+          });
+
+          updateBallot({
+            ...votes
+          });
         },
-        mined: txId => {
-          onMinedHandler();
+        mined: (txId, txHash) => {
+          // Set previous ballot
+          setPreviousBallot({
+            ...previousBallot,
+            ...ballot
+          });
+
+          clearBallot();
+          mutatePreviousVotes();
           transactionsApi
             .getState()
             .setMessage(
@@ -271,8 +248,10 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
               `Voted on ${Object.keys(ballot).length} poll${Object.keys(ballot).length > 1 ? 's' : ''}`
             );
         },
-        error: (_, error) => {
-          onErrorHandler(error);
+        error: (txId, error) => {
+          setSubmissionError(error);
+          setStep('tx-error');
+          toast.error('Error submitting ballot');
         }
       },
       gaslessNetwork
@@ -280,69 +259,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setTxId(txId);
   };
 
-  const pollIds: bigint[] = [];
-  const pollOptions: string[] = [];
-
-  Object.keys(ballot).forEach((key: string) => {
-    if (isPollOnBallot(parseInt(key, 10))) {
-      pollIds.push(BigInt(key));
-      pollOptions.push(ballot[key].option);
-    }
-  });
-
-  const optionIds = parsePollOptions(pollOptions).map(option => BigInt(option));
-
-  const delegatePollVote = useWriteContractFlow({
-    address: voteDelegateContractAddress as `0x${string}` | undefined,
-    abi: voteDelegateAbi,
-    functionName: 'votePoll',
-    args: [pollIds, optionIds],
-    chainId,
-    enabled: !!voteDelegateContractAddress,
-    onStart: (txHash: string) => {
-      onPendingHandler(txHash);
-    },
-    onSuccess: () => {
-      onMinedHandler();
-    },
-    onError: (error: Error) => {
-      onErrorHandler(error.message);
-    }
-  });
-
-  const directPollVote = useWriteContractFlow({
-    address: pollingAddress[chainId],
-    abi: pollingAbi,
-    functionName: 'vote',
-    args: [pollIds, optionIds],
-    chainId,
-    enabled: !voteDelegateContractAddress,
-    onStart: (txHash: string) => {
-      onPendingHandler(txHash);
-    },
-    onSuccess: () => {
-      onMinedHandler();
-    },
-    onError: (error: Error) => {
-      onErrorHandler(error.message);
-    }
-  });
-
-  const { signTypedDataAsync } = useSignTypedData();
-
-  const pollVote = voteDelegateContractAddress ? delegatePollVote : directPollVote;
-
   const submitBallot = () => {
-    if (!pollVote.prepared || pollVote.isLoading) {
-      return;
-    }
-
-    setStep('submitting');
-    pollVote.execute();
-  };
-
-  const submitBallotGasless = async () => {
-    if (!account) {
+    if (!account || !provider) {
       return;
     }
 
@@ -360,28 +278,51 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const optionIds = parsePollOptions(pollOptions);
 
-    const gaslessPublicClient = getGaslessPublicClient(chainId);
+    const voteTxCreator = async () => {
+      // vote with array arguments can be used for single vote and multiple vote
+      const populatedTransaction = voteDelegateContract
+        ? await voteDelegateContract.populateTransaction['votePoll(uint256[],uint256[])'](pollIds, optionIds)
+        : await polling.populateTransaction['vote(uint256[],uint256[])'](pollIds, optionIds);
 
-    const nonce = await gaslessPublicClient.readContract({
-      address:
-        chainId === SupportedChainId.TENDERLY
-          ? pollingArbitrumAddress[SupportedChainId.ARBITRUMTESTNET]
-          : pollingArbitrumAddress[SupportedChainId.ARBITRUM],
-      abi: pollingArbitrumAbi,
-      functionName: 'nonces',
-      args: [account as `0x${string}`]
+      return sendTransaction(populatedTransaction, provider, account);
+    };
+
+    trackPollVote(voteTxCreator);
+  };
+
+  const submitBallotGasless = async () => {
+    if (!account || !provider) {
+      return;
+    }
+
+    const pollIds: string[] = [];
+    const pollOptions: string[] = [];
+
+    setStep('submitting');
+
+    Object.keys(ballot).forEach((key: string) => {
+      if (isPollOnBallot(parseInt(key, 10))) {
+        pollIds.push(key);
+        pollOptions.push(ballot[key].option);
+      }
     });
+
+    const optionIds = parsePollOptions(pollOptions);
+
+    const pollingContract = getArbitrumPollingContractReadOnly(network);
+
+    const nonce = await pollingContract.nonces(account);
     const signatureValues = {
       voter: account.toLowerCase(),
       pollIds,
       optionIds,
-      nonce: Number(nonce),
+      nonce: nonce.toNumber(),
       expiry: Math.trunc((Date.now() + 8 * ONE_HOUR_IN_MS) / 1000) //8 hour expiry
     };
 
     let signature;
     try {
-      signature = await signTypedBallotData(signatureValues, signTypedDataAsync, network);
+      signature = await signTypedBallotData(signatureValues, provider, network);
       setStep('awaiting-relayer');
     } catch (error) {
       toast.error(error);
@@ -401,7 +342,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
         setStep('in-relayer-queue');
 
-        const voteTxCreator = () => getGaslessTransaction(gaslessPublicClient, gaslessTx.hash);
+        const gaslessProvider = getGaslessProvider(network);
+
+        const voteTxCreator = () => getGaslessTransaction(gaslessProvider, gaslessTx.hash);
         trackPollVote(voteTxCreator, getGaslessNetwork(network));
 
         if (gaslessTx.status !== 'mined') {

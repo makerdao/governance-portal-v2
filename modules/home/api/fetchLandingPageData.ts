@@ -16,6 +16,7 @@ import { Proposal } from 'modules/executive/types';
 import { PollListItem } from 'modules/polling/types';
 import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pollsResponse';
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
+import { BigNumber } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
@@ -81,6 +82,6 @@ export async function fetchLandingPageData(
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
     mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat) : undefined,
     hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
-    mkrInChief: mkrInChief ? formatValue(mkrInChief as bigint) : undefined
+    mkrInChief: mkrInChief ? formatValue(mkrInChief as BigNumber) : undefined
   };
 }

@@ -8,23 +8,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Button, Flex, Close, Text } from 'theme-ui';
+import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Proposal } from 'modules/executive/types';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 import DefaultVoteModalView from './DefaultView';
+import useTransactionsStore from 'modules/web3/stores/transactions';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
-import { TxStatus } from 'modules/web3/constants/transaction';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { useHat } from 'modules/executive/hooks/useHat';
-import { sortBytesArray } from 'lib/utils';
-import { encodeAbiParameters, keccak256 } from 'viem';
-import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
-import { useVoteProxyVote } from 'modules/executive/hooks/useVoteProxyVote';
-import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
 
 type Props = {
   close: () => void;
@@ -32,105 +24,36 @@ type Props = {
   address?: string;
 };
 
+type ModalStep = 'confirm' | 'signing' | 'pending' | 'mined' | 'failed';
+
 const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
-  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+  const [step, setStep] = useState<ModalStep>('confirm');
 
-  const { voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
+  const [txId, setTxId] = useState('');
 
-  const spellAddress = proposal ? proposal.address : address ? address : '';
-
-  const [hatChecked, setHatChecked] = useState(true);
-  const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
-
-  const { data: allSlates } = useAllSlates();
-  const { mutate: mutateMkrOnHat } = useMkrOnHat();
-
-  const { data: hat } = useHat();
-
-  const isHat = !!hat && hat === spellAddress;
-  const showHatCheckbox =
-    !!hat && spellAddress !== hat && currentSlate.includes(hat) && !currentSlate.includes(spellAddress);
-
-  const proposals = (
-    hatChecked && showHatCheckbox ? sortBytesArray([hat, spellAddress]) : [spellAddress]
-  ) as `0x${string}`[];
-
-  const encodedParam = encodeAbiParameters([{ name: 'yays', type: 'address[]' }], [proposals]);
-  const slate = keccak256(`0x${encodedParam.slice(-64 * proposals.length)}`);
-  const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
-  const slateOrProposals = slateAlreadyExists ? slate : proposals;
-
-  const voteHookParams = {
-    slateOrProposals,
-    onStart: (hash: `0x${string}`) => {
-      setTxStatus(TxStatus.LOADING);
-      setTxHash(hash);
-    },
-    onSuccess: (hash: `0x${string}`) => {
-      mutateVotedProposals();
-      mutateMkrOnHat();
-      setTxStatus(TxStatus.SUCCESS);
-      setTxHash(hash);
-    },
-    onError: () => {
-      setTxStatus(TxStatus.ERROR);
-    }
-  };
-
-  const delegateVote = useDelegateVote({
-    ...voteHookParams,
-    enabled: !!voteDelegateContractAddress
-  });
-  const proxyVote = useVoteProxyVote({
-    ...voteHookParams,
-    enabled: !!voteProxyContractAddress
-  });
-  const chiefVote = useChiefVote({
-    ...voteHookParams,
-    enabled: !voteDelegateContractAddress && !voteProxyContractAddress
-  });
-
-  const vote = () => {
-    setTxStatus(TxStatus.INITIALIZED);
-    if (voteDelegateContractAddress) {
-      delegateVote.execute();
-    } else if (voteProxyContractAddress) {
-      proxyVote.execute();
-    } else {
-      chiefVote.execute();
-    }
-  };
-
-  const voteDisabled = voteDelegateContractAddress
-    ? delegateVote.isLoading || !delegateVote.prepared
-    : voteProxyContractAddress
-    ? proxyVote.isLoading || !proxyVote.prepared
-    : chiefVote.isLoading || !chiefVote.prepared;
+  const tx = useTransactionsStore(
+    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
+    shallow
+  );
 
   return (
     <DialogOverlay isOpen={true} onDismiss={close}>
       <DialogContent ariaLabel="Executive Vote" widthDesktop="640px">
-        {txStatus === TxStatus.IDLE && (
+        {step === 'confirm' && (
           <DefaultVoteModalView
             proposal={proposal}
+            address={address}
             close={close}
-            vote={vote}
-            voteDisabled={voteDisabled}
-            currentSlate={currentSlate}
-            isHat={isHat}
-            spellAddress={spellAddress}
-            hatChecked={hatChecked}
-            showHatCheckbox={showHatCheckbox}
-            setHatChecked={setHatChecked}
+            onTransactionPending={() => setStep('pending')}
+            onTransactionFailed={() => setStep('failed')}
+            onTransactionCreated={transactionId => setTxId(transactionId)}
+            onTransactionMined={() => setStep('mined')}
           />
         )}
 
-        {(txStatus === TxStatus.LOADING || txStatus === TxStatus.INITIALIZED) && (
-          <TxInProgress txStatus={txStatus} setTxStatus={setTxStatus} txHash={txHash} setTxHash={setTxHash} />
-        )}
+        {step === 'pending' && tx && <TxInProgress tx={tx} txPending={true} setTxId={close} />}
 
-        {txStatus === TxStatus.SUCCESS && (
+        {step === 'mined' && tx && (
           <TxFinal
             title="Transaction Sent"
             description={
@@ -143,11 +66,11 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
             }
             buttonLabel="Close"
             onClick={close}
-            txHash={txHash}
+            tx={tx}
             success={true}
           />
         )}
-        {txStatus === TxStatus.ERROR && <Error close={close} />}
+        {step === 'failed' && <Error close={close} />}
       </DialogContent>
     </DialogOverlay>
   );

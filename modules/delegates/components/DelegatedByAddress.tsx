@@ -15,29 +15,36 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
 import { formatDateWithTime } from 'lib/datetime';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { parseEther } from 'viem';
+import { parseUnits } from 'ethers/lib/utils';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { calculatePercentage } from 'lib/utils';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
-  totalDelegated: bigint;
+  totalDelegated: BigNumber;
 };
 
 type CollapsableRowProps = {
   delegator: DelegationHistory;
   network: SupportedNetworks;
   bpi: number;
-  totalDelegated: bigint;
+  totalDelegated: BigNumber;
 };
 
-const formatTotalDelegated = (num: bigint, denom: bigint): string => {
+const formatTotalDelegated = (num: BigNumberJS, denom: BigNumber): string => {
   try {
-    return calculatePercentage(num, denom, 2).toString();
+    const numAsWad = parseUnits(num.toString());
+
+    const percentage = new BigNumberJS(numAsWad.toString())
+      .div(denom.toString())
+      .times(100);
+
+    return percentage.toFixed(2);
   } catch (e) {
     return '0';
   }
@@ -80,8 +87,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: [1, 3] }}>
-          {/*TODO why does the lock amount have decimal places? They all end in .0 */}
-          {`${formatValue(parseEther(lockAmount), 'wad')}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -102,8 +108,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${formatValue(
-                      parseEther(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount),
-                      'wad'
+                      parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
@@ -118,7 +123,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         {totalDelegated ? (
           <Text sx={{ fontSize: [1, 3] }}>{`${formatTotalDelegated(
-            parseEther(lockAmount),
+            new BigNumberJS(lockAmount),
             totalDelegated
           )}%`}</Text>
         ) : (
@@ -172,7 +177,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = useNetwork();
+  const { network } = useWeb3();
 
   const [sortBy, setSortBy] = useState({
     type: 'mkr',
@@ -197,9 +202,9 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
     switch (sortBy.type) {
       case 'mkr':
         return delegators?.sort((a, b) => {
-          const aMKR = parseEther(a.lockAmount);
-          const bMKR = parseEther(b.lockAmount);
-          return sortBy.order === 1 ? (aMKR > bMKR ? -1 : 1) : aMKR > bMKR ? 1 : -1;
+          const aMKR = parseUnits(a.lockAmount);
+          const bMKR = parseUnits(b.lockAmount);
+          return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
         });
       case 'address':
         return delegators?.sort((a, b) =>

@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { BigNumberJS } from 'lib/bigNumberJs';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
 import { DelegatesAPIStats } from 'modules/delegates/types';
@@ -38,11 +39,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     },
     {
       title: 'MKR Delegated',
-      value: stats ? (
-        `${stats.totalMKRDelegated.toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
-      ) : (
-        <Skeleton />
-      )
+      value: stats ? `${new BigNumberJS(stats.totalMKRDelegated).toFormat(0)} MKR` : <Skeleton />
     },
     {
       title: 'MKR in Chief',

@@ -6,35 +6,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import { TokenName } from 'modules/web3/types/tokens';
-import { tokenNameToConfig } from '../helpers/tokenNameToConfig';
-import { useChainId, useReadContract } from 'wagmi';
+import { BigNumber } from 'ethers';
 
 type UseTotalSupplyResponse = {
-  data?: bigint;
+  data?: BigNumber;
   loading: boolean;
-  error?: Error | null;
+  error?: Error;
   mutate: () => void;
 };
 
 export const useTotalSupply = (token: TokenName): UseTotalSupplyResponse => {
-  const tokenConfig = tokenNameToConfig(token);
-  const chainId = useChainId();
+  const contracts = useContracts();
+  const tokenContract = contracts[token];
 
-  const {
-    data,
-    error,
-    refetch: mutate
-  } = useReadContract({
-    address: tokenConfig?.address[chainId],
-    abi: tokenConfig?.abi,
-    chainId,
-    functionName: 'totalSupply',
-    scopeKey: `${tokenConfig?.address[chainId]}/${token}-total-supply`
+  const { data, error, mutate } = useSWR(`${tokenContract.address}/${token}-total-supply`, async () => {
+    return await tokenContract.totalSupply();
   });
 
   return {
-    data: (data as bigint) || undefined,
+    data,
     loading: !error && !data,
     error,
     mutate

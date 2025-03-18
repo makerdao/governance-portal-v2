@@ -11,6 +11,7 @@ import { DelegateOrderByEnum, DelegateStatusEnum, DelegateTypeEnum } from 'modul
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { add, isBefore } from 'date-fns';
+import { BigNumberJS } from 'lib/bigNumberJs';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import {
   DelegatesAPIResponse,
@@ -24,6 +25,7 @@ import {
   DelegateInfo
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
+import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
@@ -41,9 +43,6 @@ import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { formatEther, parseEther } from 'viem';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -220,9 +219,7 @@ export async function fetchDelegates(
   // This contains all the delegates including info merged with aligned delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const chainId = networkNameToChainId(currentNetwork);
-  const publicClient = getPublicClient(chainId);
-
+  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
@@ -232,16 +229,9 @@ export async function fetchDelegates(
 
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
-      const votedSlate = await publicClient.readContract({
-        address: chiefAddress[chainId],
-        abi: chiefAbi,
-        functionName: 'votes',
-        args: [delegate.voteDelegateAddress as `0x${string}`]
-      });
+      const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
       const votedProposals =
-        votedSlate !== ZERO_SLATE_HASH
-          ? await getSlateAddresses(chainId, chiefAddress[chainId], chiefAbi, votedSlate)
-          : [];
+        votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
       const proposalsSupported: number = votedProposals?.length || 0;
       const execSupported: CMSProposal | undefined = executives?.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
@@ -274,19 +264,19 @@ export async function fetchDelegates(
 
   const sortedDelegates = delegates.sort((a, b) => {
     if (sortBy === 'mkr') {
-      const bSupport = b.mkrDelegated ? b.mkrDelegated : '0';
-      const aSupport = a.mkrDelegated ? a.mkrDelegated : '0';
-      return parseEther(aSupport) > parseEther(bSupport) ? -1 : 1;
+      const bSupport = b.mkrDelegated ? b.mkrDelegated : 0;
+      const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
+      return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
     } else if (sortBy === 'date') {
       return a.expirationDate && b.expirationDate ? (a.expirationDate > b.expirationDate ? -1 : 1) : 0;
     } else if (sortBy === 'delegators') {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
-      const activeDelegatorsA = delegationHistoryA.filter(
-        ({ lockAmount }) => parseEther(lockAmount) > 0n
+      const activeDelegatorsA = delegationHistoryA.filter(({ lockAmount }) =>
+        new BigNumberJS(lockAmount).gt(0)
       ).length;
-      const activeDelegatorsB = delegationHistoryB.filter(
-        ({ lockAmount }) => parseEther(lockAmount) > 0n
+      const activeDelegatorsB = delegationHistoryB.filter(({ lockAmount }) =>
+        new BigNumberJS(lockAmount).gt(0)
       ).length;
       return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
     } else {
@@ -306,14 +296,12 @@ export async function fetchDelegates(
       total: dedupedDelegates.length,
       shadow: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
       aligned: dedupedDelegates.filter(d => d.status === DelegateStatusEnum.aligned).length,
-      totalMKRDelegated: Number(
-        formatEther(
-          delegates.reduce((prev, next) => {
-            const mkrDelegated = parseEther(next.mkrDelegated);
-            return prev + mkrDelegated;
-          }, 0n)
-        )
-      ),
+      totalMKRDelegated: new BigNumberJS(
+        delegates.reduce((prev, next) => {
+          const mkrDelegated = new BigNumberJS(next.mkrDelegated);
+          return prev.plus(mkrDelegated);
+        }, new BigNumberJS(0))
+      ).toNumber(),
       totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
     }
   };

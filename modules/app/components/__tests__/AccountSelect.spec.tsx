@@ -32,6 +32,8 @@ jest.mock('next/router', () => ({
   }
 }));
 
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
+
 describe('Account select', () => {
   test('can connect an account', async () => {
     render(<WrappedAccountSelect />);

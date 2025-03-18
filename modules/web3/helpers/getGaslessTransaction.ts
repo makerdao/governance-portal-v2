@@ -6,15 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { PublicClient, Transaction } from 'viem';
+import { ContractTransaction, providers } from 'ethers';
 import { backoffRetry } from 'lib/utils';
 
 export const getGaslessTransaction = async (
-  gaslessPulicClient: PublicClient,
+  gaslessProvider: providers.JsonRpcProvider,
   hash: string
-): Promise<Transaction> =>
+): Promise<ContractTransaction> =>
   backoffRetry(3, () =>
-    gaslessPulicClient.getTransaction({ hash: hash as `0x${string}` }).then(tx => {
+    gaslessProvider.getTransaction(hash).then(tx => {
       if (tx === null) throw new Error(`Transaction ${hash} not found on gasless network`);
       return tx;
     })

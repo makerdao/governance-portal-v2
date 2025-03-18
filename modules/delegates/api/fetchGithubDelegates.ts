@@ -14,7 +14,7 @@ import { fetchGithubGraphQL, fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegatesRepositoryInfo';
-import { isAddress } from 'viem';
+import { ethers } from 'ethers';
 import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
 import logger from 'lib/logger';
 import { delegatesGithubCacheKey, getDelegateGithubCacheKey } from 'modules/cache/constants/cache-keys';
@@ -88,7 +88,7 @@ async function extractGithubInformationGraphQL(
   const entries = data.repository.object.entries;
   const promises = entries
     // Our query returns extraneous files in the delegates folder, but we only want addresses
-    .filter(({ name }) => isAddress(name))
+    .filter(({ name }) => ethers.utils.isAddress(name))
     .map(async delegateEntry => {
       const voteDelegateAddress = delegateEntry.name;
 

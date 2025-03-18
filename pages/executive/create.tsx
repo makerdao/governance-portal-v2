@@ -10,7 +10,7 @@ import { Heading, Box, Button, Flex, Input, Label, Card, Text } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';
-import { getAddress } from 'viem';
+import { ethers } from 'ethers';
 import { matterWrapper } from 'lib/matter';
 import { markdownToHtml } from 'lib/markdown';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -69,7 +69,7 @@ const ExecutiveCreate = (): JSX.Element => {
     if (!metadata.address) setError(e => [...e, 'missing mainnet address']);
     else {
       try {
-        getAddress(metadata.address);
+        ethers.utils.getAddress(metadata.address);
       } catch (_) {
         setError(e => [...e, 'invalid mainnet address']);
       }

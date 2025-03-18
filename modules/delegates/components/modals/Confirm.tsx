@@ -8,21 +8,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Button, Flex, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
+import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
-  mkrToDeposit: bigint;
+  mkrToDeposit: BigNumber;
   delegate: Delegate | DelegatePaginated | DelegateInfo;
   onClick: () => void;
-  disabled: boolean;
   onBack: () => void;
 };
 
-export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, disabled, onBack }: Props): JSX.Element => {
+export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
   const { address, voteDelegateAddress } = delegate;
-  const network = useNetwork();
+  const { network } = useWeb3();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
@@ -51,7 +51,7 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, disabled, onBa
           styles={{ justifyContent: 'center' }}
         />
       </Text>
-      <Button onClick={onClick} disabled={disabled} sx={{ mt: 4 }}>
+      <Button onClick={onClick} sx={{ mt: 4 }}>
         Confirm Transaction
       </Button>
       <Button onClick={onBack} variant="textual" sx={{ color: 'secondary', fontSize: 2, mt: 1 }}>

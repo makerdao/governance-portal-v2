@@ -6,39 +6,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useChainId, useReadContract } from 'wagmi';
-import { vatAbi, vatAddress, vowAddress } from 'modules/contracts/generated';
+import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
 
 type SystemSurplusResponse = {
-  data?: bigint | undefined;
+  data?: BigNumber | undefined;
   loading: boolean;
-  error?: Error | null;
+  error?: Error;
 };
 
 export const useSystemSurplus = (): SystemSurplusResponse => {
-  const chainId = useChainId();
+  const { vat, vow } = useContracts();
 
-  const { data: dai, error: daiError } = useReadContract({
-    address: vatAddress[chainId],
-    abi: vatAbi,
-    chainId,
-    functionName: 'dai',
-    args: [vowAddress[chainId]],
-    scopeKey: `/system-surplus-dai-${chainId}`
-  });
+  const { data, error } = useSWR(`${vat.address}/system-surplus`, async () => {
+    const [dai, sin] = await Promise.all([await vat.dai(vow.address), await vat.sin(vow.address)]);
 
-  const { data: sin, error: sinError } = useReadContract({
-    address: vatAddress[chainId],
-    abi: vatAbi,
-    chainId,
-    functionName: 'sin',
-    args: [vowAddress[chainId]],
-    scopeKey: `/system-surplus-sin-${chainId}`
+    return dai.sub(sin);
   });
 
   return {
-    data: dai && sin ? dai - sin : undefined,
-    loading: !daiError && !sinError && !dai && !sin,
-    error: daiError || sinError
+    data,
+    loading: !error && !data,
+    error
   };
 };

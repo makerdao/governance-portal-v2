@@ -7,9 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR from 'swr';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
-import { useChainId, usePublicClient } from 'wagmi';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 type AllSlatesResponse = {
   data?: string[];
@@ -18,17 +17,20 @@ type AllSlatesResponse = {
 };
 
 export const useAllSlates = (): AllSlatesResponse => {
-  const chainId = useChainId();
-  const client = usePublicClient({ chainId });
+  const { chief } = useContracts();
 
-  const { data, error } = useSWR(`/${chiefAddress[chainId]}/executive/all-slates`, async () => {
-    const logs = await client?.getLogs({
-      fromBlock: DEPLOYMENT_BLOCK[chiefAddress[chainId]],
+  const { data, error } = useSWR(`/${chief.address}/executive/all-slates`, async () => {
+    const eventFragment = chief.interface.events['Etch(bytes32)'];
+    const etchTopics = chief.interface.encodeFilterTopics(eventFragment, []);
+
+    const filter = {
+      fromBlock: DEPLOYMENT_BLOCK[chief.address],
       toBlock: 'latest',
-      address: chiefAddress[chainId],
-      event: chiefAbi[1]
-    });
-    const topics = logs?.map(e => e.topics[1]);
+      address: chief.address,
+      topics: etchTopics
+    };
+    const logs = await chief.provider.getLogs(filter);
+    const topics = logs.map(e => e.topics[1]);
     return topics;
   });
 

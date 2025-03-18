@@ -18,6 +18,8 @@ jobs:
       - name: Install node packages
         run: yarn
 
+      - run: yarn build-sdk
+
       - run: yarn lint
 
       - run: yarn test:ci

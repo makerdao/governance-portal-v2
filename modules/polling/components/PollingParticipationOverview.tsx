@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Text } from 'theme-ui';
+import BigNumber from 'lib/bigNumberJs';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 import { hasVictoryConditionPlurality } from '../helpers/utils';
@@ -20,13 +21,15 @@ export function PollingParticipationOverview({
   const total = filteredVotes.length;
   const showHistory = total > 0;
 
-  const votedYes = filteredVotes.filter(vote => vote.ballot.indexOf(1) !== -1).length;
-  const votedNo = filteredVotes.filter(vote => vote.ballot.indexOf(2) !== -1).length;
-  const votedAbstain = filteredVotes.filter(vote => vote.ballot.indexOf(0) !== -1).length;
+  const votedYes = new BigNumber(filteredVotes.filter(vote => vote.ballot.indexOf(1) !== -1).length);
+  const votedNo = new BigNumber(filteredVotes.filter(vote => vote.ballot.indexOf(2) !== -1).length);
+  const votedAbstain = new BigNumber(filteredVotes.filter(vote => vote.ballot.indexOf(0) !== -1).length);
 
-  const yesPercent = votedYes > 0 ? ((votedYes / total) * 100).toFixed(0) : 0;
-  const abstainPercent = votedAbstain > 0 ? ((votedAbstain / total) * 100).toFixed(0) : 0;
-  const noPercent = votedNo > 0 ? ((votedNo / total) * 100).toFixed(0) : 0;
+  const yesPercent = votedYes.isGreaterThan(0) ? votedYes.dividedBy(total).multipliedBy(100).toFixed(0) : 0;
+  const abstainPercent = votedAbstain.isGreaterThan(0)
+    ? votedAbstain.dividedBy(total).multipliedBy(100).toFixed(0)
+    : 0;
+  const noPercent = votedNo.isGreaterThan(0) ? votedNo.dividedBy(total).multipliedBy(100).toFixed(0) : 0;
 
   return showHistory ? (
     <Box sx={{ p: [3, 4] }}>

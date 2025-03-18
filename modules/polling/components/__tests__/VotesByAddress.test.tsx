@@ -21,6 +21,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 jest.mock('@theme-ui/match-media');
 jest.mock('modules/delegates/hooks/useSingleDelegateInfo');
+jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
 
 const mockPoll: Poll = {
   ...mockPolls[0],
