@@ -56,8 +56,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
-import { getContracts } from 'modules/web3/helpers/getContracts';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { fetchExecutiveVoteTally } from 'modules/executive/api/fetchExecutiveVoteTally';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { executiveSupportersCacheKey } from 'modules/cache/constants/cache-keys';
@@ -88,8 +86,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     return;
   }
 
-  const chief = getContracts(networkNameToChainId(network), undefined, undefined, true).chief;
-  const allSupporters = await fetchExecutiveVoteTally(chief);
+  const allSupporters = await fetchExecutiveVoteTally(network);
 
   // handle percent and check address
   Object.keys(allSupporters).forEach(spell => {

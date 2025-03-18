@@ -16,7 +16,6 @@ import { markdownToHtml } from 'lib/markdown';
 import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
 import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
-import { BigNumber } from 'ethers';
 import logger from 'lib/logger';
 import { getExecutiveProposalsCacheKey, githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
@@ -121,7 +120,7 @@ export async function getExecutiveProposals({
     if (sortBy === 'mkr') {
       const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
       const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
-      return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
+      return BigInt(bSupport) > BigInt(aSupport) ? 1 : -1;
     } else if (sortBy === 'date') {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     } else {

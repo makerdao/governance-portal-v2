@@ -142,12 +142,12 @@ const QuickVote = ({
             }}
             mt={2}
             disabled={
-              !isChoiceValid || !votingWeight || !votingWeight.total.gt(0) || isDelegateContractExpired
+              !isChoiceValid || !votingWeight || !(votingWeight.total > 0n) || isDelegateContractExpired
             }
           >
             {loading
               ? 'Loading MKR balance...'
-              : !votingWeight || !votingWeight.total.gt(0)
+              : !votingWeight || !(votingWeight.total > 0n)
               ? 'Deposit MKR to vote'
               : isDelegateContractExpired
               ? 'Delegate contract expired'

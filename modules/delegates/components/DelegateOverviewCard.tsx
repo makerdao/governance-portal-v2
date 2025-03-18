@@ -25,8 +25,6 @@ import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { BigNumber } from 'ethers';
-import { formatEther, parseEther } from 'ethers/lib/utils';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -93,15 +91,15 @@ export const DelegateOverviewCard = memo(
       delegate.voteDelegateAddress
     );
     const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-    const hasMkrDelegated = account && mkrDelegated?.gt(0);
+    const hasMkrDelegated = account && mkrDelegated && mkrDelegated > 0n;
 
-    const mutateDelegateTotalMkr = (amount: BigNumber) => {
+    const mutateDelegateTotalMkr = (amount: bigint) => {
       setStateDelegates(prevDelegates => {
         const mutatedDelegateArray = prevDelegates.map(d => {
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              mkrDelegated: formatEther(parseEther(d.mkrDelegated).add(amount))
+              mkrDelegated: (BigInt(d.mkrDelegated) + amount).toString()
             };
           }
           return d;
@@ -268,7 +266,7 @@ export const DelegateOverviewCard = memo(
                 <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
                   {account && (
                     <Box>
-                      {mkrDelegated ? (
+                      {typeof mkrDelegated === 'bigint' ? (
                         <Text
                           as="p"
                           variant="microHeading"
@@ -297,7 +295,7 @@ export const DelegateOverviewCard = memo(
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                       data-testid="total-mkr-delegated"
                     >
-                      {formatValue(BigNumber.from(delegate.mkrDelegated), 'wad')}
+                      {formatValue(BigInt(delegate.mkrDelegated), 'wad')}
                     </Text>
                     <Text
                       as="p"

@@ -6,15 +6,35 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import {
+  voteDelegateFactoryAbi,
+  voteDelegateFactoryAddress,
+  voteDelegateFactoryOldAbi,
+  voteDelegateFactoryOldAddress
+} from 'modules/contracts/generated';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
-import { EthSdk } from 'modules/web3/types/contracts';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 export async function getDelegateContractAddress(
-  contracts: EthSdk,
-  address: string
+  address: string,
+  chainId: number
 ): Promise<string | undefined> {
-  const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);
-  const voteDelegateAddressOld = await contracts.voteDelegateFactoryOld.delegates(address);
+  const publicClient = getPublicClient(chainId);
+
+  const voteDelegateAddress = await publicClient.readContract({
+    address: voteDelegateFactoryAddress[chainId],
+    abi: voteDelegateFactoryAbi,
+    functionName: 'delegates',
+    args: [address as `0x${string}`]
+  });
+
+  const voteDelegateAddressOld = await publicClient.readContract({
+    address: voteDelegateFactoryOldAddress[chainId],
+    abi: voteDelegateFactoryOldAbi,
+    functionName: 'delegates',
+    args: [address as `0x${string}`]
+  });
+
   return voteDelegateAddressOld !== ZERO_ADDRESS
     ? voteDelegateAddressOld
     : voteDelegateAddress !== ZERO_ADDRESS

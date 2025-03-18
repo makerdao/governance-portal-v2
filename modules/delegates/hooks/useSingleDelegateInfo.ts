@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
 import { DelegateInfo } from '../types';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type DelegateInfoResponse = {
   data: DelegateInfo | null;
@@ -17,7 +17,7 @@ type DelegateInfoResponse = {
 };
 
 export const useSingleDelegateInfo = (address: string): DelegateInfoResponse => {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { cache } = useSWRConfig();
   const dataKey = `/api/delegates/${address}/info?network=${network}`;
 

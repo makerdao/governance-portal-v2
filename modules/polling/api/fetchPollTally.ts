@@ -10,7 +10,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll, PollTally, PollTallyOption, PollTallyVote, VictoryCondition } from 'modules/polling/types';
 import { extractWinnerPlurality } from './victory_conditions/plurality';
 import { PollVictoryConditions } from '../polling.constants';
-import BigNumber from 'lib/bigNumberJs';
 import { extractWinnerApproval } from './victory_conditions/approval';
 import { extractWinnerMajority } from './victory_conditions/majority';
 import { extractWinnerInstantRunoff } from './victory_conditions/instantRunoff';
@@ -19,9 +18,9 @@ import { InstantRunoffResults } from '../types/instantRunoff';
 import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
-import { isExponential } from 'lib/utils';
 import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
-
+import { calculatePercentage } from 'lib/utils';
+import { parseEther } from 'viem';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -77,9 +76,9 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       }
     }
     // Filter out delegates that have been replaced by newer versions
-    const newerVersionExists = allDelegates.some(otherDelegate => 
-      otherDelegate.delegate === delegate.delegate &&
-      (otherDelegate.delegateVersion ?? 1) > delegateVersion
+    const newerVersionExists = allDelegates.some(
+      otherDelegate =>
+        otherDelegate.delegate === delegate.delegate && (otherDelegate.delegateVersion ?? 1) > delegateVersion
     );
     return !newerVersionExists;
   });
@@ -98,18 +97,18 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
 
-  let totalMkrParticipation = new BigNumber(0);
-  let totalMkrActiveParticipation = new BigNumber(0);
+  let totalMkrParticipation = 0n;
+  let totalMkrActiveParticipation = 0n;
 
   // Remove all the votes that voted "Abstain" in any option. (It should only be 1 abstain option)
   const filteredVotes = votesByAddress.filter(vote => {
     // Store the total MKR
-    totalMkrParticipation = totalMkrParticipation.plus(vote.mkrSupport);
+    totalMkrParticipation = totalMkrParticipation + parseEther(vote.mkrSupport.toString());
     if (vote.ballot.filter(i => abstain.indexOf(i) !== -1).length > 0) {
       return false;
     }
 
-    totalMkrActiveParticipation = totalMkrActiveParticipation.plus(vote.mkrSupport);
+    totalMkrActiveParticipation = totalMkrActiveParticipation + parseEther(vote.mkrSupport.toString());
 
     return true;
   });
@@ -190,7 +189,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
   });
 
   // Format results
-  const votesInfo: { [key: number]: BigNumber } = {};
+  const votesInfo: { [key: number]: bigint } = {};
 
   // needs to consider IRV without comparator threshold met when aggregating MKR
   const isIrv = hasVictoryConditionInstantRunOff(poll.parameters.victoryConditions);
@@ -200,17 +199,17 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     // if IRV and no winner, only consider weight from first ballot option
     if (isIrv && !winnerOption.results) {
       if (votesInfo[vote.ballot[0]]) {
-        votesInfo[vote.ballot[0]] = votesInfo[vote.ballot[0]].plus(vote.mkrSupport);
+        votesInfo[vote.ballot[0]] = votesInfo[vote.ballot[0]] + parseEther(vote.mkrSupport.toString());
       } else {
-        votesInfo[vote.ballot[0]] = new BigNumber(vote.mkrSupport);
+        votesInfo[vote.ballot[0]] = parseEther(vote.mkrSupport.toString());
       }
     } else {
       // otherwise aggregate all votes
       vote.ballot.forEach(votedOption => {
         if (votesInfo[votedOption]) {
-          votesInfo[votedOption] = votesInfo[votedOption].plus(vote.mkrSupport);
+          votesInfo[votedOption] = votesInfo[votedOption] + parseEther(vote.mkrSupport.toString());
         } else {
-          votesInfo[votedOption] = new BigNumber(vote.mkrSupport);
+          votesInfo[votedOption] = parseEther(vote.mkrSupport.toString());
         }
       });
     }
@@ -230,29 +229,15 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
 
       const mkrSupport =
         winnerOption.results && !isAbstainOption
-          ? instantRunoffOption?.mkrSupport || new BigNumber(0)
-          : votesInfo[optionId] || new BigNumber(0);
+          ? instantRunoffOption?.mkrSupport || 0n
+          : votesInfo[optionId] || 0n;
 
-      let firstPct: string | number = 0;
-      let transferPct: string | number = 0;
-
-      if (totalMkrParticipation.gt(0)) {
-        const firstPctBn = new BigNumber(mkrSupport).div(totalMkrParticipation).times(100);
-
-        // If firstPct has too many decimal places it will be cast as an exponential number, in which case we instead cast as a string
-        firstPct = isExponential(firstPctBn.toNumber()) ? firstPctBn.toFixed(18) : firstPctBn.toNumber();
-
-        if (instantRunoffOption?.transfer) {
-          const transferPctBn = new BigNumber(instantRunoffOption?.transfer)
-            .div(totalMkrParticipation)
-            .times(100);
-
-          // Same situation for transferPct, cast as a string with regular notation if necessary
-          transferPct = isExponential(transferPctBn.toNumber())
-            ? transferPctBn.toFixed(18)
-            : transferPctBn.toNumber();
-        }
-      }
+      const firstPct =
+        totalMkrParticipation > 0n ? calculatePercentage(mkrSupport, totalMkrParticipation, 4) : 0;
+      const transferPct =
+        totalMkrParticipation > 0n && instantRunoffOption?.transfer
+          ? calculatePercentage(instantRunoffOption.transfer, totalMkrParticipation, 4)
+          : 0;
 
       return {
         optionId,
@@ -266,10 +251,10 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       };
     })
     .sort((a, b) => {
-      const valueA = new BigNumber(a.mkrSupport).plus(a.transfer || 0);
-      const valueB = new BigNumber(b.mkrSupport).plus(b.transfer || 0);
-      if (valueA.eq(valueB)) return a.optionName > b.optionName ? 1 : -1;
-      return valueA.gt(valueB) ? -1 : 1;
+      const valueA = parseEther(a.mkrSupport) + parseEther((a.transfer || 0).toString());
+      const valueB = parseEther(b.mkrSupport) + parseEther((b.transfer || 0).toString());
+      if (valueA === valueB) return a.optionName > b.optionName ? 1 : -1;
+      return valueA > valueB ? -1 : 1;
     });
 
   const tally: PollTally = {

@@ -1,8 +1,6 @@
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { mockIntersectionObserver } from '../__tests__/helpers';
-import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
 import { config } from 'lib/config';
 
 // Node/Jest don't have 'fetch' bc it's injected by next.js into global
@@ -10,7 +8,6 @@ import { config } from 'lib/config';
 // see: https://github.com/vercel/next.js/discussions/13678#discussioncomment-22383
 require('next');
 
-jest.mock('@web3-react/core');
 jest.mock('modules/web3/helpers/ens');
 
 jest.mock('remark-gfm', () => () => null);
@@ -37,14 +34,7 @@ jest.mock('modules/address/components/AddressIcon', () => {
   };
 });
 
-ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
-
 beforeAll(async () => {
-  (useWeb3React as jest.Mock).mockReturnValue({
-    account: '',
-    activate: () => null
-  });
-
   if (typeof window !== 'undefined') {
     // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
     Object.defineProperty(window, 'matchMedia', {

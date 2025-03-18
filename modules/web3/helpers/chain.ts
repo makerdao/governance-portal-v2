@@ -6,11 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { ethers } from 'ethers';
 import { SupportedChainId } from '../constants/chainID';
 import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
 import { BlockExplorer } from '../types/chain';
-import { getRPCFromChainID } from './getRPC';
 
 export const chainIdToNetworkName = (chainId?: number): SupportedNetworks => {
   if (!chainId) return SupportedNetworks.MAINNET;
@@ -26,8 +24,13 @@ export const networkNameToChainId = (networkName: string): number => {
 
 export const isSupportedChain = (chainId?: number): boolean => {
   if (!chainId) return false;
-  const isProduction = process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
-  return CHAIN_INFO[chainId] && CHAIN_INFO[chainId].type === 'normal' && (!isProduction || CHAIN_INFO[chainId].showInProduction);
+  const isProduction =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
+  return (
+    CHAIN_INFO[chainId] &&
+    CHAIN_INFO[chainId].type === 'normal' &&
+    (!isProduction || CHAIN_INFO[chainId].showInProduction)
+  );
 };
 
 export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks => {
@@ -36,20 +39,6 @@ export const getGaslessNetwork = (network: SupportedNetworks): SupportedNetworks
   } else {
     return SupportedNetworks.ARBITRUMTESTNET;
   }
-};
-
-export const getProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
-  const chainId = networkNameToChainId(network);
-  const url = getRPCFromChainID(chainId);
-  return new ethers.providers.JsonRpcProvider(url);
-};
-
-export const getGaslessProvider = (network: SupportedNetworks): ethers.providers.JsonRpcProvider => {
-  const gaslessNetwork = getGaslessNetwork(network);
-
-  const chainId = networkNameToChainId(gaslessNetwork);
-  const url = getRPCFromChainID(chainId);
-  return new ethers.providers.JsonRpcProvider(url);
 };
 
 export const getBlockExplorerName = (network: SupportedNetworks): BlockExplorer => {

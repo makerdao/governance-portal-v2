@@ -6,14 +6,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { BigNumber } from 'ethers';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from '../helpers/chain';
+import { getPublicClient } from '../helpers/getPublicClient';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
-export const getChiefApprovals = async (address: string, network?: SupportedNetworks): Promise<BigNumber> => {
+export const getChiefApprovals = async (address: string, network?: SupportedNetworks): Promise<bigint> => {
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
-  const contracts = getContracts(chainId, undefined, undefined, true);
+  const publicClient = getPublicClient(chainId);
 
-  return await contracts['chief'].approvals(address);
+  return await publicClient.readContract({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
+    functionName: 'approvals',
+    args: [address as `0x${string}`]
+  });
 };

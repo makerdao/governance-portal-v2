@@ -29,7 +29,6 @@ import { DelegatesStatusFilter } from 'modules/delegates/components/filters/Dele
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
 import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
@@ -39,6 +38,7 @@ import { getTestBreakout } from 'modules/app/helpers/getTestBreakout';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type DelegatesPageProps = DelegatesPaginatedAPIResponse & {
   seed: number;
@@ -58,7 +58,7 @@ const Delegates = ({
   paginationInfo: propPaginationInfo,
   seed: propSeed
 }: DelegatesPageProps) => {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { voteDelegateContractAddress } = useAccount();
   const [
     showAligned,
@@ -442,7 +442,7 @@ export default function DelegatesPage({
   paginationInfo: prefetchedPaginationInfo,
   seed
 }: DelegatesPageProps): JSX.Element {
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   const fallbackData = isDefaultNetwork(network)
     ? {

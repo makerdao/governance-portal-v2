@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { utils } from 'ethers';
+import { formatEther, parseEther } from 'viem';
 import { DelegationHistory, MKRLockedDelegateAPIResponse } from '../types/delegate';
 
 export const formatDelegationHistory = (lockEvents: MKRLockedDelegateAPIResponse[]): DelegationHistory[] => {
@@ -14,14 +14,12 @@ export const formatDelegationHistory = (lockEvents: MKRLockedDelegateAPIResponse
     (acc, { immediateCaller, lockAmount, blockTimestamp, hash, isLockstake }) => {
       const existing = acc.find(({ address }) => address === immediateCaller);
       if (existing) {
-        existing.lockAmount = utils.formatEther(
-          utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
-        );
+        existing.lockAmount = formatEther(parseEther(existing.lockAmount) + parseEther(lockAmount));
         existing.events.push({ lockAmount, blockTimestamp, hash, isLockstake });
       } else {
         acc.push({
           address: immediateCaller,
-          lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
+          lockAmount: formatEther(parseEther(lockAmount)),
           events: [{ lockAmount, blockTimestamp, hash, isLockstake }]
         });
       }
@@ -31,7 +29,5 @@ export const formatDelegationHistory = (lockEvents: MKRLockedDelegateAPIResponse
     []
   );
 
-  return delegators.sort((a, b) =>
-    utils.parseEther(a.lockAmount).gt(utils.parseEther(b.lockAmount)) ? -1 : 1
-  );
+  return delegators.sort((a, b) => (parseEther(a.lockAmount) > parseEther(b.lockAmount) ? -1 : 1));
 };

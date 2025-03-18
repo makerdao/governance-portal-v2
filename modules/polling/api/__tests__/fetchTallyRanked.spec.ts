@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
-import BigNumber from 'lib/bigNumberJs';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
@@ -37,7 +36,7 @@ const fromBuffer = (buf, opts?) => {
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
 
-  return new BigNumber(hex.join(''), 16);
+  return BigInt('0x' + hex.join(''));
 };
 
 describe('Fetch tally ranked', () => {

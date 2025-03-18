@@ -8,18 +8,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Button, Flex, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'lib/bigNumberJs';
 import { PollTally, Poll, PollTallyVote } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
 import { isResultDisplayApprovalBreakdown } from '../helpers/utils';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import VotedOption from './VotedOption';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { calculatePercentage } from 'lib/utils';
 
 type Props = {
   tally: PollTally;
@@ -61,9 +61,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     switch (sortBy.type) {
       case 'mkr':
         sorted = votes?.sort((a, b) => {
-          const aMKR = parseUnits(a.mkrSupport.toString());
-          const bMKR = parseUnits(b.mkrSupport.toString());
-          return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
+          const aMKR = parseEther(a.mkrSupport.toString());
+          const bMKR = parseEther(b.mkrSupport.toString());
+          return sortBy.order === 1 ? (aMKR > bMKR ? -1 : 1) : aMKR > bMKR ? 1 : -1;
         });
         break;
       case 'address':
@@ -204,8 +204,13 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   {bpi > 3 && (
                     <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
                       {`${
-                        new BigNumber(v.mkrSupport).isGreaterThan(0)
-                          ? new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)
+                        parseEther(v.mkrSupport.toString()) > 0n
+                          ? // Multiple by 1000n and then divide the number by 10 to get the equivalent of 1 decimal place in the percentage
+                            calculatePercentage(
+                              parseEther(v.mkrSupport.toString()),
+                              BigInt(totalMkrParticipation.toString()),
+                              1
+                            )
                           : 0
                       }%`}
                     </Text>
@@ -215,7 +220,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     data-testid={`vote-mkr-${v.voter}`}
                     sx={{ textAlign: ['right', 'right', 'left'], pb: 2, fontSize: [1, 3] }}
                   >
-                    {`${formatValue(parseUnits(v.mkrSupport.toString()), undefined, undefined, true, true)}${
+                    {`${formatValue(parseEther(v.mkrSupport.toString()), undefined, undefined, true, true)}${
                       bpi > 3 ? ' MKR' : ''
                     }`}
                   </Text>

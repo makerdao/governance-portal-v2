@@ -7,13 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useDelegateContractExpirationDate } from 'modules/delegates/hooks/useDelegateContractExpirationDate';
-import { isAboutToExpireCheck, isExpiredCheck } from '../helpers/expirationChecks';
-import BigNumber from 'bignumber.js';
+import { isExpiredCheck } from '../helpers/expirationChecks';
 import useSWR, { useSWRConfig } from 'swr';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { fetchJson } from 'lib/fetchJson';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { useAccount } from 'wagmi';
+import { parseEther } from 'viem';
 
 export function useMigrationStatus(): {
   isDelegateContractExpired: boolean;
@@ -21,7 +22,8 @@ export function useMigrationStatus(): {
   isDelegateV1Contract: boolean;
   isDelegatedToV1Contract: boolean;
 } {
-  const { account: address, network } = useWeb3();
+  const { address } = useAccount();
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const { data: delegatedToData } = useDelegatedTo(address, network);
@@ -57,7 +59,7 @@ export function useMigrationStatus(): {
 
   const isDelegatedToV1Contract = delegatedToData
     ? delegatedToData.delegatedTo.reduce((acc, cur) => {
-        return acc || (!!cur.expirationDate && cur.isRenewedToV2 && new BigNumber(cur.lockAmount).gt(0));
+        return acc || (!!cur.expirationDate && cur.isRenewedToV2 && parseEther(cur.lockAmount) > 0n);
       }, false)
     : false;
 

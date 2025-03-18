@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { ethers } from 'ethers';
 import { getTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { cacheSet } from 'modules/cache/cache';
 import { GASLESS_RATE_LIMIT_IN_MS } from 'modules/polling/polling.constants';
@@ -25,6 +24,10 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
 import { ApiError } from 'modules/app/api/ApiError';
 import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
+import { getGaslessPublicClient } from 'modules/web3/helpers/getPublicClient';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { pollingArbitrumAbi } from 'modules/contracts/generated';
+import { encodeFunctionData, getAddress, parseSignature } from 'viem';
 
 export const API_VOTE_ERRORS = {
   VOTER_MUST_BE_STRING: 'Voter must be a string.',
@@ -119,19 +122,32 @@ export default withApiHandler(
     }
 
     //get arbitrum polling contract with relayer's signer
-    const pollingContract = await getArbitrumPollingContractRelayProvider(network);
+    const { relayer, pollingAddress } = await getArbitrumPollingContractRelayProvider(network);
+    const publicClient = getGaslessPublicClient(networkNameToChainId(network));
 
     //verify valid nonce and expiry date
-    const nonceFromContract = await pollingContract.nonces(voter);
-    if (nonceFromContract.toNumber() !== nonce) {
+    const nonceFromContract = await publicClient.readContract({
+      address: pollingAddress,
+      abi: pollingArbitrumAbi,
+      functionName: 'nonces',
+      args: [voter]
+    });
+    if (parseInt(nonceFromContract.toString()) !== nonce) {
       await throwError({ error: API_VOTE_ERRORS.INVALID_NONCE_FOR_ADDRESS, body: req.body, skipDiscord });
     }
 
     //verify that signature and address correspond
     const typedData = getTypedBallotData({ voter, pollIds, optionIds, nonce, expiry }, network);
-    const recovered = verifyTypedSignature(typedData.domain, typedData.types, typedData.message, signature);
+    const isSignatureValid = await verifyTypedSignature(
+      getAddress(voter),
+      typedData.domain,
+      typedData.types,
+      typedData.message,
+      typedData.primaryType,
+      signature
+    );
 
-    if (ethers.utils.getAddress(recovered) !== ethers.utils.getAddress(voter)) {
+    if (isSignatureValid) {
       await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });
     }
 
@@ -147,7 +163,7 @@ export default withApiHandler(
 
       //verify address has a poll weight > 0.1 MKR
       if (!hasMkrRequired) {
-        //ether's bignumber library doesnt handle decimals
+        // BigInt doesnt handle decimals
         await throwError({
           error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED,
           body: req.body,
@@ -173,22 +189,36 @@ export default withApiHandler(
     } else {
       await postErrorInDiscord('bypassing eligibilty requirements', req.body, 'notice');
     }
-    const { r, s, v } = ethers.utils.splitSignature(signature);
+
+    const { r, s, v } = parseSignature(signature);
 
     const cacheKey = getRecentlyUsedGaslessVotingKey(voter);
     cacheSet(cacheKey, JSON.stringify(Date.now()), network, GASLESS_RATE_LIMIT_IN_MS);
     let tx;
     try {
-      tx = await pollingContract['vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)'](
-        voter,
-        nonce,
-        expiry,
-        pollIds,
-        optionIds,
-        v,
-        r,
-        s
-      );
+      const parsedPollIds = pollIds.map(pollId => BigInt(pollId));
+      const parsedOptionIds = optionIds.map(optionId => BigInt(optionId));
+
+      const data = encodeFunctionData({
+        abi: pollingArbitrumAbi,
+        functionName: 'vote',
+        args: [voter, nonce, BigInt(expiry), parsedPollIds, parsedOptionIds, +(v as bigint).toString(), r, s]
+      });
+
+      const relayerInstance = await relayer.getRelayer();
+      const address = relayerInstance.address;
+      const estimatedGas = await publicClient.estimateGas({
+        to: pollingAddress,
+        data,
+        account: address as `0x${string}`
+      });
+
+      tx = await relayer.sendTransaction({
+        to: pollingAddress,
+        data,
+        speed: 'fastest', // 'safeLow' | 'average' | 'fast' | 'fastest',
+        gasLimit: estimatedGas.toString()
+      });
     } catch (err) {
       //don't rate limit if tx didn't succeed
       cacheSet(cacheKey, '', network, GASLESS_RATE_LIMIT_IN_MS);

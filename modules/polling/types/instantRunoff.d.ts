@@ -6,11 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
-
 export type InstantRunoffOption = {
-  mkrSupport: BigNumber;
-  transfer: BigNumber;
+  mkrSupport: bigint;
+  transfer: bigint;
   winner: boolean;
   eliminated: boolean;
 };

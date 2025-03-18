@@ -7,31 +7,50 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber } from 'ethers';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { useChainId, useReadContract } from 'wagmi';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 type MkrOnHatResponse = {
-  data?: BigNumber;
+  data?: bigint;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
   mutate: () => void;
 };
 
 export const useMkrOnHat = (): MkrOnHatResponse => {
-  const { network } = useWeb3();
-  const { chief } = useContracts();
+  const network = useNetwork();
 
-  const { data, error, mutate } = useSWR(`${chief.address}/mkr-on-hat`, async () => {
-    const hatAddress = await chief.hat();
-    return await getChiefApprovals(hatAddress, network);
+  const chainId = useChainId();
+
+  const {
+    data: hatAddress,
+    error: hatError,
+    refetch: mutateHatAddress
+  } = useReadContract({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
+    chainId,
+    functionName: 'hat',
+    scopeKey: `executive-hat-${chainId}`
+  });
+
+  const {
+    data,
+    error,
+    mutate: mutateMkrOnHat
+  } = useSWR(`${chiefAddress[chainId]}/mkr-on-hat`, async () => {
+    return hatAddress ? await getChiefApprovals(hatAddress, network) : undefined;
   });
 
   return {
     data,
-    loading: !error && !data,
-    error,
-    mutate
+    loading: !hatError && !error && !data && !hatAddress,
+    error: hatError || error,
+    mutate: () => {
+      mutateHatAddress();
+      mutateMkrOnHat();
+    }
   };
 };

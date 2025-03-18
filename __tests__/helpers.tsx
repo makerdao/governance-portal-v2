@@ -1,10 +1,11 @@
 import { render, RenderResult } from '@testing-library/react';
-import { ThemeProvider } from 'theme-ui';
+import { ThemeUIProvider } from 'theme-ui';
 import theme from 'lib/theme';
 import React from 'react';
 
 export function renderWithTheme(component: React.ReactNode): RenderResult {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  // @ts-expect-error - Incompatible pointer events
+  return render(<ThemeUIProvider theme={theme}>{component}</ThemeUIProvider>);
 }
 
 export const mockIntersectionObserver = jest.fn(() => ({

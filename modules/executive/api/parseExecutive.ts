@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { matterWrapper } from 'lib/matter';
 import { CMSProposal } from 'modules/executive/types';
-import { ethers } from 'ethers';
+import { getAddress } from 'viem';
 import { slugify } from 'lib/utils';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import logger from 'lib/logger';
@@ -34,7 +34,7 @@ export function parseExecutive(
 
   //remove if address is not a valid address
   try {
-    ethers.utils.getAddress(address);
+    getAddress(address);
   } catch (_) {
     logger.warn(`parseExecutive: ${proposalLink} invalid address: ${address} skipping executive: ${title}`);
     return null;
