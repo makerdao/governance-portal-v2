@@ -6,31 +6,36 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
-import { BigNumber } from 'ethers';
+import { useChainId, useReadContract } from 'wagmi';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 type LockedMkrData = {
-  data?: BigNumber;
+  data?: bigint;
   loading: boolean;
-  error: Error;
+  error: Error | null;
   mutate: () => void;
 };
 
 export const useLockedMkr = (address?: string): LockedMkrData => {
-  const { chief } = useContracts();
+  const chainId = useChainId();
 
-  const { data, error, mutate } = useSWR(
-    address ? `${chief.address}/user/mkr-locked${address}` : null,
-    async () => {
-      return address ? await getChiefDeposits(address, chief) : undefined;
-    },
-    {
-      revalidateOnFocus: false,
-      revalidateOnMount: true
+  const {
+    data,
+    error,
+    refetch: mutate
+  } = useReadContract({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
+    chainId,
+    functionName: 'deposits',
+    args: [address as `0x${string}`],
+    scopeKey: `${chiefAddress[chainId]}/mkr-locked-${address}`,
+    query: {
+      enabled: !!address,
+      refetchOnWindowFocus: false,
+      refetchOnMount: true
     }
-  );
+  });
 
   return {
     data,

@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { MKRLockedDelegateAPIResponse } from '../types/delegate';
 import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightHisory } from '../types/mkrWeight';
-import BigNumber from 'lib/bigNumberJs';
 import { differenceInCalendarYears, subDays } from 'date-fns';
 
 export const formatDelegationHistoryChart = (
@@ -45,7 +44,7 @@ export const formatDelegationHistoryChart = (
       const mostRecent = existingItem[existingItem.length - 1];
       output.push({
         date: subDays(new Date(), end - i),
-        MKR: new BigNumber(mostRecent.callerLockTotal).toNumber()
+        MKR: Number(mostRecent.callerLockTotal)
       });
     } else {
       output.push({

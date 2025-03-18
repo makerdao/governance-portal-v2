@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import useSWR, { useSWRConfig } from 'swr';
 import { getMKRVotingWeight, MKRVotingWeightResponse } from '../helpers/getMKRVotingWeight';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type VotingWeightResponse = {
   data?: MKRVotingWeightResponse;
@@ -26,7 +26,7 @@ export const useMKRVotingWeight = ({
   // they can have voting power through their delegate contract, but the balance is not theirs
   excludeDelegateOwnerBalance?: boolean;
 }): VotingWeightResponse => {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const dataKey = `/user/polling-voting-weight/${address}/${network}`;

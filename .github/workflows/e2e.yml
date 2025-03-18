@@ -38,9 +38,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build sdk
-        run: yarn build-sdk
-
       - run: yarn exec playwright install --with-deps
 
       - name: Run E2E Test

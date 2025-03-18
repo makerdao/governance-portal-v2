@@ -14,11 +14,11 @@ import { format, sub } from 'date-fns';
 import ParticipationChart from './ParticipationChart';
 import forumPosts from '../data/forumPosts.json';
 import { DelegateInfo, DelegatePaginated } from 'modules/delegates/types';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
 import DelegateAvatarNameLight from 'modules/delegates/components/DelegateAvatarNameLight';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
   return (
@@ -81,7 +81,7 @@ export default function Participation({
   activeDelegates: DelegateInfo[] | DelegatePaginated[];
   bpi: number;
 }): React.ReactElement {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const MONTHS_PAST = 6;
   // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
   const unixtimeStart =

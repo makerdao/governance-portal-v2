@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { add } from 'date-fns';
-import { utils } from 'ethers';
+import { formatEther, parseEther } from 'viem';
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
@@ -60,9 +60,9 @@ export async function fetchDelegatedTo(
 
         // We sum the total of lockAmounts in different events to calculate the current delegated amount
         if (existing) {
-          existing.lockAmount = utils.formatEther(utils.parseEther(existing.lockAmount).add(lockAmount));
+          existing.lockAmount = formatEther(parseEther(existing.lockAmount) + parseEther(lockAmount));
           existing.events.push({
-            lockAmount: utils.formatEther(lockAmount),
+            lockAmount: formatEther(parseEther(lockAmount)),
             blockTimestamp,
             hash,
             isLockstake
@@ -100,10 +100,10 @@ export async function fetchDelegatedTo(
             expirationDate,
             isExpired,
             isAboutToExpire: !isExpired && isAboutToExpire,
-            lockAmount: utils.formatEther(lockAmount),
+            lockAmount: formatEther(parseEther(lockAmount)),
             // @ts-ignore: Property 'delegateVersion' might not exist on type 'AllDelegatesRecord'
             isRenewedToV2: !!newRenewedContract && newRenewedContract.delegateVersion === 2,
-            events: [{ lockAmount: utils.formatEther(lockAmount), blockTimestamp, hash, isLockstake }]
+            events: [{ lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isLockstake }]
           } as DelegationHistoryWithExpirationDate);
         }
 
@@ -114,7 +114,7 @@ export async function fetchDelegatedTo(
 
     // Sort by lockAmount, lockAmount is the total amount delegated currently
     return delegatedTo.sort((prev, next) =>
-      utils.parseEther(prev.lockAmount).gt(utils.parseEther(next.lockAmount)) ? -1 : 1
+      parseEther(prev.lockAmount) > parseEther(next.lockAmount) ? -1 : 1
     );
   } catch (e) {
     logger.error('fetchDelegatedTo: Error fetching MKR delegated to address', e.message);

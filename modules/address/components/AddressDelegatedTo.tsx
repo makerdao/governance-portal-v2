@@ -9,8 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import BigNumber from 'lib/bigNumberJs';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
@@ -19,10 +17,12 @@ import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import AddressIconBox from './AddressIconBox';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { formatValue } from 'lib/string';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { calculatePercentage } from 'lib/utils';
 
 type CollapsableRowProps = {
   delegate: DelegationHistoryWithExpirationDate;
@@ -81,7 +81,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${formatValue(parseUnits(lockAmount), undefined, undefined, true)}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(parseEther(lockAmount), undefined, undefined, true)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -102,7 +102,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${formatValue(
-                      parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
+                      parseEther(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
 
@@ -121,7 +121,11 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
             <Text>{`${
               totalDelegated === 0
                 ? '0'
-                : new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)
+                : calculatePercentage(
+                    parseEther(lockAmount),
+                    parseEther(totalDelegated.toString()),
+                    1
+                  ).toLocaleString()
             }%`}</Text>
           ) : (
             <Box sx={{ width: '100%' }}>
@@ -192,7 +196,7 @@ type AddressDelegatedToProps = {
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   return (
     <Box>

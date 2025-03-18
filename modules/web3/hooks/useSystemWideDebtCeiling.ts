@@ -6,21 +6,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber } from 'ethers';
+import { useChainId, useReadContract } from 'wagmi';
+import { vatAbi, vatAddress } from 'modules/contracts/generated';
 
 type SystemWideDebtCeilingResponse = {
-  data?: BigNumber | undefined;
+  data?: bigint | undefined;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
 };
 
 export const useSystemWideDebtCeiling = (): SystemWideDebtCeilingResponse => {
-  const { vat } = useContracts();
+  const chainId = useChainId();
 
-  const { data, error } = useSWR(`${vat.address}/system-wide-debt-ceiling`, async () => {
-    return await vat.Line();
+  const { data, error } = useReadContract({
+    address: vatAddress[chainId],
+    abi: vatAbi,
+    chainId,
+    functionName: 'Line',
+    scopeKey: `/system-wide-debt-ceiling-${chainId}`
   });
 
   return {

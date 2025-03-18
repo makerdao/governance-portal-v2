@@ -12,7 +12,7 @@ import { delegateHistoryArray } from 'modules/gql/queries/subgraph/delegateHisto
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
-import { utils } from 'ethers';
+import { formatEther } from 'viem';
 
 export async function fetchDelegationEventsByAddresses(
   addresses: string[],
@@ -33,11 +33,11 @@ export async function fetchDelegationEventsByAddresses(
       return {
         delegateContractAddress: x.delegate.id,
         immediateCaller: x.delegator,
-        lockAmount: utils.formatEther(x.amount),
+        lockAmount: formatEther(x.amount),
         blockNumber: x.blockNumber,
         blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
         hash: x.txnHash,
-        callerLockTotal: utils.formatEther(x.accumulatedAmount),
+        callerLockTotal: formatEther(x.accumulatedAmount),
         isLockstake: x.isLockstake
       };
     });

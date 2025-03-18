@@ -8,19 +8,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
-import { BigNumber } from 'ethers';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 export type MkrOnHatResponse = {
   hat: string;
-  mkrOnHat: BigNumber;
+  mkrOnHat: bigint;
 };
 
 export async function fetchMkrOnHat(network?: SupportedNetworks): Promise<MkrOnHatResponse> {
   const chainId = network ? networkNameToChainId(network) : networkNameToChainId(SupportedNetworks.MAINNET);
-  const contracts = getContracts(chainId, undefined, undefined, true);
-  const hat = await contracts.chief.hat();
+  const publicClient = getPublicClient(chainId);
+
+  const hat = await publicClient.readContract({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
+    functionName: 'hat'
+  });
+
   const mkrOnHat = await getChiefApprovals(hat, network);
 
   return { hat, mkrOnHat };
