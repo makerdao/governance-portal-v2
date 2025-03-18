@@ -562,7 +562,7 @@ export async function fetchDelegatesPaginated({
   if (orderBy === DelegateOrderByEnum.RANDOM) {
     combinedDelegates = combinedDelegates.sort(() => Math.random() - 0.5);
   }
-
+  
   const delegatesData = {
     paginationInfo: {
       totalCount: delegatesQueryRes.delegates.totalCount,

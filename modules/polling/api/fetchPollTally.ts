@@ -18,9 +18,9 @@ import { InstantRunoffResults } from '../types/instantRunoff';
 import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
-import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
 import { calculatePercentage } from 'lib/utils';
 import { parseEther } from 'viem';
+import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -63,7 +63,7 @@ export function findWinner(condition: VictoryCondition, votes: PollTallyVote[], 
 
 export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   const allDelegates = await fetchDelegateAddresses(network);
-  
+
   const filteredDelegates = allDelegates.filter(delegate => {
     const delegateVersion = delegate.delegateVersion ?? 1;
     // Filter out v1 delegates created over a year ago
