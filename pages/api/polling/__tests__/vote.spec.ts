@@ -21,7 +21,9 @@ import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegat
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 import { Mock, vi } from 'vitest';
+import { getGaslessPublicClient } from 'modules/web3/helpers/getPublicClient';
 
+vi.mock('modules/web3/helpers/getPublicClient');
 vi.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
 vi.mock('modules/mkr/helpers/getMKRVotingWeight');
 vi.mock('modules/cache/cache');
@@ -34,9 +36,15 @@ vi.mock('modules/app/helpers/getVoteProxyAddresses');
 vi.mock('modules/delegates/helpers/getDelegateContractAddress');
 
 describe('/api/polling/vote API Endpoint', () => {
+  const publicClientMockResponses = vi.fn().mockImplementation(({ functionName }) => {
+    if (functionName === 'nonces') return Promise.resolve(3n);
+  });
+
   beforeAll(() => {
+    (getGaslessPublicClient as Mock).mockReturnValue({
+      readContract: publicClientMockResponses
+    });
     (getArbitrumPollingContractRelayProvider as Mock).mockReturnValue({
-      nonces: () => Promise.resolve(3n),
       vote: () => Promise.resolve(null),
       'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
     });
@@ -292,7 +300,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
 
-    (verifyTypedSignature as Mock).mockReturnValue(true);
+    (verifyTypedSignature as Mock).mockReturnValue(false);
 
     const { req, res } = mockRequestResponse('POST', {
       voter: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
