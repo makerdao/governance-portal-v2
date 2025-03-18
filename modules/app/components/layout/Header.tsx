@@ -217,21 +217,6 @@ const Header = (): JSX.Element => {
           >
             Delegates
           </NavLink>
-
-          <NavLink
-            href={'/esmodule'}
-            title="View emergency shutdown module page"
-            p={0}
-            sx={{
-              flexShrink: 0,
-              display: ['none', 'flex'],
-              ml: [0, 4, 4, 5],
-              mr: [0, 'auto', 4, 5],
-              color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
-            }}
-          >
-            ES Module
-          </NavLink>
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>

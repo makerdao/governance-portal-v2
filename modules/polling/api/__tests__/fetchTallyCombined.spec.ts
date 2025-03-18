@@ -10,7 +10,7 @@ import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modul
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../gql/gqlRequest';
-import { fetchPollTally } from '../fetchPollTally';
+import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
 jest.mock('modules/gql/gqlRequest');
 
 const fromBuffer = (buf, opts?) => {
@@ -96,7 +96,7 @@ describe('Fetch tally combined with other options', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPollApproval, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPollApproval, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPollApproval.parameters,
@@ -165,7 +165,7 @@ describe('Fetch tally combined with other options', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPollApproval, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPollApproval, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPollApproval.parameters,
@@ -275,7 +275,7 @@ describe('Fetch tally combined with other options', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPollRanked, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPollRanked, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPollRanked.parameters,
@@ -358,7 +358,7 @@ describe('Fetch tally combined with other options', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPollRanked, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPollRanked, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPollRanked.parameters,
@@ -488,7 +488,7 @@ describe('Fetch tally combined with other options', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPollRankedComparison, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPollRankedComparison, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPollRankedComparison.parameters,
@@ -575,7 +575,7 @@ describe('Fetch tally combined with other options', () => {
       }
     });
 
-    const result = await fetchPollTally(mockPollRankedComparison, SupportedNetworks.MAINNET);
+    const result = await fetchPollTallyWithSpock(mockPollRankedComparison, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPollRankedComparison.parameters,
