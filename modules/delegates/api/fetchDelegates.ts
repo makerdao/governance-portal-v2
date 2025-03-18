@@ -531,7 +531,6 @@ export async function fetchDelegatesPaginated({
 
   const combinedDelegateOwnerAddresses = combinedDelegates.map(delegate => delegate.ownerAddress.toLowerCase());
 
-  console.log('combinedDelegateOwnerAddresses',combinedDelegateOwnerAddresses);
 
   const lastVotedArbitrumArray = await gqlRequest<any>({
     chainId: networkNameToChainId('arbitrum'), //TODO: update this if we add arbitrum sepolia support
@@ -540,9 +539,12 @@ export async function fetchDelegatesPaginated({
     variables: { argAddresses: combinedDelegateOwnerAddresses }
   });
 
-  console.log('lastVotedArbitrumArray',lastVotedArbitrumArray);
 
-  const lastVotedArbitrumMap = new Map(lastVotedArbitrumArray.arbitrumPollVotes.map(vote => [vote.voter.id, vote.blockTime]));
+  const lastVotedArbitrumObj = lastVotedArbitrumArray.arbitrumVoters.reduce((acc, voter) => {
+    acc[voter.id] = voter.pollVotes && voter.pollVotes.length > 0 ? Number(voter.pollVotes[0].blockTime) : 0;
+    return acc;
+  }, {});
+
   
   // Apply random sorting on the frontend if orderBy is RANDOM
   if (orderBy === DelegateOrderByEnum.RANDOM) {
@@ -633,7 +635,7 @@ export async function fetchDelegatesPaginated({
 
       const lastVoteMainnet = delegate.voter.lastVotedTimestamp || 0;
 
-      const lastVoteArbitrum = lastVotedArbitrumMap[delegate.id] || 0;
+      const lastVoteArbitrum = lastVotedArbitrumObj[delegate.ownerAddress.toLowerCase()] || 0;
 
       const lastVoteTimestamp = Math.max(lastVoteMainnet, lastVoteArbitrum);
 

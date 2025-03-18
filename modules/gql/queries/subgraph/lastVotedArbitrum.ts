@@ -8,11 +8,11 @@ import { gql } from 'graphql-request';
 
 export const lastVotedArbitrum = gql`
     query lastVotedArbitrum($argAddresses: [String!]) {
-        voters(where: {id_in: $argAddresses}) {
-            id
-            arbitrumPollVotes(orderBy: blockTime, orderDirection: desc, first: 1) {
-                blockTime
-            }
+    arbitrumVoters(where: {id_in: $argAddresses}) {
+        id
+        pollVotes(orderBy: blockTime, orderDirection: desc, first: 1) {
+            blockTime
         }
     }
+}
 `;
