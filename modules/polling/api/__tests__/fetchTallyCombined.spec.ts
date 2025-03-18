@@ -104,32 +104,32 @@ describe('Fetch tally combined with other options', () => {
       parameters: mockPollApproval.parameters,
       winner: 3,
       winningOptionName: 'Reject',
-      totalMkrParticipation: '270',
-      totalMkrActiveParticipation: '270',
+      totalMkrActiveParticipation: '270000000000000000000',
+      totalMkrParticipation: '270000000000000000000',
       victoryConditionMatched: 1,
       numVoters: 3,
       results: [
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
-          mkrSupport: '100',
-          firstPct: 37.03703703703704,
+          firstPct: 37.037,
+          mkrSupport: '100000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
-          mkrSupport: '90',
-          firstPct: 33.333333333333336,
+          firstPct: 33.3333,
+          mkrSupport: '90000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 3,
           optionName: 'Reject',
-          firstPct: 29.62962962962963,
-          mkrSupport: '80',
+          firstPct: 29.6296,
+          mkrSupport: '80000000000000000000',
           transferPct: 0,
           winner: true
         },
@@ -173,32 +173,32 @@ describe('Fetch tally combined with other options', () => {
       parameters: mockPollApproval.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrParticipation: '370',
+      totalMkrActiveParticipation: '370000000000000000000',
+      totalMkrParticipation: '370000000000000000000',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '370',
       numVoters: 3,
       results: [
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
-          mkrSupport: '200',
-          firstPct: 54.054054054054056,
+          firstPct: 54.0541,
+          mkrSupport: '200000000000000000000',
           transferPct: 0,
           winner: true
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
-          mkrSupport: '90',
-          firstPct: 24.324324324324323,
+          firstPct: 24.3243,
+          mkrSupport: '90000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 3,
           optionName: 'Reject',
-          firstPct: 21.62162162162162,
-          mkrSupport: '80',
+          firstPct: 21.6216,
+          mkrSupport: '80000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -284,14 +284,14 @@ describe('Fetch tally combined with other options', () => {
       winner: 3,
       victoryConditionMatched: 1,
       winningOptionName: 'Reject',
-      totalMkrParticipation: '300',
-      totalMkrActiveParticipation: '300',
+      totalMkrActiveParticipation: '300000000000000000000',
+      totalMkrParticipation: '300000000000000000000',
       results: [
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
-          firstPct: 33.666666666666664,
-          mkrSupport: '101',
+          firstPct: 33.6667,
+          mkrSupport: '101000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -299,8 +299,8 @@ describe('Fetch tally combined with other options', () => {
         {
           optionId: 2,
           optionName: 'Approve Increase',
-          firstPct: 33.333333333333336,
-          mkrSupport: '100',
+          firstPct: 33.3333,
+          mkrSupport: '100000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -308,16 +308,16 @@ describe('Fetch tally combined with other options', () => {
         {
           optionId: 3,
           optionName: 'Reject',
-          mkrSupport: '50',
-          firstPct: 16.666666666666668,
+          firstPct: 16.6667,
+          mkrSupport: '50000000000000000000',
           transferPct: 0,
           winner: true
         },
         {
           optionId: 4,
           optionName: 'Fourth',
-          firstPct: 16.333333333333332,
-          mkrSupport: '49',
+          firstPct: 16.3333,
+          mkrSupport: '49000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -366,9 +366,9 @@ describe('Fetch tally combined with other options', () => {
       parameters: mockPollRanked.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrParticipation: '500',
+      totalMkrActiveParticipation: '500000000000000000000',
+      totalMkrParticipation: '500000000000000000000',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '500',
       rounds: 1,
       results: [
         {
@@ -376,7 +376,7 @@ describe('Fetch tally combined with other options', () => {
           eliminated: false,
           optionName: 'Approve Existing Budget',
           firstPct: 60.2,
-          mkrSupport: '301',
+          mkrSupport: '301000000000000000000',
           transferPct: 0,
           transfer: '0',
           winner: true
@@ -386,7 +386,7 @@ describe('Fetch tally combined with other options', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 20,
-          mkrSupport: '100',
+          mkrSupport: '100000000000000000000',
           transferPct: 0,
           transfer: '0',
           eliminated: false,
@@ -396,7 +396,7 @@ describe('Fetch tally combined with other options', () => {
         {
           optionId: 3,
           optionName: 'Reject',
-          mkrSupport: '50',
+          mkrSupport: '50000000000000000000',
           firstPct: 10,
           transferPct: 0,
           transfer: '0',
@@ -407,7 +407,7 @@ describe('Fetch tally combined with other options', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 9.8,
-          mkrSupport: '49',
+          mkrSupport: '49000000000000000000',
           transferPct: 0,
           transfer: '0',
           eliminated: false,
@@ -496,15 +496,15 @@ describe('Fetch tally combined with other options', () => {
       parameters: mockPollRankedComparison.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrParticipation: '500',
+      totalMkrActiveParticipation: '500000000000000000000',
+      totalMkrParticipation: '500000000000000000000',
       victoryConditionMatched: null,
-      totalMkrActiveParticipation: '500',
       results: [
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 60.2,
-          mkrSupport: '301',
+          mkrSupport: '301000000000000000000',
           transferPct: 0,
 
           winner: false
@@ -514,7 +514,7 @@ describe('Fetch tally combined with other options', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 20,
-          mkrSupport: '100',
+          mkrSupport: '100000000000000000000',
           transferPct: 0,
 
           winner: false
@@ -523,7 +523,7 @@ describe('Fetch tally combined with other options', () => {
         {
           optionId: 3,
           optionName: 'Reject',
-          mkrSupport: '50',
+          mkrSupport: '50000000000000000000',
           firstPct: 10,
           transferPct: 0,
 
@@ -533,7 +533,7 @@ describe('Fetch tally combined with other options', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 9.8,
-          mkrSupport: '49',
+          mkrSupport: '49000000000000000000',
           transferPct: 0,
 
           winner: false
@@ -583,17 +583,17 @@ describe('Fetch tally combined with other options', () => {
       parameters: mockPollRankedComparison.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrParticipation: '3200',
+      totalMkrActiveParticipation: '3200000000000000000000',
+      totalMkrParticipation: '3200000000000000000000',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '3200',
       rounds: 1,
       results: [
         {
           optionId: 1,
           eliminated: false,
           optionName: 'Approve Existing Budget',
-          firstPct: 93.78125,
-          mkrSupport: '3001',
+          firstPct: 93.7813,
+          mkrSupport: '3001000000000000000000',
           transferPct: 0,
           transfer: '0',
           winner: true
@@ -603,7 +603,7 @@ describe('Fetch tally combined with other options', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 3.125,
-          mkrSupport: '100',
+          mkrSupport: '100000000000000000000',
           transferPct: 0,
           transfer: '0',
           eliminated: false,
@@ -613,7 +613,7 @@ describe('Fetch tally combined with other options', () => {
         {
           optionId: 3,
           optionName: 'Reject',
-          mkrSupport: '50',
+          mkrSupport: '50000000000000000000',
           firstPct: 1.5625,
           transferPct: 0,
           transfer: '0',
@@ -623,8 +623,8 @@ describe('Fetch tally combined with other options', () => {
         {
           optionId: 4,
           optionName: 'Fourth',
-          firstPct: 1.53125,
-          mkrSupport: '49',
+          firstPct: 1.5313,
+          mkrSupport: '49000000000000000000',
           transferPct: 0,
           transfer: '0',
           eliminated: false,

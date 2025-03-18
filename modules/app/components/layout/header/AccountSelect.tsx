@@ -20,7 +20,8 @@ import { useRouter } from 'next/router';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import logger from 'lib/logger';
 import { DialogContent, DialogOverlay } from '../../Dialog';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount as useAccountWagmi, useConnect, useDisconnect } from 'wagmi';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { SupportedConnectors } from 'modules/web3/constants/networks';
 
 const closeButtonStyle: ThemeUICSSObject = {
@@ -55,7 +56,8 @@ const AccountSelect = (): React.ReactElement => {
   });
 
   const { disconnect } = useDisconnect();
-  const { address, connector: connectedConnector, chainId } = useAccount();
+  const { connector: connectedConnector, chainId } = useAccountWagmi();
+  const { account: address } = useAccount();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,

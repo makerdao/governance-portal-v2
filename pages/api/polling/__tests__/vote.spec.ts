@@ -5,10 +5,6 @@ SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
 SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
-
-/**
- * @jest-environment node
- */
 import { createMocks, RequestMethod } from 'node-mocks-http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
