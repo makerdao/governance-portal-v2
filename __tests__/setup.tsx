@@ -1,8 +1,10 @@
-import '@testing-library/jest-dom';
-import '@testing-library/jest-dom/extend-expect';
-import { vi } from 'vitest';
+import { beforeAll, vi } from 'vitest';
 import { mockIntersectionObserver } from '../__tests__/helpers';
 import { config } from 'lib/config';
+import { expect } from 'vitest';
+import * as matchers from '@testing-library/jest-dom/matchers';
+
+expect.extend(matchers);
 
 // Node/Jest don't have 'fetch' bc it's injected by next.js into global
 // requiring next here applies the polyfills for fetch needed for some tests
@@ -36,22 +38,6 @@ vi.mock('modules/address/components/AddressIcon', () => {
 });
 
 beforeAll(async () => {
-  if (typeof window !== 'undefined') {
-    // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: vi.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(), // deprecated
-        removeListener: vi.fn(), // deprecated
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn()
-      }))
-    });
-  }
   global.IntersectionObserver = mockIntersectionObserver;
 
   config.REDIS_URL = '';

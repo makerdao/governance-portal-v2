@@ -9,8 +9,6 @@ export default defineConfig({
     environment: 'happy-dom',
     testTimeout: 7000,
     setupFiles: ['./__tests__/setup.tsx'],
-    // include: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
-    // include: [''],
     exclude: [
       ...configDefaults.exclude,
       'node_modules',
@@ -22,11 +20,5 @@ export default defineConfig({
       '__tests__/__mocks__',
       '__tests__/__helpers__'
     ]
-    // pool: 'forks',
-    // poolOptions: {
-    //   forks: {
-    //     singleFork: true
-    //   }
-    // }
   }
 });

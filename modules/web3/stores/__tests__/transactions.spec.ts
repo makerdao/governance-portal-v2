@@ -22,7 +22,7 @@ describe('Transactions', () => {
 
   beforeEach(async () => {
     vi.resetModules();
-    ({ transactionsApi, transactionsSelectors } = require('../transactions'));
+    ({ transactionsApi, transactionsSelectors } = await import('../transactions'));
   });
 
   test('should call initTx, setPending, and setMined for successful transactions', async () => {

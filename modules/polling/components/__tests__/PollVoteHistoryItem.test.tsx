@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 /*
 
 SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
@@ -16,7 +12,7 @@ import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryI
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { usePollTally } from '../../hooks/usePollTally';
-import { Mock, vi } from 'vitest';
+import { beforeAll, describe, expect, Mock, test, vi } from 'vitest';
 
 vi.mock('../../hooks/usePollTally');
 

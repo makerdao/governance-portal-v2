@@ -74,24 +74,24 @@ describe('Fetch tally plurality', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'First',
-      totalMkrParticipation: '809',
+      totalMkrActiveParticipation: '700000000000000000000',
+      totalMkrParticipation: '809000000000000000000',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '700',
       numVoters: 5,
       results: [
         {
           optionId: 1,
           optionName: 'First',
-          mkrSupport: '700',
-          firstPct: 86.52657601977751,
+          firstPct: 86.5266,
+          mkrSupport: '700000000000000000000',
           transferPct: 0,
           winner: true
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '109',
-          firstPct: 13.473423980222497,
+          firstPct: 13.4734,
+          mkrSupport: '109000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -167,32 +167,32 @@ describe('Fetch tally plurality', () => {
       parameters: mockPoll.parameters,
       winner: 2,
       winningOptionName: 'Second',
-      totalMkrParticipation: '2041',
+      totalMkrActiveParticipation: '1932000000000000000000',
+      totalMkrParticipation: '2041000000000000000000',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '1932',
       numVoters: 7,
       results: [
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '1232',
-          firstPct: 60.362567368936794,
+          firstPct: 60.3626,
+          mkrSupport: '1232000000000000000000',
           transferPct: 0,
           winner: true
         },
         {
           optionId: 1,
           optionName: 'First',
-          mkrSupport: '700',
-          firstPct: 34.296913277805,
+          firstPct: 34.2969,
+          mkrSupport: '700000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '109',
-          firstPct: 5.340519353258207,
+          firstPct: 5.3405,
+          mkrSupport: '109000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -325,32 +325,32 @@ describe('Fetch tally plurality', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'First',
-      totalMkrParticipation: '2041',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '732',
+      totalMkrActiveParticipation: '732000000000000000000',
+      totalMkrParticipation: '2041000000000000000000',
       numVoters: 7,
       results: [
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '1309',
-          firstPct: 64.13522782949535,
+          firstPct: 64.1352,
+          mkrSupport: '1309000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 1,
           optionName: 'First',
-          mkrSupport: '700',
-          firstPct: 34.296913277805,
+          firstPct: 34.2969,
+          mkrSupport: '700000000000000000000',
           transferPct: 0,
           winner: true
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '32',
-          firstPct: 1.567858892699657,
+          firstPct: 1.5679,
+          mkrSupport: '32000000000000000000',
           transferPct: 0,
           winner: false
         },
