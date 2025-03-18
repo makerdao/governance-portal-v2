@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollTallyVote } from '../../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
@@ -14,6 +13,7 @@ import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrW
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../../helpers/parseRawOptionId';
 import { SpockVote } from '../../types/pollTally';
+import { parseEther } from 'viem';
 
 export async function fetchVotesByAddressForPollWithSpock(
   pollId: number,
@@ -41,5 +41,7 @@ export async function fetchVotesByAddressForPollWithSpock(
     };
   });
 
-  return votes.sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
+  return votes.sort((a, b) =>
+    parseEther(a.mkrSupport.toString()) < parseEther(b.mkrSupport.toString()) ? 1 : -1
+  );
 }
