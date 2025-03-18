@@ -14,7 +14,7 @@
     "start": "next start",
     "export": "next export",
     "test": "vitest run",
-    "test:ci": "jest --runInBand --ci --coverage --detectOpenHandles --forceExit",
+    "test:ci": "vitest run --coverage",
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/",
     "gql-generate": "graphql-codegen --config codegen.yml",
