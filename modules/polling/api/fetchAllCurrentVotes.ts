@@ -82,7 +82,6 @@ export async function fetchAllCurrentVotes(
       useSubgraph: true,
       variables: {
         argAddress: address.toLowerCase(),
-        argStartUnix: 0, //TODO make this the spock cutoff date
       }
     })
   ]);
