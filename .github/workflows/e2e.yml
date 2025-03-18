@@ -14,7 +14,6 @@ jobs:
         include:
           - test: executives.spec
           - test: delegates.spec
-          # - test: esmodule.spec
           - test: polling.spec
     runs-on: ubuntu-latest
     env:
