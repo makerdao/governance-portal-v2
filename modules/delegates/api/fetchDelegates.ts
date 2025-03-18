@@ -36,6 +36,7 @@ import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { delegatesQuerySubsequentPages, delegatesQueryFirstPage } from 'modules/gql/queries/subgraph/delegates';
+import { lastVotedArbitrum } from 'modules/gql/queries/subgraph/lastVotedArbitrum';
 import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
@@ -539,6 +540,23 @@ export async function fetchDelegatesPaginated({
   ]);
   
   let combinedDelegates = [ ...(delegatesQueryRes.alignedDelegates || []), ...(delegatesQueryRes.delegates || [])];
+
+  const combinedDelegateOwnerAddresses = combinedDelegates.map(delegate => delegate.ownerAddress.toLowerCase());
+
+
+  const lastVotedArbitrumArray = await gqlRequest<any>({
+    chainId: networkNameToChainId('arbitrum'), //TODO: update this if we add arbitrum sepolia support
+    query: lastVotedArbitrum,
+    useSubgraph: true,
+    variables: { argAddresses: combinedDelegateOwnerAddresses }
+  });
+
+
+  const lastVotedArbitrumObj = lastVotedArbitrumArray.arbitrumVoters.reduce((acc, voter) => {
+    acc[voter.id] = voter.pollVotes && voter.pollVotes.length > 0 ? Number(voter.pollVotes[0].blockTime) : 0;
+    return acc;
+  }, {});
+
   
   // Apply random sorting on the frontend if orderBy is RANDOM
   if (orderBy === DelegateOrderByEnum.RANDOM) {
@@ -627,6 +645,12 @@ export async function fetchDelegatesPaginated({
         ? false 
         : finalExpirationDate ? isBefore(new Date(finalExpirationDate), new Date()) : false;
 
+      const lastVoteMainnet = delegate.voter.lastVotedTimestamp || 0;
+
+      const lastVoteArbitrum = lastVotedArbitrumObj[delegate.ownerAddress.toLowerCase()] || 0;
+
+      const lastVoteTimestamp = Math.max(lastVoteMainnet, lastVoteArbitrum);
+
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.id,
@@ -653,10 +677,7 @@ export async function fetchDelegatesPaginated({
         cuMember: githubDelegate?.cuMember,
         mkrDelegated: delegate.totalDelegated,
         delegatorCount: delegate.delegators,
-        lastVoteDate:
-          delegate.voter.lastVotedTimestamp && Number(delegate.voter.lastVotedTimestamp) > 0
-            ? new Date(Number(delegate.voter.lastVotedTimestamp) * 1000)
-            : null,
+        lastVoteDate: lastVoteTimestamp > 0 ? new Date(lastVoteTimestamp * 1000) : null,
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
         previous: allDelegatesEntry?.previous,
