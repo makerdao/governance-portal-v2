@@ -13,13 +13,27 @@ require('next');
 
 vi.mock('modules/web3/helpers/ens');
 
-vi.mock('remark-gfm', () => () => null);
-vi.mock('remark-html', () => () => null);
-vi.mock('remark-parse', () => () => null);
-vi.mock('remark-rehype', () => () => null);
-vi.mock('unified', () => () => null);
-vi.mock('rehype-stringify', () => () => null);
-vi.mock('rehype-sanitize', () => () => null);
+vi.mock('remark-gfm', () => ({
+  default: () => null
+}));
+vi.mock('remark-html', () => ({
+  default: () => null
+}));
+vi.mock('remark-parse', () => ({
+  default: () => null
+}));
+vi.mock('remark-rehype', () => ({
+  default: () => null
+}));
+vi.mock('unified', () => ({
+  default: () => null
+}));
+vi.mock('rehype-stringify', () => ({
+  default: () => null
+}));
+vi.mock('rehype-sanitize', () => ({
+  default: () => null
+}));
 
 vi.mock('uuid', () => {
   return {
