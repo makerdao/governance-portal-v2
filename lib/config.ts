@@ -10,8 +10,6 @@ type SystemConfig = {
   USE_CACHE: string;
   ALCHEMY_KEY: string;
   INFURA_KEY: string;
-  ETHERSCAN_KEY: string;
-  POCKET_KEY: string;
   TRACING_RPC_NODE: string;
   NODE_ENV: 'development' | 'production' | 'test';
   GITHUB_TOKEN: string;
@@ -39,8 +37,6 @@ export const config: SystemConfig = {
   USE_CACHE: process.env.USE_CACHE || '',
   ALCHEMY_KEY: process.env.ALCHEMY_KEY || '',
   INFURA_KEY: process.env.INFURA_KEY || '',
-  ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
-  POCKET_KEY: process.env.POCKET_KEY || '',
   TRACING_RPC_NODE: process.env.TRACING_RPC_NODE || '',
   NODE_ENV: process.env.NODE_ENV || 'development',
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',

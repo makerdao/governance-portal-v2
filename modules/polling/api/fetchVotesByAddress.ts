@@ -14,7 +14,7 @@ import { allMainnetVoters } from 'modules/gql/queries/subgraph/allMainnetVoters'
 import { allArbitrumVoters } from 'modules/gql/queries/subgraph/allArbitrumVoters';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
-import { parseEther } from 'viem';
+import { formatEther } from 'viem';
 
 interface VoterData {
   id: string;
@@ -157,5 +157,10 @@ export async function fetchVotesByAddressForPoll(
       hash: vote.txnHash
     };
   });
-  return votesWithWeights.sort((a, b) => (parseEther(a.mkrSupport) < parseEther(b.mkrSupport) ? 1 : -1));
+  return votesWithWeights
+    .sort((a, b) => (BigInt(a.mkrSupport) < BigInt(b.mkrSupport) ? 1 : -1))
+    .map(vote => ({
+      ...vote,
+      mkrSupport: formatEther(BigInt(vote.mkrSupport))
+    }));
 }
