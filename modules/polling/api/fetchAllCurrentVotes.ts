@@ -18,6 +18,7 @@ import { votingWeightHistory } from 'modules/gql/queries/subgraph/votingWeightHi
 import { formatEther } from 'viem';
 import { fetchAllCurrentVotesWithSpock } from './spock/fetchAllCurrentVotesWithSpock';
 import { NEW_POLLING_CALCULATION_START_DATE } from 'modules/polling/polling.constants';
+import { pollTimes } from 'modules/gql/queries/subgraph/pollTimes';
 
 
 interface PollVoteResponse {
@@ -50,12 +51,28 @@ interface VotingWeightHistoryResponse {
   }[];
 }
 
+interface PollTimesResponse {
+  polls: {
+    startDate: string;
+    endDate: string;
+    id: string;
+  }[];
+}
+
 function getMkrWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, timestamp: number): string {
   // Find the most recent weight entry that doesn't exceed the given timestamp
   const relevantEntry = weightHistory.executiveVotingPowerChanges
     .filter(entry => Number(entry.blockTimestamp) <= timestamp)
     .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))[0];
   return relevantEntry ? relevantEntry.newBalance : '0';
+}
+
+function isValidVote(vote: PollVoteResponse, pollTimes: PollTimesResponse): boolean {
+  const poll = pollTimes.polls.find(p => p.id === vote.poll.id);
+  const voteTime = Number(vote.blockTime);
+  const pollStart = Number(poll?.startDate);
+  const pollEnd = Number(poll?.endDate);
+  return voteTime >= pollStart && voteTime <= pollEnd;
 }
 
 async function fetchAllCurrentVotesWithSubgraph(
@@ -107,10 +124,19 @@ async function fetchAllCurrentVotesWithSubgraph(
     }, {} as Record<string, typeof combinedVotes[0]>)
   );
   
-  //TODO: only include valid votes based on time of poll
+  //get the poll times for all polls voted in
+  //This is a separate request because we needed to know the arbitrum poll ids first to pass in to the query
+  const allPollIds = dedupedVotes.map(p => p.poll.id);
+  const pollTimesRes = await gqlRequest<PollTimesResponse>({
+    chainId: networkNameToChainId(network),
+    query: pollTimes,
+    useSubgraph: true,
+    variables: { argPollIds: allPollIds }
+  });
 
-  // Parse the rankedChoice option
-  const res: PollTallyVote[] = dedupedVotes.map(o => {
+  const validVotes = dedupedVotes.filter(vote => isValidVote(vote, pollTimesRes));
+
+  const res: PollTallyVote[] = validVotes.map(o => {
     const ballot = parseRawOptionId(o.choice);
     const mkrSupport = getMkrWeightAtTimestamp(weightHistory, Number(o.blockTime));
     
