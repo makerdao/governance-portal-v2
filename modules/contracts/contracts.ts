@@ -45,13 +45,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
-    name: 'esm',
-    address: {
-      [mainnet.id]: '0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58',
-      [TENDERLY_CHAIN_ID]: '0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58'
-    }
-  },
-  {
     name: 'iou',
     address: {
       [mainnet.id]: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7',
