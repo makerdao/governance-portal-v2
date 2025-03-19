@@ -55,7 +55,7 @@ function getMkrWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, tim
   const relevantEntry = weightHistory.executiveVotingPowerChanges
     .filter(entry => Number(entry.blockTimestamp) <= timestamp)
     .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))[0];
-  return relevantEntry ? relevantEntry.newBalance : "0";
+  return relevantEntry ? relevantEntry.newBalance : '0';
 }
 
 async function fetchAllCurrentVotesWithSubgraph(
