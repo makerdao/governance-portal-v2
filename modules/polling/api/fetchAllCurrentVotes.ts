@@ -16,6 +16,8 @@ import { PollTallyVote } from '../types';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { votingWeightHistory } from 'modules/gql/queries/subgraph/votingWeightHistory';
 import { formatEther } from 'viem';
+import { fetchAllCurrentVotesWithSpock } from './spock/fetchAllCurrentVotesWithSpock';
+import { NEW_POLLING_CALCULATION_START_DATE } from 'modules/polling/polling.constants';
 
 
 interface PollVoteResponse {
@@ -56,9 +58,10 @@ function getMkrWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, tim
   return relevantEntry ? relevantEntry.newBalance : "0";
 }
 
-export async function fetchAllCurrentVotes(
+async function fetchAllCurrentVotesWithSubgraph(
   address: string,
-  network: SupportedNetworks
+  network: SupportedNetworks,
+  startUnix: number,
 ): Promise<PollTallyVote[]> {
   const addressInfo = await getAddressInfo(address, network);
   const delegateOwnerAddress = addressInfo?.delegateInfo?.address;
@@ -91,8 +94,11 @@ export async function fetchAllCurrentVotes(
   const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({...vote, chainId: arbitrumChainId}));
   const combinedVotes = [...mainnetVotesWithChainId, ...arbitrumVotesWithChainId];
 
+    // Filter votes to only include those after startUnix
+    const filteredCombinedVotes = combinedVotes.filter(vote => Number(vote.blockTime) >= startUnix);
+
   const dedupedVotes = Object.values(
-    combinedVotes.reduce((acc, vote) => {
+    filteredCombinedVotes.reduce((acc, vote) => {
       const pollId = vote.poll.id;
       if (!acc[pollId] || Number(vote.blockTime) > Number(acc[pollId].blockTime)) {
         acc[pollId] = vote;
@@ -119,4 +125,13 @@ export async function fetchAllCurrentVotes(
     };
   });
   return res;
+}
+
+export async function fetchAllCurrentVotes(address: string, network: SupportedNetworks): Promise<PollTallyVote[]> {
+  const cutoffUnix = Math.floor(NEW_POLLING_CALCULATION_START_DATE.getTime() / 1000);
+  const [subgraphVotes, spockVotes] = await Promise.all([
+    fetchAllCurrentVotesWithSubgraph(address, network, cutoffUnix),
+    fetchAllCurrentVotesWithSpock(address, network, cutoffUnix)
+  ]);
+  return [...subgraphVotes, ...spockVotes];
 }

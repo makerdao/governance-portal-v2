@@ -14,8 +14,7 @@ import { Poll, PollTally } from 'modules/polling/types';
 import { getPollTallyCacheKey } from 'modules/cache/constants/cache-keys';
 import { pollHasEnded } from './utils';
 import { ONE_WEEK_IN_MS, THIRTY_SECONDS_IN_MS } from 'modules/app/constants/time';
-
-const NEW_POLLING_CALCULATION_START_DATE = new Date('2025-04-01'); //TODO: edit date once we pick a date
+import { NEW_POLLING_CALCULATION_START_DATE } from 'modules/polling/polling.constants';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
 
