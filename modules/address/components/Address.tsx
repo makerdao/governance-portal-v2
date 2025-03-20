@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { limitString } from 'lib/string';
 import { formatAddress } from 'lib/utils';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { getENS } from 'modules/web3/helpers/ens';
 import React, { useEffect, useState } from 'react';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
