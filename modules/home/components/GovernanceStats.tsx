@@ -39,7 +39,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     {
       title: 'MKR Delegated',
       value: stats ? (
-        `${stats.totalMKRDelegated.toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
+        `${Number(stats.totalMKRDelegated).toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
       ) : (
         <Skeleton />
       )

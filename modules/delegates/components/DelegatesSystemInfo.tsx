@@ -49,7 +49,7 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
     {
       title: 'Total MKR delegated',
       id: 'total-mkr-system-info',
-      value: Math.round(stats.totalMKRDelegated).toLocaleString()
+      value: Math.round(Number(stats.totalMKRDelegated)).toLocaleString()
     },
     {
       title: 'Percent of MKR delegated',

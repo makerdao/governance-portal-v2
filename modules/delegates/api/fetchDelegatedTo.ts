@@ -17,7 +17,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getLatestOwnerFromOld } from 'modules/migration/delegateAddressLinks';
-import { AllDelegatesRecord } from 'modules/gql/generated/graphql';
+import { AllDelegatesRecord, Query } from 'modules/gql/generated/graphql';
 
 export async function fetchDelegatedTo(
   address: string,
