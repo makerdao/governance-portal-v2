@@ -40,70 +40,72 @@ describe('Fetch tally majority', () => {
     }
   } as any as Poll;
 
-  beforeEach(() => {
-    vi.resetAllMocks();
-    
+  it('Does not find winner if it doesnt pass the majority percent', async () => {
     // Set up the mock to return different responses based on the query
     (gqlRequest as Mock).mockImplementation(args => {
-        console.log('args', args);
-      const query = args.query;
-      console.log('query', query);
-      console.log('typeof query', typeof query);
-      if (query.includes('delegates(')) {
-        return Promise.resolve({delegates: []});
-      }
-      if (query.includes('allMainnetVoters')) {
-        console.log('Query is allMainnetVoters');
-        return Promise.resolve({
-          polls: [{
-            startDate: '1742227200',
-            endDate: '1742486400',
-            votes: [{
-                voter: {
-                    id: '0x0000000000000000000000000000000000000000'
+        const query = args.query;
+        if (query.includes('delegates(')) {
+            return Promise.resolve({delegates: []});
+        }
+        if (query.includes('allMainnetVoters')) {
+            return Promise.resolve({
+            polls: [{
+                startDate: '1742227200',
+                endDate: '1742486400',
+                votes: [{
+                    voter: {
+                        id: '0x0000000000000000000000000000000000000000'
+                    },
+                    blockTime: '1742327200',
+                    choice: '1',
                 },
-                blockTime: '1742327200',
-                choice: '1',
-                txnHash: '0x0000000000000000000000000000000000000000000000000000000000000000'
+                {
+                    voter: {
+                        id: '0x0000000000000000000000000000000000000002'
+                    },
+                    blockTime: '1742327200',
+                    choice: '3',
+                }
+                ]
             }]
-          }]
-        });
-      } else if (query.includes('allArbitrumVoters')) {
-        return Promise.resolve({
-          arbitrumPollVotes: [
-            {
-                voter: {
-                    id: '0x0000000000000000000000000000000000000001'
+            });
+        } else if (query.includes('allArbitrumVoters')) {
+            return Promise.resolve({
+            arbitrumPollVotes: [
+                {
+                    voter: {
+                        id: '0x0000000000000000000000000000000000000001'
+                    },
+                    blockTime: '1742327200',
+                    choice: '2',
+                }]
+            });
+        } else if (query.includes('voteAddressMkrWeightsAtTime')) {
+            return Promise.resolve({
+                voters: [{
+                    id: '0x0000000000000000000000000000000000000000',
+                    votingPowerChanges: [{
+                        newBalance: '100000000000000000000',
+                    }]
                 },
-                blockTime: '1742327200',
-                choice: '1',
-                txnHash: '0x0000000000000000000000000000000000000000000000000000000000000001'
-            }]
-        });
-      } else if (query.includes('voteAddressMkrWeightsAtTime')) {
-        return Promise.resolve({
-            voters: [{
-                id: '0x0000000000000000000000000000000000000000',
-                votingPowerChange: {
-                    newBalance: '100000000000000000000',
+                {
+                    id: '0x0000000000000000000000000000000000000001',
+                    votingPowerChanges: [{
+                        newBalance: '90000000000000000000',
+                    }]
+                },
+                {
+                    id: '0x0000000000000000000000000000000000000002',
+                    votingPowerChanges: [{
+                        newBalance: '80000000000000000000',
+                    }]
                 }
-            },
-            {
-                id: '0x0000000000000000000000000000000000000001',
-                votingPowerChange: {
-                    newBalance: '100000000000000000000',
-                }
-            }
-        ]
+            ]
+            });
+        }
+        return Promise.resolve({});
         });
-      }
-      return Promise.resolve({});
-    });
-  });
-
-  it.only('Does not find winner if it doesnt pass the majority percent', async () => {
     const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
-
     const expectedResult = {
       parameters: mockPoll.parameters,
       winner: null,
@@ -152,29 +154,68 @@ describe('Fetch tally majority', () => {
   });
 
   it('Does find a winner if it pass the majority percent', async () => {
-    // Override the default mock for this specific test
-    (gqlRequest as Mock).mockImplementation((query, variables, config) => {
-      if (query.includes('voteAddressMkrWeightsAtTime')) {
+    // Override the entire mock implementation for this test
+    (gqlRequest as Mock).mockImplementation(args => {
+      const query = args.query;
+      if (query.includes('delegates(')) {
+        return Promise.resolve({delegates: []});
+      }
+      if (query.includes('allMainnetVoters')) {
         return Promise.resolve({
-          voteAddressMkrWeightsAtTime: {
-            nodes: [
-              {
-                optionIdRaw: '1',
-                mkrSupport: '200'
-              },
-              {
-                optionIdRaw: '2',
-                mkrSupport: '90'
-              },
-              {
-                optionIdRaw: '3',
-                mkrSupport: '80'
-              }
+          polls: [{
+            startDate: '1742227200',
+            endDate: '1742486400',
+            votes: [{
+                voter: {
+                    id: '0x0000000000000000000000000000000000000000'
+                },
+                blockTime: '1742327200',
+                choice: '1',
+            },
+            {
+                voter: {
+                    id: '0x0000000000000000000000000000000000000002'
+                },
+                blockTime: '1742327200',
+                choice: '3',
+            }
             ]
-          }
+          }]
+        });
+      } else if (query.includes('allArbitrumVoters')) {
+        return Promise.resolve({
+          arbitrumPollVotes: [
+            {
+                voter: {
+                    id: '0x0000000000000000000000000000000000000001'
+                },
+                blockTime: '1742327200',
+                choice: '2',
+            }]
+        });
+      } else if (query.includes('voteAddressMkrWeightsAtTime')) {
+        return Promise.resolve({
+            voters: [{
+                id: '0x0000000000000000000000000000000000000000',
+                votingPowerChanges: [{
+                    newBalance: '200000000000000000000', // Changed from 100 to 200
+                }]
+            },
+            {
+                id: '0x0000000000000000000000000000000000000001',
+                votingPowerChanges: [{
+                    newBalance: '90000000000000000000',
+                }]
+            },
+            {
+                id: '0x0000000000000000000000000000000000000002',
+                votingPowerChanges: [{
+                    newBalance: '80000000000000000000',
+                }]
+            }
+          ]
         });
       }
-      // ... handle other queries as needed
       return Promise.resolve({});
     });
 
