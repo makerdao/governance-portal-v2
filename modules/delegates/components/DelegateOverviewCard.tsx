@@ -191,7 +191,8 @@ export const DelegateOverviewCard = memo(
                 <Button
                   variant="primaryLarge"
                   data-testid="button-delegate"
-                  disabled={!account || !!delegate.next || delegate.expired}
+                  // disabled={!account || !!delegate.next || delegate.expired}
+                  disabled={true}
                   onClick={() => {
                     setShowDelegateModal(true);
                   }}

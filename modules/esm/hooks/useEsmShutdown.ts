@@ -13,7 +13,7 @@ import { esmAbi, esmAddress } from 'modules/contracts/generated';
 
 export const useEsmShutdown = ({
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -25,7 +25,8 @@ export const useEsmShutdown = ({
     abi: esmAbi,
     functionName: 'fire',
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

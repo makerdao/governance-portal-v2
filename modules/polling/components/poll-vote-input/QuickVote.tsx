@@ -141,9 +141,10 @@ const QuickVote = ({
               submit();
             }}
             mt={2}
-            disabled={
-              !isChoiceValid || !votingWeight || !(votingWeight.total > 0n) || isDelegateContractExpired
-            }
+            // disabled={
+            //   !isChoiceValid || !votingWeight || !(votingWeight.total > 0n) || isDelegateContractExpired
+            // }
+            disabled={true}
           >
             {loading
               ? 'Loading MKR balance...'

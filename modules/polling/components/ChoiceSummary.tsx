@@ -106,7 +106,7 @@ const ChoiceSummary = ({
       </Flex>
       {showReviewButton && onBallot && (
         <InternalLink href="/polling/review" title="Review & submit your ballot">
-          <Button variant="primaryLarge" sx={{ width: '100%', cursor: 'pointer', mt: 3 }}>
+          <Button variant="primaryLarge" sx={{ width: '100%', cursor: 'pointer', mt: 3 }} disabled={true}>
             Review & Submit Your Ballot
           </Button>
         </InternalLink>

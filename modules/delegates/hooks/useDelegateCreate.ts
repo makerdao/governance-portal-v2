@@ -13,7 +13,7 @@ import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 
 export const useDelegateCreate = ({
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -25,7 +25,8 @@ export const useDelegateCreate = ({
     abi: voteDelegateFactoryAbi,
     functionName: 'create',
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

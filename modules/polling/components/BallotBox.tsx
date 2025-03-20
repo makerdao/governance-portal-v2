@@ -56,7 +56,8 @@ export default function BallotBox({ activePollCount, network, activePollIds }: P
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               variant="primaryLarge"
-              disabled={!ballotCount}
+              // disabled={!ballotCount}
+              disabled={true}
               sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}
             >
               <InternalLink href="/polling/review" title="Review & submit your ballot">

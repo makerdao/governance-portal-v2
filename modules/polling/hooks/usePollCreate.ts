@@ -17,7 +17,7 @@ export const usePollCreate = ({
   multiHash,
   url,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -29,7 +29,8 @@ export const usePollCreate = ({
 }): WriteHook => {
   const chainId = useChainId();
 
-  const enabled = paramEnabled && !!startDate && !!endDate && !!multiHash && !!url;
+  // const enabled = paramEnabled && !!startDate && !!endDate && !!multiHash && !!url;
+  const enabled = false;
 
   return useWriteContractFlow({
     address: pollingOldAddress[chainId],

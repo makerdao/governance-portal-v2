@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { fetchJson } from 'lib/fetchJson';
 import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
+// import { signTypedBallotData } from 'modules/web3/helpers/signTypedBallotData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import useTransactionsStore, {
   transactionsApi,
@@ -298,7 +298,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     functionName: 'votePoll',
     args: [pollIds, optionIds],
     chainId,
-    enabled: !!voteDelegateContractAddress,
+    // enabled: !!voteDelegateContractAddress,
+    enabled: false,
     onStart: (txHash: string) => {
       onPendingHandler(txHash);
     },
@@ -316,7 +317,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     functionName: 'vote',
     args: [pollIds, optionIds],
     chainId,
-    enabled: !voteDelegateContractAddress,
+    // enabled: !voteDelegateContractAddress,
+    enabled: false,
     onStart: (txHash: string) => {
       onPendingHandler(txHash);
     },
@@ -381,8 +383,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     let signature;
     try {
-      signature = await signTypedBallotData(signatureValues, signTypedDataAsync, network);
-      setStep('awaiting-relayer');
+      signature = undefined;
+      // signature = await signTypedBallotData(signatureValues, signTypedDataAsync, network);
+      // setStep('awaiting-relayer');
     } catch (error) {
       toast.error(error);
       setSubmissionError(parseTxError(error));

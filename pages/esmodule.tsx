@@ -207,6 +207,7 @@ const ESModule = (): React.ReactElement => {
           {totalStaked && account ? (
             <Button
               onClick={() => setShowDialog(true)}
+              disabled={true}
               variant="outline"
               sx={{ color: 'onNotice', borderColor: 'notice' }}
             >

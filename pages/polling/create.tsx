@@ -23,7 +23,7 @@ import Hash from 'ipfs-only-hash';
 import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/markdown';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useAccount } from 'modules/app/hooks/useAccount';
+// import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { PollMarkdownEditor } from 'modules/polling/components/PollMarkdownEditor';
@@ -66,7 +66,7 @@ const PollingCreate = (): React.ReactElement => {
   const [pollErrors, setPollErrors] = useState<string[]>([]);
   const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
-  const { account } = useAccount();
+  // const { account } = useAccount();
 
   const resetForm = () => {
     setPoll(undefined);
@@ -203,7 +203,8 @@ const PollingCreate = (): React.ReactElement => {
                           variant="primary"
                           data-testid="button-create-poll"
                           onClick={() => setCreating(true)}
-                          disabled={typeof poll === 'undefined' || pollErrors.length > 0 || !account}
+                          // disabled={typeof poll === 'undefined' || pollErrors.length > 0 || !account}
+                          disabled={true}
                         >
                           Create Poll
                         </Button>
