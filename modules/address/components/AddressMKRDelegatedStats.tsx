@@ -6,11 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Flex } from 'theme-ui';
+import { Box, Flex } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { parseEther } from 'viem';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
+import Tooltip from 'modules/app/components/Tooltip';
+import { getDescription } from 'modules/polling/components/VotingWeight';
 
 export function AddressMKRDelegatedStats({
   totalMKRDelegated,
