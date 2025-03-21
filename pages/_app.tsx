@@ -69,7 +69,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
           <Analytics />
 
           <NextNprogress
-            color="#1aab9b"
+            color="#504DFF"
             startPosition={0.3}
             stopDelayMs={200}
             height={3}
