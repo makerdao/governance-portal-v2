@@ -15,7 +15,7 @@ import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 export const useDelegateVote = ({
   slateOrProposals,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -31,7 +31,8 @@ export const useDelegateVote = ({
     functionName: 'vote',
     args: [slateOrProposals],
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

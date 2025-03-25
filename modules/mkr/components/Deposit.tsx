@@ -247,6 +247,7 @@ const Deposit = ({
           onClick={() => {
             open();
           }}
+          disabled={true}
           data-testid="deposit-button"
         >
           Deposit

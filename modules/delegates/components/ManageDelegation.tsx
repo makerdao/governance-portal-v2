@@ -41,7 +41,8 @@ export default function ManageDelegation({
           <Button
             variant="primaryLarge"
             data-testid="button-delegate"
-            disabled={!account}
+            // disabled={!account}
+            disabled={true}
             onClick={() => {
               setShowDelegateModal(true);
             }}
