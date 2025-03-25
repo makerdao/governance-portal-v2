@@ -106,8 +106,9 @@ const AccountSelect = (): React.ReactElement => {
         key={connector.id}
         onClick={() => connect({ connector })}
         data-testid={`select-wallet-${connector.id}`}
+        disabled={connectedConnector?.id === connector.id}
       >
-        Select
+        {connectedConnector?.id === connector.id ? 'Connected' : 'Select'}
       </Button>
     </Flex>
   ));
