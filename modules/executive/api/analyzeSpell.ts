@@ -14,8 +14,10 @@ import { getSpellExecutionDate } from 'modules/web3/api/getSpellExecuationDate';
 import { getSpellScheduledDate } from 'modules/web3/api/getSpellScheduledDate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SpellData } from '../types';
-import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 import logger from 'lib/logger';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import { dssSpellAbi } from 'modules/contracts/generated';
 
 export const getExecutiveMKRSupport = async (
   address: string,
@@ -32,7 +34,8 @@ export const getExecutiveMKRSupport = async (
 
 // executiveHash returns the hash of the executive proposal
 export const analyzeSpell = async (address: string, network: SupportedNetworks): Promise<SpellData> => {
-  const spellContract = getSpellContract(address, network);
+  const chainId = networkNameToChainId(network);
+
   // don't fetch spell data if not on mainnet
   if (network !== SupportedNetworks.MAINNET) {
     const approvals = await getChiefApprovals(address, network);
@@ -51,9 +54,15 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     };
   }
 
+  const publicClient = getPublicClient(chainId);
+  const readSpellParameters = {
+    address: address as `0x${string}`,
+    abi: dssSpellAbi
+  };
+
   const getDone = async () => {
     try {
-      const done = await spellContract.done();
+      const done = await publicClient.readContract({ ...readSpellParameters, functionName: 'done' });
       return done;
     } catch (err) {
       return undefined;
@@ -62,9 +71,12 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
   const getNextCastTime = async () => {
     try {
-      const result = await spellContract.nextCastTime();
-      if (!result.toNumber()) return undefined;
-      const nextCastTime = new Date(result.toNumber() * 1000);
+      const result = await publicClient.readContract({
+        ...readSpellParameters,
+        functionName: 'nextCastTime'
+      });
+      if (!Number(result)) return undefined;
+      const nextCastTime = new Date(Number(result) * 1000);
       return nextCastTime;
     } catch (err) {
       return undefined;
@@ -73,9 +85,9 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
   const getEta = async () => {
     try {
-      const result = await spellContract.eta();
-      if (!result.toNumber()) return undefined;
-      const eta = new Date(result.toNumber() * 1000);
+      const result = await publicClient.readContract({ ...readSpellParameters, functionName: 'eta' });
+      if (!Number(result)) return undefined;
+      const eta = new Date(Number(result) * 1000);
       return eta;
     } catch (err) {
       return undefined;
@@ -84,9 +96,9 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
   const getExpiration = async () => {
     try {
-      const result = await spellContract.expiration();
-      if (!result.toNumber()) return undefined;
-      const expiration = new Date(result.toNumber() * 1000);
+      const result = await publicClient.readContract({ ...readSpellParameters, functionName: 'expiration' });
+      if (!Number(result)) return undefined;
+      const expiration = new Date(Number(result) * 1000);
       return expiration;
     } catch (err) {
       return undefined;
@@ -123,7 +135,10 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
   const getExecutiveHash = async () => {
     try {
-      const description = await spellContract.description();
+      const description = await publicClient.readContract({
+        ...readSpellParameters,
+        functionName: 'description'
+      });
       const hash = description.substr(description.indexOf('0x'), description.length);
       return hash;
     } catch (err) {
@@ -133,7 +148,10 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
   const getOfficeHours = async () => {
     try {
-      const officeHours = await spellContract.officeHours();
+      const officeHours = await publicClient.readContract({
+        ...readSpellParameters,
+        functionName: 'officeHours'
+      });
       return officeHours;
     } catch (err) {
       return undefined;

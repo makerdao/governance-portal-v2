@@ -6,28 +6,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { Box, Card, Flex, Heading, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
-import { BigNumberWAD } from 'modules/web3/constants/numbers';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { Tokens } from 'modules/web3/constants/tokens';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import {
+  voteDelegateFactoryAddress as voteDelegateFactoryAddressMapping,
+  voteDelegateFactoryOldAddress as voteDelegateFactoryOldAddressMapping
+} from 'modules/contracts/generated';
+import { useChainId } from 'wagmi';
+import { calculatePercentage } from 'lib/utils';
+import { parseEther } from 'viem';
 
-export function DelegatesSystemInfo({
-  stats,
-  className
-}: {
-  stats: DelegatesAPIStats;
-  className?: string;
-}): React.ReactElement {
-  const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
-  const oldDelegateFactoryAddress = useContractAddress('voteDelegateFactoryOld');
-  const { network } = useWeb3();
+export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): React.ReactElement {
+  const chainId = useChainId();
+  const delegateFactoryAddress = voteDelegateFactoryAddressMapping[chainId];
+  const oldDelegateFactoryAddress = voteDelegateFactoryOldAddressMapping[chainId];
+  const network = useNetwork();
 
   const { data: totalMkr } = useTotalSupply(Tokens.MKR);
 
@@ -50,16 +49,13 @@ export function DelegatesSystemInfo({
     {
       title: 'Total MKR delegated',
       id: 'total-mkr-system-info',
-      value: new BigNumber(stats.totalMKRDelegated).toFormat(0)
+      value: Math.round(Number(stats.totalMKRDelegated)).toLocaleString()
     },
     {
       title: 'Percent of MKR delegated',
       id: 'percent-mkr-system-info',
       value: totalMkr ? (
-        `${new BigNumber(stats.totalMKRDelegated)
-          .dividedBy(new BigNumber(totalMkr._hex).div(BigNumberWAD))
-          .multipliedBy(100)
-          .toFormat(2)}%`
+        `${calculatePercentage(parseEther(stats.totalMKRDelegated.toString()), totalMkr, 2)}%`
       ) : (
         <SkeletonThemed width={'100px'} height={'15px'} />
       )

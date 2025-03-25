@@ -6,22 +6,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import useSWR from 'swr';
-import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber } from 'ethers';
+import { useChainId, useReadContract } from 'wagmi';
+import { esmAbi, esmAddress } from 'modules/contracts/generated';
 
 type EsmTotalStakedResponse = {
-  data?: BigNumber | undefined;
+  data?: bigint | undefined;
   loading: boolean;
-  error?: Error;
+  error?: Error | null;
   mutate: () => void;
 };
 
 export const useEsmTotalStaked = (): EsmTotalStakedResponse => {
-  const { esm } = useContracts();
+  const chainId = useChainId();
 
-  const { data, error, mutate } = useSWR(`${esm.address}/esm-total-staked`, async () => {
-    return await esm.Sum();
+  const {
+    data,
+    error,
+    refetch: mutate
+  } = useReadContract({
+    address: esmAddress[chainId],
+    abi: esmAbi,
+    chainId,
+    functionName: 'Sum',
+    scopeKey: `/esm-total-staked-${chainId}`
   });
 
   return {

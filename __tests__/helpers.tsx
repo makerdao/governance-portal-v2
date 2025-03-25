@@ -1,18 +1,45 @@
 import { render, RenderResult } from '@testing-library/react';
-import { ThemeProvider } from 'theme-ui';
+import { ThemeUIProvider } from 'theme-ui';
 import theme from 'lib/theme';
 import React from 'react';
+import { vi } from 'vitest';
+import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider } from 'wagmi';
+import { wagmiConfigDev } from 'modules/wagmi/config/config.default';
 
 export function renderWithTheme(component: React.ReactNode): RenderResult {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  const queryClient = new QueryClient();
+
+  return render(
+    <WagmiProvider config={mockWagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        {/* @ts-expect-error - Incompatible pointer events */}
+        <ThemeUIProvider theme={theme}>{component}</ThemeUIProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
 }
 
-export const mockIntersectionObserver = jest.fn(() => ({
+export function renderWithRealWagmiConnector(component: React.ReactNode): RenderResult {
+  const queryClient = new QueryClient();
+
+  return render(
+    <WagmiProvider config={wagmiConfigDev}>
+      <QueryClientProvider client={queryClient}>
+        {/* @ts-expect-error - Incompatible pointer events */}
+        <ThemeUIProvider theme={theme}>{component}</ThemeUIProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
+export const mockIntersectionObserver = vi.fn(() => ({
   root: null,
   rootMargin: '600px',
   thresholds: [1],
-  disconnect: jest.fn(),
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  takeRecords: jest.fn()
+  disconnect: vi.fn(),
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  takeRecords: vi.fn()
 }));

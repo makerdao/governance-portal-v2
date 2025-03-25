@@ -5,10 +5,6 @@ SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
 SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
-
-/**
- * @jest-environment node
- */
 import { createMocks, RequestMethod } from 'node-mocks-http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
@@ -16,39 +12,47 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
 import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { BigNumber } from 'ethers';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
+import { Mock, vi } from 'vitest';
+import { getGaslessPublicClient } from 'modules/web3/helpers/getPublicClient';
 
-jest.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
-jest.mock('modules/mkr/helpers/getMKRVotingWeight');
-jest.mock('modules/cache/cache');
-jest.mock('modules/polling/api/fetchPolls');
-jest.mock('modules/web3/helpers/verifyTypedSignature');
-jest.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
-jest.mock('modules/polling/api/fetchAddressPollVoteHistory');
-jest.mock('modules/app/api/postRequestToDiscord');
-jest.mock('modules/app/helpers/getVoteProxyAddresses');
-jest.mock('modules/delegates/helpers/getDelegateContractAddress');
+vi.mock('modules/web3/helpers/getPublicClient');
+vi.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
+vi.mock('modules/mkr/helpers/getMKRVotingWeight');
+vi.mock('modules/cache/cache');
+vi.mock('modules/polling/api/fetchPolls');
+vi.mock('modules/web3/helpers/verifyTypedSignature');
+vi.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
+vi.mock('modules/polling/api/fetchAddressPollVoteHistory');
+vi.mock('modules/app/api/postRequestToDiscord');
+vi.mock('modules/app/helpers/getVoteProxyAddresses');
+vi.mock('modules/delegates/helpers/getDelegateContractAddress');
 
 describe('/api/polling/vote API Endpoint', () => {
+  const publicClientMockResponses = vi.fn().mockImplementation(({ functionName }) => {
+    if (functionName === 'nonces') return Promise.resolve(3n);
+  });
+
   beforeAll(() => {
-    (getArbitrumPollingContractRelayProvider as jest.Mock).mockReturnValue({
-      nonces: () => Promise.resolve(BigNumber.from('3')),
+    (getGaslessPublicClient as Mock).mockReturnValue({
+      readContract: publicClientMockResponses
+    });
+    (getArbitrumPollingContractRelayProvider as Mock).mockReturnValue({
       vote: () => Promise.resolve(null),
       'vote(address,uint256,uint256,uint256[],uint256[],uint8,bytes32,bytes32)': () => Promise.resolve(null)
     });
-    (cacheSet as jest.Mock).mockImplementation(() => null);
-    (fetchAddressPollVoteHistory as jest.Mock).mockImplementation(() => Promise.resolve([]));
-    (postRequestToDiscord as jest.Mock).mockImplementation(() => Promise.resolve());
-    (getDelegateContractAddress as jest.Mock).mockImplementation(() => Promise.resolve(undefined));
-    (getVoteProxyAddresses as jest.Mock).mockImplementation(() => Promise.resolve(null));
+    (cacheSet as Mock).mockImplementation(() => null);
+    (fetchAddressPollVoteHistory as Mock).mockImplementation(() => Promise.resolve([]));
+    (postRequestToDiscord as Mock).mockImplementation(() => Promise.resolve());
+    (getDelegateContractAddress as Mock).mockImplementation(() => Promise.resolve(undefined));
+    (getVoteProxyAddresses as Mock).mockImplementation(() => Promise.resolve(null));
   });
   function mockRequestResponse(method: RequestMethod = 'POST', body) {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method });
@@ -201,10 +205,10 @@ describe('/api/polling/vote API Endpoint', () => {
   });
 
   it('return 400 if MKR amount is not valid', async () => {
-    (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as jest.Mock).mockReturnValue(
+    (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
+    (getMKRVotingWeight as Mock).mockReturnValue(
       Promise.resolve({
-        total: BigNumber.from(0)
+        total: 0n
       })
     );
     const { req, res } = mockRequestResponse('POST', {
@@ -217,7 +221,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as Mock).mockReturnValue(true);
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -227,13 +231,13 @@ describe('/api/polling/vote API Endpoint', () => {
   });
 
   it('return 400 if any poll is expired', async () => {
-    (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as jest.Mock).mockReturnValue(
+    (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
+    (getMKRVotingWeight as Mock).mockReturnValue(
       Promise.resolve({
-        total: parseUnits('0.2')
+        total: parseEther('0.2')
       })
     );
-    (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([]));
+    (getActivePollIds as Mock).mockReturnValue(Promise.resolve([]));
     const { req, res } = mockRequestResponse('POST', {
       voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
       pollIds: [1],
@@ -244,7 +248,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as Mock).mockReturnValue(true);
     await voteAPIHandler(req, res);
 
     expect(res.statusCode).toBe(400);
@@ -254,14 +258,14 @@ describe('/api/polling/vote API Endpoint', () => {
   });
 
   it('return 400 if it used gasless voting recently', async () => {
-    (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as jest.Mock).mockReturnValue(
+    (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
+    (getMKRVotingWeight as Mock).mockReturnValue(
       Promise.resolve({
-        total: parseUnits('0.2')
+        total: parseEther('0.2')
       })
     );
-    (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
-    (recentlyUsedGaslessVotingCheck as jest.Mock).mockReturnValue(Promise.resolve(true));
+    (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
+    (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(true));
 
     const { req, res } = mockRequestResponse('POST', {
       voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
@@ -273,7 +277,7 @@ describe('/api/polling/vote API Endpoint', () => {
       network: SupportedNetworks.MAINNET
     });
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as Mock).mockReturnValue(true);
 
     await voteAPIHandler(req, res);
 
@@ -284,19 +288,19 @@ describe('/api/polling/vote API Endpoint', () => {
   });
 
   it('return 400 if voter and signer do not match', async () => {
-    (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
-    (recentlyUsedGaslessVotingCheck as jest.Mock).mockReturnValue(Promise.resolve(false));
+    (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
+    (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(false));
 
-    (getMKRVotingWeight as jest.Mock).mockReturnValue(
+    (getMKRVotingWeight as Mock).mockReturnValue(
       Promise.resolve({
-        total: parseUnits('0.2')
+        total: parseEther('0.2')
       })
     );
-    (getActivePollIds as jest.Mock).mockReturnValue(Promise.resolve([1]));
+    (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
 
-    (cacheGet as jest.Mock).mockReturnValue(Promise.resolve(null));
+    (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
 
-    (verifyTypedSignature as jest.Mock).mockReturnValue('0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E');
+    (verifyTypedSignature as Mock).mockReturnValue(false);
 
     const { req, res } = mockRequestResponse('POST', {
       voter: '0xc0ffee254729296a45a3885639AC7E10F9d54979',

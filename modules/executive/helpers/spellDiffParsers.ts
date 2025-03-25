@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { ethers } from 'ethers';
+import { isAddress } from 'viem';
 import { isValid, format } from 'date-fns';
 import { DecodedDiffAPIResponse, SimulationDiffAPIResponse, SpellDiff } from '../types';
 import { cutMiddle } from 'lib/string';
@@ -27,7 +27,7 @@ export const formatLocation = (location: string): string => {
     // const val = location.indexOf('].') !== -1 ? location.slice(location.indexOf('].') + 2) : null;
 
     // Check if it's an address
-    if (ethers.utils.isAddress(storKey)) {
+    if (isAddress(storKey)) {
       return `${storage}[${cutMiddle(storKey, 12, 8)}]`;
 
       // Check if its a hash

@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex } from 'theme-ui';
 import { formatValue } from 'lib/string';
-import { BigNumber } from 'ethers';
 
 const ProgressRing = ({
   progress,
@@ -16,8 +15,8 @@ const ProgressRing = ({
   thresholdAmount
 }: {
   progress: number;
-  totalStaked?: BigNumber;
-  thresholdAmount?: BigNumber;
+  totalStaked?: bigint;
+  thresholdAmount?: bigint;
 }): React.ReactElement => {
   const radius = 116;
   const stroke = 10;

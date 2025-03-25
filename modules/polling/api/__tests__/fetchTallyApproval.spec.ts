@@ -11,7 +11,9 @@ import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 import { fetchPollTally } from '../fetchPollTally';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 describe('Fetch tally approval', () => {
   const mockPoll: Poll = {
@@ -39,7 +41,7 @@ describe('Fetch tally approval', () => {
   } as any as Poll;
 
   it('gives first option as winner if it has most mkr', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -72,32 +74,32 @@ describe('Fetch tally approval', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrParticipation: '861.57558',
-      totalMkrActiveParticipation: '861.57558',
+      totalMkrActiveParticipation: '861575580000000000000',
+      totalMkrParticipation: '861575580000000000000',
       numVoters: 5,
       victoryConditionMatched: 0,
       results: [
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
-          mkrSupport: '847.57558',
-          firstPct: 98.37507000836769,
+          firstPct: 98.3751,
+          mkrSupport: '847575580000000000000',
           transferPct: 0,
           winner: true
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
-          mkrSupport: '837.57558',
-          firstPct: 97.21440572863033,
+          firstPct: 97.2144,
+          mkrSupport: '837575580000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 4,
           optionName: 'None of the above',
-          firstPct: 1.624929991632307,
-          mkrSupport: '14',
+          firstPct: 1.6249,
+          mkrSupport: '14000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -124,7 +126,7 @@ describe('Fetch tally approval', () => {
   });
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -153,32 +155,32 @@ describe('Fetch tally approval', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrParticipation: '851.57558',
-      totalMkrActiveParticipation: '851.57558',
+      totalMkrActiveParticipation: '851575580000000000000',
+      totalMkrParticipation: '851575580000000000000',
       numVoters: 4,
       victoryConditionMatched: null,
       results: [
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
-          mkrSupport: '837.57558',
-          firstPct: 98.35598855476809,
+          firstPct: 98.356,
+          mkrSupport: '837575580000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
-          mkrSupport: '837.57558',
-          firstPct: 98.35598855476809,
+          firstPct: 98.356,
+          mkrSupport: '837575580000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 4,
           optionName: 'None of the above',
-          firstPct: 1.6440114452319077,
-          mkrSupport: '14',
+          firstPct: 1.644,
+          mkrSupport: '14000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -205,7 +207,7 @@ describe('Fetch tally approval', () => {
   });
 
   it('Ignores abstain', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -222,7 +224,7 @@ describe('Fetch tally approval', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrParticipation: '400',
+      totalMkrParticipation: '400000000000000000000',
       totalMkrActiveParticipation: '0',
       numVoters: 1,
       victoryConditionMatched: null,
@@ -230,7 +232,7 @@ describe('Fetch tally approval', () => {
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '400',
+          mkrSupport: '400000000000000000000',
           firstPct: 100,
           transferPct: 0,
           winner: false

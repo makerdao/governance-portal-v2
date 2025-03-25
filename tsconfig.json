@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -15,7 +15,6 @@
     "jsx": "preserve",
     "jsxImportSource": "theme-ui",
     "strictNullChecks": true,
-    "types": ["jest"],
     "baseUrl": "./",
     "paths": {
       "lib/*": ["lib/*"],
@@ -25,13 +24,5 @@
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": [
-    "next-env.d.ts",
-    "lib",
-    "modules",
-    "pages",
-    "__tests__",
-    "@testing-library/jest-dom",
-    "middleware.ts"
-  ]
+  "include": ["next-env.d.ts", "lib", "modules", "pages", "__tests__", "middleware.ts"]
 }

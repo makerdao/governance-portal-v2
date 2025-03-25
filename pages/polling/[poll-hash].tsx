@@ -33,11 +33,9 @@ import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import BigNumber from 'lib/bigNumberJs';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { fetchSinglePoll } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -48,6 +46,8 @@ import usePollsStore from 'modules/polling/stores/polls';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { formatEther } from 'viem';
 
 const editMarkdown = (content: string) => {
   // hide the duplicate proposal title
@@ -287,7 +287,14 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
                         <Text sx={{ color: 'textSecondary' }}>Total Voting Power</Text>
                         {tally ? (
-                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(3)} MKR</Text>
+                          <Text>
+                            {Number(
+                              formatEther(BigInt(tally.totalMkrParticipation.toString()))
+                            ).toLocaleString(undefined, {
+                              maximumFractionDigits: 3
+                            })}{' '}
+                            MKR
+                          </Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
                             <Skeleton />
@@ -396,7 +403,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {

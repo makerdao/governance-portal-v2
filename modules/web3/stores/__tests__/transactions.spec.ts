@@ -10,38 +10,42 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import waitForExpect from 'wait-for-expect';
 
 import { TX_NOT_ENOUGH_FUNDS } from '../../helpers/errors';
+import { Mock, vi } from 'vitest';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 waitForExpect.defaults.interval = 1;
+
+vi.mock('modules/web3/helpers/getPublicClient');
 
 let transactionsApi, transactionsSelectors;
 describe('Transactions', () => {
   beforeAll(async () => {
-    jest.setTimeout(30000);
+    vi.setConfig({ testTimeout: 30000 });
   });
 
   beforeEach(async () => {
-    jest.resetModules();
-    ({ transactionsApi, transactionsSelectors } = require('../transactions'));
+    (getPublicClient as Mock).mockReturnValue({
+      waitForTransactionReceipt: vi.fn().mockImplementation(() => Promise.resolve())
+    });
+    vi.resetModules();
+    ({ transactionsApi, transactionsSelectors } = await import('../transactions'));
   });
 
   test('should call initTx, setPending, and setMined for successful transactions', async () => {
     const address = '0x000000';
 
-    const initTxMock = (transactionsApi.getState().initTx = jest.fn(transactionsApi.getState().initTx));
+    const initTxMock = (transactionsApi.getState().initTx = vi.fn(transactionsApi.getState().initTx));
 
-    const setPendingMock = (transactionsApi.getState().setPending = jest.fn(
+    const setPendingMock = (transactionsApi.getState().setPending = vi.fn(
       transactionsApi.getState().setPending
     ));
 
-    const setMinedMock = (transactionsApi.getState().setMined = jest.fn(transactionsApi.getState().setMined));
+    const setMinedMock = (transactionsApi.getState().setMined = vi.fn(transactionsApi.getState().setMined));
 
     const txCreator = () => {
       return Promise.resolve({
-        wait: () =>
-          Promise.resolve({
-            id: 'abc',
-            hash: 'test'
-          })
+        chainId: 1,
+        hash: 'test'
       });
     };
 
@@ -70,14 +74,11 @@ describe('Transactions', () => {
     const address = '0x000000';
     const txCreator = () => {
       return Promise.resolve({
-        wait: () =>
-          Promise.resolve({
-            id: 'abc',
-            hash: 'test'
-          })
+        chainId: 1,
+        hash: 'test'
       });
     };
-    const mockPendingHook = jest.fn();
+    const mockPendingHook = vi.fn();
     await transactionsApi.getState().track(txCreator, address, '', { pending: mockPendingHook });
     await waitForExpect(() => expect(mockPendingHook.mock.calls.length).toBe(1));
   });
@@ -86,11 +87,8 @@ describe('Transactions', () => {
     const address = '0x000000';
     const txCreator = () => {
       return Promise.resolve({
-        wait: () =>
-          Promise.resolve({
-            id: 'abc',
-            hash: 'test'
-          })
+        chainId: 1,
+        hash: 'test'
       });
     };
 
@@ -104,11 +102,8 @@ describe('Transactions', () => {
   test('should set error properly', async () => {
     const address = '0x000000';
     const txCreator = () => {
-      return Promise.resolve({
-        wait: () =>
-          Promise.reject({
-            message: TX_NOT_ENOUGH_FUNDS
-          })
+      return Promise.reject({
+        message: TX_NOT_ENOUGH_FUNDS
       });
     };
     const txId = await transactionsApi.getState().track(txCreator, address);
@@ -126,20 +121,14 @@ describe('Transactions', () => {
 
     const txCreator1 = () => {
       return Promise.resolve({
-        wait: () =>
-          Promise.resolve({
-            id: 'abc',
-            hash: 'test'
-          })
+        chainId: 1,
+        hash: 'test'
       });
     };
     const txCreator2 = () => {
       return Promise.resolve({
-        wait: () =>
-          Promise.resolve({
-            id: 'abcd',
-            hash: 'test2'
-          })
+        chainId: 1,
+        hash: 'test2'
       });
     };
 

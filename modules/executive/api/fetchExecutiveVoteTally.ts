@@ -6,35 +6,49 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Chief } from '.dethcrypto/eth-sdk-client/esm/types';
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
-import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 import { formatValue } from 'lib/string';
-import { paddedBytes32ToAddress } from 'lib/utils';
-import { BigNumber } from 'ethers';
+import { calculatePercentage, paddedBytes32ToAddress, splitBlockRange } from 'lib/utils';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
+import contractInfo from '../../web3/helpers/contract-info.json';
+const chiefInfo = contractInfo.chief;
 
 type AddressWithVotes = {
   votes: string[];
-  slate: string;
+  slate: `0x${string}`;
   address: string;
-  deposits: BigNumber;
+  deposits: bigint;
 };
 
-export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null> {
-  const filter = {
-    fromBlock: DEPLOYMENT_BLOCK[chief.address],
-    toBlock: 'latest',
-    address: chief.address,
-    // TODO: get the encoded function signature from ethers
-    topics: ['0xdd46706400000000000000000000000000000000000000000000000000000000']
-  };
-  const locks = await chief.provider.getLogs(filter);
+export async function fetchExecutiveVoteTally(network: SupportedNetworks): Promise<any | null> {
+  const chainId = networkNameToChainId(network);
+  const publicClient = getPublicClient(chainId);
+
+  const currentBlock = await publicClient.getBlockNumber();
+
+  const blockChunks = splitBlockRange(DEPLOYMENT_BLOCK[chiefAddress[chainId]], currentBlock);
+
+  const locksRes = await Promise.all(
+    blockChunks.map(({ startBlock, endBlock }) =>
+      publicClient.getLogs({
+        fromBlock: startBlock,
+        toBlock: endBlock,
+        address: chiefAddress[chainId]
+      })
+    )
+  );
+
+  const locks = locksRes.flat().filter(lock => lock.topics[0] === chiefInfo.events.lock && !!lock.topics[1]);
+
   const voters: string[] = [];
 
   // get unique voters
   locks.forEach(lock => {
-    const voter = paddedBytes32ToAddress(lock.topics[1]);
+    const voter = paddedBytes32ToAddress(lock.topics[1] as `0x${string}`);
     if (!voters.includes(voter)) {
       voters.push(voter);
     }
@@ -52,25 +66,39 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
   for (const chunk of voterChunks) {
     const withDeposits = await Promise.all(
       chunk.map(voter =>
-        getChiefDeposits(voter, chief).then(deposits => ({
-          address: voter,
-          deposits
-        }))
+        publicClient
+          .readContract({
+            address: chiefAddress[chainId],
+            abi: chiefAbi,
+            functionName: 'deposits',
+            args: [voter as `0x${string}`]
+          })
+          .then(deposits => ({
+            address: voter,
+            deposits
+          }))
       )
     );
 
     const withSlates = await Promise.all(
       withDeposits.map(addressDeposit =>
-        chief.votes(addressDeposit.address).then(slate => ({
-          ...addressDeposit,
-          slate
-        }))
+        publicClient
+          .readContract({
+            address: chiefAddress[chainId],
+            abi: chiefAbi,
+            functionName: 'votes',
+            args: [addressDeposit.address as `0x${string}`]
+          })
+          .then(slate => ({
+            ...addressDeposit,
+            slate
+          }))
       )
     );
 
     const withVotes = await Promise.all(
       withSlates.map(withSlate =>
-        getSlateAddresses(chief, withSlate.slate).then(addresses => ({
+        getSlateAddresses(chainId, chiefAddress[chainId], chiefAbi, withSlate.slate).then(addresses => ({
           ...withSlate,
           votes: addresses
         }))
@@ -91,7 +119,7 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
           addresses: [{ address: voteObj.address, deposits: voteObj.deposits }]
         };
       } else {
-        voteTally[vote].approvals = voteTally[vote].approvals.add(voteObj.deposits);
+        voteTally[vote].approvals = voteTally[vote].approvals + voteObj.deposits;
         voteTally[vote].addresses.push({
           address: voteObj.address,
           deposits: voteObj.deposits
@@ -110,7 +138,7 @@ export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null>
     const withPercentages = sortedAddresses.map(shapedVoteObj => ({
       ...shapedVoteObj,
       deposits: formatValue(shapedVoteObj.deposits, 'wad', 6, false),
-      percent: ((shapedVoteObj.deposits * 100) / approvals).toFixed(2)
+      percent: approvals === 0n ? '0' : calculatePercentage(shapedVoteObj.deposits, approvals, 2).toFixed(2)
     }));
     voteTally[key] = withPercentages;
   }

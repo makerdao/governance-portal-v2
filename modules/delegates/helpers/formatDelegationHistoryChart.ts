@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { MKRLockedDelegateAPIResponse } from '../types/delegate';
 import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightHisory } from '../types/mkrWeight';
-import BigNumber from 'lib/bigNumberJs';
 import { differenceInCalendarYears, subDays } from 'date-fns';
 
 export const formatDelegationHistoryChart = (
@@ -18,7 +17,7 @@ export const formatDelegationHistoryChart = (
 ): MKRWeightHisory[] => {
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
-  const start = formatIsoDateConversion(lockEvents[0].blockTimestamp);
+  const start = formatIsoDateConversion(new Date(lockEvents[0].blockTimestamp).toISOString());
 
   const years = differenceInCalendarYears(Date.now(), new Date(lockEvents[0].blockTimestamp));
 
@@ -44,7 +43,7 @@ export const formatDelegationHistoryChart = (
       const mostRecent = existingItem[existingItem.length - 1];
       output.push({
         date: subDays(new Date(), end - i),
-        MKR: new BigNumber(mostRecent.callerLockTotal).toNumber()
+        MKR: Number(mostRecent.callerLockTotal)
       });
     } else {
       output.push({

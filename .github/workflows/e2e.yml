@@ -14,14 +14,11 @@ jobs:
         include:
           - test: executives.spec
           - test: delegates.spec
-          # - test: esmodule.spec
           - test: polling.spec
     runs-on: ubuntu-latest
     env:
       INFURA_KEY: ${{ secrets.INFURA_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ETHERSCAN_KEY: ${{ secrets.ETHERSCAN_KEY }}
-      POCKET_KEY: ${{ secrets.POCKET_KEY }}
       ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       USE_CACHE: true
@@ -37,9 +34,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-
-      - name: Build sdk
-        run: yarn build-sdk
 
       - run: yarn exec playwright install --with-deps
 

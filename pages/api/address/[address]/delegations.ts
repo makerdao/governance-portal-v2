@@ -13,16 +13,17 @@ import {
   DelegationHistory,
   DelegationHistoryWithExpirationDate
 } from 'modules/delegates/types';
-import BigNumber from 'lib/bigNumberJs';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
 import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
+import { voteProxyFactoryAddress } from 'modules/contracts/generated';
+import { voteProxyAbi } from 'modules/contracts/ethers/abis';
+import { formatEther, parseEther } from 'viem';
 
 /**
  * @swagger
@@ -171,9 +172,14 @@ export default withApiHandler(
       req.query.address as string,
       new ApiError('Invalid address', 400, 'Invalid address')
     );
-    const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
+    const chainId = networkNameToChainId(network);
 
-    const proxyInfo = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
+    const proxyInfo = await getVoteProxyAddresses(
+      voteProxyFactoryAddress[chainId],
+      voteProxyAbi,
+      address,
+      network
+    );
 
     // if hasProxy, we need to combine the delegation history of hot, cold, proxy
     let delegatedTo: DelegationHistoryWithExpirationDate[];
@@ -218,12 +224,12 @@ export default withApiHandler(
     ];
 
     const totalDelegated = filtered.reduce((prev, next) => {
-      return prev.plus(next.lockAmount);
-    }, new BigNumber(0));
+      return prev + parseEther(next.lockAmount);
+    }, 0n);
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
     res.status(200).json({
-      totalDelegated: totalDelegated.toNumber(),
+      totalDelegated: +formatEther(totalDelegated),
       delegatedTo: filtered,
       delegates: delegatesAndNextContracts
     });

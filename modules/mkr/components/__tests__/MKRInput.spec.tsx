@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 /*
 
 SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
@@ -12,13 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { render, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { MKRInput, MKRInputProps } from '../MKRInput';
+import { vi } from 'vitest';
 
 function renderMKRInput(props: Partial<MKRInputProps> = {}) {
   const defaultProps: MKRInputProps = {
-    onChange: jest.fn(),
-    value: parseUnits('0')
+    onChange: vi.fn(),
+    value: parseEther('0')
   };
 
   return render(<MKRInput {...defaultProps} {...props} />);
@@ -41,7 +38,7 @@ describe('MKRInput', () => {
 
   test('Should reflect the balance of MKR', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: parseUnits('24.5')
+      balance: parseEther('24.5')
     };
 
     renderMKRInput(props);
@@ -54,9 +51,9 @@ describe('MKRInput', () => {
 
   test('Should set balance to max when clicking setMax', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: parseUnits('24.5'),
-      value: parseUnits('0.1'),
-      onChange: jest.fn()
+      balance: parseEther('24.5'),
+      value: parseEther('0.1'),
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
@@ -65,31 +62,31 @@ describe('MKRInput', () => {
 
     userEvent.click(setMaxButton);
 
-    expect(props.onChange).toHaveBeenCalledWith(parseUnits('24.5'));
+    expect(props.onChange).toHaveBeenCalledWith(parseEther('24.5'));
 
     expect(input).toHaveValue(24.5);
   });
 
   test('Should trigger on change if the user inputs amount', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: parseUnits('24.5'),
-      value: parseUnits('0'),
-      onChange: jest.fn()
+      balance: parseEther('24.5'),
+      value: parseEther('0'),
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
     userEvent.type(input, '3');
-    const expectedValue = parseUnits('3');
+    const expectedValue = parseEther('3');
     expect(props.onChange).toHaveBeenCalledWith(expectedValue);
     expect(input).toHaveValue(3);
   });
 
   test('Should show error if default value is negative amount', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: parseUnits('24.5'),
-      value: parseUnits('-0.1'),
-      onChange: jest.fn()
+      balance: parseEther('24.5'),
+      value: parseEther('-0.1'),
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);
@@ -101,9 +98,9 @@ describe('MKRInput', () => {
 
   test('Should show error if value is greater than balance', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: parseUnits('24.5'),
-      value: parseUnits('34'),
-      onChange: jest.fn()
+      balance: parseEther('24.5'),
+      value: parseEther('34'),
+      onChange: vi.fn()
     };
 
     renderMKRInput(props);

@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { BigNumber } from 'ethers';
 import { isBefore } from 'date-fns';
 import { formatDateWithTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
@@ -24,7 +23,7 @@ export const getStatusText = ({
 }: {
   proposalAddress: string;
   spellData?: SpellData;
-  mkrOnHat?: BigNumber;
+  mkrOnHat?: bigint;
 }): string => {
   if (!spellData) return 'Fetching status...';
 
@@ -59,9 +58,8 @@ export const getStatusText = ({
   // not expired, passed, or executed, check support level
   if (!!spellData.mkrSupport && !!mkrOnHat) {
     // If the new proposal has more MKR than the old proposal, but hasn't been lifted, display 0 MKR needed to pass.
-    const mkrNeeded = mkrOnHat.sub(spellData.mkrSupport).gt(0)
-      ? mkrOnHat.sub(spellData.mkrSupport)
-      : BigNumber.from(0);
+    const mkrNeeded =
+      mkrOnHat - BigInt(spellData.mkrSupport) > 0n ? mkrOnHat - BigInt(spellData.mkrSupport) : 0n;
 
     return `${formatValue(mkrNeeded)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
       spellData.expiration

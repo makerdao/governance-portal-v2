@@ -6,24 +6,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
 import { PollTallyVote } from 'modules/polling/types';
 import {
   InstantRunoffOption,
   InstantRunoffOptions,
   InstantRunoffResults
 } from 'modules/polling/types/instantRunoff';
+import { parseEther } from 'viem';
 
 const MAX_ROUNDS = 32;
 
 export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): InstantRunoffResults | null {
-  let totalMKR = new BigNumber(0);
+  let totalMKR = 0n;
   let winner;
   let rounds = 1;
 
   const defaultOptionObj: InstantRunoffOption = {
-    mkrSupport: new BigNumber(0),
-    transfer: new BigNumber(0),
+    mkrSupport: 0n,
+    transfer: 0n,
     winner: false,
     eliminated: false
   };
@@ -36,7 +36,7 @@ export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): Insta
 
   // Run the first round
   const choiceVotes = currentVotes.map(vote => {
-    totalMKR = totalMKR.plus(vote.mkrSupport);
+    totalMKR = totalMKR + parseEther(vote.mkrSupport.toString());
 
     // take the highest preference option from each voter's ballot
     // Copy ballot to avoid modifications of the same object
@@ -52,14 +52,15 @@ export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): Insta
         options[newVote.choice] = { ...defaultOptionObj };
       }
 
-      options[newVote.choice].mkrSupport = options[newVote.choice].mkrSupport.plus(newVote.mkrSupport || 0);
+      options[newVote.choice].mkrSupport =
+        options[newVote.choice].mkrSupport + parseEther((newVote.mkrSupport || 0).toString());
     }
 
     return newVote;
   });
 
   // No MKR, return no winner
-  if (totalMKR.eq(0)) {
+  if (totalMKR === 0n) {
     return {
       options,
       winner: null,
@@ -69,7 +70,7 @@ export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): Insta
 
   // does any candidate have the majority after the first round?
   Object.entries(options).forEach(([option, { mkrSupport }]) => {
-    if (mkrSupport.gt(totalMKR.div(2))) {
+    if (mkrSupport > totalMKR / 2n) {
       winner = parseInt(option);
     }
   });
@@ -92,8 +93,7 @@ export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): Insta
     const [optionToEliminate] = filteredOptions.reduce((prv, cur) => {
       const [, prvVotes] = prv;
       const [, curVotes] = cur;
-      if (curVotes.mkrSupport.plus(curVotes.transfer).lt(prvVotes.mkrSupport.plus(prvVotes.transfer)))
-        return cur;
+      if (curVotes.mkrSupport + curVotes.transfer < prvVotes.mkrSupport + prvVotes.transfer) return cur;
       return prv;
     });
 
@@ -139,19 +139,18 @@ export function extractWinnerInstantRunoff(currentVotes: PollTallyVote[]): Insta
         if (!validVoteFound) return;
       }
       if (!options[choiceVotes[vote.index].choice as number].eliminated) {
-        options[choiceVotes[vote.index].choice as number].transfer = new BigNumber(
-          options[choiceVotes[vote.index].choice as number].transfer
-        ).plus(vote.mkrSupport || 0);
+        options[choiceVotes[vote.index].choice as number].transfer =
+          options[choiceVotes[vote.index].choice as number].transfer +
+          parseEther((vote.mkrSupport || 0).toString());
 
-        options[prevChoice as number].transfer = new BigNumber(options[prevChoice as number].transfer).minus(
-          vote.mkrSupport || 0
-        );
+        options[prevChoice as number].transfer =
+          options[prevChoice as number].transfer - parseEther((vote.mkrSupport || 0).toString());
       }
     });
 
     // look for a candidate with the majority
     Object.entries(options).forEach(([option, { mkrSupport, transfer }]) => {
-      if (mkrSupport.plus(transfer).gt(totalMKR.div(2))) {
+      if (mkrSupport + transfer > totalMKR / 2n) {
         winner = parseInt(option);
       }
     });

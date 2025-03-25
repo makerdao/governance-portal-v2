@@ -13,10 +13,14 @@ import ConfirmBurn from './burnModal/ConfirmBurn';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { BigNumber } from 'ethers';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useEsmBurn } from '../hooks/useEsmBurn';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
+import { TxStatus } from 'modules/web3/constants/transaction';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { Tokens } from 'modules/web3/constants/tokens';
+import { esmAddress } from 'modules/contracts/generated';
+import { useChainId } from 'wagmi';
 
 const ModalContent = ({
   setShowDialog,
@@ -26,18 +30,42 @@ const ModalContent = ({
   mutateMkrInEsmByAddress
 }: {
   setShowDialog: (value: boolean) => void;
-  lockedInChief: BigNumber;
-  totalStaked: BigNumber;
+  lockedInChief: bigint;
+  totalStaked: bigint;
   mutateTotalStaked: () => void;
   mutateMkrInEsmByAddress: () => void;
 }): React.ReactElement => {
   const { account } = useAccount();
+  const chainId = useChainId();
   const [step, setStep] = useState('default');
-  const [burnAmount, setBurnAmount] = useState(BigNumber.from(0));
+  const [burnAmount, setBurnAmount] = useState(0n);
+  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const { data: mkrBalance } = useMkrBalance(account);
 
-  const { burn, tx, setTxId } = useEsmBurn();
+  const { data: allowance } = useTokenAllowance(Tokens.MKR, burnAmount, account, esmAddress[chainId]);
+
+  const burn = useEsmBurn({
+    burnAmount,
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+      setStep('pending');
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      mutateTotalStaked();
+      mutateMkrInEsmByAddress();
+      setTxStatus(TxStatus.SUCCESS);
+      setStep('mined');
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+      setStep('failed');
+    },
+    enabled: !!allowance
+  });
 
   const close = () => setShowDialog(false);
 
@@ -61,27 +89,25 @@ const ModalContent = ({
           burnAmount={burnAmount}
           account={account}
           setShowDialog={setShowDialog}
+          burnDisabled={burn.isLoading || !burn.prepared}
           burn={() => {
-            burn(burnAmount, {
-              initialized: () => setStep('signing'),
-              pending: () => setStep('pending'),
-              mined: () => {
-                mutateTotalStaked();
-                mutateMkrInEsmByAddress();
-                setStep('mined');
-              },
-              error: () => setStep('failed')
-            });
+            setTxStatus(TxStatus.INITIALIZED);
+            setStep('signing');
+            burn.execute();
           }}
           totalStaked={totalStaked}
         />
       );
     case 'signing':
-      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
+      return (
+        <TxInProgress txStatus={txStatus} setTxStatus={setTxStatus} txHash={txHash} setTxHash={setTxHash} />
+      );
     case 'pending':
-      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
+      return (
+        <TxInProgress txStatus={txStatus} setTxStatus={setTxStatus} txHash={txHash} setTxHash={setTxHash} />
+      );
     case 'mined':
-      return <BurnTxSuccess tx={tx} close={close} />;
+      return <BurnTxSuccess txHash={txHash} close={close} />;
     case 'failed':
       return <BurnFailed close={close} />;
     default:

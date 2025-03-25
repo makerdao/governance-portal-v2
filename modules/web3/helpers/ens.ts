@@ -7,19 +7,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { SupportedNetworks } from '../constants/networks';
-import { getDefaultProvider } from './getDefaultProvider';
-import { providers } from 'ethers';
 import logger from 'lib/logger';
+import { getPublicClient } from './getPublicClient';
+import { normalize } from 'viem/ens';
+import { networkNameToChainId } from './chain';
 
 export async function getENS({
   address,
-  provider
+  network
 }: {
   address: string;
-  provider: providers.BaseProvider;
+  network: SupportedNetworks;
 }): Promise<string | null> {
   try {
-    const name = await provider.lookupAddress(address);
+    const publicClient = getPublicClient(networkNameToChainId(network));
+    const name = await publicClient.getEnsName({ address: address as `0x${string}` });
     return name;
   } catch (err) {
     logger.error(`getENS: ${address}. Unable to get ENS.`, err);
@@ -28,10 +30,10 @@ export async function getENS({
 }
 
 export async function resolveENS(ensName: string): Promise<string | null> {
-  const provider = getDefaultProvider(SupportedNetworks.MAINNET);
+  const publicClient = getPublicClient(networkNameToChainId(SupportedNetworks.MAINNET));
 
   try {
-    const address = await provider.resolveName(ensName);
+    const address = await publicClient.getEnsAddress({ name: normalize(ensName) });
     return address;
   } catch (err) {
     logger.error(`resolveENS: ${ensName}. Unable to resolve.`, err);

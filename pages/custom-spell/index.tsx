@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 import { Button, Card, Flex, Text, Input, Spinner, Heading } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { useState } from 'react';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import VoteModal from 'modules/executive/components/VoteModal';
@@ -19,13 +18,14 @@ import { SpellData } from 'modules/executive/types';
 import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
 import logger from 'lib/logger';
 import { toast } from 'react-toastify';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export default function CustomSpell(): JSX.Element {
   const [spellAddress, setSpellAddress] = useState<string | null>(null);
   const [spellData, setSpellData] = useState<SpellData | null | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [voting, setVoting] = useState(false);
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { account, votingAccount } = useAccount();
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();

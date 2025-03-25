@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import BigNumber from 'lib/bigNumberJs';
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
@@ -63,7 +62,11 @@ export function DelegateMKRDelegatedStats({
         }
       />
       <StatBox
-        value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(0) : '--'}
+        value={
+          typeof delegatorCount !== 'undefined'
+            ? delegatorCount.toLocaleString(undefined, { maximumFractionDigits: 0 })
+            : '--'
+        }
         label={'Total Active Delegators'}
       />
       {account && (
