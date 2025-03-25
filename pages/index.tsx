@@ -203,7 +203,9 @@ const LandingPage = ({
                     style={{
                       ...style,
                       zIndex: 100,
-                      width: isSticky ? '100%' : 'auto',
+                      width: '100vw',
+                      marginLeft: isSticky ? 0 : '50%',
+                      transform: isSticky ? 'translateX(0%)' : 'translateX(-50%)',
                       left: 0,
                       top: 66
                     }}
