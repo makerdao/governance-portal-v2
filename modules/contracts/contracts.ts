@@ -16,20 +16,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
-    name: 'chiefOld',
-    address: {
-      [mainnet.id]: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
-      [TENDERLY_CHAIN_ID]: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5'
-    }
-  },
-  {
-    name: 'dai',
-    address: {
-      [mainnet.id]: '0x6b175474e89094c44da98b954eedeac495271d0f',
-      [TENDERLY_CHAIN_ID]: '0x6b175474e89094c44da98b954eedeac495271d0f'
-    }
-  },
-  {
     name: 'dssSpell',
     address: {
       // This is an arbitrary spell address that must be changed with each implementation
@@ -42,20 +28,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     address: {
       [mainnet.id]: '0x0e2e8F1D1326A4B9633D96222Ce399c708B19c28',
       [TENDERLY_CHAIN_ID]: '0x0e2e8F1D1326A4B9633D96222Ce399c708B19c28'
-    }
-  },
-  {
-    name: 'iou',
-    address: {
-      [mainnet.id]: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7',
-      [TENDERLY_CHAIN_ID]: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7'
-    }
-  },
-  {
-    name: 'iouOld',
-    address: {
-      [mainnet.id]: '0x496C67A4CEd9C453A60F3166AB4B329870c8E355',
-      [TENDERLY_CHAIN_ID]: '0x496C67A4CEd9C453A60F3166AB4B329870c8E355'
     }
   },
   {
@@ -115,24 +87,10 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
-    name: 'voteDelegateFactoryOld',
-    address: {
-      [mainnet.id]: '0xD897F108670903D1d6070fcf818f9db3615AF272',
-      [TENDERLY_CHAIN_ID]: '0xD897F108670903D1d6070fcf818f9db3615AF272'
-    }
-  },
-  {
     name: 'voteProxyFactory',
     address: {
       [mainnet.id]: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408',
       [TENDERLY_CHAIN_ID]: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408'
-    }
-  },
-  {
-    name: 'voteProxyFactoryOld',
-    address: {
-      [mainnet.id]: '0xa63E145309cadaa6A903a19993868Ef7E85058BE',
-      [TENDERLY_CHAIN_ID]: '0xa63E145309cadaa6A903a19993868Ef7E85058BE'
     }
   },
   {
