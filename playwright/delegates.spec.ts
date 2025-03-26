@@ -8,8 +8,15 @@ test('delegate MKR', async ({ page }) => {
 
   await connectWallet(page);
 
+  // TODO: V2 delegates don't show up in tenderly e2e fork as contracts so their delegated amount doesn't show up
+  // neither does the delegation actions work
+  // Open dropdown
+  await page.locator('[data-reach-listbox-input] [role="button"]').click();
+  // Select option Lowest first
+  await page.locator('li[role="option"]:has-text("MKR delegated: highest first")').click();
+
   // Click delegate button
-  await page.locator('[data-testid="button-delegate"]').first().click();
+  await page.locator('[data-testid="button-delegate"]:enabled').first().click();
 
   // Approve tx
   await page.locator('button:has-text("Approve Delegate Contract")').click();
