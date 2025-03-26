@@ -112,7 +112,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                 <Heading mb={2} as="h4" sx={{ textAlign: 'left', fontWeight: 'bold' }}>
                   Action required: Migrate your delegated MKR
                 </Heading>
-                <Text as="p" variant="secondary">
+                <Text as="p" variant="secondary" color="text">
                   One or more of your MakerDAO delegate&lsquo;s contracts have been replaced by v2 delegate
                   contracts.{' '}
                 </Text>
@@ -137,10 +137,10 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   <Text as="h2" variant="heading">
                     MKR delegated to v1 delegate contracts
                   </Text>
-                  <Text as="p" variant="secondary" sx={{ mt: 2 }}>
+                  <Text as="p" variant="secondary" color="text" sx={{ mt: 2 }}>
                     Please undelegate your MKR from the old contracts below, one by one.
                   </Text>
-                  <Text as="p" variant="secondary">
+                  <Text as="p" variant="secondary" color="text">
                     An approval transaction will be required if this is your first time undelegating from this
                     contract.
                   </Text>
@@ -165,7 +165,9 @@ export default function DelegateMigrationPage(): React.ReactElement {
                       marginTop: 3,
                       marginBottom: 2,
                       border: '1px dashed #E3E9F0',
-                      borderRadius: 1
+                      borderRadius: 1,
+                      bg: 'backgroundTransparent',
+                      backdropFilter: 'blur(50px)'
                     }}
                   >
                     <Box
@@ -195,10 +197,10 @@ export default function DelegateMigrationPage(): React.ReactElement {
                   <Text as="h2" variant="heading">
                     V2 delegate contracts of your previous delegates
                   </Text>
-                  <Text as="p" variant="secondary" sx={{ mt: 2 }}>
+                  <Text as="p" variant="secondary" color="text" sx={{ mt: 2 }}>
                     Please delegate your MKR to the v2 delegate contracts below, one by one.
                   </Text>
-                  <Text as="p" variant="secondary">
+                  <Text as="p" variant="secondary" color="text">
                     An approval transaction will be required if this is your first time delegating to this
                     contract.
                   </Text>
