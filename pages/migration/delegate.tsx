@@ -21,7 +21,6 @@ import { NewAddress } from 'modules/migration/components/NewAddress';
 import { ConnectWallet } from 'modules/migration/components/ConnectWallet';
 import { NewDelegateContract } from 'modules/migration/components/NewDelegateContract';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
-import { useHasV1VoteDelegate } from 'modules/delegates/hooks/useHasV2VoteDelegate';
 
 export default function DelegateMigrationPage(): React.ReactElement {
   const { signMessageAsync } = useSignMessage();
@@ -38,9 +37,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
     latestOwnerHasDelegateContract
   } = useLinkedDelegateInfo();
 
-  //if latest is a v1 delegate contract, then they still haven't started the v2 linking process
-  const { data: latestIsV1Delegate } = useHasV1VoteDelegate(latestOwnerAddress);
-  const connectedAddressFound = (!!originalOwnerAddress || !!latestOwnerAddress) && !latestIsV1Delegate;
+  const connectedAddressFound = !!originalOwnerAddress || !!latestOwnerAddress;
 
   // the user should be shown the steps to take action if:
   // a - the connected account needs to migrate to v2
