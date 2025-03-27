@@ -23,6 +23,7 @@ import { DialogContent, DialogOverlay } from '../../Dialog';
 import { useAccount as useAccountWagmi, useConnect, useDisconnect } from 'wagmi';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { SupportedConnectors } from 'modules/web3/constants/networks';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -123,14 +124,13 @@ const AccountSelect = (): React.ReactElement => {
         <Alert variant="notice" sx={{ mt: 2, fontSize: 1, width: '100%' }}>
           <span>
             MetaMask is temporarily experiencing issues on Firefox. See{' '}
-            <a
+            <ExternalLink
               href="https://github.com/MetaMask/metamask-extension/pull/31119"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{ color: 'primary' }}
+              styles={{ color: 'primary', textDecoration: 'underline' }}
+              title="link to https://github.com/MetaMask/metamask-extension/pull/31119"
             >
-              this issue
-            </a>{' '}
+              <span>this issue</span>
+            </ExternalLink>{' '}
             for more details.
           </span>
         </Alert>
