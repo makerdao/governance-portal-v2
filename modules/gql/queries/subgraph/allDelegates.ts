@@ -15,7 +15,6 @@ export const allDelegates = gql`
       ownerAddress
       id
       totalDelegated
-      version
       voter {
         lastVotedTimestamp
       }

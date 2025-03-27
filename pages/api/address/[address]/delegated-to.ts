@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
-import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
+import { DelegationHistory } from 'modules/delegates/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -64,13 +64,6 @@ import { formatEther } from 'viem';
  *                       delegate:
  *                         type: string
  *                         format: address
- *                       expirationDate:
- *                         type: string
- *                         format: date-time
- *                       isAboutToExpire:
- *                         type: boolean
- *                       isExpired:
- *                         type: boolean
  *                       isRenewed:
  *                         type: boolean
  *                 totalDelegated:
@@ -80,7 +73,7 @@ import { formatEther } from 'viem';
  */
 
 export type MKRDelegatedToAPIResponse = {
-  delegatedTo: DelegationHistoryWithExpirationDate[];
+  delegatedTo: DelegationHistory[];
   totalDelegated: number;
 };
 export default withApiHandler(
@@ -112,7 +105,7 @@ export default withApiHandler(
     );
 
     // if hasProxy, we need to combine the delegation history of hot, cold, proxy
-    let delegatedTo: DelegationHistoryWithExpirationDate[];
+    let delegatedTo: DelegationHistory[];
 
     if (proxyInfo.hasProxy && proxyInfo.coldAddress && proxyInfo.hotAddress && proxyInfo.voteProxyAddress) {
       const [coldHistory, hotHistory, proxyHistory] = await Promise.all([

@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 export enum DelegateStatusEnum {
   aligned = 'aligned',
-  expired = 'expired',
   shadow = 'shadow'
 }
 

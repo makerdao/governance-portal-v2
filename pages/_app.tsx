@@ -27,7 +27,6 @@ import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import Banner from 'modules/app/components/layout/header/Banner';
 import bannerContent from 'modules/home/data/bannerContent.json';
-import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
 import React, { useMemo } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { WagmiProvider } from 'wagmi';
@@ -57,7 +56,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
             variant={activeBannerContent.variant}
           />
         )}
-        <MigrationBanner />
       </React.Fragment>
     );
   }, []);

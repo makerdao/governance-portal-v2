@@ -10,7 +10,7 @@ import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
+import { DelegationHistory } from 'modules/delegates/types';
 import { useState } from 'react';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { formatDateWithTime } from 'lib/datetime';
@@ -19,13 +19,12 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import AddressIconBox from './AddressIconBox';
 import { parseEther } from 'viem';
 import { formatValue } from 'lib/string';
-import { DateWithHover } from 'modules/app/components/DateWithHover';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { calculatePercentage } from 'lib/utils';
 
 type CollapsableRowProps = {
-  delegate: DelegationHistoryWithExpirationDate;
+  delegate: DelegationHistory;
   network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
@@ -37,19 +36,8 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
 
-  const hasExpiration = !!delegate.expirationDate;
-  const formattedDate = delegate.expirationDate ? formatDateWithTime(delegate.expirationDate) : '';
-  const dateText = delegate.isExpired
-    ? `This contract expired ${formattedDate}`
-    : `This contract will expire ${formattedDate}`;
-
   return (
-    <Box
-      as="tr"
-      sx={{
-        color: delegate.isExpired ? 'warning' : delegate.isAboutToExpire ? 'voterYellow' : 'onSecondary'
-      }}
-    >
+    <Box as="tr" sx={{ color: 'onSecondary' }}>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
           <InternalLink
@@ -134,13 +122,6 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           )}
         </Flex>
       </Box>
-      {hasExpiration && (
-        <Box as="td" sx={{ verticalAlign: 'top', pt: 2, display: bpi > 1 ? 'table-cell' : 'none' }}>
-          <Text variant="caps" sx={{ color: 'inherit' }}>
-            <DateWithHover label={dateText} date={delegate.expirationDate} />
-          </Text>
-        </Box>
-      )}
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
@@ -190,7 +171,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
 };
 
 type AddressDelegatedToProps = {
-  delegatedTo: DelegationHistoryWithExpirationDate[];
+  delegatedTo: DelegationHistory[];
   totalDelegated: number;
 };
 
@@ -221,13 +202,6 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToP
                   <Icon name="question" ml={1} />
                 </Flex>
               </Tooltip>
-            </Text>
-            <Text
-              as="th"
-              sx={{ textAlign: 'left', pb: 2, width: '20%', display: bpi > 1 ? 'table-cell' : 'none' }}
-              variant="caps"
-            >
-              Expiry Date
             </Text>
             <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '10%' }} variant="caps">
               Expand
