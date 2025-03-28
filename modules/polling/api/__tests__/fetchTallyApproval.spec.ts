@@ -126,7 +126,7 @@ describe('Fetch tally approval', () => {
   });
 
   it('gives no option as winner if both have the same MKR voting weight', async () => {
-    (gqlRequest as Mock).mockResolvedValue({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {

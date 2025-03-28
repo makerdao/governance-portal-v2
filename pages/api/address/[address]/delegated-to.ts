@@ -17,7 +17,7 @@ import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
 import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
-import { formatEther, parseEther } from 'viem';
+import { formatEther } from 'viem';
 /**
  * @swagger
  * /api/address/[address]/delegated-to:
@@ -138,7 +138,7 @@ export default withApiHandler(
     });
 
     const totalDelegated = filtered.reduce((prev, next) => {
-      return prev + parseEther(next.lockAmount);
+      return prev + BigInt(next.lockAmount);
     }, 0n);
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

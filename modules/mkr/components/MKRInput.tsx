@@ -66,7 +66,8 @@ export function MKRInput({
   const onClickSetMax = () => {
     const val = balance ? balance : 0n;
     onChange(val);
-    setCurrentValueStr(formatValue(val, 'wad', 6));
+    const formattedValue = formatValue(val, 'wad', 6).replace(/,/g, '');
+    setCurrentValueStr(formattedValue);
   };
 
   const errorMax = value !== undefined && value > (balance || 0n);
