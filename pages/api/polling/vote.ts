@@ -147,7 +147,7 @@ export default withApiHandler(
       signature
     );
 
-    if (isSignatureValid) {
+    if (!isSignatureValid) {
       await throwError({ error: API_VOTE_ERRORS.VOTER_AND_SIGNER_DIFFER, body: req.body, skipDiscord });
     }
 

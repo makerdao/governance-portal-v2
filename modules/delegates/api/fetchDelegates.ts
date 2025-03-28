@@ -7,7 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { fetchChainDelegates } from './fetchChainDelegates';
-import { DelegateOrderByEnum, DelegateStatusEnum, DelegateTypeEnum } from 'modules/delegates/delegates.constants';
+import {
+  DelegateOrderByEnum,
+  DelegateStatusEnum,
+  DelegateTypeEnum
+} from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { add, isBefore } from 'date-fns';
@@ -35,7 +39,10 @@ import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { delegatesQuerySubsequentPages, delegatesQueryFirstPage } from 'modules/gql/queries/subgraph/delegates';
+import {
+  delegatesQuerySubsequentPages,
+  delegatesQueryFirstPage
+} from 'modules/gql/queries/subgraph/delegates';
 import { lastVotedArbitrum } from 'modules/gql/queries/subgraph/lastVotedArbitrum';
 import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
@@ -340,9 +347,11 @@ export async function fetchAndMergeDelegates(
     const newContractAddress = allDelegateAddresses.find(del => del.delegate === latestOwner)?.voteDelegate;
 
     const ghDelegate = githubDelegates?.find(del =>
-      [delegate.voteDelegate.toLowerCase(), oldContractAddress?.toLowerCase(), newContractAddress?.toLowerCase()].includes(
-        del.voteDelegateAddress.toLowerCase()
-      )
+      [
+        delegate.voteDelegate.toLowerCase(),
+        oldContractAddress?.toLowerCase(),
+        newContractAddress?.toLowerCase()
+      ].includes(del.voteDelegateAddress.toLowerCase())
     );
 
     const expirationDate =
@@ -484,32 +493,32 @@ export async function fetchDelegatesPaginated({
     if (delegateType === DelegateTypeEnum.ALIGNED) {
       baseDelegatesQueryFilter.and.push({ id_in: alignedDelegatesAddresses });
       baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddresses });
-    } 
+    }
   } else if (delegateType === DelegateTypeEnum.ALIGNED) {
     baseDelegatesQueryFilter.and.push({ id_in: alignedDelegatesAddresses });
   } else if (delegateType === DelegateTypeEnum.SHADOW) {
     baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddresses });
   }
   if (!includeExpired) {
-    baseDelegatesQueryFilter.and.push({ 
+    baseDelegatesQueryFilter.and.push({
       or: [
-        { version: '2'},
-        { and: [{ version: '1', blockTimestamp_gt: Math.floor(Date.now()/1000 - 365*24*60*60) }] }
-      ] 
+        { version: '2' },
+        { and: [{ version: '1', blockTimestamp_gt: Math.floor(Date.now() / 1000 - 365 * 24 * 60 * 60) }] }
+      ]
     });
   }
 
   //get all aligned delegates (that match the filter)for the first page
-  const alignedFilterFirstPage = { 
+  const alignedFilterFirstPage = {
     and: [...(baseDelegatesQueryFilter.and || []), { id_in: alignedDelegatesAddresses }]
   };
   //use this for subsequent pages as well as part of the first page
-  const shadowFilterFirstPage = { 
-    and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddresses }] 
+  const shadowFilterFirstPage = {
+    and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddresses }]
   };
 
   const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.MKR : orderBy;
-  
+
   const delegatesQueryFirstPageVariables = {
     first: pageSize,
     orderBy: queryOrderBy,
@@ -518,7 +527,7 @@ export async function fetchDelegatesPaginated({
     shadowFilter: shadowFilterFirstPage,
     alignedDelegates: alignedDelegatesAddresses
   };
-  
+
   const delegatesQuerySubsequentPagesVariables = {
     first: pageSize,
     skip: (page - 1) * pageSize,
@@ -538,11 +547,15 @@ export async function fetchDelegatesPaginated({
     }),
     fetchDelegationMetrics(network)
   ]);
-  
-  let combinedDelegates = [ ...(delegatesQueryRes.alignedDelegates || []), ...(delegatesQueryRes.delegates || [])];
 
-  const combinedDelegateOwnerAddresses = combinedDelegates.map(delegate => delegate.ownerAddress.toLowerCase());
+  let combinedDelegates = [
+    ...(delegatesQueryRes.alignedDelegates || []),
+    ...(delegatesQueryRes.delegates || [])
+  ];
 
+  const combinedDelegateOwnerAddresses = combinedDelegates.map(delegate =>
+    delegate.ownerAddress.toLowerCase()
+  );
 
   const lastVotedArbitrumArray = await gqlRequest<any>({
     chainId: networkNameToChainId('arbitrum'), //TODO: update this if we add arbitrum sepolia support
@@ -551,18 +564,16 @@ export async function fetchDelegatesPaginated({
     variables: { argAddresses: combinedDelegateOwnerAddresses }
   });
 
-
   const lastVotedArbitrumObj = lastVotedArbitrumArray.arbitrumVoters.reduce((acc, voter) => {
     acc[voter.id] = voter.pollVotes && voter.pollVotes.length > 0 ? Number(voter.pollVotes[0].blockTime) : 0;
     return acc;
   }, {});
 
-  
   // Apply random sorting on the frontend if orderBy is RANDOM
   if (orderBy === DelegateOrderByEnum.RANDOM) {
     combinedDelegates = combinedDelegates.sort(() => Math.random() - 0.5);
   }
-  
+
   const delegatesData = {
     paginationInfo: {
       totalCount: delegatesQueryRes.delegates.totalCount,
@@ -641,9 +652,12 @@ export async function fetchDelegatesPaginated({
         finalExpirationDate = expirationDate;
       }
 
-      const isExpired = delegate.delegateVersion === 2 
-        ? false 
-        : finalExpirationDate ? isBefore(new Date(finalExpirationDate), new Date()) : false;
+      const isExpired =
+        delegate.delegateVersion === 2
+          ? false
+          : finalExpirationDate
+          ? isBefore(new Date(finalExpirationDate), new Date())
+          : false;
 
       const lastVoteMainnet = delegate.voter.lastVotedTimestamp || 0;
 
@@ -658,8 +672,8 @@ export async function fetchDelegatesPaginated({
         status: isExpired
           ? DelegateStatusEnum.expired
           : githubDelegate
-            ? DelegateStatusEnum.aligned
-            : DelegateStatusEnum.shadow,
+          ? DelegateStatusEnum.aligned
+          : DelegateStatusEnum.shadow,
         creationDate: finalCreationDate,
         expirationDate: delegate.delegateVersion === 2 ? undefined : finalExpirationDate,
         expired: isExpired,
@@ -667,8 +681,8 @@ export async function fetchDelegatesPaginated({
           delegate.delegateVersion === 2
             ? false
             : finalExpirationDate
-              ? isAboutToExpireCheck(finalExpirationDate)
-              : false,
+            ? isAboutToExpireCheck(finalExpirationDate)
+            : false,
         picture: githubDelegate?.picture,
         communication: githubDelegate?.communication,
         combinedParticipation: githubDelegate?.combinedParticipation,

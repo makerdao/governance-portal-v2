@@ -70,12 +70,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
       return [];
     }
 
-    return addressDelegations.delegates.filter(delegate => {
-      const isPreviousDelegate = delegatesThatAreV1.find(
-        i => i.address.toLowerCase() === delegate.previous?.address.toLowerCase()
-      );
-      return delegate.delegateVersion === 2;
-    });
+    return addressDelegations.delegates.filter(delegate => delegate.delegateVersion === 2);
   }, [addressDelegations, delegatesThatAreV1]);
 
   // UI loading states
