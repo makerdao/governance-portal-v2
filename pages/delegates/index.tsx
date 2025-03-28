@@ -27,7 +27,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { DelegatesStatusFilter } from 'modules/delegates/components/filters/DelegatesStatusFilter';
 import { DelegatesSortFilter } from 'modules/delegates/components/filters/DelegatesSortFilter';
-import { DelegatesShowExpiredFilter } from 'modules/delegates/components/filters/DelegatesShowExpiredFilter';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -63,7 +62,6 @@ const Delegates = ({
   const [
     showAligned,
     showShadow,
-    showExpired,
     sort,
     sortDirection,
     name,
@@ -75,7 +73,6 @@ const Delegates = ({
     state => [
       state.filters.showAligned,
       state.filters.showShadow,
-      state.filters.showExpired,
       state.sort,
       state.sortDirection,
       state.filters.name,
@@ -116,7 +113,6 @@ const Delegates = ({
     sort,
     sortDirection,
     searchTerm: name,
-    showExpired,
     delegateType:
       showAligned && showShadow
         ? DelegateTypeEnum.ALL
@@ -156,8 +152,7 @@ const Delegates = ({
           orderBy: filters.sort,
           orderDirection: filters.sortDirection,
           seed,
-          searchTerm: filters.searchTerm,
-          includeExpired: filters.showExpired
+          searchTerm: filters.searchTerm
         };
 
         const res = await fetchDelegatesPageData(network, true, queryParams);
@@ -192,7 +187,6 @@ const Delegates = ({
         sort,
         sortDirection,
         searchTerm: name,
-        showExpired,
         delegateType:
           showAligned && showShadow
             ? DelegateTypeEnum.ALL
@@ -201,7 +195,7 @@ const Delegates = ({
             : DelegateTypeEnum.ALIGNED
       });
     }
-  }, [sort, sortDirection, name, showAligned, showShadow, showExpired]);
+  }, [sort, sortDirection, name, showAligned, showShadow]);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
@@ -219,17 +213,11 @@ const Delegates = ({
     '0px'
   );
 
-  const [alignedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
-    const aligned = delegates.filter(
-      delegate => delegate.status === DelegateStatusEnum.aligned && !delegate.expired
-    );
+  const [alignedDelegates, shadowDelegates] = useMemo(() => {
+    const aligned = delegates.filter(delegate => delegate.status === DelegateStatusEnum.aligned);
+    const shadow = delegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow);
 
-    const shadow = delegates.filter(
-      delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired
-    );
-
-    const expired = delegates.filter(delegate => delegate.expired === true);
-    return [aligned, shadow, expired];
+    return [aligned, shadow];
   }, [delegates, propDelegates]);
 
   return (
@@ -270,7 +258,6 @@ const Delegates = ({
                 />
                 <DelegatesSortFilter />
                 <DelegatesStatusFilter stats={stats} />
-                <DelegatesShowExpiredFilter sx={{ ml: 2 }} />
               </Flex>
               <Button
                 variant={'outline'}
@@ -291,7 +278,7 @@ const Delegates = ({
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              {[...alignedDelegates, ...shadowDelegates, ...expiredDelegates].length === 0 && !loading && (
+              {[...alignedDelegates, ...shadowDelegates].length === 0 && !loading && (
                 <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
                   <Flex
                     sx={{
@@ -343,24 +330,6 @@ const Delegates = ({
                   <Heading as="h1">Shadow Delegates</Heading>
 
                   {shadowDelegates.map(delegate => (
-                    <Box key={delegate.voteDelegateAddress} sx={{ mb: 3 }}>
-                      <ErrorBoundary componentName="Delegate Card">
-                        <DelegateOverviewCard
-                          delegate={delegate}
-                          setStateDelegates={setDelegates}
-                          onVisitDelegate={onVisitDelegate}
-                        />
-                      </ErrorBoundary>
-                    </Box>
-                  ))}
-                </Stack>
-              )}
-
-              {expiredDelegates.length > 0 && (
-                <Stack gap={3}>
-                  <Heading as="h1">Expired Delegates</Heading>
-
-                  {expiredDelegates.map(delegate => (
                     <Box key={delegate.voteDelegateAddress} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
                         <DelegateOverviewCard
@@ -537,17 +506,6 @@ export const getStaticProps: GetStaticProps = async () => {
       } catch (e) {
         // If invalid date, use current date
         serialized.creationDate = new Date();
-      }
-    }
-
-    // Handle expirationDate
-    if (serialized.expirationDate instanceof Date) {
-      try {
-        // Test if the date is valid
-        serialized.expirationDate.toISOString();
-      } catch (e) {
-        // If invalid date, set to undefined
-        serialized.expirationDate = undefined;
       }
     }
 

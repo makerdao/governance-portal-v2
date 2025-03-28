@@ -31,7 +31,6 @@ export type DelegatesValidatedQueryParams = {
   network: SupportedNetworks;
   pageSize: number;
   page: number;
-  includeExpired: boolean;
   orderBy: string;
   orderDirection: string;
   seed: number | null;

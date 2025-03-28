@@ -153,7 +153,6 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted
-            expired={false}
             date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
           />
         </Box>

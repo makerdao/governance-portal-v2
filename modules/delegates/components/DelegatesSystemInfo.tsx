@@ -14,10 +14,7 @@ import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { Tokens } from 'modules/web3/constants/tokens';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-import {
-  voteDelegateFactoryAddress as voteDelegateFactoryAddressMapping,
-  voteDelegateFactoryOldAddress as voteDelegateFactoryOldAddressMapping
-} from 'modules/contracts/generated';
+import { voteDelegateFactoryAddress as voteDelegateFactoryAddressMapping } from 'modules/contracts/generated';
 import { useChainId } from 'wagmi';
 import { calculatePercentage } from 'lib/utils';
 import { parseEther } from 'viem';
@@ -25,7 +22,6 @@ import { parseEther } from 'viem';
 export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): React.ReactElement {
   const chainId = useChainId();
   const delegateFactoryAddress = voteDelegateFactoryAddressMapping[chainId];
-  const oldDelegateFactoryAddress = voteDelegateFactoryOldAddressMapping[chainId];
   const network = useNetwork();
 
   const { data: totalMkr } = useTotalSupply(Tokens.MKR);
@@ -78,16 +74,6 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>V2 delegate factory</Text>
             {delegateFactoryAddress ? (
               <EtherscanLink type="address" showAddress hash={delegateFactoryAddress} network={network} />
-            ) : (
-              <Box sx={{ width: 6 }}>
-                <SkeletonThemed />
-              </Box>
-            )}
-          </Flex>
-          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>V1 delegate factory</Text>
-            {oldDelegateFactoryAddress ? (
-              <EtherscanLink type="address" showAddress hash={oldDelegateFactoryAddress} network={network} />
             ) : (
               <Box sx={{ width: 6 }}>
                 <SkeletonThemed />

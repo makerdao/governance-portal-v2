@@ -52,12 +52,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *             type: integer
  *             minimum: 1
  *           default: 1
- *         - name: includeExpired
- *           description: Whether to include expired delegates. Defaults to false.
- *           in: query
- *           schema:
- *             type: boolean
- *           default: false
  *         - name: orderBy
  *           description: The field to sort the delegates by. Defaults to DATE.
  *           in: query
@@ -133,7 +127,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       type: string
  *       enum:
  *         - aligned
- *         - expired
  *         - shadow
  *     DelegatePaginated:
  *       type: object
@@ -151,13 +144,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         creationDate:
  *           type: string
  *           format: date-time
- *         expirationDate:
- *           type: string
- *           format: date-time
- *         expired:
- *           type: boolean
- *         isAboutToExpire:
- *           type: boolean
  *         picture:
  *           type: string
  *         communication:
@@ -206,9 +192,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         - address
  *         - status
  *         - creationDate
- *         - expirationDate
- *         - expired
- *         - isAboutToExpire
  *         - mkrDelegated
  *         - delegatorCount
  *         - proposalsSupported
@@ -256,10 +239,6 @@ export default withApiHandler(
       minValue: 1
     }) as number;
 
-    const includeExpired = validateQueryParam(req.query.includeExpired, 'boolean', {
-      defaultValue: false
-    }) as boolean;
-
     const orderBy = validateQueryParam(req.query.orderBy, 'string', {
       defaultValue: DelegateOrderByEnum.DATE,
       validValues: [
@@ -294,12 +273,11 @@ export default withApiHandler(
       network,
       pageSize,
       page,
-      includeExpired,
       orderBy,
       orderDirection,
       seed,
       delegateType,
-      searchTerm,
+      searchTerm
     });
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

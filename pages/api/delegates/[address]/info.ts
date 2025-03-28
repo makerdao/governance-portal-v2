@@ -61,7 +61,6 @@ import { ApiError } from 'modules/app/api/ApiError';
  *        type: string
  *        enum:
  *          - aligned
- *          - expired
  *          - shadow
  *      cuMember:
  *        type: boolean
@@ -76,13 +75,6 @@ import { ApiError } from 'modules/app/api/ApiError';
  *      blockTimestamp:
  *        type: string
  *        format: date-time
- *      expirationDate:
- *        type: string
- *        format: date-time
- *      expired:
- *        type: boolean
- *      isAboutToExpire:
- *        type: boolean
  *      previous:
  *        type: object
  *        properties:
@@ -99,9 +91,6 @@ import { ApiError } from 'modules/app/api/ApiError';
  *      - voteDelegateAddress
  *      - status
  *      - blockTimestamp
- *      - expirationDate
- *      - expired
- *      - isAboutToExpire
  */
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegateInfo | null>) => {

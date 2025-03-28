@@ -26,8 +26,6 @@ import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
-import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
-import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
@@ -46,12 +44,7 @@ const AccountPage = (): React.ReactElement => {
     votingAccount
   } = useAccount();
 
-  const { latestOwnerConnected, latestOwnerHasDelegateContract, originalOwnerAddress } =
-    useLinkedDelegateInfo();
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
-  const { data: originalOwnerContractAddress } = useVoteDelegateAddress(
-    originalOwnerAddress as `0x${string}` | undefined
-  );
   const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -130,18 +123,6 @@ const AccountPage = (): React.ReactElement => {
                     />
                   </Box>
                 )}
-                {latestOwnerConnected && originalOwnerContractAddress && (
-                  <Box sx={{ mb: 2 }}>
-                    <Label>Original delegate contract address:</Label>
-
-                    <EtherscanLink
-                      type="address"
-                      showAddress
-                      hash={originalOwnerContractAddress}
-                      network={network}
-                    />
-                  </Box>
-                )}
                 {voteDelegateContractAddress && !modalOpen && (
                   <Box sx={{ mb: 2 }}>
                     <Label>FAQ</Label>
@@ -159,11 +140,7 @@ const AccountPage = (): React.ReactElement => {
                 )}
                 {!voteDelegateContractAddress && (
                   <Box>
-                    <Label>
-                      {latestOwnerConnected && !latestOwnerHasDelegateContract
-                        ? 'Create a new delegate contract'
-                        : 'No vote delegate contract detected'}
-                    </Label>
+                    <Label>No vote delegate contract detected</Label>
                     {txStatus !== TxStatus.IDLE && (
                       <DialogOverlay
                         isOpen={modalOpen}
