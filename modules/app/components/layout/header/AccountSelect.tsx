@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
+import { Box, Flex, Text, Button, Close, ThemeUICSSObject, Alert } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import AccountBox from './AccountBox';
@@ -20,8 +20,10 @@ import { useRouter } from 'next/router';
 import { isSupportedChain } from 'modules/web3/helpers/chain';
 import logger from 'lib/logger';
 import { DialogContent, DialogOverlay } from '../../Dialog';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount as useAccountWagmi, useConnect, useDisconnect } from 'wagmi';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { SupportedConnectors } from 'modules/web3/constants/networks';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -34,6 +36,8 @@ const closeButtonStyle: ThemeUICSSObject = {
 
 const AccountSelect = (): React.ReactElement => {
   const router = useRouter();
+  const isFirefox = typeof window !== 'undefined' && navigator.userAgent.toLowerCase().includes('firefox');
+
   const { connectors, connect } = useConnect({
     mutation: {
       onSuccess: () => {
@@ -55,7 +59,8 @@ const AccountSelect = (): React.ReactElement => {
   });
 
   const { disconnect } = useDisconnect();
-  const { address, connector: connectedConnector, chainId } = useAccount();
+  const { connector: connectedConnector, chainId } = useAccountWagmi();
+  const { account: address } = useAccount();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -89,24 +94,47 @@ const AccountSelect = (): React.ReactElement => {
   const walletOptions = connectors.map((connector, index) => (
     <Flex
       key={connector.id}
-      sx={{ alignItems: 'center', justifyContent: 'space-between', mt: index !== 0 ? 3 : 0 }}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        mt: index !== 0 ? 3 : 0,
+        flexDirection: 'column'
+      }}
     >
-      <Flex sx={{ alignItems: 'center' }}>
-        <Icon
-          name={connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name}
-          color="text"
-        />
-        <Text sx={{ ml: 3 }}>{connector.name}</Text>
+      <Flex sx={{ alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+        <Flex sx={{ alignItems: 'center' }}>
+          <Icon
+            name={connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name}
+            color="text"
+          />
+          <Text sx={{ ml: 3 }}>{connector.name}</Text>
+        </Flex>
+        <Button
+          sx={{ minWidth: '120px' }}
+          variant="mutedOutline"
+          key={connector.id}
+          onClick={() => connect({ connector })}
+          data-testid={`select-wallet-${connector.id}`}
+          disabled={connectedConnector?.id === connector.id}
+        >
+          {connectedConnector?.id === connector.id ? 'Connected' : 'Select'}
+        </Button>
       </Flex>
-      <Button
-        sx={{ minWidth: '120px' }}
-        variant="mutedOutline"
-        key={connector.id}
-        onClick={() => connect({ connector })}
-        data-testid={`select-wallet-${connector.id}`}
-      >
-        Select
-      </Button>
+      {isFirefox && connector.id === 'metaMaskSDK' && (
+        <Alert variant="notice" sx={{ mt: 2, fontSize: 1, width: '100%' }}>
+          <span>
+            MetaMask is temporarily experiencing issues on Firefox. See{' '}
+            <ExternalLink
+              href="https://github.com/MetaMask/metamask-extension/pull/31119"
+              styles={{ color: 'primary', textDecoration: 'underline' }}
+              title="link to https://github.com/MetaMask/metamask-extension/pull/31119"
+            >
+              <span>this issue</span>
+            </ExternalLink>{' '}
+            for more details.
+          </span>
+        </Alert>
+      )}
     </Flex>
   ));
 

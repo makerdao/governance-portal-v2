@@ -6,11 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Flex, Text, NavLink } from 'theme-ui';
+import { Flex, Text, NavLink, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
+import { useSwitchChain } from 'wagmi';
+import { SupportedChainId } from '../constants/chainID';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -22,6 +24,7 @@ export const NetworkAlertModal = ({
   deactivate: () => void;
 }): JSX.Element | null => {
   const network = useNetwork();
+  const { switchChain } = useSwitchChain();
 
   if (chainIdError === 'network mismatch') {
     return (
@@ -52,7 +55,7 @@ export const NetworkAlertModal = ({
     return (
       <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
         <DialogContent aria-label="Unsupported Network">
-          <Flex sx={{ flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+          <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
             <Flex sx={{ alignItems: 'center' }}>
               <Text variant="microHeading" sx={{ alignItems: 'center' }}>
                 Warning
@@ -60,11 +63,13 @@ export const NetworkAlertModal = ({
               <Icon name="warning" sx={{ ml: 3, width: '23px', height: '23px' }} />
             </Flex>
 
-            <Text sx={{ mt: 3 }}>
+            <Text sx={{ mt: 3, mb: 3 }}>
               Your wallet is connected to an unsupported network, please switch it to{' '}
               {SupportedNetworks.MAINNET} to continue.
             </Text>
-            {/* <Button onClick={() => handleSwitchNetwork(SupportedNetworks.MAINNET)}>Switch to mainnet</Button>*/}
+            <Button onClick={() => switchChain({ chainId: SupportedChainId.MAINNET })}>
+              Switch to mainnet
+            </Button>
           </Flex>
         </DialogContent>
       </DialogOverlay>

@@ -12,12 +12,13 @@ import { Poll } from '../../types';
 
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { gqlRequest } from 'modules/gql/gqlRequest';
+import { Mock, vi } from 'vitest';
 
-jest.mock('modules/gql/gqlRequest');
+vi.mock('modules/gql/gqlRequest');
 
 describe('Sort Polls', () => {
   beforeAll(() => {
-    (gqlRequest as jest.Mock).mockResolvedValue({
+    (gqlRequest as Mock).mockResolvedValue({
       activePolls: {
         nodes: [],
         edges: []
