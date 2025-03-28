@@ -20,7 +20,8 @@ export const tenderly = {
   },
   blockExplorers: {
     default: { name: '', url: '' }
-  }
+  },
+  contracts: mainnet.contracts
 };
 
 const connectors = [
