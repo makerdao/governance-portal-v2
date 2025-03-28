@@ -56,6 +56,6 @@ export function formatValue(
   if (+formatted > 999) dp = 0;
   const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
   if (+fixed < 0.01 && roundDown) return '≈0.00';
-  const finished = withCommas ? (+fixed).toLocaleString() : fixed;
+  const finished = withCommas ? (+fixed).toLocaleString(undefined, { maximumFractionDigits: dp }) : fixed;
   return finished;
 }

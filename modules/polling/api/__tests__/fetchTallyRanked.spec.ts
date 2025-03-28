@@ -11,7 +11,9 @@ import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
-jest.mock('modules/gql/gqlRequest');
+import { Mock, vi } from 'vitest';
+
+vi.mock('modules/gql/gqlRequest');
 
 const fromBuffer = (buf, opts?) => {
   if (!opts) {
@@ -65,7 +67,7 @@ describe('Fetch tally ranked', () => {
   } as any as Poll;
 
   it('gives expected results for a tally with majority', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -91,14 +93,14 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       winningOptionName: 'Third',
       victoryConditionMatched: 0,
-      totalMkrParticipation: '324.692625397295750537',
-      totalMkrActiveParticipation: '324.692625397295750537',
+      totalMkrActiveParticipation: '324692625397295750537',
+      totalMkrParticipation: '324692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
-          mkrSupport: '200.598801867883985831',
-          firstPct: 61.78113889172264,
+          firstPct: 61.7811,
+          mkrSupport: '200598801867883985831',
           transfer: '0',
           transferPct: 0,
           winner: true,
@@ -107,8 +109,8 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '64.068823529411764706',
-          firstPct: 19.732146195503145,
+          firstPct: 19.7321,
+          mkrSupport: '64068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -117,8 +119,8 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 1,
           optionName: 'First',
-          firstPct: 18.486714912774218,
-          mkrSupport: '60.025',
+          firstPct: 18.4867,
+          mkrSupport: '60025000000000000000',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -147,7 +149,7 @@ describe('Fetch tally ranked', () => {
     expect(result).toEqual(expect.objectContaining(expectedResult));
   });
   it('gives expected results for a tally with no  majority', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -174,24 +176,24 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       winningOptionName: 'Third',
       victoryConditionMatched: 0,
-      totalMkrParticipation: '226.692625397295750537',
-      totalMkrActiveParticipation: '226.692625397295750537',
+      totalMkrActiveParticipation: '226692625397295750537',
+      totalMkrParticipation: '226692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
-          mkrSupport: '102.598801867883985831',
-          firstPct: 45.25899406214557,
-          transfer: '60.025',
-          transferPct: 26.47858521855385,
+          firstPct: 45.259,
+          mkrSupport: '102598801867883985831',
+          transfer: '60025000000000000000',
+          transferPct: 26.4786,
           winner: true,
           eliminated: false
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '64.068823529411764706',
-          firstPct: 28.262420719300582,
+          firstPct: 28.2624,
+          mkrSupport: '64068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -208,10 +210,10 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 1,
           optionName: 'First',
-          firstPct: 26.47858521855385,
-          mkrSupport: '60.025',
-          transfer: '-60.025',
-          transferPct: -26.47858521855385,
+          firstPct: 26.4786,
+          mkrSupport: '60025000000000000000',
+          transfer: '-60025000000000000000',
+          transferPct: -26.4785,
           winner: false,
           eliminated: true
         },
@@ -232,7 +234,7 @@ describe('Fetch tally ranked', () => {
   });
 
   it('gives expected results for a tally with multiple rounds', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -263,24 +265,24 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       winningOptionName: 'Third',
       victoryConditionMatched: 0,
-      totalMkrParticipation: '230.692625397295750537',
-      totalMkrActiveParticipation: '230.692625397295750537',
+      totalMkrActiveParticipation: '230692625397295750537',
+      totalMkrParticipation: '230692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
-          mkrSupport: '102.598801867883985831',
-          firstPct: 44.474244328872544,
-          transfer: '60.025',
-          transferPct: 26.019470668655206,
+          firstPct: 44.4742,
+          mkrSupport: '102598801867883985831',
+          transfer: '60025000000000000000',
+          transferPct: 26.0195,
           winner: true,
           eliminated: false
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '64.068823529411764706',
-          firstPct: 27.77237608661018,
+          firstPct: 27.7724,
+          mkrSupport: '64068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -289,10 +291,10 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 1,
           optionName: 'First',
-          firstPct: 26.019470668655206,
-          mkrSupport: '60.025',
-          transfer: '-56.025',
-          transferPct: -24.285561752793136,
+          firstPct: 26.0195,
+          mkrSupport: '60025000000000000000',
+          transfer: '-56025000000000000000',
+          transferPct: -24.2855,
           winner: false,
           eliminated: true
         },
@@ -307,10 +309,10 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 4,
           optionName: 'Fourth',
-          firstPct: 1.7339089158620713,
-          mkrSupport: '4',
-          transfer: '-4',
-          transferPct: -1.7339089158620713,
+          firstPct: 1.7339,
+          mkrSupport: '4000000000000000000',
+          transfer: '-4000000000000000000',
+          transferPct: -1.7338,
           winner: false,
           eliminated: true
         }
@@ -322,7 +324,7 @@ describe('Fetch tally ranked', () => {
   });
 
   it('ranked choice tally verify eliminated options cant get votes', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -354,24 +356,24 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       victoryConditionMatched: 0,
       winningOptionName: 'Third',
-      totalMkrParticipation: '220.692625397295750537',
-      totalMkrActiveParticipation: '220.692625397295750537',
+      totalMkrActiveParticipation: '220692625397295750537',
+      totalMkrParticipation: '220692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
-          mkrSupport: '102.598801867883985831',
-          firstPct: 46.48945640262485,
-          transfer: '60.025',
-          transferPct: 27.1984620654821,
+          firstPct: 46.4895,
+          mkrSupport: '102598801867883985831',
+          transfer: '60025000000000000000',
+          transferPct: 27.1985,
           winner: true,
           eliminated: false
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '54.068823529411764706',
-          firstPct: 24.499605925696823,
+          firstPct: 24.4996,
+          mkrSupport: '54068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -380,10 +382,10 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 1,
           optionName: 'First',
-          firstPct: 27.1984620654821,
-          mkrSupport: '60.025',
-          transfer: '-56.025',
-          transferPct: -25.385986459285874,
+          firstPct: 27.1985,
+          mkrSupport: '60025000000000000000',
+          transfer: '-56025000000000000000',
+          transferPct: -25.3859,
           winner: false,
           eliminated: true
         },
@@ -399,10 +401,10 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 4,
           optionName: 'Fourth',
-          firstPct: 1.8124756061962248,
-          mkrSupport: '4',
-          transfer: '-4',
-          transferPct: -1.8124756061962248,
+          firstPct: 1.8125,
+          mkrSupport: '4000000000000000000',
+          transfer: '-4000000000000000000',
+          transferPct: -1.8124,
           winner: false,
           eliminated: true
         }
@@ -423,7 +425,7 @@ describe('Fetch tally ranked', () => {
   // option 1: 201, option 2: 0, option 3: 0, option 4: 0, total: 300
   // winner: option 1
   it('ranked choice tally stop when 1 remains', async () => {
-    (gqlRequest as jest.Mock).mockResolvedValueOnce({
+    (gqlRequest as Mock).mockResolvedValueOnce({
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
@@ -454,16 +456,16 @@ describe('Fetch tally ranked', () => {
       winner: 1,
       victoryConditionMatched: 0,
       winningOptionName: 'First',
-      totalMkrParticipation: '300',
-      totalMkrActiveParticipation: '300',
+      totalMkrParticipation: '300000000000000000000',
+      totalMkrActiveParticipation: '300000000000000000000',
       results: [
         {
           optionId: 1,
           optionName: 'First',
-          firstPct: 33.666666666666664,
-          mkrSupport: '101',
-          transfer: '100',
-          transferPct: 33.333333333333336,
+          firstPct: 33.6667,
+          mkrSupport: '101000000000000000000',
+          transfer: '100000000000000000000',
+          transferPct: 33.3333,
           winner: true,
           eliminated: false
         },
@@ -471,10 +473,10 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 3,
           optionName: 'Third',
-          mkrSupport: '50',
-          firstPct: 16.666666666666668,
-          transfer: '49',
-          transferPct: 16.333333333333332,
+          mkrSupport: '50000000000000000000',
+          firstPct: 16.6667,
+          transfer: '49000000000000000000',
+          transferPct: 16.3333,
           winner: false,
           eliminated: true
         },
@@ -490,20 +492,20 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 4,
           optionName: 'Fourth',
-          firstPct: 16.333333333333332,
-          mkrSupport: '49',
-          transfer: '-49',
-          transferPct: -16.333333333333332,
+          firstPct: 16.3333,
+          mkrSupport: '49000000000000000000',
+          transfer: '-49000000000000000000',
+          transferPct: -16.3332,
           winner: false,
           eliminated: true
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '100',
-          firstPct: 33.333333333333336,
-          transfer: '-100',
-          transferPct: -33.333333333333336,
+          firstPct: 33.3333,
+          mkrSupport: '100000000000000000000',
+          transfer: '-100000000000000000000',
+          transferPct: -33.3332,
           winner: false,
           eliminated: true
         }

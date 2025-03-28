@@ -14,7 +14,7 @@ While the portal is hosted by MakerDAO at https://vote.makerdao.com, it can also
 
 In order to run the project locally, you must have the following installed on the machine:
 
-- Node, version 18.17 or greater ([install](https://nodejs.dev/learn/how-to-install-nodejs))
+- Node, version 18.17 or greater (up to version 20.x) ([install](https://nodejs.dev/learn/how-to-install-nodejs))
 
 To get started, clone the repository to the desired directory and then navigate into the project folder:
 
@@ -101,15 +101,14 @@ Required for e2e:
 - Set `NEXT_PUBLIC_TENDERLY_RPC_KEY` to the API key required to query the forked Tenderly network RPC
 - Set `TENDERLY_API_KEY` to be able to run e2e tests against forked network
 
-### Architecture diagram
-
-![](./architecture-diagram.png)
-
 ### Tests
 
 The Governance portal includes two test suites: Vitest and E2E
 
 To run e2e, `TENDERLY_API_KEY` and `NEXT_PUBLIC_TENDERLY_RPC_KEY` must be correcly configured.
+
+Install playwright
+`yarn playwright install`
 
 To run headless mode:
 `yarn e2e`

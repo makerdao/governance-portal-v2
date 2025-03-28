@@ -12,8 +12,9 @@ import os from 'os';
 
 import packageJSON from '../../../package.json';
 import { cacheSet } from '../cache';
+import { vi } from 'vitest';
 
-jest.mock('lib/config');
+vi.mock('lib/config');
 
 const cacheFile = `/${os.tmpdir()}/gov-portal-version-${packageJSON.version}-mainnet-test-${new Date()
   .toISOString()
