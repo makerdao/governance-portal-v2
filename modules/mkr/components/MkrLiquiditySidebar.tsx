@@ -10,19 +10,18 @@ import { useState } from 'react';
 import { Card, Flex, Text, Box, Heading, IconButton } from 'theme-ui';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { request } from 'graphql-request';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
-import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { config } from 'lib/config';
+import { useChainId } from 'wagmi';
+import { mkrAbi, mkrAddress as mkrAddressMapping } from 'modules/contracts/generated';
+import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
@@ -34,10 +33,12 @@ const sushiswapAddress = '0xba13afecda9beb75de5c56bbaf696b880a5a50dd';
 const compoundCTokenAddress = '0x95b4eF2869eBD94BEb4eEE400a99824BF5DC325b';
 
 async function getBalancerV1Mkr(mkrAddress: string) {
-  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${config.SUBGRAPH_API_KEY}/subgraphs/id/93yusydMYauh7cfe9jEfoGABmwnX4GffHd7in8KJi1XB`, {
-    method: 'post',
-    body: JSON.stringify({
-      query: `
+  const resp = await fetch(
+    `https://gateway-arbitrum.network.thegraph.com/api/${config.SUBGRAPH_API_KEY}/subgraphs/id/93yusydMYauh7cfe9jEfoGABmwnX4GffHd7in8KJi1XB`,
+    {
+      method: 'post',
+      body: JSON.stringify({
+        query: `
           query PostsForPools {
             pools(where: {tokensList_contains: ["${mkrAddress}"], publicSwap: true}) {
               tokens {
@@ -48,20 +49,23 @@ async function getBalancerV1Mkr(mkrAddress: string) {
             }
           }
           `
-    })
-  });
+      })
+    }
+  );
   const json = await resp.json();
   const balancerNum = json.data.pools
     .flatMap(pool => pool.tokens)
     .reduce((sum, token) => (token.symbol === 'MKR' ? parseFloat(token.balance) : 0) + sum, 0);
-  return parseUnits(parseInt(balancerNum).toString());
+  return parseEther(parseInt(balancerNum).toString());
 }
 
 async function getBalancerV2Mkr(mkrAddress: string) {
-  const resp = await fetch(`https://gateway-arbitrum.network.thegraph.com/api/${config.SUBGRAPH_API_KEY}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`, {
-    method: 'post',
-    body: JSON.stringify({
-      query: `
+  const resp = await fetch(
+    `https://gateway-arbitrum.network.thegraph.com/api/${config.SUBGRAPH_API_KEY}/subgraphs/id/C4ayEZP2yTXRAB8vSaTrgN4m9anTe9Mdm2ViyiAuV9TV`,
+    {
+      method: 'post',
+      body: JSON.stringify({
+        query: `
           query PostsForPools {
             pools(where: {tokensList_contains: ["${mkrAddress}"]}) {
               tokens {
@@ -72,21 +76,32 @@ async function getBalancerV2Mkr(mkrAddress: string) {
             }
           }
           `
-    })
-  });
+      })
+    }
+  );
   const json = await resp.json();
   const balancerNum = json.data.pools
     .flatMap(pool => pool.tokens)
-    .reduce((sum, token) => (token.address === mkrAddress ? parseFloat(token.balance) : 0) + sum, 0);
-  return parseUnits(parseInt(balancerNum).toString());
+    .reduce(
+      (sum, token) =>
+        (token.address.toLowerCase() === mkrAddress.toLowerCase() ? parseFloat(token.balance) : 0) + sum,
+      0
+    );
+  return parseEther(parseInt(balancerNum).toString());
 }
 
 async function getCompoundMkr(network: SupportedNetworks) {
-  if (network !== SupportedNetworks.MAINNET) return BigNumber.from(0);
+  if (network !== SupportedNetworks.MAINNET) return 0n;
 
   const chainId = networkNameToChainId(network);
-  const { mkr: mkrContract } = getContracts(chainId);
-  const compoundMkr = await mkrContract.balanceOf(compoundCTokenAddress);
+  const publicClient = getPublicClient(chainId);
+
+  const compoundMkr = await publicClient.readContract({
+    address: mkrAddressMapping[chainId],
+    abi: mkrAbi,
+    functionName: 'balanceOf',
+    args: [compoundCTokenAddress]
+  });
 
   return compoundMkr;
 }
@@ -99,13 +114,17 @@ export default function MkrLiquiditySidebar({
   className?: string;
 }): JSX.Element {
   const [expanded, setExpanded] = useState({});
+  const chainId = useChainId();
 
-  const mkrAddress = useContractAddress(Tokens.MKR);
+  const mkrAddress = mkrAddressMapping[chainId];
   const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
   const { data: aaveV2 } = useTokenBalance(Tokens.MKR, aaveV2Amkr);
   const { data: uniswapV2MkrEth } = useTokenBalance(Tokens.MKR, uniswapV2MkrEthPool);
   const { data: uniswapV2MkrDai } = useTokenBalance(Tokens.MKR, uniswapV2MkrDaiPool);
-  const { data: uniswapV3MkrEthPointThreePercent } = useTokenBalance(Tokens.MKR, uniswapV3MkrEthPointThreePercentPool);
+  const { data: uniswapV3MkrEthPointThreePercent } = useTokenBalance(
+    Tokens.MKR,
+    uniswapV3MkrEthPointThreePercentPool
+  );
   const { data: uniswapV3MkrEthOnePercent } = useTokenBalance(Tokens.MKR, uniswapV3MkrEthOnePercentPool);
   const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
 
@@ -128,7 +147,7 @@ export default function MkrLiquiditySidebar({
   const mkrPools = [
     [
       'Balancer',
-      balancerV1 && balancerV2 && balancerV1?.add(balancerV2),
+      balancerV1 && balancerV2 && balancerV1 + balancerV2,
       [
         ['Balancer V1', balancerV1],
         ['Balancer V2', balancerV2]
@@ -136,7 +155,7 @@ export default function MkrLiquiditySidebar({
     ],
     [
       'Aave',
-      aaveV1 && aaveV2 && aaveV1?.add(aaveV2),
+      aaveV1 && aaveV2 && aaveV1 + aaveV2,
       [
         ['Aave V1', aaveV1],
         ['Aave V2', aaveV2]
@@ -144,7 +163,11 @@ export default function MkrLiquiditySidebar({
     ],
     [
       'Uniswap',
-      uniswapV2MkrEth && uniswapV2MkrDai && uniswapV3MkrEthPointThreePercent && uniswapV3MkrEthOnePercent && uniswapV2MkrEth?.add(uniswapV2MkrDai).add(uniswapV3MkrEthPointThreePercent).add(uniswapV3MkrEthOnePercent),
+      uniswapV2MkrEth &&
+        uniswapV2MkrDai &&
+        uniswapV3MkrEthPointThreePercent &&
+        uniswapV3MkrEthOnePercent &&
+        uniswapV2MkrEth + uniswapV2MkrDai + uniswapV3MkrEthPointThreePercent + uniswapV3MkrEthOnePercent,
       [
         ['Uniswap V2 (MKR/DAI)', uniswapV2MkrDai],
         ['Uniswap V3 (MKR/ETH 0.3%)', uniswapV3MkrEthPointThreePercent],
@@ -154,10 +177,10 @@ export default function MkrLiquiditySidebar({
     ],
     ['Sushi', sushi],
     ['Compound', compound]
-  ].sort((a, b) => (a[1] && b[1] ? ((a[1] as BigNumber).gt(b[1] as BigNumber) ? -1 : 1) : 0));
+  ].sort((a, b) => (a[1] && b[1] ? (a[1] > b[1] ? -1 : 1) : 0));
 
   const totalLiquidity = `${formatValue(
-    mkrPools.reduce((acc, cur) => acc.add((cur[1] as BigNumber) || 0), BigNumber.from(0))
+    mkrPools.reduce((acc, cur) => acc + ((cur[1] as bigint | undefined) || 0n), 0n)
   )} MKR`;
 
   const PoolComponent = pool => {

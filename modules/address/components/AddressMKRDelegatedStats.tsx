@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
@@ -50,7 +50,7 @@ export function AddressMKRDelegatedStats({
         styles={{
           textAlign: 'right'
         }}
-        value={totalMKRDelegated ? formatValue(parseUnits(totalMKRDelegated.toString())) : '0'}
+        value={totalMKRDelegated ? formatValue(parseEther(totalMKRDelegated.toString())) : '0'}
         label={'Total MKR Delegated'}
       />
     </Flex>

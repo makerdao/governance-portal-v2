@@ -1,6 +1,7 @@
 import getDelegatesCounts from './getDelegatesCounts';
 import { AllDelegatesEntryWithName } from '../types';
 import { DelegateTypeEnum } from '../delegates.constants';
+import { describe, expect, it } from 'vitest';
 
 describe('getDelegatesCounts', () => {
   it('should return the correct counts for aligned, shadow, and total delegates', () => {

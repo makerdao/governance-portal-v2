@@ -33,10 +33,8 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { BigNumber } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
@@ -44,7 +42,8 @@ import { fetchJson } from 'lib/fetchJson';
 import { StatusText } from 'modules/app/components/StatusText';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { trimProposalKey } from 'modules/executive/helpers/trimProposalKey';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseEther } from 'viem';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
   proposal: Proposal;
@@ -65,7 +64,7 @@ const ProposalTimingBanner = ({
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
-  mkrOnHat?: BigNumber;
+  mkrOnHat?: bigint;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
@@ -86,7 +85,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { account } = useAccount();
 
   const bpi = useBreakpointIndex();
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { cache } = useSWRConfig();
 
   const dataKey = `/api/executive/supporters?network=${network}`;
@@ -226,7 +225,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 renderAsDiv
               />
               <StatBox
-                value={spellData && spellData.mkrSupport && formatValue(BigNumber.from(spellData.mkrSupport))}
+                value={spellData && spellData.mkrSupport && formatValue(BigInt(spellData.mkrSupport))}
                 label="MKR Support"
               />
               <StatBox
@@ -376,7 +375,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                           <Flex sx={{ flexDirection: 'column', alignItems: 'flex-end' }}>
                             <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
                             <Text color="onSecondary" sx={{ fontSize: 2 }}>
-                              {formatValue(parseUnits(supporter.deposits), undefined, undefined, true, true)}{' '}
+                              {formatValue(parseEther(supporter.deposits), undefined, undefined, true, true)}{' '}
                               MKR
                             </Text>
                           </Flex>
@@ -419,7 +418,7 @@ export default function ProposalPage({
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
-  const { network } = useWeb3();
+  const network = useNetwork();
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
   // const spellAddress = prefetchedProposal?.address;

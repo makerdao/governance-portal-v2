@@ -10,8 +10,6 @@ import { Flex, Box, Button, Text, Card } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { BigNumberJS } from 'lib/bigNumberJs';
-import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { formatDateWithTime } from 'lib/datetime';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -45,7 +43,7 @@ const ESModule = (): React.ReactElement => {
   const { data: cageTime } = useCageTime();
   const { data: lockedInChief } = useLockedMkr(account);
 
-  const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked.gte(thresholdAmount);
+  const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked >= thresholdAmount;
 
   const DesktopView = () => {
     return (
@@ -87,9 +85,7 @@ const ESModule = (): React.ReactElement => {
                 minHeight: '20px',
                 width: totalStaked
                   ? `${
-                      esmThresholdMet
-                        ? '100'
-                        : formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)
+                      esmThresholdMet ? '100' : formatValue((totalStaked * 100n) / thresholdAmount, 'wad', 0)
                     }%`
                   : '0%'
               }}
@@ -108,7 +104,7 @@ const ESModule = (): React.ReactElement => {
             esmThresholdMet
               ? esmIsActive
                 ? 100
-                : new BigNumberJS(formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)).toNumber()
+                : parseFloat(formatValue((totalStaked * 100n) / thresholdAmount, 'wad', 0))
               : 0
           }
           totalStaked={totalStaked}
@@ -128,7 +124,7 @@ const ESModule = (): React.ReactElement => {
             !esmThresholdMet ? (
               <BurnModal
                 setShowDialog={setShowDialog}
-                lockedInChief={lockedInChief || BigNumber.from(0)}
+                lockedInChief={lockedInChief || 0n}
                 totalStaked={totalStaked}
                 mutateTotalStaked={mutateTotalStaked}
                 mutateMkrInEsmByAddress={mutateMkrInEsmByAddress}
@@ -143,7 +139,7 @@ const ESModule = (): React.ReactElement => {
           )}
         </DialogContent>
       </DialogOverlay>
-      {cageTime && cageTime.gt(0) && (
+      {cageTime && cageTime > 0n && (
         <Flex
           sx={{
             flexDirection: 'column',
@@ -160,7 +156,7 @@ const ESModule = (): React.ReactElement => {
           }}
         >
           <Text data-testid="es-initiated" sx={{ textAlign: 'center' }}>
-            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
+            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toString())}. This dashboard
             is currently read-only. You can read more information about next steps{' '}
             <ExternalLink
               href="https://manual.makerdao.com/governance/emergency-shutdown"
@@ -219,7 +215,7 @@ const ESModule = (): React.ReactElement => {
           ) : null}
           <Box p={2}>
             <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center' }}>
-              {mkrInEsmByAddress && mkrInEsmByAddress.gt(0) ? (
+              {mkrInEsmByAddress && mkrInEsmByAddress > 0n ? (
                 <Box>
                   You burned{' '}
                   <strong style={{ fontWeight: 'bold' }}>{formatValue(mkrInEsmByAddress, 'wad', 6)}</strong>{' '}

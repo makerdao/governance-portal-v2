@@ -33,9 +33,6 @@ Next, install the project's dependencies using [yarn](https://yarnpkg.com/gettin
 # installs dependencies
 yarn
 
-# builds eth-sdk for interacting with contracts
-yarn build-sdk
-
 # runs the application on localhost:3000
 yarn dev
 
@@ -64,7 +61,7 @@ The portal seeks to rely on on-chain data as much as possible and to minimize re
 
 #### Network providers
 
-The portal uses the [ethers.js](https://github.com/ethers-io/ethers.js/) library in order to communicate with the Ethereum network. Ethers works closely with an ever-growing list of third-party providers in order to provide on-chain data to web applications. By default, ethers provides default API keys to plug in to these service providers. However, these API keys can quickly become rate-limited when too many requests are made. In order to prevent this, it is recommended that you sign up and add your own API keys to the configuration for [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart), [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id), [Etherscan](https://info.etherscan.com/api-keys/), and [Pocket](https://docs.pokt.network/home/#use-pocket-networks-rpc).
+The portal uses the [Wagmi](https://wagmi.sh/react/getting-started) library in order to communicate with the Ethereum network through its React hooks, and [Viem](https://viem.sh/docs/getting-started) in order to do so through its public client as well as provide Web3 utilities. Both Wagmi and Viem work by connecting to JSON-RPC APIs via HTTP in order to provide on-chain data to web applications. By default, they provide default RPC URLs that can be used to get started. However, these RPCs keys can quickly become rate-limited when too many requests are made. In order to prevent this, it is recommended that you sign up and add your own API keys to the configuration for [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart) and [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id).
 
 Due to the large volume of data that is constantly being fetched and displayed in the portal, we use caching in order to cache various network responses for a limited amount of time. This helps to reduce the load of networking calls to various APIs. This feature can be configured to be on or off.
 
@@ -76,13 +73,11 @@ The following configuration values can be added to the `.env` file:
 
 #### Recommended for improved performance:
 
-- Set `INFURA_KEY` to a valid [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) API key for ethers provider to use
+- Set `INFURA_KEY` to a valid [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) API key for Wagmi and Viem to use
 
-- Set `ALCHEMY_KEY` to a valid [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart) API key for ethers provider to use
+- Set `ALCHEMY_KEY` to a valid [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart) API key for Wagmi and Viem to use
 
-- Set `ETHERSCAN_KEY` to a valid [Etherscan](https://info.etherscan.com/api-keys/) API key for ethers provider to use
-
-- Set `POCKET_KEY` to a valid [Pocket](https://docs.pokt.network/home/#use-pocket-networks-rpc) API key for ethers provider to use
+- Set `ETHERSCAN_V2_API_KEY` to a valid [Etherscan V2](https://docs.etherscan.io/etherscan-v2#why-v2) API key for Wagmi to be able to generate the contract ABIs
 
 - Set `GITHUB_TOKEN` to fetch polls, executives, and aligned delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
 
@@ -113,7 +108,7 @@ Required for e2e:
 
 ### Tests
 
-The Governance portal includes two test suites: Jest and E2E
+The Governance portal includes two test suites: Vitest and E2E
 
 To run e2e, `TENDERLY_API_KEY` and `NEXT_PUBLIC_TENDERLY_RPC_KEY` must be correcly configured.
 
@@ -127,17 +122,17 @@ To run in UI mode:
 `yarn dev:mock` to run the app with mock wallet
 `yarn e2e:ui` to open playwright UI
 
-Jest tests under the folder `__tests__` currently execute unit tests of the platform.
+Vitest tests under the folder `__tests__` currently execute unit tests of the platform.
 
 #### Test commands
 
-jest:
+Vitest:
 
 ```bash
-# runs jest tests on live-reload mode
+# runs Vitest tests on live-reload mode
 npm run test
 
-# runs all the jest tests
+# runs all the Vitest tests
 npm run test:ci
 ```
 
@@ -149,7 +144,7 @@ After each push the system will execute:
 
 - Lint, verify type consistency
 
-- Unit test, execute Jest test suite
+- Unit test, execute Vitest test suite
 
 ```bash
 npm run start:ci

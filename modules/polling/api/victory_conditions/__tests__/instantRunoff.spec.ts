@@ -6,9 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
+import { formatEther } from 'viem';
 import { extractWinnerInstantRunoff } from '../instantRunoff';
-import BigNumber from 'lib/bigNumberJs';
 import { PollTallyVote } from 'modules/polling/types';
+
+const bigIntSerializer = (_: string, value: unknown) =>
+  typeof value === 'bigint' ? formatEther(value) : value;
 
 const fromBuffer = (buf, opts?) => {
   if (!opts) {
@@ -33,7 +36,7 @@ const fromBuffer = (buf, opts?) => {
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
 
-  return new BigNumber(hex.join(''), 16).toString();
+  return BigInt('0x' + hex.join('')).toString();
 };
 
 describe('Instant runoff calculation', () => {
@@ -98,7 +101,7 @@ describe('Instant runoff calculation', () => {
       }
     };
 
-    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+    expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 
   it('gives expected results for a tally with no majority', () => {
@@ -162,7 +165,7 @@ describe('Instant runoff calculation', () => {
       }
     };
 
-    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+    expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 
   it('gives expected results for a tally with multiple rounds', () => {
@@ -241,7 +244,7 @@ describe('Instant runoff calculation', () => {
       }
     };
 
-    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+    expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 
   it('ranked choice tally verify eliminated options cant get votes', () => {
@@ -320,7 +323,7 @@ describe('Instant runoff calculation', () => {
       }
     };
 
-    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+    expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 
   it('ranked choice tally stop when 1 remains', () => {
@@ -399,7 +402,7 @@ describe('Instant runoff calculation', () => {
       }
     };
 
-    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+    expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 
   it('Does not break with only 1 vote without mkr', () => {
@@ -430,6 +433,6 @@ describe('Instant runoff calculation', () => {
       }
     };
 
-    expect(JSON.parse(JSON.stringify(winner))).toEqual(expectedResult);
+    expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 });

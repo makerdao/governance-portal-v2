@@ -53,8 +53,6 @@ const moduleExports = {
   env: {
     INFURA_KEY: process.env.INFURA_KEY || '84842078b09946638c03157f83405213', // ethers default infura key
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
-    POCKET_KEY: process.env.POCKET_KEY,
-    ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
     GITHUB_TOKEN: process.env.GITHUB_TOKEN
   },
 
@@ -76,7 +74,7 @@ const moduleExports = {
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');
     config.resolve.alias['components'] = path.join(__dirname, 'components');
     config.resolve.alias['stores'] = path.join(__dirname, 'stores');
-    
+
     return config;
   },
 

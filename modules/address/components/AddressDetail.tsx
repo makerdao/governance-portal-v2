@@ -18,14 +18,14 @@ import AddressDelegatedTo from './AddressDelegatedTo';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
-import { useWeb3 } from 'modules/web3/hooks/useWeb3';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Tabs from 'modules/app/components/Tabs';
 import { useDelegatedTo } from 'modules/delegates/hooks/useDelegatedTo';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse }): React.ReactElement {
-  const { network } = useWeb3();
+  const network = useNetwork();
   const { data: statsData } = useSWR<AddressAPIStats>(
     addressInfo
       ? `/api/address/stats?address=${

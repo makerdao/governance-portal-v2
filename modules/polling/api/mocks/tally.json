@@ -10,8 +10,8 @@
   },
   "winner": "1",
   "rounds": 1,
-  "totalMkrParticipation": 70288.579356787892861292,
-  "totalMkrActiveParticipation": 70288.579356787892861292,
+  "totalMkrParticipation": "70288579356787892861292",
+  "totalMkrActiveParticipation": "70288579356787892861292",
   "numVoters": 13,
   "votesByAddress": [
     {

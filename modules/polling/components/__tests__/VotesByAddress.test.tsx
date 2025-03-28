@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 /*
 
 SPDX-FileCopyrightText: © 2023 Dai Foundation <www.daifoundation.org>
@@ -10,7 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithTheme as render } from '__tests__/helpers';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import mockTally from 'modules/polling/api/mocks/tally.json';
@@ -18,10 +15,10 @@ import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modul
 import { Poll, PollTally } from 'modules/polling/types';
 import { useSingleDelegateInfo } from 'modules/delegates/hooks/useSingleDelegateInfo';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Mock, vi } from 'vitest';
 
-jest.mock('@theme-ui/match-media');
-jest.mock('modules/delegates/hooks/useSingleDelegateInfo');
-jest.mock('modules/web3/connections', () => ({ connectorToWalletName: () => null }));
+vi.mock('@theme-ui/match-media');
+vi.mock('modules/delegates/hooks/useSingleDelegateInfo');
 
 const mockPoll: Poll = {
   ...mockPolls[0],
@@ -54,10 +51,10 @@ const props: { tally: PollTally; poll: Poll } = {
 
 describe('Polling votes by address', () => {
   beforeAll(() => {
-    (useSingleDelegateInfo as jest.Mock).mockReturnValue({
+    (useSingleDelegateInfo as Mock).mockReturnValue({
       data: null
     });
-    (useBreakpointIndex as jest.Mock).mockReturnValue(4);
+    (useBreakpointIndex as Mock).mockReturnValue(4);
   });
 
   test('renders plurality vote type correctly', async () => {

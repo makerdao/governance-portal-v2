@@ -16,20 +16,19 @@ import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { formatValue } from 'lib/string';
 import DelegateAvatarName from '../DelegateAvatarName';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { Text } from '@theme-ui/components';
+import { TxStatus } from 'modules/web3/constants/transaction';
 
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   delegate: Delegate | DelegatePaginated | DelegateInfo;
-  mutateTotalStaked: (amount?: BigNumber) => void;
+  mutateTotalStaked: (amount?: bigint) => void;
   mutateMKRDelegated: () => void;
   refetchOnDelegation?: boolean;
 };
@@ -44,26 +43,61 @@ export const UndelegateModal = ({
 }: Props): JSX.Element => {
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
+  const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, voteDelegateAddress);
   const sealDelegated = mkrDelegatedData?.sealDelegationAmount;
   const directDelegated = mkrDelegatedData?.directDelegationAmount;
   const { data: iouAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     Tokens.IOU,
-    parseUnits('100000000'),
+    100000000n,
     account,
     voteDelegateAddress
   );
 
-  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU);
+  const approve = useApproveUnlimitedToken({
+    name: Tokens.IOU,
+    addressToApprove: voteDelegateAddress,
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: () => {
+      // Once the approval is successful, return to tx idle so we can lock
+      setTxStatus(TxStatus.IDLE);
+      setTxHash(undefined);
+      mutateTokenAllowance();
+      free.retryPrepare();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    }
+  });
 
-  const { free, tx: freeTx, setTxId: resetFree } = useDelegateFree(voteDelegateAddress);
-
-  const [tx, resetTx] = iouAllowance ? [freeTx, resetFree] : [approveTx, resetApprove];
+  const free = useDelegateFree({
+    voteDelegateAddress,
+    mkrToWithdraw,
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.SUCCESS);
+      refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToWithdraw * -1n);
+      mutateMKRDelegated();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    },
+    enabled: !!iouAllowance && !!mkrToWithdraw
+  });
 
   const onClose = () => {
-    resetTx(null);
+    setTxStatus(TxStatus.IDLE);
+    setTxHash(undefined);
     onDismiss();
   };
 
@@ -73,10 +107,12 @@ export const UndelegateModal = ({
         <DialogContent widthDesktop="580px" ariaLabel="Undelegate modal">
           <BoxWithClose close={onClose}>
             <Box>
-              {tx ? (
+              {txStatus !== TxStatus.IDLE ? (
                 <TxDisplay
-                  tx={tx}
-                  setTxId={resetTx}
+                  txStatus={txStatus}
+                  setTxStatus={setTxStatus}
+                  txHash={txHash}
+                  setTxHash={setTxHash}
                   onDismiss={onClose}
                   title={'Undelegating MKR'}
                   description={`You undelegated ${formatValue(mkrToWithdraw, 'wad', 6)} from ${
@@ -97,21 +133,16 @@ export const UndelegateModal = ({
                       balance={directDelegated}
                       buttonLabel="Undelegate MKR"
                       onClick={() => {
-                        free(mkrToWithdraw, {
-                          mined: () => {
-                            refetchOnDelegation
-                              ? mutateTotalStaked()
-                              : mutateTotalStaked(mkrToWithdraw.mul(-1));
-                            mutateMKRDelegated();
-                          }
-                        });
+                        setTxStatus(TxStatus.INITIALIZED);
+                        free.execute();
                       }}
+                      disabled={free.isLoading || !free.prepared}
                       showAlert={false}
                       disclaimer={
-                        sealDelegated &&
-                        sealDelegated.gt(0) ? (
+                        sealDelegated && sealDelegated > 0n ? (
                           <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
-                            Your {formatValue(sealDelegated)} MKR delegated through the Seal module must be undelegated from the{' '}
+                            Your {formatValue(sealDelegated)} MKR delegated through the Seal module must be
+                            undelegated from the{' '}
                             <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
                               <span>Sky app</span>
                             </ExternalLink>
@@ -122,13 +153,11 @@ export const UndelegateModal = ({
                     />
                   ) : (
                     <ApprovalContent
-                      onClick={() =>
-                        approve(voteDelegateAddress, {
-                          mined: () => {
-                            mutateTokenAllowance();
-                          }
-                        })
-                      }
+                      onClick={() => {
+                        setTxStatus(TxStatus.INITIALIZED);
+                        approve.execute();
+                      }}
+                      disabled={approve.isLoading || !approve.prepared}
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={

@@ -6,27 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
-import BigNumber from 'lib/bigNumberJs';
-import { CurrencyObject } from 'modules/app/types/currency';
-import { hexZeroPad, stripZeros } from 'ethers/lib/utils';
 
 import round from 'lodash/round';
 import logger from './logger';
-
-export function bigNumberKFormat(num: CurrencyObject): string {
-  invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
-  const units = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
-  let typeIndex = Math.floor(num.div(10).toFixed(0).length / 3) - 1;
-  typeIndex = typeIndex >= units.length ? 7 : typeIndex; // if the number out of range
-  const noUnit = typeIndex < 0; // if the number is smaller than 1,000
-  const value = noUnit ? num : num.div(Math.pow(1000, typeIndex + 1));
-  invariant(value, 'bigNumberKFormat value undefined');
-  return `${value.toBigNumber().toFixed(2)}${noUnit ? '' : units[typeIndex]}`;
-}
+import { pad, trim } from 'viem';
 
 export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -110,9 +96,9 @@ export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
 
-export const sortBytesArray = _array =>
+export const sortBytesArray = (_array: string[]) =>
   [..._array].sort((a, b) => {
-    return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;
+    return BigInt(a.toLowerCase()) > BigInt(b.toLowerCase()) ? 1 : -1;
   });
 
 export const formatRound = (num, decimals = 2) =>
@@ -123,12 +109,8 @@ export const paddedArray = (k, value) =>
     .map(() => 0)
     .concat(...value);
 
-export const toBuffer = (number, opts) => {
-  let hex = new BigNumber(number).toString(16);
-
-  if (!opts) {
-    opts = {};
-  }
+export const toBuffer = (number: string, opts) => {
+  let hex = BigInt(number).toString(16);
 
   const endian = { 1: 'big', '-1': 'little' }[opts.endian] || opts.endian || 'big';
 
@@ -180,11 +162,11 @@ export const fromBuffer = (buf, opts) => {
 
     hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
   }
-  return new BigNumber(hex.join(''), 16);
+  return BigInt('0x' + hex.join(''));
 };
 
 export const paddedBytes32ToAddress = (hex: string): string =>
-  hex.length > 42 ? hexZeroPad(stripZeros(hex), 20) : hex;
+  hex.length > 42 ? pad(trim(hex as `0x${string}`), { size: 20 }) : hex;
 
 export const objectToGetParams = (object: { [key: string]: string | number | undefined | null }): string => {
   const params = Object.entries(object)
@@ -255,4 +237,36 @@ export function openWindowWithUrl(url: string): void {
 
 export function isExponential(numberToCheck: number): boolean {
   return numberToCheck.toString().includes('e');
+}
+
+export function calculatePercentage(value: bigint, total: bigint, decimals = 0): number {
+  const scale = BigInt(10 ** decimals);
+  // Multiply first, then add half of total amount to fix the truncating issue with big ints.
+  // Adding `total / 2n` is mathematically equivalent to adding `0.5` to the result. Which
+  // after the truncation is equivalent to rounding the result.
+  const percentage = (value * 100n * scale + total / 2n) / total;
+  return Number(percentage) / 10 ** decimals;
+}
+
+export function splitBlockRange(
+  startBlockParam: bigint,
+  endBlockParam: bigint,
+  chunkSize = 5000000n
+): { startBlock: bigint; endBlock: bigint }[] {
+  const ranges: { startBlock: bigint; endBlock: bigint }[] = [];
+
+  // Iterate from startBlock to endBlock in increments of chunkSize
+  for (let current = startBlockParam; current <= endBlockParam; current += chunkSize) {
+    // Calculate the end of the current chunk.
+    // Subtract 1 because the range is inclusive.
+    const chunkEnd = current + chunkSize - 1n;
+
+    // If the calculated chunkEnd exceeds endBlock, use endBlock instead.
+    ranges.push({
+      startBlock: current,
+      endBlock: chunkEnd > endBlockParam ? endBlockParam : chunkEnd
+    });
+  }
+
+  return ranges;
 }
