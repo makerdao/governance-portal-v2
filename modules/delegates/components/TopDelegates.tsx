@@ -42,7 +42,7 @@ export default function TopDelegates({
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
           <Heading as="h2">Top Aligned Delegates</Heading>
-          <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
+          <Text as="p" sx={{ px: 'inherit', fontSize: [2, 4] }}>
             Aligned Delegates ranked by their voting power
           </Text>
         </Stack>

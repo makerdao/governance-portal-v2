@@ -368,7 +368,7 @@ const PollingOverview = ({
                     <Stack>
                       {groupedActivePolls.map(([groupTitle, pollGroup]) => (
                         <div key={groupTitle}>
-                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
+                          <Text as="p" variant="caps" color="text" mb={2}>
                             {groupTitle}
                           </Text>
                           <Box sx={{ mb: 0 }}>
@@ -408,7 +408,7 @@ const PollingOverview = ({
                     <Stack>
                       {groupedEndedPolls.map(([groupTitle, pollGroup]) => (
                         <div key={groupTitle}>
-                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
+                          <Text as="p" variant="caps" color="text" mb={2}>
                             {groupTitle}
                           </Text>
                           <Box>

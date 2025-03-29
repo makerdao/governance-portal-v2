@@ -36,13 +36,13 @@ export const infoPoints: InfoPoint[] = [
       }
     ],
 
-    color: '#1AAB9B',
+    color: '#504DFF',
     description:
       "Off-chain governance refers to processes for making decisions that don't require on-chain voting and gathering feedback prior to on-chain voting. Off-chain governance happens on the Maker Governance Forum, where the community meets to propose and discuss new proposals. Anyone can participate in off-chain governance."
   },
   {
     number: '02',
-    color: '#1ACCA7',
+    color: '#6A6CFB',
     title: 'Understand on-chain governance',
     titleFirst: 'Understand',
     titleSecond: 'on-chain governance',

@@ -162,7 +162,8 @@ const Header = (): JSX.Element => {
         position: 'fixed',
         top: 0,
         left: 0,
-        backgroundColor: 'background'
+        backdropFilter: 'blur(64px)',
+        bg: 'backgroundTransparent'
       }}
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>

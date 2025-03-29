@@ -100,8 +100,8 @@ export default function ExecutiveOverviewCard({
                       padding: '4px 8px',
                       display: 'flex',
                       alignItems: 'center',
-                      color: 'tagColorThree',
-                      backgroundColor: 'tagColorThreeBg',
+                      color: 'primaryAlt',
+                      backgroundColor: 'primaryMuted',
                       my: 2
                     }}
                   >

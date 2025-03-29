@@ -193,7 +193,8 @@ export default {
       border: theme => `1px solid ${theme.colors.secondaryMuted}`,
       px: 3,
       py: 4,
-      background: theme => theme.colors.surface
+      background: theme => theme.colors.surface,
+      backdropFilter: 'blur(20px)'
     },
 
     desktop: {
@@ -201,7 +202,8 @@ export default {
       borderRadius: '8px',
       boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)',
       width: '50em',
-      background: theme => theme.colors.surface
+      background: theme => theme.colors.surface,
+      backdropFilter: 'blur(20px)'
     }
   }
 };
