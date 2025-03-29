@@ -27,7 +27,7 @@ export async function fetchDelegatesPageData(
   useApi = false,
   queryParams?: DelegatesQueryParams
 ): Promise<DelegatesPaginatedAPIResponse> {
-  const pageSize = 30;
+  const pageSize = 10;
   const page = queryParams?.page || 1;
   const includeExpired = queryParams?.includeExpired || false;
   const orderBy = queryParams?.orderBy || DelegateOrderByEnum.RANDOM;

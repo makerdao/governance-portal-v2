@@ -25,7 +25,6 @@ import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { formatEther, parseEther } from 'viem';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -100,7 +99,7 @@ export const DelegateOverviewCard = memo(
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              mkrDelegated: formatEther(parseEther(d.mkrDelegated) + amount)
+              mkrDelegated: (BigInt(d.mkrDelegated) + amount).toString()
             };
           }
           return d;
@@ -296,7 +295,7 @@ export const DelegateOverviewCard = memo(
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                       data-testid="total-mkr-delegated"
                     >
-                      {formatValue(parseEther(delegate.mkrDelegated), 'wad')}
+                      {formatValue(BigInt(delegate.mkrDelegated), 'wad')}
                     </Text>
                     <Text
                       as="p"

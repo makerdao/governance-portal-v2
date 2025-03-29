@@ -124,7 +124,7 @@ export const getNewOwnerFromPrevious = (address: string, network: SupportedNetwo
     };
   }, {});
 
-  return prevToNewMap[address.toLowerCase()];
+  return prevToNewMap[address?.toLowerCase()];
 };
 
 export const getLatestOwnerFromOld = (address: string, network: SupportedNetworks): string | undefined => {

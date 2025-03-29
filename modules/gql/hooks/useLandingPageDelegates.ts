@@ -10,6 +10,11 @@ import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import { DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import { DelegateInfo } from 'modules/delegates/types';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import {
+  DelegateOrderByEnum,
+  OrderDirectionEnum,
+  DelegateStatusEnum
+} from 'modules/delegates/delegates.constants';
 
 export const useLandingPageDelegates = (): [
   SWRResponse<DelegatesPaginatedAPIResponse>,
@@ -17,7 +22,7 @@ export const useLandingPageDelegates = (): [
 ] => {
   const network = useNetwork();
   const { cache } = useSWRConfig();
-  const delegatesDataKey = `/api/delegates/v2?network=${network}&delegateType=ALIGNED&pageSize=5&orderBy=MKR&orderDirection=DESC`;
+  const delegatesDataKey = `/api/delegates/v2?network=${network}&delegateType=${DelegateStatusEnum.aligned}&orderBy=${DelegateOrderByEnum.MKR}&orderDirection=${OrderDirectionEnum.DESC}&pageSize=0`;
   const delegatesInfoDataKey = `/api/delegates/info?network=${network}`;
 
   const swrConfigObject = {
@@ -31,6 +36,5 @@ export const useLandingPageDelegates = (): [
 
   const delegatesResponse = useSWR<DelegatesPaginatedAPIResponse>(delegatesDataKey, null, swrConfigObject);
   const delegatesInfoResponse = useSWR<DelegateInfo[]>(delegatesInfoDataKey, null, swrConfigObject);
-
   return [delegatesResponse, delegatesInfoResponse];
 };

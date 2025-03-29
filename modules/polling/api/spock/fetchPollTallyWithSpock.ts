@@ -7,92 +7,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { Poll, PollTally, PollTallyOption, PollTallyVote, VictoryCondition } from 'modules/polling/types';
-import { extractWinnerPlurality } from './victory_conditions/plurality';
-import { PollVictoryConditions } from '../polling.constants';
-import { extractWinnerApproval } from './victory_conditions/approval';
-import { extractWinnerMajority } from './victory_conditions/majority';
-import { extractWinnerInstantRunoff } from './victory_conditions/instantRunoff';
-import { extractWinnerDefault } from './victory_conditions/default';
-import { InstantRunoffResults } from '../types/instantRunoff';
-import { extractSatisfiesComparison } from './victory_conditions/comparison';
-import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
-import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
+import { Poll, PollTally, PollTallyOption } from 'modules/polling/types';
+import { PollVictoryConditions } from '../../polling.constants';
+import { extractSatisfiesComparison } from '../victory_conditions/comparison';
+import { hasVictoryConditionInstantRunOff } from '../../helpers/utils';
+import { fetchVotesByAddressForPollWithSpock } from './fetchVotesByAddressWithSpock';
 import { calculatePercentage } from 'lib/utils';
+import { InstantRunoffResults } from '../../types/instantRunoff';
+import { findWinner } from '../fetchPollTally';
 import { parseEther } from 'viem';
-import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
-export function findWinner(condition: VictoryCondition, votes: PollTallyVote[], poll: Poll): WinnerOption {
-  let results: InstantRunoffResults | null = null;
+export async function fetchPollTallyWithSpock(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
+  // Fetch spock votes for the poll
+  const endUnix = new Date(poll.endDate).getTime() / 1000;
 
-  switch (condition.type) {
-    case PollVictoryConditions.approval:
-      return {
-        winner: extractWinnerApproval(votes),
-        results
-      };
-    case PollVictoryConditions.majority:
-      return { winner: extractWinnerMajority(votes, condition.percent), results };
-    case PollVictoryConditions.plurality:
-      return { winner: extractWinnerPlurality(votes), results };
-    case PollVictoryConditions.instantRunoff:
-      results = extractWinnerInstantRunoff(votes);
-      return { winner: results ? results.winner : null, results };
-    case PollVictoryConditions.default:
-      return { winner: extractWinnerDefault(poll, condition.value), results };
-    // In case comparison is set on the top level instead of inside a AND logic.
-    // Inside of an AND logic, comparison is set as a filter to be complied with
-    // on the top level we would take the first option that passes this condition and declare it a winner
-    case PollVictoryConditions.comparison:
-      return {
-        winner:
-          extractSatisfiesComparison(votes, condition.comparator, condition.value).length > 0
-            ? extractSatisfiesComparison(votes, condition.comparator, condition.value)[0]
-            : null,
-        results
-      };
-    default:
-      return {
-        winner: null,
-        results
-      };
-  }
-}
-
-export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
-  const allDelegates = await fetchDelegateAddresses(network);
-
-  const filteredDelegates = allDelegates.filter(delegate => {
-    const delegateVersion = delegate.delegateVersion ?? 1;
-    // Filter out v1 delegates created over a year ago
-    if (delegateVersion === 1) {
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-      const delegateCreatedAt = new Date(delegate.blockTimestamp);
-      if (delegateCreatedAt < oneYearAgo) {
-        return false;
-      }
-    }
-    // Filter out delegates that have been replaced by newer versions
-    const newerVersionExists = allDelegates.some(
-      otherDelegate =>
-        otherDelegate.delegate === delegate.delegate && (otherDelegate.delegateVersion ?? 1) > delegateVersion
-    );
-    return !newerVersionExists;
-  });
-
-  // Create a mapping from owner addresses to delegate addresses
-  const ownerToDelegateMap: Record<string, string> = {};
-  filteredDelegates.forEach(delegate => {
-    if (delegate.voteDelegate && delegate.delegate) {
-      ownerToDelegateMap[delegate.delegate.toLowerCase()] = delegate.voteDelegate.toLowerCase();
-    }
-  });
-
-  // Fetch votes for the poll
-  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, ownerToDelegateMap, network);
+  const votesByAddress = await fetchVotesByAddressForPollWithSpock(poll.pollId, endUnix, network);
 
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];
@@ -199,7 +130,8 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     // if IRV and no winner, only consider weight from first ballot option
     if (isIrv && !winnerOption.results) {
       if (votesInfo[vote.ballot[0]]) {
-        votesInfo[vote.ballot[0]] = votesInfo[vote.ballot[0]] + parseEther(vote.mkrSupport.toString());
+        votesInfo[vote.ballot[0]] =
+          votesInfo[vote.ballot[0]] + parseEther(vote.mkrSupport.toLocaleString.toString());
       } else {
         votesInfo[vote.ballot[0]] = parseEther(vote.mkrSupport.toString());
       }

@@ -1049,6 +1049,135 @@ export const daiAddress = {
 export const daiConfig = { address: daiAddress, abi: daiAbi } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// dsSpell
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const dsSpellAbi = [
+  {
+    payable: false,
+    type: 'constructor',
+    inputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [],
+    name: 'action',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'cast',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'description',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'done',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'eta',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'expiration',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'log',
+    outputs: [{ name: '', internalType: 'contract Changelog', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'nextCastTime',
+    outputs: [{ name: 'castTime', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'officeHours',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'pause',
+    outputs: [{ name: '', internalType: 'contract PauseAbstract', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'schedule',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'sig',
+    outputs: [{ name: '', internalType: 'bytes', type: 'bytes' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'tag',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view'
+  }
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // dssSpell
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1554,235 +1683,6 @@ export const endAddress = {
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x0e2e8F1D1326A4B9633D96222Ce399c708B19c28)
  */
 export const endConfig = { address: endAddress, abi: endAbi } as const;
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// esm
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58)
- */
-export const esmAbi = [
-  {
-    type: 'constructor',
-    inputs: [
-      { name: 'gem_', internalType: 'address', type: 'address' },
-      { name: 'end_', internalType: 'address', type: 'address' },
-      { name: 'proxy_', internalType: 'address', type: 'address' },
-      { name: 'min_', internalType: 'uint256', type: 'uint256' }
-    ],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [{ name: 'usr', internalType: 'address', type: 'address', indexed: true }],
-    name: 'Deny'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'base', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'pause',
-        internalType: 'address',
-        type: 'address',
-        indexed: true
-      }
-    ],
-    name: 'DenyProxy'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'what', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      {
-        name: 'data',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false
-      }
-    ],
-    name: 'File'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'what', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      {
-        name: 'data',
-        internalType: 'address',
-        type: 'address',
-        indexed: false
-      }
-    ],
-    name: 'File'
-  },
-  { type: 'event', anonymous: false, inputs: [], name: 'Fire' },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'usr', internalType: 'address', type: 'address', indexed: true },
-      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }
-    ],
-    name: 'Join'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [{ name: 'usr', internalType: 'address', type: 'address', indexed: true }],
-    name: 'Rely'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'Sum',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'burn',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'cage',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
-    name: 'deny',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'target', internalType: 'address', type: 'address' }],
-    name: 'denyProxy',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'end',
-    outputs: [{ name: '', internalType: 'contract EndLike', type: 'address' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'uint256', type: 'uint256' }
-    ],
-    name: 'file',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'address', type: 'address' }
-    ],
-    name: 'file',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'fire',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'gem',
-    outputs: [{ name: '', internalType: 'contract GemLike', type: 'address' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
-    name: 'join',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'live',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'min',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'proxy',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
-    name: 'rely',
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'revokesGovernanceAccess',
-    outputs: [{ name: 'ret', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'sum',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  },
-  {
-    type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'wards',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  }
-] as const;
-
-/**
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58)
- */
-export const esmAddress = {
-  1: '0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58',
-  314310: '0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58'
-} as const;
-
-/**
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x09e05fF6142F2f9de8B6B65855A1d56B6cfE4c58)
- */
-export const esmConfig = { address: esmAddress, abi: esmAbi } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // iou
@@ -4135,6 +4035,165 @@ export const vatAddress = {
 export const vatConfig = { address: vatAddress, abi: vatAbi } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// voteDelegate
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const voteDelegateAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: '_chief', internalType: 'address', type: 'address' },
+      { name: '_polling', internalType: 'address', type: 'address' },
+      { name: '_delegate', internalType: 'address', type: 'address' }
+    ],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'usr', internalType: 'address', type: 'address', indexed: true },
+      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }
+    ],
+    name: 'Free'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'usr', internalType: 'address', type: 'address', indexed: true },
+      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }
+    ],
+    name: 'Lock'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [],
+    name: 'chief',
+    outputs: [{ name: '', internalType: 'contract ChiefLike', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [],
+    name: 'delegate',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'expiration',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
+    name: 'free',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [],
+    name: 'gov',
+    outputs: [{ name: '', internalType: 'contract TokenLike', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [],
+    name: 'iou',
+    outputs: [{ name: '', internalType: 'contract TokenLike', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
+    name: 'lock',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [],
+    name: 'polling',
+    outputs: [{ name: '', internalType: 'contract PollingLike', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    type: 'function',
+    inputs: [{ name: '', internalType: 'address', type: 'address' }],
+    name: 'stake',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'vote',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
+    name: 'vote',
+    outputs: [{ name: 'result', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [
+      { name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' },
+      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' }
+    ],
+    name: 'votePoll',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [
+      { name: 'pollId', internalType: 'uint256', type: 'uint256' },
+      { name: 'optionId', internalType: 'uint256', type: 'uint256' }
+    ],
+    name: 'votePoll',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [{ name: 'pollId', internalType: 'uint256', type: 'uint256' }],
+    name: 'withdrawPoll',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    type: 'function',
+    inputs: [{ name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' }],
+    name: 'withdrawPoll',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  }
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // voteDelegateFactory
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -4311,6 +4370,113 @@ export const voteDelegateFactoryOldConfig = {
   address: voteDelegateFactoryOldAddress,
   abi: voteDelegateFactoryOldAbi
 } as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// voteProxy
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const voteProxyAbi = [
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'gov',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'cold',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'freeAll',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'iou',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [{ name: 'slate', type: 'bytes32' }],
+    name: 'vote',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [{ name: 'wad', type: 'uint256' }],
+    name: 'free',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [{ name: 'wad', type: 'uint256' }],
+    name: 'lock',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'hot',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    constant: false,
+    payable: false,
+    type: 'function',
+    inputs: [{ name: 'yays', type: 'address[]' }],
+    name: 'vote',
+    outputs: [{ name: '', type: 'bytes32' }],
+    stateMutability: 'nonpayable'
+  },
+  {
+    constant: true,
+    payable: false,
+    type: 'function',
+    inputs: [],
+    name: 'chief',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    payable: false,
+    type: 'constructor',
+    inputs: [
+      { name: '_chief', type: 'address' },
+      { name: '_cold', type: 'address' },
+      { name: '_hot', type: 'address' }
+    ],
+    stateMutability: 'nonpayable'
+  }
+] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // voteProxyFactory
