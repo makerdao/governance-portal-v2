@@ -17,7 +17,7 @@ import { SpellData } from '../types';
 import logger from 'lib/logger';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { dssSpellAbi } from 'modules/contracts/generated';
+import { chiefAbi, chiefAddress, dssSpellAbi } from 'modules/contracts/generated';
 
 export const getExecutiveMKRSupport = async (
   address: string,
@@ -60,99 +60,19 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     abi: dssSpellAbi
   };
 
-  const getDone = async () => {
+  const getScheduledDate = async (eta: bigint) => {
     try {
-      const done = await publicClient.readContract({ ...readSpellParameters, functionName: 'done' });
-      return done;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  const getNextCastTime = async () => {
-    try {
-      const result = await publicClient.readContract({
-        ...readSpellParameters,
-        functionName: 'nextCastTime'
-      });
-      if (!Number(result)) return undefined;
-      const nextCastTime = new Date(Number(result) * 1000);
-      return nextCastTime;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  const getEta = async () => {
-    try {
-      const result = await publicClient.readContract({ ...readSpellParameters, functionName: 'eta' });
-      if (!Number(result)) return undefined;
-      const eta = new Date(Number(result) * 1000);
-      return eta;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  const getExpiration = async () => {
-    try {
-      const result = await publicClient.readContract({ ...readSpellParameters, functionName: 'expiration' });
-      if (!Number(result)) return undefined;
-      const expiration = new Date(Number(result) * 1000);
-      return expiration;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  const getScheduledDate = async () => {
-    try {
-      const spellDate = await getSpellScheduledDate(address, network);
+      const spellDate = await getSpellScheduledDate(eta, address, network);
       return spellDate;
     } catch (err) {
       return undefined;
     }
   };
 
-  const getExecutionDate = async () => {
+  const getExecutionDate = async (done: boolean) => {
     try {
-      const executionDate = await getSpellExecutionDate(address, network);
+      const executionDate = await getSpellExecutionDate(done, address, network);
       return executionDate;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  const getApprovals = async () => {
-    try {
-      const approvals = await getChiefApprovals(address, network);
-
-      return approvals.toString();
-    } catch (err) {
-      return '0';
-    }
-  };
-
-  const getExecutiveHash = async () => {
-    try {
-      const description = await publicClient.readContract({
-        ...readSpellParameters,
-        functionName: 'description'
-      });
-      const hash = description.substr(description.indexOf('0x'), description.length);
-      return hash;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  const getOfficeHours = async () => {
-    try {
-      const officeHours = await publicClient.readContract({
-        ...readSpellParameters,
-        functionName: 'officeHours'
-      });
-      return officeHours;
     } catch (err) {
       return undefined;
     }
@@ -160,41 +80,45 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
   const [
     done,
-    nextCastTime,
-    eta,
-    expiration,
-    datePassed,
-    dateExecuted,
-    mkrSupport,
-    executiveHash,
+    responseNextCastTime,
+    responseEta,
+    responseExpiration,
+    responseMkrSupport,
+    responseExecutiveHash,
     officeHours
-  ] = await Promise.all([
-    // done
-    getDone(),
+  ] = await publicClient.multicall({
+    contracts: [
+      { ...readSpellParameters, functionName: 'done' },
+      { ...readSpellParameters, functionName: 'nextCastTime' },
+      { ...readSpellParameters, functionName: 'eta' },
+      { ...readSpellParameters, functionName: 'expiration' },
+      {
+        address: chiefAddress[chainId],
+        abi: chiefAbi,
+        functionName: 'approvals',
+        args: [address as `0x${string}`]
+      },
+      // executiveHash
+      { ...readSpellParameters, functionName: 'description' },
+      { ...readSpellParameters, functionName: 'officeHours' }
+    ],
+    allowFailure: false
+  });
 
-    //nextCastTime
-    getNextCastTime(),
+  const nextCastTime = Number(responseNextCastTime)
+    ? new Date(Number(responseNextCastTime) * 1000)
+    : undefined;
+  const eta = Number(responseEta) ? new Date(Number(responseEta) * 1000) : undefined;
+  const expiration = Number(responseExpiration) ? new Date(Number(responseExpiration) * 1000) : undefined;
+  const mkrSupport = responseMkrSupport ? responseMkrSupport.toString() : '0';
+  const executiveHash = responseExecutiveHash.substr(
+    responseExecutiveHash.indexOf('0x'),
+    responseExecutiveHash.length
+  );
 
-    // eta
-    getEta(),
-
-    // expiration
-    getExpiration(),
-
-    // datePassed
-    getScheduledDate(),
-
-    // dateExecuted
-    getExecutionDate(),
-
-    // mkrSupport
-    getApprovals(),
-
-    // executiveHash
-    getExecutiveHash(),
-
-    // officeHours
-    getOfficeHours()
+  const [datePassed, dateExecuted] = await Promise.all([
+    getScheduledDate(responseEta),
+    getExecutionDate(done)
   ]);
 
   return {

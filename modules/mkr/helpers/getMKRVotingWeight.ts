@@ -30,26 +30,22 @@ export type MKRVotingWeightResponse = {
   total: bigint;
 };
 
-const getMKRBalanceOf = async (chainId: number, address: string): Promise<bigint> => {
-  const publicClient = getPublicClient(chainId);
-  const mkrBalance = await publicClient.readContract({
+const getMKRBalanceOfParams = (chainId: number, address: string) => {
+  return {
     address: mkrAddress[chainId],
     abi: mkrAbi,
     functionName: 'balanceOf',
     args: [address as `0x${string}`]
-  });
-  return mkrBalance;
+  } as const;
 };
 
-const getChiefDeposits = async (chainId: number, address: string): Promise<bigint> => {
-  const publicClient = getPublicClient(chainId);
-  const chiefDeposits = await publicClient.readContract({
+const getChiefDepositsParams = (chainId: number, address: string) => {
+  return {
     address: chiefAddress[chainId],
     abi: chiefAbi,
     functionName: 'deposits',
     args: [address as `0x${string}`]
-  });
-  return chiefDeposits;
+  } as const;
 };
 
 // returns the voting weight for an address
@@ -59,14 +55,20 @@ export async function getMKRVotingWeight(
   excludeDelegateOwnerBalance: boolean
 ): Promise<MKRVotingWeightResponse> {
   const chainId = networkNameToChainId(network);
+  const publicClient = getPublicClient(chainId);
 
   // first check if the address is a delegate contract and if so return the balance locked in the delegate contract
   const voteDelegateAddress = !excludeDelegateOwnerBalance
     ? await getDelegateContractAddress(address, chainId)
     : undefined;
   if (voteDelegateAddress) {
-    const mkrDelegate = await getMKRBalanceOf(chainId, voteDelegateAddress);
-    const mkrChiefDelegate = await getChiefDeposits(chainId, voteDelegateAddress);
+    const [mkrDelegate, mkrChiefDelegate] = await publicClient.multicall({
+      contracts: [
+        getMKRBalanceOfParams(chainId, voteDelegateAddress),
+        getChiefDepositsParams(chainId, voteDelegateAddress)
+      ],
+      allowFailure: false
+    });
     return {
       walletBalanceHot: mkrDelegate,
       chiefBalanceHot: mkrChiefDelegate,
@@ -90,13 +92,16 @@ export async function getMKRVotingWeight(
     voteProxyAddresses.voteProxyAddress
   ) {
     const [walletBalanceHot, walletBalanceCold, chiefBalanceHot, chiefBalanceCold, chiefBalanceProxy] =
-      await Promise.all([
-        await getMKRBalanceOf(chainId, voteProxyAddresses.hotAddress),
-        await getMKRBalanceOf(chainId, voteProxyAddresses.coldAddress),
-        await getChiefDeposits(chainId, voteProxyAddresses.hotAddress),
-        await getChiefDeposits(chainId, voteProxyAddresses.coldAddress),
-        await getChiefDeposits(chainId, voteProxyAddresses.voteProxyAddress)
-      ]);
+      await publicClient.multicall({
+        contracts: [
+          getMKRBalanceOfParams(chainId, voteProxyAddresses.hotAddress),
+          getMKRBalanceOfParams(chainId, voteProxyAddresses.coldAddress),
+          getChiefDepositsParams(chainId, voteProxyAddresses.hotAddress),
+          getChiefDepositsParams(chainId, voteProxyAddresses.coldAddress),
+          getChiefDepositsParams(chainId, voteProxyAddresses.voteProxyAddress)
+        ],
+        allowFailure: false
+      });
 
     return {
       walletBalanceHot,
@@ -110,8 +115,10 @@ export async function getMKRVotingWeight(
   }
 
   // otherwise, not proxy or delegate, get connected wallet balances
-  const walletBalanceHot = await getMKRBalanceOf(chainId, address);
-  const chiefBalanceHot = await getChiefDeposits(chainId, address);
+  const [walletBalanceHot, chiefBalanceHot] = await publicClient.multicall({
+    contracts: [getMKRBalanceOfParams(chainId, address), getChiefDepositsParams(chainId, address)],
+    allowFailure: false
+  });
   return {
     walletBalanceHot,
     chiefBalanceHot,
