@@ -17,7 +17,7 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { votingWeightHistory } from 'modules/gql/queries/subgraph/votingWeightHistory';
 import { formatEther } from 'viem';
 import { fetchAllCurrentVotesWithSpock } from './spock/fetchAllCurrentVotesWithSpock';
-import { NEW_POLLING_CALCULATION_START_DATE } from 'modules/polling/polling.constants';
+import { SKY_PORTAL_START_DATE } from 'modules/polling/polling.constants';
 import { pollTimes } from 'modules/gql/queries/subgraph/pollTimes';
 
 
@@ -154,10 +154,7 @@ async function fetchAllCurrentVotesWithSubgraph(
 }
 
 export async function fetchAllCurrentVotes(address: string, network: SupportedNetworks): Promise<PollTallyVote[]> {
-  const cutoffUnix = Math.floor(NEW_POLLING_CALCULATION_START_DATE.getTime() / 1000);
-  const [subgraphVotes, spockVotes] = await Promise.all([
-    fetchAllCurrentVotesWithSubgraph(address, network, cutoffUnix),
-    fetchAllCurrentVotesWithSpock(address, network, cutoffUnix)
-  ]);
-  return [...subgraphVotes, ...spockVotes];
+  const cutoffUnix = Math.floor(SKY_PORTAL_START_DATE.getTime() / 1000);
+  const subgraphVotes = await fetchAllCurrentVotesWithSubgraph(address, network, cutoffUnix);
+  return subgraphVotes;
 }

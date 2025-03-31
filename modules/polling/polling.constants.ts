@@ -80,4 +80,4 @@ export const AGGREGATED_POLLS_FILE_URL = {
     'https://raw.githubusercontent.com/makerdao-dux/community/tenderly-polls/governance/polls/meta/polls.json'
 };
 
-export const NEW_POLLING_CALCULATION_START_DATE = new Date('2025-03-17'); //TODO: edit date once we pick a date
+export const SKY_PORTAL_START_DATE = new Date('2025-03-17'); //TODO: edit date once we pick a cutoff date
