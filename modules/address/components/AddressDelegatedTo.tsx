@@ -80,7 +80,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${formatValue(parseEther(lockAmount), undefined, undefined, true)}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(BigInt(lockAmount), undefined, undefined, true)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -101,7 +101,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${formatValue(
-                      parseEther(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
+                      BigInt(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
                     )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
 
@@ -121,7 +121,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
               totalDelegated === 0
                 ? '0'
                 : calculatePercentage(
-                    parseEther(lockAmount),
+                    BigInt(lockAmount),
                     parseEther(totalDelegated.toString()),
                     1
                   ).toLocaleString()

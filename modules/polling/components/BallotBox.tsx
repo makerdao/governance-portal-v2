@@ -59,6 +59,7 @@ export default function BallotBox({ activePollCount, network, activePollIds }: P
               // disabled={!ballotCount}
               disabled={true}
               sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}
+              data-testid="review-ballot-button"
             >
               <InternalLink href="/polling/review" title="Review & submit your ballot">
                 <>Review & Submit Your Ballot</>
