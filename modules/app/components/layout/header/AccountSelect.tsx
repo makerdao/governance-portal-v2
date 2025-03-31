@@ -144,7 +144,12 @@ const AccountSelect = (): React.ReactElement => {
         <Icon name="chevron_left" color="primary" size="10px" mr="2" />
         Back
       </Button>
-      <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
+      <Close
+        sx={closeButtonStyle}
+        aria-label="close"
+        data-testid="wallet-modal-close-button"
+        onClick={close}
+      />
     </Flex>
   );
 
@@ -175,7 +180,12 @@ const AccountSelect = (): React.ReactElement => {
             <>
               <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3, mt: 1 }}>
                 <Text variant="microHeading">{address ? 'Account' : 'Select a Wallet'}</Text>
-                <Close aria-label="close" sx={closeButtonStyle} onClick={close} />
+                <Close
+                  aria-label="close"
+                  sx={closeButtonStyle}
+                  data-testid="wallet-modal-close-button"
+                  onClick={close}
+                />
               </Flex>
               {address ? (
                 <>
