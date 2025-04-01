@@ -24,13 +24,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
-    name: 'end',
-    address: {
-      [mainnet.id]: '0x0e2e8F1D1326A4B9633D96222Ce399c708B19c28',
-      [TENDERLY_CHAIN_ID]: '0x0e2e8F1D1326A4B9633D96222Ce399c708B19c28'
-    }
-  },
-  {
     name: 'mkr',
     address: {
       [mainnet.id]: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
@@ -42,13 +35,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     address: {
       [mainnet.id]: '0xbe286431454714f511008713973d3b053a2d38f3',
       [TENDERLY_CHAIN_ID]: '0xbe286431454714f511008713973d3b053a2d38f3'
-    }
-  },
-  {
-    name: 'pauseProxy',
-    address: {
-      [mainnet.id]: '0xBE8E3e3618f7474F8cB1d074A26afFef007E98FB',
-      [TENDERLY_CHAIN_ID]: '0xBE8E3e3618f7474F8cB1d074A26afFef007E98FB'
     }
   },
   {
