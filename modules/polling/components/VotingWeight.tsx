@@ -26,14 +26,6 @@ export const getDescription = ({
           {'Balance of delegated MKR: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}
         </Text>
       );
-    } else if (votingWeight.chiefBalanceCold) {
-      return (
-        <>
-          <Text as="p">
-            {'Cold wallet balance in chief: ' + formatValue(votingWeight.chiefBalanceCold) + ' MKR'}
-          </Text>
-        </>
-      );
     } else {
       return (
         <>
