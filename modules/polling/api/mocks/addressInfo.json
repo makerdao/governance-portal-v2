@@ -1,6 +1,5 @@
 {
   "isDelegate": true,
-  "isProxyContract": false,
   "delegateInfo": {
     "voteDelegateAddress": "0xad2fda5f6ce305d2ced380fdfa791b6a26e7f281",
     "address": "0x0988e41c02915fe1befa78c556f946e5f20ffbd3",

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState } from 'react';
-import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
+import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -20,12 +20,12 @@ import { useFree } from '../hooks/useFree';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
 const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
-  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
+  const { account } = useAccount();
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
+  const { data: lockedMkr } = useLockedMkr(account);
 
   const free = useFree({
     mkrToWithdraw,
@@ -103,11 +103,6 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
               />
             </Box>
 
-            {voteProxyContractAddress && account === voteProxyHotAddress && (
-              <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
-                You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
-              </Alert>
-            )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
               disabled={

@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getMKRVotingWeight } from './getMKRVotingWeight';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { Mock, vi } from 'vitest';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { chiefAbi, chiefAddress, mkrAbi, mkrAddress } from 'modules/contracts/generated';
@@ -17,7 +16,6 @@ import { SupportedChainId } from 'modules/web3/constants/chainID';
 
 vi.mock('modules/web3/helpers/getPublicClient');
 vi.mock('modules/delegates/helpers/getDelegateContractAddress');
-vi.mock('modules/app/helpers/getVoteProxyAddresses');
 
 describe('getMKRVotingWeight', () => {
   const mkrBalanceOfParameters = {
@@ -46,8 +44,6 @@ describe('getMKRVotingWeight', () => {
     });
 
     (getDelegateContractAddress as Mock).mockReturnValue(undefined);
-
-    (getVoteProxyAddresses as Mock).mockReturnValue({});
   });
 
   it('should return 0 if no MKR is locked', async () => {

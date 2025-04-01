@@ -36,16 +36,10 @@ import { TxStatus } from 'modules/web3/constants/transaction';
 
 const AccountPage = (): React.ReactElement => {
   const network = useNetwork();
-  const {
-    account,
-    mutate: mutateAccount,
-    voteDelegateContractAddress,
-    voteProxyContractAddress,
-    votingAccount
-  } = useAccount();
+  const { account, mutate: mutateAccount, voteDelegateContractAddress, votingAccount } = useAccount();
 
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
-  const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
+  const { data: chiefBalance } = useLockedMkr(account);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
@@ -162,9 +156,9 @@ const AccountPage = (): React.ReactElement => {
                       </DialogOverlay>
                     )}
                     <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                      Warning: You will be unable to vote with a vote proxy contract or your existing chief
-                      balance through the UI after creating a delegate contract. This functionality is only
-                      affected in the user interface and not at the contract level.
+                      Warning: You will be unable to vote with your existing chief balance through the UI
+                      after creating a delegate contract. This functionality is only affected in the user
+                      interface and not at the contract level.
                     </Alert>
                     <Label
                       sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}

@@ -10,8 +10,6 @@ import { useChainId } from 'wagmi';
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 
 export const useFree = ({
   mkrToWithdraw,
@@ -24,9 +22,10 @@ export const useFree = ({
   mkrToWithdraw: bigint;
 }): WriteHook => {
   const chainId = useChainId();
-  const { voteProxyContractAddress } = useAccount();
 
-  const commonParams = {
+  return useWriteContractFlow({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
     functionName: 'free',
     args: [mkrToWithdraw],
     chainId,
@@ -35,19 +34,5 @@ export const useFree = ({
     onSuccess,
     onError,
     onStart
-  } as const;
-
-  const useWriteContractFlowResponseProxy = useWriteContractFlow({
-    address: voteProxyContractAddress as `0x${string}` | undefined,
-    abi: voteProxyAbi,
-    ...commonParams
   });
-
-  const useWriteContractFlowResponseChief = useWriteContractFlow({
-    address: chiefAddress[chainId],
-    abi: chiefAbi,
-    ...commonParams
-  });
-
-  return voteProxyContractAddress ? useWriteContractFlowResponseProxy : useWriteContractFlowResponseChief;
 };

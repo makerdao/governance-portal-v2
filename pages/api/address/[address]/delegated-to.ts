@@ -11,12 +11,9 @@ import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistory } from 'modules/delegates/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
-import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
 import { formatEther } from 'viem';
 /**
  * @swagger
@@ -95,28 +92,8 @@ export default withApiHandler(
       req.query.address as string,
       new ApiError('Invalid address', 400, 'Invalid address')
     );
-    const chainId = networkNameToChainId(network);
 
-    const proxyInfo = await getVoteProxyAddresses(
-      voteProxyFactoryAddress[chainId],
-      voteProxyFactoryAbi,
-      address,
-      network
-    );
-
-    // if hasProxy, we need to combine the delegation history of hot, cold, proxy
-    let delegatedTo: DelegationHistory[];
-
-    if (proxyInfo.hasProxy && proxyInfo.coldAddress && proxyInfo.hotAddress && proxyInfo.voteProxyAddress) {
-      const [coldHistory, hotHistory, proxyHistory] = await Promise.all([
-        fetchDelegatedTo(proxyInfo.coldAddress, network),
-        fetchDelegatedTo(proxyInfo.hotAddress, network),
-        fetchDelegatedTo(proxyInfo.voteProxyAddress, network)
-      ]);
-      delegatedTo = coldHistory.concat(hotHistory).concat(proxyHistory);
-    } else {
-      delegatedTo = await fetchDelegatedTo(address, network);
-    }
+    const delegatedTo = await fetchDelegatedTo(address, network);
 
     // filter out duplicate txs for the same address
     const txHashes = {};

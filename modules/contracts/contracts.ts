@@ -73,13 +73,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
-    name: 'voteProxyFactory',
-    address: {
-      [mainnet.id]: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408',
-      [TENDERLY_CHAIN_ID]: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408'
-    }
-  },
-  {
     name: 'vow',
     address: {
       [mainnet.id]: '0xA950524441892A31ebddF91d3cEEFa04Bf454466',

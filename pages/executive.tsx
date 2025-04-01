@@ -17,7 +17,6 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import Deposit from 'modules/mkr/components/Deposit';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
@@ -64,7 +63,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 );
 
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
-  const { account, voteDelegateContractAddress, voteProxyContractAddress, votingAccount } = useAccount();
+  const { account, voteDelegateContractAddress, votingAccount } = useAccount();
   const network = useNetwork();
 
   const [showHistorical, setShowHistorical] = React.useState(false);
@@ -154,34 +153,11 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const { data: hat } = useHat();
 
-  const showProxyInfo = Boolean(
-    !voteProxyContractAddress && lockedMkr && lockedMkr === 0n && !voteDelegateContractAddress
-  );
-
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
 
-      {votedProposals &&
-        !votingForSomething &&
-        voteProxyContractAddress &&
-        lockedMkr &&
-        !voteDelegateContractAddress && (
-          <>
-            <ProgressBar step={lockedMkr === 0n ? 1 : 2} />
-            <MigrationBadge>
-              {lockedMkr === 0n ? (
-                <Text>
-                  Your vote proxy has been created. Please{' '}
-                  <Deposit link={'deposit'} showProxyInfo={showProxyInfo} /> into your new vote proxy contract
-                </Text>
-              ) : (
-                'Your vote proxy has been created. You are now ready to vote.'
-              )}
-            </MigrationBadge>
-          </>
-        )}
-      {votedProposals && !votingForSomething && !voteProxyContractAddress && lockedMkr && lockedMkr > 0n && (
+      {votedProposals && !votingForSomething && lockedMkr && lockedMkr > 0n && (
         <>
           <ProgressBar step={2} />
           <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
@@ -193,7 +169,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
             lockedMkr={lockedMkr || 0n}
             mutateLockedMkr={mutateLockedMkr}
             voteDelegate={voteDelegateContractAddress}
-            showProxyInfo={showProxyInfo}
           />
         )}
         <Flex sx={{ alignItems: 'center' }}>

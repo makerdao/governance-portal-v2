@@ -11,8 +11,6 @@ import { fetchAllCurrentVotes } from 'modules/polling/api/fetchAllCurrentVotes';
 import logger from 'lib/logger';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
-import { voteProxyFactoryAbi, voteProxyFactoryAddress } from 'modules/contracts/generated';
 
 export async function ballotIncludesAlreadyVoted(
   voter: string,
@@ -22,16 +20,9 @@ export async function ballotIncludesAlreadyVoted(
   try {
     const chainId = networkNameToChainId(network);
 
-    const [voteDelegateAddress, voteProxyAddress] = await Promise.all([
-      getDelegateContractAddress(voter, chainId),
-      getVoteProxyAddresses(voteProxyFactoryAddress[chainId], voteProxyFactoryAbi, voter, network)
-    ]);
+    const voteDelegateAddress = await getDelegateContractAddress(voter, chainId);
 
-    const addressToUseAsVoter = voteDelegateAddress
-      ? voteDelegateAddress
-      : voteProxyAddress?.hotAddress
-      ? voteProxyAddress?.hotAddress
-      : voter;
+    const addressToUseAsVoter = voteDelegateAddress ? voteDelegateAddress : voter;
 
     const voteHistory = await fetchAllCurrentVotes(addressToUseAsVoter, network);
     const votedPollIds = voteHistory.map(v => v.pollId);
