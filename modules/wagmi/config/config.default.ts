@@ -1,7 +1,7 @@
 import { createConfig, createStorage, fallback, http, noopStorage } from 'wagmi';
 import { arbitrum, arbitrumSepolia, mainnet } from 'wagmi/chains';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { coinbaseWallet, metaMask, safe, walletConnect } from 'wagmi/connectors';
+import { coinbaseWallet, metaMask, safe, walletConnect, injected } from 'wagmi/connectors';
 import { createPublicClient } from 'viem';
 
 const tenderlyRpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`;
@@ -44,6 +44,17 @@ const transports = {
 
 const connectors = [
   metaMask(),
+  injected({
+    target() {
+      return {
+        id: 'injected',
+        name: 'Browser Wallet',
+        provider(window) {
+          return window?.ethereum;
+        }
+      };
+    }
+  }),
   walletConnect({
     name: 'Sky Governance Portal',
     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'd5c6af7c0680adbaad12f33744ee4413'
