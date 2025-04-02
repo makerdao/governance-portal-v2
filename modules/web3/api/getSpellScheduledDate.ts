@@ -14,7 +14,7 @@ import { pauseAddress } from 'modules/contracts/generated';
 const pauseInfo = contractInfo.pause;
 
 export const getSpellScheduledDate = async (
-  eta: bigint,
+  eta: bigint | undefined,
   spellAddress: string,
   network?: SupportedNetworks
 ): Promise<Date | undefined> => {

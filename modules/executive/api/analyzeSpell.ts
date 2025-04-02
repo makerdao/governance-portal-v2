@@ -60,7 +60,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     abi: dssSpellAbi
   };
 
-  const getScheduledDate = async (eta: bigint) => {
+  const getScheduledDate = async (eta: bigint | undefined) => {
     try {
       const spellDate = await getSpellScheduledDate(eta, address, network);
       return spellDate;
@@ -69,7 +69,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     }
   };
 
-  const getExecutionDate = async (done: boolean) => {
+  const getExecutionDate = async (done: boolean | undefined) => {
     try {
       const executionDate = await getSpellExecutionDate(done, address, network);
       return executionDate;
@@ -79,13 +79,13 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
   };
 
   const [
-    done,
-    responseNextCastTime,
-    responseEta,
-    responseExpiration,
-    responseMkrSupport,
-    responseExecutiveHash,
-    officeHours
+    { result: done },
+    { result: responseNextCastTime },
+    { result: responseEta },
+    { result: responseExpiration },
+    { result: responseMkrSupport },
+    { result: responseExecutiveHash },
+    { result: officeHours }
   ] = await publicClient.multicall({
     contracts: [
       { ...readSpellParameters, functionName: 'done' },
@@ -101,8 +101,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
       // executiveHash
       { ...readSpellParameters, functionName: 'description' },
       { ...readSpellParameters, functionName: 'officeHours' }
-    ],
-    allowFailure: false
+    ]
   });
 
   const nextCastTime = Number(responseNextCastTime)
@@ -111,7 +110,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
   const eta = Number(responseEta) ? new Date(Number(responseEta) * 1000) : undefined;
   const expiration = Number(responseExpiration) ? new Date(Number(responseExpiration) * 1000) : undefined;
   const mkrSupport = responseMkrSupport ? responseMkrSupport.toString() : '0';
-  const executiveHash = responseExecutiveHash.substr(
+  const executiveHash = responseExecutiveHash?.substr(
     responseExecutiveHash.indexOf('0x'),
     responseExecutiveHash.length
   );
