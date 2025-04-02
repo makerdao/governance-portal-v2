@@ -22,33 +22,32 @@ export async function fetchChainDelegates(
   const chainId = networkNameToChainId(network);
   const data = await gqlRequest<Query>({ chainId, query: allDelegates });
 
-  const delegates = data.allDelegates.nodes;
+  const delegates = data.allDelegates.nodes.filter(delegate => !!delegate);
 
   const publicClient = getPublicClient(chainId);
 
-  const delegatesWithMkrStaked: DelegateContractInformation[] = await Promise.all(
-    delegates.map(async (delegate): Promise<DelegateContractInformation> => {
-      if (delegate?.voteDelegate && delegate.delegate) {
-        // Get MKR delegated to each contract
-        const mkr = await publicClient.readContract({
-          address: chiefAddress[chainId],
-          abi: chiefAbi,
-          functionName: 'deposits',
-          args: [delegate.voteDelegate as `0x${string}`]
-        });
-
-        const chainDelegate: DelegateContractInformation = {
-          ...(delegate as DelegateContractInformation),
-          address: delegate.delegate,
-          voteDelegateAddress: delegate.voteDelegate,
-          mkrDelegated: formatValue(mkr, 'wad', 18, false)
-        };
-
-        return chainDelegate;
-      }
-      return delegate as DelegateContractInformation;
+  const delegatesWithMkrStaked: DelegateContractInformation[] = (
+    await publicClient.multicall({
+      contracts: delegates.map(delegate => ({
+        address: chiefAddress[chainId],
+        abi: chiefAbi,
+        functionName: 'deposits',
+        args: [delegate.voteDelegate as `0x${string}`]
+      }))
     })
-  );
+  ).map((mkrRes, i) => {
+    const delegate = delegates[i];
+    if (delegate.voteDelegate && delegate.delegate && typeof mkrRes.result === 'bigint') {
+      const chainDelegate: DelegateContractInformation = {
+        ...(delegate as DelegateContractInformation),
+        address: delegate.delegate,
+        voteDelegateAddress: delegate.voteDelegate,
+        mkrDelegated: formatValue(mkrRes.result, 'wad', 18, false)
+      };
+      return chainDelegate;
+    }
+    return delegate as DelegateContractInformation;
+  });
 
   return delegatesWithMkrStaked;
 }
