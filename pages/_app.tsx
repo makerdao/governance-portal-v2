@@ -34,6 +34,7 @@ import { WagmiProvider } from 'wagmi';
 import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
 import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeImage } from 'modules/app/components/ThemeImage';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -61,6 +62,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
       </React.Fragment>
     );
   }, []);
+
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
@@ -69,7 +71,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
           <Analytics />
 
           <NextNprogress
-            color="#1aab9b"
+            color="#504DFF"
             startPosition={0.3}
             stopDelayMs={200}
             height={3}
@@ -102,9 +104,11 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     variant: 'layout.root',
 
                     paddingTop: 5,
+                    position: 'relative',
                     overflowX: 'hidden'
                   }}
                 >
+                  <ThemeImage />
                   {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
                   <Box sx={{ px: [3, 4] }}>
                     <Component {...pageProps} />

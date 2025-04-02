@@ -31,7 +31,8 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
   return (
     <Box
       sx={{
-        backgroundColor: 'background',
+        backgroundColor: 'surface',
+        backdropFilter: 'blur(50px)',
         zIndex: 200
       }}
     >

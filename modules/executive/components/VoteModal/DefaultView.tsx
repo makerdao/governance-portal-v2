@@ -94,7 +94,7 @@ export default function DefaultVoteModalView({
       <Text variant="heading" sx={{ fontSize: 6 }}>
         Confirm Vote
       </Text>
-      <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'onSecondary', fontSize: [3, 4] }}>
+      <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'textSecondary', fontSize: [3, 4] }}>
         You are voting for the following executive proposal:
       </Text>
       <Flex
@@ -130,7 +130,7 @@ export default function DefaultVoteModalView({
         }}
       >
         <GridBox bpi={bpi}>
-          <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
+          <Text as="p" color="textSecondary" sx={{ fontSize: 3 }}>
             Your voting weight
           </Text>
           {lockedMkr !== undefined ? (
@@ -144,7 +144,7 @@ export default function DefaultVoteModalView({
           )}
         </GridBox>
         <GridBox bpi={bpi}>
-          <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
+          <Text as="p" color="textSecondary" sx={{ fontSize: 3 }}>
             MKR supporting
           </Text>
           {spellData !== undefined ? (
@@ -158,7 +158,7 @@ export default function DefaultVoteModalView({
           )}
         </GridBox>
         <Box sx={{ height: ['64px', '78px'], p: 3, pt: 2 }}>
-          <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
+          <Text as="p" color="textSecondary" sx={{ fontSize: 3 }}>
             After vote cast
           </Text>
           {lockedMkr !== undefined && spellData !== undefined ? (
