@@ -40,13 +40,15 @@ export const useFree = ({
   const useWriteContractFlowResponseProxy = useWriteContractFlow({
     address: voteProxyContractAddress as `0x${string}` | undefined,
     abi: voteProxyAbi,
-    ...commonParams
+    ...commonParams,
+    enabled: commonParams.enabled && !!voteProxyContractAddress
   });
 
   const useWriteContractFlowResponseChief = useWriteContractFlow({
     address: chiefAddress[chainId],
     abi: chiefAbi,
-    ...commonParams
+    ...commonParams,
+    enabled: commonParams.enabled && !voteProxyContractAddress
   });
 
   return voteProxyContractAddress ? useWriteContractFlowResponseProxy : useWriteContractFlowResponseChief;
