@@ -3,8 +3,60 @@ import { expect, Page } from '@playwright/test';
 export class PollingPage {
   readonly page: Page;
 
+  // Locators
+  private pollHeading: any;
+  private singleSelect: any;
+  private addToBallotButton: any;
+  private ballotAddedText: any;
+  private reviewButton: any;
+  private editPollChoiceButton: any;
+  private updateVoteButton: any;
+  private submitBallotButton: any;
+  private gaslessVotingText: any;
+  private switchToLegacyButton: any;
+  private legacyVotingText: any;
+  private submitLegacyButton: any;
+  private signWalletText: any;
+  private shareVotesText: any;
+  private voteSubmissionText: any;
+  private pollOverviewCard: any;
+  private submitGaslessButton: any;
+
   constructor(page: Page) {
     this.page = page;
+    this.initializeLocators();
+  }
+
+  private initializeLocators() {
+    this.pollHeading = this.page.getByRole('heading', { name: /Active Polls|Ended Polls/ });
+    this.singleSelect = this.page.locator('[data-testid="single-select"]');
+    this.addToBallotButton = this.page.locator('[data-testid="button-add-vote-to-ballot"]');
+    this.ballotAddedText = this.page.locator('text=/1 of .* available poll(s)? added to ballot/');
+    this.reviewButton = this.page.locator('text=Review & Submit Your Ballot');
+    this.editPollChoiceButton = this.page.locator('[data-testid="edit-poll-choice"]');
+    this.updateVoteButton = this.page.locator('text=Update vote');
+    this.submitBallotButton = this.page.locator('[data-testid="submit-ballot-button"]');
+    this.gaslessVotingText = this.page.locator('text=Gasless voting via Arbitrum');
+    this.switchToLegacyButton = this.page.locator('[data-testid="switch-to-legacy-voting-button"]');
+    this.legacyVotingText = this.page.locator(
+      'text=Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
+    );
+    this.submitLegacyButton = this.page.locator('[data-testid="submit-ballot-legacy-button"]');
+    this.signWalletText = this.page.locator('text=Please use your wallet to sign');
+    this.shareVotesText = this.page.locator('text=Share all your votes');
+    this.voteSubmissionText = this.page.locator(
+      'text=Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
+    );
+    this.pollOverviewCard = this.page.locator('[data-testid="poll-overview-card"]');
+    this.submitGaslessButton = this.page.locator('[data-testid="submit-ballot-gasless-button"]');
+  }
+
+  private getSingleSelectOption(choice: 'Yes' | 'No') {
+    return this.page.locator(`[data-testid="single-select-option-${choice}"]`);
+  }
+
+  private getPollId(pollId: number) {
+    return this.page.locator(`text=Poll ID ${pollId}`);
   }
 
   async goto() {
@@ -12,65 +64,59 @@ export class PollingPage {
   }
 
   async waitForPolls() {
-    await expect(this.page.getByRole('heading', { name: /Active Polls|Ended Polls/ })).toBeVisible();
+    await expect(this.pollHeading).toBeVisible();
   }
 
   async selectChoice(choice: 'Yes' | 'No') {
-    const selectChoice = this.page.locator('[data-testid="single-select"]');
-    await selectChoice.first().click();
-    await this.page.locator(`[data-testid="single-select-option-${choice}"]`).first().click();
+    await this.singleSelect.first().click();
+    await this.getSingleSelectOption(choice).first().click();
   }
 
   async addToBallot() {
-    const buttonsVote = this.page.locator('[data-testid="button-add-vote-to-ballot"]');
-    await expect(buttonsVote.first()).toBeEnabled();
-    await buttonsVote.first().click();
-    await expect(this.page.locator('text=/1 of .* available poll(s)? added to ballot/')).toBeVisible();
+    await expect(this.addToBallotButton.first()).toBeEnabled();
+    await this.addToBallotButton.first().click();
+    await expect(this.ballotAddedText).toBeVisible();
   }
 
   async navigateToReview() {
-    await this.page.locator('text=Review & Submit Your Ballot').click();
+    await this.reviewButton.click();
     await expect(this.page).toHaveURL('/polling/review');
   }
 
   async verifyPollId(pollId: number) {
-    await expect(this.page.locator(`text=Poll ID ${pollId}`)).toBeVisible();
+    await expect(this.getPollId(pollId)).toBeVisible();
   }
 
   async editChoice(choice: 'Yes' | 'No') {
-    await this.page.locator('[data-testid="edit-poll-choice"]').click();
-    const selectChoice = this.page.locator('[data-testid="single-select"]');
-    await selectChoice.first().click();
-    await this.page.locator(`[data-testid="single-select-option-${choice}"]`).click({ force: true });
-    await this.page.locator('text=Update vote').click();
+    await this.editPollChoiceButton.click();
+    await this.singleSelect.first().click();
+    await this.getSingleSelectOption(choice).click({ force: true });
+    await this.updateVoteButton.click();
   }
 
   async submitBallot() {
-    await this.page.locator('[data-testid="submit-ballot-button"]').click();
-    await expect(this.page.locator('text=Gasless voting via Arbitrum')).toBeVisible();
+    await this.submitBallotButton.click();
+    await expect(this.gaslessVotingText).toBeVisible();
   }
 
   async switchToLegacyVoting() {
-    await this.page.locator('[data-testid="switch-to-legacy-voting-button"]').click();
-    await expect(
-      this.page.locator(
-        'text=Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
-      )
-    ).toBeVisible();
+    await this.switchToLegacyButton.click();
+    await expect(this.legacyVotingText).toBeVisible();
   }
 
   async submitLegacyVote() {
-    await this.page.locator('[data-testid="submit-ballot-legacy-button"]').click();
-    await expect(this.page.locator('text=Please use your wallet to sign')).toBeVisible();
-    await expect(this.page.locator('text=Share all your votes')).toBeVisible();
+    await this.submitLegacyButton.click();
+    await expect(this.signWalletText).toBeVisible();
+    await expect(this.shareVotesText).toBeVisible();
+  }
+
+  async submitGaslessVote() {
+    await this.submitGaslessButton.click();
+    await this.verifyVoteSubmission();
   }
 
   async verifyVoteSubmission() {
-    await expect(
-      this.page.locator(
-        'text=Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
-      )
-    ).toBeVisible();
-    await expect(this.page.locator('[data-testid="poll-overview-card"]')).toHaveCount(1);
+    await expect(this.voteSubmissionText).toBeVisible();
+    await expect(this.pollOverviewCard).toHaveCount(1);
   }
 }
