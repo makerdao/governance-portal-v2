@@ -46,6 +46,7 @@ export default function ReviewBox({
     setSubmissionMethod,
     submitBallot,
     submitBallotGasless,
+    isVotePrepared,
     submissionError
   } = useContext(BallotContext);
   const network = useNetwork();
@@ -228,7 +229,9 @@ export default function ReviewBox({
                   }}
                   data-testid="submit-ballot-legacy-button"
                   variant="primaryLarge"
-                  disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}
+                  disabled={
+                    !ballotCount || !!(transaction && transaction?.status !== 'error') || !isVotePrepared
+                  }
                   sx={{ mt: 3, width: '100%' }}
                 >
                   Proceed with legacy voting

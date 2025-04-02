@@ -1178,6 +1178,7 @@ export const icons = {
     ),
     viewBox: '0 0 20 20'
   },
+  'Browser Wallet': brandIcons.ether_circle_color,
   WalletLink: {
     path: (
       <g>

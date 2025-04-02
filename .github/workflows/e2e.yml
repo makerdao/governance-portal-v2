@@ -15,6 +15,7 @@ jobs:
           - test: executives.spec
           - test: delegates.spec
           - test: polling.spec
+          - test: wallet.spec
     runs-on: ubuntu-latest
     env:
       INFURA_KEY: ${{ secrets.INFURA_KEY }}

@@ -17,7 +17,8 @@ export const mockWagmiConfig = createConfig({
     })
   ],
   transports: {
-    [tenderlyMainnet.id]: http()
+    // Passing undefined for the RPC URL as it will use the one defined in the Tenderly chain object
+    [tenderlyMainnet.id]: http(undefined, { batch: { wait: 500 } })
   },
   storage: createStorage({
     storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
@@ -27,7 +28,7 @@ export const mockWagmiConfig = createConfig({
 
 export const mockPublicClient = createPublicClient({
   chain: tenderlyMainnet,
-  transport: http(),
+  transport: http(undefined, { batch: { wait: 500 } }),
   key: 'mock-public-client',
   name: 'Mock public client'
 });

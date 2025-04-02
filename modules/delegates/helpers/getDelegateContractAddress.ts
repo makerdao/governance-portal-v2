@@ -21,18 +21,21 @@ export async function getDelegateContractAddress(
 ): Promise<string | undefined> {
   const publicClient = getPublicClient(chainId);
 
-  const voteDelegateAddress = await publicClient.readContract({
-    address: voteDelegateFactoryAddress[chainId],
-    abi: voteDelegateFactoryAbi,
-    functionName: 'delegates',
-    args: [address as `0x${string}`]
-  });
-
-  const voteDelegateAddressOld = await publicClient.readContract({
-    address: voteDelegateFactoryOldAddress[chainId],
-    abi: voteDelegateFactoryOldAbi,
-    functionName: 'delegates',
-    args: [address as `0x${string}`]
+  const [{ result: voteDelegateAddress }, { result: voteDelegateAddressOld }] = await publicClient.multicall({
+    contracts: [
+      {
+        address: voteDelegateFactoryAddress[chainId],
+        abi: voteDelegateFactoryAbi,
+        functionName: 'delegates',
+        args: [address as `0x${string}`]
+      },
+      {
+        address: voteDelegateFactoryOldAddress[chainId],
+        abi: voteDelegateFactoryOldAbi,
+        functionName: 'delegates',
+        args: [address as `0x${string}`]
+      }
+    ]
   });
 
   return voteDelegateAddressOld !== ZERO_ADDRESS

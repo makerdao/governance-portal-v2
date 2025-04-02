@@ -39,7 +39,8 @@ export const useOldChiefFree = ({
     address: voteProxyOldContractAddress as `0x${string}` | undefined,
     abi: voteProxyAbi,
     functionName: 'freeAll',
-    ...commonParams
+    ...commonParams,
+    enabled: commonParams.enabled && !!voteProxyOldContractAddress
   });
 
   const useWriteContractFlowResponseChief = useWriteContractFlow({
@@ -47,7 +48,8 @@ export const useOldChiefFree = ({
     abi: chiefOldAbi,
     functionName: 'free',
     args: [mkrToWithdraw],
-    ...commonParams
+    ...commonParams,
+    enabled: commonParams.enabled && !voteProxyOldContractAddress
   });
 
   return voteProxyOldContractAddress ? useWriteContractFlowResponseProxy : useWriteContractFlowResponseChief;

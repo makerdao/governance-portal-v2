@@ -35,7 +35,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
             Connected with {accountName}
           </Text>
         </Flex>
-        <Button variant="mutedOutline" onClick={change}>
+        <Button variant="mutedOutline" onClick={change} data-testid="wallet-change-button">
           Change
         </Button>
       </Flex>
@@ -83,7 +83,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
           title="View account page"
           styles={{ color: 'accentBlue', width: '100%' }}
         >
-          <Button variant="primaryOutline" sx={{ width: '100%' }}>
+          <Button variant="primaryOutline" sx={{ width: '100%' }} data-testid="view-account-page-button">
             View account page
           </Button>
         </InternalLink>
