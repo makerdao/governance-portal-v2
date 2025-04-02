@@ -64,6 +64,7 @@ interface ContextProps {
   updateVoteFromBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
   removeVoteFromBallot: (pollId: number) => void;
   addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => void;
+  isVotePrepared: boolean;
   submitBallot: () => void;
   submitBallotGasless: () => void;
   clearBallot: () => void;
@@ -84,6 +85,7 @@ export const BallotContext = React.createContext<ContextProps>({
   addVoteToBallot: (pollId: number, ballotVote: Partial<BallotVote>) => null,
   clearBallot: () => null,
   removeVoteFromBallot: (pollId: number) => null,
+  isVotePrepared: false,
   submitBallot: () => null,
   submitBallotGasless: () => null,
   isPollOnBallot: (pollId: number) => false,
@@ -332,6 +334,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   const pollVote = voteDelegateContractAddress ? delegatePollVote : directPollVote;
 
+  const isVotePrepared = submissionMethod === 'standard' && pollVote.prepared && !pollVote.isLoading;
+
   const submitBallot = () => {
     if (!pollVote.prepared || pollVote.isLoading) {
       return;
@@ -459,6 +463,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         updateVoteFromBallot,
         submitBallot,
         submitBallotGasless,
+        isVotePrepared,
         transaction,
         isPollOnBallot,
         ballotCount: Object.keys(ballot).length,

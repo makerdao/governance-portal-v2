@@ -1,4 +1,4 @@
-import { createConfig, createStorage, fallback, http, noopStorage } from 'wagmi';
+import { createConfig, createStorage, http, noopStorage } from 'wagmi';
 import { arbitrum, arbitrumSepolia, mainnet } from 'wagmi/chains';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { coinbaseWallet, metaMask, safe, walletConnect, injected } from 'wagmi/connectors';
