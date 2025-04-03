@@ -18,7 +18,6 @@ import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recently
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { getDelegateContractAddress } from 'modules/delegates/helpers/getDelegateContractAddress';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { verifyTypedSignature } from 'modules/web3/helpers/verifyTypedSignature';
 import { Mock, vi } from 'vitest';
 import { getGaslessPublicClient } from 'modules/web3/helpers/getPublicClient';
@@ -32,7 +31,6 @@ vi.mock('modules/web3/helpers/verifyTypedSignature');
 vi.mock('modules/polling/helpers/recentlyUsedGaslessVotingCheck');
 vi.mock('modules/polling/api/fetchAddressPollVoteHistory');
 vi.mock('modules/app/api/postRequestToDiscord');
-vi.mock('modules/app/helpers/getVoteProxyAddresses');
 vi.mock('modules/delegates/helpers/getDelegateContractAddress');
 
 describe('/api/polling/vote API Endpoint', () => {
@@ -52,7 +50,6 @@ describe('/api/polling/vote API Endpoint', () => {
     (fetchAddressPollVoteHistory as Mock).mockImplementation(() => Promise.resolve([]));
     (postRequestToDiscord as Mock).mockImplementation(() => Promise.resolve());
     (getDelegateContractAddress as Mock).mockImplementation(() => Promise.resolve(undefined));
-    (getVoteProxyAddresses as Mock).mockImplementation(() => Promise.resolve(null));
   });
   function mockRequestResponse(method: RequestMethod = 'POST', body) {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } = createMocks({ method });

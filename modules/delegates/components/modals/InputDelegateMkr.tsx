@@ -40,8 +40,8 @@ export function InputDelegateMkr({
   disclaimer
 }: Props): React.ReactElement {
   const [value, setValue] = useState(0n);
-  const { account, voteProxyContractAddress } = useAccount();
-  const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
+  const { account } = useAccount();
+  const { data: lockedMkr } = useLockedMkr(account);
   function handleChange(val: bigint): void {
     setValue(val);
     onChange(val);

@@ -12,14 +12,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import Deposit from 'modules/mkr/components/Deposit';
-import WithdrawOldChief from 'modules/executive/components/WithdrawOldChief';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
@@ -32,13 +29,11 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
@@ -46,8 +41,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { useChainId, useReadContract } from 'wagmi';
-import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -70,15 +63,8 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 );
 
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
-  const {
-    account,
-    voteDelegateContractAddress,
-    voteProxyContractAddress,
-    voteProxyOldContractAddress,
-    votingAccount
-  } = useAccount();
+  const { account, voteDelegateContractAddress, votingAccount } = useAccount();
   const network = useNetwork();
-  const chainId = useChainId();
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
@@ -150,20 +136,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     mutatePaginatedProposals();
   }, [startDate, endDate]);
 
-  const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
-
-  const { data: lockedMkrOldChief } = useReadContract({
-    address: chiefOldAddress[chainId],
-    abi: chiefOldAbi,
-    chainId,
-    functionName: 'deposits',
-    args: [lockedMkrKeyOldChief as `0x${string}`],
-    scopeKey: `/user/mkr-locked-old-chief/${lockedMkrKeyOldChief}`,
-    query: {
-      enabled: !!lockedMkrKeyOldChief
-    }
-  });
-
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
   const prevSortByRef = useRef<string>(sortBy);
@@ -181,107 +153,22 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const { data: hat } = useHat();
 
-  const showProxyInfo = Boolean(
-    lockedMkrOldChief &&
-      lockedMkrOldChief === 0n &&
-      !voteProxyContractAddress &&
-      lockedMkr &&
-      lockedMkr === 0n &&
-      !voteDelegateContractAddress
-  );
-
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
 
-      {lockedMkrOldChief && lockedMkrOldChief > 0 && (
+      {votedProposals && !votingForSomething && lockedMkr && lockedMkr > 0n && (
         <>
-          <ProgressBar step={0} />
-          <MigrationBadge py={[2]}>
-            <Flex
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                alignContent: 'space-between',
-                flexWrap: 'wrap'
-              }}
-            >
-              <Text sx={{ py: 2 }}>
-                An executive vote has passed to update the Chief to a new version. You have{' '}
-                <b>{formatValue(lockedMkrOldChief)} MKR</b> to withdraw from the old chief.
-              </Text>
-              <Flex>
-                <WithdrawOldChief />
-                <ExternalLink
-                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
-                  title="View migration steps"
-                >
-                  <Button
-                    variant="outline"
-                    sx={{
-                      height: '26px',
-                      py: 0,
-                      px: 2,
-                      ml: 1,
-                      textTransform: 'uppercase',
-                      fontWeight: 'bold',
-                      fontSize: '10px',
-                      borderColor: 'accentBlue',
-                      color: 'accentBlue',
-                      ':hover': { color: 'accentBlueEmphasis', borderColor: 'accentBlueEmphasis' },
-                      ':hover svg': { color: 'accentBlueEmphasis' }
-                    }}
-                  >
-                    <Text>
-                      Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
-                    </Text>
-                  </Button>
-                </ExternalLink>
-              </Flex>
-            </Flex>
-          </MigrationBadge>
+          <ProgressBar step={2} />
+          <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
         </>
       )}
-      {votedProposals &&
-        !votingForSomething &&
-        lockedMkrOldChief &&
-        lockedMkrOldChief === 0n &&
-        voteProxyContractAddress &&
-        lockedMkr &&
-        !voteDelegateContractAddress && (
-          <>
-            <ProgressBar step={lockedMkr === 0n ? 1 : 2} />
-            <MigrationBadge>
-              {lockedMkr === 0n ? (
-                <Text>
-                  Your vote proxy has been created. Please{' '}
-                  <Deposit link={'deposit'} showProxyInfo={showProxyInfo} /> into your new vote proxy contract
-                </Text>
-              ) : (
-                'Your vote proxy has been created. You are now ready to vote.'
-              )}
-            </MigrationBadge>
-          </>
-        )}
-      {votedProposals &&
-        !votingForSomething &&
-        lockedMkrOldChief &&
-        lockedMkrOldChief === 0n &&
-        !voteProxyContractAddress &&
-        lockedMkr &&
-        lockedMkr > 0n && (
-          <>
-            <ProgressBar step={2} />
-            <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
-          </>
-        )}
       <Stack>
         {account && (
           <ExecutiveBalance
             lockedMkr={lockedMkr || 0n}
             mutateLockedMkr={mutateLockedMkr}
             voteDelegate={voteDelegateContractAddress}
-            showProxyInfo={showProxyInfo}
           />
         )}
         <Flex sx={{ alignItems: 'center' }}>

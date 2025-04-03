@@ -55,7 +55,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *        type: string
  *        enum:
  *          - aligned
- *          - expired
  *          - shadow
  *      cuMember:
  *        type: boolean
@@ -70,13 +69,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *      blockTimestamp:
  *        type: string
  *        format: date-time
- *      expirationDate:
- *        type: string
- *        format: date-time
- *      expired:
- *        type: boolean
- *      isAboutToExpire:
- *        type: boolean
  *      previous:
  *        type: object
  *        properties:
@@ -93,9 +85,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *      - voteDelegateAddress
  *      - status
  *      - blockTimestamp
- *      - expirationDate
- *      - expired
- *      - isAboutToExpire
  */
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegateInfo[]>) => {
@@ -104,7 +93,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<D
     validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
-  const delegates = await fetchDelegatesInfo(network, true, false);
+  const delegates = await fetchDelegatesInfo(network, true);
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(delegates);
 });

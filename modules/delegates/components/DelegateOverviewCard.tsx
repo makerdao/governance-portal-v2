@@ -22,7 +22,6 @@ import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import Icon from 'modules/app/components/Icon';
 import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
-import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 
@@ -134,13 +133,11 @@ export const DelegateOverviewCard = memo(
               }}
             >
               <LastVoted
-                expired={delegate.expired}
                 date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
                 left
               />
             </Flex>
             <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
-              <DelegateContractInfo delegate={delegate} />
               {delegate.cuMember && (
                 <Flex sx={{ mt: 1 }}>
                   <CoreUnitButton handleInfoClick={handleInfoClick} />
@@ -190,7 +187,7 @@ export const DelegateOverviewCard = memo(
                 <Button
                   variant="primaryLarge"
                   data-testid="button-delegate"
-                  disabled={!account || !!delegate.next || delegate.expired}
+                  disabled={!account}
                   onClick={() => {
                     setShowDelegateModal(true);
                   }}
