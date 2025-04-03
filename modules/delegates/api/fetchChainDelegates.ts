@@ -12,8 +12,6 @@ import { DelegateContractInformation } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
@@ -25,32 +23,17 @@ export async function fetchChainDelegates(
     query: allDelegates
   });
 
-  const delegates = data.allDelegates.nodes.filter(delegate => !!delegate);
+  return data.delegates.map(d => {
+    // Ensure blockTimestamp is a valid number
+    const blockTimestamp = d.blockTimestamp ? Number(d.blockTimestamp) : 0;
 
-  const publicClient = getPublicClient(chainId);
-
-  const delegatesWithMkrStaked: DelegateContractInformation[] = (
-    await publicClient.multicall({
-      contracts: delegates.map(delegate => ({
-        address: chiefAddress[chainId],
-        abi: chiefAbi,
-        functionName: 'deposits',
-        args: [delegate.voteDelegate as `0x${string}`]
-      }))
-    })
-  ).map((mkrRes, i) => {
-    const delegate = delegates[i];
-    if (delegate.voteDelegate && delegate.delegate && typeof mkrRes.result === 'bigint') {
-      const chainDelegate: DelegateContractInformation = {
-        ...(delegate as DelegateContractInformation),
-        address: delegate.delegate,
-        voteDelegateAddress: delegate.voteDelegate,
-        mkrDelegated: formatValue(mkrRes.result, 'wad', 18, false)
-      };
-      return chainDelegate;
-    }
-    return delegate as DelegateContractInformation;
+    return {
+      blockTimestamp,
+      address: d.ownerAddress,
+      voteDelegateAddress: d.id,
+      mkrDelegated: formatValue(BigInt(d.totalDelegated), 'wad', 18, false),
+      delegateVersion: Number(d.version),
+      lastVoteDate: d.voter?.lastVotedTimestamp ? Number(d.voter.lastVotedTimestamp) : null
+    };
   });
-
-  return delegatesWithMkrStaked;
 }
