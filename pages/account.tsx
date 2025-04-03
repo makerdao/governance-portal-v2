@@ -222,7 +222,7 @@ const AccountPage = (): React.ReactElement => {
                     </Button>
                   </Box>
                 )}
-                {!!voteDelegateContractAddress && (
+                {!!voteDelegateContractAddress && !isChiefLive && (
                   <Box>
                     <Label>Support the Launch of SKY Governance</Label>
                     {txStatus !== TxStatus.IDLE && (
