@@ -37,7 +37,7 @@ import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useReadContract } from 'wagmi';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
+import { chiefAddress, newChiefAbi } from 'modules/contracts/generated';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 const AccountPage = (): React.ReactElement => {
@@ -55,7 +55,7 @@ const AccountPage = (): React.ReactElement => {
 
   const { data: live } = useReadContract({
     address: chiefAddress[chainId],
-    abi: chiefAbi,
+    abi: newChiefAbi,
     chainId,
     functionName: 'live',
     scopeKey: `chief-live-${chainId}`
