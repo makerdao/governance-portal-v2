@@ -222,7 +222,7 @@ const AccountPage = (): React.ReactElement => {
                     </Button>
                   </Box>
                 )}
-                {!!voteDelegateContractAddress && !votedForAddressZero && !isChiefLive && (
+                {!!voteDelegateContractAddress && (
                   <Box>
                     <Label>Support the Launch of SKY Governance</Label>
                     {txStatus !== TxStatus.IDLE && (
@@ -250,7 +250,12 @@ const AccountPage = (): React.ReactElement => {
                       to your delegate contract will immediately count toward launching the new chief.
                     </Alert>
                     <Button
-                      disabled={addressZeroVote.isLoading || !addressZeroVote.prepared}
+                      disabled={
+                        addressZeroVote.isLoading ||
+                        !addressZeroVote.prepared ||
+                        votedForAddressZero ||
+                        isChiefLive
+                      }
                       onClick={() => {
                         setTxStatus(TxStatus.INITIALIZED);
                         setModalOpen(true);
@@ -261,6 +266,12 @@ const AccountPage = (): React.ReactElement => {
                     >
                       Support address(0)
                     </Button>
+                    {votedForAddressZero && (
+                      <Text as="p" sx={{ mt: 2 }}>
+                        You are supporting address(0). Thank you for contributing to the launch of SKY
+                        governance.
+                      </Text>
+                    )}
                   </Box>
                 )}
                 {chiefBalance && chiefBalance > 0n && (
