@@ -32,15 +32,19 @@ describe('getMKRVotingWeight', () => {
 
   const fakeDelegateOwnerAddress = '0x9999567890123456789012345678901234567890';
   const fakeDelegateAddress = '0x1234567890123456789012345678901234567890';
-  const balanceMock = vi.fn().mockImplementation(({ args, functionName }) => {
-    if (args[0] === fakeDelegateAddress && functionName === 'balanceOf') {
-      return Promise.resolve(100n);
-    }
-    return Promise.resolve(0n);
+  const balanceMock = vi.fn().mockImplementation(({ contracts }) => {
+    return Promise.resolve(
+      contracts.map(({ args, functionName }) => {
+        if (args[0] === fakeDelegateAddress && functionName === 'balanceOf') {
+          return 100n;
+        }
+        return 0n;
+      })
+    );
   });
   beforeAll(() => {
     (getPublicClient as Mock).mockReturnValue({
-      readContract: balanceMock
+      multicall: balanceMock
     });
 
     (getDelegateContractAddress as Mock).mockReturnValue(undefined);
@@ -49,12 +53,17 @@ describe('getMKRVotingWeight', () => {
   it('should return 0 if no MKR is locked', async () => {
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
     expect(balanceMock).toHaveBeenNthCalledWith(1, {
-      ...mkrBalanceOfParameters,
-      args: [fakeDelegateOwnerAddress]
-    });
-    expect(balanceMock).toHaveBeenNthCalledWith(2, {
-      ...chiefDepositsParameters,
-      args: [fakeDelegateOwnerAddress]
+      contracts: [
+        {
+          ...mkrBalanceOfParameters,
+          args: [fakeDelegateOwnerAddress]
+        },
+        {
+          ...chiefDepositsParameters,
+          args: [fakeDelegateOwnerAddress]
+        }
+      ],
+      allowFailure: false
     });
     expect(result).toEqual({
       walletBalanceHot: 0n,
@@ -67,13 +76,18 @@ describe('getMKRVotingWeight', () => {
   it('should include the delegate contract weight by default', async () => {
     (getDelegateContractAddress as Mock).mockReturnValue(fakeDelegateAddress);
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, false);
-    expect(balanceMock).toHaveBeenNthCalledWith(3, {
-      ...mkrBalanceOfParameters,
-      args: [fakeDelegateAddress]
-    });
-    expect(balanceMock).toHaveBeenNthCalledWith(4, {
-      ...chiefDepositsParameters,
-      args: [fakeDelegateAddress]
+    expect(balanceMock).toHaveBeenNthCalledWith(2, {
+      contracts: [
+        {
+          ...mkrBalanceOfParameters,
+          args: [fakeDelegateAddress]
+        },
+        {
+          ...chiefDepositsParameters,
+          args: [fakeDelegateAddress]
+        }
+      ],
+      allowFailure: false
     });
     expect(result).toEqual({
       walletBalanceHot: 100n,
@@ -86,13 +100,18 @@ describe('getMKRVotingWeight', () => {
   it('should exclude the delegate contract weight if param is true', async () => {
     (getDelegateContractAddress as Mock).mockReturnValue(fakeDelegateAddress);
     const result = await getMKRVotingWeight(fakeDelegateOwnerAddress, SupportedNetworks.TENDERLY, true);
-    expect(balanceMock).toHaveBeenNthCalledWith(5, {
-      ...mkrBalanceOfParameters,
-      args: [fakeDelegateOwnerAddress]
-    });
-    expect(balanceMock).toHaveBeenNthCalledWith(6, {
-      ...chiefDepositsParameters,
-      args: [fakeDelegateOwnerAddress]
+    expect(balanceMock).toHaveBeenNthCalledWith(3, {
+      contracts: [
+        {
+          ...mkrBalanceOfParameters,
+          args: [fakeDelegateOwnerAddress]
+        },
+        {
+          ...chiefDepositsParameters,
+          args: [fakeDelegateOwnerAddress]
+        }
+      ],
+      allowFailure: false
     });
     expect(result).toEqual({
       walletBalanceHot: 0n,
