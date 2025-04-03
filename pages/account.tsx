@@ -75,7 +75,6 @@ const AccountPage = (): React.ReactElement => {
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
       mutateAccount?.();
-      setModalOpen(false);
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
@@ -92,7 +91,6 @@ const AccountPage = (): React.ReactElement => {
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
       mutateVotedProposals();
-      setModalOpen(false);
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
