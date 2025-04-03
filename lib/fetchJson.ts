@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 // List of allowed external domains
-const ALLOWED_DOMAINS = ['beaconcha.in', 'etherchain.org', '3.127.236.127'];
+const ALLOWED_DOMAINS = ['beaconcha.in', 'etherchain.org'];
 
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
   // Validate URL if it's a string
