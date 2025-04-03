@@ -118,17 +118,8 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           zIndex: -1,
           position: 'absolute',
           transform: 'translateX(-50%)',
-          backgroundImage:
-            renderedMode === 'dark'
-              ? bpi <= 2
-                ? 'url(/assets/bg_dark_medium.jpeg)'
-                : 'url(/assets/bg_footer_dark.jpeg)'
-              : bpi <= 2
-              ? 'url(/assets/bg_medium.jpeg)'
-              : 'url(/assets/bg_footer_light.jpeg)',
-          backgroundSize: ['1500px', '1500px', '1500px', '100% 600px', '100% 400px'],
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: ['-750px 100%', '-750px 100%', '-750px 100%', 'bottom', 'bottom']
+          bg: 'surface',
+          backdropFilter: 'blur(64px)'
         }}
       />
       <Flex

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Text, Flex, useColorMode, Box, Alert } from 'theme-ui';
+import { Heading, Text, Flex, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -57,13 +57,6 @@ const LandingPage = ({
 }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
-  const [mode] = useColorMode();
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
-
-  // change background on color mode switch
-  useEffect(() => {
-    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
-  }, [mode]);
 
   // account
   const { account, votingAccount } = useAccount();
@@ -139,21 +132,6 @@ const LandingPage = ({
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
       )}
-      <Box
-        as={'div'}
-        sx={{
-          top: 0,
-          left: 0,
-          pt: '100%',
-          width: '100%',
-          zIndex: -1,
-          position: 'absolute',
-          backgroundImage,
-          backgroundSize: ['cover', 'contain'],
-          backgroundPosition: 'top center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
       <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
       <StickyContainer>
         <PrimaryLayout sx={{ maxWidth: 'page' }}>
@@ -249,10 +227,11 @@ const LandingPage = ({
               />
             </section>
 
-            <Box as={'section'} sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
+            <Box as={'section'} sx={{ position: 'relative', mt: '4', overflowY: 'clip' }} id="learn">
               <Box
                 sx={{
-                  background: 'onSurfaceAlt',
+                  background: 'surface',
+                  backdropFilter: 'blur(50px)',
                   width: '200vw',
                   zIndex: -1,
                   ml: '-100vw',
