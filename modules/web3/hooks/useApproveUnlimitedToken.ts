@@ -27,13 +27,16 @@ export const useApproveUnlimitedToken = ({
   const chainId = useChainId();
   const tokenConfig = tokenNameToConfig(name);
 
+  // Only enable token approvals for IOU tokens, used for undelegating and withdrawing MKR
+  const enabled = paramEnabled && (name === 'iou' || name === 'iouOld');
+
   return useWriteContractFlow({
     address: tokenConfig?.address[chainId],
     abi: tokenConfig?.abi,
     functionName: 'approve',
     args: [addressToApprove as `0x${string}`],
     chainId,
-    enabled: paramEnabled,
+    enabled,
     gas,
     onSuccess,
     onError,

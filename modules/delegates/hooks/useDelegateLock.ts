@@ -15,7 +15,7 @@ export const useDelegateLock = ({
   voteDelegateAddress,
   mkrToDeposit,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -31,7 +31,8 @@ export const useDelegateLock = ({
     functionName: 'lock',
     args: [mkrToDeposit],
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

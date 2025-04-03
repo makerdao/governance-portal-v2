@@ -15,7 +15,7 @@ import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 export const useVoteProxyVote = ({
   slateOrProposals,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -31,7 +31,8 @@ export const useVoteProxyVote = ({
     functionName: 'vote',
     args: [slateOrProposals],
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

@@ -16,7 +16,7 @@ import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 export const useLock = ({
   mkrToDeposit,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -30,7 +30,8 @@ export const useLock = ({
     functionName: 'lock',
     args: [mkrToDeposit],
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

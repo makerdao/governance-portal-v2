@@ -14,7 +14,7 @@ import { esmAbi, esmAddress } from 'modules/contracts/generated';
 export const useEsmBurn = ({
   burnAmount,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -29,7 +29,8 @@ export const useEsmBurn = ({
     functionName: 'join',
     args: [burnAmount],
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,

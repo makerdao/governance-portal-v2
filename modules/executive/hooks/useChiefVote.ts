@@ -14,7 +14,7 @@ import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 export const useChiefVote = ({
   slateOrProposals,
   gas,
-  enabled: paramEnabled = true,
+  // enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -29,7 +29,8 @@ export const useChiefVote = ({
     functionName: 'vote',
     args: [slateOrProposals],
     chainId,
-    enabled: paramEnabled,
+    // enabled: paramEnabled,
+    enabled: false,
     gas,
     onSuccess,
     onError,
