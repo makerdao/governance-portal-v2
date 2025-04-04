@@ -994,6 +994,242 @@ export const mkrAddress = {
 export const mkrConfig = { address: mkrAddress, abi: mkrAbi } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// newChief
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const newChiefAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'gov_', internalType: 'address', type: 'address' },
+      { name: 'maxYays_', internalType: 'uint256', type: 'uint256' },
+      { name: 'launchThreshold_', internalType: 'uint256', type: 'uint256' },
+      { name: 'liftCooldown_', internalType: 'uint256', type: 'uint256' }
+    ],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'slate',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true
+      },
+      {
+        name: 'yays',
+        internalType: 'address[]',
+        type: 'address[]',
+        indexed: false
+      }
+    ],
+    name: 'Etch'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }],
+    name: 'Free'
+  },
+  { type: 'event', anonymous: false, inputs: [], name: 'Launch' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [{ name: 'whom', internalType: 'address', type: 'address', indexed: true }],
+    name: 'Lift'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }],
+    name: 'Lock'
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'slate',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true
+      }
+    ],
+    name: 'Vote'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'EMPTY_SLATE',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'GOV',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'MAX_YAYS',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'yay', internalType: 'address', type: 'address' }],
+    name: 'approvals',
+    outputs: [{ name: 'amt', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'caller', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'bytes4', type: 'bytes4' }
+    ],
+    name: 'canCall',
+    outputs: [{ name: 'ok', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
+    name: 'deposits',
+    outputs: [{ name: 'amt', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
+    name: 'etch',
+    outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
+    name: 'free',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'gov',
+    outputs: [{ name: '', internalType: 'contract GemLike', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'hat',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'last',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'launch',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'launchThreshold',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'length',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'whom', internalType: 'address', type: 'address' }],
+    name: 'lift',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'liftCooldown',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'live',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
+    name: 'lock',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'maxYays',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'slate', internalType: 'bytes32', type: 'bytes32' },
+      { name: '', internalType: 'uint256', type: 'uint256' }
+    ],
+    name: 'slates',
+    outputs: [{ name: 'yays', internalType: 'address', type: 'address' }],
+    stateMutability: 'view'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'vote',
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
+    name: 'vote',
+    outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'nonpayable'
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
+    name: 'votes',
+    outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view'
+  }
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // pause
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

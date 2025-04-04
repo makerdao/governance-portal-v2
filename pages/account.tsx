@@ -33,9 +33,16 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { TxStatus } from 'modules/web3/constants/transaction';
+import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { useReadContract } from 'wagmi';
+import { chiefAddress, newChiefAbi } from 'modules/contracts/generated';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 const AccountPage = (): React.ReactElement => {
   const network = useNetwork();
+  const chainId = networkNameToChainId(network);
   const { account, mutate: mutateAccount, voteDelegateContractAddress, votingAccount } = useAccount();
 
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
@@ -46,6 +53,19 @@ const AccountPage = (): React.ReactElement => {
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
+  const { data: live } = useReadContract({
+    address: chiefAddress[chainId],
+    abi: newChiefAbi,
+    chainId,
+    functionName: 'live',
+    scopeKey: `chief-live-${chainId}`
+  });
+  const isChiefLive = live === 1n;
+
+  const { data: votedProposals, mutate: mutateVotedProposals } =
+    useVotedProposals(voteDelegateContractAddress);
+  const votedForAddressZero = votedProposals.includes(ZERO_ADDRESS);
+
   const createDelegate = useDelegateCreate({
     onStart: (hash: `0x${string}`) => {
       setTxHash(hash);
@@ -55,11 +75,27 @@ const AccountPage = (): React.ReactElement => {
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
       mutateAccount?.();
-      setModalOpen(false);
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     }
+  });
+
+  const addressZeroVote = useDelegateVote({
+    slateOrProposals: [ZERO_ADDRESS],
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.SUCCESS);
+      mutateVotedProposals();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    },
+    enabled: !!voteDelegateContractAddress && !votedForAddressZero && !isChiefLive
   });
 
   return (
@@ -184,6 +220,58 @@ const AccountPage = (): React.ReactElement => {
                     >
                       Create delegate contract
                     </Button>
+                  </Box>
+                )}
+                {!!voteDelegateContractAddress && !isChiefLive && (
+                  <Box>
+                    <Label>Support the Launch of SKY Governance</Label>
+                    {txStatus !== TxStatus.IDLE && (
+                      <DialogOverlay
+                        isOpen={modalOpen}
+                        onDismiss={() => {
+                          setModalOpen(false);
+                        }}
+                      >
+                        <DialogContent ariaLabel="Vote for address(0) modal" widthDesktop="580px">
+                          <TxDisplay
+                            txStatus={txStatus}
+                            setTxStatus={setTxStatus}
+                            txHash={txHash}
+                            setTxHash={setTxHash}
+                            onDismiss={() => {
+                              setModalOpen(false);
+                            }}
+                          />
+                        </DialogContent>
+                      </DialogOverlay>
+                    )}
+                    <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
+                      Voting for address(0) now, even with 0 SKY delegated, ensures that any future delegation
+                      to your delegate contract will immediately count toward launching the new chief.
+                    </Alert>
+                    <Button
+                      disabled={
+                        addressZeroVote.isLoading ||
+                        !addressZeroVote.prepared ||
+                        votedForAddressZero ||
+                        isChiefLive
+                      }
+                      onClick={() => {
+                        setTxStatus(TxStatus.INITIALIZED);
+                        setModalOpen(true);
+                        addressZeroVote.execute();
+                      }}
+                      sx={{ mt: 3, mb: 1 }}
+                      data-testid="vote-button"
+                    >
+                      Support address(0)
+                    </Button>
+                    {votedForAddressZero && (
+                      <Text as="p" sx={{ mt: 2 }}>
+                        You are supporting address(0). Thank you for contributing to the launch of SKY
+                        governance.
+                      </Text>
+                    )}
                   </Box>
                 )}
                 {chiefBalance && chiefBalance > 0n && (
