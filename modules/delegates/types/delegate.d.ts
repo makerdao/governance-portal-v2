@@ -29,7 +29,6 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
-  delegateVersion?: number | null;
   lastVoteDate: number | null;
 };
 
@@ -42,9 +41,6 @@ export type Delegate = {
   picture: string;
   status: DelegateStatusEnum;
   lastVoteDate: number | null;
-  expired: boolean;
-  isAboutToExpire: boolean;
-  expirationDate?: Date | null;
   externalUrl?: string;
   combinedParticipation?: string;
   pollParticipation?: string;
@@ -56,15 +52,6 @@ export type Delegate = {
   execSupported: CMSProposal | undefined;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
-  delegateVersion?: number | null;
-  previous?: {
-    address: string;
-    voteDelegateAddress: string;
-  };
-  next?: {
-    address: string;
-    voteDelegateAddress: string;
-  };
 };
 
 export type DelegatePaginated = Omit<
@@ -94,13 +81,6 @@ export type DelegationHistory = {
   events: DelegationHistoryEvent[];
 };
 
-export type DelegationHistoryWithExpirationDate = DelegationHistory & {
-  expirationDate?: Date | null;
-  isAboutToExpire: boolean;
-  isExpired: boolean;
-  isRenewedToV2: boolean;
-};
-
 export type DelegationHistoryEvent = {
   lockAmount: string;
   blockTimestamp: string;
@@ -109,7 +89,6 @@ export type DelegationHistoryEvent = {
 };
 
 export type MKRLockedDelegateAPIResponse = {
-  fromAddress: string;
   immediateCaller: string;
   delegateContractAddress: string;
   lockAmount: string;
@@ -135,7 +114,6 @@ export type AllDelegatesEntry = {
   blockTimestamp: Date;
   delegate: string;
   voteDelegate: string;
-  delegateVersion?: number | null;
 };
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
@@ -143,33 +121,10 @@ export type AllDelegatesEntryWithName = AllDelegatesEntry & {
   picture?: string;
   delegateType: DelegateTypeEnum;
   blockTimestamp: Date;
-  expirationDate?: Date | null;
-  expired: boolean;
-  isAboutToExpire: boolean;
-  previous?: {
-    address: string;
-    voteDelegateAddress: string;
-  };
-  next?: {
-    address: string;
-    voteDelegateAddress: string;
-  };
 };
 
 export type DelegateInfo = Omit<DelegateRepoInformation, 'externalUrl' | 'description'> & {
   address: string;
   status: DelegateStatusEnum;
   blockTimestamp: Date;
-  expirationDate?: Date | null;
-  expired: boolean;
-  isAboutToExpire: boolean;
-  previous?: {
-    address: string;
-    voteDelegateAddress: string;
-  };
-  next?: {
-    address: string;
-    voteDelegateAddress: string;
-  };
-  delegateVersion?: number | null;
 };

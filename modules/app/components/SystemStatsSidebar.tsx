@@ -296,7 +296,7 @@ export default function SystemStatsSidebar({
         <ExternalLink
           href="https://daistats.com/"
           target="_blank"
-          sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'accentBlueEmphasis' } }}
+          sx={{ color: 'text', fontSize: 3, ':hover': { color: 'accentBlueEmphasis' } }}
         >
           <Flex sx={{ alignItems: 'center' }}>
             <Text>

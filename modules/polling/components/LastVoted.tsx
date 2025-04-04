@@ -13,12 +13,10 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DateWithHover } from 'modules/app/components/DateWithHover';
 
 export default function LastVoted({
-  expired,
   date,
   left = false,
   styles
 }: {
-  expired: boolean;
   date?: number | string | Date | null;
   left?: boolean;
   styles?: ThemeUIStyleObject;
@@ -78,7 +76,7 @@ export default function LastVoted({
         ...styles
       }}
     >
-      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2, ml: left ? 1 : 0 }}>
+      <Text variant="caps" color="onSecondary" sx={{ mr: 2, ml: left ? 1 : 0 }}>
         {lastVoteDate}
       </Text>
       <Flex
@@ -90,7 +88,7 @@ export default function LastVoted({
         <Icon
           name="calendar"
           sx={
-            expired || !date
+            !date
               ? iconStyles.expiredCalendar
               : isLongerThan28Days
               ? iconStyles.redCalendar

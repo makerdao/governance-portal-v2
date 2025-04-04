@@ -8,21 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
-import {
-  DelegateInfo,
-  DelegationHistory,
-  DelegationHistoryWithExpirationDate
-} from 'modules/delegates/types';
+import { DelegateInfo, DelegationHistory } from 'modules/delegates/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { ApiError } from 'modules/app/api/ApiError';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
 import { validateAddress } from 'modules/web3/api/validateAddress';
 import { fetchDelegatesInfo } from 'modules/delegates/api/fetchDelegates';
-import { voteProxyFactoryAddress } from 'modules/contracts/generated';
-import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 import { formatEther, parseEther } from 'viem';
 
 /**
@@ -70,7 +62,6 @@ import { formatEther, parseEther } from 'viem';
  *        type: string
  *        enum:
  *          - recognized
- *          - expired
  *          - shadow
  *      cuMember:
  *        type: boolean
@@ -85,13 +76,6 @@ import { formatEther, parseEther } from 'viem';
  *      blockTimestamp:
  *        type: string
  *        format: date-time
- *      expirationDate:
- *        type: string
- *        format: date-time
- *      expired:
- *        type: boolean
- *      isAboutToExpire:
- *        type: boolean
  *      previous:
  *        type: object
  *        properties:
@@ -108,9 +92,6 @@ import { formatEther, parseEther } from 'viem';
  *      - voteDelegateAddress
  *      - status
  *      - blockTimestamp
- *      - expirationDate
- *      - expired
- *      - isAboutToExpire
  *  DelegationHistoryEvent:
  *    type: object
  *    properties:
@@ -172,28 +153,8 @@ export default withApiHandler(
       req.query.address as string,
       new ApiError('Invalid address', 400, 'Invalid address')
     );
-    const chainId = networkNameToChainId(network);
 
-    const proxyInfo = await getVoteProxyAddresses(
-      voteProxyFactoryAddress[chainId],
-      voteProxyAbi,
-      address,
-      network
-    );
-
-    // if hasProxy, we need to combine the delegation history of hot, cold, proxy
-    let delegatedTo: DelegationHistoryWithExpirationDate[];
-
-    if (proxyInfo.hasProxy && proxyInfo.coldAddress && proxyInfo.hotAddress && proxyInfo.voteProxyAddress) {
-      const [coldHistory, hotHistory, proxyHistory] = await Promise.all([
-        fetchDelegatedTo(proxyInfo.coldAddress, network),
-        fetchDelegatedTo(proxyInfo.hotAddress, network),
-        fetchDelegatedTo(proxyInfo.voteProxyAddress, network)
-      ]);
-      delegatedTo = coldHistory.concat(hotHistory).concat(proxyHistory);
-    } else {
-      delegatedTo = await fetchDelegatedTo(address, network);
-    }
+    const delegatedTo = await fetchDelegatedTo(address, network);
 
     // filter out duplicate txs
     const txHashes = {};
@@ -208,20 +169,10 @@ export default withApiHandler(
       })
       .map(({ address, lockAmount, events }) => ({ address, lockAmount, events }));
 
-    const delegatesInfo = await fetchDelegatesInfo(network, false, true);
+    const delegatesInfo = await fetchDelegatesInfo(network, false);
     const delegatesDelegatedTo = delegatesInfo.filter(({ voteDelegateAddress }) =>
       filtered.some(({ address }) => address.toLowerCase() === voteDelegateAddress.toLowerCase())
     );
-    const delegatesAndNextContracts = [
-      ...delegatesDelegatedTo,
-      ...(delegatesDelegatedTo
-        .map(({ next }) =>
-          delegatesInfo.find(
-            d => d.voteDelegateAddress.toLowerCase() === next?.voteDelegateAddress.toLowerCase()
-          )
-        )
-        .filter(delegate => !!delegate) as DelegateInfo[])
-    ];
 
     const totalDelegated = filtered.reduce((prev, next) => {
       return prev + parseEther(next.lockAmount);
@@ -231,7 +182,7 @@ export default withApiHandler(
     res.status(200).json({
       totalDelegated: +formatEther(totalDelegated),
       delegatedTo: filtered,
-      delegates: delegatesAndNextContracts
+      delegates: delegatesDelegatedTo
     });
   }
 );

@@ -14,7 +14,7 @@ export type DelegatesAPIStats = {
   total: number;
   shadow: number;
   aligned: number;
-  totalMKRDelegated: string;
+  totalMKRDelegated: number;
   totalDelegators: number;
 };
 
@@ -31,7 +31,6 @@ export type DelegatesValidatedQueryParams = {
   network: SupportedNetworks;
   pageSize: number;
   page: number;
-  includeExpired: boolean;
   orderBy: string;
   orderDirection: string;
   seed: number | null;

@@ -27,11 +27,7 @@ import { useNetwork } from 'modules/app/hooks/useNetwork';
 export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse }): React.ReactElement {
   const network = useNetwork();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    addressInfo
-      ? `/api/address/stats?address=${
-          addressInfo.voteProxyInfo?.hotAddress ? addressInfo.voteProxyInfo.hotAddress : addressInfo.address
-        }&network=${network}`
-      : null,
+    addressInfo ? `/api/address/stats?address=${addressInfo.address}&network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -153,7 +149,6 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted
-            expired={false}
             date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
           />
         </Box>

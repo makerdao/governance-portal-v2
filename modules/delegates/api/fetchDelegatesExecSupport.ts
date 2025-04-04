@@ -1,6 +1,5 @@
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
-import { Query } from 'modules/gql/generated/graphql';
+import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { allDelegatesExecSupportKey } from 'modules/cache/constants/cache-keys';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -29,17 +28,21 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
     const chainId = networkNameToChainId(network);
     const publicClient = getPublicClient(chainId);
 
-    const data = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = data.allDelegates.nodes;
+    const data = await gqlRequest({
+      chainId,
+      useSubgraph: true,
+      query: allDelegates
+    });
+    const delegates = data.delegates;
 
     const delegatesExecSupport = await Promise.all(
       delegates.map(async delegate => {
-        if (delegate?.voteDelegate) {
+        if (delegate?.id) {
           const votedSlate = await publicClient.readContract({
             address: chiefAddress[chainId],
             abi: chiefAbi,
             functionName: 'votes',
-            args: [delegate.voteDelegate as `0x${string}`]
+            args: [delegate.id]
           });
           const votedProposals =
             votedSlate !== ZERO_SLATE_HASH
@@ -47,7 +50,7 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
               : [];
 
           return {
-            voteDelegate: delegate.voteDelegate,
+            voteDelegate: delegate.id,
             votedProposals
           };
         }

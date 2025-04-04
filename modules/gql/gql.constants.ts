@@ -14,14 +14,16 @@ export const TENDERLY_SPOCK_URL = 'https://pollingdb2-tenderly-staging.makerdao.
 
 /* Subgraph URLs */
 
-// const usePrivateSubgraph = process.env.USE_PRIVATE_SUBGRAPH === 'true';
-// const permission = usePrivateSubgraph ? 'private' : 'public';
 export const TENDERLY_SUBGRAPH_URL =
   'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-testnet';
 export const MAINNET_STAGING_SUBGRAPH_URL =
   'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-mainnet';
 export const MAINNET_PROD_SUBGRAPH_URL =
   'https://query-subgraph.sky.money/subgraphs/name/jetstreamgg/subgraph-mainnet';
+export const ARBITRUM_STAGING_SUBGRAPH_URL =
+  'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-arbitrum';
+export const ARBITRUM_PROD_SUBGRAPH_URL =
+  'https://query-subgraph.sky.money/subgraphs/name/jetstreamgg/subgraph-arbitrum';
 
 export enum QueryFilterNames {
   Active = 'active',

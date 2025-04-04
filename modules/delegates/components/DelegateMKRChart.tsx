@@ -137,8 +137,8 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
         <AreaChart data={data || []} margin={{ bottom: 66, left: 20, right: 20, top: 10 }}>
           <defs>
             <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#1AAB9B" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#1AAB9B" stopOpacity={0} />
+              <stop offset="5%" stopColor="#504DFF" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#504DFF" stopOpacity={0} />
             </linearGradient>
           </defs>
 
@@ -170,7 +170,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           <CartesianGrid stroke="#D5D9E0" strokeDasharray="5 5" />
           <Tooltip content={renderTooltip} />
 
-          <Area dataKey="MKR" stroke={'#1AAB9B'} type="monotone" fill="url(#gradientFront)" />
+          <Area dataKey="MKR" stroke={'#504DFF'} type="monotone" fill="url(#gradientFront)" />
 
           <ReferenceLine stroke={'#D4D9E1'} x={0} y={0} />
         </AreaChart>

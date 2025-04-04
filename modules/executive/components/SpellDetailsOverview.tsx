@@ -22,7 +22,7 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Executive hash:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary', wordWrap: 'break-word' }}>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary', wordWrap: 'break-word' }}>
           {spellDetails?.executiveHash}
         </Text>
       </Flex>
@@ -30,7 +30,7 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Data executed:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
           {formatDateWithTime(spellDetails?.dateExecuted)}
         </Text>
       </Flex>
@@ -38,13 +38,15 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Data passed:{' '}
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>{formatDateWithTime(spellDetails?.datePassed)}</Text>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
+          {formatDateWithTime(spellDetails?.datePassed)}
+        </Text>
       </Flex>
       <Flex sx={{ mt: 3, flexDirection: ['column', 'row'] }}>
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Available for execution at:{' '}
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
           {formatDateWithTime(spellDetails?.nextCastTime || spellDetails?.eta)}
         </Text>
       </Flex>
@@ -52,20 +54,24 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Expiration:{' '}
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>{formatDateWithTime(spellDetails?.expiration)}</Text>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
+          {formatDateWithTime(spellDetails?.expiration)}
+        </Text>
       </Flex>
 
       <Flex sx={{ mt: 3, flexDirection: ['column', 'row'] }}>
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Has been cast:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>{spellDetails?.hasBeenCast ? 'true' : 'false'}</Text>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
+          {spellDetails?.hasBeenCast ? 'true' : 'false'}
+        </Text>
       </Flex>
       <Flex sx={{ mt: 3, flexDirection: ['column', 'row'] }}>
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Has been scheduled:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
           {spellDetails?.hasBeenScheduled ? 'true' : 'false'}
         </Text>
       </Flex>
@@ -73,7 +79,7 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           MKR support:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
           {formatValue(BigInt(spellDetails?.mkrSupport))} MKR
         </Text>
       </Flex>
@@ -81,7 +87,7 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Next cast time:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
           {formatDateWithTime(spellDetails?.nextCastTime)}
         </Text>
       </Flex>
@@ -89,7 +95,9 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
         <Text as="span" sx={{ fontWeight: 'bold' }}>
           Office hours:
         </Text>
-        <Text sx={{ ml: [0, 3], color: 'onSecondary' }}>{spellDetails?.officeHours ? 'true' : 'false'}</Text>
+        <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
+          {spellDetails?.officeHours ? 'true' : 'false'}
+        </Text>
       </Flex>
     </Box>
   );

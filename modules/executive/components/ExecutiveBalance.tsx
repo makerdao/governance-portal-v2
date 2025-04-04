@@ -15,22 +15,12 @@ type Props = {
   lockedMkr: bigint;
   mutateLockedMkr?: () => void;
   voteDelegate?: string;
-  voteProxy?: string;
-  showProxyInfo?: boolean;
 };
 
-export const ExecutiveBalance = ({
-  lockedMkr,
-  mutateLockedMkr,
-  voteDelegate,
-  voteProxy,
-  showProxyInfo
-}: Props): JSX.Element => (
+export const ExecutiveBalance = ({ lockedMkr, mutateLockedMkr, voteDelegate }: Props): JSX.Element => (
   <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
     <Flex>
-      <Text sx={{ mr: 1 }}>
-        {voteDelegate ? 'In delegate contract:' : voteProxy ? 'In proxy contract:' : 'In voting contract:'}{' '}
-      </Text>
+      <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
       <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
         {formatValue(lockedMkr, 'wad', 6)} MKR
       </Text>
@@ -38,7 +28,7 @@ export const ExecutiveBalance = ({
     {!voteDelegate && (
       <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
         <Box sx={{ ml: [0, 3] }}>
-          <Deposit showProxyInfo={showProxyInfo} mutateLockedMkr={mutateLockedMkr} />
+          <Deposit mutateLockedMkr={mutateLockedMkr} />
         </Box>
         <Withdraw sx={{ ml: 3 }} mutateLockedMkr={mutateLockedMkr} />
       </Flex>

@@ -96,7 +96,7 @@ export default function Participation({
       <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
         <Stack gap={2}>
           <Heading as="h2">Follow the Conversation and Participate</Heading>
-          <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
+          <Text as="p" sx={{ px: 'inherit', fontSize: [2, 4] }}>
             Engage with the Maker Community and make informed decisions.
           </Text>
         </Stack>

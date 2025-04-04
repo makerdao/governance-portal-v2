@@ -21,7 +21,12 @@ export async function fetchAddressPollVoteHistory(
   const voteHistory = await fetchAllCurrentVotes(address, network);
   const items = await Promise.all(
     voteHistory.map(async (pollVote: PollTallyVote): Promise<PollVoteHistory | null> => {
-      const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
+      const pollVoteId = String(pollVote.pollId);
+      
+      const poll = pollsData.polls.find(p => {
+        return String(p.pollId) === pollVoteId;
+      });
+      
       // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
       if (!poll) {
         return null;

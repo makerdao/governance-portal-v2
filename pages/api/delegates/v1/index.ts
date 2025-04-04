@@ -97,13 +97,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       lastVoteDate:
  *         type: number
  *         nullable: true
- *       expired:
- *         type: boolean
- *       isAboutToExpire:
- *         type: boolean
- *       expirationDate:
- *         type: string
- *         format: date-time
  *       externalUrl:
  *         type: string
  *         nullable: true
