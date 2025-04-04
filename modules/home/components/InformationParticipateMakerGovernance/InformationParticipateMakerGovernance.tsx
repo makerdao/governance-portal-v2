@@ -86,7 +86,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
         <Box sx={{ p: 3, height: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%', alignItems: 'center' }}>
             <Box sx={{ mr: 2, flex: 1 }}>
-              <Heading as="h2">How to participate in Maker Governance</Heading>
+              <Heading as="h2">How to participate in Sky Governance</Heading>
             </Box>
             <Box>
               <ExternalLink

@@ -46,7 +46,7 @@ const AddressView = ({
         } Information`}
         description={`See all the voting activity of ${
           addressInfo.delegateInfo?.name || addressInfo.address
-        } in Maker Governance. `}
+        } in Sky Governance. `}
         image={addressInfo.delegateInfo?.picture}
       />
 

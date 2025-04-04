@@ -2,15 +2,15 @@
 
 <p><a  href="https://vote.makerdao.com/"><img  alt="maker logo"  src="./maker-logo.png"  alt="vote.makerdao.com"  width="125"></a></p>
 
-<p>Maker Governance Portal</p>
+<p>Sky Governance Portal</p>
 
 </h1>
 
-This is the repo containing the code for the [Maker Governance Portal](https://vote.makerdao.com). The Maker Governance Portal is an open-source interface for governance of the Maker protocol. </br>Copyright [Dai Foundation](https://daifoundation.org/) 2022.
+This is the repo containing the code for the [Sky Governance Portal](https://vote.makerdao.com). The Sky Governance Portal is an open-source interface for governance of the Sky protocol. </br>Copyright [Dai Foundation](https://daifoundation.org/) 2022.
 
 ### To run locally:
 
-While the portal is hosted by MakerDAO at https://vote.makerdao.com, it can also be run by anyone on their local machine.
+While the portal is hosted by Sky at https://vote.makerdao.com, it can also be run by anyone on their local machine.
 
 In order to run the project locally, you must have the following installed on the machine:
 
@@ -50,7 +50,7 @@ The tag and versioning should be done on develop, and then merged to master thro
 
 #### Content
 
-The portal seeks to rely on on-chain data as much as possible and to minimize reliance on data stored on centralized servers. However, due to the large volume of data that is relevant to Maker governance, fetching this data from on-chain is both time and resource-intensive. In order to improve the user's experience, some reliance on third-party services has been added, and we recommend a few configuration steps for optimal use. These services include:
+The portal seeks to rely on on-chain data as much as possible and to minimize reliance on data stored on centralized servers. However, due to the large volume of data that is relevant to Sky governance, fetching this data from on-chain is both time and resource-intensive. In order to improve the user's experience, some reliance on third-party services has been added, and we recommend a few configuration steps for optimal use. These services include:
 
 - [GitHub](https://github.com/makerdao/community/tree/master/governance) for storing markdown related to [polls](https://github.com/makerdao/community/tree/master/governance/polls), [executives](https://github.com/makerdao/community/tree/master/governance/votes), and [aligned delegates](https://github.com/makerdao/community/tree/master/governance/delegates)
 
