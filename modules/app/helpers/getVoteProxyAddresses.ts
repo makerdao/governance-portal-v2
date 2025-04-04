@@ -47,18 +47,21 @@ export const getVoteProxyAddresses = async (
   try {
     // assume account is a proxy contrac
     // this will fail if vpContract is not an instance of vote proxy
-    const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-      publicClient.readContract({
-        address: account as `0x${string}`,
-        abi: voteProxyAbi,
-        functionName: 'cold'
-      }),
-      publicClient.readContract({
-        address: account as `0x${string}`,
-        abi: voteProxyAbi,
-        functionName: 'hot'
-      })
-    ]);
+    const [proxyAddressCold, proxyAddressHot] = await publicClient.multicall({
+      contracts: [
+        {
+          address: account as `0x${string}`,
+          abi: voteProxyAbi,
+          functionName: 'cold'
+        },
+        {
+          address: account as `0x${string}`,
+          abi: voteProxyAbi,
+          functionName: 'hot'
+        }
+      ],
+      allowFailure: false
+    });
 
     // if the calls above didn't fail, account is a proxy contract, so set values
     hotAddress = proxyAddressHot;
@@ -72,20 +75,23 @@ export const getVoteProxyAddresses = async (
 
   // if account is not a proxy, check if it is a hot or cold address
   if (!hasProxy) {
-    const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-      publicClient.readContract({
-        address: voteProxyFactory,
-        abi: voteProxyFactoryAbi,
-        functionName: 'coldMap',
-        args: [account]
-      }),
-      publicClient.readContract({
-        address: voteProxyFactory,
-        abi: voteProxyFactoryAbi,
-        functionName: 'hotMap',
-        args: [account]
-      })
-    ]);
+    const [proxyAddressCold, proxyAddressHot] = await publicClient.multicall({
+      contracts: [
+        {
+          address: voteProxyFactory,
+          abi: voteProxyFactoryAbi,
+          functionName: 'coldMap',
+          args: [account]
+        },
+        {
+          address: voteProxyFactory,
+          abi: voteProxyFactoryAbi,
+          functionName: 'hotMap',
+          args: [account]
+        }
+      ],
+      allowFailure: false
+    });
 
     // if account belongs to a hot or cold map, get proxy contract address
     if (proxyAddressCold !== ZERO_ADDRESS) {

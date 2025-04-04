@@ -12,14 +12,12 @@ import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { formatValue } from 'lib/string';
 import { parseEther } from 'viem';
-import { Tokens } from 'modules/web3/constants/tokens';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { config } from 'lib/config';
-import { useChainId } from 'wagmi';
+import { useChainId, useReadContracts } from 'wagmi';
 import { mkrAbi, mkrAddress as mkrAddressMapping } from 'modules/contracts/generated';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
@@ -117,16 +115,58 @@ export default function MkrLiquiditySidebar({
   const chainId = useChainId();
 
   const mkrAddress = mkrAddressMapping[chainId];
-  const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
-  const { data: aaveV2 } = useTokenBalance(Tokens.MKR, aaveV2Amkr);
-  const { data: uniswapV2MkrEth } = useTokenBalance(Tokens.MKR, uniswapV2MkrEthPool);
-  const { data: uniswapV2MkrDai } = useTokenBalance(Tokens.MKR, uniswapV2MkrDaiPool);
-  const { data: uniswapV3MkrEthPointThreePercent } = useTokenBalance(
-    Tokens.MKR,
-    uniswapV3MkrEthPointThreePercentPool
-  );
-  const { data: uniswapV3MkrEthOnePercent } = useTokenBalance(Tokens.MKR, uniswapV3MkrEthOnePercentPool);
-  const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
+
+  const liquidityCallParams = {
+    address: mkrAddress,
+    abi: mkrAbi,
+    chainId,
+    functionName: 'balanceOf'
+  } as const;
+
+  const {
+    data: [
+      aaveV1,
+      aaveV2,
+      uniswapV2MkrEth,
+      uniswapV2MkrDai,
+      uniswapV3MkrEthPointThreePercent,
+      uniswapV3MkrEthOnePercent,
+      sushi
+    ] = []
+  } = useReadContracts({
+    contracts: [
+      {
+        ...liquidityCallParams,
+        args: [aaveLendingPoolCore]
+      },
+      {
+        ...liquidityCallParams,
+        args: [aaveV2Amkr]
+      },
+      {
+        ...liquidityCallParams,
+        args: [uniswapV2MkrEthPool]
+      },
+      {
+        ...liquidityCallParams,
+        args: [uniswapV2MkrDaiPool]
+      },
+      {
+        ...liquidityCallParams,
+        args: [uniswapV3MkrEthPointThreePercentPool]
+      },
+      {
+        ...liquidityCallParams,
+        args: [uniswapV3MkrEthOnePercentPool]
+      },
+      {
+        ...liquidityCallParams,
+        args: [sushiswapAddress]
+      }
+    ],
+    allowFailure: false,
+    scopeKey: `mkr-liquidity-${chainId}`
+  });
 
   const { data: balancerV1 } = useSWR(
     `${mkrAddress}/mkr-liquidity-balancer-v1`,

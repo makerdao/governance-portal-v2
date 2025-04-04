@@ -10,21 +10,16 @@ import { DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from '../helpers/chain';
 import contractInfo from '../helpers/contract-info.json';
 import { getPublicClient } from '../helpers/getPublicClient';
-import { dssSpellAbi, pauseAddress } from 'modules/contracts/generated';
+import { pauseAddress } from 'modules/contracts/generated';
 const pauseInfo = contractInfo.pause;
 
 export const getSpellScheduledDate = async (
+  eta: bigint | undefined,
   spellAddress: string,
   network?: SupportedNetworks
 ): Promise<Date | undefined> => {
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
   const publicClient = getPublicClient(chainId);
-
-  const eta = await publicClient.readContract({
-    address: spellAddress as `0x${string}`,
-    abi: dssSpellAbi,
-    functionName: 'eta'
-  });
 
   if (!eta) return undefined;
 
