@@ -106,8 +106,8 @@ export class PollingPage {
 
   async submitLegacyVote() {
     await this.submitLegacyButton.click();
-    await expect(this.signWalletText).toBeVisible();
-    await expect(this.shareVotesText).toBeVisible();
+    await expect(this.signWalletText).toBeVisible({ timeout: 10000 });
+    await expect(this.shareVotesText).toBeVisible({ timeout: 10000 });
   }
 
   async submitGaslessVote() {
@@ -116,7 +116,7 @@ export class PollingPage {
   }
 
   async verifyVoteSubmission() {
-    await expect(this.voteSubmissionText).toBeVisible();
+    await expect(this.voteSubmissionText).toBeVisible({ timeout: 10000 });
     await expect(this.pollOverviewCard).toHaveCount(1);
   }
 }

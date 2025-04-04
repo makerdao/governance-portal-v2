@@ -26,38 +26,64 @@ test('Adds polls to review and navigates to review page and votes with the legac
 }) => {
   const selectedPollId = 1107;
 
-  await pollingPage.goto();
-  await pollingPage.waitForPolls();
-  await connectWallet(page);
+  await test.step('navigate to polling page', async () => {
+    await pollingPage.goto();
+    await pollingPage.waitForPolls();
+  });
 
-  await pollingPage.selectChoice('Yes');
-  await pollingPage.addToBallot();
-  await pollingPage.navigateToReview();
-  await pollingPage.verifyPollId(selectedPollId);
-  await pollingPage.editChoice('No');
-  await pollingPage.submitBallot();
-  await pollingPage.switchToLegacyVoting();
-  await pollingPage.submitLegacyVote();
-  await pollingPage.verifyVoteSubmission();
+  await test.step('connect wallet', async () => {
+    await connectWallet(page);
+  });
+
+  await test.step('select poll choice and add to ballot', async () => {
+    await pollingPage.selectChoice('Yes');
+    await pollingPage.addToBallot();
+  });
+
+  await test.step('review and edit ballot', async () => {
+    await pollingPage.navigateToReview();
+    await pollingPage.verifyPollId(selectedPollId);
+    await pollingPage.editChoice('No');
+  });
+
+  await test.step('submit vote using legacy system', async () => {
+    await pollingPage.submitBallot();
+    await pollingPage.switchToLegacyVoting();
+    await pollingPage.submitLegacyVote();
+    await pollingPage.verifyVoteSubmission();
+  });
 });
 
 //Skip this test because eth_signTypedData_v4 doesn't work with the mock connector
 //We'd need to find a way to update the CustomizedBridge to handle eth_signTypedData_v4 to get this to work.
-test('Adds polls to review and navigates to review page and votes with the gasless system', async ({
+test.skip('Adds polls to review and navigates to review page and votes with the gasless system', async ({
   page,
   pollingPage
 }) => {
   const selectedPollId = 1107;
 
-  await pollingPage.goto();
-  await pollingPage.waitForPolls();
-  await connectWallet(page);
+  await test.step('navigate to polling page', async () => {
+    await pollingPage.goto();
+    await pollingPage.waitForPolls();
+  });
 
-  await pollingPage.selectChoice('Yes');
-  await pollingPage.addToBallot();
-  await pollingPage.navigateToReview();
-  await pollingPage.verifyPollId(selectedPollId);
-  await pollingPage.editChoice('No');
-  await pollingPage.submitBallot();
-  await pollingPage.submitGaslessVote();
+  await test.step('connect wallet', async () => {
+    await connectWallet(page);
+  });
+
+  await test.step('select poll choice and add to ballot', async () => {
+    await pollingPage.selectChoice('Yes');
+    await pollingPage.addToBallot();
+  });
+
+  await test.step('review and edit ballot', async () => {
+    await pollingPage.navigateToReview();
+    await pollingPage.verifyPollId(selectedPollId);
+    await pollingPage.editChoice('No');
+  });
+
+  await test.step('submit vote using gasless system', async () => {
+    await pollingPage.submitBallot();
+    await pollingPage.submitGaslessVote();
+  });
 });
