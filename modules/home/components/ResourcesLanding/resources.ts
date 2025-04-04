@@ -37,8 +37,8 @@ type LandingResource = {
 
 export const resources: LandingResource[] = [
   {
-    title: 'Maker Governance Forum',
-    url: 'https://forum.makerdao.com/',
+    title: 'Sky Governance Forum',
+    url: 'https://forum.sky.money/',
     category: ResourceCategory.GOVERNANCE,
     bg: ResourceBackground.GOVERNANCE,
     color: ResourceColor.GOVERNANCE,
@@ -46,6 +46,7 @@ export const resources: LandingResource[] = [
     summary:
       'Participate in or start new discussions related to the governance of MakerDAO and the Maker protocol.'
   },
+  // TODO: should this be removed?
   {
     title: 'Maker Operation Manual',
     url: 'https://manual.makerdao.com',

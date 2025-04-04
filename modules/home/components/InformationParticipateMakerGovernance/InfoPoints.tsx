@@ -38,7 +38,7 @@ export const infoPoints: InfoPoint[] = [
 
     color: '#504DFF',
     description:
-      "Off-chain governance refers to processes for making decisions that don't require on-chain voting and gathering feedback prior to on-chain voting. Off-chain governance happens on the Maker Governance Forum, where the community meets to propose and discuss new proposals. Anyone can participate in off-chain governance."
+      "Off-chain governance refers to processes for making decisions that don't require on-chain voting and gathering feedback prior to on-chain voting. Off-chain governance happens on the Sky Governance Forum, where the community meets to propose and discuss new proposals. Anyone can participate in off-chain governance."
   },
   {
     number: '02',
@@ -65,7 +65,7 @@ export const infoPoints: InfoPoint[] = [
     links: [],
 
     description:
-      'Connect a web3 wallet (eg. MetaMask, WalletConnect) that holds your MKR tokens and start participating! Users that hold many MKR tokens or use their wallet for other uses besides Maker governance might want to consider more secure methods of setting up a voting wallet, such as using a hardware wallet.'
+      'Connect a web3 wallet (eg. MetaMask, WalletConnect) that holds your MKR tokens and start participating! Users that hold many MKR tokens or use their wallet for other uses besides Sky governance might want to consider more secure methods of setting up a voting wallet, such as using a hardware wallet.'
   },
   {
     number: '04',
@@ -102,7 +102,7 @@ export const infoPoints: InfoPoint[] = [
 
     description: (
       <Text>
-        If you prefer to participate in Maker governance manually instead of delegating, then you are able to
+        If you prefer to participate in Sky governance manually instead of delegating, then you are able to
         start participating once your voting wallet is set up.{' '}
         <InternalLink href="/executive" title="Executives" styles={{ fontWeight: 'semiBold' }}>
           <Text>Find the latest Executive Proposal</Text>

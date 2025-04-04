@@ -140,13 +140,13 @@ const LandingPage = ({
               <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
                 <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
-                    Maker Governance
+                    Sky Governance
                   </Heading>
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Voting Portal
                   </Heading>
                   <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
-                    Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol
+                    Vote with or delegate your SKY tokens to help protect the integrity of the Sky protocol
                   </Text>
                   <Box>
                     <PlayButton
