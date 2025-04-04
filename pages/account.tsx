@@ -40,6 +40,11 @@ import { useReadContract } from 'wagmi';
 import { chiefAddress, newChiefAbi } from 'modules/contracts/generated';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
+enum DelegateFlow {
+  CREATE = 'CREATE_DELEGATE',
+  VOTE = 'VOTE'
+}
+
 const AccountPage = (): React.ReactElement => {
   const network = useNetwork();
   const chainId = networkNameToChainId(network);
@@ -52,6 +57,7 @@ const AccountPage = (): React.ReactElement => {
   const [warningRead, setWarningRead] = useState(false);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+  const [flow, setFlow] = useState<DelegateFlow>(DelegateFlow.CREATE);
 
   const { data: live } = useReadContract({
     address: chiefAddress[chainId],
@@ -168,29 +174,63 @@ const AccountPage = (): React.ReactElement => {
                     </ExternalLink>
                   </Box>
                 )}
+                <DialogOverlay
+                  isOpen={modalOpen}
+                  onDismiss={() => {
+                    setModalOpen(false);
+                  }}
+                >
+                  <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
+                    <TxDisplay
+                      txStatus={txStatus}
+                      setTxStatus={setTxStatus}
+                      txHash={txHash}
+                      setTxHash={setTxHash}
+                      onDismiss={() => {
+                        setModalOpen(false);
+                      }}
+                      description={
+                        flow === DelegateFlow.CREATE
+                          ? 'You have successfully created your delegate contract.'
+                          : 'You have successfully voted for address(0). Thank you for contributing to the launch of SKY governance.'
+                      }
+                    >
+                      {flow === DelegateFlow.CREATE && !isChiefLive && (
+                        <Box>
+                          <Text as="p" sx={{ mt: 4 }}>
+                            You can now proceed to support the launch of SKY governance, or skip this step and
+                            vote later
+                          </Text>
+                          <Text as="p" sx={{ mt: 3 }}>
+                            Voting for address(0) now, even with 0 SKY delegated, ensures that any future
+                            delegation to your delegate contract will immediately count toward launching the
+                            new chief.
+                          </Text>
+                          <Button
+                            disabled={
+                              addressZeroVote.isLoading ||
+                              !addressZeroVote.prepared ||
+                              votedForAddressZero ||
+                              isChiefLive
+                            }
+                            onClick={() => {
+                              setFlow(DelegateFlow.VOTE);
+                              setTxStatus(TxStatus.INITIALIZED);
+                              addressZeroVote.execute();
+                            }}
+                            sx={{ mt: 3, mb: 1 }}
+                            data-testid="vote-button"
+                          >
+                            Support address(0)
+                          </Button>
+                        </Box>
+                      )}
+                    </TxDisplay>
+                  </DialogContent>
+                </DialogOverlay>
                 {!voteDelegateContractAddress && (
                   <Box>
                     <Label>No vote delegate contract detected</Label>
-                    {txStatus !== TxStatus.IDLE && (
-                      <DialogOverlay
-                        isOpen={modalOpen}
-                        onDismiss={() => {
-                          setModalOpen(false);
-                        }}
-                      >
-                        <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
-                          <TxDisplay
-                            txStatus={txStatus}
-                            setTxStatus={setTxStatus}
-                            txHash={txHash}
-                            setTxHash={setTxHash}
-                            onDismiss={() => {
-                              setModalOpen(false);
-                            }}
-                          />
-                        </DialogContent>
-                      </DialogOverlay>
-                    )}
                     <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
                       Warning: You will be unable to vote with your existing chief balance through the UI
                       after creating a delegate contract. This functionality is only affected in the user
@@ -225,26 +265,6 @@ const AccountPage = (): React.ReactElement => {
                 {!!voteDelegateContractAddress && !isChiefLive && (
                   <Box>
                     <Label>Support the Launch of SKY Governance</Label>
-                    {txStatus !== TxStatus.IDLE && (
-                      <DialogOverlay
-                        isOpen={modalOpen}
-                        onDismiss={() => {
-                          setModalOpen(false);
-                        }}
-                      >
-                        <DialogContent ariaLabel="Vote for address(0) modal" widthDesktop="580px">
-                          <TxDisplay
-                            txStatus={txStatus}
-                            setTxStatus={setTxStatus}
-                            txHash={txHash}
-                            setTxHash={setTxHash}
-                            onDismiss={() => {
-                              setModalOpen(false);
-                            }}
-                          />
-                        </DialogContent>
-                      </DialogOverlay>
-                    )}
                     <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
                       Voting for address(0) now, even with 0 SKY delegated, ensures that any future delegation
                       to your delegate contract will immediately count toward launching the new chief.
@@ -257,6 +277,7 @@ const AccountPage = (): React.ReactElement => {
                         isChiefLive
                       }
                       onClick={() => {
+                        setFlow(DelegateFlow.VOTE);
                         setTxStatus(TxStatus.INITIALIZED);
                         setModalOpen(true);
                         addressZeroVote.execute();
