@@ -59,5 +59,5 @@ export const config: SystemConfig = {
   TENDERLY_RPC_KEY: process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY || '',
   USE_MOCK_WALLET: process.env.NEXT_PUBLIC_USE_MOCK_WALLET || '',
   SUBGRAPH_API_KEY: process.env.NEXT_PUBLIC_SUBGRAPH_API_KEY || '',
-  READ_ONLY: Boolean(process.env.READ_ONLY)
+  READ_ONLY: process.env.READ_ONLY === 'true'
 };
