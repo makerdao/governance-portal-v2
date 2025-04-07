@@ -16,7 +16,6 @@ import { PollTallyVote } from '../types';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { votingWeightHistory } from 'modules/gql/queries/subgraph/votingWeightHistory';
 import { formatEther } from 'viem';
-import { fetchAllCurrentVotesWithSpock } from './spock/fetchAllCurrentVotesWithSpock';
 import { SKY_PORTAL_START_DATE } from 'modules/polling/polling.constants';
 import { pollTimes } from 'modules/gql/queries/subgraph/pollTimes';
 
