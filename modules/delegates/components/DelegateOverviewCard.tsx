@@ -26,6 +26,7 @@ import DelegateContractInfo from 'modules/migration/components/DelegateContractI
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { formatEther, parseEther } from 'viem';
+import { config } from 'lib/config';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -191,8 +192,7 @@ export const DelegateOverviewCard = memo(
                 <Button
                   variant="primaryLarge"
                   data-testid="button-delegate"
-                  // disabled={!account || !!delegate.next || delegate.expired}
-                  disabled={true}
+                  disabled={config.READ_ONLY || !account || !!delegate.next || delegate.expired}
                   onClick={() => {
                     setShowDelegateModal(true);
                   }}

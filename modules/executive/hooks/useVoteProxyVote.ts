@@ -11,11 +11,12 @@ import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 import { useChainId } from 'wagmi';
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { voteProxyAbi } from 'modules/contracts/ethers/abis';
+import { config } from 'lib/config';
 
 export const useVoteProxyVote = ({
   slateOrProposals,
   gas,
-  // enabled: paramEnabled = true,
+  enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -31,8 +32,7 @@ export const useVoteProxyVote = ({
     functionName: 'vote',
     args: [slateOrProposals],
     chainId,
-    // enabled: paramEnabled,
-    enabled: false,
+    enabled: paramEnabled && !config.READ_ONLY,
     gas,
     onSuccess,
     onError,

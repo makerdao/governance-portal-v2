@@ -13,9 +13,10 @@ import { DelegatePicture } from './DelegatePicture';
 import { DelegatePaginated } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { useState } from 'react';
-// import { useAccount } from 'modules/app/hooks/useAccount';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { calculatePercentage } from 'lib/utils';
 import { parseEther } from 'viem';
+import { config } from 'lib/config';
 
 export default function TopDelegates({
   topDelegates,
@@ -24,7 +25,7 @@ export default function TopDelegates({
   topDelegates: DelegatePaginated[];
   totalMKRDelegated: bigint;
 }): React.ReactElement {
-  // const { account } = useAccount();
+  const { account } = useAccount();
   const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
 
   return (
@@ -125,8 +126,7 @@ export default function TopDelegates({
                   <Button
                     variant="outline"
                     data-testid="button-delegate"
-                    // disabled={!account}
-                    disabled={true}
+                    disabled={config.READ_ONLY || !account}
                     onClick={() => {
                       setShowDelegateModal(delegate);
                     }}

@@ -12,11 +12,12 @@ import { useChainId } from 'wagmi';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { voteProxyAbi } from 'modules/contracts/ethers/abis';
+import { config } from 'lib/config';
 
 export const useLock = ({
   mkrToDeposit,
   gas,
-  // enabled: paramEnabled = true,
+  enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -30,8 +31,7 @@ export const useLock = ({
     functionName: 'lock',
     args: [mkrToDeposit],
     chainId,
-    // enabled: paramEnabled,
-    enabled: false,
+    enabled: paramEnabled && !config.READ_ONLY,
     gas,
     onSuccess,
     onError,

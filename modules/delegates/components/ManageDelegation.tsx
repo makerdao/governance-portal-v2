@@ -14,6 +14,7 @@ import { UndelegateModal } from './modals/UndelegateModal';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { config } from 'lib/config';
 
 export default function ManageDelegation({
   delegate,
@@ -41,8 +42,7 @@ export default function ManageDelegation({
           <Button
             variant="primaryLarge"
             data-testid="button-delegate"
-            // disabled={!account}
-            disabled={true}
+            disabled={config.READ_ONLY || !account}
             onClick={() => {
               setShowDelegateModal(true);
             }}

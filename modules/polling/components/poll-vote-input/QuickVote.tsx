@@ -27,6 +27,7 @@ import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
+import { config } from 'lib/config';
 
 type Props = {
   poll: PollListItem | Poll;
@@ -141,10 +142,13 @@ const QuickVote = ({
               submit();
             }}
             mt={2}
-            // disabled={
-            //   !isChoiceValid || !votingWeight || !(votingWeight.total > 0n) || isDelegateContractExpired
-            // }
-            disabled={true}
+            disabled={
+              !isChoiceValid ||
+              !votingWeight ||
+              !(votingWeight.total > 0n) ||
+              isDelegateContractExpired ||
+              config.READ_ONLY
+            }
           >
             {loading
               ? 'Loading MKR balance...'

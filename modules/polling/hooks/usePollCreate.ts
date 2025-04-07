@@ -10,6 +10,7 @@ import { useChainId } from 'wagmi';
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { pollingOldAbi, pollingOldAddress } from 'modules/contracts/generated';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
+import { config } from 'lib/config';
 
 export const usePollCreate = ({
   startDate,
@@ -17,7 +18,7 @@ export const usePollCreate = ({
   multiHash,
   url,
   gas,
-  // enabled: paramEnabled = true,
+  enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
@@ -29,8 +30,7 @@ export const usePollCreate = ({
 }): WriteHook => {
   const chainId = useChainId();
 
-  // const enabled = paramEnabled && !!startDate && !!endDate && !!multiHash && !!url;
-  const enabled = false;
+  const enabled = paramEnabled && !!startDate && !!endDate && !!multiHash && !!url && !config.READ_ONLY;
 
   return useWriteContractFlow({
     address: pollingOldAddress[chainId],
