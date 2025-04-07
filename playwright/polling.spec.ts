@@ -26,100 +26,64 @@ test('Adds polls to review and navigates to review page and votes with the legac
 }) => {
   const selectedPollId = 1107;
 
-  await pollingPage.goto();
-  await pollingPage.waitForPolls();
-  await connectWallet(page);
+  await test.step('navigate to polling page', async () => {
+    await pollingPage.goto();
+    await pollingPage.waitForPolls();
+  });
 
-  await pollingPage.selectChoice('Yes');
-  await pollingPage.addToBallot();
-  await pollingPage.navigateToReview();
-  await pollingPage.verifyPollId(selectedPollId);
-  await pollingPage.editChoice('No');
-  await pollingPage.submitBallot();
-  await pollingPage.switchToLegacyVoting();
-  await pollingPage.submitLegacyVote();
-  await pollingPage.verifyVoteSubmission();
+  await test.step('connect wallet', async () => {
+    await connectWallet(page);
+  });
+
+  await test.step('select poll choice and add to ballot', async () => {
+    await pollingPage.selectChoice('Yes');
+    await pollingPage.addToBallot();
+  });
+
+  await test.step('review and edit ballot', async () => {
+    await pollingPage.navigateToReview();
+    await pollingPage.verifyPollId(selectedPollId);
+    await pollingPage.editChoice('No');
+  });
+
+  await test.step('submit vote using legacy system', async () => {
+    await pollingPage.submitBallot();
+    await pollingPage.switchToLegacyVoting();
+    await pollingPage.submitLegacyVote();
+    await pollingPage.verifyVoteSubmission();
+  });
 });
 
 //Skip this test because eth_signTypedData_v4 doesn't work with the mock connector
 //We'd need to find a way to update the CustomizedBridge to handle eth_signTypedData_v4 to get this to work.
 test.skip('Adds polls to review and navigates to review page and votes with the gasless system', async ({
-  page
+  page,
+  pollingPage
 }) => {
-  await page.goto('/polling');
-
-  await expect(page.getByRole('heading', { name: /Active Polls|Ended Polls/ })).toBeVisible();
-
-  await connectWallet(page);
-
   const selectedPollId = 1107;
-  const selectChoice = page.locator('[data-testid="single-select"]');
 
-  await selectChoice.nth(0).click();
+  await test.step('navigate to polling page', async () => {
+    await pollingPage.goto();
+    await pollingPage.waitForPolls();
+  });
 
-  // click on option
-  await page.locator('[data-testid="single-select-option-Yes"]').first().click();
+  await test.step('connect wallet', async () => {
+    await connectWallet(page);
+  });
 
-  const buttonsVote = page.locator('[data-testid="button-add-vote-to-ballot"]');
+  await test.step('select poll choice and add to ballot', async () => {
+    await pollingPage.selectChoice('Yes');
+    await pollingPage.addToBallot();
+  });
 
-  // Click the button
-  await expect(buttonsVote.first()).toBeEnabled();
+  await test.step('review and edit ballot', async () => {
+    await pollingPage.navigateToReview();
+    await pollingPage.verifyPollId(selectedPollId);
+    await pollingPage.editChoice('No');
+  });
 
-  await buttonsVote.first().click();
-
-  // Check the ballot count has increased
-  await expect(page.locator('text=/1 of .* available poll(s)? added to ballot/')).toBeVisible();
-
-  // Click on the navigate
-  await page.locator('text=Review & Submit Your Ballot').click();
-
-  await expect(page).toHaveURL('/polling/review');
-
-  // Poll card should display poll IDs
-  await expect(page.locator(`text=Poll ID ${selectedPollId}`)).toBeVisible();
-
-  // It can edit a choice
-  await page.locator('[data-testid="edit-poll-choice"]').click();
-
-  // Opens the select
-  await selectChoice.first().click();
-
-  // Clicks on "No"
-  await page.locator('[data-testid="single-select-option-No"]').click({ force: true });
-
-  // Clicks on update vote
-  await page.locator('text=Update vote').click();
-
-  // Move to submit ballot screen
-  await page.locator('[data-testid="submit-ballot-button"]').click();
-
-  await expect(page.locator('text=Gasless voting via Arbitrum')).toBeVisible();
-
-  // vote via gasless
-  await page.locator('[data-testid="submit-ballot-gasless-button"]').click();
-
-  await expect(
-    page.locator(
-      'text=Submit your vote by creating a transaction and sending it to the polling contract on Ethereum Mainnet.'
-    )
-  ).toBeVisible();
-
-  // Click legacy voting submit button
-  await page.locator('[data-testid="submit-ballot-legacy-button"]').click();
-
-  await expect(page.locator('text=Please use your wallet to sign')).toBeVisible();
-
-  //await expect(page.locator('text=Transaction Pending')).toBeVisible();
-
-  await expect(page.locator('text=Share all your votes')).toBeVisible();
-
-  // After finishing voting, there should be a message with the sharing info
-  await expect(
-    page.locator(
-      'text=Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes'
-    )
-  ).toBeVisible();
-
-  // And the same amount of poll cards
-  await expect(page.locator('[data-testid="poll-overview-card"]')).toHaveCount(1);
+  await test.step('submit vote using gasless system', async () => {
+    await pollingPage.submitBallot();
+    await pollingPage.submitGaslessVote();
+  });
 });
