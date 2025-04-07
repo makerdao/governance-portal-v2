@@ -50,6 +50,10 @@ const connectors = [
         id: 'injected',
         name: 'Browser Wallet',
         provider(window) {
+          const providers = window?.ethereum?.providers;
+          if (providers?.length) {
+            return providers[0];
+          }
           return window?.ethereum;
         }
       };
