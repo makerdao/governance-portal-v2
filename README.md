@@ -1,6 +1,6 @@
 <h1  align="center"  style="margin-top: 1em; margin-bottom: 3em;">
 
-<p><a  href="https://vote.makerdao.com/"><img  alt="maker logo"  src="./maker-logo.png"  alt="vote.makerdao.com"  width="125"></a></p>
+<p><a  href="https://vote.makerdao.com/"><img  alt="sky logo"  src="./sky-logo.png"  alt="vote.makerdao.com"  width="125"></a></p>
 
 <p>Sky Governance Portal</p>
 
