@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useEffect, useState } from 'react';
 import { Box, Input, ThemeUIStyleObject, IconButton } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../Icon';
 import { debounce } from 'modules/app/helpers/debounce';
 
 type Props = {

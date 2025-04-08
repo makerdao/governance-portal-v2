@@ -1985,11 +1985,6 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@makerdao/dai-ui-icons@^0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons/-/dai-ui-icons-0.0.39.tgz#744174a186e4528f365e3482fbf22ae52b0177c1"
-  integrity sha512-pKT+AYwH5ZFSu992tzHdK7PxlP7cMlFm0+sqPA6WBtVxp1fH19clOPc7AaGO7Rj6mtA5gu3kZPy1qJlRSvzC3w==
-
 "@metamask/eth-json-rpc-provider@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@metamask/eth-json-rpc-provider/-/eth-json-rpc-provider-1.0.1.tgz#3fd5316c767847f4ca107518b611b15396a5a32c"

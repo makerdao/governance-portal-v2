@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Button, Text, Close } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 

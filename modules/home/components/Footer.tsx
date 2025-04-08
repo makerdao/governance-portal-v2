@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Flex, Text, useColorMode } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import React, { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -40,7 +40,7 @@ const ContactSection = ({ heading, logos, icon }) => {
           </ExternalLink>
         ))}
       </Flex>
-      <Icon name={icon} size="auto" sx={{ my: [0, 0, 4], width: '76px' }} />
+      <Icon name={icon} sx={{ my: [0, 0, 4], width: '76px' }} />
     </Flex>
   );
 };

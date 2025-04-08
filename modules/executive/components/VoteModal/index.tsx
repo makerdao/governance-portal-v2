@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Button, Flex, Close, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Proposal } from 'modules/executive/types';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';

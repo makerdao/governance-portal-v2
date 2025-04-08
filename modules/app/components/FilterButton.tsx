@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from './Icon';
 import { Menu, MenuButton, MenuList } from '@reach/menu-button';
 import { ThemeUIStyleObject } from 'theme-ui';
 
@@ -32,7 +32,7 @@ export default function FilterButton({
         {...props}
       >
         {name()}
-        <Icon name="chevron_down" size={2} ml={2} />
+        <Icon name="chevron_down" sx={{ size: 2, ml: 2 }} />
       </MenuButton>
       <MenuList sx={{ variant: listVariant }}>{children}</MenuList>
     </Menu>

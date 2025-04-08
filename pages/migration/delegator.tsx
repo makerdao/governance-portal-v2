@@ -16,8 +16,7 @@ import AccountNotConnected from 'modules/web3/components/AccountNotConnected';
 import { useMemo } from 'react';
 import { useAddressDelegations } from 'modules/delegates/hooks/useAddressDelegations';
 import { DelegateExpirationOverviewCard } from 'modules/migration/components/DelegateExpirationOverviewCard';
-import LocalIcon from 'modules/app/components/Icon';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 
 import Link from 'next/link';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
@@ -175,7 +174,7 @@ export default function DelegateMigrationPage(): React.ReactElement {
                         justifyContent: 'center'
                       }}
                     >
-                      <LocalIcon name="calendarcross" size={3} color="text" />
+                      <Icon name="calendarcross" size={3} color="text" />
                     </Box>
                     <Text as="p" variant="secondary">
                       None of your delegates contracts have been replaced by v2 delegate contracts.

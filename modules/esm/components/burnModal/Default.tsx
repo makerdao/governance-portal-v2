@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Button, Text, Grid, Close } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 
 type Props = {
   setShowDialog: (value: boolean) => void;
@@ -17,7 +17,7 @@ type Props = {
 const DefaultScreen = ({ setShowDialog, setStep }: Props): JSX.Element => (
   <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
     <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
-    <Icon ml={2} name="warning" size={5} sx={{ color: 'notice' }} />
+    <Icon name="warning" size={5} sx={{ color: 'notice', ml: 2 }} />
     <Text variant="heading" mt={4}>
       Are you sure you want to burn MKR?
     </Text>

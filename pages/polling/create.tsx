@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useState } from 'react';
 import { Heading, Text, Box, Button, Flex, Input, Label } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -117,7 +117,7 @@ const PollingCreate = (): React.ReactElement => {
             <Stack gap={2}>
               <InternalLink href={'/polling'} title="View polling page">
                 <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
-                  <Icon name="chevron_left" size="2" mr={2} />
+                  <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
                   Back to All Polls
                 </Button>
               </InternalLink>

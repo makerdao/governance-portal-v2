@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, Divider, Text, useColorMode } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../Icon';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import React, { useState, useEffect } from 'react';
@@ -27,7 +27,7 @@ import { useNetwork } from 'modules/app/hooks/useNetwork';
 const MenuItemContent = ({ label, icon }: { label: React.ReactNode; icon: string }) => {
   return (
     <Flex sx={{ alignItems: 'center', gap: 2, justifyContent: 'flex-start' }}>
-      <Icon name={icon} size={'auto'} sx={{ height: '20px', width: '20px' }} />
+      <Icon name={icon} sx={{ height: '20px', width: '20px' }} />
       {typeof label === 'string' ? <Text>{label}</Text> : label}
     </Flex>
   );
@@ -170,7 +170,6 @@ const Header = (): JSX.Element => {
           <IconButton aria-label="Sky home" sx={{ width: '70px', height: 4, p: 0 }}>
             <Icon
               name={renderedMode === 'dark' ? 'sky_white' : 'sky'}
-              size="auto"
               sx={{ width: '70px', cursor: 'pointer' }}
             />
           </IconButton>
@@ -319,11 +318,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
       >
         <InternalLink href={'/'} title="View homepage">
           <IconButton aria-label="Sky home" sx={{ width: '70px', height: 4, p: 0 }}>
-            <Icon
-              name={mode === 'dark' ? 'sky_white' : 'sky'}
-              size="auto"
-              sx={{ width: '70px', cursor: 'pointer' }}
-            />
+            <Icon name={mode === 'dark' ? 'sky_white' : 'sky'} sx={{ width: '70px', cursor: 'pointer' }} />
           </IconButton>
         </InternalLink>
         <Flex sx={{ alignItems: 'center', gap: 2 }}>

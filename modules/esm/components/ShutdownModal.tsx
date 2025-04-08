@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Button, Text, Grid, Close, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import { formatValue } from 'lib/string';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
@@ -46,7 +46,7 @@ const ModalContent = ({
   const DefaultScreen = () => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
-      <Icon ml={2} name="warning" size={5} sx={{ color: 'notice' }} />
+      <Icon name="warning" size={5} sx={{ color: 'notice', ml: 2 }} />
       <Text variant="heading" mt={4}>
         Shutting down the Dai Credit System
       </Text>
