@@ -269,13 +269,13 @@ export default function Icon({
   ...rest
 }: {
   name: string;
-  size?: number;
+  size?: number | string;
   color?: string;
   role?: string;
   focusable?: boolean;
   sx?: any;
 }): React.ReactElement | null {
-  const mergedIcons = { ...themeIcons, ...icons };
+  const mergedIcons = { ...icons, ...themeIcons };
 
   if (!mergedIcons[name]) {
     logger.error(`Icon: No icon found with name ${name}`);
@@ -285,9 +285,8 @@ export default function Icon({
   return (
     <svg
       viewBox={mergedIcons[name].viewBox || '0 0 24 24'}
-      sx={{ ...sx, size: size, verticalAlign: 'middle', color }}
+      sx={{ ...sx, size, color }}
       color={color}
-      display="inline-block"
       focusable={focusable}
       role={role}
       {...rest}

@@ -40,7 +40,7 @@ const ContactSection = ({ heading, logos, icon }) => {
           </ExternalLink>
         ))}
       </Flex>
-      <Icon name={icon} sx={{ my: [0, 0, 4], width: '76px' }} />
+      <Icon name={icon} size="auto" sx={{ my: [0, 0, 4], width: '76px' }} />
     </Flex>
   );
 };

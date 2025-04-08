@@ -170,6 +170,7 @@ const Header = (): JSX.Element => {
           <IconButton aria-label="Sky home" sx={{ width: '70px', height: 4, p: 0 }}>
             <Icon
               name={renderedMode === 'dark' ? 'sky_white' : 'sky'}
+              size="auto"
               sx={{ width: '70px', cursor: 'pointer' }}
             />
           </IconButton>
@@ -318,7 +319,11 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
       >
         <InternalLink href={'/'} title="View homepage">
           <IconButton aria-label="Sky home" sx={{ width: '70px', height: 4, p: 0 }}>
-            <Icon name={mode === 'dark' ? 'sky_white' : 'sky'} sx={{ width: '70px', cursor: 'pointer' }} />
+            <Icon
+              name={mode === 'dark' ? 'sky_white' : 'sky'}
+              size="auto"
+              sx={{ width: '70px', cursor: 'pointer' }}
+            />
           </IconButton>
         </InternalLink>
         <Flex sx={{ alignItems: 'center', gap: 2 }}>
