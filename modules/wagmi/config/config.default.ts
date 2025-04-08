@@ -44,7 +44,6 @@ const transports = {
 
 const connectors = [
   metaMask(),
-  injected(),
   walletConnect({
     name: 'Sky Governance Portal',
     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'd5c6af7c0680adbaad12f33744ee4413'
