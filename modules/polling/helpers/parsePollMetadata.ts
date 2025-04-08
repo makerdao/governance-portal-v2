@@ -10,12 +10,12 @@ import { matterWrapper } from 'lib/matter';
 import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
-import { PollSpock } from '../types/pollSpock';
+import { PollSubgraph } from '../types/pollSubgraph';
 import { getPollTags } from '../api/getPollTags';
 import { Tag } from 'modules/app/types/tag';
 import { oldVoteTypeToNewParameters, validatePollParameters } from './validatePollParameters';
 
-export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
+export function subgraphPollToPartialPoll(poll: PollSubgraph): PartialPoll {
   const formatted: PartialPoll = {
     ...poll,
     slug: poll.multiHash.slice(0, 8),

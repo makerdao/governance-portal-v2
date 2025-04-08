@@ -16,7 +16,6 @@ import { PollTallyVote } from '../types';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { votingWeightHistory } from 'modules/gql/queries/subgraph/votingWeightHistory';
 import { formatEther } from 'viem';
-import { fetchAllCurrentVotesWithSpock } from './spock/fetchAllCurrentVotesWithSpock';
 import { SKY_PORTAL_START_DATE } from 'modules/polling/polling.constants';
 import { pollTimes } from 'modules/gql/queries/subgraph/pollTimes';
 
@@ -87,19 +86,16 @@ async function fetchAllCurrentVotesWithSubgraph(
     gqlRequest<MainnetVotesResponse>({
       chainId: networkNameToChainId(network),
       query: allMainnetVotes,
-      useSubgraph: true,
       variables: { argAddress: address.toLowerCase() }
     }),
     gqlRequest<ArbitrumVotesResponse>({
       chainId: arbitrumChainId,
       query: allArbitrumVotes,
-      useSubgraph: true,
       variables: { argAddress: delegateOwnerAddress ? delegateOwnerAddress.toLowerCase() : address.toLowerCase() }
     }),
     gqlRequest<VotingWeightHistoryResponse>({
       chainId: networkNameToChainId(network),
       query: votingWeightHistory,
-      useSubgraph: true,
       variables: {
         argAddress: address.toLowerCase(),
       }
@@ -130,7 +126,6 @@ async function fetchAllCurrentVotesWithSubgraph(
   const pollTimesRes = await gqlRequest<PollTimesResponse>({
     chainId: networkNameToChainId(network),
     query: pollTimes,
-    useSubgraph: true,
     variables: { argPollIds: allPollIds }
   });
 

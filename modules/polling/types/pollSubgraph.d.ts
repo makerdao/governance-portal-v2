@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-export type PollSpock = {
+export type PollSubgraph = {
   creator: string;
   pollId: number;
   blockCreated: number;
@@ -14,5 +14,4 @@ export type PollSpock = {
   endDate: number;
   multiHash: string;
   url: string;
-  cursor: string;
 };

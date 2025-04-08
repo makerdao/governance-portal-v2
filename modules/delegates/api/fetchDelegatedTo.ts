@@ -24,7 +24,6 @@ export async function fetchDelegatedTo(
     const chainId = networkNameToChainId(network);
     const delegatesData = await gqlRequest({
       chainId,
-      useSubgraph: true,
       query: allDelegates
     });
     const delegates = delegatesData.delegates;
@@ -32,7 +31,6 @@ export async function fetchDelegatedTo(
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      useSubgraph: true,
       query: delegatorHistory,
       variables: { address: address.toLowerCase() }
     });

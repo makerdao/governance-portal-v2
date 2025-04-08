@@ -69,7 +69,6 @@ export async function fetchVotesByAddressForPoll(
   const mainnetVotersResponse = await gqlRequest<MainnetVotersResponse>({
     chainId: networkNameToChainId(network),
     query: allMainnetVoters,
-    useSubgraph: true,
     variables: {
       argPollId: pollId.toString()
     }
@@ -88,7 +87,6 @@ export async function fetchVotesByAddressForPoll(
   const arbitrumVotersResponse = await gqlRequest<ArbitrumVotersResponse>({
     chainId: arbitrumChainId,
     query: allArbitrumVoters,
-    useSubgraph: true,
     variables: {
       argPollId: pollId.toString()
     }
@@ -135,7 +133,6 @@ export async function fetchVotesByAddressForPoll(
   const mkrWeightsResponse = await gqlRequest<MkrWeightsResponse>({
     chainId: networkNameToChainId(network),
     query: voteAddressMkrWeightsAtTime,
-    useSubgraph: true,
     variables: { argVoters: allVoterAddresses, argUnix: endUnix }
   });
 
