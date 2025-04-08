@@ -7,7 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { icons as daiUiIcons } from '@makerdao/dai-ui-icons';
-import { icons as brandIcons } from '@makerdao/dai-ui-icons-branding';
 
 const skyIcon = ({ darkMode = false } = {}) => (
   <g>
@@ -244,6 +243,22 @@ const skyIcon = ({ darkMode = false } = {}) => (
   </g>
 );
 
+const etherCircleColor = {
+  path: (
+    <g>
+      <path
+        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+        fill="#667FE3"
+      />
+      <path d="M12 6V14.2882L8.00005 12.1113L12 6Z" fill="white" />
+      <path d="M12 6L15.9999 12.1113L12 14.2882V6Z" fill="white" />
+      <path d="M11.9999 14.9858V17.9999L8 12.81L11.9999 14.9858Z" fill="white" />
+      <path d="M11.9999 17.9999V14.9858L16 12.81L11.9999 17.9999Z" fill="white" />
+    </g>
+  ),
+  viewBox: '0 0 24 24'
+};
+
 export const icons = {
   chevron_right: daiUiIcons.chevron_right,
   chevron_left: daiUiIcons.chevron_left,
@@ -256,10 +271,32 @@ export const icons = {
   edit: daiUiIcons.edit,
   verified: daiUiIcons.verified,
   warning: daiUiIcons.warning,
-  Trezor: brandIcons.trezor,
-  Ledger: brandIcons.ledger,
-  Mainnet: brandIcons.ether_circle_color,
-  Tenderly: brandIcons.ether_circle_color,
+  Trezor: {
+    path: (
+      <g>
+        <path
+          d="M16.952 8.14404H19V18.7917H18.9859L12.0002 22L5.01409 18.7917H5V8.14404H7.04892V6.64921C7.04892 4.08589 9.27077 2 12.0012 2C14.7302 2 16.952 4.08589 16.952 6.64921V8.14404ZM16.1826 17.0209V10.6424H7.81739V17.0209L12.0002 18.9373L16.1826 17.0209ZM9.58895 6.64921V8.14404H14.412V6.64921C14.412 5.4628 13.3298 4.49743 12.0012 4.49743C10.6712 4.49743 9.58895 5.4628 9.58895 6.64921Z"
+          fill="currentColor"
+        />
+      </g>
+    ),
+    viewBox: '0 0 24 24'
+  },
+  Ledger: {
+    path: (
+      <g>
+        <path d="M5 2C3.34315 2 2 3.34315 2 5V7H7V2H5Z" fill="currentColor" />
+        <path d="M10 2V14H22V5C22 3.34315 20.6569 2 19 2H10Z" fill="currentColor" />
+        <path d="M22 17H17V22H19C20.6569 22 22 20.6569 22 19V17Z" fill="currentColor" />
+        <path d="M14 22V17H10V22H14Z" fill="currentColor" />
+        <path d="M7 22V17H2V19C2 20.6569 3.34315 22 5 22H7Z" fill="currentColor" />
+        <path d="M2 14H7V10H2V14Z" fill="currentColor" />
+      </g>
+    ),
+    viewBox: '0 0 24 24'
+  },
+  Mainnet: etherCircleColor,
+  Tenderly: etherCircleColor,
   play: {
     path: (
       <g>
@@ -1178,7 +1215,7 @@ export const icons = {
     ),
     viewBox: '0 0 20 20'
   },
-  'Browser Wallet': brandIcons.ether_circle_color,
+  'Browser Wallet': etherCircleColor,
   WalletLink: {
     path: (
       <g>

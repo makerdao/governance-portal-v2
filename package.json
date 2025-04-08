@@ -25,7 +25,6 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@makerdao/dai-ui-icons": "^0.0.39",
-    "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@octokit/core": "^4.0.5",
     "@reach/dialog": "^0.16.2",
     "@reach/listbox": "^0.18.0",
