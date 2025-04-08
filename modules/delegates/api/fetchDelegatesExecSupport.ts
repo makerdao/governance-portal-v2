@@ -30,7 +30,6 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
 
     const data = await gqlRequest({
       chainId,
-      useSubgraph: true,
       query: allDelegates
     });
     const delegates = data.delegates;

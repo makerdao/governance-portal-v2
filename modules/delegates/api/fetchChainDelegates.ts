@@ -19,7 +19,6 @@ export async function fetchChainDelegates(
   const chainId = networkNameToChainId(network);
   const data = await gqlRequest({
     chainId,
-    useSubgraph: true,
     query: allDelegates
   });
 

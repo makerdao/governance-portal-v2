@@ -20,7 +20,6 @@ interface DelegationMetrics {
 export async function fetchDelegationMetrics(network: SupportedNetworks): Promise<DelegationMetrics> {
   const res = await gqlRequest<any>({
     chainId: networkNameToChainId(network),
-    useSubgraph: true,
     query: allDelegations
   });
   const delegations = res.delegations;
