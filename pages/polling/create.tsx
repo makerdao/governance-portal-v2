@@ -15,8 +15,6 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import PollCreateModal from 'modules/polling/components/PollCreateModal';
-import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import ResourceBox from 'modules/app/components/ResourceBox';
 import { validatePollFromRawURL } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
@@ -29,9 +27,6 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { PollMarkdownEditor } from 'modules/polling/components/PollMarkdownEditor';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getGaslessNetwork } from 'modules/web3/helpers/chain';
-import { useSwitchChain } from 'wagmi';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -156,7 +151,6 @@ const PollingCreate = (): React.ReactElement => {
         <Heading mb={2} as="h4">
           Create Poll
         </Heading>
-        <SidebarLayout>
           <Box>
             <Stack gap={2}>
               <InternalLink href={'/polling'} title="View polling page">
@@ -175,7 +169,8 @@ const PollingCreate = (): React.ReactElement => {
                         <Box>
                           <Label htmlFor="url">URL</Label>
                           <Flex sx={{ flexDirection: 'row' }}>
-                            <Input name="url" mb={3} onChange={e => setPollUrl(e.target.value)} />
+                            <Input name="url" mb={3} onChange={e => setPollUrl(e.target.value)} 
+                            />
                             <Button
                               variant="smallOutline"
                               onClick={() => urlValidation(pollUrl)}
@@ -270,22 +265,6 @@ const PollingCreate = (): React.ReactElement => {
               </Card>
             </Stack>
           </Box>
-          {bpi >= 3 && (
-            <Stack gap={3}>
-              <SystemStatsSidebar
-                fields={[
-                  'chief contract',
-                  'mkr in chief',
-                  'mkr needed to pass',
-                  'savings rate',
-                  'total dai',
-                  'debt ceiling'
-                ]}
-              />
-              <ResourceBox type={'general'} />
-            </Stack>
-          )}
-        </SidebarLayout>
       </Stack>
     </PrimaryLayout>
   );
