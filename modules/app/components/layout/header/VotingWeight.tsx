@@ -24,11 +24,14 @@ export default function VotingWeight(): JSX.Element {
       </Flex>
       <Flex>
         <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
-        {votingWeight ? `${formatValue(votingWeight.chiefTotal)} MKR` : '--'}
+          {votingWeight ? `${formatValue(votingWeight.chiefTotal)} MKR` : '--'}
         </Text>
       </Flex>
       <Flex sx={{ py: 1 }}>
-        <Text variant="secondary">Your voting weight is the amount of MKR you have locked in the voting contract. This weight applies to both polling and executive votes.</Text>
+        <Text variant="secondary">
+          Your voting weight is the amount of MKR you have locked in the voting contract. This weight applies
+          to both polling and executive votes.
+        </Text>
       </Flex>
     </>
   );

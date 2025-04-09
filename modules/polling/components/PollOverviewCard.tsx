@@ -7,8 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React, { memo } from 'react';
-import { Icon } from '@makerdao/dai-ui-icons';
-import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
+import { Card, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import {
   isActivePoll,
   isResultDisplayApprovalBreakdown,

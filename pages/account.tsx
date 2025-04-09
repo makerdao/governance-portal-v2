@@ -17,7 +17,7 @@ import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { DelegateDetail, TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
@@ -169,7 +169,8 @@ const AccountPage = (): React.ReactElement => {
                       }
                     >
                       <Text as="p" sx={{ display: 'flex', alignItems: 'center' }}>
-                        How can I verify my delegate contract? <Icon name="arrowTopRight" size={2} ml={2} />
+                        How can I verify my delegate contract?{' '}
+                        <Icon name="arrowTopRight" sx={{ size: 2, ml: 2 }} />
                       </Text>
                     </ExternalLink>
                   </Box>

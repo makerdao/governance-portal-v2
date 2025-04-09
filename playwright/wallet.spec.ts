@@ -3,33 +3,45 @@ import { expect } from '@playwright/test';
 
 test.describe('Wallet Connection', () => {
   test('should show wallet modal and handle connection flow', async ({ page, walletPage }) => {
-    await page.goto('/');
+    await test.step('navigate to home page', async () => {
+      await page.goto('/');
+    });
 
-    await walletPage.clickConnectWallet();
-    await walletPage.waitForConnection();
+    await test.step('connect wallet', async () => {
+      await walletPage.clickConnectWallet();
+      await walletPage.waitForConnection();
+    });
 
-    await walletPage.openWalletModal();
-    await walletPage.verifyWalletModal();
+    await test.step('verify wallet modal', async () => {
+      await walletPage.openWalletModal();
+      await walletPage.verifyWalletModal();
+    });
 
-    await walletPage.clickChangeWallet();
-    await walletPage.verifyWalletSelectionModal();
+    await test.step('verify wallet selection flow', async () => {
+      await walletPage.clickChangeWallet();
+      await walletPage.verifyWalletSelectionModal();
+    });
 
-    await walletPage.clickBackButton();
-    await walletPage.closeModal();
+    await test.step('close wallet modal', async () => {
+      await walletPage.clickBackButton();
+      await walletPage.closeModal();
+    });
   });
 
   test('should navigate to account page', async ({ page, walletPage }) => {
-    await page.goto('/');
+    await test.step('navigate to home page', async () => {
+      await page.goto('/');
+    });
 
-    // Connect wallet first
-    await walletPage.clickConnectWallet();
-    await walletPage.waitForConnection();
+    await test.step('connect wallet', async () => {
+      await walletPage.clickConnectWallet();
+      await walletPage.waitForConnection();
+    });
 
-    // Open wallet modal
-    await walletPage.openWalletModal();
-
-    // Click view account page and verify navigation
-    await walletPage.clickViewAccountPage();
-    await expect(page).toHaveURL('/account');
+    await test.step('navigate to account page', async () => {
+      await walletPage.openWalletModal();
+      await walletPage.clickViewAccountPage();
+      await expect(page).toHaveURL('/account');
+    });
   });
 });

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Flex, Heading, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useState } from 'react';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import CirclesBackground from '../CirclesBackground';
@@ -64,7 +64,7 @@ function Card({
                 >
                   <Flex sx={{ alignItems: 'center' }}>
                     <Text>{link.linkTitle}</Text>
-                    <Icon ml={2} name="arrowTopRight" size={3} sx={{ color: infoPoint.color }} />
+                    <Icon name="arrowTopRight" size={3} sx={{ color: infoPoint.color, ml: 2 }} />
                   </Flex>
                 </ExternalLink>
               </Box>
@@ -86,7 +86,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
         <Box sx={{ p: 3, height: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%', alignItems: 'center' }}>
             <Box sx={{ mr: 2, flex: 1 }}>
-              <Heading as="h2">How to participate in Maker Governance</Heading>
+              <Heading as="h2">How to participate in Sky Governance</Heading>
             </Box>
             <Box>
               <ExternalLink

@@ -18,7 +18,6 @@ export type SupportedChain = {
   label: string;
   network: SupportedNetworks;
   defaultRpc: string;
-  spockUrl?: string;
   subgraphUrl?: string;
   type: 'gasless' | 'normal';
   showInProduction: boolean;

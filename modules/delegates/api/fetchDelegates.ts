@@ -402,7 +402,6 @@ export async function fetchDelegatesPaginated({
     gqlRequest<any>({
       chainId,
       query: page === 1 ? delegatesQueryFirstPage : delegatesQuerySubsequentPages,
-      useSubgraph: true,
       variables: page === 1 ? delegatesQueryFirstPageVariables : delegatesQuerySubsequentPagesVariables
     }),
     fetchDelegationMetrics(network)
@@ -420,7 +419,6 @@ export async function fetchDelegatesPaginated({
   const lastVotedArbitrumArray = await gqlRequest<any>({
     chainId: networkNameToChainId('arbitrum'), //TODO: update this if we add arbitrum sepolia support
     query: lastVotedArbitrum,
-    useSubgraph: true,
     variables: { argAddresses: combinedDelegateOwnerAddresses }
   });
 

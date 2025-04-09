@@ -1,52 +1,24 @@
-import { test, expect } from '@playwright/test';
-import { closeModal, connectWallet } from './shared';
+import { test } from './fixtures/base';
+import { connectWallet } from './shared';
 import './forkVnet';
 
-test('navigates to executives and can deposit into chief', async ({ page }) => {
-  await page.goto('/executive');
+test('navigates to executives and can deposit into chief', async ({ page, executivePage }) => {
+  await test.step('navigate to executives page', async () => {
+    await executivePage.goto();
+  });
 
-  await connectWallet(page);
+  await test.step('connect wallet', async () => {
+    await connectWallet(page);
+  });
 
-  // Sees the "In voting contract" text
-  await expect(page.locator('text=/In voting contract/')).toBeVisible();
+  await test.step('verify and deposit into chief contract', async () => {
+    await executivePage.verifyVotingContract();
+    await executivePage.depositIntoChief();
+    await executivePage.depositMkr('0.01');
+    await executivePage.verifyLockedMkr('0.01');
+  });
 
-  // Click deposit
-  await page.locator('[data-testid="deposit-button"]').click();
-
-  // Click approve contract
-  await page.locator('[data-testid="deposit-approve-button"]').click();
-
-  await expect(page.locator('text=/Confirm Transaction/')).toBeVisible();
-
-  //commenting out because sometimes the Transaction Pending screen doesn't get picked up
-  // await expect(page.locator('text=/Transaction Pending/')).toBeVisible();
-
-  // Deposit
-  await expect(page.locator('text=/Deposit into voting contract/')).toBeVisible();
-
-  // Deposit
-  await page.locator('[data-testid="mkr-input"]').fill('0.01');
-
-  // Click button
-  await page.locator('[data-testid="button-deposit-mkr"]').click();
-
-  await expect(page.locator('text=/Confirm Transaction/')).toBeVisible();
-  await expect(page.locator('text=/Transaction Successful/')).toBeVisible();
-
-  await closeModal(page);
-
-  // Wait for tx
-  //commenting out because sometimes the Transaction Pending screen doesn't get picked up
-  // await expect(page.locator('text=/Transaction Pending/')).toBeVisible();
-  // await expect(page.locator('text=/Transaction Sent/')).toBeVisible();
-
-  // Check MKR
-  await expect(page.locator('[data-testid="locked-mkr"]')).toHaveText('0.01 MKR');
-
-  // Can vote
-  await page.locator('[data-testid="vote-button-exec-overview-card"]').first().click();
-
-  await page.locator('[data-testid="vote-modal-vote-btn"]').click();
-
-  await expect(page.locator('text=/Transaction Sent/')).toBeVisible();
+  await test.step('vote on executive', async () => {
+    await executivePage.vote();
+  });
 });

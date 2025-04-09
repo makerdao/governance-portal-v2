@@ -15,7 +15,7 @@ import {
 } from 'modules/polling/helpers/utils';
 import { Poll, PollListItem } from 'modules/polling/types';
 import { Box, Flex, Text, Heading } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 
