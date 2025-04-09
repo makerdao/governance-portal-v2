@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Text, Label } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
@@ -31,7 +31,7 @@ export function ConnectWallet(): JSX.Element {
       >
         <Flex sx={{ alignItems: 'center' }}>
           <Text>Read instructions on how to switch accounts in MetaMask</Text>
-          <Icon ml={2} name="arrowTopRight" size={2} />
+          <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
         </Flex>
       </ExternalLink>
       <Flex sx={{ alignItems: 'center' }}>

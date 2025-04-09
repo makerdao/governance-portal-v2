@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import React from 'react';
 import AddressIcon from './AddressIcon';
 import { Box, Text, Flex } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -128,7 +128,7 @@ export default function AddressIconBox({
             <Text sx={{ color: 'textSecondary', fontSize: 1 }}>Proxy Contract</Text>
             <Tooltip label={tooltipLabel}>
               <Flex>
-                <Icon name="question" ml={2} />
+                <Icon name="question" sx={{ ml: 2 }} />
               </Flex>
             </Tooltip>
           </Flex>

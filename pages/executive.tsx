@@ -12,7 +12,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
@@ -233,7 +233,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                     }}
                   >
                     <Text>
-                      Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
+                      Forum Post <Icon name="arrowTopRight" sx={{ size: 2, ml: '1px' }} color="accentBlue" />
                     </Text>
                   </Button>
                 </ExternalLink>

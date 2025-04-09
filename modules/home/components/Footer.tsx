@@ -7,10 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Flex, Text, useColorMode } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import React, { useState, useEffect } from 'react';
-import { translate } from '@makerdao/i18n-helper';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 const ContactSection = ({ heading, logos, icon }) => {
@@ -46,7 +45,7 @@ const ContactSection = ({ heading, logos, icon }) => {
   );
 };
 
-export default function Footer({ locale = 'en' }: { locale?: string }): React.ReactElement {
+export default function Footer(): React.ReactElement {
   const bpi = useBreakpointIndex();
   const [mode] = useColorMode();
   const [renderedMode, setRenderedMode] = useState('light');
@@ -55,45 +54,43 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
     setRenderedMode(mode);
   }, [mode]);
 
-  const t = text => translate(text, locale);
-
   const links = [
     {
-      header: t('Participate'),
+      header: 'Participate',
       list: [
         {
           url: 'https://forum.makerdao.com/',
-          title: t('Community')
+          title: 'Community'
         }
       ]
     },
     {
-      header: t('Ecosystem'),
+      header: 'Ecosystem',
       list: [
         {
           url: 'https://sky.money/',
-          title: t('sky.money')
+          title: 'sky.money'
         },
         {
           url: 'https://web3-growth.notion.site/Sky-Brand-Kit-ec871fa39f9d41bf9cc4446e7d1f6997?p=ebe95d12947642b6bf69cbac9d09c972&pm=c',
-          title: t('Brand Guidelines')
+          title: 'Brand Guidelines'
         },
         {
           url: 'https://www.notion.so/Sky-Brand-Kit-ec871fa39f9d41bf9cc4446e7d1f6997?pvs=4',
-          title: t('Media Assets')
+          title: 'Media Assets'
         },
         {
           url: 'https://sky.money/faq',
-          title: t('FAQs')
+          title: 'FAQs'
         }
       ]
     },
     {
-      header: t('Build'),
+      header: 'Build',
       list: [
         {
           url: 'https://developers.sky.money/',
-          title: t('Developer Documentation')
+          title: 'Developer Documentation'
         }
       ]
     }

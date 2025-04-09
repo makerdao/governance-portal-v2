@@ -8,10 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useEffect, useState } from 'react';
 import { Box, Flex, Heading, Text, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { markdownToHtml } from 'lib/markdown';
-import InternalIcon from 'modules/app/components/Icon';
+import Icon from 'modules/app/components/Icon';
 import { openWindowWithUrl } from 'lib/utils';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 
@@ -61,14 +60,14 @@ export const ShareVotesModal = ({
             <Flex sx={{ justifyContent: 'center', mt: 4, flexDirection: ['column', 'row'] }}>
               <Box sx={{ width: ['100%', '50%'], paddingRight: [0, 1], mb: [2, 0] }}>
                 <Button onClick={copyToClipboard} sx={{ width: '100%' }}>
-                  <Icon name="copy" mr={2} color="background" size={12} />
+                  <Icon name="copy" sx={{ mr: 2 }} color="background" size={12} />
                   {copied ? 'Copied!' : 'Copy & paste on the forum'}
                 </Button>
               </Box>
               <Box sx={{ width: ['100%', '50%'], paddingLeft: [0, 1] }}>
                 <Button sx={{ width: '100%' }} onClick={() => openWindowWithUrl(twitterContent)}>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <InternalIcon name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
+                    <Icon name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
                   </Flex>
                 </Button>
               </Box>

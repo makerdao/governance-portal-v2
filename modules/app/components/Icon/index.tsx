@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import logger from 'lib/logger';
 import React from 'react';
+import { icons as themeIcons } from 'lib/theme/icons';
 
 const icons = {
   calendarcross: {
@@ -268,28 +269,29 @@ export default function Icon({
   ...rest
 }: {
   name: string;
-  size?: number;
+  size?: number | string;
   color?: string;
   role?: string;
   focusable?: boolean;
   sx?: any;
 }): React.ReactElement | null {
-  if (!icons[name]) {
+  const mergedIcons = { ...icons, ...themeIcons };
+
+  if (!mergedIcons[name]) {
     logger.error(`Icon: No icon found with name ${name}`);
     return null;
   }
 
   return (
     <svg
-      viewBox={icons[name].viewBox || '0 0 24 24'}
-      sx={{ ...sx, size: size, verticalAlign: 'middle', color }}
+      viewBox={mergedIcons[name].viewBox || '0 0 24 24'}
+      sx={{ ...sx, size, color }}
       color={color}
-      display="inline-block"
       focusable={focusable}
       role={role}
       {...rest}
     >
-      {icons[name].path}
+      {mergedIcons[name].path}
     </svg>
   );
 }

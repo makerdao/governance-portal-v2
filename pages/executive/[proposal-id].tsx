@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge } from 'theme-ui';
 import useSWR, { useSWRConfig } from 'swr';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getExecutiveProposal, getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
@@ -165,7 +165,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
           <InternalLink href={'/executive'} title="View executive proposals">
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                <Icon name="chevron_left" size="2" mr={2} />
+                <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
                 Back to {bpi === 0 ? 'All' : 'Executive'} Proposals
               </Flex>
             </Button>
