@@ -6,6 +6,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "dev": "next",
     "dev:mock": "NEXT_PUBLIC_USE_MOCK_WALLET=true next",
