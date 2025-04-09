@@ -29,17 +29,20 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
-      - run: yarn exec playwright install --with-deps
+      - run: pnpm exec playwright install --with-deps
 
       - name: Run E2E Test
-        run: yarn run e2e ${{ matrix.test }}
+        run: pnpm run e2e ${{ matrix.test }}
 
       - uses: actions/upload-artifact@v4
         if: always()
