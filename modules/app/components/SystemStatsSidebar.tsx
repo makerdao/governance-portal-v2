@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from './Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from './layout/layouts/Stack';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
@@ -301,7 +301,7 @@ export default function SystemStatsSidebar({
           <Flex sx={{ alignItems: 'center' }}>
             <Text>
               See more
-              <Icon ml={2} name="arrowTopRight" size={2} />
+              <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>
