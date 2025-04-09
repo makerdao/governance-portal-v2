@@ -10,7 +10,7 @@ import { Text, Alert } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import { ExternalLink } from '../../ExternalLink';
 import React from 'react';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 
 const scroll = keyframes({
   from: { transform: 'translate(60vw, 0)' },
@@ -26,7 +26,7 @@ const Banner = ({
   variant?: string;
   href?: string;
 }): React.ReactElement => {
-  const arrow = href ? <Icon name="chevron_right" size={2} ml={2} /> : null;
+  const arrow = href ? <Icon name="chevron_right" size={2} sx={{ ml: 2 }} /> : null;
   const textComponent = (
     <Text
       as="p"

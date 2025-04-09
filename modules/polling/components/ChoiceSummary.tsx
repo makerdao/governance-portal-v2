@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Text, Flex, Box, Button } from 'theme-ui';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { ABSTAIN } from '../polling.constants';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Poll, PollListItem } from '../types';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
@@ -79,7 +79,7 @@ const ChoiceSummary = ({
               mt: 1
             }}
           >
-            <Icon name="edit" size={3} mr={1} />
+            <Icon name="edit" size={3} sx={{ mr: 1 }} />
             Edit choice{isInputFormatSingleChoice(poll.parameters) ? '' : 's'}
           </Button>
         )}
@@ -99,7 +99,7 @@ const ChoiceSummary = ({
             }}
           >
             {' '}
-            <Icon mr="1" size={3} name={'ballot'} />
+            <Icon sx={{ mr: 1 }} size={3} name={'ballot'} />
             Remove vote
           </Button>
         )}

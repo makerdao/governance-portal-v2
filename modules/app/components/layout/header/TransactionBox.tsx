@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Text, Spinner } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 
 import { Transaction } from 'modules/web3/types/transaction';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Flex, Heading, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useState } from 'react';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import CirclesBackground from '../CirclesBackground';
@@ -64,7 +64,7 @@ function Card({
                 >
                   <Flex sx={{ alignItems: 'center' }}>
                     <Text>{link.linkTitle}</Text>
-                    <Icon ml={2} name="arrowTopRight" size={3} sx={{ color: infoPoint.color }} />
+                    <Icon name="arrowTopRight" size={3} sx={{ color: infoPoint.color, ml: 2 }} />
                   </Flex>
                 </ExternalLink>
               </Box>
