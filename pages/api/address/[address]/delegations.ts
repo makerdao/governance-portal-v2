@@ -63,8 +63,6 @@ import { formatEther, parseEther } from 'viem';
  *        enum:
  *          - recognized
  *          - shadow
- *      cuMember:
- *        type: boolean
  *      pollParticipation:
  *        type: string
  *      executiveParticipation:

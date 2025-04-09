@@ -18,8 +18,6 @@ import { CurrentlySupportingExecutive } from 'modules/executive/components/Curre
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { CoreUnitModal } from './modals/CoreUnitModal';
-import { CoreUnitButton } from './modals/CoreUnitButton';
 import Icon from 'modules/app/components/Icon';
 import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
@@ -79,11 +77,6 @@ export const DelegateOverviewCard = memo(
 
     const [showDelegateModal, setShowDelegateModal] = useState(false);
     const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-    const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
-
-    const handleInfoClick = () => {
-      setShowCoreUnitModal(!showCoreUnitModal);
-    };
 
     const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
       account,
@@ -136,13 +129,6 @@ export const DelegateOverviewCard = memo(
                 date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
                 left
               />
-            </Flex>
-            <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
-              {delegate.cuMember && (
-                <Flex sx={{ mt: 1 }}>
-                  <CoreUnitButton handleInfoClick={handleInfoClick} />
-                </Flex>
-              )}
             </Flex>
           </Flex>
 
@@ -332,10 +318,6 @@ export const DelegateOverviewCard = memo(
             mutateMKRDelegated={mutateMKRDelegated}
             refetchOnDelegation={false}
           />
-        )}
-
-        {showCoreUnitModal && (
-          <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
         )}
       </Card>
     );
