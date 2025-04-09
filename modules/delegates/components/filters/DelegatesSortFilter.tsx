@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useDelegatesFiltersStore from '../../stores/delegatesFiltersStore';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { DelegateOrderByEnum, OrderDirectionEnum } from 'modules/delegates/delegates.constants';
 import { useMemo } from 'react';
 

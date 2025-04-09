@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Card, Flex, Divider, Heading, Text, Box, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
@@ -110,7 +110,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
             <InternalLink href={'/polling'} title="View polling page">
               <Button variant="mutedOutline">
                 <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
-                  <Icon name="chevron_left" size="2" mr={2} />
+                  <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
                   Back to All Polls
                 </Flex>
                 <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
@@ -123,7 +123,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 <InternalLink href={`/polling/${prevSlug}`} title="View previous poll" scroll={false}>
                   <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size={2} mr={2} />
+                      <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
                       {bpi > 0 ? 'Previous Poll' : 'Previous'}
                     </Flex>
                   </Button>
@@ -139,7 +139,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                       {bpi > 0 ? 'Next Poll' : 'Next'}
-                      <Icon name="chevron_right" size={2} ml={2} />
+                      <Icon name="chevron_right" sx={{ size: 2, ml: 2 }} />
                     </Flex>
                   </Button>
                 </InternalLink>
@@ -181,7 +181,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     {poll.tags.some(tag => tag.id.includes('impact')) && (
                       <>
                         <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer' }}>
-                          <Icon name="info" color="primary" mt={3} />
+                          <Icon name="info" color="primary" sx={{ mt: 3 }} />
                         </Flex>
                         {overlayOpen && (
                           <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
@@ -223,7 +223,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         <ExternalLink title="Forum Discussion" href={poll.discussionLink}>
                           <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                             Forum Discussion
-                            <Icon ml={2} name="arrowTopRight" size={2} />
+                            <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
                           </Text>
                         </ExternalLink>
                       </Box>
@@ -233,7 +233,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         <ExternalLink title="Review resources on GitHub" href={parseRawUrl(poll.url)}>
                           <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                             Review resources on GitHub
-                            <Icon ml={2} name="arrowTopRight" size={2} />
+                            <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
                           </Text>
                         </ExternalLink>
                       </Box>
@@ -270,7 +270,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         >
                           <Flex sx={{ alignItems: 'center' }}>
                             View more
-                            <Icon name="chevron_down" size="2" ml={2} />
+                            <Icon name="chevron_down" sx={{ size: 2, ml: 2 }} />
                           </Flex>
                         </Button>
                       </Box>

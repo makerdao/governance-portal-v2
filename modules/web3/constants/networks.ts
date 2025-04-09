@@ -12,9 +12,6 @@ import { SupportedChainId } from './chainID';
 import tenderlyTestnetData from '../../../tenderlyTestnetData.json';
 
 import {
-  MAINNET_SPOCK_URL,
-  STAGING_MAINNET_SPOCK_URL,
-  TENDERLY_SPOCK_URL,
   TENDERLY_SUBGRAPH_URL,
   MAINNET_STAGING_SUBGRAPH_URL,
   MAINNET_PROD_SUBGRAPH_URL,
@@ -62,8 +59,6 @@ export const CHAIN_INFO: ChainInfo = {
     type: 'normal',
     network: SupportedNetworks.MAINNET,
     defaultRpc: NodeProviders.ALCHEMY,
-    spockUrl:
-      process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
     subgraphUrl:
       process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
         ? MAINNET_STAGING_SUBGRAPH_URL
@@ -112,7 +107,6 @@ export const CHAIN_INFO: ChainInfo = {
     type: 'normal',
     network: SupportedNetworks.TENDERLY,
     defaultRpc: NodeProviders.TENDERLY,
-    spockUrl: TENDERLY_SPOCK_URL,
     subgraphUrl: TENDERLY_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.TENDERLY]:

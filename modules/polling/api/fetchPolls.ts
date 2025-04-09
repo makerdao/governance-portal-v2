@@ -17,10 +17,10 @@ import { PollsValidatedQueryParams } from 'modules/polling/types';
 import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { PollSpock } from '../types/pollSpock';
+import { PollSubgraph } from '../types/pollSubgraph';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
-import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
+import { subgraphPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
@@ -57,7 +57,7 @@ export function sortPolls(pollList: Poll[]): Poll[] {
 }
 
 // Fetches all the polls metadata, sorts and filters results.
-export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll[]> {
+export async function fetchAllPollsMetadata(pollList: PollSubgraph[]): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
@@ -73,9 +73,9 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   for (const pollGroup of chunk(dedupedPolls, 20)) {
     // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
-      pollGroup.map(async (p: PollSpock) => {
+      pollGroup.map(async (p: PollSubgraph) => {
         try {
-          return await fetchPollMetadata(spockPollToPartialPoll(p), tagsMapping);
+          return await fetchPollMetadata(subgraphPollToPartialPoll(p), tagsMapping);
         } catch (err) {
           numFailedFetches += 1;
           failedPollIds.push(p.pollId);
@@ -100,7 +100,7 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
 export async function fetchSpockPolls(
   network: SupportedNetworks,
   queryVariables?: PollsQueryVariables | null
-): Promise<PollSpock[]> {
+): Promise<PollSubgraph[]> {
   const requestData = {
     chainId: networkNameToChainId(network),
     query: allWhitelistedPolls,
@@ -115,7 +115,7 @@ export async function fetchSpockPolls(
     return { ...poll, cursor };
   });
 
-  return pollList as PollSpock[];
+  return pollList as PollSubgraph[];
 }
 
 export async function _getAllPolls(

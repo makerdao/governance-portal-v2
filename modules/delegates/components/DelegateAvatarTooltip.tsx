@@ -1,5 +1,5 @@
 import { Box, Flex, Image, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Delegate, DelegatePaginated, DelegateInfo } from '../types';
 import { DelegateStatusEnum } from '../delegates.constants';
 import { Avatar } from 'modules/address/components/Avatar';

@@ -17,7 +17,6 @@ export async function fetchDelegateAddresses(network: SupportedNetworks): Promis
 
     const data = await gqlRequest({
       chainId,
-      useSubgraph: true,
       query: allDelegates
     });
 

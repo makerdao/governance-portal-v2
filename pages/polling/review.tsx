@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { GetStaticProps } from 'next';
 import { useContext, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useSWR, { useSWRConfig } from 'swr';
@@ -98,7 +98,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
         previousVotesLength > 1 ? previousVotesLength : 'a'
       } MakerDAO governance poll${
         previousVotesLength > 1 ? 's' : ''
-      }! Find my votes and all Maker governance proposals on the Governance Portal:`;
+      }! Find my votes and all Sky governance proposals on the Governance Portal:`;
     }
 
     return (
@@ -184,7 +184,7 @@ const PollingReview = ({ polls: activePolls, activePollIds, tags }: PollingRevie
               <Box>
                 <InternalLink href={'/polling'} title="View polling page">
                   <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
-                    <Icon name="chevron_left" size="2" mr={2} />
+                    <Icon name="chevron_left" size={2} sx={{ mr: 2 }} />
                     Back to All Polls
                   </Button>
                 </InternalLink>
