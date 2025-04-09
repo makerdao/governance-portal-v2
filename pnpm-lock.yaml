@@ -17,6 +17,9 @@ importers:
       '@octokit/core':
         specifier: ^4.0.5
         version: 4.2.4
+      '@octokit/graphql':
+        specifier: ^5.0.6
+        version: 5.0.6
       '@reach/dialog':
         specifier: ^0.16.2
         version: 0.16.2(@types/react@18.3.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -65,9 +68,15 @@ importers:
       date-fns-tz:
         specifier: ^1.1.6
         version: 1.3.8(date-fns@2.30.0)
+      debug:
+        specifier: ^4.4.0
+        version: 4.4.0
       defender-relay-client:
         specifier: ^1.23.0
-        version: 1.44.0(@ethersproject/abstract-provider@5.8.0)(@ethersproject/abstract-signer@5.8.0)(@ethersproject/hash@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@ethersproject/transactions@5.8.0)(web3-core-helpers@1.10.3)(web3-core@1.10.4)
+        version: 1.44.0(@ethersproject/abstract-provider@5.8.0)(@ethersproject/abstract-signer@5.8.0)(@ethersproject/hash@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@ethersproject/transactions@5.8.0)(debug@4.4.0)(web3-core-helpers@1.10.4)(web3-core@1.10.4)
+      eth-rpc-errors:
+        specifier: ^4.0.3
+        version: 4.0.3
       graphql-request:
         specifier: ^4.0.0
         version: 4.3.0(graphql@16.8.1)
@@ -145,7 +154,7 @@ importers:
         version: 1.13.3
       swagger-ui-react:
         specifier: ^4.11.0
-        version: 4.19.1(@types/react@18.3.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.19.1(@types/react@18.3.9)(debug@4.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       swr:
         specifier: ^1.0.1
         version: 1.3.0(react@18.3.1)
@@ -7874,10 +7883,6 @@ packages:
   web-tree-sitter@0.20.3:
     resolution: {integrity: sha512-zKGJW9r23y3BcJusbgvnOH2OYAW40MXAOi9bi3Gcc7T4Gms9WWgXF8m6adsJWpGJEhgOzCrfiz1IzKowJWrtYw==}
 
-  web3-core-helpers@1.10.3:
-    resolution: {integrity: sha512-Yv7dQC3B9ipOc5sWm3VAz1ys70Izfzb8n9rSiQYIPjpqtJM+3V4EeK6ghzNR6CO2es0+Yu9CtCkw0h8gQhrTxA==}
-    engines: {node: '>=8.0.0'}
-
   web3-core-helpers@1.10.4:
     resolution: {integrity: sha512-r+L5ylA17JlD1vwS8rjhWr0qg7zVoVMDvWhajWA5r5+USdh91jRUYosp19Kd1m2vE034v7Dfqe1xYRoH2zvG0g==}
     engines: {node: '>=8.0.0'}
@@ -7902,10 +7907,6 @@ packages:
     resolution: {integrity: sha512-B6elffYm81MYZDTrat7aEhnhdtVE3lDBUZft16Z8awYMZYJDbnykEbJVS+l3mnA7AQTnSDr/1MjWofGDLBJPww==}
     engines: {node: '>=8.0.0'}
 
-  web3-eth-iban@1.10.3:
-    resolution: {integrity: sha512-ZCfOjYKAjaX2TGI8uif5ah+J3BYFuo+47JOIV1RIz2l7kD9VfnxvRH5UiQDRyMALQC7KFd2hUqIEtHklapNyKA==}
-    engines: {node: '>=8.0.0'}
-
   web3-eth-iban@1.10.4:
     resolution: {integrity: sha512-0gE5iNmOkmtBmbKH2aTodeompnNE8jEyvwFJ6s/AF6jkw9ky9Op9cqfzS56AYAbrqEFuClsqB/AoRves7LDELw==}
     engines: {node: '>=8.0.0'}
@@ -7920,10 +7921,6 @@ packages:
 
   web3-providers-ws@1.10.4:
     resolution: {integrity: sha512-j3FBMifyuFFmUIPVQR4pj+t5ILhAexAui0opgcpu9R5LxQrLRUZxHSnU+YO25UycSOa/NAX8A+qkqZNpcFAlxA==}
-    engines: {node: '>=8.0.0'}
-
-  web3-utils@1.10.3:
-    resolution: {integrity: sha512-OqcUrEE16fDBbGoQtZXWdavsPzbGIDc5v3VrRTZ0XrIpefC/viZ1ZU9bGEemazyS0catk/3rkOOxpzTfY+XsyQ==}
     engines: {node: '>=8.0.0'}
 
   web3-utils@1.10.4:
@@ -10836,12 +10833,12 @@ snapshots:
       web-tree-sitter: 0.20.3
     optional: true
 
-  '@swagger-api/apidom-reference@0.99.2':
+  '@swagger-api/apidom-reference@0.99.2(debug@4.4.0)':
     dependencies:
       '@babel/runtime-corejs3': 7.27.0
       '@swagger-api/apidom-core': 0.99.2
       '@types/ramda': 0.29.12
-      axios: 1.6.8
+      axios: 1.6.8(debug@4.4.0)
       minimatch: 7.4.6
       process: 0.11.10
       ramda: 0.30.0
@@ -12169,9 +12166,9 @@ snapshots:
 
   axe-core@4.7.0: {}
 
-  axios@0.21.4:
+  axios@0.21.4(debug@4.4.0):
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.4.0)
     transitivePeerDependencies:
       - debug
 
@@ -12182,9 +12179,9 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@1.6.8:
+  axios@1.6.8(debug@4.4.0):
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.4.0)
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -12907,18 +12904,18 @@ snapshots:
     dependencies:
       clone: 1.0.4
 
-  defender-base-client@1.44.0:
+  defender-base-client@1.44.0(debug@4.4.0):
     dependencies:
       amazon-cognito-identity-js: 6.3.12
       async-retry: 1.3.3
-      axios: 0.21.4
+      axios: 0.21.4(debug@4.4.0)
       lodash: 4.17.21
       node-fetch: 2.7.0
     transitivePeerDependencies:
       - debug
       - encoding
 
-  defender-relay-client@1.44.0(@ethersproject/abstract-provider@5.8.0)(@ethersproject/abstract-signer@5.8.0)(@ethersproject/hash@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@ethersproject/transactions@5.8.0)(web3-core-helpers@1.10.3)(web3-core@1.10.4):
+  defender-relay-client@1.44.0(@ethersproject/abstract-provider@5.8.0)(@ethersproject/abstract-signer@5.8.0)(@ethersproject/hash@5.8.0)(@ethersproject/providers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(@ethersproject/transactions@5.8.0)(debug@4.4.0)(web3-core-helpers@1.10.4)(web3-core@1.10.4):
     dependencies:
       '@ethersproject/abstract-provider': 5.8.0
       '@ethersproject/abstract-signer': 5.8.0
@@ -12926,12 +12923,12 @@ snapshots:
       '@ethersproject/providers': 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@ethersproject/transactions': 5.8.0
       amazon-cognito-identity-js: 6.3.12
-      axios: 0.21.4
-      defender-base-client: 1.44.0
+      axios: 0.21.4(debug@4.4.0)
+      defender-base-client: 1.44.0(debug@4.4.0)
       lodash: 4.17.21
       node-fetch: 2.7.0
       web3-core: 1.10.4
-      web3-core-helpers: 1.10.3
+      web3-core-helpers: 1.10.4
     transitivePeerDependencies:
       - debug
       - encoding
@@ -13798,6 +13795,10 @@ snapshots:
   follow-redirects@1.15.6(debug@4.3.4):
     optionalDependencies:
       debug: 4.3.4
+
+  follow-redirects@1.15.6(debug@4.4.0):
+    optionalDependencies:
+      debug: 4.4.0
 
   for-each@0.3.3:
     dependencies:
@@ -17037,14 +17038,14 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger-client@3.27.2:
+  swagger-client@3.27.2(debug@4.4.0):
     dependencies:
       '@babel/runtime-corejs3': 7.27.0
       '@swagger-api/apidom-core': 0.99.2
       '@swagger-api/apidom-error': 0.99.0
       '@swagger-api/apidom-json-pointer': 0.99.2
       '@swagger-api/apidom-ns-openapi-3-1': 0.99.2
-      '@swagger-api/apidom-reference': 0.99.2
+      '@swagger-api/apidom-reference': 0.99.2(debug@4.4.0)
       cookie: 0.6.0
       deepmerge: 4.3.1
       fast-json-patch: 3.1.1
@@ -17074,7 +17075,7 @@ snapshots:
     transitivePeerDependencies:
       - openapi-types
 
-  swagger-ui-react@4.19.1(@types/react@18.3.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  swagger-ui-react@4.19.1(@types/react@18.3.9)(debug@4.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime-corejs3': 7.27.0
       '@braintree/sanitize-url': 6.0.2
@@ -17107,7 +17108,7 @@ snapshots:
       reselect: 4.1.8
       serialize-error: 8.1.0
       sha.js: 2.4.11
-      swagger-client: 3.27.2
+      swagger-client: 3.27.2(debug@4.4.0)
       url-parse: 1.5.10
       xml: 1.0.1
       xml-but-prettier: 1.0.1
@@ -17832,11 +17833,6 @@ snapshots:
   web-tree-sitter@0.20.3:
     optional: true
 
-  web3-core-helpers@1.10.3:
-    dependencies:
-      web3-eth-iban: 1.10.3
-      web3-utils: 1.10.3
-
   web3-core-helpers@1.10.4:
     dependencies:
       web3-eth-iban: 1.10.4
@@ -17883,11 +17879,6 @@ snapshots:
       - encoding
       - supports-color
 
-  web3-eth-iban@1.10.3:
-    dependencies:
-      bn.js: 5.2.1
-      web3-utils: 1.10.3
-
   web3-eth-iban@1.10.4:
     dependencies:
       bn.js: 5.2.1
@@ -17914,17 +17905,6 @@ snapshots:
       websocket: 1.0.35
     transitivePeerDependencies:
       - supports-color
-
-  web3-utils@1.10.3:
-    dependencies:
-      '@ethereumjs/util': 8.1.0
-      bn.js: 5.2.1
-      ethereum-bloom-filters: 1.2.0
-      ethereum-cryptography: 2.1.3
-      ethjs-unit: 0.1.6
-      number-to-bn: 1.7.0
-      randombytes: 2.1.0
-      utf8: 3.0.0
 
   web3-utils@1.10.4:
     dependencies:
