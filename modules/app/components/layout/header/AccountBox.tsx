@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Flex, Text, Box, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 import { formatAddress } from 'lib/utils';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -30,7 +30,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
     <Flex sx={{ flexDirection: 'column' }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Flex>
-          <Icon name={accountName} size={'24px'} />
+          {accountName && <Icon name={accountName} sx={{ size: '24px' }} />}
           <Text variant="secondary" sx={{ ml: 2 }}>
             Connected with {accountName}
           </Text>
@@ -61,7 +61,7 @@ const AccountBox = ({ address, accountName, change, disconnect }: Props): JSX.El
           data-testid="copy-address"
         >
           <Text variant="secondary">{copied ? 'Copied!' : 'Copy Address'}</Text>
-          <Icon name="copy" color="textSecondary" sx={{ ml: 2 }} size="14px" />
+          <Icon name="copy" color="textSecondary" sx={{ ml: 2, size: '14px' }} />
         </Flex>
       </Flex>
       <Flex

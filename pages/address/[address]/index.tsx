@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Heading, Box, Flex, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { fetchJson } from 'lib/fetchJson';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -58,7 +58,7 @@ const AddressView = ({
                 <InternalLink scroll={false} href={'/delegates'} title="View delegates page">
                   <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size={2} mr={2} />
+                      <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
                       {bpi > 0 ? 'Back to all delegates' : 'Back'}
                     </Flex>
                   </Button>

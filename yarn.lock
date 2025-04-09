@@ -1244,21 +1244,6 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@makerdao/dai-ui-icons-branding@^0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons-branding/-/dai-ui-icons-branding-0.0.39.tgz#c4826db284b40f3c3536fac4f5ebf9544f0eccd1"
-  integrity sha512-DA8qaFLpRL81wnfwUhuDSYMfTcGJdFC7GdKohQoHoZvhBa0H4mJz8R0R+/M0Jtt5kjxf6D/2Bx8NOfXEAWkYCg==
-
-"@makerdao/dai-ui-icons@^0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons/-/dai-ui-icons-0.0.39.tgz#744174a186e4528f365e3482fbf22ae52b0177c1"
-  integrity sha512-pKT+AYwH5ZFSu992tzHdK7PxlP7cMlFm0+sqPA6WBtVxp1fH19clOPc7AaGO7Rj6mtA5gu3kZPy1qJlRSvzC3w==
-
-"@makerdao/i18n-helper@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@makerdao/i18n-helper/-/i18n-helper-0.1.8.tgz#2860bc5ac04be120ef0c93fac90e0a8f468466dc"
-  integrity sha512-EgPnHc8YKZ9S8mkkjf3OG89DiMHwi8qmr1N0xBpvS1MDD5EhGzx3H0/b2Cq9GzYbAA/KRUj7Gt/ayO4p2W4M0g==
-
 "@metamask/eth-json-rpc-provider@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@metamask/eth-json-rpc-provider/-/eth-json-rpc-provider-1.0.1.tgz#3fd5316c767847f4ca107518b611b15396a5a32c"
@@ -12465,9 +12450,9 @@ vite-tsconfig-paths@^5.1.4:
     tsconfck "^3.0.3"
 
 "vite@^5.0.0 || ^6.0.0":
-  version "6.2.4"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.2.4.tgz#05809de3f918fded87f73a838761995a4d66a680"
-  integrity sha512-veHMSew8CcRzhL5o8ONjy8gkfmFJAd5Ac16oxBUjlwgX3Gq2Wqr+qNC3TjPIpy7TPV/KporLga5GT9HqdrCizw==
+  version "6.2.5"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.2.5.tgz#d093b5fe8eb96e594761584a966ab13f24457820"
+  integrity sha512-j023J/hCAa4pRIUH6J9HemwYfjB5llR2Ps0CWeikOtdR8+pAURAk0DoJC5/mm9kd+UgdnIy7d6HE4EAvlYhPhA==
   dependencies:
     esbuild "^0.25.0"
     postcss "^8.5.3"

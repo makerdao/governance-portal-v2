@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from './Icon';
 
 type ResourceType = 'general' | 'polling' | 'executive' | 'delegates';
 
@@ -125,7 +125,7 @@ const resources: Record<ResourceType, Resource> = {
         url: 'https://manual.makerdao.com/delegation/for-mkr-holders/mkr-holder-guide'
       }
     ]
-  },
+  }
 };
 
 export default function ResourceBox({
@@ -146,7 +146,7 @@ export default function ResourceBox({
             <ExternalLink href={resource.url} target="_blank">
               <Text sx={{ color: 'accentBlue', ':hover': { color: 'accentBlueEmphasis' } }}>
                 {resource.linkTitle}
-                <Icon ml={2} name="arrowTopRight" size={2} />
+                <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
               </Text>
             </ExternalLink>
           </Flex>
