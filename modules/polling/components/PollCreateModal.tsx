@@ -45,6 +45,8 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
     }
   });
 
+  console.log('createPoll', createPoll);
+
   const Default = () => {
     return (
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>

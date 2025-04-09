@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useChainId } from 'wagmi';
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
-import { pollingOldAbi, pollingOldAddress } from 'modules/contracts/generated';
+import { pollingArbitrumAbi, pollingArbitrumAddress } from 'modules/contracts/generated';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 
 export const usePollCreate = ({
@@ -32,8 +32,8 @@ export const usePollCreate = ({
   const enabled = paramEnabled && !!startDate && !!endDate && !!multiHash && !!url;
 
   return useWriteContractFlow({
-    address: pollingOldAddress[chainId],
-    abi: pollingOldAbi,
+    address: pollingArbitrumAddress[chainId],
+    abi: pollingArbitrumAbi,
     functionName: 'createPoll',
     args: [startDate as bigint, endDate as bigint, multiHash as string, url as string],
     chainId,

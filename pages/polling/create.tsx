@@ -99,21 +99,16 @@ const PollingCreate = (): React.ReactElement => {
   const { account } = useAccount();
   const network = useNetwork();
   const [showNetworkModal, setShowNetworkModal] = useState(false);
-  const [targetNetwork, setTargetNetwork] = useState<SupportedNetworks | null>(null);
 
   useEffect(() => {
-    if (network) {
-      const gaslessNetwork = getGaslessNetwork(network);
-      setTargetNetwork(gaslessNetwork);
-      
-      // Check if user is on the correct network
+    if (network && account) {
       if (network !== SupportedNetworks.ARBITRUM && network !== SupportedNetworks.ARBITRUMTESTNET) {
         setShowNetworkModal(true);
       } else {
         setShowNetworkModal(false);
       }
     }
-  }, [network]);
+  }, [network, account]);
 
   const resetForm = () => {
     setPoll(undefined);
@@ -155,7 +150,7 @@ const PollingCreate = (): React.ReactElement => {
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Create Poll" />
 
-      {showNetworkModal && <NetworkSwitchModal network={network} targetNetwork={targetNetwork} />}
+      {showNetworkModal && <NetworkSwitchModal/>}
 
       <Stack gap={3}>
         <Heading mb={2} as="h4">
