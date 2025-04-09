@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Box, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { Poll, PollListItem } from 'modules/polling/types';
@@ -36,7 +36,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
       <Text variant="caps" color={color}>
         {text}
       </Text>
-      {icon && <Icon ml="2" name={icon} sx={{ color }} />}
+      {icon && <Icon name={icon} sx={{ color, ml: 2 }} />}
     </Flex>
   );
 };

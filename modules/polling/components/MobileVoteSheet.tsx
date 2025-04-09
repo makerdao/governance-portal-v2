@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState, useEffect, useContext } from 'react';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Text, Button, Box, Flex } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import range from 'lodash/range';
@@ -124,7 +124,7 @@ export default function MobileVoteSheet({
               alignItems: 'center'
             }}
           >
-            <Icon name="edit" size={3} mr={2} />
+            <Icon name="edit" size={3} sx={{ mr: 2 }} />
             Edit Choices
           </Button>
         ) : (

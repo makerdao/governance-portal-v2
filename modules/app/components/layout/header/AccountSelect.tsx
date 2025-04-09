@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, Close, ThemeUICSSObject, Alert } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from '../../Icon';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
@@ -25,6 +25,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { SupportedConnectors } from 'modules/web3/constants/networks';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { icons } from 'lib/theme/icons';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -106,10 +107,12 @@ const AccountSelect = (): React.ReactElement => {
     >
       <Flex sx={{ alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
         <Flex sx={{ alignItems: 'center' }}>
-          <Icon
-            name={connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name}
-            color="text"
-          />
+          {(() => {
+            const potentialIconName =
+              connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name;
+            const iconName = potentialIconName in icons ? potentialIconName : 'wallet';
+            return <Icon name={iconName} color="text" />;
+          })()}
           <Text sx={{ ml: 3 }}>{connector.name}</Text>
         </Flex>
         <Button
@@ -144,7 +147,7 @@ const AccountSelect = (): React.ReactElement => {
   const BackButton = ({ onClick }) => (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Button variant="textual" color="primary" sx={{ fontSize: 3, px: 0 }} onClick={onClick}>
-        <Icon name="chevron_left" color="primary" size="10px" mr="2" />
+        <Icon name="chevron_left" color="primary" sx={{ size: '10px', mr: 2 }} />
         Back
       </Button>
       <Close
