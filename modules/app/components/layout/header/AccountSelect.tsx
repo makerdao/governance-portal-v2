@@ -24,6 +24,7 @@ import { useAccount as useAccountWagmi, useConnect, useDisconnect } from 'wagmi'
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { SupportedConnectors } from 'modules/web3/constants/networks';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { icons } from 'lib/theme/icons';
 
 const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
@@ -103,10 +104,12 @@ const AccountSelect = (): React.ReactElement => {
     >
       <Flex sx={{ alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
         <Flex sx={{ alignItems: 'center' }}>
-          <Icon
-            name={connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name}
-            color="text"
-          />
+          {(() => {
+            const potentialIconName =
+              connector.id === 'safe' ? SupportedConnectors.GNOSIS_SAFE : connector.name;
+            const iconName = potentialIconName in icons ? potentialIconName : 'wallet';
+            return <Icon name={iconName} color="text" />;
+          })()}
           <Text sx={{ ml: 3 }}>{connector.name}</Text>
         </Flex>
         <Button
