@@ -21,8 +21,6 @@ import { PollSubgraph } from '../types/pollSubgraph';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { subgraphPollToPartialPoll } from '../helpers/parsePollMetadata';
-import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
-import { PollsQueryVariables } from 'modules/gql/types';
 import logger from 'lib/logger';
 import {
   partialActivePollsCacheKey,
@@ -99,7 +97,7 @@ export async function fetchAllPollsMetadata(pollList: PollSubgraph[]): Promise<P
 
 export async function fetchSpockPolls(
   network: SupportedNetworks,
-  queryVariables?: PollsQueryVariables | null
+  queryVariables?: any
 ): Promise<PollSubgraph[]> {
   const requestData = {
     chainId: networkNameToChainId(network),
@@ -107,9 +105,9 @@ export async function fetchSpockPolls(
     variables: queryVariables
   };
 
-  const data = await gqlRequest<GqlQuery>(requestData);
+  const data = await gqlRequest(requestData);
 
-  const pollEdges: ActivePollEdge[] = data.activePolls.edges;
+  const pollEdges = data.activePolls.edges;
 
   const pollList = pollEdges.map(({ node: poll, cursor }) => {
     return { ...poll, cursor };
@@ -118,10 +116,7 @@ export async function fetchSpockPolls(
   return pollList as PollSubgraph[];
 }
 
-export async function _getAllPolls(
-  network?: SupportedNetworks,
-  queryVariables?: PollsQueryVariables
-): Promise<Poll[]> {
+export async function _getAllPolls(network?: SupportedNetworks, queryVariables?: any): Promise<Poll[]> {
   const cacheKey = getAllPollsCacheKey(queryVariables);
 
   const cachedPolls = await cacheGet(cacheKey, network);
@@ -157,7 +152,7 @@ const defaultFilters: PollFilters = {
 export async function getPolls(
   filters = defaultFilters,
   network?: SupportedNetworks,
-  queryVariables?: PollsQueryVariables
+  queryVariables?: any
 ): Promise<PollsResponse> {
   const allPolls = await _getAllPolls(network, queryVariables);
 
