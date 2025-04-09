@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect } from 'react';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { Poll, PollListItem } from 'modules/polling/types';
 
 type Props = { poll: PollListItem | Poll; choice: number | null; setChoice: (number) => void };

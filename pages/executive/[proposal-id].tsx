@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Badge } from 'theme-ui';
 import useSWR, { useSWRConfig } from 'swr';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getExecutiveProposal, getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
@@ -165,7 +165,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
           <InternalLink href={'/executive'} title="View executive proposals">
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                <Icon name="chevron_left" size="2" mr={2} />
+                <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
                 Back to {bpi === 0 ? 'All' : 'Executive'} Proposals
               </Flex>
             </Button>
@@ -407,6 +407,17 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   );
 };
 
+const LoadingIndicator = () => (
+  <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
+    <Flex sx={{ justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+      <Spinner size={48} />{' '}
+      <Text ml={3} sx={{ fontSize: 4 }}>
+        Loading proposal...
+      </Text>
+    </Flex>
+  </PrimaryLayout>
+);
+
 // HOC to fetch the proposal depending on the network
 export default function ProposalPage({
   proposal: prefetchedProposal
@@ -417,7 +428,8 @@ export default function ProposalPage({
 }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
-  const { query } = useRouter();
+  const router = useRouter();
+  const { query } = router;
   const network = useNetwork();
 
   /**Disabling spell-effects until multi-transactions endpoint is ready */
@@ -444,6 +456,12 @@ export default function ProposalPage({
     }
   }, [query['proposal-id'], network]);
 
+  // Check for fallback state first
+  if (router.isFallback) {
+    return <LoadingIndicator />;
+  }
+
+  // Now check for actual errors or missing proposals AFTER fallback is resolved
   if (error || (isDefaultNetwork(network) && !prefetchedProposal?.key)) {
     return (
       <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -455,12 +473,10 @@ export default function ProposalPage({
     );
   }
 
-  if (!isDefaultNetwork(network) && !_proposal)
-    return (
-      <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
-        <p>Loading…</p>
-      </PrimaryLayout>
-    );
+  // Loading check for non-default networks
+  if (!isDefaultNetwork(network) && !_proposal) {
+    return <LoadingIndicator />;
+  }
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
   // const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : diffs;

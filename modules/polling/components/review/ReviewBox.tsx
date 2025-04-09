@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Box, Button, Card, Divider, Flex, Text } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import ActivePollsBox from './ActivePollsBox';
 import { useContext, useEffect } from 'react';
 import { BallotContext } from '../../context/BallotContext';
@@ -179,7 +179,7 @@ export default function ReviewBox({
                     >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                        <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
                       </Text>
                     </ExternalLink>
                   </Box>
@@ -244,7 +244,7 @@ export default function ReviewBox({
                     <ExternalLink href="https://manual.makerdao.com/" title="Learn more">
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center' }}>
                         Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                        <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
                       </Text>
                     </ExternalLink>
                   </Box>
@@ -278,7 +278,7 @@ export default function ReviewBox({
                     >
                       <Text as="p" sx={{ fontSize: [1, 3], textAlign: 'center', color: 'accentBlue' }}>
                         Learn more
-                        <Icon ml={2} name="arrowTopRight" size={2} />
+                        <Icon sx={{ ml: 2 }} name="arrowTopRight" size={2} />
                       </Text>
                     </ExternalLink>
                   </Flex>
@@ -290,9 +290,9 @@ export default function ReviewBox({
                       {!precheckData ? (
                         <SkeletonThemed width="30px" height="18px" />
                       ) : hasMkrRequired ? (
-                        <Icon name="checkmark" color="bull" size={'13px'} />
+                        <Icon name="checkmark" color="bull" sx={{ size: '13px' }} />
                       ) : (
-                        <Icon name="close" color="bear" size={'13px'} />
+                        <Icon name="close" color="bear" sx={{ size: '13px' }} />
                       )}
                     </Text>
                   </Flex>
@@ -304,9 +304,9 @@ export default function ReviewBox({
                       {!precheckData ? (
                         <SkeletonThemed width="30px" height="18px" />
                       ) : !recentlyUsedGaslessVoting ? (
-                        <Icon name="checkmark" color="bull" size={'13px'} />
+                        <Icon name="checkmark" color="bull" sx={{ size: '13px' }} />
                       ) : (
-                        <Icon name="close" color="bear" size={'13px'} />
+                        <Icon name="close" color="bear" sx={{ size: '13px' }} />
                       )}
                     </Text>
                   </Flex>
@@ -318,9 +318,9 @@ export default function ReviewBox({
                       {!precheckData ? (
                         <SkeletonThemed width="30px" height="18px" />
                       ) : !alreadyVoted ? (
-                        <Icon name="checkmark" color="bull" size={'13px'} />
+                        <Icon name="checkmark" color="bull" sx={{ size: '13px' }} />
                       ) : (
-                        <Icon name="close" color="bear" size={'13px'} />
+                        <Icon name="close" color="bear" sx={{ size: '13px' }} />
                       )}
                     </Text>
                   </Flex>
@@ -331,9 +331,9 @@ export default function ReviewBox({
                     </Text>
                     <Text>
                       {!isGnosisSafe ? (
-                        <Icon name="checkmark" color="bull" size={'13px'} />
+                        <Icon name="checkmark" color="bull" sx={{ size: '13px' }} />
                       ) : (
-                        <Icon name="close" color="bear" size={'13px'} />
+                        <Icon name="close" color="bear" sx={{ size: '13px' }} />
                       )}
                     </Text>
                   </Flex>
@@ -349,9 +349,9 @@ export default function ReviewBox({
                       </Text>
                       <Text>
                         {relayFunded ? (
-                          <Icon name="checkmark" color="bull" size={'13px'} />
+                          <Icon name="checkmark" color="bull" sx={{ size: '13px' }} />
                         ) : (
-                          <Icon name="close" color="bear" size={'13px'} />
+                          <Icon name="close" color="bear" sx={{ size: '13px' }} />
                         )}
                       </Text>
                     </Flex>

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Text, Button, Box } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 
 export function NewDelegateContract(): JSX.Element {
   return (

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState } from 'react';
 import { Alert, Button, Flex, Text, Input, Label } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 export function NewAddressInitial({
@@ -36,8 +36,8 @@ export function NewAddressInitial({
           </Text>
           <Text as="p" variant="secondary" sx={{ mt: 2 }}>
             Clicking ’submit address’ spawns a message you are required to sign using your current connected
-            wallet. DUX team will verify the message and establish a link between your current contract and your new v2
-            delegate contract.
+            wallet. DUX team will verify the message and establish a link between your current contract and
+            your new v2 delegate contract.
           </Text>
         </Flex>
         <Flex sx={{ width: '40%' }}>

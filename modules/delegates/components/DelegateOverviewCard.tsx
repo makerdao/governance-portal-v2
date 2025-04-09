@@ -21,7 +21,6 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import Icon from 'modules/app/components/Icon';
-import { Icon as UIIcon } from '@makerdao/dai-ui-icons';
 import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
@@ -39,7 +38,7 @@ const DelegateVotingStatsModal = () => {
   return (
     <>
       <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer', ml: 2 }}>
-        <UIIcon name="info" color="primary" />
+        <Icon name="info" color="primary" />
       </Flex>
       {overlayOpen && (
         <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
