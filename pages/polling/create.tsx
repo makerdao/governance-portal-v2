@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heading, Text, Box, Button, Flex, Input, Label, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -27,6 +27,11 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { PollMarkdownEditor } from 'modules/polling/components/PollMarkdownEditor';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { getGaslessNetwork } from 'modules/web3/helpers/chain';
+import { useSwitchChain } from 'wagmi';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -58,6 +63,31 @@ const CreateText = ({ children }) => {
     </Box>
   );
 };
+
+const NetworkSwitchModal = () => {
+  return (
+    <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+      }}
+    >
+      <Card sx={{ width: 'auto', padding: 4 }}>
+        <Heading as="h4" mb={3}>Network Switch Required</Heading>
+        <Text mb={3}>Please switch to arbitrum to create a poll.</Text>
+      </Card>
+    </Box>
+  );
+};
+
 const PollingCreate = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
   const [loading, setLoading] = useState(false);
@@ -67,6 +97,23 @@ const PollingCreate = (): React.ReactElement => {
   const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
   const { account } = useAccount();
+  const network = useNetwork();
+  const [showNetworkModal, setShowNetworkModal] = useState(false);
+  const [targetNetwork, setTargetNetwork] = useState<SupportedNetworks | null>(null);
+
+  useEffect(() => {
+    if (network) {
+      const gaslessNetwork = getGaslessNetwork(network);
+      setTargetNetwork(gaslessNetwork);
+      
+      // Check if user is on the correct network
+      if (network !== SupportedNetworks.ARBITRUM && network !== SupportedNetworks.ARBITRUMTESTNET) {
+        setShowNetworkModal(true);
+      } else {
+        setShowNetworkModal(false);
+      }
+    }
+  }, [network]);
 
   const resetForm = () => {
     setPoll(undefined);
@@ -107,6 +154,8 @@ const PollingCreate = (): React.ReactElement => {
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Create Poll" />
+
+      {showNetworkModal && <NetworkSwitchModal network={network} targetNetwork={targetNetwork} />}
 
       <Stack gap={3}>
         <Heading mb={2} as="h4">

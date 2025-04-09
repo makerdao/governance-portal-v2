@@ -53,12 +53,14 @@ const connectors = [
 ];
 
 export const wagmiConfigDev = createConfig({
-  chains: [mainnet, tenderly],
+  chains: [mainnet, tenderly, arbitrum, arbitrumSepolia],
   ssr: true,
   connectors,
   transports: {
     [mainnet.id]: transports[mainnet.id],
-    [tenderly.id]: transports[tenderly.id]
+    [tenderly.id]: transports[tenderly.id],
+    [arbitrum.id]: transports[arbitrum.id],
+    [arbitrumSepolia.id]: transports[arbitrumSepolia.id]
   },
   multiInjectedProviderDiscovery: true,
   storage: createStorage({
@@ -68,11 +70,12 @@ export const wagmiConfigDev = createConfig({
 });
 
 export const wagmiConfigProd = createConfig({
-  chains: [mainnet],
+  chains: [mainnet, arbitrum],
   ssr: true,
   connectors,
   transports: {
-    [mainnet.id]: transports[mainnet.id]
+    [mainnet.id]: transports[mainnet.id],
+    [arbitrum.id]: transports[arbitrum.id]
   },
   multiInjectedProviderDiscovery: false
 });
