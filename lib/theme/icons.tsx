@@ -1602,7 +1602,7 @@ export const icons = {
       />
     )
   },
-  Rabby: {
+  'Rabby Wallet': {
     viewBox: '0 0 19 17',
     path: (
       <g>
