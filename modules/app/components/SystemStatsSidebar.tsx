@@ -28,8 +28,7 @@ import { useNetwork } from '../hooks/useNetwork';
 import { useChainId } from 'wagmi';
 import {
   chiefAddress as chiefAddressMapping,
-  pollingAddress as pollingAddressMapping,
-  pollingOldAddress as pollingOldAddressMapping
+  pollingAddress as pollingAddressMapping
 } from 'modules/contracts/generated';
 
 type StatField =
