@@ -34,8 +34,7 @@ import {
 
 type StatField =
   | 'chief contract'
-  | 'polling contract v1'
-  | 'polling contract v2'
+  | 'mainnet polling contract'
   | 'arbitrum polling contract'
   | 'mkr in chief'
   | 'mkr needed to pass'
@@ -130,13 +129,13 @@ export default function SystemStatsSidebar({
       );
     },
 
-    'polling contract v2': key => {
+    'mainnet polling contract': key => {
       const pollingAddress = pollingAddressMapping[chainId];
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Flex sx={{ alignItems: 'center' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract v2</Text>
+            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Mainnet Polling Contract</Text>
             <PollingContractsModal />
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
@@ -150,22 +149,6 @@ export default function SystemStatsSidebar({
           </Text>
         </Flex>
       );
-    },
-
-    'polling contract v1': key => {
-      const pollingAddress = pollingOldAddressMapping[chainId];
-
-      return pollingAddress ? (
-        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract v1</Text>
-            <PollingContractsModal />
-          </Flex>
-          <Text variant="h2" sx={{ fontSize: 3 }}>
-            <EtherscanLink hash={pollingAddress} type="address" network={network} showAddress />
-          </Text>
-        </Flex>
-      ) : null;
     },
 
     'arbitrum polling contract': key => {

@@ -60,11 +60,11 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url: 'https://www.notion.so/jetstreamgg/How-to-Calculate-Polling-Results-32a3f732d7fd481abd685e1f419d2bba'
+        url: 'https://jetstreamgg.notion.site/How-to-Calculate-Polling-Results-in-Sky-Governance-Portal-1cffae49084a80dea70cfcc319edc9f8'
       },
       {
         linkTitle: 'How to manually vote in a poll with Etherscan?',
-        url: 'https://www.notion.so/jetstreamgg/How-to-manually-vote-in-a-Maker-poll-with-Etherscan-d61a8fbac15a4bfc840ecb2d5c19cd80'
+        url: 'https://jetstreamgg.notion.site/How-to-manually-vote-in-a-Sky-poll-with-Etherscan-1d1fae49084a8057b265da3d77eaac1c'
       },
       {
         linkTitle: 'How to vote in on-chain governance?',
