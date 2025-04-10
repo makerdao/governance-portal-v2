@@ -100,28 +100,6 @@ export async function fetchDelegate(
   return mergeDelegateInfo({ onChainDelegate, githubDelegate });
 }
 
-// Returns the delegate info without the chain data about votes
-export async function fetchDelegatesInformation(network?: SupportedNetworks): Promise<Delegate[]> {
-  const currentNetwork = network ? network : DEFAULT_NETWORK.network;
-
-  const { data: gitHubDelegates } = await fetchGithubDelegates(currentNetwork);
-
-  const onChainDelegates = await fetchChainDelegates(currentNetwork);
-
-  // Map all the raw delegates info and map it to Delegate structure with the github info
-  const mergedDelegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
-    const githubDelegate = gitHubDelegates
-      ? gitHubDelegates.find(
-          i => i.voteDelegateAddress.toLowerCase() === onChainDelegate.voteDelegateAddress.toLowerCase()
-        )
-      : undefined;
-
-    return mergeDelegateInfo({ onChainDelegate, githubDelegate });
-  });
-
-  return mergedDelegates;
-}
-
 export async function fetchAndMergeDelegates(
   network: SupportedNetworks
 ): Promise<[DelegateRepoInformation[] | undefined, AllDelegatesEntryWithName[]]> {
