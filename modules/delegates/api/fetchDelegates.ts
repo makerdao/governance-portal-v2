@@ -16,7 +16,6 @@ import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegate
 import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import {
-  DelegatesAPIResponse,
   Delegate,
   DelegateContractInformation,
   DelegateRepoInformation,
@@ -28,13 +27,6 @@ import {
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
-import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
-import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegationHistory';
-import { CMSProposal } from 'modules/executive/types';
-import { allDelegatesCacheKey } from 'modules/cache/constants/cache-keys';
-import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { TEN_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import {
   delegatesQuerySubsequentPages,
@@ -46,9 +38,6 @@ import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { formatEther, parseEther } from 'viem';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -131,118 +120,6 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
   });
 
   return mergedDelegates;
-}
-
-// Returns a list of delegates, mixin onchain and repo information
-export async function fetchDelegates(
-  network?: SupportedNetworks,
-  sortBy: 'mkr' | 'random' | 'delegators' | 'date' = 'random'
-): Promise<DelegatesAPIResponse> {
-  const currentNetwork = network ? network : DEFAULT_NETWORK.network;
-
-  const cacheKey = allDelegatesCacheKey;
-  const cachedResponse = await cacheGet(cacheKey, network);
-  if (cachedResponse) {
-    return JSON.parse(cachedResponse);
-  }
-
-  // This contains all the delegates including info merged with aligned delegates
-  const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
-
-  const chainId = networkNameToChainId(currentNetwork);
-  const publicClient = getPublicClient(chainId);
-
-  const executives = await getGithubExecutives(currentNetwork);
-
-  const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
-  // Fetch all delegate lock events to calculate total number of delegators
-  const lockEvents = await fetchDelegationEventsByAddresses(delegateAddresses, currentNetwork);
-  const delegationHistory = formatDelegationHistory(lockEvents);
-
-  const delegates = await Promise.all(
-    delegatesInfo.map(async delegate => {
-      const votedSlate = await publicClient.readContract({
-        address: chiefAddress[chainId],
-        abi: chiefAbi,
-        functionName: 'votes',
-        args: [delegate.voteDelegateAddress as `0x${string}`]
-      });
-      const votedProposals =
-        votedSlate !== ZERO_SLATE_HASH
-          ? await getSlateAddresses(chainId, chiefAddress[chainId], chiefAbi, votedSlate)
-          : [];
-      const proposalsSupported: number = votedProposals?.length || 0;
-      const execSupported: CMSProposal | undefined = executives?.find(proposal =>
-        votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
-      );
-
-      // Filter the lock events to get only the ones for this delegate address
-      const mkrLockedDelegate = lockEvents.filter(
-        ({ delegateContractAddress }) =>
-          delegateContractAddress.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
-      );
-
-      return {
-        ...delegate,
-        // Trim the description when fetching all the delegates
-        description: delegate.description.substring(0, 100) + '...',
-        proposalsSupported,
-        execSupported: execSupported
-          ? {
-              ...execSupported,
-              content: '...',
-              about: '...',
-              proposalBlurb: '...'
-            }
-          : undefined,
-        lastVoteDate: delegate.lastVoteDate ? delegate.lastVoteDate : null,
-        mkrLockedDelegate
-      };
-    })
-  );
-
-  const sortedDelegates = delegates.sort((a, b) => {
-    if (sortBy === 'mkr') {
-      const bSupport = b.mkrDelegated ? b.mkrDelegated : '0';
-      const aSupport = a.mkrDelegated ? a.mkrDelegated : '0';
-      return parseEther(aSupport) > parseEther(bSupport) ? -1 : 1;
-    } else if (sortBy === 'delegators') {
-      const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
-      const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
-      const activeDelegatorsA = delegationHistoryA.filter(
-        ({ lockAmount }) => parseEther(lockAmount) > 0n
-      ).length;
-      const activeDelegatorsB = delegationHistoryB.filter(
-        ({ lockAmount }) => parseEther(lockAmount) > 0n
-      ).length;
-      return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
-    } else {
-      // Random sorting
-      return Math.random() * 1 > 0.5 ? -1 : 1;
-    }
-  });
-
-  const delegatesResponse: DelegatesAPIResponse = {
-    delegates: sortedDelegates,
-    stats: {
-      total: sortedDelegates.length,
-      shadow: sortedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
-      aligned: sortedDelegates.filter(d => d.status === DelegateStatusEnum.aligned).length,
-      totalMKRDelegated: Number(
-        formatEther(
-          delegates.reduce((prev, next) => {
-            const mkrDelegated = parseEther(next.mkrDelegated);
-            return prev + mkrDelegated;
-          }, 0n)
-        )
-      ),
-      totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
-    }
-  };
-
-  cacheSet(cacheKey, JSON.stringify(delegatesResponse), network, TEN_MINUTES_IN_MS);
-
-  return delegatesResponse;
 }
 
 export async function fetchAndMergeDelegates(

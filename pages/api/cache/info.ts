@@ -13,7 +13,6 @@ import logger from 'lib/logger';
 import { getCacheInfo } from 'modules/cache/cache';
 import {
   delegatesGithubCacheKey,
-  allDelegatesCacheKey,
   executiveSupportersCacheKey,
   getAllPollsCacheKey,
   executiveProposalsCacheKey
@@ -40,8 +39,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     getAllPollsCacheKey(),
     executiveProposalsCacheKey,
     executiveSupportersCacheKey,
-    delegatesGithubCacheKey,
-    allDelegatesCacheKey
+    delegatesGithubCacheKey
   ];
 
   try {

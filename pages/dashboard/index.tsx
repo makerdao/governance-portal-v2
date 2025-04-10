@@ -14,7 +14,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { fetchJson } from 'lib/fetchJson';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import {
-  allDelegatesCacheKey,
   delegatesGithubCacheKey,
   executiveSupportersCacheKey,
   getAllPollsCacheKey,
@@ -146,7 +145,6 @@ const DashboardPage = (): React.ReactElement => {
                     <Button
                       onClick={() => {
                         invalidate(delegatesGithubCacheKey);
-                        invalidate(allDelegatesCacheKey);
                       }}
                       disabled={loading}
                     >

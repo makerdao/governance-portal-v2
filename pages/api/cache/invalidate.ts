@@ -13,7 +13,6 @@ import logger from 'lib/logger';
 import { cacheDel } from 'modules/cache/cache';
 import {
   delegatesGithubCacheKey,
-  allDelegatesCacheKey,
   executiveSupportersCacheKey,
   githubExecutivesCacheKey,
   executiveProposalsCacheKey
@@ -44,8 +43,7 @@ export default withApiHandler(
       executiveSupportersCacheKey,
       githubExecutivesCacheKey,
       'polls-',
-      delegatesGithubCacheKey,
-      allDelegatesCacheKey
+      delegatesGithubCacheKey
     ];
 
     try {
