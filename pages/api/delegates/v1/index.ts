@@ -108,8 +108,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         type: string
  *       communication:
  *         type: string
- *       cuMember:
- *         type: boolean
  *       mkrDelegated:
  *         type: string
  *       proposalsSupported:
