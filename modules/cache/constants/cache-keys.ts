@@ -39,9 +39,6 @@ export const getAddressStatsCacheKey = (address: string | string[]): string =>
 export const getAddressDelegationHistoryCacheKey = (address: string): string =>
   `address-delegation-history-${address.toLowerCase()}`;
 
-export const getAllPollsCacheKey = (filters?: any): string =>
-  `polls-${filters ? JSON.stringify(filters) : 'all'}`;
-
 export const pollSlugToIdsCacheKey = 'poll-slug-to-ids';
 
 export const pollListCacheKey = 'poll-list';

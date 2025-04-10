@@ -6,12 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { parsePollMetadata, subgraphPollToPartialPoll } from '../parsePollMetadata';
+import { parsePollMetadata } from '../parsePollMetadata';
 import pollJson327 from './__helpers__/poll-327.js';
 import pollJson431 from './__helpers__/poll-431.js';
 import fs from 'fs';
 import { matterWrapper } from 'lib/matter';
-import { PollSubgraph } from '../../types/pollSubgraph';
 import { getPollTags, getPollTagsMapping } from 'modules/polling/api/getPollTags';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
 import { Mock, vi } from 'vitest';
@@ -40,11 +39,7 @@ describe('Parse poll metadata', () => {
 
   test('return the expected values', async () => {
     const tagsMapping = await getPollTagsMapping();
-    const actual = await parsePollMetadata(
-      subgraphPollToPartialPoll(pollJson431 as PollSubgraph),
-      pollMetadata431,
-      tagsMapping
-    );
+    const actual = await parsePollMetadata(pollJson431, pollMetadata431, tagsMapping);
     expect(actual).toEqual(
       expect.objectContaining({
         pollId: 431,
@@ -82,11 +77,7 @@ describe('Parse poll metadata', () => {
 
   test('return the expected values for an old uncategorized poll', async () => {
     const tagsMapping = await getPollTagsMapping();
-    const actual = await parsePollMetadata(
-      subgraphPollToPartialPoll(pollJson327 as PollSubgraph),
-      pollMetadata327,
-      tagsMapping
-    );
+    const actual = await parsePollMetadata(pollJson327, pollMetadata327, tagsMapping);
     expect(actual).toEqual(
       expect.objectContaining({
         pollId: 327,
