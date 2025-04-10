@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect } from 'react';
 import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';

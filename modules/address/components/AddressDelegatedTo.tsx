@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistoryWithExpirationDate } from 'modules/delegates/types';
 import { useState } from 'react';
@@ -215,7 +215,7 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToP
               <Tooltip label={'This is the percentage of the total MKR delegated by this address.'}>
                 <Flex>
                   <span>Voting Weight</span>
-                  <Icon name="question" ml={1} />
+                  <Icon name="question" sx={{ ml: 1 }} />
                 </Flex>
               </Tooltip>
             </Text>

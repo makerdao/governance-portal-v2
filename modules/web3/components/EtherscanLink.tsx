@@ -11,7 +11,7 @@ import { Box, Text, ThemeUIStyleObject } from 'theme-ui';
 import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
 import { getBlockExplorerName, networkNameToChainId } from '../helpers/chain';
 import { getEtherscanLink } from '../helpers/getEtherscanLink';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 import { formatAddress } from 'lib/utils';
 import React from 'react';
 
@@ -47,13 +47,13 @@ export default function EtherscanLink({
           {showAddress && formatAddress(hash)}
           {!showAddress && (
             <React.Fragment>
-              {isGasless && <Icon name="lightningBolt" color="primary" size={3} mr={1} />}
+              {isGasless && <Icon name="lightningBolt" color="primary" sx={{ size: 3, mr: 1 }} />}
               {prefix}
               {showBlockExplorerName ? blockExplorerName : ''}
               {suffix}
             </React.Fragment>
           )}
-          <Icon name="arrowTopRight" size={2} ml={1} color="inherit" />
+          <Icon name="arrowTopRight" sx={{ size: 2, ml: 1 }} color="inherit" />
         </Text>
       </ExternalLink>
     </Box>

@@ -10,7 +10,7 @@ import shallow from 'zustand/shallow';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
-import { Icon } from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
 
 export default function PollsSort(): JSX.Element {
   const [sort, setSort] = useUiFiltersStore(state => [state.pollsSortBy, state.setPollsSortBy], shallow);

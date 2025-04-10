@@ -44,17 +44,6 @@ const transports = {
 
 const connectors = [
   metaMask(),
-  injected({
-    target() {
-      return {
-        id: 'injected',
-        name: 'Browser Wallet',
-        provider(window) {
-          return window?.ethereum;
-        }
-      };
-    }
-  }),
   walletConnect({
     name: 'Sky Governance Portal',
     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'd5c6af7c0680adbaad12f33744ee4413'
@@ -71,7 +60,7 @@ export const wagmiConfigDev = createConfig({
     [mainnet.id]: transports[mainnet.id],
     [tenderly.id]: transports[tenderly.id]
   },
-  multiInjectedProviderDiscovery: false,
+  multiInjectedProviderDiscovery: true,
   storage: createStorage({
     storage: typeof window !== 'undefined' && window.localStorage ? window.localStorage : noopStorage,
     key: 'wagmi-dev'
@@ -85,7 +74,7 @@ export const wagmiConfigProd = createConfig({
   transports: {
     [mainnet.id]: transports[mainnet.id]
   },
-  multiInjectedProviderDiscovery: false
+  multiInjectedProviderDiscovery: true
 });
 
 export const mainnetPublicClient = createPublicClient({
