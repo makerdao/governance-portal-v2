@@ -87,20 +87,6 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
         >
           <ExternalLink
             styles={{ variant: 'links.nostyle' }}
-            href="https://governance-metrics-dashboard.vercel.app/"
-            title="Stats"
-          >
-            <MenuItemContent icon="stats" label="Stats" />
-          </ExternalLink>
-        </MenuItem>
-        <MenuItem
-          onSelect={() => ({})}
-          sx={{
-            variant: 'menubuttons.default.headerItem'
-          }}
-        >
-          <ExternalLink
-            styles={{ variant: 'links.nostyle' }}
             href="https://manual.makerdao.com/"
             title="FAQs"
           >
@@ -417,15 +403,6 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
           </Flex>
 
           <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
-            <Flex onClick={hide}>
-              <ExternalLink
-                styles={{ variant: 'links.nostyle' }}
-                href="https://governance-metrics-dashboard.vercel.app/"
-                title="Stats"
-              >
-                <MenuItemContent icon="stats" label="Stats" />
-              </ExternalLink>
-            </Flex>
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
