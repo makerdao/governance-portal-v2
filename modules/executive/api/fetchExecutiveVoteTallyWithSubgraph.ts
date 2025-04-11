@@ -23,7 +23,6 @@ export async function fetchExecutiveVoteTallyWithSubgraph(network: SupportedNetw
         const response = await gqlRequest({
             chainId: networkNameToChainId(network),
             query: allSpellVotes,
-            useSubgraph: true,
             variables: { argSkip: skip, argFirst: pageSize }
         });
         

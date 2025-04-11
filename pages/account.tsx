@@ -26,8 +26,6 @@ import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useAddressInfo } from 'modules/app/hooks/useAddressInfo';
-import { useLinkedDelegateInfo } from 'modules/migration/hooks/useLinkedDelegateInfo';
-import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import AccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import { ClientRenderOnly } from 'modules/app/components/ClientRenderOnly';
@@ -35,29 +33,38 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { TxStatus } from 'modules/web3/constants/transaction';
+import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { useReadContract } from 'wagmi';
+import { chiefAddress, newChiefAbi } from 'modules/contracts/generated';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 const AccountPage = (): React.ReactElement => {
   const network = useNetwork();
-  const {
-    account,
-    mutate: mutateAccount,
-    voteDelegateContractAddress,
-    voteProxyContractAddress,
-    votingAccount
-  } = useAccount();
+  const chainId = networkNameToChainId(network);
+  const { account, mutate: mutateAccount, voteDelegateContractAddress, votingAccount } = useAccount();
 
-  const { latestOwnerConnected, latestOwnerHasDelegateContract, originalOwnerAddress } =
-    useLinkedDelegateInfo();
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
-  const { data: originalOwnerContractAddress } = useVoteDelegateAddress(
-    originalOwnerAddress as `0x${string}` | undefined
-  );
-  const { data: chiefBalance } = useLockedMkr(voteProxyContractAddress || account);
+  const { data: chiefBalance } = useLockedMkr(account);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+
+  const { data: live } = useReadContract({
+    address: chiefAddress[chainId],
+    abi: newChiefAbi,
+    chainId,
+    functionName: 'live',
+    scopeKey: `chief-live-${chainId}`
+  });
+  const isChiefLive = live === 1n;
+
+  const { data: votedProposals, mutate: mutateVotedProposals } =
+    useVotedProposals(voteDelegateContractAddress);
+  const votedForAddressZero = votedProposals.includes(ZERO_ADDRESS);
 
   const createDelegate = useDelegateCreate({
     onStart: (hash: `0x${string}`) => {
@@ -68,11 +75,27 @@ const AccountPage = (): React.ReactElement => {
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
       mutateAccount?.();
-      setModalOpen(false);
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     }
+  });
+
+  const addressZeroVote = useDelegateVote({
+    slateOrProposals: [ZERO_ADDRESS],
+    onStart: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.LOADING);
+    },
+    onSuccess: (hash: `0x${string}`) => {
+      setTxHash(hash);
+      setTxStatus(TxStatus.SUCCESS);
+      mutateVotedProposals();
+    },
+    onError: () => {
+      setTxStatus(TxStatus.ERROR);
+    },
+    enabled: !!voteDelegateContractAddress && !votedForAddressZero && !isChiefLive
   });
 
   return (
@@ -130,18 +153,6 @@ const AccountPage = (): React.ReactElement => {
                     />
                   </Box>
                 )}
-                {latestOwnerConnected && originalOwnerContractAddress && (
-                  <Box sx={{ mb: 2 }}>
-                    <Label>Original delegate contract address:</Label>
-
-                    <EtherscanLink
-                      type="address"
-                      showAddress
-                      hash={originalOwnerContractAddress}
-                      network={network}
-                    />
-                  </Box>
-                )}
                 {voteDelegateContractAddress && !modalOpen && (
                   <Box sx={{ mb: 2 }}>
                     <Label>FAQ</Label>
@@ -160,11 +171,7 @@ const AccountPage = (): React.ReactElement => {
                 )}
                 {!voteDelegateContractAddress && (
                   <Box>
-                    <Label>
-                      {latestOwnerConnected && !latestOwnerHasDelegateContract
-                        ? 'Create a new delegate contract'
-                        : 'No vote delegate contract detected'}
-                    </Label>
+                    <Label>No vote delegate contract detected</Label>
                     {txStatus !== TxStatus.IDLE && (
                       <DialogOverlay
                         isOpen={modalOpen}
@@ -186,9 +193,9 @@ const AccountPage = (): React.ReactElement => {
                       </DialogOverlay>
                     )}
                     <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                      Warning: You will be unable to vote with a vote proxy contract or your existing chief
-                      balance through the UI after creating a delegate contract. This functionality is only
-                      affected in the user interface and not at the contract level.
+                      Warning: You will be unable to vote with your existing chief balance through the UI
+                      after creating a delegate contract. This functionality is only affected in the user
+                      interface and not at the contract level.
                     </Alert>
                     <Label
                       sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}
@@ -214,6 +221,58 @@ const AccountPage = (): React.ReactElement => {
                     >
                       Create delegate contract
                     </Button>
+                  </Box>
+                )}
+                {!!voteDelegateContractAddress && !isChiefLive && (
+                  <Box>
+                    <Label>Support the Launch of SKY Governance</Label>
+                    {txStatus !== TxStatus.IDLE && (
+                      <DialogOverlay
+                        isOpen={modalOpen}
+                        onDismiss={() => {
+                          setModalOpen(false);
+                        }}
+                      >
+                        <DialogContent ariaLabel="Vote for address(0) modal" widthDesktop="580px">
+                          <TxDisplay
+                            txStatus={txStatus}
+                            setTxStatus={setTxStatus}
+                            txHash={txHash}
+                            setTxHash={setTxHash}
+                            onDismiss={() => {
+                              setModalOpen(false);
+                            }}
+                          />
+                        </DialogContent>
+                      </DialogOverlay>
+                    )}
+                    <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
+                      Voting for address(0) now, even with 0 SKY delegated, ensures that any future delegation
+                      to your delegate contract will immediately count toward launching the new chief.
+                    </Alert>
+                    <Button
+                      disabled={
+                        addressZeroVote.isLoading ||
+                        !addressZeroVote.prepared ||
+                        votedForAddressZero ||
+                        isChiefLive
+                      }
+                      onClick={() => {
+                        setTxStatus(TxStatus.INITIALIZED);
+                        setModalOpen(true);
+                        addressZeroVote.execute();
+                      }}
+                      sx={{ mt: 3, mb: 1 }}
+                      data-testid="vote-button"
+                    >
+                      Support address(0)
+                    </Button>
+                    {votedForAddressZero && (
+                      <Text as="p" sx={{ mt: 2 }}>
+                        You are supporting address(0). Thank you for contributing to the launch of SKY
+                        governance.
+                      </Text>
+                    )}
                   </Box>
                 )}
                 {chiefBalance && chiefBalance > 0n && (

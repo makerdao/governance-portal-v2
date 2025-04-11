@@ -14,8 +14,6 @@ export const githubExecutivesCacheKey = 'executives-github';
 
 export const delegatesGithubCacheKey = 'delegates-github';
 
-export const allDelegatesCacheKey = 'all-delegates';
-
 export const allDelegatesExecSupportKey = 'all-delegates-exec-support';
 
 export const allDelegateAddressesKey = 'all-delegate-addresses';
@@ -40,9 +38,6 @@ export const getAddressStatsCacheKey = (address: string | string[]): string =>
 
 export const getAddressDelegationHistoryCacheKey = (address: string): string =>
   `address-delegation-history-${address.toLowerCase()}`;
-
-export const getAllPollsCacheKey = (filters?: any): string =>
-  `polls-${filters ? JSON.stringify(filters) : 'all'}`;
 
 export const pollSlugToIdsCacheKey = 'poll-slug-to-ids';
 

@@ -148,7 +148,8 @@ const Header = (): JSX.Element => {
         position: 'fixed',
         top: 0,
         left: 0,
-        backgroundColor: 'background'
+        backdropFilter: 'blur(64px)',
+        bg: 'backgroundTransparent'
       }}
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -202,21 +203,6 @@ const Header = (): JSX.Element => {
             }}
           >
             Delegates
-          </NavLink>
-
-          <NavLink
-            href={'/esmodule'}
-            title="View emergency shutdown module page"
-            p={0}
-            sx={{
-              flexShrink: 0,
-              display: ['none', 'flex'],
-              ml: [0, 4, 4, 5],
-              mr: [0, 'auto', 4, 5],
-              color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
-            }}
-          >
-            ES Module
           </NavLink>
         </Flex>
       </Flex>
@@ -350,9 +336,6 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
           <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
             <InternalLink title="View delegate page" href="/delegates">
               <Text sx={{ fontWeight: 'semiBold' }}>Delegates</Text>
-            </InternalLink>
-            <InternalLink title="View emergency shutdown page" href="/esmodule">
-              <Text sx={{ fontWeight: 'semiBold' }}>ES Module</Text>
             </InternalLink>
           </Flex>
         </Flex>

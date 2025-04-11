@@ -6,9 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { PollVoteHistory } from 'modules/polling/types';
+import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import { Delegate } from 'modules/delegates/types';
-import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 export type AddressAPIStats = {
   pollVoteHistory: PollVoteHistory[];
@@ -17,8 +16,6 @@ export type AddressAPIStats = {
 
 export type AddressApiResponse = {
   isDelegate: boolean;
-  isProxyContract: boolean;
-  voteProxyInfo?: VoteProxyAddresses;
   delegateInfo?: Delegate;
   address: string;
   voteDelegateAdress?: string;

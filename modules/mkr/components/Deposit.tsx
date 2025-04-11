@@ -20,24 +20,21 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
 import { Tokens } from 'modules/web3/constants/tokens';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { useChainId } from 'wagmi';
 import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
 const ModalContent = ({
   close,
-  showProxyInfo,
   mutateLockedMkr
 }: {
   close: () => void;
-  showProxyInfo?: boolean;
   mutateLockedMkr?: () => void;
 }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
+  const { account } = useAccount();
   const chainId = useChainId();
   const { data: mkrBalance } = useMkrBalance(account);
 
@@ -45,12 +42,12 @@ const ModalContent = ({
     Tokens.MKR,
     100000000n,
     account,
-    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefAddress[chainId]
+    chiefAddress[chainId]
   );
 
   const approve = useApproveUnlimitedToken({
     name: Tokens.MKR,
-    addressToApprove: voteProxyContractAddress || chiefAddress[chainId],
+    addressToApprove: chiefAddress[chainId],
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
     },
@@ -172,24 +169,6 @@ const ModalContent = ({
             >
               Approve
             </Button>
-            {showProxyInfo && (
-              <Text as="p" sx={{ fontSize: 2, mt: 3, color: 'textSecondary', textAlign: 'center' }}>
-                Advanced users interested in creating a{' '}
-                <ExternalLink
-                  href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
-                  title="Read about proxy contracts"
-                >
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>vote proxy contract</Text>
-                </ExternalLink>{' '}
-                instead of depositing directly into Chief can learn how to create one{' '}
-                <ExternalLink
-                  href="https://dux.makerdao.network/how-to-create-a-vote-proxy-manually-using-etherscan"
-                  title="Etherscan guide"
-                >
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
-                </ExternalLink>
-              </Text>
-            )}
           </Stack>
         )}
       </Box>
@@ -197,27 +176,10 @@ const ModalContent = ({
   );
 };
 
-const Deposit = ({
-  link,
-  showProxyInfo,
-  mutateLockedMkr
-}: {
-  link?: string;
-  showProxyInfo?: boolean;
-  mutateLockedMkr?: () => void;
-}): JSX.Element => {
-  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
+const Deposit = ({ link, mutateLockedMkr }: { link?: string; mutateLockedMkr?: () => void }): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
 
   const open = () => {
-    if (account && voteProxyContractAddress && account === voteProxyHotAddress) {
-      alert(
-        'You are using the hot wallet for a voting proxy. ' +
-          'You can only deposit from the cold wallet. ' +
-          'Switch to that wallet to continue.'
-      );
-      return;
-    }
     setShowDialog(true);
   };
 
@@ -225,11 +187,7 @@ const Deposit = ({
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent
-            close={() => setShowDialog(false)}
-            showProxyInfo={showProxyInfo}
-            mutateLockedMkr={mutateLockedMkr}
-          />
+          <ModalContent close={() => setShowDialog(false)} mutateLockedMkr={mutateLockedMkr} />
         </DialogContent>
       </DialogOverlay>
       {link ? (
