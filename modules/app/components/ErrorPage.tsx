@@ -34,7 +34,7 @@ export default function ErrorPage({
         <Box pt={3}>
           <Text sx={{ textAlign: 'center' }}>
             For more information or help, please contact the Development &amp; UX core unit on{' '}
-            <ExternalLink href="https://discord.gg/GHcFMdKden" title="Discord">
+            <ExternalLink href="https://discord.gg/tQ5wnN6Ms4" title="Discord">
               <Text>Discord</Text>
             </ExternalLink>
           </Text>

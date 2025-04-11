@@ -74,7 +74,7 @@ export const wagmiConfigProd = createConfig({
   transports: {
     [mainnet.id]: transports[mainnet.id]
   },
-  multiInjectedProviderDiscovery: false
+  multiInjectedProviderDiscovery: true
 });
 
 export const mainnetPublicClient = createPublicClient({
