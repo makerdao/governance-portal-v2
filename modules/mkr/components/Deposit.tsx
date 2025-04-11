@@ -24,6 +24,7 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { useChainId } from 'wagmi';
 import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
+import { config } from 'lib/config';
 
 const ModalContent = ({
   close,
@@ -247,6 +248,7 @@ const Deposit = ({
           onClick={() => {
             open();
           }}
+          disabled={config.READ_ONLY}
           data-testid="deposit-button"
         >
           Deposit

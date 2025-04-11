@@ -28,6 +28,7 @@ import { useCageTime } from 'modules/esm/hooks/useCageTime';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { config } from 'lib/config';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -207,6 +208,7 @@ const ESModule = (): React.ReactElement => {
           {totalStaked && account ? (
             <Button
               onClick={() => setShowDialog(true)}
+              disabled={config.READ_ONLY}
               variant="outline"
               sx={{ color: 'onNotice', borderColor: 'notice' }}
             >
