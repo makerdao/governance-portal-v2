@@ -8,30 +8,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { PartialActivePoll, Poll, PollFilterQueryParams, PollListItem } from 'modules/polling/types';
-import { fetchPollMetadata } from './fetchPollMetadata';
-import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { getCategories } from '../helpers/getCategories';
-import { isActivePoll } from '../helpers/utils';
-import { PollFilters, PollsPaginatedResponse, PollsResponse } from '../types/pollsResponse';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { PollsPaginatedResponse } from '../types/pollsResponse';
 import { PollsValidatedQueryParams } from 'modules/polling/types';
-import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
-import { gqlRequest } from 'modules/gql/gqlRequest';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { PollSubgraph } from '../types/pollSubgraph';
-import uniqBy from 'lodash/uniqBy';
-import chunk from 'lodash/chunk';
-import { subgraphPollToPartialPoll } from '../helpers/parsePollMetadata';
-import logger from 'lib/logger';
 import {
   partialActivePollsCacheKey,
-  getAllPollsCacheKey,
   isPollsHashValidCacheKey,
   pollDetailsCacheKey,
   pollListCacheKey,
   pollsHashCacheKey,
   pollSlugToIdsCacheKey
 } from 'modules/cache/constants/cache-keys';
-import { getPollTagsMapping, getPollTags } from './getPollTags';
+import { getPollTags } from './getPollTags';
 import {
   AGGREGATED_POLLS_FILE_URL,
   PollStatusEnum,
@@ -41,140 +29,6 @@ import {
 import { ONE_WEEK_IN_MS, THIRTY_MINUTES_IN_MS } from 'modules/app/constants/time';
 import { sortPollsBy } from '../helpers/sortPolls';
 import { TagCount } from 'modules/app/types/tag';
-
-export function sortPolls(pollList: Poll[]): Poll[] {
-  return pollList.sort((a, b) => {
-    // closest to expiration shown first, if some have same expiration date, sort by startdate
-    const dateEndDiff = a.endDate.getTime() - b.endDate.getTime();
-
-    // Sort by more recent first if they end at the same time
-    const sortedByStartDate = a.startDate.getTime() < b.startDate.getTime() ? 1 : -1;
-
-    return dateEndDiff < 0 ? 1 : dateEndDiff > 0 ? -1 : sortedByStartDate;
-  });
-}
-
-// Fetches all the polls metadata, sorts and filters results.
-export async function fetchAllPollsMetadata(pollList: PollSubgraph[]): Promise<Poll[]> {
-  let numFailedFetches = 0;
-  const failedPollIds: number[] = [];
-  const polls: Poll[] = [];
-
-  //uniqBy keeps the first occurence of a duplicate, so we sort polls so that the most recent poll is kept in case of a duplicate
-  const dedupedPolls = uniqBy(
-    pollList.sort((a, b) => b.pollId - a.pollId),
-    p => p.multiHash
-  );
-
-  const tagsMapping = await getPollTagsMapping();
-
-  for (const pollGroup of chunk(dedupedPolls, 20)) {
-    // fetch polls in batches, don't fetch a new batch until the current one has resolved
-    const pollGroupWithData = await Promise.all(
-      pollGroup.map(async (p: PollSubgraph) => {
-        try {
-          return await fetchPollMetadata(subgraphPollToPartialPoll(p), tagsMapping);
-        } catch (err) {
-          numFailedFetches += 1;
-          failedPollIds.push(p.pollId);
-          return null;
-        }
-      })
-    ).then((polls: Poll[]) => polls.filter(poll => !!poll));
-
-    polls.push(...pollGroupWithData);
-  }
-
-  logger.warn(
-    'fetchAllPollsMetadata',
-    `---
-    Failed to fetch docs for ${numFailedFetches}/${pollList.length} polls.
-    IDs: ${failedPollIds}`
-  );
-
-  return sortPolls(polls);
-}
-
-export async function fetchSpockPolls(
-  network: SupportedNetworks,
-  queryVariables?: any
-): Promise<PollSubgraph[]> {
-  const requestData = {
-    chainId: networkNameToChainId(network),
-    query: allWhitelistedPolls,
-    variables: queryVariables
-  };
-
-  const data = await gqlRequest(requestData);
-
-  const pollEdges = data.activePolls.edges;
-
-  const pollList = pollEdges.map(({ node: poll, cursor }) => {
-    return { ...poll, cursor };
-  });
-
-  return pollList as PollSubgraph[];
-}
-
-export async function _getAllPolls(network?: SupportedNetworks, queryVariables?: any): Promise<Poll[]> {
-  const cacheKey = getAllPollsCacheKey(queryVariables);
-
-  const cachedPolls = await cacheGet(cacheKey, network);
-  if (cachedPolls) {
-    return JSON.parse(cachedPolls);
-  }
-
-  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryVariables);
-
-  const polls = await fetchAllPollsMetadata(pollList);
-
-  // remove markdown from "all-polls" to avoid sending too much data
-  const trimmedPolls = polls.map(poll => {
-    return {
-      ...poll,
-      content: poll.content.substring(0, 100) + '...'
-    };
-  });
-
-  cacheSet(cacheKey, JSON.stringify(trimmedPolls), network);
-
-  return trimmedPolls;
-}
-
-// Public method that returns the polls, and accepts filters
-const defaultFilters: PollFilters = {
-  startDate: null,
-  endDate: null,
-  tags: null,
-  active: null
-};
-
-export async function getPolls(
-  filters = defaultFilters,
-  network?: SupportedNetworks,
-  queryVariables?: any
-): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network, queryVariables);
-
-  const filteredPolls = allPolls.filter(poll => {
-    // check date filters first
-    if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;
-    if (filters.endDate && new Date(poll.endDate).getTime() > filters.endDate.getTime()) return false;
-
-    // if no category filters selected, return all, otherwise, check if poll contains category
-    return !filters.tags || poll.tags.some(c => filters.tags && filters.tags.includes(c.id));
-  });
-
-  return {
-    polls: filteredPolls,
-    tags: getCategories(allPolls),
-    stats: {
-      active: allPolls.filter(isActivePoll).length,
-      finished: allPolls.filter(p => !isActivePoll(p)).length,
-      total: allPolls.length
-    }
-  };
-}
 
 export async function checkCachedPollsValidity(
   network: SupportedNetworks

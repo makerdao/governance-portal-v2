@@ -62,8 +62,6 @@ import { ApiError } from 'modules/app/api/ApiError';
  *        enum:
  *          - aligned
  *          - shadow
- *      cuMember:
- *        type: boolean
  *      pollParticipation:
  *        type: string
  *      executiveParticipation:

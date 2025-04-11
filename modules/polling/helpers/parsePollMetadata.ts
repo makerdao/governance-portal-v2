@@ -7,23 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { matterWrapper } from 'lib/matter';
-import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
-import { PollSubgraph } from '../types/pollSubgraph';
 import { getPollTags } from '../api/getPollTags';
 import { Tag } from 'modules/app/types/tag';
 import { oldVoteTypeToNewParameters, validatePollParameters } from './validatePollParameters';
-
-export function subgraphPollToPartialPoll(poll: PollSubgraph): PartialPoll {
-  const formatted: PartialPoll = {
-    ...poll,
-    slug: poll.multiHash.slice(0, 8),
-    startDate: new Date(poll.startDate * 1000),
-    endDate: new Date(poll.endDate * 1000)
-  };
-  return formatted;
-}
 
 export async function parsePollMetadata(
   poll: PartialPoll,
@@ -37,7 +25,7 @@ export async function parsePollMetadata(
   const title = pollMeta?.title || '';
   const options = pollMeta.options;
   const discussionLink =
-    pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link) ? pollMeta.discussion_link : null;
+    pollMeta?.discussion_link && isValidUrl(pollMeta.discussion_link) ? pollMeta.discussion_link : null;
 
   // Old vote type.
   const voteType: PollVoteType =
@@ -81,4 +69,15 @@ export async function parsePollMetadata(
     tags: pollTags.map(p => tags.find(t => t.id === p)).filter(p => !!p) as Tag[],
     ctx: { prev: null, next: null }
   };
+}
+
+function isValidUrl(value: string | undefined) {
+  if (!value) return;
+
+  try {
+    const url = new URL(value);
+    return url.href;
+  } catch (err) {
+    return;
+  }
 }

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Delegate, DelegatePaginated } from './delegate';
+import { DelegatePaginated } from './delegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegateTypeEnum } from '../delegates.constants';
 
@@ -16,15 +16,6 @@ export type DelegatesAPIStats = {
   aligned: number;
   totalMKRDelegated: number;
   totalDelegators: number;
-};
-
-export type DelegatesAPIResponse = {
-  delegates: Delegate[];
-  stats: DelegatesAPIStats;
-  pagination?: {
-    page: number;
-    pageSize: number;
-  };
 };
 
 export type DelegatesValidatedQueryParams = {

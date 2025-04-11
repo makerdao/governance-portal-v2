@@ -33,8 +33,6 @@ async function extractGithubInformation(
 
     const metricsMd = folderContents.find(item => item.name === 'metrics.md');
 
-    const cuMemberMd = folderContents.find(item => item.name === 'cumember.md');
-
     // No profile found
     if (!profileMd) {
       return undefined;
@@ -55,11 +53,6 @@ async function extractGithubInformation(
       metricsData = data;
     }
 
-    let cuMember = false;
-    if (cuMemberMd) {
-      cuMember = true;
-    }
-
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
     const html = await markdownToHtml(content);
     return {
@@ -72,8 +65,7 @@ async function extractGithubInformation(
       combinedParticipation: metricsData.combined_participation,
       pollParticipation: metricsData.poll_participation,
       executiveParticipation: metricsData.exec_participation,
-      communication: metricsData.communication,
-      cuMember
+      communication: metricsData.communication
     };
   } catch (e) {
     logger.error('extractGithubInformation: Error parsing folder from github delegate', e.message);
@@ -97,8 +89,6 @@ async function extractGithubInformationGraphQL(
 
       const metricsMd = folderContents.find(item => item.name === 'metrics.md');
 
-      const cuMemberMd = folderContents.find(item => item.name === 'cumember.md');
-
       // No profile found
       if (!profileMd) {
         return undefined;
@@ -114,11 +104,6 @@ async function extractGithubInformationGraphQL(
       const metricsMdDoc = metricsMd?.object?.text;
       const { data } = matterWrapper(metricsMdDoc);
       const metricsData = data;
-
-      let cuMember = false;
-      if (cuMemberMd) {
-        cuMember = true;
-      }
 
       const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
       const html = await markdownToHtml(content);
@@ -137,8 +122,7 @@ async function extractGithubInformationGraphQL(
         combinedParticipation: metricsData.combined_participation,
         pollParticipation: metricsData.poll_participation,
         executiveParticipation: metricsData.exec_participation,
-        communication: metricsData.communication,
-        cuMember
+        communication: metricsData.communication
       };
       return vd;
     });

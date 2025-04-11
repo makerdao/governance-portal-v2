@@ -56,8 +56,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *        enum:
  *          - aligned
  *          - shadow
- *      cuMember:
- *        type: boolean
  *      pollParticipation:
  *        type: string
  *      executiveParticipation:
