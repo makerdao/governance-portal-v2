@@ -54,7 +54,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     <Stats
       title="Governance Stats"
       infoUnits={infoUnits}
-      viewMoreUrl="https://governance-metrics-dashboard.vercel.app/"
+      viewMoreUrl=""
     />
   );
 }
