@@ -45,13 +45,6 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
-    name: 'pollingOld',
-    address: {
-      [mainnet.id]: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D',
-      [TENDERLY_CHAIN_ID]: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D'
-    }
-  },
-  {
     name: 'pot',
     address: {
       [mainnet.id]: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',

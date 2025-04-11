@@ -93,8 +93,7 @@ const AddressView = ({
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
                 fields={[
-                  'polling contract v2',
-                  'polling contract v1',
+                  'mainnet polling contract',
                   'arbitrum polling contract',
                   'savings rate',
                   'total dai',
