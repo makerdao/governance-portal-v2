@@ -12,16 +12,19 @@ jobs:
       REDIS_URL: ${{ secrets.REDIS_URL }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
 
       - name: Install node packages
-        run: yarn
+        run: pnpm i
 
-      - run: yarn lint
+      - run: pnpm lint
 
-      - run: yarn test:ci
+      - run: pnpm test:ci
 
       - name: Codecov
         run: |
-          yarn add --dev codecov
+          pnpm add -D codecov
           ./node_modules/.bin/codecov
