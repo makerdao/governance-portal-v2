@@ -14,10 +14,8 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { fetchJson } from 'lib/fetchJson';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import {
-  allDelegatesCacheKey,
   delegatesGithubCacheKey,
   executiveSupportersCacheKey,
-  getAllPollsCacheKey,
   getPollTallyCacheKey,
   githubExecutivesCacheKey,
   executiveProposalsCacheKey
@@ -121,11 +119,6 @@ const DashboardPage = (): React.ReactElement => {
                 {loading && <Box>Clearing selected cache...</Box>}
                 <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
                   <Box sx={{ m: 3 }}>
-                    <Button onClick={() => invalidate(getAllPollsCacheKey())} disabled={loading}>
-                      All polls
-                    </Button>
-                  </Box>
-                  <Box sx={{ m: 3 }}>
                     <Button
                       onClick={() => {
                         invalidate(githubExecutivesCacheKey);
@@ -146,7 +139,6 @@ const DashboardPage = (): React.ReactElement => {
                     <Button
                       onClick={() => {
                         invalidate(delegatesGithubCacheKey);
-                        invalidate(allDelegatesCacheKey);
                       }}
                       disabled={loading}
                     >
@@ -179,14 +171,6 @@ const DashboardPage = (): React.ReactElement => {
                   <Button variant="outline" onClick={fetchCacheInfo}>
                     Refresh
                   </Button>
-                </Flex>
-                <Flex sx={{ mt: 2 }}>
-                  <Text sx={{ fontWeight: 'semiBold' }}>All polls:</Text>
-                  {cacheInfo[getAllPollsCacheKey()] > 0 ? (
-                    <Text sx={{ ml: 2 }}>{`Expires in ${cacheInfo[getAllPollsCacheKey()]} seconds`}</Text>
-                  ) : (
-                    <Text sx={{ ml: 2 }}>No cache found</Text>
-                  )}
                 </Flex>
                 <Flex sx={{ mt: 2 }}>
                   <Text sx={{ fontWeight: 'semiBold' }}>Executives proposals:</Text>
