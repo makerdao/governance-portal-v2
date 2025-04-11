@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState } from 'react';
-import { Box } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
@@ -18,7 +18,6 @@ import { formatValue } from 'lib/string';
 import DelegateAvatarName from '../DelegateAvatarName';
 import { DialogContent, DialogOverlay } from 'modules/app/components/Dialog';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { Text } from '@theme-ui/components';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
 type Props = {

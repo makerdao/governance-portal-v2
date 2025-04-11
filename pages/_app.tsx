@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import { ThemeUIProvider, Flex, Box } from 'theme-ui';
-import { Global } from '@emotion/core';
+import { Global } from '@emotion/react';
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
