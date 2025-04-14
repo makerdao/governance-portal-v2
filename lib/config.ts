@@ -12,9 +12,6 @@ type SystemConfig = {
   INFURA_KEY: string;
   TRACING_RPC_NODE: string;
   NODE_ENV: 'development' | 'production' | 'test';
-  GITHUB_TOKEN: string;
-  GITHUB_TOKEN_2: string;
-  GITHUB_TOKEN_3: string;
   REDIS_URL: string;
   DEFENDER_API_KEY_TESTNET: string;
   DEFENDER_API_SECRET_TESTNET: string;
@@ -39,9 +36,6 @@ export const config: SystemConfig = {
   INFURA_KEY: process.env.INFURA_KEY || '',
   TRACING_RPC_NODE: process.env.TRACING_RPC_NODE || '',
   NODE_ENV: process.env.NODE_ENV || 'development',
-  GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
-  GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',
-  GITHUB_TOKEN_3: process.env.GITHUB_TOKEN_3 || '',
   REDIS_URL: process.env.REDIS_URL || '',
   DEFENDER_API_KEY_TESTNET: process.env.DEFENDER_API_KEY_TESTNET || '',
   DEFENDER_API_SECRET_TESTNET: process.env.DEFENDER_API_SECRET_TESTNET || '',
