@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState } from 'react';
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
 import Icon from './Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
@@ -22,8 +21,6 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { DialogOverlay, DialogContent } from './Dialog';
-import BoxWithClose from './BoxWithClose';
 import { useNetwork } from '../hooks/useNetwork';
 import { useChainId } from 'wagmi';
 import {
@@ -41,43 +38,6 @@ type StatField =
   | 'total dai'
   | 'debt ceiling'
   | 'system surplus';
-
-const PollingContractsModal = () => {
-  const [overlayOpen, setOverlayOpen] = useState(false);
-
-  return (
-    <>
-      <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer', ml: 1 }}>
-        <Icon name="info" color="primary" />
-      </Flex>
-      {overlayOpen && (
-        <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
-          <DialogContent ariaLabel="Polling contract versions info">
-            <BoxWithClose close={() => setOverlayOpen(false)}>
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                <Heading sx={{ mb: 3 }}>Polling contract versions</Heading>
-                <Text sx={{ textAlign: 'center', mb: 3 }}>
-                  v2 - The latest version of the polling contract was deployed to enable batch voting, so
-                  users can vote on multiple polls in one transaction.
-                </Text>
-                <Text sx={{ textAlign: 'center' }}>
-                  v1 - The first version of the polling contract is still used for creating polls on-chain,
-                  but it only allows for voting on a single poll per transaction, so an upgrade was deployed.
-                </Text>
-              </Flex>
-            </BoxWithClose>
-          </DialogContent>
-        </DialogOverlay>
-      )}
-    </>
-  );
-};
 
 export default function SystemStatsSidebar({
   fields = [],
@@ -133,10 +93,7 @@ export default function SystemStatsSidebar({
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Mainnet Polling Contract</Text>
-            <PollingContractsModal />
-          </Flex>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Mainnet Polling Contract</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
               <EtherscanLink hash={pollingAddress} type="address" network={network} showAddress />
