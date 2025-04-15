@@ -31,11 +31,11 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'Learn about Maker Endgame',
-        url: 'https://forum.makerdao.com/t/the-5-phases-of-endgame/20830/'
+        url: 'https://forum.sky.money/t/the-5-phases-of-endgame/20830/'
       },
       {
         linkTitle: 'Governance Forum',
-        url: 'https://forum.makerdao.com/'
+        url: 'https://forum.sky.money/'
       },
       {
         linkTitle: 'Governance Documentation',
