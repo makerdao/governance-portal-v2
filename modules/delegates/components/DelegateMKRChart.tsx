@@ -160,7 +160,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             label={{
               fill: '#708390',
               position: 'bottomLeft',
-              value: 'MKR',
+              value: 'SKY',
               viewBox: { height: 10, width: 10, x: 20, y: 300 }
             }}
             tickMargin={5}

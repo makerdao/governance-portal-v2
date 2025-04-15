@@ -99,7 +99,7 @@ const ParticipationChart = ({
           label={{
             fill: get(theme, 'colors.onSurface'),
             position: 'bottom',
-            value: 'MKR',
+            value: 'SKY',
             offset: 9
           }}
           domain={['dataMin', 'dataMax']}
