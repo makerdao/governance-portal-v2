@@ -183,7 +183,7 @@ export const DelegateOverviewCard = memo(
                     ml: hasMkrDelegated ? 3 : 0
                   }}
                 >
-                  Delegate MKR
+                  Delegate SKY
                 </Button>
               </Flex>
             </Flex>
@@ -266,7 +266,7 @@ export const DelegateOverviewCard = memo(
                         color="onSecondary"
                         sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
                       >
-                        MKR delegated by you
+                        SKY delegated by you
                       </Text>
                     </Box>
                   )}
@@ -285,7 +285,7 @@ export const DelegateOverviewCard = memo(
                       color="onSecondary"
                       sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
                     >
-                      Total MKR delegated
+                      Total SKY delegated
                     </Text>
                   </Box>
                 </Flex>

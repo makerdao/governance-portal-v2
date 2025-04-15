@@ -226,7 +226,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
               />
               <StatBox
                 value={spellData && spellData.mkrSupport && formatValue(BigInt(spellData.mkrSupport))}
-                label="MKR Support"
+                label="SKY Support"
               />
               <StatBox
                 value={
@@ -376,7 +376,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                             <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
                             <Text color="onSecondary" sx={{ fontSize: 2 }}>
                               {formatValue(parseEther(supporter.deposits), undefined, undefined, true, true)}{' '}
-                              MKR
+                              SKY
                             </Text>
                           </Flex>
                         </Flex>

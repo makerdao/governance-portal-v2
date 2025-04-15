@@ -85,7 +85,7 @@ export const UndelegateModal = ({
                   txHash={txHash}
                   setTxHash={setTxHash}
                   onDismiss={onClose}
-                  title={'Undelegating MKR'}
+                  title={'Undelegating SKY'}
                   description={`You undelegated ${formatValue(mkrToWithdraw, 'wad', 6)} from ${
                     delegate.name
                   }`}
@@ -98,10 +98,10 @@ export const UndelegateModal = ({
                 <>
                   <InputDelegateMkr
                     title="Withdraw from delegate contract"
-                    description="Input the amount of MKR to withdraw from the delegate contract."
+                    description="Input the amount of SKY to withdraw from the delegate contract."
                     onChange={setMkrToWithdraw}
                     balance={directDelegated}
-                    buttonLabel="Undelegate MKR"
+                    buttonLabel="Undelegate SKY"
                     onClick={() => {
                       setTxStatus(TxStatus.INITIALIZED);
                       free.execute();
@@ -111,7 +111,7 @@ export const UndelegateModal = ({
                     disclaimer={
                       sealDelegated && sealDelegated > 0n ? (
                         <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
-                          Your {formatValue(sealDelegated)} MKR delegated through the Seal module must be
+                          Your {formatValue(sealDelegated)} SKY delegated through the Seal module must be
                           undelegated from the{' '}
                           <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
                             <span>Sky app</span>

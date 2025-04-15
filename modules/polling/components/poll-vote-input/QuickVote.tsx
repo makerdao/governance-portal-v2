@@ -141,9 +141,9 @@ const QuickVote = ({
             disabled={!isChoiceValid || !votingWeight || !(votingWeight.total > 0n)}
           >
             {loading
-              ? 'Loading MKR balance...'
+              ? 'Loading SKY balance...'
               : !votingWeight || !(votingWeight.total > 0n)
-              ? 'Deposit MKR to vote'
+              ? 'Deposit SKY to vote'
               : addedChoice
               ? 'Update vote'
               : 'Add vote to ballot'}

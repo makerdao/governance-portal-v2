@@ -101,7 +101,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
                 fontWeight: 'semiBold'
               }}
             >
-              {formatValue(parseEther(vote.mkrSupport.toString()), undefined, undefined, true, true)} MKR
+              {formatValue(parseEther(vote.mkrSupport.toString()), undefined, undefined, true, true)} SKY
             </Text>
           </Box>
         </Box>
