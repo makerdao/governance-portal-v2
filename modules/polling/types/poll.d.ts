@@ -88,14 +88,19 @@ export type Poll = {
   tags: Tag[];
   slug: string;
   ctx: {
-    prev: PartialPoll | null;
-    next: PartialPoll | null;
+    prev: { slug: string } | null;
+    next: { slug: string } | null;
   };
   url?: string;
 };
 
 export type PartialPoll = {
+  multiHash: string;
+  pollId: number;
   slug: string;
+  startDate: Date;
+  endDate: Date;
+  url: string;
 };
 
 export type PollsValidatedQueryParams = {
