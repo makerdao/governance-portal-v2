@@ -15,7 +15,6 @@ import { pollHasEnded } from './utils';
 import { ONE_WEEK_IN_MS, THIRTY_SECONDS_IN_MS } from 'modules/app/constants/time';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
-
   // Builds poll tally
   const tally: PollTally = await fetchPollTally(poll, network);
 

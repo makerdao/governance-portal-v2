@@ -95,12 +95,7 @@ export type Poll = {
 };
 
 export type PartialPoll = {
-  multiHash: string;
-  pollId: number;
   slug: string;
-  startDate: Date;
-  endDate: Date;
-  url: string;
 };
 
 export type PollsValidatedQueryParams = {
@@ -120,8 +115,11 @@ export type PollFilterQueryParams = Omit<PollsValidatedQueryParams, 'network'>;
 
 export type PollListItem = Pick<
   Poll,
-  'pollId' | 'startDate' | 'endDate' | 'slug' | 'title' | 'summary' | 'parameters' | 'options'
+  'pollId' | 'multiHash' | 'slug' | 'title' | 'summary' | 'discussionLink' | 'parameters' | 'options'
 > & {
+  startDate: string;
+  endDate: string;
+  url: string;
   type: PollInputFormat;
   tags: string[];
 };
@@ -130,4 +128,10 @@ export type PartialActivePoll = {
   pollId: number;
   startDate: Date;
   endDate: Date;
+};
+
+export type SubgraphPoll = {
+  id: string;
+  url: string;
+  multiHash: string;
 };
