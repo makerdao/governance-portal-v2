@@ -43,12 +43,12 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
       value: stats.shadow
     },
     {
-      title: 'Total MKR delegated',
+      title: 'Total SKY delegated',
       id: 'total-mkr-system-info',
       value: Math.round(stats.totalMKRDelegated).toLocaleString()
     },
     {
-      title: 'Percent of MKR delegated',
+      title: 'Percent of SKY delegated',
       id: 'percent-mkr-system-info',
       value: totalMkr ? (
         `${calculatePercentage(parseEther(stats.totalMKRDelegated.toString()), totalMkr, 2)}%`
@@ -71,7 +71,7 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
       <Card variant="compact">
         <StackLayout gap={3}>
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>V2 delegate factory</Text>
+            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate factory</Text>
             {delegateFactoryAddress ? (
               <EtherscanLink type="address" showAddress hash={delegateFactoryAddress} network={network} />
             ) : (

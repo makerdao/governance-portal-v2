@@ -21,8 +21,8 @@ type Props = {
 export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
   const infoUnits = [
     {
-      title: 'MKR on Hat',
-      value: mkrOnHat ? `${mkrOnHat} MKR` : <Skeleton />
+      title: 'SKY on Hat',
+      value: mkrOnHat ? `${mkrOnHat} SKY` : <Skeleton />
     },
     {
       title: 'Active Polls',
@@ -37,16 +37,16 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
       value: stats ? stats.shadow.toString() : <Skeleton />
     },
     {
-      title: 'MKR Delegated',
+      title: 'SKY Delegated',
       value: stats ? (
-        `${stats.totalMKRDelegated.toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
+        `${stats.totalMKRDelegated.toLocaleString(undefined, { maximumFractionDigits: 0 })} SKY`
       ) : (
         <Skeleton />
       )
     },
     {
-      title: 'MKR in Chief',
-      value: mkrInChief ? `${mkrInChief} MKR` : <Skeleton />
+      title: 'SKY in Chief',
+      value: mkrInChief ? `${mkrInChief} SKY` : <Skeleton />
     }
   ];
 

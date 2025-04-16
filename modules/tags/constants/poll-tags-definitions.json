@@ -13,7 +13,7 @@
     "shortname": "Parameter",
     "longname": "Risk Parameter",
     "recommend_ui": true,
-    "description": "Polls that change risk parameters within the Maker Protocol",
+    "description": "Polls that change risk parameters within the Sky Protocol",
     "precedence": 2
   },
   {
@@ -21,7 +21,7 @@
     "shortname": "Tech",
     "longname": "Technical",
     "recommend_ui": true,
-    "description": "Polls relating to technical changes to the Maker Protocol",
+    "description": "Polls relating to technical changes to the Sky Protocol",
     "precedence": 3
   },
   {
@@ -64,7 +64,7 @@
     "shortname": "Collateral On",
     "longname": "Collateral Onboarding",
     "recommend_ui": true,
-    "description": "Polls relating to the onboarding of collateral into the Maker Protocol",
+    "description": "Polls relating to the onboarding of collateral into the Sky Protocol",
     "related_link": "https://collateral.makerdao.com/",
     "precedence": 8
   },
@@ -73,7 +73,7 @@
     "shortname": "Oracle",
     "longname": "Oracle",
     "recommend_ui": true,
-    "description": "Polls concerning MakerDAO's Oracles",
+    "description": "Polls concerning Sky Protocol's Oracles",
     "precedence": 9
   },
   {
@@ -99,7 +99,7 @@
     "shortname": "RWA",
     "longname": "Real World Asset",
     "recommend_ui": true,
-    "description": "Polls relating to Real World Assets in the Maker Protocol",
+    "description": "Polls relating to Real World Assets in the Sky Protocol",
     "precedence": 12
   },
   {
@@ -125,7 +125,7 @@
     "shortname": "Bridge",
     "longname": "Multi-Chain Bridge",
     "recommend_ui": true,
-    "description": "Polls relating to the bridging of DAI and the Maker Protocol to other chains",
+    "description": "Polls relating to the bridging of USDS and the Sky Protocol to other chains",
     "precedence": 15
   },
   {
@@ -169,7 +169,7 @@
     "shortname": "Auction",
     "longname": "Auction",
     "recommend_ui": true,
-    "description": "Polls related to auctions and auction parameters in the Maker Protocol",
+    "description": "Polls related to auctions and auction parameters in the Sky Protocol",
     "precedence": 20
   },
   {
@@ -278,7 +278,7 @@
     "shortname": "Priority Sentiment",
     "longname": "Prioritization Sentiment",
     "recommend_ui": true,
-    "description": "Polls that seek input on prioritization sentiment from MKR holders",
+    "description": "Polls that seek input on prioritization sentiment from SKY holders",
     "precedence": 33
   }
 ]

@@ -71,7 +71,7 @@ export default function TopDelegates({
           </Box>
           <Box sx={{ width: '30%', textAlign: 'left', display: ['none', 'block'] }}>
             <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-              MKR
+              SKY
             </Text>
           </Box>
         </Flex>
@@ -122,7 +122,7 @@ export default function TopDelegates({
                   }}
                 >
                   <Text as="p">
-                    {mkrDelegated ? parseFloat(formatEther(BigInt(mkrDelegated))).toFixed(2) : '0.00'} MKR
+                    {mkrDelegated ? parseFloat(formatEther(BigInt(mkrDelegated))).toFixed(2) : '0.00'} SKY
                   </Text>
                   <Button
                     variant="outline"

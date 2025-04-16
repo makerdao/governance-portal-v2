@@ -160,7 +160,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       {votedProposals && !votingForSomething && lockedMkr && lockedMkr > 0n && (
         <>
           <ProgressBar step={2} />
-          <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
+          <MigrationBadge>Your SKY has been deposited. You are now ready to vote.</MigrationBadge>
         </>
       )}
       <Stack>
@@ -319,8 +319,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               <SystemStatsSidebar
                 fields={[
                   'chief contract',
-                  'mkr in chief',
-                  'mkr needed to pass',
+                  'sky in chief',
+                  'sky needed to pass',
                   'savings rate',
                   'total dai',
                   'debt ceiling'

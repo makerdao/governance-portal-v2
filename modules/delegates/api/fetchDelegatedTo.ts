@@ -87,7 +87,7 @@ export async function fetchDelegatedTo(
       parseEther(prev.lockAmount) > parseEther(next.lockAmount) ? -1 : 1
     );
   } catch (e) {
-    logger.error('fetchDelegatedTo: Error fetching MKR delegated to address', e.message);
+    logger.error('fetchDelegatedTo: Error fetching SKY delegated to address', e.message);
     return [];
   }
 }

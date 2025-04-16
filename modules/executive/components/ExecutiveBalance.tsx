@@ -22,7 +22,7 @@ export const ExecutiveBalance = ({ lockedMkr, mutateLockedMkr, voteDelegate }: P
     <Flex>
       <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
       <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
-        {formatValue(lockedMkr, 'wad', 6)} MKR
+        {formatValue(lockedMkr, 'wad', 6)} SKY
       </Text>
     </Flex>
     {!voteDelegate && (

@@ -179,7 +179,7 @@ export default function ExecutiveOverviewCard({
               ) : (
                 <StatBox
                   value={formatValue(BigInt(proposal.spellData?.mkrSupport))}
-                  label="MKR Supporting"
+                  label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />
               )}

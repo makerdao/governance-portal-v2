@@ -60,14 +60,14 @@ const ParticipationChart = ({
     return (
       <Box>
         {monthMKR && <Text as="p">{format(new Date(monthMKR.blockTimestamp), 'LLL yyyy')}</Text>}
-        {monthMKR && <Text as="p">{parseInt(monthMKR.lockTotal).toLocaleString()} MKR</Text>}
+        {monthMKR && <Text as="p">{parseInt(monthMKR.lockTotal).toLocaleString()} SKY</Text>}
       </Box>
     );
   };
 
   const formatLegend = () => (
     <Text as="span" sx={{ color: 'onSurface' }}>
-      MKR Locked in Chief
+      SKY Locked in Chief
     </Text>
   );
 
@@ -99,7 +99,7 @@ const ParticipationChart = ({
           label={{
             fill: get(theme, 'colors.onSurface'),
             position: 'bottom',
-            value: 'MKR',
+            value: 'SKY',
             offset: 9
           }}
           domain={['dataMin', 'dataMax']}

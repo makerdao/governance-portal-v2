@@ -107,6 +107,6 @@ describe('MKRInput', () => {
     const error = screen.getByTestId('mkr-input-error');
 
     expect(error).toBeVisible();
-    expect(error).toHaveTextContent('MKR balance too low');
+    expect(error).toHaveTextContent('SKY balance too low');
   });
 });

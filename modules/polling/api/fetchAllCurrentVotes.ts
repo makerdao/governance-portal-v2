@@ -52,8 +52,8 @@ interface VotingWeightHistoryResponse {
 
 interface PollTimesResponse {
   polls: {
-    startDate: string;
-    endDate: string;
+    startDate?: string;
+    endDate?: string;
     id: string;
   }[];
 }

@@ -67,7 +67,7 @@ export default function VoteBreakdown({
                         textAlign: 'right'
                       }}
                     >
-                      {`${formatValue(BigInt(mkrSupport.toString()))} MKR Voting`}
+                      {`${formatValue(BigInt(mkrSupport.toString()))} SKY Voting`}
                       {!isResultDisplayApprovalBreakdown(poll.parameters)
                         ? ` (${formatValue(BigInt(tallyResult.firstPct.toString()))}%)`
                         : ''}
@@ -131,7 +131,7 @@ export default function VoteBreakdown({
                         textAlign: ['left', 'right']
                       }}
                     >
-                      {`${formatValue(BigInt((firstChoice + transfer).toString()))} MKR Voting (${formatValue(
+                      {`${formatValue(BigInt((firstChoice + transfer).toString()))} SKY Voting (${formatValue(
                         parseEther(
                           (BigInt(tallyResult.firstPct) + BigInt(tallyResult?.transferPct || 0)).toString()
                         )
@@ -211,7 +211,7 @@ export default function VoteBreakdown({
                       textAlign: 'right'
                     }}
                   >
-                    {`${formatValue(BigInt(mkrSupport.toString()))} MKR Voting (${formatValue(
+                    {`${formatValue(BigInt(mkrSupport.toString()))} SKY Voting (${formatValue(
                       parseEther(tallyResult.firstPct.toString())
                     )}%)`}
                   </Text>

@@ -7,5 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 export enum Tokens {
-  MKR = 'mkr'
+  MKR = 'mkr',
+  SKY = 'sky'
 }

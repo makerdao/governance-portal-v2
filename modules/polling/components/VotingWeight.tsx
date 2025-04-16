@@ -23,13 +23,13 @@ export const getDescription = ({
     if (isDelegate) {
       return (
         <Text as="p">
-          {'Balance of delegated MKR: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}
+          {'Balance of delegated SKY: ' + formatValue(votingWeight.chiefBalanceHot) + ' SKY'}
         </Text>
       );
     } else {
       return (
         <>
-          <Text as="p">{'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}</Text>
+          <Text as="p">{'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' SKY'}</Text>
         </>
       );
     }
@@ -57,7 +57,7 @@ export default function VotingWeight(): JSX.Element {
           Voting weight
         </Text>
       </Flex>
-      <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight.total)} MKR` : '--'}</Text>
+      <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight.total)} SKY` : '--'}</Text>
     </Flex>
   );
 }

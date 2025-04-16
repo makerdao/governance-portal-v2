@@ -90,7 +90,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
                 Withdraw from voting contract
               </Text>
               <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
-                Input the amount of MKR to withdraw from the voting contract.
+                Input the amount of SKY to withdraw from the voting contract.
               </Text>
             </Box>
 
@@ -99,7 +99,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
                 onChange={setMkrToWithdraw}
                 balance={lockedMkr}
                 value={mkrToWithdraw}
-                balanceText="MKR in contract:"
+                balanceText="SKY in contract:"
               />
             </Box>
 
@@ -118,7 +118,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
                 free.execute();
               }}
             >
-              Withdraw MKR
+              Withdraw SKY
             </Button>
           </Stack>
         )}

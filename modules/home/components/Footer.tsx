@@ -59,7 +59,7 @@ export default function Footer(): React.ReactElement {
       header: 'Participate',
       list: [
         {
-          url: 'https://forum.makerdao.com/',
+          url: 'https://forum.sky.money/',
           title: 'Community'
         }
       ]

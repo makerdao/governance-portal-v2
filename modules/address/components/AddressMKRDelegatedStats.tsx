@@ -41,7 +41,7 @@ export function AddressMKRDelegatedStats({
           textAlign: 'right'
         }}
         value={totalMKRDelegated ? formatValue(parseEther(totalMKRDelegated.toString())) : '0'}
-        label={'Total MKR Delegated'}
+        label={'Total SKY Delegated'}
       />
     </Flex>
   );

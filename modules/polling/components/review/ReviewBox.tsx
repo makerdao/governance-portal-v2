@@ -284,7 +284,7 @@ export default function ReviewBox({
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Address has at least {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} MKR of polling weight
+                      Address has at least {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} SKY of polling weight
                     </Text>
                     <Text>
                       {!precheckData ? (

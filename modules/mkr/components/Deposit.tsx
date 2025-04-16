@@ -124,7 +124,7 @@ const ModalContent = ({
                 Deposit into voting contract
               </Text>
               <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3, mt: 3 }}>
-                Input the amount of MKR to deposit into the voting contract.
+                Input the amount of SKY to deposit into the voting contract.
               </Text>
             </Box>
 
@@ -154,7 +154,7 @@ const ModalContent = ({
                 Approve voting contract
               </Text>
               <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3, mt: 3 }}>
-                Approve the transfer of MKR to the voting contract.
+                Approve the transfer of SKY to the voting contract.
               </Text>
             </Box>
 
