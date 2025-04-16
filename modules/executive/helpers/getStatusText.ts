@@ -28,8 +28,7 @@ export const getStatusText = ({
   if (!spellData) return 'Fetching status...';
 
   if (proposalAddress === ZERO_ADDRESS) {
-    return `This proposal surpased the threshold – the new
-    chief has been activated!`;
+    return `This proposal has surpassed the threshold — the new chief has been activated!`;
   }
 
   // check if scheduled or has been executed
