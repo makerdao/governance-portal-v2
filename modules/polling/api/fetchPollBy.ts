@@ -9,22 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll, PollListItem } from '../types';
-import {
-  pollDetailsCacheKey,
-  pollListCacheKey,
-  pollSlugToIdsCacheKey
-} from 'modules/cache/constants/cache-keys';
+import { pollDetailsCacheKey, pollListCacheKey } from 'modules/cache/constants/cache-keys';
 import { refetchPolls } from './fetchPolls';
 import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
 import { matterWrapper } from 'lib/matter';
 import { markdownToHtml } from 'lib/markdown';
 import { getPollTags } from './getPollTags';
-
-const fetchPollListsFromCache = async (network: SupportedNetworks) =>
-  await Promise.all([
-    cacheGet(pollListCacheKey, network, ONE_WEEK_IN_MS),
-    cacheGet(pollSlugToIdsCacheKey, network, ONE_WEEK_IN_MS)
-  ]);
 
 export async function fetchSinglePoll(
   network: SupportedNetworks,
@@ -34,22 +24,21 @@ export async function fetchSinglePoll(
     return null;
   }
 
-  let [pollListString, pollSlugToIdsString] = await fetchPollListsFromCache(network);
+  const pollListString = await cacheGet(pollListCacheKey, network, ONE_WEEK_IN_MS);
+  let pollList: PollListItem[] = [];
 
-  if (!pollListString || !pollSlugToIdsString) {
-    await refetchPolls(network);
-    // If not found, fetch them again after refetching all polls
-    [pollListString, pollSlugToIdsString] = await fetchPollListsFromCache(network);
+  if (pollListString) {
+    pollList = JSON.parse(pollListString);
+  } else {
+    const { pollList: refetchedPollList } = await refetchPolls(network);
+    pollList = refetchedPollList;
   }
-
-  const pollList: PollListItem[] = JSON.parse(pollListString);
-  const pollSlugToIds = JSON.parse(pollSlugToIdsString);
 
   const parsedPollIdentifier = typeof pollIdOrSlug === 'number' ? pollIdOrSlug : parseInt(pollIdOrSlug);
   // If it's a number, the parameter passed is a pollId. If not, it's a pollSlug
   const pollId: number | null = !Number.isNaN(parsedPollIdentifier)
     ? parsedPollIdentifier
-    : pollSlugToIds.find(p => p[0] === pollIdOrSlug)?.[1] || null;
+    : pollList.find(p => p.slug === pollIdOrSlug)?.pollId || null;
 
   if (!pollId) {
     return null;

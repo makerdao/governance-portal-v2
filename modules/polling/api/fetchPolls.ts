@@ -11,11 +11,7 @@ import { PartialActivePoll, PollFilterQueryParams, PollListItem, SubgraphPoll } 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollsPaginatedResponse } from '../types/pollsResponse';
 import { PollsValidatedQueryParams } from 'modules/polling/types';
-import {
-  partialActivePollsCacheKey,
-  pollListCacheKey,
-  pollSlugToIdsCacheKey
-} from 'modules/cache/constants/cache-keys';
+import { partialActivePollsCacheKey, pollListCacheKey } from 'modules/cache/constants/cache-keys';
 import { getPollTags } from './getPollTags';
 import { AGGREGATED_POLLS_FILE_URL, PollStatusEnum, PollInputFormat } from '../polling.constants';
 import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
@@ -98,11 +94,8 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
       endDate: new Date(endDate)
     }));
 
-  const pollSlugToIds = pollList.map(({ slug, pollId }) => [slug, pollId]);
-
   cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
   cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
-  cacheSet(pollSlugToIdsCacheKey, JSON.stringify(pollSlugToIds), network, ONE_WEEK_IN_MS);
 
   return { pollList, partialActivePolls };
 }
