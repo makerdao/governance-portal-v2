@@ -8,12 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import useSWR from 'swr';
 import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
-import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
-import { config } from 'lib/config';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
-import { parseEther } from 'viem';
 
 type DelegatedByUserResponse = {
   data:
@@ -43,59 +39,24 @@ export const useMkrDelegatedByUser = (
       mutate: () => undefined
     };
   }
-  const network = chainIdToNetworkName(chainId);
-
-  const fetchFromChain = async (userAddress: string | undefined, voteDelegateAddress: string) => {
-    if (!userAddress) return undefined;
-
-    const publicClient = getPublicClient(chainId);
-    const directDelegated = await publicClient.readContract({
-      address: voteDelegateAddress as `0x${string}`,
-      abi: voteDelegateAbi,
-      functionName: 'stake',
-      args: [userAddress as `0x${string}`]
-    });
-
-    return {
-      directDelegationAmount: directDelegated,
-      sealDelegationAmount: undefined,
-      totalDelegationAmount: directDelegated
-    };
-  };
 
   const { data, error, mutate } = useSWR(
     userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
     async () => {
-      if (config.USE_MOCK_WALLET) {
-        return fetchFromChain(userAddress as string, voteDelegateAddress);
-      }
-      try {
-        const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
-        const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
-        let sealDelegated = 0n;
-        let directDelegated = 0n; // Calculate this as needed
-        for (let i = 0; i < delegations.length; i++) {
-          try {
-            const curr = delegations[i];
-            const lockAmount = parseEther(curr.lockAmount.toString());
-            if (curr.isLockstake) {
-              sealDelegated = sealDelegated + lockAmount;
-            } else {
-              directDelegated = directDelegated + lockAmount;
-            }
-          } catch (innerError) {
-            console.error(`Error processing delegation ${i + 1}:`, innerError);
-          }
-        }
-        return {
-          directDelegationAmount: directDelegated,
-          sealDelegationAmount: sealDelegated,
-          totalDelegationAmount: sealDelegated + directDelegated
-        };
-      } catch (outerError) {
-        console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);
-        return fetchFromChain(userAddress, voteDelegateAddress);
-      }
+      if (!userAddress) return undefined;
+
+      const publicClient = getPublicClient(chainId);
+      const directDelegated = await publicClient.readContract({
+        address: voteDelegateAddress as `0x${string}`,
+        abi: voteDelegateAbi,
+        functionName: 'stake',
+        args: [userAddress as `0x${string}`]
+      });
+      return {
+        directDelegationAmount: directDelegated,
+        sealDelegationAmount: undefined,
+        totalDelegationAmount: directDelegated
+      };
     },
     {
       revalidateOnMount: true,
