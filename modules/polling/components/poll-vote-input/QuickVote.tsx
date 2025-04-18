@@ -138,11 +138,11 @@ const QuickVote = ({
               submit();
             }}
             mt={2}
-            disabled={!isChoiceValid || !votingWeight || !(votingWeight.total > 0n)}
+            disabled={!isChoiceValid || !votingWeight || !(votingWeight > 0n)}
           >
             {loading
               ? 'Loading SKY balance...'
-              : !votingWeight || !(votingWeight.total > 0n)
+              : !votingWeight || !(votingWeight > 0n)
               ? 'Deposit SKY to vote'
               : addedChoice
               ? 'Update vote'

@@ -32,7 +32,7 @@ export function AddressMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={votingWeight ? formatValue(votingWeight.total, undefined, undefined, true) : '0'}
+        value={votingWeight ? formatValue(votingWeight, undefined, undefined, true) : '0'}
         label={'Voting weight'}
       />
 

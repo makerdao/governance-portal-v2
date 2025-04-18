@@ -20,7 +20,7 @@ export async function hasMkrRequiredVotingWeight(
   let hasMkrRequired = false;
   try {
     const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network, false);
-    hasMkrRequired = canBeEqual ? pollWeight.total >= weight : pollWeight.total > weight;
+    hasMkrRequired = canBeEqual ? pollWeight >= weight : pollWeight > weight;
   } catch (err) {
     logger.error(err);
   }
