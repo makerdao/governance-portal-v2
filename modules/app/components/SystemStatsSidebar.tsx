@@ -76,7 +76,7 @@ export default function SystemStatsSidebar({
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>SKY in Chief</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {chiefBalance ? (
+            {chiefBalance || chiefBalance === 0n ? (
               `${formatValue(chiefBalance)} SKY`
             ) : (
               <Box sx={{ width: 6 }}>
@@ -137,7 +137,7 @@ export default function SystemStatsSidebar({
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>SKY on Governing Proposal</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {mkrOnHat ? (
+            {mkrOnHat || mkrOnHat === 0n ? (
               `${formatValue(mkrOnHat)} SKY`
             ) : (
               <Box sx={{ width: 6 }}>
