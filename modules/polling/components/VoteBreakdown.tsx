@@ -133,7 +133,7 @@ export default function VoteBreakdown({
                     >
                       {`${formatValue(BigInt((firstChoice + transfer).toString()))} MKR Voting (${formatValue(
                         parseEther(
-                          (BigInt(tallyResult.firstPct) + BigInt(tallyResult?.transferPct || 0)).toString()
+                          (Number(tallyResult.firstPct) + Number(tallyResult?.transferPct || 0)).toString()
                         )
                       )}%)`}
                     </Text>
