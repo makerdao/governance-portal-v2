@@ -2647,7 +2647,7 @@ export const voteDelegateFactoryAbi = [
  */
 export const voteDelegateFactoryAddress = {
   1: '0xC3D809E87A2C9da4F6d98fECea9135d834d6F5A0',
-  314310: '0x093D305366218D6d09bA10448922F10814b031dd',
+  314310: '0x98F74b7C96497070ba5052E02832EF9892962e62',
 } as const
 
 /**
