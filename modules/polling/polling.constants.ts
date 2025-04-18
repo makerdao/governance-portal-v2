@@ -13,9 +13,9 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export const ABSTAIN = 0;
 
-export const MIN_MKR_REQUIRED_FOR_GASLESS_VOTING = parseEther('0.1');
-export const MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY = parseFloat(
-  formatEther(MIN_MKR_REQUIRED_FOR_GASLESS_VOTING)
+export const MIN_SKY_REQUIRED_FOR_GASLESS_VOTING = parseEther('20');
+export const MIN_SKY_REQUIRED_FOR_GASLESS_VOTING_DISPLAY = parseFloat(
+  formatEther(MIN_SKY_REQUIRED_FOR_GASLESS_VOTING)
 ).toLocaleString();
 export const GASLESS_RATE_LIMIT_IN_MS = TEN_MINUTES_IN_MS;
 
