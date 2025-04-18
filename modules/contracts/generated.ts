@@ -12,9 +12,9 @@ export const chiefAbi = [
     inputs: [
       { name: 'GOV', internalType: 'contract DSToken', type: 'address' },
       { name: 'IOU', internalType: 'contract DSToken', type: 'address' },
-      { name: 'MAX_YAYS', internalType: 'uint256', type: 'uint256' }
+      { name: 'MAX_YAYS', internalType: 'uint256', type: 'uint256' },
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -24,10 +24,10 @@ export const chiefAbi = [
         name: 'slate',
         internalType: 'bytes32',
         type: 'bytes32',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'Etch'
+    name: 'Etch',
   },
   {
     type: 'event',
@@ -38,9 +38,9 @@ export const chiefAbi = [
       { name: 'foo', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'bar', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'fax', internalType: 'bytes', type: 'bytes', indexed: false }
+      { name: 'fax', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'LogNote'
+    name: 'LogNote',
   },
   {
     type: 'event',
@@ -50,10 +50,10 @@ export const chiefAbi = [
         name: 'authority',
         internalType: 'address',
         type: 'address',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'LogSetAuthority'
+    name: 'LogSetAuthority',
   },
   {
     type: 'event',
@@ -63,10 +63,10 @@ export const chiefAbi = [
         name: 'owner',
         internalType: 'address',
         type: 'address',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'LogSetOwner'
+    name: 'LogSetOwner',
   },
   {
     constant: true,
@@ -75,7 +75,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'GOV',
     outputs: [{ name: '', internalType: 'contract DSToken', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -84,7 +84,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'IOU',
     outputs: [{ name: '', internalType: 'contract DSToken', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -93,7 +93,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'MAX_YAYS',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -102,7 +102,7 @@ export const chiefAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'approvals',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -110,8 +110,10 @@ export const chiefAbi = [
     type: 'function',
     inputs: [],
     name: 'authority',
-    outputs: [{ name: '', internalType: 'contract DSAuthority', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract DSAuthority', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -120,11 +122,11 @@ export const chiefAbi = [
     inputs: [
       { name: 'caller', internalType: 'address', type: 'address' },
       { name: 'code', internalType: 'address', type: 'address' },
-      { name: 'sig', internalType: 'bytes4', type: 'bytes4' }
+      { name: 'sig', internalType: 'bytes4', type: 'bytes4' },
     ],
     name: 'canCall',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -133,7 +135,7 @@ export const chiefAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'deposits',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -142,7 +144,7 @@ export const chiefAbi = [
     inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
     name: 'etch',
     outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -151,7 +153,7 @@ export const chiefAbi = [
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'free',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -159,11 +161,11 @@ export const chiefAbi = [
     type: 'function',
     inputs: [
       { name: 'code', internalType: 'address', type: 'address' },
-      { name: 'sig', internalType: 'bytes4', type: 'bytes4' }
+      { name: 'sig', internalType: 'bytes4', type: 'bytes4' },
     ],
     name: 'getCapabilityRoles',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -172,7 +174,7 @@ export const chiefAbi = [
     inputs: [{ name: 'who', internalType: 'address', type: 'address' }],
     name: 'getUserRoles',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -180,11 +182,11 @@ export const chiefAbi = [
     type: 'function',
     inputs: [
       { name: 'who', internalType: 'address', type: 'address' },
-      { name: 'role', internalType: 'uint8', type: 'uint8' }
+      { name: 'role', internalType: 'uint8', type: 'uint8' },
     ],
     name: 'hasUserRole',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -193,7 +195,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'hat',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -201,11 +203,11 @@ export const chiefAbi = [
     type: 'function',
     inputs: [
       { name: 'code', internalType: 'address', type: 'address' },
-      { name: 'sig', internalType: 'bytes4', type: 'bytes4' }
+      { name: 'sig', internalType: 'bytes4', type: 'bytes4' },
     ],
     name: 'isCapabilityPublic',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -214,7 +216,7 @@ export const chiefAbi = [
     inputs: [{ name: 'who', internalType: 'address', type: 'address' }],
     name: 'isUserRoot',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -223,7 +225,7 @@ export const chiefAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'last',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -232,7 +234,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'launch',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -241,7 +243,7 @@ export const chiefAbi = [
     inputs: [{ name: 'whom', internalType: 'address', type: 'address' }],
     name: 'lift',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -250,7 +252,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'live',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -259,7 +261,7 @@ export const chiefAbi = [
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'lock',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -268,7 +270,7 @@ export const chiefAbi = [
     inputs: [],
     name: 'owner',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -278,12 +280,12 @@ export const chiefAbi = [
       {
         name: 'authority_',
         internalType: 'contract DSAuthority',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     name: 'setAuthority',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -292,7 +294,7 @@ export const chiefAbi = [
     inputs: [{ name: 'owner_', internalType: 'address', type: 'address' }],
     name: 'setOwner',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -301,11 +303,11 @@ export const chiefAbi = [
     inputs: [
       { name: 'code', internalType: 'address', type: 'address' },
       { name: 'sig', internalType: 'bytes4', type: 'bytes4' },
-      { name: 'enabled', internalType: 'bool', type: 'bool' }
+      { name: 'enabled', internalType: 'bool', type: 'bool' },
     ],
     name: 'setPublicCapability',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -315,11 +317,11 @@ export const chiefAbi = [
       { name: 'role', internalType: 'uint8', type: 'uint8' },
       { name: 'code', internalType: 'address', type: 'address' },
       { name: 'sig', internalType: 'bytes4', type: 'bytes4' },
-      { name: 'enabled', internalType: 'bool', type: 'bool' }
+      { name: 'enabled', internalType: 'bool', type: 'bool' },
     ],
     name: 'setRoleCapability',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -327,11 +329,11 @@ export const chiefAbi = [
     type: 'function',
     inputs: [
       { name: 'who', internalType: 'address', type: 'address' },
-      { name: 'enabled', internalType: 'bool', type: 'bool' }
+      { name: 'enabled', internalType: 'bool', type: 'bool' },
     ],
     name: 'setRootUser',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -340,11 +342,11 @@ export const chiefAbi = [
     inputs: [
       { name: 'who', internalType: 'address', type: 'address' },
       { name: 'role', internalType: 'uint8', type: 'uint8' },
-      { name: 'enabled', internalType: 'bool', type: 'bool' }
+      { name: 'enabled', internalType: 'bool', type: 'bool' },
     ],
     name: 'setUserRole',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -352,11 +354,11 @@ export const chiefAbi = [
     type: 'function',
     inputs: [
       { name: '', internalType: 'bytes32', type: 'bytes32' },
-      { name: '', internalType: 'uint256', type: 'uint256' }
+      { name: '', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'slates',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -365,7 +367,7 @@ export const chiefAbi = [
     inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -374,7 +376,7 @@ export const chiefAbi = [
     inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
     name: 'vote',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -383,8 +385,8 @@ export const chiefAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'votes',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 /**
@@ -392,7 +394,7 @@ export const chiefAbi = [
  */
 export const chiefAddress = {
   1: '0x0a3f6849f78076aefaDf113F5BED87720274dDC0',
-  314310: '0x0a3f6849f78076aefaDf113F5BED87720274dDC0'
+  314310: '0x81a5186946ce055a5ceeC93cd97C7e7EDe7Da922',
 } as const;
 
 /**
@@ -409,7 +411,7 @@ export const dsSpellAbi = [
     payable: false,
     type: 'constructor',
     inputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -417,7 +419,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'action',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -426,7 +428,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'cast',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -435,7 +437,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'description',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -444,7 +446,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'done',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -453,7 +455,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'eta',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -462,7 +464,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'expiration',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -470,8 +472,10 @@ export const dsSpellAbi = [
     type: 'function',
     inputs: [],
     name: 'log',
-    outputs: [{ name: '', internalType: 'contract Changelog', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract Changelog', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -480,7 +484,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'nextCastTime',
     outputs: [{ name: 'castTime', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -489,7 +493,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'officeHours',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -497,8 +501,10 @@ export const dsSpellAbi = [
     type: 'function',
     inputs: [],
     name: 'pause',
-    outputs: [{ name: '', internalType: 'contract PauseAbstract', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract PauseAbstract', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -507,7 +513,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'schedule',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -516,7 +522,7 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'sig',
     outputs: [{ name: '', internalType: 'bytes', type: 'bytes' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -525,8 +531,8 @@ export const dsSpellAbi = [
     inputs: [],
     name: 'tag',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,92 +549,96 @@ export const dssSpellAbi = [
     inputs: [],
     name: 'action',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'cast',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'description',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'done',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'eta',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'expiration',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'log',
-    outputs: [{ name: '', internalType: 'contract Changelog', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract Changelog', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'nextCastTime',
     outputs: [{ name: 'castTime', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'officeHours',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'pause',
-    outputs: [{ name: '', internalType: 'contract PauseAbstract', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract PauseAbstract', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'schedule',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'sig',
     outputs: [{ name: '', internalType: 'bytes', type: 'bytes' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'tag',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 /**
@@ -636,7 +646,7 @@ export const dssSpellAbi = [
  */
 export const dssSpellAddress = {
   1: '0x6f076E9eB81828fa83d9c3E0aa3E088AD24Ee20B',
-  314310: '0x6f076E9eB81828fa83d9c3E0aa3E088AD24Ee20B'
+  314310: '0x6f076E9eB81828fa83d9c3E0aa3E088AD24Ee20B',
 } as const;
 
 /**
@@ -644,7 +654,7 @@ export const dssSpellAddress = {
  */
 export const dssSpellConfig = {
   address: dssSpellAddress,
-  abi: dssSpellAbi
+  abi: dssSpellAbi,
 } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -662,7 +672,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'name',
     outputs: [{ name: '', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -671,7 +681,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'stop',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -679,11 +689,11 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'guy', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'approve',
     outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -692,7 +702,7 @@ export const mkrAbi = [
     inputs: [{ name: 'owner_', type: 'address' }],
     name: 'setOwner',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -701,7 +711,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'totalSupply',
     outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -710,11 +720,11 @@ export const mkrAbi = [
     inputs: [
       { name: 'src', type: 'address' },
       { name: 'dst', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'transferFrom',
     outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -723,7 +733,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'decimals',
     outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -731,11 +741,11 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'guy', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'mint',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -744,7 +754,7 @@ export const mkrAbi = [
     inputs: [{ name: 'wad', type: 'uint256' }],
     name: 'burn',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -753,7 +763,7 @@ export const mkrAbi = [
     inputs: [{ name: 'name_', type: 'bytes32' }],
     name: 'setName',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -762,7 +772,7 @@ export const mkrAbi = [
     inputs: [{ name: 'src', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -771,7 +781,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'stopped',
     outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -780,7 +790,7 @@ export const mkrAbi = [
     inputs: [{ name: 'authority_', type: 'address' }],
     name: 'setAuthority',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -789,7 +799,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'owner',
     outputs: [{ name: '', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -798,7 +808,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'symbol',
     outputs: [{ name: '', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -806,11 +816,11 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'guy', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'burn',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -819,7 +829,7 @@ export const mkrAbi = [
     inputs: [{ name: 'wad', type: 'uint256' }],
     name: 'mint',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -827,11 +837,11 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'dst', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'transfer',
     outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -839,11 +849,11 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'dst', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'push',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -852,11 +862,11 @@ export const mkrAbi = [
     inputs: [
       { name: 'src', type: 'address' },
       { name: 'dst', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'move',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -865,7 +875,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'start',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -874,7 +884,7 @@ export const mkrAbi = [
     inputs: [],
     name: 'authority',
     outputs: [{ name: '', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -883,7 +893,7 @@ export const mkrAbi = [
     inputs: [{ name: 'guy', type: 'address' }],
     name: 'approve',
     outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -891,11 +901,11 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'src', type: 'address' },
-      { name: 'guy', type: 'address' }
+      { name: 'guy', type: 'address' },
     ],
     name: 'allowance',
     outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -903,47 +913,47 @@ export const mkrAbi = [
     type: 'function',
     inputs: [
       { name: 'src', type: 'address' },
-      { name: 'wad', type: 'uint256' }
+      { name: 'wad', type: 'uint256' },
     ],
     name: 'pull',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     payable: false,
     type: 'constructor',
     inputs: [{ name: 'symbol_', type: 'bytes32' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       { name: 'guy', type: 'address', indexed: true },
-      { name: 'wad', type: 'uint256', indexed: false }
+      { name: 'wad', type: 'uint256', indexed: false },
     ],
-    name: 'Mint'
+    name: 'Mint',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       { name: 'guy', type: 'address', indexed: true },
-      { name: 'wad', type: 'uint256', indexed: false }
+      { name: 'wad', type: 'uint256', indexed: false },
     ],
-    name: 'Burn'
+    name: 'Burn',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [{ name: 'authority', type: 'address', indexed: true }],
-    name: 'LogSetAuthority'
+    name: 'LogSetAuthority',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [{ name: 'owner', type: 'address', indexed: true }],
-    name: 'LogSetOwner'
+    name: 'LogSetOwner',
   },
   {
     type: 'event',
@@ -954,9 +964,9 @@ export const mkrAbi = [
       { name: 'foo', type: 'bytes32', indexed: true },
       { name: 'bar', type: 'bytes32', indexed: true },
       { name: 'wad', type: 'uint256', indexed: false },
-      { name: 'fax', type: 'bytes', indexed: false }
+      { name: 'fax', type: 'bytes', indexed: false },
     ],
-    name: 'LogNote'
+    name: 'LogNote',
   },
   {
     type: 'event',
@@ -964,9 +974,9 @@ export const mkrAbi = [
     inputs: [
       { name: 'from', type: 'address', indexed: true },
       { name: 'to', type: 'address', indexed: true },
-      { name: 'value', type: 'uint256', indexed: false }
+      { name: 'value', type: 'uint256', indexed: false },
     ],
-    name: 'Transfer'
+    name: 'Transfer',
   },
   {
     type: 'event',
@@ -974,10 +984,10 @@ export const mkrAbi = [
     inputs: [
       { name: 'owner', type: 'address', indexed: true },
       { name: 'spender', type: 'address', indexed: true },
-      { name: 'value', type: 'uint256', indexed: false }
+      { name: 'value', type: 'uint256', indexed: false },
     ],
-    name: 'Approval'
-  }
+    name: 'Approval',
+  },
 ] as const;
 
 /**
@@ -985,7 +995,7 @@ export const mkrAbi = [
  */
 export const mkrAddress = {
   1: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
-  314310: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2'
+  314310: '0x56072C95FAA701256059aa122697B133aDEd9279',
 } as const;
 
 /**
@@ -1004,9 +1014,9 @@ export const newChiefAbi = [
       { name: 'gov_', internalType: 'address', type: 'address' },
       { name: 'maxYays_', internalType: 'uint256', type: 'uint256' },
       { name: 'launchThreshold_', internalType: 'uint256', type: 'uint256' },
-      { name: 'liftCooldown_', internalType: 'uint256', type: 'uint256' }
+      { name: 'liftCooldown_', internalType: 'uint256', type: 'uint256' },
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -1016,35 +1026,41 @@ export const newChiefAbi = [
         name: 'slate',
         internalType: 'bytes32',
         type: 'bytes32',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'yays',
         internalType: 'address[]',
         type: 'address[]',
-        indexed: false
-      }
+        indexed: false,
+      },
     ],
-    name: 'Etch'
+    name: 'Etch',
   },
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }],
-    name: 'Free'
+    inputs: [
+      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false },
+    ],
+    name: 'Free',
   },
   { type: 'event', anonymous: false, inputs: [], name: 'Launch' },
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'whom', internalType: 'address', type: 'address', indexed: true }],
-    name: 'Lift'
+    inputs: [
+      { name: 'whom', internalType: 'address', type: 'address', indexed: true },
+    ],
+    name: 'Lift',
   },
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }],
-    name: 'Lock'
+    inputs: [
+      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false },
+    ],
+    name: 'Lock',
   },
   {
     type: 'event',
@@ -1054,179 +1070,179 @@ export const newChiefAbi = [
         name: 'slate',
         internalType: 'bytes32',
         type: 'bytes32',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'Vote'
+    name: 'Vote',
   },
   {
     type: 'function',
     inputs: [],
     name: 'EMPTY_SLATE',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'GOV',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'MAX_YAYS',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'yay', internalType: 'address', type: 'address' }],
     name: 'approvals',
     outputs: [{ name: 'amt', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [
       { name: 'caller', internalType: 'address', type: 'address' },
       { name: '', internalType: 'address', type: 'address' },
-      { name: '', internalType: 'bytes4', type: 'bytes4' }
+      { name: '', internalType: 'bytes4', type: 'bytes4' },
     ],
     name: 'canCall',
     outputs: [{ name: 'ok', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'deposits',
     outputs: [{ name: 'amt', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
     name: 'etch',
     outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'free',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'gov',
     outputs: [{ name: '', internalType: 'contract GemLike', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'hat',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'last',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'launch',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'launchThreshold',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
     name: 'length',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'whom', internalType: 'address', type: 'address' }],
     name: 'lift',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'liftCooldown',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'live',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'lock',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'maxYays',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [
       { name: 'slate', internalType: 'bytes32', type: 'bytes32' },
-      { name: '', internalType: 'uint256', type: 'uint256' }
+      { name: '', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'slates',
     outputs: [{ name: 'yays', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
     name: 'vote',
     outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'votes',
     outputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1246,10 +1262,10 @@ export const pauseAbi = [
       {
         name: 'authority_',
         internalType: 'contract DSAuthority',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -1260,9 +1276,9 @@ export const pauseAbi = [
       { name: 'foo', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'bar', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'fax', internalType: 'bytes', type: 'bytes', indexed: false }
+      { name: 'fax', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'LogNote'
+    name: 'LogNote',
   },
   {
     type: 'event',
@@ -1272,10 +1288,10 @@ export const pauseAbi = [
         name: 'authority',
         internalType: 'address',
         type: 'address',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'LogSetAuthority'
+    name: 'LogSetAuthority',
   },
   {
     type: 'event',
@@ -1285,10 +1301,10 @@ export const pauseAbi = [
         name: 'owner',
         internalType: 'address',
         type: 'address',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'LogSetOwner'
+    name: 'LogSetOwner',
   },
   {
     constant: true,
@@ -1296,8 +1312,10 @@ export const pauseAbi = [
     type: 'function',
     inputs: [],
     name: 'authority',
-    outputs: [{ name: '', internalType: 'contract DSAuthority', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract DSAuthority', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -1306,7 +1324,7 @@ export const pauseAbi = [
     inputs: [],
     name: 'delay',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1316,11 +1334,11 @@ export const pauseAbi = [
       { name: 'usr', internalType: 'address', type: 'address' },
       { name: 'tag', internalType: 'bytes32', type: 'bytes32' },
       { name: 'fax', internalType: 'bytes', type: 'bytes' },
-      { name: 'eta', internalType: 'uint256', type: 'uint256' }
+      { name: 'eta', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'drop',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1330,11 +1348,11 @@ export const pauseAbi = [
       { name: 'usr', internalType: 'address', type: 'address' },
       { name: 'tag', internalType: 'bytes32', type: 'bytes32' },
       { name: 'fax', internalType: 'bytes', type: 'bytes' },
-      { name: 'eta', internalType: 'uint256', type: 'uint256' }
+      { name: 'eta', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'exec',
     outputs: [{ name: 'out', internalType: 'bytes', type: 'bytes' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -1343,7 +1361,7 @@ export const pauseAbi = [
     inputs: [],
     name: 'owner',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -1352,7 +1370,7 @@ export const pauseAbi = [
     inputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
     name: 'plans',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1362,11 +1380,11 @@ export const pauseAbi = [
       { name: 'usr', internalType: 'address', type: 'address' },
       { name: 'tag', internalType: 'bytes32', type: 'bytes32' },
       { name: 'fax', internalType: 'bytes', type: 'bytes' },
-      { name: 'eta', internalType: 'uint256', type: 'uint256' }
+      { name: 'eta', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'plot',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -1374,8 +1392,10 @@ export const pauseAbi = [
     type: 'function',
     inputs: [],
     name: 'proxy',
-    outputs: [{ name: '', internalType: 'contract DSPauseProxy', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract DSPauseProxy', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1385,12 +1405,12 @@ export const pauseAbi = [
       {
         name: 'authority_',
         internalType: 'contract DSAuthority',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     name: 'setAuthority',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1399,7 +1419,7 @@ export const pauseAbi = [
     inputs: [{ name: 'delay_', internalType: 'uint256', type: 'uint256' }],
     name: 'setDelay',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1408,8 +1428,8 @@ export const pauseAbi = [
     inputs: [{ name: 'owner_', internalType: 'address', type: 'address' }],
     name: 'setOwner',
     outputs: [],
-    stateMutability: 'nonpayable'
-  }
+    stateMutability: 'nonpayable',
+  },
 ] as const;
 
 /**
@@ -1417,7 +1437,7 @@ export const pauseAbi = [
  */
 export const pauseAddress = {
   1: '0xbE286431454714F511008713973d3B053A2d38f3',
-  314310: '0xbE286431454714F511008713973d3B053A2d38f3'
+  314310: '0xbE286431454714F511008713973d3B053A2d38f3',
 } as const;
 
 /**
@@ -1441,41 +1461,41 @@ export const pollingAbi = [
         name: 'creator',
         internalType: 'address',
         type: 'address',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'blockCreated',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'pollId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'startDate',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'endDate',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'multiHash',
         internalType: 'string',
         type: 'string',
-        indexed: false
+        indexed: false,
       },
-      { name: 'url', internalType: 'string', type: 'string', indexed: false }
+      { name: 'url', internalType: 'string', type: 'string', indexed: false },
     ],
-    name: 'PollCreated'
+    name: 'PollCreated',
   },
   {
     type: 'event',
@@ -1485,22 +1505,22 @@ export const pollingAbi = [
         name: 'creator',
         internalType: 'address',
         type: 'address',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'blockWithdrawn',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'pollId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
-      }
+        indexed: false,
+      },
     ],
-    name: 'PollWithdrawn'
+    name: 'PollWithdrawn',
   },
   {
     type: 'event',
@@ -1510,22 +1530,22 @@ export const pollingAbi = [
         name: 'voter',
         internalType: 'address',
         type: 'address',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'pollId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'optionId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'Voted'
+    name: 'Voted',
   },
   {
     type: 'function',
@@ -1533,53 +1553,53 @@ export const pollingAbi = [
       { name: 'startDate', internalType: 'uint256', type: 'uint256' },
       { name: 'endDate', internalType: 'uint256', type: 'uint256' },
       { name: 'multiHash', internalType: 'string', type: 'string' },
-      { name: 'url', internalType: 'string', type: 'string' }
+      { name: 'url', internalType: 'string', type: 'string' },
     ],
     name: 'createPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'npoll',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [
       { name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' },
-      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' }
+      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' },
     ],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [
       { name: 'pollId', internalType: 'uint256', type: 'uint256' },
-      { name: 'optionId', internalType: 'uint256', type: 'uint256' }
+      { name: 'optionId', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [{ name: 'pollId', internalType: 'uint256', type: 'uint256' }],
     name: 'withdrawPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [{ name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' }],
     name: 'withdrawPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
-  }
+    stateMutability: 'nonpayable',
+  },
 ] as const;
 
 /**
@@ -1587,7 +1607,7 @@ export const pollingAbi = [
  */
 export const pollingAddress = {
   1: '0xD3A9FE267852281a1e6307a1C37CDfD76d39b133',
-  314310: '0xD3A9FE267852281a1e6307a1C37CDfD76d39b133'
+  314310: '0xD3A9FE267852281a1e6307a1C37CDfD76d39b133',
 } as const;
 
 /**
@@ -1595,7 +1615,7 @@ export const pollingAddress = {
  */
 export const pollingConfig = {
   address: pollingAddress,
-  abi: pollingAbi
+  abi: pollingAbi,
 } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1616,41 +1636,41 @@ export const pollingArbitrumAbi = [
         name: 'creator',
         internalType: 'address',
         type: 'address',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'blockCreated',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'pollId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'startDate',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'endDate',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'multiHash',
         internalType: 'string',
         type: 'string',
-        indexed: false
+        indexed: false,
       },
-      { name: 'url', internalType: 'string', type: 'string', indexed: false }
+      { name: 'url', internalType: 'string', type: 'string', indexed: false },
     ],
-    name: 'PollCreated'
+    name: 'PollCreated',
   },
   {
     type: 'event',
@@ -1660,22 +1680,22 @@ export const pollingArbitrumAbi = [
         name: 'creator',
         internalType: 'address',
         type: 'address',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'blockWithdrawn',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
+        indexed: false,
       },
       {
         name: 'pollId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: false
-      }
+        indexed: false,
+      },
     ],
-    name: 'PollWithdrawn'
+    name: 'PollWithdrawn',
   },
   {
     type: 'event',
@@ -1685,43 +1705,43 @@ export const pollingArbitrumAbi = [
         name: 'voter',
         internalType: 'address',
         type: 'address',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'pollId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: true
+        indexed: true,
       },
       {
         name: 'optionId',
         internalType: 'uint256',
         type: 'uint256',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'Voted'
+    name: 'Voted',
   },
   {
     type: 'function',
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'VOTE_TYPEHASH',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'chainId',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
@@ -1729,39 +1749,39 @@ export const pollingArbitrumAbi = [
       { name: 'startDate', internalType: 'uint256', type: 'uint256' },
       { name: 'endDate', internalType: 'uint256', type: 'uint256' },
       { name: 'multiHash', internalType: 'string', type: 'string' },
-      { name: 'url', internalType: 'string', type: 'string' }
+      { name: 'url', internalType: 'string', type: 'string' },
     ],
     name: 'createPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [],
     name: 'name',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'nonces',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'npoll',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'version',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
@@ -1773,29 +1793,29 @@ export const pollingArbitrumAbi = [
       { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'v', internalType: 'uint8', type: 'uint8' },
       { name: 'r', internalType: 'bytes32', type: 'bytes32' },
-      { name: 's', internalType: 'bytes32', type: 'bytes32' }
+      { name: 's', internalType: 'bytes32', type: 'bytes32' },
     ],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [
       { name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' },
-      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' }
+      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' },
     ],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
     inputs: [{ name: 'pollId', internalType: 'uint256', type: 'uint256' }],
     name: 'withdrawPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
-  }
+    stateMutability: 'nonpayable',
+  },
 ] as const;
 
 /**
@@ -1804,7 +1824,7 @@ export const pollingArbitrumAbi = [
  */
 export const pollingArbitrumAddress = {
   42161: '0x4f4e551b4920a5417F8d4e7f8f099660dAdadcEC',
-  421614: '0xE63329692fA90B3efd5eB675c601abeDB2DF715a'
+  421614: '0xE63329692fA90B3efd5eB675c601abeDB2DF715a',
 } as const;
 
 /**
@@ -1813,7 +1833,7 @@ export const pollingArbitrumAddress = {
  */
 export const pollingArbitrumConfig = {
   address: pollingArbitrumAddress,
-  abi: pollingArbitrumAbi
+  abi: pollingArbitrumAbi,
 } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1828,7 +1848,7 @@ export const potAbi = [
     payable: false,
     type: 'constructor',
     inputs: [{ name: 'vat_', internalType: 'address', type: 'address' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -1838,9 +1858,9 @@ export const potAbi = [
       { name: 'usr', internalType: 'address', type: 'address', indexed: true },
       { name: 'arg1', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'arg2', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'data', internalType: 'bytes', type: 'bytes', indexed: false }
+      { name: 'data', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'LogNote'
+    name: 'LogNote',
   },
   {
     constant: true,
@@ -1849,7 +1869,7 @@ export const potAbi = [
     inputs: [],
     name: 'Pie',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1858,7 +1878,7 @@ export const potAbi = [
     inputs: [],
     name: 'cage',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -1867,7 +1887,7 @@ export const potAbi = [
     inputs: [],
     name: 'chi',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1876,7 +1896,7 @@ export const potAbi = [
     inputs: [{ name: 'guy', internalType: 'address', type: 'address' }],
     name: 'deny',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1885,7 +1905,7 @@ export const potAbi = [
     inputs: [],
     name: 'drip',
     outputs: [{ name: 'tmp', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -1894,7 +1914,7 @@ export const potAbi = [
     inputs: [],
     name: 'dsr',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1903,7 +1923,7 @@ export const potAbi = [
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'exit',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1911,11 +1931,11 @@ export const potAbi = [
     type: 'function',
     inputs: [
       { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'uint256', type: 'uint256' }
+      { name: 'data', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'file',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1923,11 +1943,11 @@ export const potAbi = [
     type: 'function',
     inputs: [
       { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'addr', internalType: 'address', type: 'address' }
+      { name: 'addr', internalType: 'address', type: 'address' },
     ],
     name: 'file',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -1936,7 +1956,7 @@ export const potAbi = [
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'join',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -1945,7 +1965,7 @@ export const potAbi = [
     inputs: [],
     name: 'live',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -1954,7 +1974,7 @@ export const potAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'pie',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -1963,7 +1983,7 @@ export const potAbi = [
     inputs: [{ name: 'guy', internalType: 'address', type: 'address' }],
     name: 'rely',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -1972,7 +1992,7 @@ export const potAbi = [
     inputs: [],
     name: 'rho',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -1981,7 +2001,7 @@ export const potAbi = [
     inputs: [],
     name: 'vat',
     outputs: [{ name: '', internalType: 'contract VatLike', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -1990,7 +2010,7 @@ export const potAbi = [
     inputs: [],
     name: 'vow',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -1999,8 +2019,8 @@ export const potAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'wards',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 /**
@@ -2008,7 +2028,7 @@ export const potAbi = [
  */
 export const potAddress = {
   1: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
-  314310: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7'
+  314310: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
 } as const;
 
 /**
@@ -2028,7 +2048,7 @@ export const vatAbi = [
     payable: false,
     type: 'constructor',
     inputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -2038,9 +2058,9 @@ export const vatAbi = [
       { name: 'arg1', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'arg2', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'arg3', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'data', internalType: 'bytes', type: 'bytes', indexed: false }
+      { name: 'data', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'LogNote'
+    name: 'LogNote',
   },
   {
     constant: true,
@@ -2049,7 +2069,7 @@ export const vatAbi = [
     inputs: [],
     name: 'Line',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2058,7 +2078,7 @@ export const vatAbi = [
     inputs: [],
     name: 'cage',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2066,11 +2086,11 @@ export const vatAbi = [
     type: 'function',
     inputs: [
       { name: '', internalType: 'address', type: 'address' },
-      { name: '', internalType: 'address', type: 'address' }
+      { name: '', internalType: 'address', type: 'address' },
     ],
     name: 'can',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2079,7 +2099,7 @@ export const vatAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'dai',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2088,7 +2108,7 @@ export const vatAbi = [
     inputs: [],
     name: 'debt',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2097,7 +2117,7 @@ export const vatAbi = [
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'deny',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2106,11 +2126,11 @@ export const vatAbi = [
     inputs: [
       { name: 'ilk', internalType: 'bytes32', type: 'bytes32' },
       { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'uint256', type: 'uint256' }
+      { name: 'data', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'file',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2118,11 +2138,11 @@ export const vatAbi = [
     type: 'function',
     inputs: [
       { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'uint256', type: 'uint256' }
+      { name: 'data', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'file',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2132,11 +2152,11 @@ export const vatAbi = [
       { name: 'ilk', internalType: 'bytes32', type: 'bytes32' },
       { name: 'src', internalType: 'address', type: 'address' },
       { name: 'dst', internalType: 'address', type: 'address' },
-      { name: 'wad', internalType: 'uint256', type: 'uint256' }
+      { name: 'wad', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'flux',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2145,11 +2165,11 @@ export const vatAbi = [
     inputs: [
       { name: 'i', internalType: 'bytes32', type: 'bytes32' },
       { name: 'u', internalType: 'address', type: 'address' },
-      { name: 'rate', internalType: 'int256', type: 'int256' }
+      { name: 'rate', internalType: 'int256', type: 'int256' },
     ],
     name: 'fold',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2160,11 +2180,11 @@ export const vatAbi = [
       { name: 'src', internalType: 'address', type: 'address' },
       { name: 'dst', internalType: 'address', type: 'address' },
       { name: 'dink', internalType: 'int256', type: 'int256' },
-      { name: 'dart', internalType: 'int256', type: 'int256' }
+      { name: 'dart', internalType: 'int256', type: 'int256' },
     ],
     name: 'fork',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2176,11 +2196,11 @@ export const vatAbi = [
       { name: 'v', internalType: 'address', type: 'address' },
       { name: 'w', internalType: 'address', type: 'address' },
       { name: 'dink', internalType: 'int256', type: 'int256' },
-      { name: 'dart', internalType: 'int256', type: 'int256' }
+      { name: 'dart', internalType: 'int256', type: 'int256' },
     ],
     name: 'frob',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2188,11 +2208,11 @@ export const vatAbi = [
     type: 'function',
     inputs: [
       { name: '', internalType: 'bytes32', type: 'bytes32' },
-      { name: '', internalType: 'address', type: 'address' }
+      { name: '', internalType: 'address', type: 'address' },
     ],
     name: 'gem',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2204,11 +2224,11 @@ export const vatAbi = [
       { name: 'v', internalType: 'address', type: 'address' },
       { name: 'w', internalType: 'address', type: 'address' },
       { name: 'dink', internalType: 'int256', type: 'int256' },
-      { name: 'dart', internalType: 'int256', type: 'int256' }
+      { name: 'dart', internalType: 'int256', type: 'int256' },
     ],
     name: 'grab',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2217,7 +2237,7 @@ export const vatAbi = [
     inputs: [{ name: 'rad', internalType: 'uint256', type: 'uint256' }],
     name: 'heal',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2226,7 +2246,7 @@ export const vatAbi = [
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'hope',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2239,9 +2259,9 @@ export const vatAbi = [
       { name: 'rate', internalType: 'uint256', type: 'uint256' },
       { name: 'spot', internalType: 'uint256', type: 'uint256' },
       { name: 'line', internalType: 'uint256', type: 'uint256' },
-      { name: 'dust', internalType: 'uint256', type: 'uint256' }
+      { name: 'dust', internalType: 'uint256', type: 'uint256' },
     ],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2250,7 +2270,7 @@ export const vatAbi = [
     inputs: [{ name: 'ilk', internalType: 'bytes32', type: 'bytes32' }],
     name: 'init',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2259,7 +2279,7 @@ export const vatAbi = [
     inputs: [],
     name: 'live',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2268,11 +2288,11 @@ export const vatAbi = [
     inputs: [
       { name: 'src', internalType: 'address', type: 'address' },
       { name: 'dst', internalType: 'address', type: 'address' },
-      { name: 'rad', internalType: 'uint256', type: 'uint256' }
+      { name: 'rad', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'move',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2281,7 +2301,7 @@ export const vatAbi = [
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'nope',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2290,7 +2310,7 @@ export const vatAbi = [
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'rely',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2299,7 +2319,7 @@ export const vatAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'sin',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2308,11 +2328,11 @@ export const vatAbi = [
     inputs: [
       { name: 'ilk', internalType: 'bytes32', type: 'bytes32' },
       { name: 'usr', internalType: 'address', type: 'address' },
-      { name: 'wad', internalType: 'int256', type: 'int256' }
+      { name: 'wad', internalType: 'int256', type: 'int256' },
     ],
     name: 'slip',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2321,11 +2341,11 @@ export const vatAbi = [
     inputs: [
       { name: 'u', internalType: 'address', type: 'address' },
       { name: 'v', internalType: 'address', type: 'address' },
-      { name: 'rad', internalType: 'uint256', type: 'uint256' }
+      { name: 'rad', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'suck',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2333,14 +2353,14 @@ export const vatAbi = [
     type: 'function',
     inputs: [
       { name: '', internalType: 'bytes32', type: 'bytes32' },
-      { name: '', internalType: 'address', type: 'address' }
+      { name: '', internalType: 'address', type: 'address' },
     ],
     name: 'urns',
     outputs: [
       { name: 'ink', internalType: 'uint256', type: 'uint256' },
-      { name: 'art', internalType: 'uint256', type: 'uint256' }
+      { name: 'art', internalType: 'uint256', type: 'uint256' },
     ],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2349,7 +2369,7 @@ export const vatAbi = [
     inputs: [],
     name: 'vice',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2358,8 +2378,8 @@ export const vatAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'wards',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 /**
@@ -2367,7 +2387,7 @@ export const vatAbi = [
  */
 export const vatAddress = {
   1: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B',
-  314310: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B'
+  314310: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B',
 } as const;
 
 /**
@@ -2385,35 +2405,37 @@ export const voteDelegateAbi = [
     inputs: [
       { name: '_chief', internalType: 'address', type: 'address' },
       { name: '_polling', internalType: 'address', type: 'address' },
-      { name: '_delegate', internalType: 'address', type: 'address' }
+      { name: '_delegate', internalType: 'address', type: 'address' },
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       { name: 'usr', internalType: 'address', type: 'address', indexed: true },
-      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false },
     ],
-    name: 'Free'
+    name: 'Free',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       { name: 'usr', internalType: 'address', type: 'address', indexed: true },
-      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: 'wad', internalType: 'uint256', type: 'uint256', indexed: false },
     ],
-    name: 'Lock'
+    name: 'Lock',
   },
   {
     constant: true,
     type: 'function',
     inputs: [],
     name: 'chief',
-    outputs: [{ name: '', internalType: 'contract ChiefLike', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract ChiefLike', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2421,14 +2443,14 @@ export const voteDelegateAbi = [
     inputs: [],
     name: 'delegate',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'expiration',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2436,23 +2458,27 @@ export const voteDelegateAbi = [
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'free',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
     type: 'function',
     inputs: [],
     name: 'gov',
-    outputs: [{ name: '', internalType: 'contract TokenLike', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract TokenLike', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: true,
     type: 'function',
     inputs: [],
     name: 'iou',
-    outputs: [{ name: '', internalType: 'contract TokenLike', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract TokenLike', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2460,15 +2486,17 @@ export const voteDelegateAbi = [
     inputs: [{ name: 'wad', internalType: 'uint256', type: 'uint256' }],
     name: 'lock',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
     type: 'function',
     inputs: [],
     name: 'polling',
-    outputs: [{ name: '', internalType: 'contract PollingLike', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: '', internalType: 'contract PollingLike', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2476,7 +2504,7 @@ export const voteDelegateAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'stake',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2484,7 +2512,7 @@ export const voteDelegateAbi = [
     inputs: [{ name: 'slate', internalType: 'bytes32', type: 'bytes32' }],
     name: 'vote',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2492,29 +2520,29 @@ export const voteDelegateAbi = [
     inputs: [{ name: 'yays', internalType: 'address[]', type: 'address[]' }],
     name: 'vote',
     outputs: [{ name: 'result', internalType: 'bytes32', type: 'bytes32' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
     type: 'function',
     inputs: [
       { name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' },
-      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' }
+      { name: 'optionIds', internalType: 'uint256[]', type: 'uint256[]' },
     ],
     name: 'votePoll',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
     type: 'function',
     inputs: [
       { name: 'pollId', internalType: 'uint256', type: 'uint256' },
-      { name: 'optionId', internalType: 'uint256', type: 'uint256' }
+      { name: 'optionId', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'votePoll',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2522,7 +2550,7 @@ export const voteDelegateAbi = [
     inputs: [{ name: 'pollId', internalType: 'uint256', type: 'uint256' }],
     name: 'withdrawPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2530,8 +2558,8 @@ export const voteDelegateAbi = [
     inputs: [{ name: 'pollIds', internalType: 'uint256[]', type: 'uint256[]' }],
     name: 'withdrawPoll',
     outputs: [],
-    stateMutability: 'nonpayable'
-  }
+    stateMutability: 'nonpayable',
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2546,9 +2574,9 @@ export const voteDelegateFactoryAbi = [
     type: 'constructor',
     inputs: [
       { name: '_chief', internalType: 'address', type: 'address' },
-      { name: '_polling', internalType: 'address', type: 'address' }
+      { name: '_polling', internalType: 'address', type: 'address' },
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -2559,53 +2587,59 @@ export const voteDelegateFactoryAbi = [
         name: 'voteDelegate',
         internalType: 'address',
         type: 'address',
-        indexed: true
-      }
+        indexed: true,
+      },
     ],
-    name: 'CreateVoteDelegate'
+    name: 'CreateVoteDelegate',
   },
   {
     type: 'function',
     inputs: [],
     name: 'chief',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'create',
-    outputs: [{ name: 'voteDelegate', internalType: 'address', type: 'address' }],
-    stateMutability: 'nonpayable'
+    outputs: [
+      { name: 'voteDelegate', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
-    inputs: [{ name: 'voteDelegate', internalType: 'address', type: 'address' }],
+    inputs: [
+      { name: 'voteDelegate', internalType: 'address', type: 'address' },
+    ],
     name: 'created',
     outputs: [{ name: 'created', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'delegates',
-    outputs: [{ name: 'voteDelegate', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
+    outputs: [
+      { name: 'voteDelegate', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'isDelegate',
     outputs: [{ name: 'ok', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
     name: 'polling',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 /**
@@ -2613,7 +2647,7 @@ export const voteDelegateFactoryAbi = [
  */
 export const voteDelegateFactoryAddress = {
   1: '0xC3D809E87A2C9da4F6d98fECea9135d834d6F5A0',
-  314310: '0x093D305366218D6d09bA10448922F10814b031dd'
+  314310: '0x98F74b7C96497070ba5052E02832EF9892962e62',
 } as const;
 
 /**
@@ -2621,7 +2655,7 @@ export const voteDelegateFactoryAddress = {
  */
 export const voteDelegateFactoryConfig = {
   address: voteDelegateFactoryAddress,
-  abi: voteDelegateFactoryAbi
+  abi: voteDelegateFactoryAbi,
 } as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2638,9 +2672,9 @@ export const vowAbi = [
     inputs: [
       { name: 'vat_', internalType: 'address', type: 'address' },
       { name: 'flapper_', internalType: 'address', type: 'address' },
-      { name: 'flopper_', internalType: 'address', type: 'address' }
+      { name: 'flopper_', internalType: 'address', type: 'address' },
     ],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -2650,9 +2684,9 @@ export const vowAbi = [
       { name: 'usr', internalType: 'address', type: 'address', indexed: true },
       { name: 'arg1', internalType: 'bytes32', type: 'bytes32', indexed: true },
       { name: 'arg2', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'data', internalType: 'bytes', type: 'bytes', indexed: false }
+      { name: 'data', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'LogNote'
+    name: 'LogNote',
   },
   {
     constant: true,
@@ -2661,7 +2695,7 @@ export const vowAbi = [
     inputs: [],
     name: 'Ash',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2670,7 +2704,7 @@ export const vowAbi = [
     inputs: [],
     name: 'Sin',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2679,7 +2713,7 @@ export const vowAbi = [
     inputs: [],
     name: 'bump',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2688,7 +2722,7 @@ export const vowAbi = [
     inputs: [],
     name: 'cage',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2697,7 +2731,7 @@ export const vowAbi = [
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'deny',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2706,7 +2740,7 @@ export const vowAbi = [
     inputs: [],
     name: 'dump',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2715,7 +2749,7 @@ export const vowAbi = [
     inputs: [{ name: 'tab', internalType: 'uint256', type: 'uint256' }],
     name: 'fess',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2723,11 +2757,11 @@ export const vowAbi = [
     type: 'function',
     inputs: [
       { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'uint256', type: 'uint256' }
+      { name: 'data', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'file',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2735,11 +2769,11 @@ export const vowAbi = [
     type: 'function',
     inputs: [
       { name: 'what', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'data', internalType: 'address', type: 'address' }
+      { name: 'data', internalType: 'address', type: 'address' },
     ],
     name: 'file',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2748,7 +2782,7 @@ export const vowAbi = [
     inputs: [],
     name: 'flap',
     outputs: [{ name: 'id', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2757,7 +2791,7 @@ export const vowAbi = [
     inputs: [],
     name: 'flapper',
     outputs: [{ name: '', internalType: 'contract FlapLike', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2766,7 +2800,7 @@ export const vowAbi = [
     inputs: [{ name: 'era', internalType: 'uint256', type: 'uint256' }],
     name: 'flog',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: false,
@@ -2775,7 +2809,7 @@ export const vowAbi = [
     inputs: [],
     name: 'flop',
     outputs: [{ name: 'id', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2784,7 +2818,7 @@ export const vowAbi = [
     inputs: [],
     name: 'flopper',
     outputs: [{ name: '', internalType: 'contract FlopLike', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2793,7 +2827,7 @@ export const vowAbi = [
     inputs: [{ name: 'rad', internalType: 'uint256', type: 'uint256' }],
     name: 'heal',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2802,7 +2836,7 @@ export const vowAbi = [
     inputs: [],
     name: 'hump',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2811,7 +2845,7 @@ export const vowAbi = [
     inputs: [{ name: 'rad', internalType: 'uint256', type: 'uint256' }],
     name: 'kiss',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2820,7 +2854,7 @@ export const vowAbi = [
     inputs: [],
     name: 'live',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: false,
@@ -2829,7 +2863,7 @@ export const vowAbi = [
     inputs: [{ name: 'usr', internalType: 'address', type: 'address' }],
     name: 'rely',
     outputs: [],
-    stateMutability: 'nonpayable'
+    stateMutability: 'nonpayable',
   },
   {
     constant: true,
@@ -2838,7 +2872,7 @@ export const vowAbi = [
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'sin',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2847,7 +2881,7 @@ export const vowAbi = [
     inputs: [],
     name: 'sump',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2856,7 +2890,7 @@ export const vowAbi = [
     inputs: [],
     name: 'vat',
     outputs: [{ name: '', internalType: 'contract VatLike', type: 'address' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2865,7 +2899,7 @@ export const vowAbi = [
     inputs: [],
     name: 'wait',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
+    stateMutability: 'view',
   },
   {
     constant: true,
@@ -2874,8 +2908,8 @@ export const vowAbi = [
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'wards',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view'
-  }
+    stateMutability: 'view',
+  },
 ] as const;
 
 /**
@@ -2883,7 +2917,7 @@ export const vowAbi = [
  */
 export const vowAddress = {
   1: '0xA950524441892A31ebddF91d3cEEFa04Bf454466',
-  314310: '0xA950524441892A31ebddF91d3cEEFa04Bf454466'
+  314310: '0xA950524441892A31ebddF91d3cEEFa04Bf454466',
 } as const;
 
 /**

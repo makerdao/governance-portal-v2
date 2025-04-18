@@ -44,9 +44,9 @@ describe('getDelegatesCounts', () => {
     ];
 
     const expectedCounts = {
-      alignedDelegatesCount: 2,
+      alignedDelegatesCount: 3,
       shadowDelegatesCount: 2,
-      totalDelegatesCount: 4
+      totalDelegatesCount: 5
     };
 
     expect(getDelegatesCounts(allDelegatesWithNames)).toEqual(expectedCounts);

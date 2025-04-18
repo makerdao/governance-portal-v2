@@ -12,7 +12,7 @@ import { getRecentlyUsedGaslessVotingKey } from 'modules/cache/constants/cache-k
 import { cacheGet } from 'modules/cache/cache';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
-import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
+import { MIN_SKY_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { ballotIncludesAlreadyVoted } from 'modules/polling/helpers/ballotIncludesAlreadyVoted';
 import { getRelayerBalance } from 'modules/polling/api/getRelayerBalance';
 import { ApiError } from 'modules/app/api/ApiError';
@@ -51,7 +51,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const [recentlyUsedGaslessVoting, hasMkrRequired, alreadyVoted, relayBalance] = await Promise.all([
     cacheGet(cacheKey, network),
-    hasMkrRequiredVotingWeight(voter, network, MIN_MKR_REQUIRED_FOR_GASLESS_VOTING, true),
+    hasMkrRequiredVotingWeight(voter, network, MIN_SKY_REQUIRED_FOR_GASLESS_VOTING, true),
     ballotIncludesAlreadyVoted(voter, network, pollIdsArray),
     getRelayerBalance(network)
   ]);

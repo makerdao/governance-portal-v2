@@ -8,7 +8,7 @@ const tenderlyRpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${process.env.NE
 
 export const tenderly = {
   id: SupportedChainId.TENDERLY as const,
-  name: 'mainnet_sep_30_0',
+  name: 'mainnet_2025_apr_15_0',
   network: 'tenderly',
   iconUrl: 'tokens/weth.svg',
   nativeCurrency: {
