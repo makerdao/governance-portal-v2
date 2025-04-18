@@ -20,6 +20,7 @@ import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
 import { calculatePercentage } from 'lib/utils';
 import { parseEther } from 'viem';
+import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
 
@@ -61,10 +62,18 @@ export function findWinner(condition: VictoryCondition, votes: PollTallyVote[], 
 }
 
 export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
-  // Fetch spock votes for the poll
-  const endUnix = new Date(poll.endDate).getTime() / 1000;
+  const allDelegates = await fetchDelegateAddresses(network);
 
-  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
+  // Create a mapping from owner addresses to delegate addresses
+  const ownerToDelegateMap: Record<string, string> = {};
+  allDelegates.forEach(delegate => {
+    if (delegate.voteDelegate && delegate.delegate) {
+      ownerToDelegateMap[delegate.delegate.toLowerCase()] = delegate.voteDelegate.toLowerCase();
+    }
+  });
+
+  // Fetch votes for the poll
+  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, ownerToDelegateMap, network);
 
   // Abstain
   const abstain = poll.parameters.inputFormat.abstain ? poll.parameters.inputFormat.abstain : [0];

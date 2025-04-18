@@ -31,7 +31,7 @@ export class DelegatePage {
 
   private initializeLocators() {
     this.sortDropdown = this.page.locator('[data-reach-listbox-input] [role="button"]');
-    this.highestFirstOption = this.page.locator('li[role="option"]:has-text("MKR delegated: highest first")');
+    this.highestFirstOption = this.page.locator('li[role="option"]:has-text("SKY delegated: highest first")');
     this.delegateButton = this.page.locator('[data-testid="button-delegate"]:enabled');
     this.approveDelegateButton = this.page.locator('button:has-text("Approve Delegate Contract")');
     this.confirmTransactionButton = this.page.locator('button:has-text("Confirm Transaction")');
@@ -45,7 +45,7 @@ export class DelegatePage {
     this.undelegateButton = this.page.locator('[data-testid="button-undelegate"]');
     this.withdrawText = this.page.locator('text=Withdraw from delegate contract');
     this.setMaxButton = this.page.locator('button[data-testid="mkr-input-set-max"]');
-    this.undelegateMkrButton = this.page.locator('button:has-text("Undelegate MKR")');
+    this.undelegateMkrButton = this.page.locator('button:has-text("Undelegate SKY")');
     this.transactionPendingText = this.page.locator('text=Transaction Pending');
     this.transactionSentText = this.page.locator('text=Transaction Sent');
   }

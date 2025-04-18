@@ -81,7 +81,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: [1, 3] }}>
           {/*TODO why does the lock amount have decimal places? They all end in .0 */}
-          {`${formatValue(parseEther(lockAmount), 'wad')}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(parseEther(lockAmount), 'wad')}${bpi > 0 ? ' SKY' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -104,7 +104,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     {`${formatValue(
                       parseEther(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount),
                       'wad'
-                    )}${bpi > 0 ? ' MKR' : ''}`}
+                    )}${bpi > 0 ? ' SKY' : ''}`}
                   </Text>
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {isLockstake ? '(Seal)' : ''}
@@ -225,7 +225,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
           Delegators
         </Text>
         <Text as="p" variant="secondary" color="onSurface">
-          Addresses that have delegated MKR to this delegate
+          Addresses that have delegated SKY to this delegate
         </Text>
       </Box>
       <table
@@ -259,7 +259,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               variant="caps"
               onClick={() => changeSort('mkr')}
             >
-              {bpi < 1 ? 'MKR' : 'MKR Delegated'}
+              {bpi < 1 ? 'SKY' : 'SKY Delegated'}
               {sortBy.type === 'mkr' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
@@ -270,7 +270,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
                 ''
               )}
             </Text>
-            <Tooltip label={'This is the percentage of the total MKR delegated to this delegate.'}>
+            <Tooltip label={'This is the percentage of the total SKY delegated to this delegate.'}>
               <Text
                 as="th"
                 sx={{ cursor: 'pointer', textAlign: 'left', pb: 2, width: '20%' }}

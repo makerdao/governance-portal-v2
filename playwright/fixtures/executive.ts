@@ -62,7 +62,7 @@ export class ExecutivePage {
   }
 
   async verifyLockedMkr(amount: string) {
-    await expect(this.lockedMkr).toHaveText(`${amount} MKR`);
+    await expect(this.lockedMkr).toHaveText(`${amount} SKY`);
   }
 
   async vote() {

@@ -39,8 +39,8 @@ export function InputDelegateMkr({
   disclaimer
 }: Props): React.ReactElement {
   const [value, setValue] = useState(0n);
-  const { account, voteProxyContractAddress } = useAccount();
-  const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
+  const { account } = useAccount();
+  const { data: lockedMkr } = useLockedMkr(account);
   function handleChange(val: bigint): void {
     setValue(val);
     onChange(val);
@@ -68,8 +68,8 @@ export function InputDelegateMkr({
       {showAlert && lockedMkr && lockedMkr >= parseEther('0.1') && balance && balance > 0n && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
-            {`You have ${formatValue(lockedMkr)} additional MKR locked in the voting contract. `}
-            <Withdraw link={'Withdraw MKR'} />
+            {`You have ${formatValue(lockedMkr)} additional SKY locked in the voting contract. `}
+            <Withdraw link={'Withdraw SKY'} />
             {' to deposit it into a delegate contract.'}
           </Text>
         </Alert>
@@ -78,7 +78,7 @@ export function InputDelegateMkr({
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {'You must '}
-            <Withdraw link={'withdraw your MKR'} />
+            <Withdraw link={'withdraw your SKY'} />
             {' from the voting contract before delegating it.'}
           </Text>
         </Alert>

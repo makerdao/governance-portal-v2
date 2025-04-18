@@ -14,7 +14,6 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import Tooltip from 'modules/app/components/Tooltip';
-import { getDescription } from 'modules/polling/components/VotingWeight';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
@@ -46,20 +45,13 @@ export function DelegateMKRDelegatedStats({
         value={
           !votingWeight ? (
             <Skeleton width="100%" height="15px" />
-          ) : votingWeight?.chiefBalanceHot ? (
-            formatValue(votingWeight?.chiefBalanceHot)
+          ) : votingWeight ? (
+            formatValue(votingWeight)
           ) : (
             'Untracked'
           )
         }
-        label={'Total MKR Delegated'}
-        tooltip={
-          <Tooltip label={getDescription({ votingWeight, isDelegate: true })}>
-            <Box>
-              <Icon sx={{ ml: 1 }} name="question" />
-            </Box>
-          </Tooltip>
-        }
+        label={'Total SKY Delegated'}
       />
       <StatBox
         value={
@@ -72,7 +64,7 @@ export function DelegateMKRDelegatedStats({
       {account && (
         <StatBox
           value={typeof totalMkrDelegated !== 'undefined' ? formatValue(totalMkrDelegated) : '0'}
-          label={'MKR delegated by you'}
+          label={'SKY delegated by you'}
         />
       )}
     </Flex>

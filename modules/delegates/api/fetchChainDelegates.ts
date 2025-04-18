@@ -10,44 +10,28 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
 import { DelegateContractInformation } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { Query } from 'modules/gql/generated/graphql';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
   const chainId = networkNameToChainId(network);
-  const data = await gqlRequest<Query>({ chainId, query: allDelegates });
-
-  const delegates = data.allDelegates.nodes.filter(delegate => !!delegate);
-
-  const publicClient = getPublicClient(chainId);
-
-  const delegatesWithMkrStaked: DelegateContractInformation[] = (
-    await publicClient.multicall({
-      contracts: delegates.map(delegate => ({
-        address: chiefAddress[chainId],
-        abi: chiefAbi,
-        functionName: 'deposits',
-        args: [delegate.voteDelegate as `0x${string}`]
-      }))
-    })
-  ).map((mkrRes, i) => {
-    const delegate = delegates[i];
-    if (delegate.voteDelegate && delegate.delegate && typeof mkrRes.result === 'bigint') {
-      const chainDelegate: DelegateContractInformation = {
-        ...(delegate as DelegateContractInformation),
-        address: delegate.delegate,
-        voteDelegateAddress: delegate.voteDelegate,
-        mkrDelegated: formatValue(mkrRes.result, 'wad', 18, false)
-      };
-      return chainDelegate;
-    }
-    return delegate as DelegateContractInformation;
+  const data = await gqlRequest({
+    chainId,
+    query: allDelegates
   });
 
-  return delegatesWithMkrStaked;
+  return data.delegates.map(d => {
+    // Ensure blockTimestamp is a valid number
+    const blockTimestamp = d.blockTimestamp ? Number(d.blockTimestamp) : 0;
+
+    return {
+      blockTimestamp,
+      address: d.ownerAddress,
+      voteDelegateAddress: d.id,
+      mkrDelegated: formatValue(BigInt(d.totalDelegated), 'wad', 18, false),
+      lastVoteDate: d.voter?.lastVotedTimestamp ? Number(d.voter.lastVotedTimestamp) : null
+    };
+  });
 }

@@ -15,7 +15,6 @@ import { CHAIN_INFO } from 'modules/web3/constants/networks';
 
 type GqlRequestProps = {
   chainId?: SupportedChainId;
-  useSubgraph?: boolean;
   query: RequestDocument;
   variables?: Variables | null;
 };
@@ -23,21 +22,15 @@ type GqlRequestProps = {
 // TODO we'll be able to remove the "any" if we update all the instances of gqlRequest to pass <Query>
 export const gqlRequest = async <TQuery = any>({
   chainId,
-  useSubgraph = false,
   query,
   variables
 }: GqlRequestProps): Promise<TQuery> => {
   try {
     const id = chainId ?? SupportedChainId.MAINNET;
-    let url;
-    if (useSubgraph) {
-      url = CHAIN_INFO[id].subgraphUrl;
-    } else {
-      url = CHAIN_INFO[id].spockUrl;
-    }
+    const url = CHAIN_INFO[id].subgraphUrl;
     if (!url) {
       return Promise.reject(
-        new ApiError(`Missing ${useSubgraph ? 'subgraph' : 'spock'} url in configuration for chainId: ${id}`)
+        new ApiError(`Missing subgraph url in configuration for chainId: ${id}`)
       );
     }
 

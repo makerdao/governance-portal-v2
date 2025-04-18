@@ -25,7 +25,7 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
     <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Flex sx={{ justifyContent: 'space-between' }}>
         <Heading>Browse the Governance Forum</Heading>
-        <ExternalLink href="https://forum.makerdao.com/" title="View Forum Posts" target="_blank">
+        <ExternalLink href="https://forum.sky.money/" title="View Forum Posts" target="_blank">
           <ViewMore label="View Forum" />
         </ExternalLink>
       </Flex>
@@ -96,7 +96,7 @@ export default function Participation({
       <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
         <Stack gap={2}>
           <Heading as="h2">Follow the Conversation and Participate</Heading>
-          <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
+          <Text as="p" sx={{ px: 'inherit', fontSize: [2, 4] }}>
             Engage with the Maker Community and make informed decisions.
           </Text>
         </Stack>

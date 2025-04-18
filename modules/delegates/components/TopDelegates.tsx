@@ -15,7 +15,7 @@ import { DelegateModal } from './modals/DelegateModal';
 import { useState } from 'react';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { calculatePercentage } from 'lib/utils';
-import { parseEther } from 'viem';
+import { formatEther } from 'viem';
 
 export default function TopDelegates({
   topDelegates,
@@ -42,7 +42,7 @@ export default function TopDelegates({
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
           <Heading as="h2">Top Aligned Delegates</Heading>
-          <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
+          <Text as="p" sx={{ px: 'inherit', fontSize: [2, 4] }}>
             Aligned Delegates ranked by their voting power
           </Text>
         </Stack>
@@ -71,7 +71,7 @@ export default function TopDelegates({
           </Box>
           <Box sx={{ width: '30%', textAlign: 'left', display: ['none', 'block'] }}>
             <Text as="p" variant="caps" sx={{ color: 'secondaryEmphasis' }}>
-              MKR
+              SKY
             </Text>
           </Box>
         </Flex>
@@ -107,7 +107,7 @@ export default function TopDelegates({
                 >
                   <Text>
                     {mkrDelegated
-                      ? calculatePercentage(parseEther(mkrDelegated), totalMKRDelegated, 2).toString()
+                      ? calculatePercentage(BigInt(mkrDelegated), totalMKRDelegated, 2).toString()
                       : '0.00'}
                     %
                   </Text>
@@ -121,7 +121,9 @@ export default function TopDelegates({
                     display: ['none', 'flex']
                   }}
                 >
-                  <Text as="p">{mkrDelegated ? parseFloat(mkrDelegated).toFixed(2) : '0.00'} MKR</Text>
+                  <Text as="p">
+                    {mkrDelegated ? parseFloat(formatEther(BigInt(mkrDelegated))).toFixed(2) : '0.00'} SKY
+                  </Text>
                   <Button
                     variant="outline"
                     data-testid="button-delegate"

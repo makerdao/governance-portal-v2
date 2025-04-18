@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 export enum DelegateStatusEnum {
   aligned = 'aligned',
-  expired = 'expired',
   shadow = 'shadow'
 }
 
@@ -25,13 +24,13 @@ export enum DelegateTypeEnum {
 }
 
 export enum DelegateOrderByEnum {
-  DATE = 'DATE',
-  MKR = 'MKR',
-  DELEGATORS = 'DELEGATORS',
-  RANDOM = 'RANDOM'
+  DATE = 'blockTimestamp',
+  MKR = 'totalDelegated',
+  DELEGATORS = 'delegators',
+  RANDOM = 'random'
 }
 
 export enum OrderDirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC'
+  ASC = 'asc',
+  DESC = 'desc'
 }

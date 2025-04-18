@@ -129,7 +129,7 @@ export const DelegateModal = ({
                     mkrToDeposit,
                     'wad',
                     6
-                  )} MKR to ${delegate.name}.`}
+                  )} SKY to ${delegate.name}.`}
                 >
                   <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
                     <DelegateAvatarName delegate={delegate} />
@@ -157,10 +157,10 @@ export const DelegateModal = ({
                     ) : (
                       <InputDelegateMkr
                         title={title}
-                        description="Input the amount of MKR to deposit into the delegate contract."
+                        description="Input the amount of SKY to deposit into the delegate contract."
                         onChange={setMkrToDeposit}
                         balance={mkrBalance}
-                        buttonLabel="Delegate MKR"
+                        buttonLabel="Delegate SKY"
                         onClick={() => setConfirmStep(true)}
                         showAlert={true}
                       />
@@ -175,7 +175,7 @@ export const DelegateModal = ({
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={
-                        'Approve the transfer of MKR tokens to the delegate contract to deposit your MKR.'
+                        'Approve the transfer of SKY tokens to the delegate contract to deposit your SKY.'
                       }
                     />
                   )}

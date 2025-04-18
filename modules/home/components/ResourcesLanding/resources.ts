@@ -14,13 +14,13 @@ export enum ResourceCategory {
 }
 
 enum ResourceBackground {
-  GOVERNANCE = 'linear-gradient(260.14deg, #DEE8C4 0%, #AAE4D7 97.43%)',
-  PRODUCTS_AND_TOOLS = 'linear-gradient(260.14deg, #E2CCFF 0%, #9A4BFF 97.43%)',
-  DEVELOPERS = 'linear-gradient(260.14deg, #F4B7FE 0%, #E64BFF 97.43%)'
+  GOVERNANCE = 'linear-gradient(260.14deg, #6A6CFB 0%, #2A197D 97.43%)',
+  PRODUCTS_AND_TOOLS = 'linear-gradient(260.14deg, #F7A7F9 0%, #6D28FF 97.43%)',
+  DEVELOPERS = 'linear-gradient(260.14deg, #FFCD6B 0%, #EB5EDF 97.43%)'
 }
 
 export enum ResourceColor {
-  GOVERNANCE = '#1ACCA7',
+  GOVERNANCE = '#504DFF',
   PRODUCTS_AND_TOOLS = '#9A4BFF',
   DEVELOPERS = '#E64BFF'
 }
@@ -37,8 +37,8 @@ type LandingResource = {
 
 export const resources: LandingResource[] = [
   {
-    title: 'Maker Governance Forum',
-    url: 'https://forum.makerdao.com/',
+    title: 'Sky Governance Forum',
+    url: 'https://forum.sky.money/',
     category: ResourceCategory.GOVERNANCE,
     bg: ResourceBackground.GOVERNANCE,
     color: ResourceColor.GOVERNANCE,
@@ -46,6 +46,7 @@ export const resources: LandingResource[] = [
     summary:
       'Participate in or start new discussions related to the governance of MakerDAO and the Maker protocol.'
   },
+  // TODO: should this be removed?
   {
     title: 'Maker Operation Manual',
     url: 'https://manual.makerdao.com',

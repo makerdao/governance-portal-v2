@@ -10,8 +10,6 @@ import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { useChainId } from 'wagmi';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { voteProxyAbi } from 'modules/contracts/ethers/abis';
 
 export const useLock = ({
   mkrToDeposit,
@@ -24,9 +22,10 @@ export const useLock = ({
   mkrToDeposit: bigint;
 }): WriteHook => {
   const chainId = useChainId();
-  const { voteProxyContractAddress } = useAccount();
 
-  const commonParams = {
+  return useWriteContractFlow({
+    address: chiefAddress[chainId],
+    abi: chiefAbi,
     functionName: 'lock',
     args: [mkrToDeposit],
     chainId,
@@ -35,21 +34,5 @@ export const useLock = ({
     onSuccess,
     onError,
     onStart
-  } as const;
-
-  const useWriteContractFlowResponseProxy = useWriteContractFlow({
-    address: voteProxyContractAddress as `0x${string}` | undefined,
-    abi: voteProxyAbi,
-    ...commonParams,
-    enabled: commonParams.enabled && !!voteProxyContractAddress
   });
-
-  const useWriteContractFlowResponseChief = useWriteContractFlow({
-    address: chiefAddress[chainId],
-    abi: chiefAbi,
-    ...commonParams,
-    enabled: commonParams.enabled && !voteProxyContractAddress
-  });
-
-  return voteProxyContractAddress ? useWriteContractFlowResponseProxy : useWriteContractFlowResponseChief;
 };

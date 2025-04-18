@@ -6,17 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React, { useState } from 'react';
-import { Heading, Text, Box, Button, Flex, Input, Label } from 'theme-ui';
-import Icon from 'modules/app/components/Icon';
+import React, { useState, useEffect } from 'react';
+import { Heading, Text, Box, Button, Flex, Input, Label, Card } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
-import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import PollCreateModal from 'modules/polling/components/PollCreateModal';
-import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import ResourceBox from 'modules/app/components/ResourceBox';
 import { validatePollFromRawURL } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
@@ -24,9 +20,12 @@ import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/markdown';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { PollMarkdownEditor } from 'modules/polling/components/PollMarkdownEditor';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { useSwitchChain } from 'wagmi';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -58,6 +57,33 @@ const CreateText = ({ children }) => {
     </Box>
   );
 };
+
+const NetworkSwitchModal = () => {
+  const { switchChain } = useSwitchChain();
+  return (
+    <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+      }}
+    >
+      <Card sx={{ width: 'auto', padding: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Heading as="h4" mb={3}>Network Switch Required</Heading>
+        <Text mb={3}>Please switch to arbitrum to create a poll.</Text>
+        <Button onClick={() => switchChain({ chainId: SupportedChainId.ARBITRUM })}>Switch to Arbitrum</Button>
+      </Card>
+    </Box>
+  );
+};
+
 const PollingCreate = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
   const [loading, setLoading] = useState(false);
@@ -67,6 +93,18 @@ const PollingCreate = (): React.ReactElement => {
   const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
   const { account } = useAccount();
+  const network = useNetwork();
+  const [showNetworkModal, setShowNetworkModal] = useState(false);
+
+  useEffect(() => {
+    if (network && account) {
+      if (network !== SupportedNetworks.ARBITRUM && network !== SupportedNetworks.ARBITRUMTESTNET) {
+        setShowNetworkModal(true);
+      } else {
+        setShowNetworkModal(false);
+      }
+    }
+  }, [network, account]);
 
   const resetForm = () => {
     setPoll(undefined);
@@ -108,19 +146,14 @@ const PollingCreate = (): React.ReactElement => {
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Create Poll" />
 
+      {showNetworkModal && <NetworkSwitchModal/>}
+
       <Stack gap={3}>
         <Heading mb={2} as="h4">
           Create Poll
         </Heading>
-        <SidebarLayout>
           <Box>
-            <Stack gap={2}>
-              <InternalLink href={'/polling'} title="View polling page">
-                <Button variant="mutedOutline" sx={{ width: 'max-content' }}>
-                  <Icon name="chevron_left" sx={{ size: 2, mr: 2 }} />
-                  Back to All Polls
-                </Button>
-              </InternalLink>
+            <Card>
               <Stack gap={3}>
                 <Tabs
                   tabListStyles={{ pl: [3, 4] }}
@@ -130,7 +163,8 @@ const PollingCreate = (): React.ReactElement => {
                       <Box>
                         <Label htmlFor="url">URL</Label>
                         <Flex sx={{ flexDirection: 'row' }}>
-                          <Input name="url" mb={3} onChange={e => setPollUrl(e.target.value)} />
+                          <Input name="url" mb={3} onChange={e => setPollUrl(e.target.value)} 
+                          />
                           <Button
                             variant="smallOutline"
                             onClick={() => urlValidation(pollUrl)}
@@ -180,7 +214,8 @@ const PollingCreate = (): React.ReactElement => {
                       <CreateText>
                         {poll &&
                           `${
-                            (new Date(poll.endDate).getTime() - new Date(poll.startDate).getTime()) / 86400000
+                            (new Date(poll.endDate).getTime() - new Date(poll.startDate).getTime()) /
+                            86400000
                           } days`}
                       </CreateText>
                       <Label>Discussion Link</Label>
@@ -221,24 +256,8 @@ const PollingCreate = (): React.ReactElement => {
                   <PollCreateModal close={() => setCreating(false)} poll={poll} setPoll={setPoll} />
                 )}
               </Stack>
-            </Stack>
+            </Card>
           </Box>
-          {bpi >= 3 && (
-            <Stack gap={3}>
-              <SystemStatsSidebar
-                fields={[
-                  'chief contract',
-                  'mkr in chief',
-                  'mkr needed to pass',
-                  'savings rate',
-                  'total dai',
-                  'debt ceiling'
-                ]}
-              />
-              <ResourceBox type={'general'} />
-            </Stack>
-          )}
-        </SidebarLayout>
       </Stack>
     </PrimaryLayout>
   );

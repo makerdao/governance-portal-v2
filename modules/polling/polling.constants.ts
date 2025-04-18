@@ -13,9 +13,9 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export const ABSTAIN = 0;
 
-export const MIN_MKR_REQUIRED_FOR_GASLESS_VOTING = parseEther('0.1');
-export const MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY = parseFloat(
-  formatEther(MIN_MKR_REQUIRED_FOR_GASLESS_VOTING)
+export const MIN_SKY_REQUIRED_FOR_GASLESS_VOTING = parseEther('20');
+export const MIN_SKY_REQUIRED_FOR_GASLESS_VOTING_DISPLAY = parseFloat(
+  formatEther(MIN_SKY_REQUIRED_FOR_GASLESS_VOTING)
 ).toLocaleString();
 export const GASLESS_RATE_LIMIT_IN_MS = TEN_MINUTES_IN_MS;
 
@@ -79,3 +79,5 @@ export const AGGREGATED_POLLS_FILE_URL = {
   [SupportedNetworks.TENDERLY]:
     'https://raw.githubusercontent.com/makerdao-dux/community/tenderly-polls/governance/polls/meta/polls.json'
 };
+
+export const SKY_PORTAL_START_DATE = new Date('2025-03-17'); //TODO: edit date once we pick a cutoff date
