@@ -66,18 +66,11 @@ export enum PollStatusEnum {
   ended = 'ENDED'
 }
 
-export const POLLS_HASH_FILE_URL = {
-  [SupportedNetworks.MAINNET]:
-    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/hashed-polls.json',
-  [SupportedNetworks.TENDERLY]:
-    'https://raw.githubusercontent.com/makerdao-dux/community/tenderly-polls/governance/polls/meta/hashed-polls.json'
-};
-
 export const AGGREGATED_POLLS_FILE_URL = {
   [SupportedNetworks.MAINNET]:
-    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/polls.json',
+    'https://raw.githubusercontent.com/jetstreamgg/gov-metadata/refs/heads/main/polls/index.json',
   [SupportedNetworks.TENDERLY]:
-    'https://raw.githubusercontent.com/makerdao-dux/community/tenderly-polls/governance/polls/meta/polls.json'
+    'https://raw.githubusercontent.com/jetstreamgg/gov-metadata/refs/heads/main/polls/index.json'
 };
 
 export const SKY_PORTAL_START_DATE = new Date('2025-03-17'); //TODO: edit date once we pick a cutoff date

@@ -8,12 +8,42 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { DelegateStatusEnum, DelegateTypeEnum } from '../delegates.constants';
 
+export type GithubDelegate = {
+  path: string;
+  metadata: {
+    name: string;
+    external_profile_url: string;
+    address: string;
+    avatar?: string;
+    tags?: string[];
+  };
+  metrics: {
+    combined_participation: string;
+    poll_participation: string;
+    exec_participation: string;
+    communication: string;
+    start_date: string;
+  };
+};
+
 export type DelegateRepoInformation = {
   voteDelegateAddress: string;
   picture?: string;
   name: string;
   externalUrl: string;
   description: string;
+  combinedParticipation?: string;
+  pollParticipation?: string;
+  executiveParticipation?: string;
+  communication?: string;
+  tags?: string[];
+};
+
+export type DelegateListItem = {
+  voteDelegateAddress: string;
+  picture?: string;
+  name: string;
+  externalUrl: string;
   combinedParticipation?: string;
   pollParticipation?: string;
   executiveParticipation?: string;

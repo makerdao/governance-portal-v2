@@ -51,16 +51,6 @@ export default function ExecutiveOverviewCard({
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
 
-  if (!('about' in proposal)) {
-    return (
-      <Card sx={{ p: [0, 0] }}>
-        <Box sx={{ p: 3 }}>
-          <Text>spell address {proposal.address}</Text>
-        </Box>
-      </Card>
-    );
-  }
-
   const canVote = !!account;
 
   return (

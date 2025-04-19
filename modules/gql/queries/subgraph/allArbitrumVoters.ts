@@ -10,15 +10,17 @@ import { gql } from 'graphql-request';
 
 export const allArbitrumVoters = gql`
   query allArbitrumVoters($argPollId: String) {
-		arbitrumPollVotes(where: {poll: $argPollId}){
-      id
-      voter {
-        id
+    arbitrumPoll(id: $argPollId) {
+      startDate
+      endDate
+      votes {
+        voter {
+          id
+        }
+        blockTime
+        choice
+        txnHash
       }
-      blockTime
-      choice
-      txnHash
     }
   }
 `;
- 

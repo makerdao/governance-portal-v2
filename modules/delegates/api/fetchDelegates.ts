@@ -23,7 +23,8 @@ import {
   DelegatesPaginatedAPIResponse,
   DelegatePaginated,
   AllDelegatesEntryWithName,
-  DelegateInfo
+  DelegateInfo,
+  DelegateListItem
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -102,7 +103,7 @@ export async function fetchDelegate(
 
 export async function fetchAndMergeDelegates(
   network: SupportedNetworks
-): Promise<[DelegateRepoInformation[] | undefined, AllDelegatesEntryWithName[]]> {
+): Promise<[DelegateListItem[] | undefined, AllDelegatesEntryWithName[]]> {
   const [{ data: githubDelegates }, allDelegateAddresses] = await Promise.all([
     fetchGithubDelegates(network),
     fetchDelegateAddresses(network)

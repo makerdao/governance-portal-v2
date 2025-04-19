@@ -7,138 +7,107 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { cacheGet, cacheSet } from 'modules/cache/cache';
-import { PartialActivePoll, Poll, PollFilterQueryParams, PollListItem } from 'modules/polling/types';
+import { PartialActivePoll, PollFilterQueryParams, PollListItem, SubgraphPoll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollsPaginatedResponse } from '../types/pollsResponse';
 import { PollsValidatedQueryParams } from 'modules/polling/types';
-import {
-  partialActivePollsCacheKey,
-  isPollsHashValidCacheKey,
-  pollDetailsCacheKey,
-  pollListCacheKey,
-  pollsHashCacheKey,
-  pollSlugToIdsCacheKey
-} from 'modules/cache/constants/cache-keys';
+import { partialActivePollsCacheKey, pollListCacheKey } from 'modules/cache/constants/cache-keys';
 import { getPollTags } from './getPollTags';
-import {
-  AGGREGATED_POLLS_FILE_URL,
-  PollStatusEnum,
-  POLLS_HASH_FILE_URL,
-  PollInputFormat
-} from '../polling.constants';
-import { ONE_WEEK_IN_MS, THIRTY_MINUTES_IN_MS } from 'modules/app/constants/time';
+import { AGGREGATED_POLLS_FILE_URL, PollStatusEnum, PollInputFormat } from '../polling.constants';
+import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
 import { sortPollsBy } from '../helpers/sortPolls';
 import { TagCount } from 'modules/app/types/tag';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { arbitrumPollsQuery } from 'modules/gql/queries/subgraph/arbitrumPolls';
 
-export async function checkCachedPollsValidity(
-  network: SupportedNetworks
-): Promise<{ valid: boolean; hash?: string }> {
-  const isPollsHashValid: boolean | undefined = await cacheGet(
-    isPollsHashValidCacheKey,
-    network,
-    THIRTY_MINUTES_IN_MS
-  );
-
-  if (isPollsHashValid) {
-    return { valid: true };
-  }
-
-  const githubPollsHashRes = await fetch(POLLS_HASH_FILE_URL[network]);
-  const githubPollsHashFile = await githubPollsHashRes.json();
-
-  const githubPollsHash: string | undefined = githubPollsHashFile.hash;
-  const cachedPollsHash: string | undefined = await cacheGet(pollsHashCacheKey, network, ONE_WEEK_IN_MS);
-
-  if (githubPollsHash && cachedPollsHash && githubPollsHash === cachedPollsHash) {
-    cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
-    return { valid: true };
-  } else {
-    return { valid: false, hash: githubPollsHash };
-  }
-}
-
-export async function refetchPolls(
-  network: SupportedNetworks,
-  githubHash: string
-): Promise<{
+export async function refetchPolls(network: SupportedNetworks): Promise<{
   pollList: PollListItem[];
-  allPolls: Poll[];
   partialActivePolls: PartialActivePoll[];
 }> {
-  const allPollsRes = await fetch(AGGREGATED_POLLS_FILE_URL[network]);
-  const allPolls = await allPollsRes.json();
+  const arbitrumChainId =
+    network === SupportedNetworks.MAINNET ? SupportedChainId.ARBITRUM : SupportedChainId.ARBITRUMTESTNET;
 
-  const pollList: PollListItem[] = allPolls.map(poll => {
-    const { pollId, startDate, endDate, slug, parameters, summary, title, options, tags } = poll;
-    return {
-      pollId,
-      startDate: new Date(startDate).toISOString(),
-      endDate: new Date(endDate).toISOString(),
-      slug,
-      type: parameters.inputFormat.type,
-      parameters,
-      title,
-      summary,
-      options,
-      tags
-    };
-  });
+  const subgraphPolls: SubgraphPoll[] = [];
+  let refetchSubgraph = true;
+  let skip = 0;
+  while (refetchSubgraph) {
+    const response = await gqlRequest<Promise<{ arbitrumPolls: SubgraphPoll[] }>>({
+      chainId: arbitrumChainId,
+      query: arbitrumPollsQuery,
+      variables: { argsSkip: skip }
+    });
 
-  const partialActivePolls = pollList
-    .filter(poll => new Date(poll.endDate) > new Date())
-    .map(({ pollId, startDate, endDate }) => ({ pollId, startDate, endDate }));
-
-  cacheSet(isPollsHashValidCacheKey, 'true', network, THIRTY_MINUTES_IN_MS);
-  cacheSet(pollsHashCacheKey, githubHash, network, ONE_WEEK_IN_MS);
-  cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
-  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
-
-  const pollTags = getPollTags();
-
-  const pollSlugToIds: [string, number][] = [];
-  const stringifiedPolls: { [key: number]: string } = {};
-
-  const parsedPolls: Poll[] = allPolls.map((poll, i) => {
-    const prevPoll = allPolls[i - 1];
-    const nextPoll = allPolls[i + 1];
-
-    const pollWithLinksAndTags: Poll = {
-      ...poll,
-      tags: poll.tags.map(tag => pollTags.find(t => t.id === tag)).filter(tag => !!tag),
-      ctx: {
-        prev: prevPoll ? { slug: prevPoll.slug } : null,
-        next: nextPoll ? { slug: nextPoll.slug } : null
-      }
-    };
-
-    pollSlugToIds.push([poll.slug, poll.pollId]);
-    stringifiedPolls[poll.pollId] = JSON.stringify(pollWithLinksAndTags);
-
-    return pollWithLinksAndTags;
-  });
-
-  // Individual polls contain more metadata than the poll-list array and are used to render the poll detail page.
-  // They are stored as multiple hashes for a same cache key for improved performance when setting and getting them.
-  cacheSet(pollDetailsCacheKey, stringifiedPolls, network, ONE_WEEK_IN_MS, 'HSET');
-  cacheSet(pollSlugToIdsCacheKey, JSON.stringify(pollSlugToIds), network, ONE_WEEK_IN_MS);
-
-  return { pollList, allPolls: parsedPolls, partialActivePolls };
-}
-
-export async function getActivePollIds(network: SupportedNetworks): Promise<number[]> {
-  const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
-
-  let partialActivePolls: PartialActivePoll[] | undefined;
-
-  if (cachedPollsAreValid) {
-    const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, ONE_WEEK_IN_MS);
-    if (cachedPartialActivePolls) {
-      partialActivePolls = JSON.parse(cachedPartialActivePolls);
+    if (response.arbitrumPolls.length === 0) {
+      refetchSubgraph = false;
+    } else {
+      skip += 1000;
+      subgraphPolls.push(...response.arbitrumPolls);
     }
   }
 
-  if (!partialActivePolls) {
-    const { partialActivePolls: newPartialActivePolls } = await refetchPolls(network, githubHash as string);
+  const pollsMetadata = await (await fetch(AGGREGATED_POLLS_FILE_URL[network])).json();
+
+  const pollList: PollListItem[] = subgraphPolls
+    .map(poll => {
+      const { id, url, multiHash } = poll;
+
+      const foundPollMetadata = pollsMetadata.find(entry => {
+        const encodedUrl = encodeURIComponent(url);
+        const encodedPath = encodeURIComponent(entry.path);
+        return encodedUrl.includes(encodedPath);
+      });
+
+      if (!foundPollMetadata) {
+        return;
+      }
+
+      const { metadata } = foundPollMetadata;
+
+      return {
+        pollId: parseInt(id),
+        startDate: new Date(metadata.start_date).toISOString(),
+        endDate: new Date(metadata.end_date).toISOString(),
+        multiHash,
+        slug: multiHash.slice(0, 8),
+        url,
+        discussionLink: metadata.discussion_link,
+        type: metadata.parameters.input_format.type,
+        parameters: {
+          inputFormat: metadata.parameters.input_format,
+          resultDisplay: metadata.parameters.result_display,
+          victoryConditions: metadata.parameters.victory_conditions
+        },
+        title: metadata.title,
+        summary: metadata.summary,
+        options: metadata.options,
+        tags: metadata.tags || []
+      };
+    })
+    .filter(poll => !!poll);
+
+  const partialActivePolls = pollList
+    .filter(poll => new Date(poll.endDate) > new Date())
+    .map(({ pollId, startDate, endDate }) => ({
+      pollId,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate)
+    }));
+
+  cacheSet(pollListCacheKey, JSON.stringify(pollList), network, ONE_WEEK_IN_MS);
+  cacheSet(partialActivePollsCacheKey, JSON.stringify(partialActivePolls), network, ONE_WEEK_IN_MS);
+
+  return { pollList, partialActivePolls };
+}
+
+export async function getActivePollIds(network: SupportedNetworks): Promise<number[]> {
+  let partialActivePolls: PartialActivePoll[] | undefined;
+
+  const cachedPartialActivePolls = await cacheGet(partialActivePollsCacheKey, network, ONE_WEEK_IN_MS);
+  if (cachedPartialActivePolls) {
+    partialActivePolls = JSON.parse(cachedPartialActivePolls);
+  } else {
+    const { partialActivePolls: newPartialActivePolls } = await refetchPolls(network);
     partialActivePolls = newPartialActivePolls;
   }
 
@@ -151,17 +120,12 @@ export async function getActivePollIds(network: SupportedNetworks): Promise<numb
 }
 
 export async function getPollList(network: SupportedNetworks): Promise<PollListItem[]> {
-  const { valid: cachedPollsAreValid, hash: githubHash } = await checkCachedPollsValidity(network);
-
-  if (cachedPollsAreValid) {
-    const cachedPollList = await cacheGet(pollListCacheKey, network, ONE_WEEK_IN_MS);
-    if (cachedPollList) {
-      return JSON.parse(cachedPollList);
-    }
+  const cachedPollList = await cacheGet(pollListCacheKey, network, ONE_WEEK_IN_MS);
+  if (cachedPollList) {
+    return JSON.parse(cachedPollList);
   }
 
-  const { pollList } = await refetchPolls(network, githubHash as string);
-
+  const { pollList } = await refetchPolls(network);
   return pollList;
 }
 

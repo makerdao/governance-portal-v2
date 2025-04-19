@@ -237,14 +237,14 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 label="Supporters"
               />
             </Flex>
-            {'about' in proposal ? (
+            {'content' in proposal ? (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={['Proposal Detail', 'Spell Details']}
                 tabRoutes={['Proposal Detail', 'Spell Details']}
                 tabPanels={[
                   <Box
-                    key={'about'}
+                    key={'content'}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,

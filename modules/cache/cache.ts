@@ -188,7 +188,8 @@ export const cacheSet = (
   data: string | { [key: number]: string },
   network?: SupportedNetworks,
   expiryMs = ONE_HOUR_IN_MS,
-  method: 'SET' | 'HSET' = 'SET'
+  method: 'SET' | 'HSET' = 'SET',
+  field = ''
 ): void => {
   if (!config.USE_CACHE || config.USE_CACHE === 'false') {
     return;
@@ -204,12 +205,20 @@ export const cacheSet = (
       const expirySeconds = Math.round(expiryMs / 1000);
       logger.debug(`Redis cache set for ${path}, with TTL ${expirySeconds} seconds`);
 
-      if (method === 'HSET' && typeof data !== 'string') {
-        redis?.hset(path, data, err => {
-          if (!err) {
-            redis.expire(path, expirySeconds);
-          }
-        });
+      if (method === 'HSET') {
+        if (typeof data === 'string') {
+          redis?.hset(path, field, data, err => {
+            if (!err) {
+              redis.expire(path, expirySeconds);
+            }
+          });
+        } else {
+          redis?.hset(path, data, err => {
+            if (!err) {
+              redis.expire(path, expirySeconds);
+            }
+          });
+        }
       } else {
         const checkedData = typeof data === 'string' ? data : JSON.stringify(data);
         redis?.set(path, checkedData, 'EX', expirySeconds);

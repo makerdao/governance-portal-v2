@@ -74,8 +74,6 @@ The following configuration values can be added to the `.env` file:
 
 - Set `ETHERSCAN_V2_API_KEY` to a valid [Etherscan V2](https://docs.etherscan.io/etherscan-v2#why-v2) API key for Wagmi to be able to generate the contract ABIs
 
-- Set `GITHUB_TOKEN` to fetch polls, executives, and aligned delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
-
 - Set `USE_CACHE` to true if you want to use cache, if `REDIS_URL` is set it will use REDIS otherwise filesystem cache
 
 - Set `GASLESS_DISABLED` to `true` to disable gasless voting in UI (pre-check endpoint will fail)
