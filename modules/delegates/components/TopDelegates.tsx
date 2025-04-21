@@ -36,7 +36,7 @@ export default function TopDelegates({
           isOpen={true}
           onDismiss={() => setShowDelegateModal(null)}
           mutateTotalStaked={() => null}
-          mutateMKRDelegated={() => null}
+          mutateSkyDelegated={() => null}
         />
       )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>

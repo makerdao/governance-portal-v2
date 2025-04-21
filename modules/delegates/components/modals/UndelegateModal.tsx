@@ -11,7 +11,7 @@ import { Box, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
+import { InputDelegateSky, TxDisplay } from 'modules/delegates/components';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
@@ -25,7 +25,7 @@ type Props = {
   onDismiss: () => void;
   delegate: Delegate | DelegatePaginated | DelegateInfo;
   mutateTotalStaked: (amount?: bigint) => void;
-  mutateMKRDelegated: () => void;
+  mutateSkyDelegated: () => void;
   refetchOnDelegation?: boolean;
 };
 
@@ -34,7 +34,7 @@ export const UndelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMKRDelegated,
+  mutateSkyDelegated,
   refetchOnDelegation = true
 }: Props): JSX.Element => {
   const { account } = useAccount();
@@ -58,7 +58,7 @@ export const UndelegateModal = ({
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
       refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToWithdraw * -1n);
-      mutateMKRDelegated();
+      mutateSkyDelegated();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
@@ -96,7 +96,7 @@ export const UndelegateModal = ({
                 </TxDisplay>
               ) : (
                 <>
-                  <InputDelegateMkr
+                  <InputDelegateSky
                     title="Withdraw from delegate contract"
                     description="Input the amount of SKY to withdraw from the delegate contract."
                     onChange={setMkrToWithdraw}

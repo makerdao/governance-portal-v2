@@ -70,7 +70,7 @@ export default function ManageDelegation({
           isOpen={showDelegateModal}
           onDismiss={() => setShowDelegateModal(false)}
           mutateTotalStaked={mutateTotalStaked}
-          mutateMKRDelegated={mutateMkrStaked}
+          mutateSkyDelegated={mutateMkrStaked}
         />
       )}
       {showUndelegateModal && (
@@ -79,7 +79,7 @@ export default function ManageDelegation({
           isOpen={showUndelegateModal}
           onDismiss={() => setShowUndelegateModal(false)}
           mutateTotalStaked={mutateTotalStaked}
-          mutateMKRDelegated={mutateMkrStaked}
+          mutateSkyDelegated={mutateMkrStaked}
         />
       )}
     </Box>

@@ -27,7 +27,7 @@ type Props = {
   showAlert: boolean;
 };
 
-export function InputDelegateMkr({
+export function InputDelegateSky({
   title,
   description,
   onChange,
