@@ -44,7 +44,7 @@ export const useSkyVotingWeight = ({
 
   return {
     data,
-    loading: !error && !data,
+    loading: !error && data === undefined,
     error,
     mutate
   };
