@@ -8,5 +8,11 @@
     "content": "MakerDAO is now Sky — the next evolution of DeFi. Explore Sky.money and get rewarded for saving without giving up control.",
     "href": "https://sky.money",
     "variant": "alerts.primary"
+  },
+  {
+    "active": true,
+    "content": "Maker Governance is voting to decide the future of the Chief contract and the use of SKY for future governance. Click to learn more about the potential migration and how to participate.",
+    "href": "https://vote.sky.money",
+    "variant": "alerts.primary"
   }
 ]
