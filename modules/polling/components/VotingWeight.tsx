@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Text } from 'theme-ui';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import { formatValue } from 'lib/string';
 
 export default function VotingWeight(): JSX.Element {
   const { account } = useAccount();
 
-  const { data: votingWeight } = useMKRVotingWeight({ address: account });
+  const { data: votingWeight } = useSkyVotingWeight({ address: account });
 
   return (
     <Flex

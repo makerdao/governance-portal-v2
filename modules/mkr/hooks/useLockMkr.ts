@@ -11,7 +11,8 @@ import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { useChainId } from 'wagmi';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 
-export const useLock = ({
+// TODO I think this can be deleted
+export const useLockMkr = ({
   mkrToDeposit,
   gas,
   enabled: paramEnabled = true,

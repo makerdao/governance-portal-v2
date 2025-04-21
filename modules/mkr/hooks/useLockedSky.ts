@@ -16,7 +16,7 @@ type LockedMkrData = {
   mutate: () => void;
 };
 
-export const useLockedMkr = (address?: string): LockedMkrData => {
+export const useLockedSky = (address?: string): LockedMkrData => {
   const chainId = useChainId();
 
   const {
@@ -29,7 +29,7 @@ export const useLockedMkr = (address?: string): LockedMkrData => {
     chainId,
     functionName: 'deposits',
     args: [address as `0x${string}`],
-    scopeKey: `${chiefAddress[chainId]}/mkr-locked-${address}`,
+    scopeKey: `${chiefAddress[chainId]}/sky-locked-${address}`,
     query: {
       enabled: !!address,
       refetchOnWindowFocus: false,

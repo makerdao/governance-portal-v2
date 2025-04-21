@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { Delegate } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
@@ -28,7 +28,7 @@ export default function ManageDelegation({
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-  const { mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+  const { mutate: mutateTotalStaked } = useLockedSky(delegate.voteDelegateAddress);
   const { mutate: mutateMkrStaked } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
 
   return (
@@ -70,7 +70,7 @@ export default function ManageDelegation({
           isOpen={showDelegateModal}
           onDismiss={() => setShowDelegateModal(false)}
           mutateTotalStaked={mutateTotalStaked}
-          mutateMKRDelegated={mutateMkrStaked}
+          mutateSkyDelegated={mutateMkrStaked}
         />
       )}
       {showUndelegateModal && (
@@ -79,7 +79,7 @@ export default function ManageDelegation({
           isOpen={showUndelegateModal}
           onDismiss={() => setShowUndelegateModal(false)}
           mutateTotalStaked={mutateTotalStaked}
-          mutateMKRDelegated={mutateMkrStaked}
+          mutateSkyDelegated={mutateMkrStaked}
         />
       )}
     </Box>

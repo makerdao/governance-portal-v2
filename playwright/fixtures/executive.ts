@@ -30,7 +30,7 @@ export class ExecutivePage {
     this.confirmTransactionText = this.page.locator('text=/Confirm Transaction/');
     this.depositIntoContractText = this.page.locator('text=/Deposit into voting contract/');
     this.mkrInput = this.page.locator('[data-testid="mkr-input"]');
-    this.depositMkrButton = this.page.locator('[data-testid="button-deposit-mkr"]');
+    this.depositMkrButton = this.page.locator('[data-testid="button-deposit-sky"]');
     this.transactionSuccessfulText = this.page.locator('text=/Transaction Successful/');
     this.lockedMkr = this.page.locator('[data-testid="locked-mkr"]');
     this.voteButton = this.page.locator('[data-testid="vote-button-exec-overview-card"]');

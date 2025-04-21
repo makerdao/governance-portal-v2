@@ -14,39 +14,39 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
-import { useLock } from '../hooks/useLock';
+import { useLockSky } from '../hooks/useLockSky';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useChainId } from 'wagmi';
 import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
+import { useSkyBalance } from '../hooks/useSkyBalance';
 
 const ModalContent = ({
   close,
-  mutateLockedMkr
+  mutateLockedSky
 }: {
   close: () => void;
-  mutateLockedMkr?: () => void;
+  mutateLockedSky?: () => void;
 }): React.ReactElement => {
-  const [mkrToDeposit, setMkrToDeposit] = useState(0n);
+  const [skyToDeposit, setSkyToDeposit] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
   const { account } = useAccount();
   const chainId = useChainId();
-  const { data: mkrBalance } = useMkrBalance(account);
+  const { data: skyBalance } = useSkyBalance(account);
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    Tokens.MKR,
+    Tokens.SKY,
     100000000n,
     account,
     chiefAddress[chainId]
   );
 
   const approve = useApproveUnlimitedToken({
-    name: Tokens.MKR,
+    name: Tokens.SKY,
     addressToApprove: chiefAddress[chainId],
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
@@ -61,14 +61,14 @@ const ModalContent = ({
     }
   });
 
-  const lock = useLock({
-    mkrToDeposit,
+  const lock = useLockSky({
+    skyToDeposit,
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
     },
     onSuccess: () => {
       setTxStatus(TxStatus.SUCCESS);
-      mutateLockedMkr?.();
+      mutateLockedSky?.();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
@@ -101,6 +101,12 @@ const ModalContent = ({
               )}
             </Flex>
 
+            {txStatus === TxStatus.SUCCESS && (
+              <Button variant="outline" onClick={close} sx={{ mt: 3 }}>
+                Close
+              </Button>
+            )}
+
             {txStatus === TxStatus.INITIALIZED && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
@@ -129,21 +135,21 @@ const ModalContent = ({
             </Box>
 
             <Box>
-              <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance} />
+              <MKRInput value={skyToDeposit} onChange={setSkyToDeposit} balance={skyBalance} />
             </Box>
 
             <Button
-              data-testid="button-deposit-mkr"
+              data-testid="button-deposit-sky"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={
-                mkrToDeposit === 0n || mkrToDeposit > (mkrBalance || 0n) || lock.isLoading || !lock.prepared
+                skyToDeposit === 0n || skyToDeposit > (skyBalance || 0n) || lock.isLoading || !lock.prepared
               }
               onClick={() => {
                 setTxStatus(TxStatus.INITIALIZED);
                 lock.execute();
               }}
             >
-              Deposit MKR
+              Deposit SKY
             </Button>
           </Stack>
         )}
@@ -176,7 +182,7 @@ const ModalContent = ({
   );
 };
 
-const Deposit = ({ link, mutateLockedMkr }: { link?: string; mutateLockedMkr?: () => void }): JSX.Element => {
+const Deposit = ({ link, mutateLockedSky }: { link?: string; mutateLockedSky?: () => void }): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
 
   const open = () => {
@@ -187,7 +193,7 @@ const Deposit = ({ link, mutateLockedMkr }: { link?: string; mutateLockedMkr?: (
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent close={() => setShowDialog(false)} mutateLockedMkr={mutateLockedMkr} />
+          <ModalContent close={() => setShowDialog(false)} mutateLockedSky={mutateLockedSky} />
         </DialogContent>
       </DialogOverlay>
       {link ? (
