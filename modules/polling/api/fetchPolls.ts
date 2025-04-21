@@ -12,7 +12,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollsPaginatedResponse } from '../types/pollsResponse';
 import { PollsValidatedQueryParams } from 'modules/polling/types';
 import { partialActivePollsCacheKey, pollListCacheKey } from 'modules/cache/constants/cache-keys';
-import { getPollTags } from './getPollTags';
+import { getPollTags, getPollTagsMapping } from './getPollTags';
 import { AGGREGATED_POLLS_FILE_URL, PollStatusEnum, PollInputFormat } from '../polling.constants';
 import { ONE_WEEK_IN_MS } from 'modules/app/constants/time';
 import { sortPollsBy } from '../helpers/sortPolls';
@@ -46,7 +46,11 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
     }
   }
 
-  const pollsMetadata = await (await fetch(AGGREGATED_POLLS_FILE_URL[network])).json();
+  const [pollsMetadataRes, pollTagsMapping] = await Promise.all([
+    fetch(AGGREGATED_POLLS_FILE_URL[network]),
+    getPollTagsMapping()
+  ]);
+  const pollsMetadata = await pollsMetadataRes.json();
 
   const pollList: PollListItem[] = subgraphPolls
     .map(poll => {
@@ -81,7 +85,7 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
         title: metadata.title,
         summary: metadata.summary,
         options: metadata.options,
-        tags: metadata.tags || []
+        tags: pollTagsMapping[parseInt(id)] || []
       };
     })
     .filter(poll => !!poll);
