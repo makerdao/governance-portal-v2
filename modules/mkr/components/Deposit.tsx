@@ -14,7 +14,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
@@ -101,6 +100,12 @@ const ModalContent = ({
                 <TxIndicators.Pending sx={{ width: 6 }} />
               )}
             </Flex>
+
+            {txStatus === TxStatus.SUCCESS && (
+              <Button variant="outline" onClick={close} sx={{ mt: 3 }}>
+                Close
+              </Button>
+            )}
 
             {txStatus === TxStatus.INITIALIZED && (
               <Box>

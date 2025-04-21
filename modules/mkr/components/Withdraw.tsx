@@ -22,13 +22,15 @@ import { TxStatus } from 'modules/web3/constants/transaction';
 const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
   const { account } = useAccount();
 
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
+  const [skyToWithdraw, setSkyToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { data: lockedSky } = useLockedSky(account);
+  const { data: lockedSky, error: lockedSkyError } = useLockedSky(account);
 
+  console.log('lockedSky', lockedSky);
+  console.log('lockedSkyError', lockedSkyError);
   const free = useFree({
-    mkrToWithdraw,
+    skyToWithdraw,
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
     },
@@ -39,7 +41,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     },
-    enabled: !!mkrToWithdraw
+    enabled: !!skyToWithdraw
   });
 
   return (
@@ -66,6 +68,12 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
                 <TxIndicators.Pending sx={{ width: 6 }} />
               )}
             </Flex>
+
+            {txStatus === TxStatus.SUCCESS && (
+              <Button variant="outline" onClick={close} sx={{ mt: 3 }}>
+                Close
+              </Button>
+            )}
 
             {txStatus === TxStatus.INITIALIZED && (
               <Box>
@@ -96,9 +104,9 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
 
             <Box>
               <MKRInput
-                onChange={setMkrToWithdraw}
+                onChange={setSkyToWithdraw}
                 balance={lockedSky}
-                value={mkrToWithdraw}
+                value={skyToWithdraw}
                 balanceText="SKY in contract:"
               />
             </Box>
@@ -106,9 +114,9 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
               disabled={
-                mkrToWithdraw === 0n ||
+                skyToWithdraw === 0n ||
                 !lockedSky ||
-                mkrToWithdraw > lockedSky ||
+                skyToWithdraw > lockedSky ||
                 free.isLoading ||
                 !free.prepared
               }
