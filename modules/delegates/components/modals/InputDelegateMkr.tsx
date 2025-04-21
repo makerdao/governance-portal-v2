@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Alert, Button, Box, Flex, Text } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
 import { useState } from 'react';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
@@ -40,7 +40,7 @@ export function InputDelegateMkr({
 }: Props): React.ReactElement {
   const [value, setValue] = useState(0n);
   const { account } = useAccount();
-  const { data: lockedMkr } = useLockedMkr(account);
+  const { data: lockedSky } = useLockedSky(account);
   function handleChange(val: bigint): void {
     setValue(val);
     onChange(val);
@@ -65,16 +65,16 @@ export function InputDelegateMkr({
         </Button>
         {disclaimer}
       </Box>
-      {showAlert && lockedMkr && lockedMkr >= parseEther('0.1') && balance && balance > 0n && (
+      {showAlert && lockedSky && lockedSky >= parseEther('0.1') && balance && balance > 0n && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
-            {`You have ${formatValue(lockedMkr)} additional SKY locked in the voting contract. `}
+            {`You have ${formatValue(lockedSky)} additional SKY locked in the voting contract. `}
             <Withdraw link={'Withdraw SKY'} />
             {' to deposit it into a delegate contract.'}
           </Text>
         </Alert>
       )}
-      {showAlert && lockedMkr && lockedMkr > 0n && balance && balance === 0n && (
+      {showAlert && lockedSky && lockedSky > 0n && balance && balance === 0n && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {'You must '}

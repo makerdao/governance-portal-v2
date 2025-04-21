@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
 import { formatValue } from 'lib/string';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -51,7 +51,7 @@ const AccountPage = (): React.ReactElement => {
   const { account, mutate: mutateAccount, voteDelegateContractAddress, votingAccount } = useAccount();
 
   const { data: addressInfo, error: errorLoadingAddressInfo } = useAddressInfo(votingAccount, network);
-  const { data: chiefBalance } = useLockedMkr(account);
+  const { data: chiefBalance } = useLockedSky(account);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
