@@ -84,19 +84,19 @@ describe('Fetch tally majority', () => {
             return Promise.resolve({
                 voters: [{
                     id: '0x0000000000000000000000000000000000000000',
-                    votingPowerChanges: [{
+                    v2VotingPowerChanges: [{
                         newBalance: '100000000000000000000',
                     }]
                 },
                 {
                     id: '0x0000000000000000000000000000000000000001',
-                    votingPowerChanges: [{
+                    v2VotingPowerChanges: [{
                         newBalance: '90000000000000000000',
                     }]
                 },
                 {
                     id: '0x0000000000000000000000000000000000000002',
-                    votingPowerChanges: [{
+                    v2VotingPowerChanges: [{
                         newBalance: '80000000000000000000',
                     }]
                 }
@@ -197,19 +197,19 @@ describe('Fetch tally majority', () => {
         return Promise.resolve({
             voters: [{
                 id: '0x0000000000000000000000000000000000000000',
-                votingPowerChanges: [{
+                v2VotingPowerChanges: [{
                     newBalance: '200000000000000000000', // Changed from 100 to 200
                 }]
             },
             {
                 id: '0x0000000000000000000000000000000000000001',
-                votingPowerChanges: [{
+                v2VotingPowerChanges: [{
                     newBalance: '90000000000000000000',
                 }]
             },
             {
                 id: '0x0000000000000000000000000000000000000002',
-                votingPowerChanges: [{
+                v2VotingPowerChanges: [{
                     newBalance: '80000000000000000000',
                 }]
             }

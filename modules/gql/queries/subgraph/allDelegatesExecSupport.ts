@@ -10,14 +10,14 @@ import { gql } from 'graphql-request';
 
 export const allDelegatesExecSupport = gql`
   {
-    delegates(first: 1000) {
+    delegates(first: 1000, where: {version: "3"}) {
       blockTimestamp
       ownerAddress
       id
       totalDelegated
       voter {
         lastVotedTimestamp
-        currentSpells {
+        currentSpellsV2 {
           id
         }
       }
