@@ -24,7 +24,7 @@ test('Adds polls to review and navigates to review page and votes with the legac
   page,
   pollingPage
 }) => {
-  const selectedPollId = 1107;
+  const selectedPollId = 1502;
 
   await test.step('navigate to polling page', async () => {
     await pollingPage.goto();
