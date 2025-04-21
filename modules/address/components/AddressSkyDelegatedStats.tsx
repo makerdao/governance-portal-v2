@@ -9,17 +9,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex } from 'theme-ui';
 import { parseEther } from 'viem';
 import { StatBox } from 'modules/app/components/StatBox';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import { formatValue } from 'lib/string';
 
-export function AddressMKRDelegatedStats({
+export function AddressSkyDelegatedStats({
   totalMKRDelegated,
   address
 }: {
   totalMKRDelegated?: number;
   address: string;
 }): React.ReactElement {
-  const { data: votingWeight } = useMKRVotingWeight({ address, excludeDelegateOwnerBalance: true });
+  const { data: votingWeight } = useSkyVotingWeight({ address, excludeDelegateOwnerBalance: true });
 
   return (
     <Flex

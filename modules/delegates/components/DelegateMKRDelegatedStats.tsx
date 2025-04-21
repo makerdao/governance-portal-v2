@@ -14,7 +14,7 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import Tooltip from 'modules/app/components/Tooltip';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
 export function DelegateMKRDelegatedStats({
@@ -29,7 +29,7 @@ export function DelegateMKRDelegatedStats({
 
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
   const totalMkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-  const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
+  const { data: votingWeight } = useSkyVotingWeight({ address: delegate.voteDelegateAddress });
 
   return (
     <Flex

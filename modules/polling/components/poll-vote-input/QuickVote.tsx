@@ -25,7 +25,7 @@ import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 
 type Props = {
   poll: PollListItem | Poll;
@@ -45,7 +45,7 @@ const QuickVote = ({
   buttonVariant
 }: Props): React.ReactElement => {
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight, loading } = useMKRVotingWeight({ address: account });
+  const { data: votingWeight, loading } = useSkyVotingWeight({ address: account });
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
