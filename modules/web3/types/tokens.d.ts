@@ -6,4 +6,4 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-export type TokenName = 'mkr';
+export type TokenName = 'mkr' | 'sky';

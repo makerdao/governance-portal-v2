@@ -12,7 +12,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
@@ -68,7 +68,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
-  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
+  const { data: lockedSky, mutate: mutateLockedSky } = useLockedSky(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { data: mkrOnHat } = useMkrOnHat();
@@ -157,7 +157,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
 
-      {votedProposals && !votingForSomething && lockedMkr && lockedMkr > 0n && (
+      {votedProposals && !votingForSomething && lockedSky && lockedSky > 0n && (
         <>
           <ProgressBar step={2} />
           <MigrationBadge>Your SKY has been deposited. You are now ready to vote.</MigrationBadge>
@@ -166,8 +166,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
       <Stack>
         {account && (
           <ExecutiveBalance
-            lockedMkr={lockedMkr || 0n}
-            mutateLockedMkr={mutateLockedMkr}
+            lockedSky={lockedSky || 0n}
+            mutateLockedSky={mutateLockedSky}
             voteDelegate={voteDelegateContractAddress}
           />
         )}

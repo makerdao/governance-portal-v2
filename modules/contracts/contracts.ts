@@ -31,6 +31,13 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
     }
   },
   {
+    name: 'sky',
+    address: {
+      [mainnet.id]: '0x56072c95faa701256059aa122697b133aded9279',
+      [TENDERLY_CHAIN_ID]: '0x56072c95faa701256059aa122697b133aded9279'
+    }
+  },
+  {
     name: 'pause',
     address: {
       [mainnet.id]: '0xbe286431454714f511008713973d3b053a2d38f3',

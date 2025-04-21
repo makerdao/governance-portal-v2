@@ -14,7 +14,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useFree } from '../hooks/useFree';
 import { TxStatus } from 'modules/web3/constants/transaction';
@@ -25,7 +25,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
   const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { data: lockedMkr } = useLockedMkr(account);
+  const { data: lockedSky } = useLockedSky(account);
 
   const free = useFree({
     mkrToWithdraw,
@@ -97,7 +97,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
             <Box>
               <MKRInput
                 onChange={setMkrToWithdraw}
-                balance={lockedMkr}
+                balance={lockedSky}
                 value={mkrToWithdraw}
                 balanceText="SKY in contract:"
               />
@@ -107,12 +107,12 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
               disabled={
                 mkrToWithdraw === 0n ||
-                !lockedMkr ||
-                mkrToWithdraw > lockedMkr ||
+                !lockedSky ||
+                mkrToWithdraw > lockedSky ||
                 free.isLoading ||
                 !free.prepared
               }
-              data-testid="button-withdraw-mkr"
+              data-testid="button-withdraw-sky"
               onClick={() => {
                 setTxStatus(TxStatus.INITIALIZED);
                 free.execute();

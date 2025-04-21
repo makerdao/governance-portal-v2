@@ -24,7 +24,7 @@ import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedSky';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { Address } from 'modules/address/components/Address';

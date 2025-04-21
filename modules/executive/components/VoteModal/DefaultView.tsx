@@ -10,7 +10,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { Proposal } from 'modules/executive/types';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedSky';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import { useAccount } from 'modules/app/hooks/useAccount';

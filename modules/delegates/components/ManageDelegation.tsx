@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { Delegate } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedSky';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
