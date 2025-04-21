@@ -6,14 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Box, Flex } from 'theme-ui';
-import Icon from 'modules/app/components/Icon';
+import { Flex } from 'theme-ui';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import Tooltip from 'modules/app/components/Tooltip';
 import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
@@ -29,7 +27,9 @@ export function DelegateMKRDelegatedStats({
 
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
   const totalMkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-  const { data: votingWeight } = useSkyVotingWeight({ address: delegate.voteDelegateAddress });
+  const { data: votingWeight, loading: votingWeightLoading } = useSkyVotingWeight({
+    address: delegate.voteDelegateAddress
+  });
 
   return (
     <Flex
@@ -43,9 +43,9 @@ export function DelegateMKRDelegatedStats({
     >
       <StatBox
         value={
-          !votingWeight ? (
+          votingWeightLoading ? (
             <Skeleton width="100%" height="15px" />
-          ) : votingWeight ? (
+          ) : typeof votingWeight !== 'undefined' ? (
             formatValue(votingWeight)
           ) : (
             'Untracked'
