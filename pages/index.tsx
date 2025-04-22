@@ -50,6 +50,7 @@ const LandingPage = ({
   pollTags,
   delegates,
   delegatesInfo,
+  delegatesError,
   stats,
   mkrOnHat,
   hat,
@@ -127,7 +128,7 @@ const LandingPage = ({
 
   return (
     <div>
-      {delegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
+      {delegatesError && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -318,6 +319,7 @@ export default function Index({
     pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
     delegates: delegatesData.data?.delegates?.slice(0, 5) ?? [],
     delegatesInfo: delegatesInfo.data ?? [],
+    delegatesError: delegatesData.error || delegatesInfo.error,
     stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
