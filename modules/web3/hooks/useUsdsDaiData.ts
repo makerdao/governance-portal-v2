@@ -1,9 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useChainId } from 'wagmi';
-
-// Define a placeholder for TENDERLY_CHAIN_ID if it's not globally available or imported
-// Replace with the actual value or import if available
-const TENDERLY_CHAIN_ID = parseInt(process.env.NEXT_PUBLIC_TENDERLY_CHAIN_ID || '0', 10) || 11155111; // Example fallback
+import { SupportedChainId } from '../constants/chainID';
 
 // Constants for API URLs
 export const URL_BA_LABS_API_MAINNET = 'https://info-sky.blockanalitica.com/api/v1';
@@ -17,7 +14,7 @@ export const URL_BA_LABS_API_TENDERLY = 'https://sky-tenderly.blockanalitica.com
 export function getBaLabsApiUrl(chainId: number | undefined): string | null {
   if (chainId === undefined) return null;
   switch (chainId) {
-    case TENDERLY_CHAIN_ID:
+    case SupportedChainId.TENDERLY:
       return URL_BA_LABS_API_TENDERLY;
     // Add other specific chain cases if needed
     // case mainnet.id: // Example for mainnet
@@ -29,13 +26,10 @@ export function getBaLabsApiUrl(chainId: number | undefined): string | null {
 }
 
 /**
- * Formats the Block Analitica URL. Placeholder function - adjust if specific formatting is needed.
  * @param url The URL object to format.
  * @returns The formatted URL object.
  */
 export function formatBaLabsUrl(url: URL): URL {
-  // Add any necessary query parameters or path adjustments here
-  // Example: url.searchParams.set('apiKey', 'your-key');
   return url;
 }
 
@@ -94,7 +88,6 @@ async function fetchUsdsDaiData(url: URL): Promise<UsdsDaiChartInfo[]> {
       throw new Error(`Network response was not ok: ${response.statusText} (status: ${response.status})`);
     }
 
-    // Assuming the API returns { results: [...] }
     const data: { results: UsdsDaiApiResponse[] } = await response.json();
 
     const result = transformBaLabsData(data?.results || []);
@@ -102,14 +95,12 @@ async function fetchUsdsDaiData(url: URL): Promise<UsdsDaiChartInfo[]> {
     return result;
   } catch (error) {
     console.error('Error fetching BaLabs data:', error);
-    // Re-throw the error so React Query can handle it
     throw error;
   }
 }
 
 /**
  * Hook to fetch historic overall USDS/DAI data from the Block Analitica API.
- * Uses React Query for data fetching, caching, and state management.
  *
  * @returns An object containing the fetched data, loading state, error state,
  *          refetch function, and data source information.
@@ -134,7 +125,6 @@ export function useUsdsDaiData(): { data?: UsdsDaiChartInfo[]; isLoading: boolea
     error,
     isLoading // Use isLoading directly from useQuery
   } = useQuery<UsdsDaiChartInfo[], Error>({
-    // Specify types for data and error
     // queryKey needs to be stable and serializable. Use the URL string or parts of it.
     // Using the full URL string ensures uniqueness per endpoint and chain.
     // Handle the case where url might be undefined initially.
