@@ -20,7 +20,7 @@ import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
+import MkrSkyLiquiditySidebar from 'modules/mkr/components/MkrSkyLiquiditySidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
@@ -328,7 +328,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               />
             </ErrorBoundary>
             <ErrorBoundary componentName="MKR Liquidity">
-              <MkrLiquiditySidebar network={network} />
+              <MkrSkyLiquiditySidebar network={network} />
             </ErrorBoundary>
             <ResourceBox type={'executive'} />
             <ResourceBox type={'general'} />
