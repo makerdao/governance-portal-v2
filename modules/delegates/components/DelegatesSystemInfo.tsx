@@ -24,7 +24,7 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
   const delegateFactoryAddress = voteDelegateFactoryAddressMapping[chainId];
   const network = useNetwork();
 
-  const { data: totalMkr } = useTotalSupply(Tokens.MKR);
+  const { data: totalMkr } = useTotalSupply(Tokens.SKY);
 
   const statsItems = [
     {
