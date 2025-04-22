@@ -50,6 +50,10 @@ type ChainInfo = {
 const { TENDERLY_RPC_URL } = tenderlyTestnetData;
 const TENDERLY_CONTAINER_ID = 'da404f7a-d40d-4c75-928f-308835f9e0e3';
 
+// Constants for API URLs
+export const URL_BA_LABS_API_MAINNET = 'https://info-sky.blockanalitica.com/api/v1';
+export const URL_BA_LABS_API_TENDERLY = 'https://sky-tenderly.blockanalitica.com/api/v1';
+
 //todo: change name to SUPPORTED_CHAIN_INFO
 export const CHAIN_INFO: ChainInfo = {
   [SupportedChainId.MAINNET]: {
@@ -93,9 +97,9 @@ export const CHAIN_INFO: ChainInfo = {
     network: SupportedNetworks.ARBITRUM,
     defaultRpc: NodeProviders.ALCHEMY,
     subgraphUrl:
-    process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
-      ? ARBITRUM_STAGING_SUBGRAPH_URL
-      : ARBITRUM_PROD_SUBGRAPH_URL,
+      process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
+        ? ARBITRUM_STAGING_SUBGRAPH_URL
+        : ARBITRUM_PROD_SUBGRAPH_URL,
     rpcs: {
       [NodeProviders.ALCHEMY]: `https://arb-mainnet.g.alchemy.com/v2/${config.ALCHEMY_ARBITRUM_KEY}`
     },
