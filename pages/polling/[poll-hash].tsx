@@ -384,7 +384,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 'mainnet polling contract',
                 'arbitrum polling contract',
                 'savings rate',
-                'total dai',
+                'total usds',
                 'debt ceiling',
                 'system surplus'
               ]}

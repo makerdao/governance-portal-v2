@@ -322,7 +322,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   'sky in chief',
                   'sky needed to pass',
                   'savings rate',
-                  'total dai',
+                  'total usds',
                   'debt ceiling'
                 ]}
               />
