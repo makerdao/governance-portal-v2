@@ -157,7 +157,7 @@ export default function SystemStatsSidebar({
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Sky Savings Rate</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {skySavingsRate ? (
               `${skySavingsRate}%`
