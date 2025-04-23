@@ -12,7 +12,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from './layout/layouts/Stack';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { useUsdsDaiData } from 'modules/web3/hooks/useUsdsDaiData';
-import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useSkySavingsRate } from 'modules/web3/hooks/useSkySavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
@@ -150,15 +150,17 @@ export default function SystemStatsSidebar({
     },
 
     'savings rate': key => {
-      const { data: daiSavingsRate } = useDaiSavingsRate();
+      const { data: skySavingsRateData } = useSkySavingsRate();
+      const skySavingsRate = skySavingsRateData
+        ? (parseFloat(skySavingsRateData) * 100).toFixed(2)
+        : undefined;
 
-      // TODO replace with USDS savings rate
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {daiSavingsRate ? (
-              `${daiSavingsRate.toFixed(2)}%`
+            {skySavingsRate ? (
+              `${skySavingsRate}%`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
