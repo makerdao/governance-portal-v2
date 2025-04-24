@@ -44,7 +44,7 @@ interface ArbitrumVotesResponse {
 }
 
 interface VotingWeightHistoryResponse {
-  executiveVotingPowerChangesV2: {
+  executiveVotingPowerChangeV2S: {
     blockTimestamp: string;
     newBalance: string;
   }[];
@@ -60,7 +60,7 @@ interface PollTimesResponse {
 
 function getMkrWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, timestamp: number): string {
   // Find the most recent weight entry that doesn't exceed the given timestamp
-  const relevantEntry = weightHistory.executiveVotingPowerChangesV2
+  const relevantEntry = weightHistory.executiveVotingPowerChangeV2S
     .filter(entry => Number(entry.blockTimestamp) <= timestamp)
     .sort((a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp))[0];
   return relevantEntry ? relevantEntry.newBalance : '0';

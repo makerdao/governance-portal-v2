@@ -26,7 +26,7 @@ export async function fetchExecutiveVoteTallyWithSubgraph(network: SupportedNetw
             variables: { argSkip: skip, argFirst: pageSize }
         });
         
-        const currentPageData = response.executiveVotesV2 || [];
+        const currentPageData = response.executiveVoteV2S || [];
         allData = [...allData, ...currentPageData];
         
         if (currentPageData.length < pageSize) {
