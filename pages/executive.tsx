@@ -159,7 +159,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
       {votedProposals && !votingForSomething && lockedSky && lockedSky > 0n && (
         <>
-          <ProgressBar step={2} />
+          <ProgressBar step={1} />
           <MigrationBadge>Your SKY has been deposited. You are now ready to vote.</MigrationBadge>
         </>
       )}
