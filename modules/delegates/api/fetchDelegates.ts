@@ -208,6 +208,9 @@ export async function fetchDelegatesPaginated({
   const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
     getDelegatesCounts(filteredDelegateEntries);
 
+  // If there are no aligned delegates, the id_not_in filter will filter out everything if we give it an empty array
+  const alignedDelegatesAddressesForNotInQuery = alignedDelegatesAddresses.length > 0 ? alignedDelegatesAddresses : ["0x0000000000000000000000000000000000000000"];
+
   
   // eslint-disable-next-line quotes
   const baseDelegatesQueryFilter: any = { and: [{ version: "3" }] };
@@ -215,12 +218,12 @@ export async function fetchDelegatesPaginated({
     baseDelegatesQueryFilter.and.push({ id_in: filteredDelegateAddresses });
     if (delegateType === DelegateTypeEnum.ALIGNED) {
       baseDelegatesQueryFilter.and.push({ id_in: alignedDelegatesAddresses });
-      baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddresses });
+      baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddressesForNotInQuery });
     }
   } else if (delegateType === DelegateTypeEnum.ALIGNED) {
     baseDelegatesQueryFilter.and.push({ id_in: alignedDelegatesAddresses });
   } else if (delegateType === DelegateTypeEnum.SHADOW) {
-    baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddresses });
+    baseDelegatesQueryFilter.and.push({ id_not_in: alignedDelegatesAddressesForNotInQuery });
   }
 
   //get all aligned delegates (that match the filter)for the first page
@@ -229,7 +232,7 @@ export async function fetchDelegatesPaginated({
   };
   //use this for subsequent pages as well as part of the first page
   const shadowFilterFirstPage = {
-    and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddresses }]
+    and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddressesForNotInQuery }]
   };
 
   const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.MKR : orderBy;
