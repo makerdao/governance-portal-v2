@@ -208,6 +208,8 @@ export async function fetchDelegatesPaginated({
   const { alignedDelegatesCount, shadowDelegatesCount, totalDelegatesCount } =
     getDelegatesCounts(filteredDelegateEntries);
 
+  
+  // eslint-disable-next-line quotes
   const baseDelegatesQueryFilter: any = { and: [{ version: "3" }] };
   if (searchTerm) {
     baseDelegatesQueryFilter.and.push({ id_in: filteredDelegateAddresses });
