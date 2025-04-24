@@ -261,8 +261,10 @@ export async function fetchDelegatesPaginated({
   ]);
 
   let combinedDelegates = [
-    ...(delegatesQueryRes.alignedDelegates || []),
-    ...(delegatesQueryRes.delegates || [])
+    // Include aligned delegates if the filter doesn't specify to only show shadow delegates
+    ...((delegateType !== DelegateTypeEnum.SHADOW && delegatesQueryRes.alignedDelegates) || []),
+    // Include shadow delegates if the filter doesn't specify to only show aligned delegates
+    ...((delegateType !== DelegateTypeEnum.ALIGNED && delegatesQueryRes.delegates) || [])
   ];
 
   const combinedDelegateOwnerAddresses = combinedDelegates.map(delegate =>

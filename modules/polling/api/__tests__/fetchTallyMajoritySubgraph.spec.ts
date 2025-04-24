@@ -49,36 +49,37 @@ describe('Fetch tally majority', () => {
         }
         if (query.includes('allMainnetVoters')) {
             return Promise.resolve({
-            polls: [{
-                startDate: '1742227200',
-                endDate: '1742486400',
-                votes: [{
-                    voter: {
-                        id: '0x0000000000000000000000000000000000000000'
-                    },
-                    blockTime: '1742327200',
-                    choice: '1',
+            pollVotes: [{
+                voter: {
+                    id: '0x0000000000000000000000000000000000000000'
                 },
-                {
-                    voter: {
-                        id: '0x0000000000000000000000000000000000000002'
-                    },
-                    blockTime: '1742327200',
-                    choice: '3',
-                }
-                ]
+                blockTime: '1742327200',
+                choice: '1',
+                txnHash: '0x123'
+            },
+            {
+                voter: {
+                    id: '0x0000000000000000000000000000000000000002'
+                },
+                blockTime: '1742327200',
+                choice: '3',
+                txnHash: '0x456'
             }]
             });
         } else if (query.includes('allArbitrumVoters')) {
             return Promise.resolve({
-            arbitrumPollVotes: [
-                {
+            arbitrumPoll: {
+                startDate: '1742227200',
+                endDate: '1742486400',
+                votes: [{
                     voter: {
                         id: '0x0000000000000000000000000000000000000001'
                     },
                     blockTime: '1742327200',
                     choice: '2',
+                    txnHash: '0x789'
                 }]
+            }
             });
         } else if (query.includes('voteAddressMkrWeightsAtTime')) {
             return Promise.resolve({
@@ -162,36 +163,37 @@ describe('Fetch tally majority', () => {
       }
       if (query.includes('allMainnetVoters')) {
         return Promise.resolve({
-          polls: [{
-            startDate: '1742227200',
-            endDate: '1742486400',
-            votes: [{
-                voter: {
-                    id: '0x0000000000000000000000000000000000000000'
-                },
-                blockTime: '1742327200',
-                choice: '1',
+          pollVotes: [{
+            voter: {
+              id: '0x0000000000000000000000000000000000000000'
             },
-            {
-                voter: {
-                    id: '0x0000000000000000000000000000000000000002'
-                },
-                blockTime: '1742327200',
-                choice: '3',
-            }
-            ]
+            blockTime: '1742327200',
+            choice: '1',
+            txnHash: '0x123'
+          },
+          {
+            voter: {
+              id: '0x0000000000000000000000000000000000000002'
+            },
+            blockTime: '1742327200',
+            choice: '3',
+            txnHash: '0x456'
           }]
         });
       } else if (query.includes('allArbitrumVoters')) {
         return Promise.resolve({
-          arbitrumPollVotes: [
-            {
-                voter: {
-                    id: '0x0000000000000000000000000000000000000001'
-                },
-                blockTime: '1742327200',
-                choice: '2',
+          arbitrumPoll: {
+            startDate: '1742227200',
+            endDate: '1742486400',
+            votes: [{
+              voter: {
+                id: '0x0000000000000000000000000000000000000001'
+              },
+              blockTime: '1742327200',
+              choice: '2',
+              txnHash: '0x789'
             }]
+          }
         });
       } else if (query.includes('voteAddressMkrWeightsAtTime')) {
         return Promise.resolve({

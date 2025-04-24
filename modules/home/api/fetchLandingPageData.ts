@@ -28,6 +28,7 @@ export type LandingPageData = {
   pollTags: TagCount[];
   delegates: DelegatePaginated[];
   delegatesInfo: DelegateInfo[];
+  delegatesError: Error | null;
   stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   hat?: string;

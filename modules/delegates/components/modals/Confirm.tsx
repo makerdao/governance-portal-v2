@@ -18,9 +18,17 @@ type Props = {
   onClick: () => void;
   disabled: boolean;
   onBack: () => void;
+  prepareError?: Error | null;
 };
 
-export const ConfirmContent = ({ skyToDeposit, delegate, onClick, disabled, onBack }: Props): JSX.Element => {
+export const ConfirmContent = ({
+  skyToDeposit,
+  delegate,
+  onClick,
+  disabled,
+  onBack,
+  prepareError
+}: Props): JSX.Element => {
   const { address, voteDelegateAddress } = delegate;
   const network = useNetwork();
 
@@ -57,6 +65,12 @@ export const ConfirmContent = ({ skyToDeposit, delegate, onClick, disabled, onBa
       <Button onClick={onBack} variant="textual" sx={{ color: 'secondary', fontSize: 2, mt: 1 }}>
         Back
       </Button>
+      {prepareError && (
+        <Text variant="smallText" sx={{ color: 'error', mt: 3 }}>
+          Something went wrong preparing the transaction. Please try again or contact support if the issue
+          persists.
+        </Text>
+      )}
     </Flex>
   );
 };
