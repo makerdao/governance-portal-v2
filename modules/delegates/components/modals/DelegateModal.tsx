@@ -153,6 +153,7 @@ export const DelegateModal = ({
                           !lock.prepared
                         }
                         onBack={() => setConfirmStep(false)}
+                        prepareError={lock.prepareError}
                       />
                     ) : (
                       <InputDelegateSky

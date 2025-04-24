@@ -25,6 +25,7 @@ type Props = {
   onClick: () => void;
   disabled?: boolean;
   showAlert: boolean;
+  prepareError?: Error | null;
 };
 
 export function InputDelegateSky({
@@ -36,7 +37,8 @@ export function InputDelegateSky({
   onClick,
   disabled = false,
   showAlert,
-  disclaimer
+  disclaimer,
+  prepareError
 }: Props): React.ReactElement {
   const [value, setValue] = useState(0n);
   const { account } = useAccount();
@@ -65,6 +67,12 @@ export function InputDelegateSky({
         </Button>
         {disclaimer}
       </Box>
+      {prepareError && (
+        <Text variant="smallText" sx={{ color: 'error', mt: 3 }}>
+          Something went wrong preparing the transaction. Please try again or contact support if the issue
+          persists.
+        </Text>
+      )}
       {showAlert && lockedSky && lockedSky >= parseEther('0.1') && balance && balance > 0n && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>

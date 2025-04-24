@@ -108,6 +108,7 @@ export const UndelegateModal = ({
                     }}
                     disabled={free.isLoading || !free.prepared}
                     showAlert={false}
+                    prepareError={free.prepareError}
                     disclaimer={
                       sealDelegated && sealDelegated > 0n ? (
                         <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
