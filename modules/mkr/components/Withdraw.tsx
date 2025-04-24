@@ -27,8 +27,6 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
 
   const { data: lockedSky, error: lockedSkyError } = useLockedSky(account);
 
-  console.log('lockedSky', lockedSky);
-  console.log('lockedSkyError', lockedSkyError);
   const free = useFree({
     skyToWithdraw,
     onStart: () => {
