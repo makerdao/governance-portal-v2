@@ -209,11 +209,10 @@ export async function fetchDelegatesPaginated({
     getDelegatesCounts(filteredDelegateEntries);
 
   // If there are no aligned delegates, the id_not_in filter will filter out everything if we give it an empty array
-  const alignedDelegatesAddressesForNotInQuery = alignedDelegatesAddresses.length > 0 ? alignedDelegatesAddresses : ["0x0000000000000000000000000000000000000000"];
+  const alignedDelegatesAddressesForNotInQuery = alignedDelegatesAddresses.length > 0 ? alignedDelegatesAddresses : ['0x0000000000000000000000000000000000000000'];
 
   
-  // eslint-disable-next-line quotes
-  const baseDelegatesQueryFilter: any = { and: [{ version: "3" }] };
+  const baseDelegatesQueryFilter: any = { and: [{ version: '3' }] };
   if (searchTerm) {
     baseDelegatesQueryFilter.and.push({ id_in: filteredDelegateAddresses });
     if (delegateType === DelegateTypeEnum.ALIGNED) {
