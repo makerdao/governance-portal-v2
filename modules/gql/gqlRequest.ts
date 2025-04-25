@@ -42,7 +42,7 @@ export const gqlRequest = async <TQuery = any>({
     }
 
     const resp = await backoffRetry(
-      3,
+      1,
       () => request(url, query, variables),
       500,
       (message: string) => {
