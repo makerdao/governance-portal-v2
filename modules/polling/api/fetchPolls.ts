@@ -19,7 +19,8 @@ import { sortPollsBy } from '../helpers/sortPolls';
 import { TagCount } from 'modules/app/types/tag';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { arbitrumPollsQuery } from 'modules/gql/queries/subgraph/arbitrumPolls';
+import { arbitrumPollsQuery, arbitrumPollsQueryWithWhitelist } from 'modules/gql/queries/subgraph/arbitrumPolls';
+import { POLL_CREATOR_WHITELIST } from '../polling.constants';
 
 export async function refetchPolls(network: SupportedNetworks): Promise<{
   pollList: PollListItem[];
@@ -34,8 +35,10 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
   while (refetchSubgraph) {
     const response = await gqlRequest<Promise<{ arbitrumPolls: SubgraphPoll[] }>>({
       chainId: arbitrumChainId,
-      query: arbitrumPollsQuery,
-      variables: { argsSkip: skip }
+      query: network === SupportedNetworks.MAINNET ? arbitrumPollsQueryWithWhitelist : arbitrumPollsQuery,
+      variables: network === SupportedNetworks.MAINNET 
+        ? { argsSkip: skip, creatorWhitelist: POLL_CREATOR_WHITELIST }
+        : { argsSkip: skip }
     });
 
     if (response.arbitrumPolls.length === 0) {
