@@ -97,7 +97,7 @@ export async function getExecutiveProposals({
   endDate?: number;
   network?: SupportedNetworks;
 }): Promise<Proposal[]> {
-  const currentNetwork = network === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : network;
+  const currentNetwork = network;
 
   const cacheKey = getExecutiveProposalsCacheKey(start, limit, sortBy, startDate, endDate);
 
@@ -153,7 +153,7 @@ export async function getExecutiveProposal(
 ): Promise<Proposal | null> {
   const net = network ? network : DEFAULT_NETWORK.network;
 
-  const currentNetwork = net === SupportedNetworks.TENDERLY ? SupportedNetworks.MAINNET : net;
+  const currentNetwork = net;
 
   const proposals = await getGithubExecutives(currentNetwork);
 
