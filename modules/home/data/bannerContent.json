@@ -14,5 +14,11 @@
     "content": "Maker Governance is voting to decide the future of the Chief contract and the use of SKY for future governance. Click to learn more about the potential migration and how to participate.",
     "href": "https://vote.sky.money",
     "variant": "alerts.primary"
+  },
+  {
+    "active": false,
+    "content": "The Maker Governance Voting Portal is now read-only. You may undelegate or withdraw your MKR from chief at any time. Click here to visit the new voting portal.",
+    "href": "https://vote.sky.money",
+    "variant": "alerts.primary"
   }
 ]
