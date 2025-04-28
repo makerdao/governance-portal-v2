@@ -40,7 +40,7 @@ export const useMkrOnHat = (): MkrOnHatResponse => {
     data,
     error,
     mutate: mutateMkrOnHat
-  } = useSWR(`${chiefAddress[chainId]}/mkr-on-hat`, async () => {
+  } = useSWR(`${chiefAddress[chainId]}/${hatAddress}/mkr-on-hat`, async () => {
     return hatAddress ? await getChiefApprovals(hatAddress, network) : undefined;
   });
 

@@ -293,7 +293,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                             ).toLocaleString(undefined, {
                               maximumFractionDigits: 3
                             })}{' '}
-                            MKR
+                            SKY
                           </Text>
                         ) : (
                           <Box sx={{ width: 4 }}>

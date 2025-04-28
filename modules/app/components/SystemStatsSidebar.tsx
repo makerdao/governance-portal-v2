@@ -70,7 +70,7 @@ export default function SystemStatsSidebar({
     },
     'sky in chief': key => {
       const chiefAddress = chiefAddressMapping[chainId];
-      const { data: chiefBalance } = useTokenBalance(Tokens.MKR, chiefAddress);
+      const { data: chiefBalance } = useTokenBalance(Tokens.SKY, chiefAddress);
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -172,7 +172,6 @@ export default function SystemStatsSidebar({
     },
 
     'total usds': key => {
-      console.log(data);
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total USDS</Text>
