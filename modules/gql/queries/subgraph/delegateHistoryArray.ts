@@ -10,7 +10,7 @@ import { gql } from 'graphql-request';
 
 export const delegateHistoryArray = gql`
   query delegateHistoryArray($delegates: [String!]!) {
-    delegates(first: 1000, where: { id_in: $delegates }) {
+    delegates(first: 1000, where: { id_in: $delegates, version: "3" }) {
       delegationHistory {
         amount
         accumulatedAmount

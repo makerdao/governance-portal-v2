@@ -10,17 +10,14 @@ import { gql } from 'graphql-request';
 
 export const allMainnetVoters = gql`
   query allMainnetVoters($argPollId: String) {
-    polls(where: {id: $argPollId}) {
-      startDate
-      endDate
-      votes {
-        voter {
-          id
-        }
-        blockTime
-        choice
-        txnHash
+    pollVotes(where: { poll: $argPollId }) {
+      id
+      voter {
+        id
       }
+      blockTime
+      choice
+      txnHash
     }
   }
 `;

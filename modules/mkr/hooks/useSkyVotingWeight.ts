@@ -17,7 +17,7 @@ type VotingWeightResponse = {
   mutate: () => void;
 };
 
-export const useMKRVotingWeight = ({
+export const useSkyVotingWeight = ({
   address,
   excludeDelegateOwnerBalance = false
 }: {
@@ -44,7 +44,7 @@ export const useMKRVotingWeight = ({
 
   return {
     data,
-    loading: !error && !data,
+    loading: !error && data === undefined,
     error,
     mutate
   };

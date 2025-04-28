@@ -28,6 +28,7 @@ export type LandingPageData = {
   pollTags: TagCount[];
   delegates: DelegatePaginated[];
   delegatesInfo: DelegateInfo[];
+  delegatesError: Error | null;
   stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   hat?: string;
@@ -81,6 +82,6 @@ export async function fetchLandingPageData(
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
     mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat) : undefined,
     hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
-    mkrInChief: mkrInChief ? formatValue(mkrInChief as bigint) : undefined
+    mkrInChief: mkrInChief === 0n || mkrInChief ? formatValue(mkrInChief as bigint) : undefined
   };
 }

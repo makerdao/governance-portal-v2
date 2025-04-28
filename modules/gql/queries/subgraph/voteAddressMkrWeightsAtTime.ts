@@ -12,7 +12,7 @@ export const voteAddressMkrWeightsAtTime = gql`
 query voteAddressMkrWeightsAtTime($argVoters: [String!]!, $argUnix: BigInt!) {
     voters(where: {id_in: $argVoters}) {
       id
-    	votingPowerChanges(first: 1, orderDirection: desc, orderBy: blockTimestamp, where: {blockTimestamp_lte: $argUnix}) {
+    	v2VotingPowerChanges(first: 1, orderDirection: desc, orderBy: blockTimestamp, where: {blockTimestamp_lte: $argUnix}) {
       	newBalance
       }
   }

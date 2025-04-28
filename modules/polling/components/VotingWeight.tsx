@@ -7,41 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Text } from 'theme-ui';
-import { MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import { formatValue } from 'lib/string';
-
-export const getDescription = ({
-  votingWeight,
-  isDelegate
-}: {
-  votingWeight?: MKRVotingWeightResponse;
-  isDelegate?: boolean;
-}): JSX.Element | null => {
-  if (votingWeight) {
-    if (isDelegate) {
-      return (
-        <Text as="p">
-          {'Balance of delegated SKY: ' + formatValue(votingWeight.chiefBalanceHot) + ' SKY'}
-        </Text>
-      );
-    } else {
-      return (
-        <>
-          <Text as="p">{'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' SKY'}</Text>
-        </>
-      );
-    }
-  }
-
-  return null;
-};
 
 export default function VotingWeight(): JSX.Element {
   const { account } = useAccount();
 
-  const { data: votingWeight } = useMKRVotingWeight({ address: account });
+  const { data: votingWeight } = useSkyVotingWeight({ address: account });
 
   return (
     <Flex
@@ -57,7 +30,7 @@ export default function VotingWeight(): JSX.Element {
           Voting weight
         </Text>
       </Flex>
-      <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight.total)} SKY` : '--'}</Text>
+      <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight)} SKY` : '--'}</Text>
     </Flex>
   );
 }

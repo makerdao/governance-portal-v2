@@ -18,7 +18,7 @@ import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useAccount } from 'wagmi';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { TXMined } from 'modules/web3/types/transaction';
-import { MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/polling.constants';
+import { MIN_SKY_REQUIRED_FOR_GASLESS_VOTING_DISPLAY } from 'modules/polling/polling.constants';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
@@ -284,7 +284,7 @@ export default function ReviewBox({
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                     <Text as="p" variant="secondary" sx={{ fontSize: 1 }}>
-                      Address has at least {MIN_MKR_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} SKY of polling weight
+                      Address has at least {MIN_SKY_REQUIRED_FOR_GASLESS_VOTING_DISPLAY} SKY of polling weight
                     </Text>
                     <Text>
                       {!precheckData ? (

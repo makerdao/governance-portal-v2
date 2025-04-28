@@ -230,9 +230,7 @@ describe('/api/polling/vote API Endpoint', () => {
   it('return 400 if any poll is expired', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as Mock).mockReturnValue(
-      Promise.resolve({
-        total: parseEther('0.2')
-      })
+      Promise.resolve(parseEther('40'))
     );
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([]));
     const { req, res } = mockRequestResponse('POST', {
@@ -257,9 +255,7 @@ describe('/api/polling/vote API Endpoint', () => {
   it('return 400 if it used gasless voting recently', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
     (getMKRVotingWeight as Mock).mockReturnValue(
-      Promise.resolve({
-        total: parseEther('0.2')
-      })
+      Promise.resolve(parseEther('40'))
     );
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
     (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(true));
@@ -289,9 +285,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(false));
 
     (getMKRVotingWeight as Mock).mockReturnValue(
-      Promise.resolve({
-        total: parseEther('0.2')
-      })
+      Promise.resolve(parseEther('40'))
     );
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
 

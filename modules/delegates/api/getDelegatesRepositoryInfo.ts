@@ -16,18 +16,28 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'makerdao',
-    repo: 'community',
-    page: 'governance/delegates'
+    owner: 'jetstreamgg',
+    repo: 'gov-metadata',
+    page: 'delegates'
   };
 
   const repoTest = {
-    owner: 'makerdao-dux',
-    repo: 'voting-delegates',
+    owner: 'jetstreamgg',
+    repo: 'gov-metadata',
     page: 'delegates'
   };
 
   const delegatesRepositoryInfo =
     network === SupportedNetworks.MAINNET || SupportedNetworks.TENDERLY ? repoMainnet : repoTest;
   return delegatesRepositoryInfo;
+}
+
+export function getDelegatesIndexFileUrl(network: SupportedNetworks) {
+  const { owner, repo, page } = getDelegatesRepositoryInformation(network);
+  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/main/${page}/index.json`;
+}
+
+export function getMetadataRepoBaseUrl(network: SupportedNetworks) {
+  const { owner, repo } = getDelegatesRepositoryInformation(network);
+  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/main`;
 }

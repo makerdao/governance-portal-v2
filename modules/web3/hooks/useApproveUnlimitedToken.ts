@@ -12,6 +12,9 @@ import { useWriteContractFlow } from './useWriteContractFlow';
 import { tokenNameToConfig } from '../helpers/tokenNameToConfig';
 import { WriteHook, WriteHookParams } from '../types/hooks';
 
+// Maximum possible number for ERC20 approvals (2^256 - 1)
+const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
 export const useApproveUnlimitedToken = ({
   name,
   addressToApprove,
@@ -31,7 +34,7 @@ export const useApproveUnlimitedToken = ({
     address: tokenConfig?.address[chainId],
     abi: tokenConfig?.abi,
     functionName: 'approve',
-    args: [addressToApprove as `0x${string}`],
+    args: [addressToApprove as `0x${string}`, MAX_UINT256],
     chainId,
     enabled: paramEnabled,
     gas,

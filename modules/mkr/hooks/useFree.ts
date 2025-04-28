@@ -12,14 +12,14 @@ import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 
 export const useFree = ({
-  mkrToWithdraw,
+  skyToWithdraw,
   gas,
   enabled: paramEnabled = true,
   onSuccess,
   onError,
   onStart
 }: WriteHookParams & {
-  mkrToWithdraw: bigint;
+  skyToWithdraw: bigint;
 }): WriteHook => {
   const chainId = useChainId();
 
@@ -27,7 +27,7 @@ export const useFree = ({
     address: chiefAddress[chainId],
     abi: chiefAbi,
     functionName: 'free',
-    args: [mkrToWithdraw],
+    args: [skyToWithdraw],
     chainId,
     enabled: paramEnabled,
     gas,

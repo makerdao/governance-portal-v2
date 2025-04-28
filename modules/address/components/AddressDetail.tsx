@@ -16,7 +16,7 @@ import { fetchJson } from 'lib/fetchJson';
 import LastVoted from 'modules/polling/components/LastVoted';
 import AddressDelegatedTo from './AddressDelegatedTo';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
+import { AddressSkyDelegatedStats } from './AddressSkyDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Tabs from 'modules/app/components/Tabs';
@@ -155,7 +155,7 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
       </Flex>
 
       <Box sx={{ pl: [3, 4], pr: [3, 4], display: 'flex', flexDirection: 'column' }}>
-        <AddressMKRDelegatedStats
+        <AddressSkyDelegatedStats
           totalMKRDelegated={delegatedToData?.totalDelegated}
           address={addressInfo.address}
         />

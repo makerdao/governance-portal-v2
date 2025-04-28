@@ -13,14 +13,22 @@ import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type Props = {
-  mkrToDeposit: bigint;
+  skyToDeposit: bigint;
   delegate: Delegate | DelegatePaginated | DelegateInfo;
   onClick: () => void;
   disabled: boolean;
   onBack: () => void;
+  prepareError?: Error | null;
 };
 
-export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, disabled, onBack }: Props): JSX.Element => {
+export const ConfirmContent = ({
+  skyToDeposit,
+  delegate,
+  onClick,
+  disabled,
+  onBack,
+  prepareError
+}: Props): JSX.Element => {
   const { address, voteDelegateAddress } = delegate;
   const network = useNetwork();
 
@@ -31,7 +39,7 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, disabled, onBa
       </Text>
       <Text sx={{ mt: 4 }}>
         You are delegating{' '}
-        <Text sx={{ fontWeight: 'bold', display: 'inline' }}>{formatValue(mkrToDeposit, 'wad', 6)} SKY</Text>{' '}
+        <Text sx={{ fontWeight: 'bold', display: 'inline' }}>{formatValue(skyToDeposit, 'wad', 6)} SKY</Text>{' '}
         to delegate contract{' '}
         <EtherscanLink
           type="address"
@@ -57,6 +65,12 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, disabled, onBa
       <Button onClick={onBack} variant="textual" sx={{ color: 'secondary', fontSize: 2, mt: 1 }}>
         Back
       </Button>
+      {prepareError && (
+        <Text variant="smallText" sx={{ color: 'error', mt: 3 }}>
+          Something went wrong preparing the transaction. Please try again or contact support if the issue
+          persists.
+        </Text>
+      )}
     </Flex>
   );
 };

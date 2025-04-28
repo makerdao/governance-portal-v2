@@ -77,7 +77,7 @@ export const DelegateOverviewCard = memo(
     const [showDelegateModal, setShowDelegateModal] = useState(false);
     const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-    const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
+    const { data: mkrDelegatedData, mutate: mutateSkyDelegated } = useMkrDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );
@@ -304,7 +304,7 @@ export const DelegateOverviewCard = memo(
             isOpen={showDelegateModal}
             onDismiss={() => setShowDelegateModal(false)}
             mutateTotalStaked={mutateDelegateTotalMkr}
-            mutateMKRDelegated={mutateMKRDelegated}
+            mutateSkyDelegated={mutateSkyDelegated}
             refetchOnDelegation={false}
           />
         )}
@@ -314,7 +314,7 @@ export const DelegateOverviewCard = memo(
             isOpen={showUndelegateModal}
             onDismiss={() => setShowUndelegateModal(false)}
             mutateTotalStaked={mutateDelegateTotalMkr}
-            mutateMKRDelegated={mutateMKRDelegated}
+            mutateSkyDelegated={mutateSkyDelegated}
             refetchOnDelegation={false}
           />
         )}

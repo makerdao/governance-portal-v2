@@ -6,16 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Box, Flex } from 'theme-ui';
-import Icon from 'modules/app/components/Icon';
+import { Flex } from 'theme-ui';
 import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import Tooltip from 'modules/app/components/Tooltip';
-import { getDescription } from 'modules/polling/components/VotingWeight';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
 export function DelegateMKRDelegatedStats({
@@ -30,7 +27,9 @@ export function DelegateMKRDelegatedStats({
 
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
   const totalMkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-  const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
+  const { data: votingWeight, loading: votingWeightLoading } = useSkyVotingWeight({
+    address: delegate.voteDelegateAddress
+  });
 
   return (
     <Flex
@@ -44,22 +43,15 @@ export function DelegateMKRDelegatedStats({
     >
       <StatBox
         value={
-          !votingWeight ? (
+          votingWeightLoading ? (
             <Skeleton width="100%" height="15px" />
-          ) : votingWeight?.chiefBalanceHot ? (
-            formatValue(votingWeight?.chiefBalanceHot)
+          ) : typeof votingWeight !== 'undefined' ? (
+            formatValue(votingWeight)
           ) : (
             'Untracked'
           )
         }
         label={'Total SKY Delegated'}
-        tooltip={
-          <Tooltip label={getDescription({ votingWeight, isDelegate: true })}>
-            <Box>
-              <Icon sx={{ ml: 1 }} name="question" />
-            </Box>
-          </Tooltip>
-        }
       />
       <StatBox
         value={

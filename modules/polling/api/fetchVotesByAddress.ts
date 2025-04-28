@@ -15,6 +15,7 @@ import { allArbitrumVoters } from 'modules/gql/queries/subgraph/allArbitrumVoter
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { formatEther } from 'viem';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
 
 interface VoterData {
   id: string;
@@ -27,25 +28,25 @@ interface VoteData {
   txnHash: string;
 }
 
-interface MainnetPollData {
-  startDate: number;
-  endDate: number;
-  votes: VoteData[];
-}
-
-interface MainnetVotersResponse {
-  polls: MainnetPollData[];
-}
-
-interface ArbitrumVoteData {
+interface MainnetVoteData {
   voter: VoterData;
   choice: string;
   blockTime: number;
   txnHash: string;
 }
 
+interface MainnetVotersResponse {
+  pollVotes: MainnetVoteData[];
+}
+
+interface ArbitrumPollData {
+  startDate: number;
+  endDate: number;
+  votes: VoteData[];
+}
+
 interface ArbitrumVotersResponse {
-  arbitrumPollVotes: ArbitrumVoteData[];
+  arbitrumPoll: ArbitrumPollData;
 }
 
 interface VotingPowerChange {
@@ -54,7 +55,7 @@ interface VotingPowerChange {
 
 interface VoterWithWeight {
   id: string;
-  votingPowerChanges: VotingPowerChange[];
+  v2VotingPowerChanges: VotingPowerChange[];
 }
 
 interface MkrWeightsResponse {
@@ -66,38 +67,36 @@ export async function fetchVotesByAddressForPoll(
   delegateOwnerToAddress: Record<string, string>,
   network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
-  const mainnetVotersResponse = await gqlRequest<MainnetVotersResponse>({
-    chainId: networkNameToChainId(network),
-    query: allMainnetVoters,
-    variables: {
-      argPollId: pollId.toString()
-    }
-  });
+  const arbitrumChainId =
+    network === SupportedNetworks.MAINNET ? SupportedChainId.ARBITRUM : SupportedChainId.ARBITRUMTESTNET;
 
-  const startUnix = mainnetVotersResponse.polls[0].startDate;
-  const endUnix = mainnetVotersResponse.polls[0].endDate;
+  const [mainnetVotersResponse, arbitrumVotersResponse] = await Promise.all([
+    gqlRequest<MainnetVotersResponse>({
+      chainId: networkNameToChainId(network),
+      query: allMainnetVoters,
+      variables: {
+        argPollId: pollId.toString()
+      }
+    }),
+    gqlRequest<ArbitrumVotersResponse>({
+      chainId: arbitrumChainId,
+      query: allArbitrumVoters,
+      variables: {
+        argPollId: pollId.toString()
+      }
+    })
+  ]);
 
-  const mainnetVotes = mainnetVotersResponse.polls[0].votes;
-  const mainnetVoterAddresses = mainnetVotes
-    .filter(vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix)
-    .map(vote => vote.voter.id);
+  const startUnix = arbitrumVotersResponse.arbitrumPoll.startDate;
+  const endUnix = arbitrumVotersResponse.arbitrumPoll.endDate;
 
-  const arbitrumChainId = networkNameToChainId('arbitrum'); //update if we ever want to support an arbitrum sepolia subgraph
-
-  const arbitrumVotersResponse = await gqlRequest<ArbitrumVotersResponse>({
-    chainId: arbitrumChainId,
-    query: allArbitrumVoters,
-    variables: {
-      argPollId: pollId.toString()
-    }
-  });
-
-  const arbitrumVotes = arbitrumVotersResponse.arbitrumPollVotes;
-
-  const mapToDelegateAddress = voterAddress => delegateOwnerToAddress[voterAddress] || voterAddress;
+  const mainnetVotes = mainnetVotersResponse.pollVotes;
+  const arbitrumVotes = arbitrumVotersResponse.arbitrumPoll.votes;
 
   const isVoteWithinPollTimeframe = vote => vote.blockTime >= startUnix && vote.blockTime <= endUnix;
+  const mapToDelegateAddress = (voterAddress: string) => delegateOwnerToAddress[voterAddress] || voterAddress;
 
+  const mainnetVoterAddresses = mainnetVotes.filter(isVoteWithinPollTimeframe).map(vote => vote.voter.id);
   const arbitrumVoterAddresses = arbitrumVotes
     .filter(isVoteWithinPollTimeframe)
     .map(vote => mapToDelegateAddress(vote.voter.id));
@@ -140,7 +139,7 @@ export async function fetchVotesByAddressForPoll(
 
   const votesWithWeights = dedupedVotes.map((vote: (typeof allVotes)[0]) => {
     const voterData = votersWithWeights.find(voter => voter.id === vote.voter.id);
-    const votingPowerChanges = voterData?.votingPowerChanges || [];
+    const votingPowerChanges = voterData?.v2VotingPowerChanges || [];
     const mkrSupport = votingPowerChanges.length > 0 ? votingPowerChanges[0].newBalance : '0';
 
     const ballot = parseRawOptionId(vote.choice.toString());

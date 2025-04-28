@@ -1,14 +1,14 @@
 import { createConfig, createStorage, http, noopStorage } from 'wagmi';
 import { arbitrum, arbitrumSepolia, mainnet } from 'wagmi/chains';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { coinbaseWallet, metaMask, safe, walletConnect, injected } from 'wagmi/connectors';
+import { coinbaseWallet, metaMask, safe, walletConnect } from 'wagmi/connectors';
 import { createPublicClient } from 'viem';
 
 const tenderlyRpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`;
 
 export const tenderly = {
   id: SupportedChainId.TENDERLY as const,
-  name: 'mainnet_sep_30_0',
+  name: 'mainnet_2025_apr_15_0',
   network: 'tenderly',
   iconUrl: 'tokens/weth.svg',
   nativeCurrency: {

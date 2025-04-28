@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
+import { useSkyBalance } from 'modules/mkr/hooks/useSkyBalance';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { InputDelegateMkr } from './InputDelegateMkr';
+import { InputDelegateSky } from './InputDelegateSky';
 import { ApprovalContent } from './Approval';
 import { TxDisplay } from './TxDisplay';
 import { ConfirmContent } from './Confirm';
@@ -30,7 +30,7 @@ type Props = {
   onDismiss: () => void;
   delegate: Delegate | DelegatePaginated | DelegateInfo;
   mutateTotalStaked: (amount?: bigint) => void;
-  mutateMKRDelegated: () => void;
+  mutateSkyDelegated: () => void;
   title?: string;
   refetchOnDelegation?: boolean;
 };
@@ -40,29 +40,29 @@ export const DelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMKRDelegated,
+  mutateSkyDelegated,
   title = 'Deposit into delegate contract',
   refetchOnDelegation = true
 }: Props): JSX.Element => {
   const { account } = useAccount();
 
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToDeposit, setMkrToDeposit] = useState(0n);
+  const [skyToDeposit, setSkyToDeposit] = useState(0n);
   const [confirmStep, setConfirmStep] = useState(false);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
-  const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(account);
+  const { data: skyBalance, mutate: mutateSkyBalance } = useSkyBalance(account);
 
-  const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    Tokens.MKR,
+  const { data: skyAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
+    Tokens.SKY,
     100000000n,
     account,
     voteDelegateAddress
   );
 
   const approve = useApproveUnlimitedToken({
-    name: Tokens.MKR,
+    name: Tokens.SKY,
     addressToApprove: voteDelegateAddress,
     onStart: (hash: `0x${string}`) => {
       setTxHash(hash);
@@ -82,7 +82,7 @@ export const DelegateModal = ({
 
   const lock = useDelegateLock({
     voteDelegateAddress,
-    mkrToDeposit,
+    skyToDeposit,
     onStart: (hash: `0x${string}`) => {
       setTxHash(hash);
       setTxStatus(TxStatus.LOADING);
@@ -90,14 +90,14 @@ export const DelegateModal = ({
     onSuccess: (hash: `0x${string}`) => {
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
-      refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToDeposit);
-      mutateMKRDelegated();
-      mutateMkrBalance();
+      refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(skyToDeposit);
+      mutateSkyDelegated();
+      mutateSkyBalance();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     },
-    enabled: !!mkrAllowance && !!mkrToDeposit
+    enabled: !!skyAllowance && !!skyToDeposit
   });
 
   const onClose = () => {
@@ -126,7 +126,7 @@ export const DelegateModal = ({
                   onDismiss={onClose}
                   title={`Delegating to ${delegate.name}`}
                   description={`Congratulations, you delegated ${formatValue(
-                    mkrToDeposit,
+                    skyToDeposit,
                     'wad',
                     6
                   )} SKY to ${delegate.name}.`}
@@ -137,29 +137,30 @@ export const DelegateModal = ({
                 </TxDisplay>
               ) : (
                 <>
-                  {mkrAllowance ? (
+                  {skyAllowance ? (
                     confirmStep ? (
                       <ConfirmContent
-                        mkrToDeposit={mkrToDeposit}
+                        skyToDeposit={skyToDeposit}
                         delegate={delegate}
                         onClick={() => {
                           setTxStatus(TxStatus.INITIALIZED);
                           lock.execute();
                         }}
                         disabled={
-                          mkrToDeposit === 0n ||
-                          mkrToDeposit > (mkrBalance || 0n) ||
+                          skyToDeposit === 0n ||
+                          skyToDeposit > (skyBalance || 0n) ||
                           lock.isLoading ||
                           !lock.prepared
                         }
                         onBack={() => setConfirmStep(false)}
+                        prepareError={lock.prepareError}
                       />
                     ) : (
-                      <InputDelegateMkr
+                      <InputDelegateSky
                         title={title}
                         description="Input the amount of SKY to deposit into the delegate contract."
-                        onChange={setMkrToDeposit}
-                        balance={mkrBalance}
+                        onChange={setSkyToDeposit}
+                        balance={skyBalance}
                         buttonLabel="Delegate SKY"
                         onClick={() => setConfirmStep(true)}
                         showAlert={true}

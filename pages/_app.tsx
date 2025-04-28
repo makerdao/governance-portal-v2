@@ -25,9 +25,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
-import Banner from 'modules/app/components/layout/header/Banner';
-import bannerContent from 'modules/home/data/bannerContent.json';
-import React, { useMemo } from 'react';
+import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
+import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { WagmiProvider } from 'wagmi';
 import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
@@ -45,21 +44,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
   const wagmiConfig = useMockWallet ? mockWagmiConfig : isProduction ? wagmiConfigProd : wagmiConfigDev;
   const queryClient = new QueryClient();
-
-  const activeBannerContent = bannerContent.find(({ active }) => active === true);
-  const banners = useMemo(() => {
-    return (
-      <React.Fragment>
-        {activeBannerContent && (
-          <Banner
-            content={activeBannerContent.content}
-            href={activeBannerContent.href}
-            variant={activeBannerContent.variant}
-          />
-        )}
-      </React.Fragment>
-    );
-  }, []);
 
   return (
     <WagmiProvider config={wagmiConfig}>
@@ -107,7 +91,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 >
                   <ThemeImage />
-                  {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
+                  <AppBanner />
                   <Box sx={{ px: [3, 4] }}>
                     <Component {...pageProps} />
                   </Box>
