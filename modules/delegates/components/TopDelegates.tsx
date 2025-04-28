@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { calculatePercentage } from 'lib/utils';
 import { parseEther } from 'viem';
+import { config } from 'lib/config';
 
 export default function TopDelegates({
   topDelegates,
@@ -125,7 +126,7 @@ export default function TopDelegates({
                   <Button
                     variant="outline"
                     data-testid="button-delegate"
-                    disabled={!account}
+                    disabled={config.READ_ONLY || !account}
                     onClick={() => {
                       setShowDelegateModal(delegate);
                     }}

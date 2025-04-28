@@ -10,6 +10,7 @@ import { useChainId } from 'wagmi';
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 import { esmAbi, esmAddress } from 'modules/contracts/generated';
+import { config } from 'lib/config';
 
 export const useEsmShutdown = ({
   gas,
@@ -25,7 +26,7 @@ export const useEsmShutdown = ({
     abi: esmAbi,
     functionName: 'fire',
     chainId,
-    enabled: paramEnabled,
+    enabled: paramEnabled && !config.READ_ONLY,
     gas,
     onSuccess,
     onError,
