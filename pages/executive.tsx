@@ -41,26 +41,6 @@ import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
-const MigrationBadge = ({ children, py = [2, 3] }) => (
-  <Badge
-    variant="primary"
-    sx={{
-      textTransform: 'none',
-      borderColor: 'primary',
-      borderRadius: 'small',
-      width: '100%',
-      whiteSpace: 'normal',
-      fontWeight: 'normal',
-      fontSize: [1, 2],
-      px: [3, 4],
-      my: 3,
-      py
-    }}
-  >
-    {children}
-  </Badge>
-);
-
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, votingAccount } = useAccount();
   const network = useNetwork();
