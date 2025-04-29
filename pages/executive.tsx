@@ -26,7 +26,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
-import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
@@ -136,8 +135,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     mutatePaginatedProposals();
   }, [startDate, endDate]);
 
-  const votingForSomething = votedProposals && votedProposals.length > 0;
-
   const prevSortByRef = useRef<string>(sortBy);
 
   useEffect(() => {
@@ -156,13 +153,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
-
-      {votedProposals && !votingForSomething && lockedSky && lockedSky > 0n && (
-        <>
-          <ProgressBar step={1} />
-          <MigrationBadge>Your SKY has been deposited. You are now ready to vote.</MigrationBadge>
-        </>
-      )}
       <Stack>
         {account && (
           <ExecutiveBalance
