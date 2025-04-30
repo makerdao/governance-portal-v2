@@ -140,6 +140,36 @@ describe('AccountPage', () => {
     });
   });
 
+  it('should show "No vote delegate contract detected" when no delegate contract exists', () => {
+    renderWithTheme(<AccountPage />);
+
+    expect(screen.getByText('No vote delegate contract detected')).toBeInTheDocument();
+  });
+
+  it('should disable create button when warning checkbox is unchecked', () => {
+    renderWithTheme(<AccountPage />);
+
+    const createButton = screen.getByTestId('create-button');
+    expect(createButton).toBeInTheDocument();
+    expect(createButton).toBeDisabled();
+  });
+
+  it('should enable create button when warning checkbox is checked', () => {
+    renderWithTheme(<AccountPage />);
+
+    const warningLabel = screen.getByTestId('checkbox-create-delegate');
+    const createButton = screen.getByTestId('create-button');
+
+    // Initial state - button should be disabled
+    expect(createButton).toBeDisabled();
+
+    // Click the checkbox
+    fireEvent.click(warningLabel);
+
+    // Button should now be enabled
+    expect(createButton).toBeEnabled();
+  });
+
   it('shows modal with "Support address(0)" after creating delegate contract', async () => {
     renderWithTheme(<AccountPage />);
 
@@ -159,5 +189,45 @@ describe('AccountPage', () => {
 
     // Verify the modal content
     expect(screen.getByText(/voting for address\(0\) now, even with 0 sky delegated/i)).toBeInTheDocument();
+  });
+
+  it('should show warning about losing UI voting capability with existing chief balance', () => {
+    // Mock a non-zero chief balance
+    vi.mocked(useLockedSkyModule.useLockedSky).mockReturnValue({
+      data: 100000000000000000000n, // 100 SKY
+      loading: false,
+      error: null,
+      mutate: vi.fn()
+    });
+
+    renderWithTheme(<AccountPage />);
+
+    // Verify the warning message is shown
+    expect(screen.getByText(/you have a dschief balance of/i)).toBeInTheDocument();
+    const balanceSpan = screen.getByText((content, element) => {
+      return element?.tagName.toLowerCase() === 'span' && content.includes('100');
+    });
+    expect(balanceSpan).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /if you become a delegate, you will only be able to vote through the portal as a delegate\. in this case, it is recommended to withdraw your sky and delegate it to yourself or create the delegate contract from a different account\./i
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('should open modal when clicking "Create delegate contract"', () => {
+    renderWithTheme(<AccountPage />);
+
+    // Accept warning checkbox
+    const warningLabel = screen.getByTestId('checkbox-create-delegate');
+    fireEvent.click(warningLabel);
+
+    // Click "Create delegate contract"
+    const createButton = screen.getByTestId('create-button');
+    fireEvent.click(createButton);
+
+    // Verify modal is open by checking for modal content
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByLabelText('Delegate modal')).toBeInTheDocument();
   });
 });
