@@ -80,8 +80,8 @@ export async function fetchLandingPageData(
     polls: pollsData ? (pollsData as PollsPaginatedResponse).polls : [],
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
-    mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat) : undefined,
+    mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat, 'wad', 2, true, false, 1e9) : undefined,
     hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
-    mkrInChief: mkrInChief === 0n || mkrInChief ? formatValue(mkrInChief as bigint) : undefined
+    mkrInChief: mkrInChief === 0n || mkrInChief ? formatValue(mkrInChief as bigint, 'wad', 2, true, false, 1e9) : undefined
   };
 }
