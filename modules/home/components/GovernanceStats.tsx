@@ -40,7 +40,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     {
       title: 'SKY Delegated',
       value: stats ? (
-        `${formatValue(BigInt(stats.totalMKRDelegated), 0, 2, true, false, true)} SKY`
+        `${formatValue(BigInt(stats.totalMKRDelegated), 0, 2, true, false, 1e9)} SKY`
       ) : (
         <Skeleton />
       )

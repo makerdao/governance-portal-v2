@@ -23,30 +23,30 @@ export function formatValue(
   dp = 2,
   withCommas = true,
   roundDown = false,
-  truncateLarge = false
+  truncateThreshold?: number
 ): string {
   if (typeof type === 'string') {
     switch (type) {
       case 'ray':
-        return formatValue(value, 27, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 27, dp, withCommas, roundDown, truncateThreshold);
       case 'rad':
-        return formatValue(value, 45, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 45, dp, withCommas, roundDown, truncateThreshold);
       case 'wei':
-        return formatValue(value, 0, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 0, dp, withCommas, roundDown, truncateThreshold);
       case 'kwei':
-        return formatValue(value, 3, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 3, dp, withCommas, roundDown, truncateThreshold);
       case 'mwei':
-        return formatValue(value, 6, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 6, dp, withCommas, roundDown, truncateThreshold);
       case 'gwei':
-        return formatValue(value, 9, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 9, dp, withCommas, roundDown, truncateThreshold);
       case 'szabo':
-        return formatValue(value, 12, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 12, dp, withCommas, roundDown, truncateThreshold);
       case 'finney':
-        return formatValue(value, 15, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 15, dp, withCommas, roundDown, truncateThreshold);
       case 'ether':
       case 'wad':
       default:
-        return formatValue(value, 18, dp, withCommas, roundDown, truncateLarge);
+        return formatValue(value, 18, dp, withCommas, roundDown, truncateThreshold);
     }
   }
 
@@ -58,8 +58,13 @@ export function formatValue(
   const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
   if (+fixed < 0.01 && roundDown) return '≈0.00';
   
-  if (truncateLarge && +fixed >= 1e9) {
-    return (+fixed / 1e9).toFixed(2) + 'B';
+  if (truncateThreshold && +fixed >= truncateThreshold) {
+    //truncate the number to the nearest thousand, million, billion, or trillion
+    //and remove any trailing zeros
+    if (+fixed >= 1e12) return (+fixed / 1e12).toFixed(2).replace(/\.?0+$/, '') + 'T';
+    if (+fixed >= 1e9) return (+fixed / 1e9).toFixed(2).replace(/\.?0+$/, '') + 'B';
+    if (+fixed >= 1e6) return (+fixed / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
+    if (+fixed >= 1e3) return (+fixed / 1e3).toFixed(2).replace(/\.?0+$/, '') + 'K';
   }
   
   const finished = withCommas ? (+fixed).toLocaleString(undefined, { maximumFractionDigits: dp }) : fixed;
