@@ -22,30 +22,31 @@ export function formatValue(
   type: string | number = 'wad',
   dp = 2,
   withCommas = true,
-  roundDown = false
+  roundDown = false,
+  truncateLarge = false
 ): string {
   if (typeof type === 'string') {
     switch (type) {
       case 'ray':
-        return formatValue(value, 27, dp, withCommas, roundDown);
+        return formatValue(value, 27, dp, withCommas, roundDown, truncateLarge);
       case 'rad':
-        return formatValue(value, 45, dp, withCommas, roundDown);
+        return formatValue(value, 45, dp, withCommas, roundDown, truncateLarge);
       case 'wei':
-        return formatValue(value, 0, dp, withCommas, roundDown);
+        return formatValue(value, 0, dp, withCommas, roundDown, truncateLarge);
       case 'kwei':
-        return formatValue(value, 3, dp, withCommas, roundDown);
+        return formatValue(value, 3, dp, withCommas, roundDown, truncateLarge);
       case 'mwei':
-        return formatValue(value, 6, dp, withCommas, roundDown);
+        return formatValue(value, 6, dp, withCommas, roundDown, truncateLarge);
       case 'gwei':
-        return formatValue(value, 9, dp, withCommas, roundDown);
+        return formatValue(value, 9, dp, withCommas, roundDown, truncateLarge);
       case 'szabo':
-        return formatValue(value, 12, dp, withCommas, roundDown);
+        return formatValue(value, 12, dp, withCommas, roundDown, truncateLarge);
       case 'finney':
-        return formatValue(value, 15, dp, withCommas, roundDown);
+        return formatValue(value, 15, dp, withCommas, roundDown, truncateLarge);
       case 'ether':
       case 'wad':
       default:
-        return formatValue(value, 18, dp, withCommas, roundDown);
+        return formatValue(value, 18, dp, withCommas, roundDown, truncateLarge);
     }
   }
 
@@ -56,6 +57,11 @@ export function formatValue(
   if (+formatted > 999) dp = 0;
   const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
   if (+fixed < 0.01 && roundDown) return '≈0.00';
+  
+  if (truncateLarge && +fixed >= 1e9) {
+    return (+fixed / 1e9).toFixed(2) + 'B';
+  }
+  
   const finished = withCommas ? (+fixed).toLocaleString(undefined, { maximumFractionDigits: dp }) : fixed;
   return finished;
 }
