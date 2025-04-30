@@ -8,7 +8,9 @@ import * as useDelegateCreateModule from 'modules/delegates/hooks/useDelegateCre
 import * as useReadContractModule from 'wagmi';
 import * as useSimulateContractModule from 'wagmi';
 import * as useDelegateVoteModule from 'modules/executive/hooks/useDelegateVote';
+import * as useVotedProposalsModule from 'modules/executive/hooks/useVotedProposals';
 import { renderWithTheme } from '../helpers';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 vi.mock('lottie-web', () => ({
   default: {
@@ -22,6 +24,7 @@ vi.mock('modules/app/hooks/useAddressInfo');
 vi.mock('modules/delegates/hooks/useDelegateCreate');
 vi.mock('wagmi');
 vi.mock('modules/executive/hooks/useDelegateVote');
+vi.mock('modules/executive/hooks/useVotedProposals');
 
 describe('AccountPage', () => {
   beforeEach(() => {
@@ -138,6 +141,14 @@ describe('AccountPage', () => {
       retryPrepare: vi.fn(),
       prepareError: null
     });
+
+    // Mock useVotedProposals - default to empty array (not voted for address zero)
+    vi.mocked(useVotedProposalsModule.useVotedProposals).mockReturnValue({
+      data: [],
+      loading: false,
+      error: null,
+      mutate: vi.fn()
+    });
   });
 
   it('should show "No vote delegate contract detected" when no delegate contract exists', () => {
@@ -229,5 +240,128 @@ describe('AccountPage', () => {
     // Verify modal is open by checking for modal content
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Delegate modal')).toBeInTheDocument();
+  });
+
+  it('should show "You are supporting address(0)" message when user has already voted for address(0)', () => {
+    // Mock a delegate contract address
+    vi.mocked(useAccountModule.useAccount).mockReturnValue({
+      account: '0x123',
+      mutate: vi.fn(),
+      voteDelegateContractAddress: '0x456',
+      votingAccount: '0x123'
+    });
+
+    // Mock that the user has already voted for address(0)
+    vi.mocked(useVotedProposalsModule.useVotedProposals).mockReturnValue({
+      data: ['0x0000000000000000000000000000000000000000'], // ZERO_ADDRESS
+      loading: false,
+      error: null,
+      mutate: vi.fn()
+    });
+
+    renderWithTheme(<AccountPage />);
+
+    // Verify the "You are supporting address(0)" message is displayed
+    expect(
+      screen.getByText(
+        /you are supporting address\(0\)\. thank you for contributing to the launch of sky governance\./i
+      )
+    ).toBeInTheDocument();
+
+    // Verify the "Support address(0)" button is disabled
+    const voteButton = screen.getByTestId('vote-button');
+    expect(voteButton).toBeDisabled();
+  });
+
+  it('should not show "Support address(0)" section when chief is live', () => {
+    // Mock a delegate contract address
+    vi.mocked(useAccountModule.useAccount).mockReturnValue({
+      account: '0x123',
+      mutate: vi.fn(),
+      voteDelegateContractAddress: '0x456',
+      votingAccount: '0x123'
+    });
+
+    // Mock that the chief is live (value of 1n)
+    vi.mocked(useReadContractModule.useReadContract).mockReturnValue({
+      data: 1n, // Chief is live
+      isError: false,
+      error: null,
+      isPending: false,
+      isLoading: false,
+      isLoadingError: false,
+      isRefetchError: false,
+      isSuccess: true,
+      isPlaceholderData: false,
+      status: 'success',
+      dataUpdatedAt: Date.now(),
+      errorUpdatedAt: Date.now(),
+      failureCount: 0,
+      failureReason: null,
+      errorUpdateCount: 0,
+      isFetched: true,
+      isFetchedAfterMount: true,
+      isFetching: false,
+      isRefetching: false,
+      isStale: false,
+      isInitialLoading: false,
+      isPaused: false,
+      refetch: vi.fn(),
+      fetchStatus: 'idle',
+      promise: Promise.resolve(),
+      queryKey: []
+    });
+
+    renderWithTheme(<AccountPage />);
+
+    // Verify the "Support the Launch of SKY Governance" section is not displayed
+    expect(screen.queryByText(/support the launch of sky governance/i)).not.toBeInTheDocument();
+
+    // Verify the "Support address(0)" button is not displayed
+    expect(screen.queryByTestId('vote-button')).not.toBeInTheDocument();
+  });
+
+  it('should display the delegate contract address when it exists', () => {
+    // Mock a delegate contract address
+    vi.mocked(useAccountModule.useAccount).mockReturnValue({
+      account: '0x123',
+      mutate: vi.fn(),
+      voteDelegateContractAddress: '0x456',
+      votingAccount: '0x123'
+    });
+
+    renderWithTheme(<AccountPage />);
+
+    // Verify the delegate contract address label is displayed
+    expect(screen.getByText('Your delegate contract address:')).toBeInTheDocument();
+
+    // Verify the delegate contract address is displayed (it's displayed as "0x456...x456")
+    expect(
+      screen.getByText((content, element) => {
+        return element?.tagName.toLowerCase() === 'span' && content.includes('0x456');
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('should display the delegate contract address when it exists (after creation)', () => {
+    // Mock a delegate contract address directly
+    vi.mocked(useAccountModule.useAccount).mockReturnValue({
+      account: '0x123',
+      mutate: vi.fn(),
+      voteDelegateContractAddress: '0x456', // Already have a delegate contract
+      votingAccount: '0x123'
+    });
+
+    renderWithTheme(<AccountPage />);
+
+    // Verify the delegate contract address label is displayed
+    expect(screen.getByText('Your delegate contract address:')).toBeInTheDocument();
+
+    // Verify the delegate contract address is displayed (it's displayed as "0x456...x456")
+    expect(
+      screen.getByText((content, element) => {
+        return element?.tagName.toLowerCase() === 'span' && content.includes('0x456');
+      })
+    ).toBeInTheDocument();
   });
 });
