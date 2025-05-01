@@ -233,9 +233,7 @@ const AccountPage = (): React.ReactElement => {
                   <Box>
                     <Label>No vote delegate contract detected</Label>
                     <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                      Warning: You will be unable to vote with your existing chief balance through the UI
-                      after creating a delegate contract. This functionality is only affected in the user
-                      interface and not at the contract level.
+                      If you deposited SKY directly into the voting contract, you will need to withdraw it and delegate it to your delegate if you want to vote with it.
                     </Alert>
                     <Label
                       sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}
