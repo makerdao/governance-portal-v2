@@ -54,7 +54,7 @@ const AccountPage = (): React.ReactElement => {
   const { data: chiefBalance } = useLockedSky(account);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [warningRead, setWarningRead] = useState(false);
+  const [warningRead, setWarningRead] = useState(chiefBalance === 0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const [flow, setFlow] = useState<DelegateFlow>(DelegateFlow.CREATE);
@@ -232,21 +232,31 @@ const AccountPage = (): React.ReactElement => {
                 {!voteDelegateContractAddress && (
                   <Box>
                     <Label>No vote delegate contract detected</Label>
-                    <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                      If you deposited SKY directly into the voting contract, you will need to withdraw it and delegate it to your delegate if you want to vote with it.
-                    </Alert>
-                    <Label
-                      sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}
-                      data-testid="checkbox-create-delegate"
-                    >
-                      <Checkbox
-                        checked={warningRead}
-                        onChange={() => {
-                          setWarningRead(!warningRead);
-                        }}
-                      />
-                      I understand
-                    </Label>
+                    {chiefBalance && chiefBalance > 0n && (
+                    <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 1 }}>
+                      <Text as="p">
+                        You have {' '}
+                        <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY</Text>
+                        {' '} deposited in the voting contract.
+                        <Text as="p" sx={{ my: 2 }}>
+                            If you become a delegate, you will only be able to vote as a delegate through the portal. It is recommended you either withdraw your SKY and delegate it to yourself or use a different account to create the delegate contract.
+                        </Text>
+                      </Text>
+                      <Withdraw sx={{ mt: 3 }} />
+                      <Label
+                        sx={{ mt: 3, fontSize: 2, alignItems: 'center', fontWeight: 'normal' }}
+                        data-testid="checkbox-create-delegate"
+                      >
+                        <Checkbox
+                          checked={warningRead}
+                          onChange={() => {
+                            setWarningRead(!warningRead);
+                          }}
+                        />
+                        Proceed anyway without withdrawing SKY
+                      </Label>
+                    </Flex>
+                  )}
                     <Button
                       disabled={!warningRead || createDelegate.isLoading || !createDelegate.prepared}
                       onClick={() => {
@@ -292,21 +302,19 @@ const AccountPage = (): React.ReactElement => {
                         governance.
                       </Text>
                     )}
-                  </Box>
-                )}
-                {chiefBalance && chiefBalance > 0n && (
-                  <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 5 }}>
-                    <Text as="p">
-                      You have a DSChief balance of{' '}
-                      <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY.</Text>
-                      <Text as="p" sx={{ my: 2 }}>
-                        {voteDelegateContractAddress
-                          ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your SKY and delegate it to yourself to vote with it.'
-                          : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your SKY and delegate it to yourself or create the delegate contract from a different account.'}
+                    {chiefBalance !== undefined && chiefBalance > 0n && (
+                    <>
+                      <Text as="p" sx={{ mt: 4 }}>
+                        You have {' '}
+                        <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY</Text>
+                        {' '} deposited in the voting contract.
+                        <Text as="p" sx={{ my: 2 }}>
+                            As a delegate you can only vote with your delegate contract through the portal. Please withdraw your SKY and delegate it to yourself to vote with it.
+                        </Text>
                       </Text>
-                    </Text>
-                    <Withdraw sx={{ mt: 3 }} />
-                  </Flex>
+                      <Withdraw sx={{ mt: 3 }} />
+                    </>)}
+                  </Box>
                 )}
               </Card>
             </Box>
