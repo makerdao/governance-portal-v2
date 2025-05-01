@@ -70,7 +70,7 @@ export default function SystemStatsSidebar({
     },
     'sky in chief': key => {
       const chiefAddress = chiefAddressMapping[chainId];
-      const { data: chiefBalance } = useTokenBalance(Tokens.MKR, chiefAddress);
+      const { data: chiefBalance } = useTokenBalance(Tokens.SKY, chiefAddress);
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
