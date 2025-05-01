@@ -10,7 +10,7 @@ import { gql } from 'graphql-request';
 
 export const votingWeightHistory = gql`
   query VotingWeightHistory($argAddress: String){
-    executiveVotingPowerChanges(where: {voter: $argAddress}){
+    executiveVotingPowerChangeV2S(where: {voter: $argAddress}){
 			blockTimestamp
       newBalance
     }

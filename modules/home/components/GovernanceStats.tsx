@@ -10,6 +10,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
 import { DelegatesAPIStats } from 'modules/delegates/types';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { formatValue } from 'lib/string';
 
 type Props = {
   pollStats: PollsResponse['stats'];
@@ -39,7 +40,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     {
       title: 'SKY Delegated',
       value: stats ? (
-        `${stats.totalMKRDelegated.toLocaleString(undefined, { maximumFractionDigits: 0 })} SKY`
+        `${formatValue(BigInt(Math.floor(stats.totalMKRDelegated)), 0, 2, true, false, 1e9)} SKY`
       ) : (
         <Skeleton />
       )

@@ -20,13 +20,12 @@ import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
+import MkrSkyLiquiditySidebar from 'modules/mkr/components/MkrSkyLiquiditySidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
-import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
@@ -41,26 +40,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-
-const MigrationBadge = ({ children, py = [2, 3] }) => (
-  <Badge
-    variant="primary"
-    sx={{
-      textTransform: 'none',
-      borderColor: 'primary',
-      borderRadius: 'small',
-      width: '100%',
-      whiteSpace: 'normal',
-      fontWeight: 'normal',
-      fontSize: [1, 2],
-      px: [3, 4],
-      my: 3,
-      py
-    }}
-  >
-    {children}
-  </Badge>
-);
 
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, votingAccount } = useAccount();
@@ -136,8 +115,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     mutatePaginatedProposals();
   }, [startDate, endDate]);
 
-  const votingForSomething = votedProposals && votedProposals.length > 0;
-
   const prevSortByRef = useRef<string>(sortBy);
 
   useEffect(() => {
@@ -156,13 +133,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
-
-      {votedProposals && !votingForSomething && lockedSky && lockedSky > 0n && (
-        <>
-          <ProgressBar step={2} />
-          <MigrationBadge>Your SKY has been deposited. You are now ready to vote.</MigrationBadge>
-        </>
-      )}
       <Stack>
         {account && (
           <ExecutiveBalance
@@ -328,7 +298,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               />
             </ErrorBoundary>
             <ErrorBoundary componentName="MKR Liquidity">
-              <MkrLiquiditySidebar network={network} />
+              <MkrSkyLiquiditySidebar network={network} />
             </ErrorBoundary>
             <ResourceBox type={'executive'} />
             <ResourceBox type={'general'} />

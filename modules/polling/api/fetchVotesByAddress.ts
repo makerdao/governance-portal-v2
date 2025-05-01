@@ -55,7 +55,7 @@ interface VotingPowerChange {
 
 interface VoterWithWeight {
   id: string;
-  votingPowerChanges: VotingPowerChange[];
+  v2VotingPowerChanges: VotingPowerChange[];
 }
 
 interface MkrWeightsResponse {
@@ -139,7 +139,7 @@ export async function fetchVotesByAddressForPoll(
 
   const votesWithWeights = dedupedVotes.map((vote: (typeof allVotes)[0]) => {
     const voterData = votersWithWeights.find(voter => voter.id === vote.voter.id);
-    const votingPowerChanges = voterData?.votingPowerChanges || [];
+    const votingPowerChanges = voterData?.v2VotingPowerChanges || [];
     const mkrSupport = votingPowerChanges.length > 0 ? votingPowerChanges[0].newBalance : '0';
 
     const ballot = parseRawOptionId(vote.choice.toString());

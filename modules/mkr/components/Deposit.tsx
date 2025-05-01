@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState } from 'react';
-import { Button, Flex, Text, Box, Link } from 'theme-ui';
+import { Button, Flex, Text, Box, Link, ButtonProps } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -182,7 +182,15 @@ const ModalContent = ({
   );
 };
 
-const Deposit = ({ link, mutateLockedSky }: { link?: string; mutateLockedSky?: () => void }): JSX.Element => {
+const Deposit = ({
+  link,
+  mutateLockedSky,
+  ...props
+}: {
+  link?: string;
+  mutateLockedSky?: () => void;
+  sx?: ButtonProps['sx'];
+}): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
 
   const open = () => {
@@ -211,6 +219,7 @@ const Deposit = ({ link, mutateLockedSky }: { link?: string; mutateLockedSky?: (
           onClick={() => {
             open();
           }}
+          {...props}
           data-testid="deposit-button"
         >
           Deposit

@@ -30,7 +30,7 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
 
     const delegatesExecSupport: DelegateExecSupport[] = data.delegates.map(delegate => ({
       voteDelegate: delegate.id,
-      votedProposals: delegate.voter.currentSpells.map(spell => spell.id)
+      votedProposals: delegate.voter.currentSpellsV2.map(spell => spell.id)
     }));
 
     cacheSet(allDelegatesExecSupportKey, JSON.stringify(delegatesExecSupport), network, TEN_MINUTES_IN_MS);

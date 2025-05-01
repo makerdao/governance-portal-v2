@@ -25,10 +25,8 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
   const [skyToWithdraw, setSkyToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { data: lockedSky, error: lockedSkyError } = useLockedSky(account);
+  const { data: lockedSky } = useLockedSky(account);
 
-  console.log('lockedSky', lockedSky);
-  console.log('lockedSkyError', lockedSkyError);
   const free = useFree({
     skyToWithdraw,
     onStart: () => {
