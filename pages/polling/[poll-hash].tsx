@@ -293,7 +293,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                             ).toLocaleString(undefined, {
                               maximumFractionDigits: 3
                             })}{' '}
-                            MKR
+                            SKY
                           </Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
@@ -384,7 +384,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 'mainnet polling contract',
                 'arbitrum polling contract',
                 'savings rate',
-                'total dai',
+                'total usds',
                 'debt ceiling',
                 'system surplus'
               ]}

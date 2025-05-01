@@ -332,7 +332,7 @@ const AccountPage = (): React.ReactElement => {
                 'mainnet polling contract',
                 'arbitrum polling contract',
                 'savings rate',
-                'total dai',
+                'total usds',
                 'debt ceiling',
                 'system surplus'
               ]}

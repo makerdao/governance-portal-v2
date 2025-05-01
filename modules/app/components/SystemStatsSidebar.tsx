@@ -11,9 +11,8 @@ import Icon from './Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from './layout/layouts/Stack';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
-import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
-import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
-import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useUsdsDaiData } from 'modules/web3/hooks/useUsdsDaiData';
+import { useSkySavingsRate } from 'modules/web3/hooks/useSkySavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
@@ -35,7 +34,7 @@ type StatField =
   | 'sky in chief'
   | 'sky needed to pass'
   | 'savings rate'
-  | 'total dai'
+  | 'total usds'
   | 'debt ceiling'
   | 'system surplus';
 
@@ -48,6 +47,7 @@ export default function SystemStatsSidebar({
 }): JSX.Element {
   const network = useNetwork();
   const chainId = useChainId();
+  const { data } = useUsdsDaiData();
 
   const statsMap = {
     'chief contract': key => {
@@ -150,14 +150,17 @@ export default function SystemStatsSidebar({
     },
 
     'savings rate': key => {
-      const { data: daiSavingsRate } = useDaiSavingsRate();
+      const { data: skySavingsRateData } = useSkySavingsRate();
+      const skySavingsRate = skySavingsRateData
+        ? (parseFloat(skySavingsRateData) * 100).toFixed(2)
+        : undefined;
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Sky Savings Rate</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {daiSavingsRate ? (
-              `${daiSavingsRate.toFixed(2)}%`
+            {skySavingsRate ? (
+              `${skySavingsRate}%`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -168,15 +171,21 @@ export default function SystemStatsSidebar({
       );
     },
 
-    'total dai': key => {
-      const { data: totalDai } = useTotalDai();
-
+    'total usds': key => {
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total USDS</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {totalDai ? (
-              `${formatValue(totalDai, 'rad')} DAI`
+            {data && data.length > 0 ? (
+              `${Math.round(
+                parseFloat(
+                  // Find the data point with the highest blockTimestamp
+                  data.reduce(
+                    (latest, current) => (current.blockTimestamp > latest.blockTimestamp ? current : latest),
+                    data[0]
+                  ).totalUsds
+                )
+              ).toLocaleString('en-US')} USDS`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -190,6 +199,7 @@ export default function SystemStatsSidebar({
     'debt ceiling': key => {
       const { data: debtCeiling } = useSystemWideDebtCeiling();
 
+      // TODO replace with USDS debt ceiling
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
@@ -207,14 +217,20 @@ export default function SystemStatsSidebar({
     },
 
     'system surplus': key => {
-      const { data: systemSurplus } = useSystemSurplus();
-
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {systemSurplus ? (
-              `${formatValue(systemSurplus, 'rad')} DAI`
+            {data && data.length > 0 ? (
+              `${Math.round(
+                parseFloat(
+                  // Find the data point with the highest blockTimestamp
+                  data.reduce(
+                    (latest, current) => (current.blockTimestamp > latest.blockTimestamp ? current : latest),
+                    data[0]
+                  ).surplusBuffer
+                )
+              ).toLocaleString('en-US')} USDS`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />

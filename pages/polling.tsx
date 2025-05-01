@@ -465,7 +465,7 @@ const PollingOverview = ({
                   'mainnet polling contract',
                   'arbitrum polling contract',
                   'savings rate',
-                  'total dai',
+                  'total usds',
                   'debt ceiling',
                   'system surplus'
                 ]}
