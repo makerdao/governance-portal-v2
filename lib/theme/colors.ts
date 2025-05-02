@@ -85,7 +85,7 @@ export const colors = {
     dark: {
       primary: '#6A6CFB',
       primaryEmphasis: '#8C92FF',
-      primaryMuted: '#2A197D',
+      primaryMuted: '#4A2F9D',
       primaryAlt: '#A8AEFF',
       onPrimary: '#000',
       background: '#141414',

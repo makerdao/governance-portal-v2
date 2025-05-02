@@ -10,7 +10,6 @@ import * as useSimulateContractModule from 'wagmi';
 import * as useDelegateVoteModule from 'modules/executive/hooks/useDelegateVote';
 import * as useVotedProposalsModule from 'modules/executive/hooks/useVotedProposals';
 import { renderWithTheme } from '../helpers';
-import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 vi.mock('lottie-web', () => ({
   default: {
@@ -157,7 +156,15 @@ describe('AccountPage', () => {
     expect(screen.getByText('No vote delegate contract detected')).toBeInTheDocument();
   });
 
-  it('should disable create button when warning checkbox is unchecked', () => {
+  it('should disable create button when warning checkbox is unchecked and user has a chief balance', () => {
+    // Mock a non-zero locked SKY balance
+    vi.mocked(useLockedSkyModule.useLockedSky).mockReturnValue({
+      data: 100000000000000000000n, // 100 SKY
+      loading: false,
+      error: null,
+      mutate: vi.fn()
+    });
+
     renderWithTheme(<AccountPage />);
 
     const createButton = screen.getByTestId('create-button');
@@ -165,7 +172,15 @@ describe('AccountPage', () => {
     expect(createButton).toBeDisabled();
   });
 
-  it('should enable create button when warning checkbox is checked', () => {
+  it('should enable create button when warning checkbox is checked when user has a chief balance', () => {
+    // Mock a non-zero locked SKY balance
+    vi.mocked(useLockedSkyModule.useLockedSky).mockReturnValue({
+      data: 100000000000000000000n, // 100 SKY
+      loading: false,
+      error: null,
+      mutate: vi.fn()
+    });
+
     renderWithTheme(<AccountPage />);
 
     const warningLabel = screen.getByTestId('checkbox-create-delegate');
@@ -183,10 +198,6 @@ describe('AccountPage', () => {
 
   it('shows modal with "Support address(0)" after creating delegate contract', async () => {
     renderWithTheme(<AccountPage />);
-
-    // Accept warning checkbox
-    const warningLabel = screen.getByTestId('checkbox-create-delegate');
-    fireEvent.click(warningLabel);
 
     // Click "Create delegate contract"
     const createButton = screen.getByTestId('create-button');
@@ -214,24 +225,20 @@ describe('AccountPage', () => {
     renderWithTheme(<AccountPage />);
 
     // Verify the warning message is shown
-    expect(screen.getByText(/you have a dschief balance of/i)).toBeInTheDocument();
+    expect(screen.getByText(/deposited in the voting contract/i)).toBeInTheDocument();
     const balanceSpan = screen.getByText((content, element) => {
       return element?.tagName.toLowerCase() === 'span' && content.includes('100');
     });
     expect(balanceSpan).toBeInTheDocument();
     expect(
       screen.getByText(
-        /if you become a delegate, you will only be able to vote through the portal as a delegate\. in this case, it is recommended to withdraw your sky and delegate it to yourself or create the delegate contract from a different account\./i
+        /If you become a delegate, you will only be able to vote as a delegate through the portal. It is recommended you either withdraw your SKY and delegate it to yourself or use a different account to create the delegate contract\./i
       )
     ).toBeInTheDocument();
   });
 
   it('should open modal when clicking "Create delegate contract"', () => {
     renderWithTheme(<AccountPage />);
-
-    // Accept warning checkbox
-    const warningLabel = screen.getByTestId('checkbox-create-delegate');
-    fireEvent.click(warningLabel);
 
     // Click "Create delegate contract"
     const createButton = screen.getByTestId('create-button');
