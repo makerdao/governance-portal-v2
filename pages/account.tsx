@@ -54,11 +54,10 @@ const AccountPage = (): React.ReactElement => {
   const { data: chiefBalance } = useLockedSky(account);
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [warningRead, setWarningRead] = useState(chiefBalance === 0n);
+  const [warningRead, setWarningRead] = useState(false);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
   const [flow, setFlow] = useState<DelegateFlow>(DelegateFlow.CREATE);
-
   const { data: live } = useReadContract({
     address: chiefAddress[chainId],
     abi: newChiefAbi,
@@ -258,7 +257,7 @@ const AccountPage = (): React.ReactElement => {
                     </Flex>
                   )}
                     <Button
-                      disabled={!warningRead || createDelegate.isLoading || !createDelegate.prepared}
+                      disabled={(!warningRead && chiefBalance && chiefBalance > 0n) || createDelegate.isLoading || !createDelegate.prepared}
                       onClick={() => {
                         setTxStatus(TxStatus.INITIALIZED);
                         setModalOpen(true);
@@ -274,28 +273,32 @@ const AccountPage = (): React.ReactElement => {
                 {!!voteDelegateContractAddress && !isChiefLive && (
                   <Box>
                     <Label>Support the Launch of SKY Governance</Label>
-                    <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                      Voting for address(0) now, even with 0 SKY delegated, ensures that any future delegation
-                      to your delegate contract will immediately count toward launching the new chief.
-                    </Alert>
-                    <Button
-                      disabled={
-                        addressZeroVote.isLoading ||
-                        !addressZeroVote.prepared ||
-                        votedForAddressZero ||
-                        isChiefLive
-                      }
-                      onClick={() => {
-                        setFlow(DelegateFlow.VOTE);
-                        setTxStatus(TxStatus.INITIALIZED);
-                        setModalOpen(true);
-                        addressZeroVote.execute();
-                      }}
-                      sx={{ mt: 3, mb: 1 }}
-                      data-testid="vote-button"
-                    >
-                      Support address(0)
-                    </Button>
+                    {!votedForAddressZero && (
+                      <>
+                        <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
+                          Voting for address(0) now, even with 0 SKY delegated, ensures that any future delegation
+                          to your delegate contract will immediately count toward launching the new chief.
+                        </Alert>
+                        <Button
+                          disabled={
+                            addressZeroVote.isLoading ||
+                            !addressZeroVote.prepared ||
+                            votedForAddressZero ||
+                            isChiefLive
+                          }
+                          onClick={() => {
+                            setFlow(DelegateFlow.VOTE);
+                            setTxStatus(TxStatus.INITIALIZED);
+                            setModalOpen(true);
+                            addressZeroVote.execute();
+                          }}
+                          sx={{ mt: 3, mb: 1 }}
+                          data-testid="vote-button"
+                        >
+                          Support address(0)
+                        </Button>
+                      </>
+                    )}
                     {votedForAddressZero && (
                       <Text as="p" sx={{ mt: 2 }}>
                         You are supporting address(0). Thank you for contributing to the launch of SKY
