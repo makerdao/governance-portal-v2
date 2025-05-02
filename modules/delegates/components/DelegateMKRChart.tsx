@@ -89,7 +89,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   };
 
   const formatYAxis = tickItem => {
-    return formatValue(BigInt(tickItem), 0, 2, true, false, 1e6);
+    return formatValue(BigInt(Math.floor(tickItem)), 0, 2, true, false, 1e6);
   };
 
   return (

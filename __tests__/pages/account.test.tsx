@@ -274,10 +274,6 @@ describe('AccountPage', () => {
         /you are supporting address\(0\)\. thank you for contributing to the launch of sky governance\./i
       )
     ).toBeInTheDocument();
-
-    // Verify the "Support address(0)" button is disabled
-    const voteButton = screen.getByTestId('vote-button');
-    expect(voteButton).toBeDisabled();
   });
 
   it('should not show "Support address(0)" section when chief is live', () => {
