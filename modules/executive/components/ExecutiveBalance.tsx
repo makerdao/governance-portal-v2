@@ -20,7 +20,7 @@ type Props = {
 export const ExecutiveBalance = ({ lockedSky, mutateLockedSky, voteDelegate }: Props): JSX.Element => (
   <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
     <Flex>
-      <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
+      <Text sx={{ mr: 1 }}>{voteDelegate ? 'Delegate voting weight:' : 'Voting weight:'} </Text>
       <Text sx={{ fontWeight: 'bold' }} data-testid="locked-sky">
         {formatValue(lockedSky, 'wad', 6)} SKY
       </Text>

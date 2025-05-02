@@ -293,11 +293,11 @@ const PollingOverview = ({
                 sx={{
                   justifyContent: ['center', 'center', 'center', 'flex-start'],
                   alignItems: 'center',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
+                  gap: 2
                 }}
               >
                 <SearchBar
-                  sx={{ m: 2 }}
                   onChange={setTitle}
                   value={title}
                   placeholder="Search poll titles"
@@ -305,10 +305,10 @@ const PollingOverview = ({
                   performSearchOnClear={true}
                 />
                 <PollsSort />
-                <CategoryFilter tags={tags} sx={{ m: 2 }} />
-                <StatusFilter stats={stats} sx={{ m: 2 }} />
-                <PollTypeFilter stats={stats} sx={{ m: 2 }} />
-                <DateFilter sx={{ m: 2 }} />
+                <CategoryFilter tags={tags} />
+                <StatusFilter stats={stats} />
+                <PollTypeFilter stats={stats} />
+                <DateFilter />
               </Flex>
               <Button
                 variant={'outline'}
@@ -465,7 +465,7 @@ const PollingOverview = ({
                   'mainnet polling contract',
                   'arbitrum polling contract',
                   'savings rate',
-                  'total dai',
+                  'total usds',
                   'debt ceiling',
                   'system surplus'
                 ]}

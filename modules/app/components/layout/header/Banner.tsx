@@ -8,9 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Text, Alert } from 'theme-ui';
 import { keyframes } from '@emotion/react';
-import { ExternalLink } from '../../ExternalLink';
 import React from 'react';
 import Icon from '../../Icon';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const scroll = keyframes({
   from: { transform: 'translate(60vw, 0)' },
@@ -53,9 +53,9 @@ const Banner = ({
     >
       {typeof content === 'string' ? (
         href ? (
-          <ExternalLink href={href} title="" styles={{ color: 'white' }}>
+          <InternalLink href={href} title="">
             {textComponent}
-          </ExternalLink>
+          </InternalLink>
         ) : (
           <div>{textComponent}</div>
         )

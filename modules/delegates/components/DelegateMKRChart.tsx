@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Box, Text, Flex, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
+import { formatValue } from 'lib/string';
 
 import {
   CartesianGrid,
@@ -73,7 +74,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
       <Box>
         {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
         <Text as="p">
-          SKY Weight: {(monthMKR?.MKR || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          SKY Weight: {formatValue(BigInt(monthMKR?.MKR || 0), 0, 2, true, false, 1e6)}
         </Text>
       </Box>
     );
@@ -88,7 +89,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   };
 
   const formatYAxis = tickItem => {
-    return tickItem.toLocaleString();
+    return formatValue(BigInt(Math.floor(tickItem)), 0, 2, true, false, 1e6);
   };
 
   return (

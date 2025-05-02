@@ -11,7 +11,7 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
   {
     name: 'chief',
     address: {
-      [mainnet.id]: '0x0a3f6849f78076aefaDf113F5BED87720274dDC0',
+      [mainnet.id]: '0x929d9A1435662357F54AdcF64DcEE4d6b867a6f9',
       [TENDERLY_CHAIN_ID]: '0x81a5186946ce055a5ceeC93cd97C7e7EDe7Da922'
     }
   },
@@ -68,7 +68,7 @@ export const contracts: { name: string; address: Record<ChainId, `0x${string}`> 
   {
     name: 'voteDelegateFactory',
     address: {
-      [mainnet.id]: '0xC3D809E87A2C9da4F6d98fECea9135d834d6F5A0',
+      [mainnet.id]: '0x4Cf3DaeFA2683Cd18df00f7AFF5169C00a9EccD5',
       [TENDERLY_CHAIN_ID]: '0x98F74b7C96497070ba5052E02832EF9892962e62'
     }
   },
