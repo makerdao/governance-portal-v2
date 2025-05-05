@@ -11,14 +11,13 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export type RepositoryInfo = {
   owner: string;
   repo: string;
-  page: string;
+  page?: string;
 };
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'jetstreamgg',
-    repo: 'gov-metadata',
-    page: 'delegates'
+    owner: 'makerdao',
+    repo: 'delegates'
   };
 
   const repoTest = {
@@ -34,7 +33,8 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
 
 export function getDelegatesIndexFileUrl(network: SupportedNetworks) {
   const { owner, repo, page } = getDelegatesRepositoryInformation(network);
-  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/main/${page}/index.json`;
+  const path = page ? `/${page}/index.json` : '/index.json';
+  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/main${path}`;
 }
 
 export function getMetadataRepoBaseUrl(network: SupportedNetworks) {

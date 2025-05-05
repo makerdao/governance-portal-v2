@@ -82,7 +82,30 @@ export async function fetchGithubDelegates(
   try {
     const delegatesIndexUrl = getDelegatesIndexFileUrl(network);
     const delegatesIndexRes = await fetch(delegatesIndexUrl);
-    const delegatesIndexData: GithubDelegate[] = await delegatesIndexRes.json();
+
+    // Check if the fetch was successful
+    if (!delegatesIndexRes.ok) {
+      logger.error(
+        `fetchGithubDelegates: Failed to fetch delegates index. Status: ${delegatesIndexRes.status} ${delegatesIndexRes.statusText}`,
+        'Network',
+        network
+      );
+      return { error: true };
+    }
+
+    let delegatesIndexData: GithubDelegate[];
+    try {
+      // Attempt to parse the JSON response
+      delegatesIndexData = await delegatesIndexRes.json();
+    } catch (jsonError: any) {
+      logger.error(
+        'fetchGithubDelegates: Failed to parse delegates index JSON.',
+        jsonError.message,
+        'Network',
+        network
+      );
+      return { error: true };
+    }
 
     const data = await extractGithubDelegateListInformation(delegatesIndexData);
 
@@ -116,7 +139,29 @@ export async function fetchGithubDelegate(
     // Fetch the aggregated index of the delegates folder
     const delegatesIndexUrl = getDelegatesIndexFileUrl(network);
     const delegatesIndexRes = await fetch(delegatesIndexUrl);
-    const delegatesIndexData: GithubDelegate[] = await delegatesIndexRes.json();
+
+    // Check if the fetch was successful
+    if (!delegatesIndexRes.ok) {
+      logger.error(
+        `fetchGithubDelegate: Failed to fetch delegates index. Status: ${delegatesIndexRes.status} ${delegatesIndexRes.statusText}`,
+        'Network',
+        network
+      );
+      return { error: true };
+    }
+    let delegatesIndexData: GithubDelegate[];
+    try {
+      // Attempt to parse the JSON response
+      delegatesIndexData = await delegatesIndexRes.json();
+    } catch (jsonError: any) {
+      logger.error(
+        'fetchGithubDelegate: Failed to parse delegates index JSON.',
+        jsonError.message,
+        'Network',
+        network
+      );
+      return { error: true };
+    }
 
     const delegateIndexData = delegatesIndexData.find(
       f => f.metadata.address.toLowerCase() === address.toLowerCase()
