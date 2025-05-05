@@ -16,7 +16,7 @@ test('navigates to executives and can withdraw from chief', async ({ page, execu
     await executivePage.verifyDepositDisabled();
   });
 
-  await test.step('withdraw from chief contract', async () => {
+  await test.step('deposit into chief from the API', async () => {
     // Deposit MKR into the Chief through an RPC call directly since it's not possible from the app
     const depositSuccessful = await depositMkr('0.01');
     expect(depositSuccessful).toBe(true);
@@ -26,7 +26,13 @@ test('navigates to executives and can withdraw from chief', async ({ page, execu
 
     await executivePage.verifyVotingContract();
     await executivePage.verifyLockedMkr('0.01');
+  });
 
+  await test.step('verify voting is disabled', async () => {
+    await executivePage.verifyDepositDisabled();
+  });
+
+  await test.step('withdraw from chief contract', async () => {
     await executivePage.withdrawFromChief();
     await executivePage.withdrawMkr('0.01');
     await executivePage.verifyLockedMkr('0');

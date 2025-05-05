@@ -80,6 +80,10 @@ export class ExecutivePage {
   }
 
   async verifyDepositDisabled() {
+    await expect(this.voteButton.first()).toBeDisabled();
+  }
+
+  async verifyVoteDisabled() {
     await expect(this.depositButton).toBeDisabled();
   }
 
