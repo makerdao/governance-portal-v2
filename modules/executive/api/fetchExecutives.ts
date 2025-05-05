@@ -28,16 +28,51 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   }
 
   const githubRepo = {
-    owner: 'jetstreamgg',
-    repo: 'gov-metadata',
-    page: 'executive-votes'
+    owner: 'makerdao',
+    repo: 'executive-votes'
   };
-  const githubUrl =
-    'https://raw.githubusercontent.com/jetstreamgg/gov-metadata/refs/heads/main/executive-votes/index.json';
+  const githubUrl = 'https://raw.githubusercontent.com/makerdao/executive-votes/refs/heads/main/index.json';
 
-  const [proposalIndex, githubProposals] = await Promise.all<
-    [Promise<{ mainnet: string[] }>, Promise<GithubProposal[]>]
-  >([(await fetch(EXEC_PROPOSAL_INDEX)).json(), (await fetch(githubUrl)).json()]);
+  let proposalIndex: { mainnet: string[] } | null = null;
+  let githubProposals: GithubProposal[] | null = null;
+
+  try {
+    const [proposalIndexResponse, githubProposalsResponse] = await Promise.all([
+      fetch(EXEC_PROPOSAL_INDEX),
+      fetch(githubUrl)
+    ]);
+
+    if (!proposalIndexResponse.ok) {
+      throw new Error(`Failed to fetch proposal index: ${proposalIndexResponse.statusText}`);
+    }
+    if (!githubProposalsResponse.ok) {
+      throw new Error(`Failed to fetch github proposals: ${githubProposalsResponse.statusText}`);
+    }
+
+    try {
+      proposalIndex = await proposalIndexResponse.json();
+    } catch (e) {
+      logger.error(`getGithubExecutives: Failed to parse proposal index JSON`, e);
+      throw new Error('Failed to parse proposal index JSON');
+    }
+
+    try {
+      githubProposals = await githubProposalsResponse.json();
+    } catch (e) {
+      logger.error(`getGithubExecutives: Failed to parse github proposals JSON`, e);
+      throw new Error('Failed to parse github proposals JSON');
+    }
+  } catch (error) {
+    logger.error(`getGithubExecutives: Error fetching executive data for network ${network}`, error);
+    // Return empty array or re-throw, depending on desired upstream handling
+    return [];
+  }
+
+  // Ensure proposalIndex and githubProposals are not null before proceeding
+  if (!proposalIndex || !githubProposals) {
+    logger.error(`getGithubExecutives: Failed to fetch necessary data for network ${network}`);
+    return [];
+  }
 
   const proposals = githubProposals.map(proposal => {
     try {
