@@ -67,13 +67,12 @@ export enum PollStatusEnum {
 }
 
 export const AGGREGATED_POLLS_FILE_URL = {
-  [SupportedNetworks.MAINNET]:
-    'https://raw.githubusercontent.com/jetstreamgg/gov-metadata/refs/heads/main/polls/index.json',
+  [SupportedNetworks.MAINNET]: 'https://raw.githubusercontent.com/makerdao/polls/refs/heads/main/index.json',
   [SupportedNetworks.TENDERLY]:
     'https://raw.githubusercontent.com/jetstreamgg/gov-metadata/refs/heads/main/polls/index.json'
 };
 
-export const SKY_PORTAL_START_DATE = new Date('2025-03-17'); //TODO: edit date once we pick a cutoff date
+export const SKY_PORTAL_START_DATE = new Date('2025-05-10'); //TODO: edit date once we pick a cutoff date
 
 export const POLL_CREATOR_WHITELIST = [
   '0x9f8046bDfbF4B65ad12D6Bcf37Fc2745706dFFa1',
