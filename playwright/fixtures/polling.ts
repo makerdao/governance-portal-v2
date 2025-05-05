@@ -21,6 +21,7 @@ export class PollingPage {
   private voteSubmissionText: any;
   private pollOverviewCard: any;
   private submitGaslessButton: any;
+  private votingWeightText: any;
 
   constructor(page: Page) {
     this.page = page;
@@ -49,6 +50,7 @@ export class PollingPage {
     );
     this.pollOverviewCard = this.page.locator('[data-testid="poll-overview-card"]');
     this.submitGaslessButton = this.page.locator('[data-testid="submit-ballot-gasless-button"]');
+    this.votingWeightText = this.page.locator('[data-testid="voting-weight"]');
   }
 
   private getSingleSelectOption(choice: 'Yes' | 'No') {
@@ -118,5 +120,17 @@ export class PollingPage {
   async verifyVoteSubmission() {
     await expect(this.voteSubmissionText).toBeVisible({ timeout: 10000 });
     await expect(this.pollOverviewCard).toHaveCount(1);
+  }
+
+  async verifyVotingWeight(votingWeight: string) {
+    await expect(this.votingWeightText).toHaveText(votingWeight);
+  }
+
+  async verifyAddToBallotDisabled() {
+    await expect(this.addToBallotButton.first()).toBeDisabled();
+  }
+
+  async verifyReviewBallotDisabled() {
+    await expect(this.reviewButton).toBeDisabled();
   }
 }
