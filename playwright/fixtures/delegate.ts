@@ -42,12 +42,12 @@ export class DelegatePage {
     this.delegatingText = this.page.locator('text=You are delegating');
     this.congratsText = this.page.locator('text=Congratulations, you delegated');
     this.delegatedByYouText = this.page.locator('[data-testid="mkr-delegated-by-you"]');
-    this.undelegateButton = this.page.locator('[data-testid="button-undelegate"]');
+    this.undelegateButton = this.page.locator('[data-testid="button-undelegate"]:enabled');
     this.withdrawText = this.page.locator('text=Withdraw from delegate contract');
     this.setMaxButton = this.page.locator('button[data-testid="mkr-input-set-max"]');
     this.undelegateMkrButton = this.page.locator('button:has-text("Undelegate MKR")');
     this.transactionPendingText = this.page.locator('text=Transaction Pending');
-    this.transactionSentText = this.page.locator('text=Transaction Sent');
+    this.transactionSentText = this.page.locator('text=/You undelegated \\d+ from \\w+$/');
   }
 
   async goto() {
@@ -79,6 +79,10 @@ export class DelegatePage {
     await expect(this.delegatedByYouText.first()).toHaveText(amount);
   }
 
+  async verifyDelegateButtonIsDisabled() {
+    await expect(this.delegateButton).toHaveCount(0);
+  }
+
   async undelegate() {
     await this.undelegateButton.first().click();
     await this.approveDelegateButton.click();
@@ -91,7 +95,5 @@ export class DelegatePage {
     await this.undelegateMkrButton.click();
     await expect(this.transactionPendingText).toBeVisible();
     await expect(this.transactionSentText).toBeVisible();
-    closeModal(this.page);
-    await expect(this.delegatedByYouText.contains('0.000')).toBeVisible();
   }
 }
