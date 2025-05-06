@@ -74,6 +74,7 @@ function isValidVote(vote: PollVoteResponse, pollTimes: PollTimesResponse): bool
   return voteTime >= pollStart && voteTime <= pollEnd;
 }
 
+//TODO: add pagination to get > 1000 votes
 async function fetchAllCurrentVotesWithSubgraph(
   address: string,
   network: SupportedNetworks,
@@ -86,12 +87,12 @@ async function fetchAllCurrentVotesWithSubgraph(
     gqlRequest<MainnetVotesResponse>({
       chainId: networkNameToChainId(network),
       query: allMainnetVotes,
-      variables: { argAddress: address.toLowerCase() }
+      variables: { argAddress: address.toLowerCase(), startUnix }
     }),
     gqlRequest<ArbitrumVotesResponse>({
       chainId: arbitrumChainId,
       query: allArbitrumVotes,
-      variables: { argAddress: delegateOwnerAddress ? delegateOwnerAddress.toLowerCase() : address.toLowerCase() }
+      variables: { argAddress: delegateOwnerAddress ? delegateOwnerAddress.toLowerCase() : address.toLowerCase(), startUnix }
     }),
     gqlRequest<VotingWeightHistoryResponse>({
       chainId: networkNameToChainId(network),
@@ -101,17 +102,12 @@ async function fetchAllCurrentVotesWithSubgraph(
       }
     })
   ]);
-
   const mainnetVotesWithChainId = mainnetVotes.pollVotes.map(vote => ({...vote, chainId: networkNameToChainId(network)}));
   const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({...vote, chainId: arbitrumChainId}));
   const combinedVotes = [...mainnetVotesWithChainId, ...arbitrumVotesWithChainId];
 
-  //TODO: do this filtering with the subgraph query
-  // Filter votes to only include those after startUnix
-  const filteredCombinedVotes = combinedVotes.filter(vote => Number(vote.blockTime) >= startUnix);
-
   const dedupedVotes = Object.values(
-    filteredCombinedVotes.reduce((acc, vote) => {
+    combinedVotes.reduce((acc, vote) => {
       const pollId = vote.poll.id;
       if (!acc[pollId] || Number(vote.blockTime) > Number(acc[pollId].blockTime)) {
         acc[pollId] = vote;
