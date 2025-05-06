@@ -72,7 +72,15 @@ export const AGGREGATED_POLLS_FILE_URL = {
     'https://raw.githubusercontent.com/jetstreamgg/polls/refs/heads/testnet/index.json'
 };
 
-export const SKY_PORTAL_START_DATE = new Date('2025-05-10'); //TODO: edit date once we pick a cutoff date
+export const SKY_PORTAL_START_DATE_MAINNET = new Date('2025-05-16'); //TODO: edit date once we pick a cutoff date
+export const SKY_PORTAL_START_DATE_TENDERLY = new Date('2025-03-17');
+
+export function getSkyPortalStartDate(network?: SupportedNetworks): Date {
+  if (network === SupportedNetworks.TENDERLY) {
+    return SKY_PORTAL_START_DATE_TENDERLY;
+  }
+  return SKY_PORTAL_START_DATE_MAINNET;
+}
 
 export const POLL_CREATOR_WHITELIST = [
   '0x9f8046bDfbF4B65ad12D6Bcf37Fc2745706dFFa1',
