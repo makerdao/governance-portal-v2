@@ -10,13 +10,13 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allMainnetVotes } from 'modules/gql/queries/subgraph/allMainnetVotes';
 import { allArbitrumVotes } from 'modules/gql/queries/subgraph/allArbitrumVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { networkNameToChainId, getGaslessNetwork } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';
 import { PollTallyVote } from '../types';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { votingWeightHistory } from 'modules/gql/queries/subgraph/votingWeightHistory';
 import { formatEther } from 'viem';
-import { SKY_PORTAL_START_DATE } from 'modules/polling/polling.constants';
+import { getSkyPortalStartDate } from 'modules/polling/polling.constants';
 import { pollTimes } from 'modules/gql/queries/subgraph/pollTimes';
 
 
@@ -81,7 +81,7 @@ async function fetchAllCurrentVotesWithSubgraph(
 ): Promise<PollTallyVote[]> {
   const addressInfo = await getAddressInfo(address, network);
   const delegateOwnerAddress = addressInfo?.delegateInfo?.address;
-  const arbitrumChainId = networkNameToChainId('arbitrum'); //update if we ever add support for arbitrum sepolia
+  const arbitrumChainId = networkNameToChainId(getGaslessNetwork(network));
   const [mainnetVotes, arbitrumVotes, weightHistory] = await Promise.all([
     gqlRequest<MainnetVotesResponse>({
       chainId: networkNameToChainId(network),
@@ -102,13 +102,13 @@ async function fetchAllCurrentVotesWithSubgraph(
     })
   ]);
 
-
   const mainnetVotesWithChainId = mainnetVotes.pollVotes.map(vote => ({...vote, chainId: networkNameToChainId(network)}));
   const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({...vote, chainId: arbitrumChainId}));
   const combinedVotes = [...mainnetVotesWithChainId, ...arbitrumVotesWithChainId];
 
-    // Filter votes to only include those after startUnix
-    const filteredCombinedVotes = combinedVotes.filter(vote => Number(vote.blockTime) >= startUnix);
+  //TODO: do this filtering with the subgraph query
+  // Filter votes to only include those after startUnix
+  const filteredCombinedVotes = combinedVotes.filter(vote => Number(vote.blockTime) >= startUnix);
 
   const dedupedVotes = Object.values(
     filteredCombinedVotes.reduce((acc, vote) => {
@@ -149,7 +149,7 @@ async function fetchAllCurrentVotesWithSubgraph(
 }
 
 export async function fetchAllCurrentVotes(address: string, network: SupportedNetworks): Promise<PollTallyVote[]> {
-  const cutoffUnix = Math.floor(SKY_PORTAL_START_DATE.getTime() / 1000);
+  const cutoffUnix = Math.floor(getSkyPortalStartDate(network).getTime() / 1000);
   const subgraphVotes = await fetchAllCurrentVotesWithSubgraph(address, network, cutoffUnix);
   return subgraphVotes;
 }
