@@ -40,7 +40,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-
+import Icon from 'modules/app/components/Icon';
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, votingAccount } = useAccount();
   const network = useNetwork();
@@ -164,7 +164,49 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
           <Box>
             <Stack gap={3}>
               <Heading as="h1">Executive Proposals</Heading>
-              {!isLoadingInitialData && (
+              {/* Show loading skeleton initially */}
+              {isLoadingInitialData && (
+                <Box>
+                  <Box my={3}>
+                    <SkeletonThemed width={'100%'} height={'200px'} />
+                  </Box>
+                </Box>
+              )}
+
+              {/* Show no proposals found message */}
+              {!isLoadingInitialData && !isValidating && flattenedProposals.length === 0 && (
+                <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
+                  <Flex
+                    sx={{
+                      borderRadius: '50%',
+                      backgroundColor: 'secondary',
+                      p: 2,
+                      width: '111px',
+                      height: '111px',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Box m={'auto'}>
+                      <Icon name="magnifying_glass" sx={{ color: 'background', size: 4 }} />
+                    </Box>
+                  </Flex>
+                  <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
+                    No executive proposals found
+                  </Text>
+                  {(startDate || endDate) && (
+                    <Button
+                      variant={'textual'}
+                      sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
+                      onClick={resetExecutiveFilters}
+                    >
+                      Reset filters
+                    </Button>
+                  )}
+                </Flex>
+              )}
+
+              {/* Render active proposals */}
+              {!isLoadingInitialData && flattenedProposals.filter(proposal => proposal.active).length > 0 && (
                 <Stack gap={4} sx={{ mb: 4 }}>
                   {flattenedProposals
                     .filter(proposal => proposal.active)
@@ -182,20 +224,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 </Stack>
               )}
 
-              {!isValidating &&
-                (startDate || endDate) &&
-                flattenedProposals &&
-                flattenedProposals.length === 0 && (
-                  <Text>No proposals found. Please try clearing filters.</Text>
-                )}
-
-              {isLoadingInitialData && (
-                <Box>
-                  <Box my={3}>
-                    <SkeletonThemed width={'100%'} height={'200px'} />
-                  </Box>
-                </Box>
-              )}
               {!showHistorical && flattenedProposals.filter(proposal => proposal.active).length > 0 && (
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                   <Divider />
