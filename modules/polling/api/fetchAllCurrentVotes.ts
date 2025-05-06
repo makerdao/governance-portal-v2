@@ -133,7 +133,8 @@ async function fetchAllCurrentVotesWithSubgraph(
 
   const res: PollTallyVote[] = validVotes.map(o => {
     const ballot = parseRawOptionId(o.choice);
-    const mkrSupport = getMkrWeightAtTimestamp(weightHistory, Number(o.blockTime));
+    const poll = pollTimesRes.arbitrumPolls.find(p => p.id === o.poll.id);
+    const mkrSupport = getMkrWeightAtTimestamp(weightHistory, Number(poll?.endDate || o.blockTime));
     
     return {
       pollId: Number(o.poll.id),
