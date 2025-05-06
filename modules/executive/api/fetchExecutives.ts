@@ -52,14 +52,14 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     try {
       proposalIndex = await proposalIndexResponse.json();
     } catch (e) {
-      logger.error(`getGithubExecutives: Failed to parse proposal index JSON`, e);
+      logger.error('getGithubExecutives: Failed to parse proposal index JSON', e);
       throw new Error('Failed to parse proposal index JSON');
     }
 
     try {
       githubProposals = await githubProposalsResponse.json();
     } catch (e) {
-      logger.error(`getGithubExecutives: Failed to parse github proposals JSON`, e);
+      logger.error('getGithubExecutives: Failed to parse github proposals JSON', e);
       throw new Error('Failed to parse github proposals JSON');
     }
   } catch (error) {
