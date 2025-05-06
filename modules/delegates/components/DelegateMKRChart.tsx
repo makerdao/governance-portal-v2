@@ -74,7 +74,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
       <Box>
         {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
         <Text as="p">
-          SKY Weight: {formatValue(BigInt(monthMKR?.MKR || 0), 0, 2, true, false, 1e6)}
+          SKY Weight: {formatValue(BigInt(Math.floor(monthMKR?.MKR || 0)), 0, 2, true, false, 1e6)}
         </Text>
       </Box>
     );
