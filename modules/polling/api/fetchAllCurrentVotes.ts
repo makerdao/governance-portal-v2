@@ -51,7 +51,7 @@ interface VotingWeightHistoryResponse {
 }
 
 interface PollTimesResponse {
-  polls: {
+  arbitrumPolls: {
     startDate?: string;
     endDate?: string;
     id: string;
@@ -67,7 +67,7 @@ function getMkrWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, tim
 }
 
 function isValidVote(vote: PollVoteResponse, pollTimes: PollTimesResponse): boolean {
-  const poll = pollTimes.polls.find(p => p.id === vote.poll.id);
+  const poll = pollTimes.arbitrumPolls.find(p => p.id === vote.poll.id);
   const voteTime = Number(vote.blockTime);
   const pollStart = Number(poll?.startDate);
   const pollEnd = Number(poll?.endDate);
@@ -124,7 +124,7 @@ async function fetchAllCurrentVotesWithSubgraph(
   //This is a separate request because we needed to know the arbitrum poll ids first to pass in to the query
   const allPollIds = dedupedVotes.map(p => p.poll.id);
   const pollTimesRes = await gqlRequest<PollTimesResponse>({
-    chainId: networkNameToChainId(network),
+    chainId: arbitrumChainId,
     query: pollTimes,
     variables: { argPollIds: allPollIds }
   });
@@ -133,7 +133,8 @@ async function fetchAllCurrentVotesWithSubgraph(
 
   const res: PollTallyVote[] = validVotes.map(o => {
     const ballot = parseRawOptionId(o.choice);
-    const mkrSupport = getMkrWeightAtTimestamp(weightHistory, Number(o.blockTime));
+    const poll = pollTimesRes.arbitrumPolls.find(p => p.id === o.poll.id);
+    const mkrSupport = getMkrWeightAtTimestamp(weightHistory, Number(poll?.endDate || o.blockTime));
     
     return {
       pollId: Number(o.poll.id),
