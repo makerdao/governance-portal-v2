@@ -27,8 +27,7 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
     branch: 'testnet'
   };
 
-  const delegatesRepositoryInfo =
-    network === SupportedNetworks.MAINNET || SupportedNetworks.TENDERLY ? repoMainnet : repoTest;
+  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoTest;
   return delegatesRepositoryInfo;
 }
 
