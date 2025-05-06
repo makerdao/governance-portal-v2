@@ -19,8 +19,12 @@ import { sortPollsBy } from '../helpers/sortPolls';
 import { TagCount } from 'modules/app/types/tag';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { arbitrumPollsQuery, arbitrumPollsQueryWithWhitelist } from 'modules/gql/queries/subgraph/arbitrumPolls';
+import {
+  arbitrumPollsQuery,
+  arbitrumPollsQueryWithWhitelist
+} from 'modules/gql/queries/subgraph/arbitrumPolls';
 import { POLL_CREATOR_WHITELIST } from '../polling.constants';
+import logger from 'lib/logger';
 
 export async function refetchPolls(network: SupportedNetworks): Promise<{
   pollList: PollListItem[];
@@ -36,9 +40,10 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
     const response = await gqlRequest<Promise<{ arbitrumPolls: SubgraphPoll[] }>>({
       chainId: arbitrumChainId,
       query: network === SupportedNetworks.MAINNET ? arbitrumPollsQueryWithWhitelist : arbitrumPollsQuery,
-      variables: network === SupportedNetworks.MAINNET 
-        ? { argsSkip: skip, creatorWhitelist: POLL_CREATOR_WHITELIST }
-        : { argsSkip: skip }
+      variables:
+        network === SupportedNetworks.MAINNET
+          ? { argsSkip: skip, creatorWhitelist: POLL_CREATOR_WHITELIST }
+          : { argsSkip: skip }
     });
 
     if (response.arbitrumPolls.length === 0) {
@@ -53,7 +58,30 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
     fetch(AGGREGATED_POLLS_FILE_URL[network]),
     getPollTagsMapping()
   ]);
-  const pollsMetadata = await pollsMetadataRes.json();
+
+  // Check if fetching polls metadata was successful
+  if (!pollsMetadataRes.ok) {
+    logger.error(
+      `refetchPolls: Failed to fetch aggregated polls file. Status: ${pollsMetadataRes.status} ${pollsMetadataRes.statusText}`,
+      'Network',
+      network
+    );
+    return { pollList: [], partialActivePolls: [] };
+  }
+
+  let pollsMetadata;
+  try {
+    // Attempt to parse the JSON response for polls metadata
+    pollsMetadata = await pollsMetadataRes.json();
+  } catch (jsonError: any) {
+    logger.error(
+      'refetchPolls: Failed to parse aggregated polls JSON.',
+      jsonError.message,
+      'Network',
+      network
+    );
+    return { pollList: [], partialActivePolls: [] };
+  }
 
   const pollList: PollListItem[] = subgraphPolls
     .map(poll => {

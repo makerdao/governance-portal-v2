@@ -27,7 +27,7 @@ import {
   DelegateListItem
 } from 'modules/delegates/types';
 import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { networkNameToChainId, getGaslessNetwork } from 'modules/web3/helpers/chain';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import {
   delegatesQuerySubsequentPages,
@@ -276,7 +276,7 @@ export async function fetchDelegatesPaginated({
   );
 
   const lastVotedArbitrumArray = await gqlRequest<any>({
-    chainId: networkNameToChainId('arbitrum'), //TODO: update this if we add arbitrum sepolia support
+    chainId: networkNameToChainId(getGaslessNetwork(network)),
     query: lastVotedArbitrum,
     variables: { argAddresses: combinedDelegateOwnerAddresses }
   });

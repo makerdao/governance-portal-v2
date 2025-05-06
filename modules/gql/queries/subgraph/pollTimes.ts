@@ -10,11 +10,10 @@ import { gql } from 'graphql-request';
 
 export const pollTimes = gql`
     query pollTimes($argPollIds: [String!]){
-        polls(where: {id_in: $argPollIds}){
+        arbitrumPolls(where: {id_in: $argPollIds}){
         startDate
         endDate
         id
         }
     }
 `;
-
