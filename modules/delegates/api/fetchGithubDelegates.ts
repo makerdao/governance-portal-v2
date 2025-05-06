@@ -16,6 +16,49 @@ import logger from 'lib/logger';
 import { delegatesGithubCacheKey, getDelegateGithubCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
 
+// Fetches and parses the delegates index file from Github
+async function fetchDelegatesIndex(
+  network: SupportedNetworks
+): Promise<{ error: boolean; data?: GithubDelegate[] }> {
+  try {
+    const delegatesIndexUrl = getDelegatesIndexFileUrl(network);
+    const delegatesIndexRes = await fetch(delegatesIndexUrl);
+
+    // Check if the fetch was successful
+    if (!delegatesIndexRes.ok) {
+      logger.error(
+        `fetchDelegatesIndex: Failed to fetch delegates index. Status: ${delegatesIndexRes.status} ${delegatesIndexRes.statusText}`,
+        'Network',
+        network
+      );
+      return { error: true };
+    }
+
+    let delegatesIndexData: GithubDelegate[];
+    try {
+      // Attempt to parse the JSON response
+      delegatesIndexData = await delegatesIndexRes.json();
+    } catch (jsonError: any) {
+      logger.error(
+        'fetchDelegatesIndex: Failed to parse delegates index JSON.',
+        jsonError.message,
+        'Network',
+        network
+      );
+      return { error: true };
+    }
+    return { error: false, data: delegatesIndexData };
+  } catch (e) {
+    logger.error(
+      'fetchDelegatesIndex: Error fetching delegates index from Github ',
+      e.message,
+      'Network',
+      network
+    );
+    return { error: true };
+  }
+}
+
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
   delegateIndexData: GithubDelegate,
@@ -67,6 +110,7 @@ async function extractGithubDelegateListInformation(
     };
   });
 }
+
 export async function fetchGithubDelegates(
   network: SupportedNetworks
 ): Promise<{ error: boolean; data?: DelegateListItem[] }> {
@@ -80,34 +124,13 @@ export async function fetchGithubDelegates(
   }
 
   try {
-    const delegatesIndexUrl = getDelegatesIndexFileUrl(network);
-    const delegatesIndexRes = await fetch(delegatesIndexUrl);
+    const delegatesIndexResult = await fetchDelegatesIndex(network);
 
-    // Check if the fetch was successful
-    if (!delegatesIndexRes.ok) {
-      logger.error(
-        `fetchGithubDelegates: Failed to fetch delegates index. Status: ${delegatesIndexRes.status} ${delegatesIndexRes.statusText}`,
-        'Network',
-        network
-      );
+    if (delegatesIndexResult.error || !delegatesIndexResult.data) {
       return { error: true };
     }
 
-    let delegatesIndexData: GithubDelegate[];
-    try {
-      // Attempt to parse the JSON response
-      delegatesIndexData = await delegatesIndexRes.json();
-    } catch (jsonError: any) {
-      logger.error(
-        'fetchGithubDelegates: Failed to parse delegates index JSON.',
-        jsonError.message,
-        'Network',
-        network
-      );
-      return { error: true };
-    }
-
-    const data = await extractGithubDelegateListInformation(delegatesIndexData);
+    const data = await extractGithubDelegateListInformation(delegatesIndexResult.data);
 
     // Store in cache
     cacheSet(delegatesGithubCacheKey, JSON.stringify(data), network, ONE_HOUR_IN_MS);
@@ -137,33 +160,13 @@ export async function fetchGithubDelegate(
 
   try {
     // Fetch the aggregated index of the delegates folder
-    const delegatesIndexUrl = getDelegatesIndexFileUrl(network);
-    const delegatesIndexRes = await fetch(delegatesIndexUrl);
+    const delegatesIndexResult = await fetchDelegatesIndex(network);
 
-    // Check if the fetch was successful
-    if (!delegatesIndexRes.ok) {
-      logger.error(
-        `fetchGithubDelegate: Failed to fetch delegates index. Status: ${delegatesIndexRes.status} ${delegatesIndexRes.statusText}`,
-        'Network',
-        network
-      );
-      return { error: true };
-    }
-    let delegatesIndexData: GithubDelegate[];
-    try {
-      // Attempt to parse the JSON response
-      delegatesIndexData = await delegatesIndexRes.json();
-    } catch (jsonError: any) {
-      logger.error(
-        'fetchGithubDelegate: Failed to parse delegates index JSON.',
-        jsonError.message,
-        'Network',
-        network
-      );
+    if (delegatesIndexResult.error || !delegatesIndexResult.data) {
       return { error: true };
     }
 
-    const delegateIndexData = delegatesIndexData.find(
+    const delegateIndexData = delegatesIndexResult.data.find(
       f => f.metadata.address.toLowerCase() === address.toLowerCase()
     );
 
