@@ -17,7 +17,7 @@ import { PollListItem } from 'modules/polling/types';
 import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pollsResponse';
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { fetchJson } from 'lib/fetchJson';
-import { PollOrderByEnum } from 'modules/polling/polling.constants';
+import { PollOrderByEnum, SKY_PORTAL_START_DATE_MAINNET } from 'modules/polling/polling.constants';
 import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
 import { TagCount } from 'modules/app/types/tag';
 
@@ -50,7 +50,7 @@ export async function fetchLandingPageData(
     status: null,
     tags: null,
     type: null,
-    startDate: null,
+    startDate: SKY_PORTAL_START_DATE_MAINNET,
     endDate: null
   };
 
@@ -80,8 +80,13 @@ export async function fetchLandingPageData(
     polls: pollsData ? (pollsData as PollsPaginatedResponse).polls : [],
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
-    mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat, 'wad', 2, true, false, 1e9) : undefined,
+    mkrOnHat: mkrOnHatResponse
+      ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat, 'wad', 2, true, false, 1e9)
+      : undefined,
     hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
-    mkrInChief: mkrInChief === 0n || mkrInChief ? formatValue(mkrInChief as bigint, 'wad', 2, true, false, 1e9) : undefined
+    mkrInChief:
+      mkrInChief === 0n || mkrInChief
+        ? formatValue(mkrInChief as bigint, 'wad', 2, true, false, 1e9)
+        : undefined
   };
 }

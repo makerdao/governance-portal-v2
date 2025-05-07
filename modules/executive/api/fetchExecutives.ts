@@ -12,7 +12,6 @@ import { CMSProposal, Proposal, GithubProposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/markdown';
-import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
 import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import logger from 'lib/logger';
@@ -28,29 +27,32 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   }
 
   const githubRepo = {
-    owner: 'makerdao',
-    repo: 'executive-votes'
+    owner: network === SupportedNetworks.MAINNET ? 'makerdao' : 'jetstreamgg',
+    repo: 'executive-votes',
+    branch: network === SupportedNetworks.MAINNET ? 'main' : 'testnet'
   };
-  const githubUrl = 'https://raw.githubusercontent.com/makerdao/executive-votes/refs/heads/main/index.json';
+  
+  const githubIndexUrl = `https://raw.githubusercontent.com/${githubRepo.owner}/${githubRepo.repo}/refs/heads/${githubRepo.branch}/index.json`;
+  const activeExecsUrl = `https://raw.githubusercontent.com/${githubRepo.owner}/${githubRepo.repo}/refs/heads/${githubRepo.branch}/active/proposals.json`;
 
-  let proposalIndex: { mainnet: string[] } | null = null;
+  let activeProposals: { mainnet: string[] } | null = null;
   let githubProposals: GithubProposal[] | null = null;
 
   try {
-    const [proposalIndexResponse, githubProposalsResponse] = await Promise.all([
-      fetch(EXEC_PROPOSAL_INDEX),
-      fetch(githubUrl)
+    const [activeExecsResponse, githubProposalsResponse] = await Promise.all([
+      fetch(activeExecsUrl),
+      fetch(githubIndexUrl)
     ]);
 
-    if (!proposalIndexResponse.ok) {
-      throw new Error(`Failed to fetch proposal index: ${proposalIndexResponse.statusText}`);
+    if (!activeExecsResponse.ok) {
+      throw new Error(`Failed to fetch proposal index: ${activeExecsResponse.statusText}`);
     }
     if (!githubProposalsResponse.ok) {
       throw new Error(`Failed to fetch github proposals: ${githubProposalsResponse.statusText}`);
     }
 
     try {
-      proposalIndex = await proposalIndexResponse.json();
+      activeProposals = await activeExecsResponse.json();
     } catch (e) {
       logger.error('getGithubExecutives: Failed to parse proposal index JSON', e);
       throw new Error('Failed to parse proposal index JSON');
@@ -68,16 +70,16 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     return [];
   }
 
-  // Ensure proposalIndex and githubProposals are not null before proceeding
-  if (!proposalIndex || !githubProposals) {
+  // Ensure activeProposals and githubProposals are not null before proceeding
+  if (!activeProposals || !githubProposals) {
     logger.error(`getGithubExecutives: Failed to fetch necessary data for network ${network}`);
     return [];
   }
 
   const proposals = githubProposals.map(proposal => {
     try {
-      const path = `https://raw.githubusercontent.com/${githubRepo.owner}/${githubRepo.repo}/refs/heads/main/${proposal.path}`;
-      return parseExecutive(proposal, proposalIndex, path, SupportedNetworks.MAINNET); //always use mainnet proposal index for now
+      const path = `https://raw.githubusercontent.com/${githubRepo.owner}/${githubRepo.repo}/refs/heads/${githubRepo.branch}/${proposal.path}`;
+      return parseExecutive(proposal, activeProposals, path, network);
     } catch (e) {
       logger.error(`getGithubExecutives: network ${network}`, e);
       // Catch error and return null if failed fetching one proposal
