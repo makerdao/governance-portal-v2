@@ -13,11 +13,11 @@ export const getVoteColor = (optionId: number, pollParameters: PollParameters, h
   const abstainOptionHex = '#708390';
   const abstainOption = 'onSurface';
 
-  const noOptionHex = '#F75524';
-  const noOption = 'warning';
+  const noOptionHex = '#FF6D6D';
+  const noOption = 'bear';
 
-  const yesOptionHex = '#1AAB9B';
-  const yesOption = 'primary';
+  const yesOptionHex = '#00A66A';
+  const yesOption = 'bull';
 
   if (pollParameters.inputFormat.abstain.indexOf(optionId) !== -1) {
     return hex ? abstainOptionHex : abstainOption;

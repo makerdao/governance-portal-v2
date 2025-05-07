@@ -46,7 +46,7 @@ const AddressView = ({
         } Information`}
         description={`See all the voting activity of ${
           addressInfo.delegateInfo?.name || addressInfo.address
-        } in Maker Governance. `}
+        } in Sky Governance. `}
         image={addressInfo.delegateInfo?.picture}
       />
 
@@ -93,11 +93,10 @@ const AddressView = ({
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
                 fields={[
-                  'polling contract v2',
-                  'polling contract v1',
+                  'mainnet polling contract',
                   'arbitrum polling contract',
                   'savings rate',
-                  'total dai',
+                  'total usds',
                   'debt ceiling',
                   'system surplus'
                 ]}

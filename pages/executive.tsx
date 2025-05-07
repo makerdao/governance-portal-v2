@@ -12,33 +12,27 @@ import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import Icon from 'modules/app/components/Icon';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import Deposit from 'modules/mkr/components/Deposit';
-import WithdrawOldChief from 'modules/executive/components/WithdrawOldChief';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
+import MkrSkyLiquiditySidebar from 'modules/mkr/components/MkrSkyLiquiditySidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
-import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
@@ -46,43 +40,14 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { useChainId, useReadContract } from 'wagmi';
-import { chiefOldAbi, chiefOldAddress } from 'modules/contracts/generated';
-
-const MigrationBadge = ({ children, py = [2, 3] }) => (
-  <Badge
-    variant="primary"
-    sx={{
-      textTransform: 'none',
-      borderColor: 'primary',
-      borderRadius: 'small',
-      width: '100%',
-      whiteSpace: 'normal',
-      fontWeight: 'normal',
-      fontSize: [1, 2],
-      px: [3, 4],
-      my: 3,
-      py
-    }}
-  >
-    {children}
-  </Badge>
-);
-
+import Icon from 'modules/app/components/Icon';
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
-  const {
-    account,
-    voteDelegateContractAddress,
-    voteProxyContractAddress,
-    voteProxyOldContractAddress,
-    votingAccount
-  } = useAccount();
+  const { account, voteDelegateContractAddress, votingAccount } = useAccount();
   const network = useNetwork();
-  const chainId = useChainId();
 
   const [showHistorical, setShowHistorical] = React.useState(false);
 
-  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(votingAccount);
+  const { data: lockedSky, mutate: mutateLockedSky } = useLockedSky(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { data: mkrOnHat } = useMkrOnHat();
@@ -150,22 +115,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     mutatePaginatedProposals();
   }, [startDate, endDate]);
 
-  const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
-
-  const { data: lockedMkrOldChief } = useReadContract({
-    address: chiefOldAddress[chainId],
-    abi: chiefOldAbi,
-    chainId,
-    functionName: 'deposits',
-    args: [lockedMkrKeyOldChief as `0x${string}`],
-    scopeKey: `/user/mkr-locked-old-chief/${lockedMkrKeyOldChief}`,
-    query: {
-      enabled: !!lockedMkrKeyOldChief
-    }
-  });
-
-  const votingForSomething = votedProposals && votedProposals.length > 0;
-
   const prevSortByRef = useRef<string>(sortBy);
 
   useEffect(() => {
@@ -181,107 +130,15 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const { data: hat } = useHat();
 
-  const showProxyInfo = Boolean(
-    lockedMkrOldChief &&
-      lockedMkrOldChief === 0n &&
-      !voteProxyContractAddress &&
-      lockedMkr &&
-      lockedMkr === 0n &&
-      !voteDelegateContractAddress
-  );
-
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
-
-      {lockedMkrOldChief && lockedMkrOldChief > 0 && (
-        <>
-          <ProgressBar step={0} />
-          <MigrationBadge py={[2]}>
-            <Flex
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                alignContent: 'space-between',
-                flexWrap: 'wrap'
-              }}
-            >
-              <Text sx={{ py: 2 }}>
-                An executive vote has passed to update the Chief to a new version. You have{' '}
-                <b>{formatValue(lockedMkrOldChief)} MKR</b> to withdraw from the old chief.
-              </Text>
-              <Flex>
-                <WithdrawOldChief />
-                <ExternalLink
-                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
-                  title="View migration steps"
-                >
-                  <Button
-                    variant="outline"
-                    sx={{
-                      height: '26px',
-                      py: 0,
-                      px: 2,
-                      ml: 1,
-                      textTransform: 'uppercase',
-                      fontWeight: 'bold',
-                      fontSize: '10px',
-                      borderColor: 'accentBlue',
-                      color: 'accentBlue',
-                      ':hover': { color: 'accentBlueEmphasis', borderColor: 'accentBlueEmphasis' },
-                      ':hover svg': { color: 'accentBlueEmphasis' }
-                    }}
-                  >
-                    <Text>
-                      Forum Post <Icon name="arrowTopRight" sx={{ size: 2, ml: '1px' }} color="accentBlue" />
-                    </Text>
-                  </Button>
-                </ExternalLink>
-              </Flex>
-            </Flex>
-          </MigrationBadge>
-        </>
-      )}
-      {votedProposals &&
-        !votingForSomething &&
-        lockedMkrOldChief &&
-        lockedMkrOldChief === 0n &&
-        voteProxyContractAddress &&
-        lockedMkr &&
-        !voteDelegateContractAddress && (
-          <>
-            <ProgressBar step={lockedMkr === 0n ? 1 : 2} />
-            <MigrationBadge>
-              {lockedMkr === 0n ? (
-                <Text>
-                  Your vote proxy has been created. Please{' '}
-                  <Deposit link={'deposit'} showProxyInfo={showProxyInfo} /> into your new vote proxy contract
-                </Text>
-              ) : (
-                'Your vote proxy has been created. You are now ready to vote.'
-              )}
-            </MigrationBadge>
-          </>
-        )}
-      {votedProposals &&
-        !votingForSomething &&
-        lockedMkrOldChief &&
-        lockedMkrOldChief === 0n &&
-        !voteProxyContractAddress &&
-        lockedMkr &&
-        lockedMkr > 0n && (
-          <>
-            <ProgressBar step={2} />
-            <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
-          </>
-        )}
       <Stack>
         {account && (
           <ExecutiveBalance
-            lockedMkr={lockedMkr || 0n}
-            mutateLockedMkr={mutateLockedMkr}
+            lockedSky={lockedSky || 0n}
+            mutateLockedSky={mutateLockedSky}
             voteDelegate={voteDelegateContractAddress}
-            showProxyInfo={showProxyInfo}
           />
         )}
         <Flex sx={{ alignItems: 'center' }}>
@@ -307,7 +164,49 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
           <Box>
             <Stack gap={3}>
               <Heading as="h1">Executive Proposals</Heading>
-              {!isLoadingInitialData && (
+              {/* Show loading skeleton initially */}
+              {isLoadingInitialData && (
+                <Box>
+                  <Box my={3}>
+                    <SkeletonThemed width={'100%'} height={'200px'} />
+                  </Box>
+                </Box>
+              )}
+
+              {/* Show no proposals found message */}
+              {!isLoadingInitialData && !isValidating && flattenedProposals.length === 0 && (
+                <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
+                  <Flex
+                    sx={{
+                      borderRadius: '50%',
+                      backgroundColor: 'secondary',
+                      p: 2,
+                      width: '111px',
+                      height: '111px',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Box m={'auto'}>
+                      <Icon name="magnifying_glass" sx={{ color: 'background', size: 4 }} />
+                    </Box>
+                  </Flex>
+                  <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
+                    No executive proposals found
+                  </Text>
+                  {(startDate || endDate) && (
+                    <Button
+                      variant={'textual'}
+                      sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
+                      onClick={resetExecutiveFilters}
+                    >
+                      Reset filters
+                    </Button>
+                  )}
+                </Flex>
+              )}
+
+              {/* Render active proposals */}
+              {!isLoadingInitialData && flattenedProposals.filter(proposal => proposal.active).length > 0 && (
                 <Stack gap={4} sx={{ mb: 4 }}>
                   {flattenedProposals
                     .filter(proposal => proposal.active)
@@ -325,20 +224,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 </Stack>
               )}
 
-              {!isValidating &&
-                (startDate || endDate) &&
-                flattenedProposals &&
-                flattenedProposals.length === 0 && (
-                  <Text>No proposals found. Please try clearing filters.</Text>
-                )}
-
-              {isLoadingInitialData && (
-                <Box>
-                  <Box my={3}>
-                    <SkeletonThemed width={'100%'} height={'200px'} />
-                  </Box>
-                </Box>
-              )}
               {!showHistorical && flattenedProposals.filter(proposal => proposal.active).length > 0 && (
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                   <Divider />
@@ -432,16 +317,16 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               <SystemStatsSidebar
                 fields={[
                   'chief contract',
-                  'mkr in chief',
-                  'mkr needed to pass',
+                  'sky in chief',
+                  'sky needed to pass',
                   'savings rate',
-                  'total dai',
+                  'total usds',
                   'debt ceiling'
                 ]}
               />
             </ErrorBoundary>
             <ErrorBoundary componentName="MKR Liquidity">
-              <MkrLiquiditySidebar network={network} />
+              <MkrSkyLiquiditySidebar network={network} />
             </ErrorBoundary>
             <ResourceBox type={'executive'} />
             <ResourceBox type={'general'} />

@@ -6,15 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useState } from 'react';
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
 import Icon from './Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from './layout/layouts/Stack';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
-import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
-import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
-import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useUsdsDaiData } from 'modules/web3/hooks/useUsdsDaiData';
+import { useSkySavingsRate } from 'modules/web3/hooks/useSkySavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
@@ -22,64 +20,23 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
-import { DialogOverlay, DialogContent } from './Dialog';
-import BoxWithClose from './BoxWithClose';
 import { useNetwork } from '../hooks/useNetwork';
 import { useChainId } from 'wagmi';
 import {
   chiefAddress as chiefAddressMapping,
-  pollingAddress as pollingAddressMapping,
-  pollingOldAddress as pollingOldAddressMapping
+  pollingAddress as pollingAddressMapping
 } from 'modules/contracts/generated';
 
 type StatField =
   | 'chief contract'
-  | 'polling contract v1'
-  | 'polling contract v2'
+  | 'mainnet polling contract'
   | 'arbitrum polling contract'
-  | 'mkr in chief'
-  | 'mkr needed to pass'
+  | 'sky in chief'
+  | 'sky needed to pass'
   | 'savings rate'
-  | 'total dai'
+  | 'total usds'
   | 'debt ceiling'
   | 'system surplus';
-
-const PollingContractsModal = () => {
-  const [overlayOpen, setOverlayOpen] = useState(false);
-
-  return (
-    <>
-      <Flex onClick={() => setOverlayOpen(true)} sx={{ cursor: 'pointer', ml: 1 }}>
-        <Icon name="info" color="primary" />
-      </Flex>
-      {overlayOpen && (
-        <DialogOverlay isOpen={overlayOpen} onDismiss={() => setOverlayOpen(false)}>
-          <DialogContent ariaLabel="Polling contract versions info">
-            <BoxWithClose close={() => setOverlayOpen(false)}>
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                <Heading sx={{ mb: 3 }}>Polling contract versions</Heading>
-                <Text sx={{ textAlign: 'center', mb: 3 }}>
-                  v2 - The latest version of the polling contract was deployed to enable batch voting, so
-                  users can vote on multiple polls in one transaction.
-                </Text>
-                <Text sx={{ textAlign: 'center' }}>
-                  v1 - The first version of the polling contract is still used for creating polls on-chain,
-                  but it only allows for voting on a single poll per transaction, so an upgrade was deployed.
-                </Text>
-              </Flex>
-            </BoxWithClose>
-          </DialogContent>
-        </DialogOverlay>
-      )}
-    </>
-  );
-};
 
 export default function SystemStatsSidebar({
   fields = [],
@@ -90,6 +47,7 @@ export default function SystemStatsSidebar({
 }): JSX.Element {
   const network = useNetwork();
   const chainId = useChainId();
+  const { data } = useUsdsDaiData();
 
   const statsMap = {
     'chief contract': key => {
@@ -110,16 +68,16 @@ export default function SystemStatsSidebar({
         </Flex>
       );
     },
-    'mkr in chief': key => {
+    'sky in chief': key => {
       const chiefAddress = chiefAddressMapping[chainId];
-      const { data: chiefBalance } = useTokenBalance(Tokens.MKR, chiefAddress);
+      const { data: chiefBalance } = useTokenBalance(Tokens.SKY, chiefAddress);
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>SKY in Chief</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {chiefBalance ? (
-              `${formatValue(chiefBalance)} MKR`
+            {chiefBalance || chiefBalance === 0n ? (
+              `${formatValue(chiefBalance)} SKY`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -130,15 +88,12 @@ export default function SystemStatsSidebar({
       );
     },
 
-    'polling contract v2': key => {
+    'mainnet polling contract': key => {
       const pollingAddress = pollingAddressMapping[chainId];
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract v2</Text>
-            <PollingContractsModal />
-          </Flex>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Mainnet Polling Contract</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
               <EtherscanLink hash={pollingAddress} type="address" network={network} showAddress />
@@ -150,22 +105,6 @@ export default function SystemStatsSidebar({
           </Text>
         </Flex>
       );
-    },
-
-    'polling contract v1': key => {
-      const pollingAddress = pollingOldAddressMapping[chainId];
-
-      return pollingAddress ? (
-        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract v1</Text>
-            <PollingContractsModal />
-          </Flex>
-          <Text variant="h2" sx={{ fontSize: 3 }}>
-            <EtherscanLink hash={pollingAddress} type="address" network={network} showAddress />
-          </Text>
-        </Flex>
-      ) : null;
     },
 
     'arbitrum polling contract': key => {
@@ -191,15 +130,15 @@ export default function SystemStatsSidebar({
       );
     },
 
-    'mkr needed to pass': key => {
+    'sky needed to pass': key => {
       const { data: mkrOnHat } = useMkrOnHat();
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR on Governing Proposal</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>SKY on Governing Proposal</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {mkrOnHat ? (
-              `${formatValue(mkrOnHat)} MKR`
+            {mkrOnHat || mkrOnHat === 0n ? (
+              `${formatValue(mkrOnHat)} SKY`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -211,14 +150,17 @@ export default function SystemStatsSidebar({
     },
 
     'savings rate': key => {
-      const { data: daiSavingsRate } = useDaiSavingsRate();
+      const { data: skySavingsRateData } = useSkySavingsRate();
+      const skySavingsRate = skySavingsRateData
+        ? (parseFloat(skySavingsRateData) * 100).toFixed(2)
+        : undefined;
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Sky Savings Rate</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {daiSavingsRate ? (
-              `${daiSavingsRate.toFixed(2)}%`
+            {skySavingsRate ? (
+              `${skySavingsRate}%`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -229,15 +171,21 @@ export default function SystemStatsSidebar({
       );
     },
 
-    'total dai': key => {
-      const { data: totalDai } = useTotalDai();
-
+    'total usds': key => {
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total USDS</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {totalDai ? (
-              `${formatValue(totalDai, 'rad')} DAI`
+            {data && data.length > 0 ? (
+              `${Math.round(
+                parseFloat(
+                  // Find the data point with the highest blockTimestamp
+                  data.reduce(
+                    (latest, current) => (current.blockTimestamp > latest.blockTimestamp ? current : latest),
+                    data[0]
+                  ).totalUsds
+                )
+              ).toLocaleString('en-US')} USDS`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -251,6 +199,7 @@ export default function SystemStatsSidebar({
     'debt ceiling': key => {
       const { data: debtCeiling } = useSystemWideDebtCeiling();
 
+      // TODO replace with USDS debt ceiling
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
@@ -268,14 +217,20 @@ export default function SystemStatsSidebar({
     },
 
     'system surplus': key => {
-      const { data: systemSurplus } = useSystemSurplus();
-
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
-            {systemSurplus ? (
-              `${formatValue(systemSurplus, 'rad')} DAI`
+            {data && data.length > 0 ? (
+              `${Math.round(
+                parseFloat(
+                  // Find the data point with the highest blockTimestamp
+                  data.reduce(
+                    (latest, current) => (current.blockTimestamp > latest.blockTimestamp ? current : latest),
+                    data[0]
+                  ).surplusBuffer
+                )
+              ).toLocaleString('en-US')} USDS`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -296,7 +251,7 @@ export default function SystemStatsSidebar({
         <ExternalLink
           href="https://daistats.com/"
           target="_blank"
-          sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'accentBlueEmphasis' } }}
+          sx={{ color: 'text', fontSize: 3, ':hover': { color: 'accentBlueEmphasis' } }}
         >
           <Flex sx={{ alignItems: 'center' }}>
             <Text>

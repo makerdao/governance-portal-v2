@@ -11,23 +11,32 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 export type RepositoryInfo = {
   owner: string;
   repo: string;
-  page: string;
+  branch: string;
 };
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
     owner: 'makerdao',
-    repo: 'community',
-    page: 'governance/delegates'
+    repo: 'delegates',
+    branch: 'main'
   };
 
   const repoTest = {
-    owner: 'makerdao-dux',
-    repo: 'voting-delegates',
-    page: 'delegates'
+    owner: 'jetstreamgg',
+    repo: 'delegates',
+    branch: 'testnet'
   };
 
-  const delegatesRepositoryInfo =
-    network === SupportedNetworks.MAINNET || SupportedNetworks.TENDERLY ? repoMainnet : repoTest;
+  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoTest;
   return delegatesRepositoryInfo;
+}
+
+export function getDelegatesIndexFileUrl(network: SupportedNetworks) {
+  const { owner, repo, branch } = getDelegatesRepositoryInformation(network);
+  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/${branch}/index.json`;
+}
+
+export function getMetadataRepoBaseUrl(network: SupportedNetworks) {
+  const { owner, repo, branch } = getDelegatesRepositoryInformation(network);
+  return `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/${branch}`;
 }

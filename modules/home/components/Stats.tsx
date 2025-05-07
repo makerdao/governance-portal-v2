@@ -32,7 +32,16 @@ export const Stats = ({ title, infoUnits, viewMoreUrl }: Props): JSX.Element => 
           )}
         </Flex>
 
-        <Flex sx={{ mx: 0, px: 5, pb: 3, backgroundColor: 'background', borderRadius: 'small' }}>
+        <Flex
+          sx={{
+            mx: 0,
+            px: 5,
+            pb: 3,
+            backgroundColor: 'surface',
+            backdropFilter: 'blur(50px)',
+            borderRadius: 'round'
+          }}
+        >
           <Flex m={3} sx={{ width: '100%', justifyContent: 'space-between' }}>
             {infoUnits.map(unit => (
               <Box key={unit.title} data-testid={unit.title}>
@@ -49,7 +58,7 @@ export const Stats = ({ title, infoUnits, viewMoreUrl }: Props): JSX.Element => 
       </Box>
 
       {/* Mobile */}
-      <Box sx={{ display: ['block', 'none'], backgroundColor: 'background' }}>
+      <Box sx={{ display: ['block', 'none'], backgroundColor: 'surface', backdropFilter: 'blur(50px)' }}>
         <Grid sx={{ p: 0 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Heading>{title}</Heading>

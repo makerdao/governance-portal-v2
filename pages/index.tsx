@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Text, Flex, useColorMode, Box, Alert } from 'theme-ui';
+import { Heading, Text, Flex, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -33,8 +33,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import Participation from 'modules/home/components/Participation';
-import TabsNavigation from 'modules/home/components/TabsNavigation';
-import { StickyContainer, Sticky } from 'react-sticky';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
@@ -50,6 +48,7 @@ const LandingPage = ({
   pollTags,
   delegates,
   delegatesInfo,
+  delegatesError,
   stats,
   mkrOnHat,
   hat,
@@ -57,13 +56,6 @@ const LandingPage = ({
 }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
-  const [mode] = useColorMode();
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
-
-  // change background on color mode switch
-  useEffect(() => {
-    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
-  }, [mode]);
 
   // account
   const { account, votingAccount } = useAccount();
@@ -134,152 +126,121 @@ const LandingPage = ({
 
   return (
     <div>
-      {delegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
+      {delegatesError && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
       )}
-      <Box
-        as={'div'}
-        sx={{
-          top: 0,
-          left: 0,
-          pt: '100%',
-          width: '100%',
-          zIndex: -1,
-          position: 'absolute',
-          backgroundImage,
-          backgroundSize: ['cover', 'contain'],
-          backgroundPosition: 'top center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
       <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
-      <StickyContainer>
-        <PrimaryLayout sx={{ maxWidth: 'page' }}>
-          <Stack gap={[5, 6]} separationType="p">
-            <section>
-              <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
-                <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
-                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
-                    Maker Governance
-                  </Heading>
-                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
-                    Voting Portal
-                  </Heading>
-                  <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
-                    Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol
-                  </Text>
-                  <Box>
-                    <PlayButton
-                      label="How to vote"
-                      onClick={() => setVideoOpen(true)}
-                      styles={{ mr: [1, 3] }}
-                    />
-                  </Box>
+      <PrimaryLayout sx={{ maxWidth: 'page' }}>
+        <Stack gap={[5, 6]} separationType="p">
+          <section>
+            <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
+              <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                  Sky Governance
+                </Heading>
+                <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                  Voting Portal
+                </Heading>
+                <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
+                  Vote with or delegate your SKY tokens to help protect the integrity of the Sky protocol
+                </Text>
+                <Box>
+                  <PlayButton
+                    label="How to vote"
+                    onClick={() => setVideoOpen(true)}
+                    styles={{ mr: [1, 3] }}
+                  />
+                </Box>
+              </Flex>
+              <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Heading>Latest Executive</Heading>
+                  <InternalLink href={'/executive'} title="Latest Executive">
+                    <ViewMore />
+                  </InternalLink>
                 </Flex>
-                <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
-                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Heading>Latest Executive</Heading>
-                    <InternalLink href={'/executive'} title="Latest Executive">
-                      <ViewMore />
-                    </InternalLink>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <ErrorBoundary componentName="Latest Executive">
-                      {proposals ? (
-                        proposals.length > 0 ? (
-                          <ExecutiveOverviewCard
-                            votedProposals={votedProposals}
-                            account={account}
-                            isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
-                            proposal={proposals[0]}
-                          />
-                        ) : (
-                          <Text>No proposals found</Text>
-                        )
+                <Flex sx={{ mt: 3 }}>
+                  <ErrorBoundary componentName="Latest Executive">
+                    {proposals ? (
+                      proposals.length > 0 ? (
+                        <ExecutiveOverviewCard
+                          votedProposals={votedProposals}
+                          account={account}
+                          isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
+                          proposal={proposals[0]}
+                        />
                       ) : (
-                        <Skeleton />
-                      )}
-                    </ErrorBoundary>
-                  </Flex>
+                        <Text>No proposals found</Text>
+                      )
+                    ) : (
+                      <Skeleton />
+                    )}
+                  </ErrorBoundary>
                 </Flex>
               </Flex>
-            </section>
-
-            <section>
-              <ErrorBoundary componentName="Governance Stats">
-                <GovernanceStats
-                  pollStats={pollStats}
-                  stats={stats}
-                  mkrOnHat={mkrOnHat}
-                  mkrInChief={mkrInChief}
-                />
-              </ErrorBoundary>
-            </section>
-
-            <section id="vote">
-              <Sticky topOffset={bpi < 1 ? 1050 : 700}>
-                {({ style, isSticky }) => (
-                  <Box
-                    style={{
-                      ...style,
-                      zIndex: 100,
-                      width: isSticky ? '100%' : 'auto',
-                      left: 0,
-                      top: 66
-                    }}
-                  >
-                    <TabsNavigation activeTab={activeTab} />
-                  </Box>
-                )}
-              </Sticky>
-              <Box ref={voteRef} />
-              <Box sx={{ mt: 3 }}>
-                <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
-              </Box>
-              <PollCategoriesLanding pollCategories={pollTags} />
-            </section>
-
-            <section id="delegate">
-              <Box ref={delegateRef} />
-              <TopDelegates
-                topDelegates={delegates}
-                totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
-              />
-            </section>
-
-            <Box as={'section'} sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
-              <Box
-                sx={{
-                  background: 'onSurfaceAlt',
-                  width: '200vw',
-                  zIndex: -1,
-                  ml: '-100vw',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  height: '1720px'
-                }}
-              />
-              <Box ref={learnRef} />
-              <InformationParticipateMakerGovernance />
-              <ResourcesLanding />
-            </Box>
-
-            <section id="engage">
-              <Box ref={engageRef} />
-              <Participation activeDelegates={activeDelegates} bpi={bpi} />
-            </section>
-            <Flex
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              sx={{ justifyContent: 'flex-end', mb: 3 }}
-            >
-              <ViewMore label="Back to the top" icon="chevron_up" />
             </Flex>
-          </Stack>
-        </PrimaryLayout>
-      </StickyContainer>
+          </section>
+
+          <section>
+            <ErrorBoundary componentName="Governance Stats">
+              <GovernanceStats
+                pollStats={pollStats}
+                stats={stats}
+                mkrOnHat={mkrOnHat}
+                mkrInChief={mkrInChief}
+              />
+            </ErrorBoundary>
+          </section>
+
+          <section id="vote">
+            <Box ref={voteRef} />
+            <Box sx={{ mt: 3 }}>
+              <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
+            </Box>
+            <PollCategoriesLanding pollCategories={pollTags} />
+          </section>
+
+          <section id="delegate">
+            <Box ref={delegateRef} />
+            <TopDelegates
+              topDelegates={delegates}
+              totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
+            />
+          </section>
+
+          <Box as={'section'} sx={{ position: 'relative', mt: '4', overflowY: 'clip' }} id="learn">
+            <Box
+              sx={{
+                background: 'surface',
+                backdropFilter: 'blur(50px)',
+                width: '200vw',
+                zIndex: -1,
+                ml: '-100vw',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '1720px'
+              }}
+            />
+            <Box ref={learnRef} />
+            <InformationParticipateMakerGovernance />
+            <ResourcesLanding />
+          </Box>
+
+          <section id="engage">
+            <Box ref={engageRef} />
+            <Participation activeDelegates={activeDelegates} bpi={bpi} />
+          </section>
+          <Flex
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            sx={{ justifyContent: 'flex-end', mb: 3 }}
+          >
+            <ViewMore label="Back to the top" icon="chevron_up" />
+          </Flex>
+        </Stack>
+      </PrimaryLayout>
     </div>
   );
 };
@@ -337,8 +298,9 @@ export default function Index({
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
     pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
-    delegates: delegatesData.data?.delegates ?? [],
+    delegates: delegatesData.data?.delegates?.slice(0, 5) ?? [],
     delegatesInfo: delegatesInfo.data ?? [],
+    delegatesError: delegatesData.error || delegatesInfo.error,
     stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,

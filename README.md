@@ -1,16 +1,16 @@
 <h1  align="center"  style="margin-top: 1em; margin-bottom: 3em;">
 
-<p><a  href="https://vote.makerdao.com/"><img  alt="maker logo"  src="./maker-logo.png"  alt="vote.makerdao.com"  width="125"></a></p>
+<p><a  href="https://vote.makerdao.com/"><img  alt="sky logo"  src="./sky-logo.png"  alt="vote.makerdao.com"  width="125"></a></p>
 
-<p>Maker Governance Portal</p>
+<p>Sky Governance Portal</p>
 
 </h1>
 
-This is the repo containing the code for the [Maker Governance Portal](https://vote.makerdao.com). The Maker Governance Portal is an open-source interface for governance of the Maker protocol. </br>Copyright [Dai Foundation](https://daifoundation.org/) 2022.
+This is the repo containing the code for the [Sky Governance Portal](https://vote.makerdao.com). The Sky Governance Portal is an open-source interface for governance of the Sky protocol. </br>Copyright [Dai Foundation](https://daifoundation.org/) 2022.
 
 ### To run locally:
 
-While the portal is hosted by MakerDAO at https://vote.makerdao.com, it can also be run by anyone on their local machine.
+While the portal is hosted by Sky at https://vote.makerdao.com, it can also be run by anyone on their local machine.
 
 In order to run the project locally, you must have the following installed on the machine:
 
@@ -40,11 +40,6 @@ pnpm dev
 
 At this point, you should be able to access the application by going to the address `http://localhost:3000` in your browser.
 
-### Upgrading
-
-> **Warning**
-> The method `_signTypedData` from ethers is an experimental feature and will be renamed to `signTypedData`. Make sure to keep the version of ethers fixed or rename the method once is available.
-
 ### Releasing
 
 To do releases of the governance portal, please use `npm version minor` or `npm version patch` to bump the version in the package.json and create a tag.
@@ -55,7 +50,7 @@ The tag and versioning should be done on develop, and then merged to master thro
 
 #### Content
 
-The portal seeks to rely on on-chain data as much as possible and to minimize reliance on data stored on centralized servers. However, due to the large volume of data that is relevant to Maker governance, fetching this data from on-chain is both time and resource-intensive. In order to improve the user's experience, some reliance on third-party services has been added, and we recommend a few configuration steps for optimal use. These services include:
+The portal seeks to rely on on-chain data as much as possible and to minimize reliance on data stored on centralized servers. However, due to the large volume of data that is relevant to Sky governance, fetching this data from on-chain is both time and resource-intensive. In order to improve the user's experience, some reliance on third-party services has been added, and we recommend a few configuration steps for optimal use. These services include:
 
 - [GitHub](https://github.com/makerdao/community/tree/master/governance) for storing markdown related to [polls](https://github.com/makerdao/community/tree/master/governance/polls), [executives](https://github.com/makerdao/community/tree/master/governance/votes), and [aligned delegates](https://github.com/makerdao/community/tree/master/governance/delegates)
 
@@ -78,8 +73,6 @@ The following configuration values can be added to the `.env` file:
 - Set `ALCHEMY_KEY` to a valid [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart) API key for Wagmi and Viem to use
 
 - Set `ETHERSCAN_V2_API_KEY` to a valid [Etherscan V2](https://docs.etherscan.io/etherscan-v2#why-v2) API key for Wagmi to be able to generate the contract ABIs
-
-- Set `GITHUB_TOKEN` to fetch polls, executives, and aligned delegates information from GitHub (optionally set `GITHUB_TOKEN_2` and `GITHUB_TOKEN_3`)
 
 - Set `USE_CACHE` to true if you want to use cache, if `REDIS_URL` is set it will use REDIS otherwise filesystem cache
 

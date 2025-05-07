@@ -7,50 +7,47 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState } from 'react';
-import { Button, Flex, Text, Box, Link } from 'theme-ui';
+import { Button, Flex, Text, Box, Link, ButtonProps } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
-import { useLock } from '../hooks/useLock';
+import { useLockSky } from '../hooks/useLockSky';
 import { Tokens } from 'modules/web3/constants/tokens';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { useChainId } from 'wagmi';
 import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
+import { useSkyBalance } from '../hooks/useSkyBalance';
 
 const ModalContent = ({
   close,
-  showProxyInfo,
-  mutateLockedMkr
+  mutateLockedSky
 }: {
   close: () => void;
-  showProxyInfo?: boolean;
-  mutateLockedMkr?: () => void;
+  mutateLockedSky?: () => void;
 }): React.ReactElement => {
-  const [mkrToDeposit, setMkrToDeposit] = useState(0n);
+  const [skyToDeposit, setSkyToDeposit] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
+  const { account } = useAccount();
   const chainId = useChainId();
-  const { data: mkrBalance } = useMkrBalance(account);
+  const { data: skyBalance } = useSkyBalance(account);
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    Tokens.MKR,
+    Tokens.SKY,
     100000000n,
     account,
-    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefAddress[chainId]
+    chiefAddress[chainId]
   );
 
   const approve = useApproveUnlimitedToken({
-    name: Tokens.MKR,
-    addressToApprove: voteProxyContractAddress || chiefAddress[chainId],
+    name: Tokens.SKY,
+    addressToApprove: chiefAddress[chainId],
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
     },
@@ -64,14 +61,14 @@ const ModalContent = ({
     }
   });
 
-  const lock = useLock({
-    mkrToDeposit,
+  const lock = useLockSky({
+    skyToDeposit,
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
     },
     onSuccess: () => {
       setTxStatus(TxStatus.SUCCESS);
-      mutateLockedMkr?.();
+      mutateLockedSky?.();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
@@ -104,6 +101,12 @@ const ModalContent = ({
               )}
             </Flex>
 
+            {txStatus === TxStatus.SUCCESS && (
+              <Button variant="outline" onClick={close} sx={{ mt: 3 }}>
+                Close
+              </Button>
+            )}
+
             {txStatus === TxStatus.INITIALIZED && (
               <Box>
                 <Text sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
@@ -127,26 +130,26 @@ const ModalContent = ({
                 Deposit into voting contract
               </Text>
               <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3, mt: 3 }}>
-                Input the amount of MKR to deposit into the voting contract.
+                Input the amount of SKY to deposit into the voting contract.
               </Text>
             </Box>
 
             <Box>
-              <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance} />
+              <MKRInput value={skyToDeposit} onChange={setSkyToDeposit} balance={skyBalance} />
             </Box>
 
             <Button
-              data-testid="button-deposit-mkr"
+              data-testid="button-deposit-sky"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={
-                mkrToDeposit === 0n || mkrToDeposit > (mkrBalance || 0n) || lock.isLoading || !lock.prepared
+                skyToDeposit === 0n || skyToDeposit > (skyBalance || 0n) || lock.isLoading || !lock.prepared
               }
               onClick={() => {
                 setTxStatus(TxStatus.INITIALIZED);
                 lock.execute();
               }}
             >
-              Deposit MKR
+              Deposit SKY
             </Button>
           </Stack>
         )}
@@ -157,7 +160,7 @@ const ModalContent = ({
                 Approve voting contract
               </Text>
               <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3, mt: 3 }}>
-                Approve the transfer of MKR to the voting contract.
+                Approve the transfer of SKY to the voting contract.
               </Text>
             </Box>
 
@@ -172,24 +175,6 @@ const ModalContent = ({
             >
               Approve
             </Button>
-            {showProxyInfo && (
-              <Text as="p" sx={{ fontSize: 2, mt: 3, color: 'textSecondary', textAlign: 'center' }}>
-                Advanced users interested in creating a{' '}
-                <ExternalLink
-                  href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
-                  title="Read about proxy contracts"
-                >
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>vote proxy contract</Text>
-                </ExternalLink>{' '}
-                instead of depositing directly into Chief can learn how to create one{' '}
-                <ExternalLink
-                  href="https://dux.makerdao.network/how-to-create-a-vote-proxy-manually-using-etherscan"
-                  title="Etherscan guide"
-                >
-                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
-                </ExternalLink>
-              </Text>
-            )}
           </Stack>
         )}
       </Box>
@@ -199,25 +184,16 @@ const ModalContent = ({
 
 const Deposit = ({
   link,
-  showProxyInfo,
-  mutateLockedMkr
+  mutateLockedSky,
+  ...props
 }: {
   link?: string;
-  showProxyInfo?: boolean;
-  mutateLockedMkr?: () => void;
+  mutateLockedSky?: () => void;
+  sx?: ButtonProps['sx'];
 }): JSX.Element => {
-  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const [showDialog, setShowDialog] = useState(false);
 
   const open = () => {
-    if (account && voteProxyContractAddress && account === voteProxyHotAddress) {
-      alert(
-        'You are using the hot wallet for a voting proxy. ' +
-          'You can only deposit from the cold wallet. ' +
-          'Switch to that wallet to continue.'
-      );
-      return;
-    }
     setShowDialog(true);
   };
 
@@ -225,11 +201,7 @@ const Deposit = ({
     <>
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent ariaLabel="Executive Vote" widthDesktop="520px">
-          <ModalContent
-            close={() => setShowDialog(false)}
-            showProxyInfo={showProxyInfo}
-            mutateLockedMkr={mutateLockedMkr}
-          />
+          <ModalContent close={() => setShowDialog(false)} mutateLockedSky={mutateLockedSky} />
         </DialogContent>
       </DialogOverlay>
       {link ? (
@@ -247,6 +219,7 @@ const Deposit = ({
           onClick={() => {
             open();
           }}
+          {...props}
           data-testid="deposit-button"
         >
           Deposit

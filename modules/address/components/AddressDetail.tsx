@@ -16,7 +16,7 @@ import { fetchJson } from 'lib/fetchJson';
 import LastVoted from 'modules/polling/components/LastVoted';
 import AddressDelegatedTo from './AddressDelegatedTo';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
+import { AddressSkyDelegatedStats } from './AddressSkyDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Tabs from 'modules/app/components/Tabs';
@@ -27,11 +27,7 @@ import { useNetwork } from 'modules/app/hooks/useNetwork';
 export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse }): React.ReactElement {
   const network = useNetwork();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    addressInfo
-      ? `/api/address/stats?address=${
-          addressInfo.voteProxyInfo?.hotAddress ? addressInfo.voteProxyInfo.hotAddress : addressInfo.address
-        }&network=${network}`
-      : null,
+    addressInfo ? `/api/address/stats?address=${addressInfo.address}&network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -81,7 +77,7 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
             fontWeight: 'semiBold'
           }}
         >
-          MKR Delegated by Address
+          SKY Delegated by Address
         </Text>
         {!delegatedToData && (
           <Box mb={3}>
@@ -96,7 +92,7 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
         )}
         {delegatedToData && delegatedToData.delegatedTo.length === 0 && (
           <Box mb={3}>
-            <Text>No MKR delegated</Text>
+            <Text>No SKY delegated</Text>
           </Box>
         )}
       </Box>
@@ -153,14 +149,13 @@ export function AddressDetail({ addressInfo }: { addressInfo: AddressApiResponse
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted
-            expired={false}
             date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
           />
         </Box>
       </Flex>
 
       <Box sx={{ pl: [3, 4], pr: [3, 4], display: 'flex', flexDirection: 'column' }}>
-        <AddressMKRDelegatedStats
+        <AddressSkyDelegatedStats
           totalMKRDelegated={delegatedToData?.totalDelegated}
           address={addressInfo.address}
         />

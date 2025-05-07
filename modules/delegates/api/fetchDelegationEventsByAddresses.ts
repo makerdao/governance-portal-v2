@@ -21,7 +21,6 @@ export async function fetchDelegationEventsByAddresses(
   try {
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      useSubgraph: true,
       query: delegateHistoryArray,
       variables: {
         delegates: addresses

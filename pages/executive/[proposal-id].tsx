@@ -226,7 +226,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
               />
               <StatBox
                 value={spellData && spellData.mkrSupport && formatValue(BigInt(spellData.mkrSupport))}
-                label="MKR Support"
+                label="SKY Support"
               />
               <StatBox
                 value={
@@ -237,14 +237,14 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 label="Supporters"
               />
             </Flex>
-            {'about' in proposal ? (
+            {'content' in proposal ? (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={['Proposal Detail', 'Spell Details']}
                 tabRoutes={['Proposal Detail', 'Spell Details']}
                 tabPanels={[
                   <Box
-                    key={'about'}
+                    key={'content'}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
@@ -376,7 +376,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                             <Text>{supporter.percent > 0.01 ? supporter.percent : '<0.01'}%</Text>
                             <Text color="onSecondary" sx={{ fontSize: 2 }}>
                               {formatValue(parseEther(supporter.deposits), undefined, undefined, true, true)}{' '}
-                              MKR
+                              SKY
                             </Text>
                           </Flex>
                         </Flex>

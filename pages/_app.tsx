@@ -25,15 +25,14 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
-import Banner from 'modules/app/components/layout/header/Banner';
-import bannerContent from 'modules/home/data/bannerContent.json';
-import { MigrationBanner } from 'modules/migration/components/MigrationBanner';
-import React, { useMemo } from 'react';
+import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
+import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { WagmiProvider } from 'wagmi';
 import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
 import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeImage } from 'modules/app/components/ThemeImage';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -46,21 +45,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const wagmiConfig = useMockWallet ? mockWagmiConfig : isProduction ? wagmiConfigProd : wagmiConfigDev;
   const queryClient = new QueryClient();
 
-  const activeBannerContent = bannerContent.find(({ active }) => active === true);
-  const banners = useMemo(() => {
-    return (
-      <React.Fragment>
-        {activeBannerContent && (
-          <Banner
-            content={activeBannerContent.content}
-            href={activeBannerContent.href}
-            variant={activeBannerContent.variant}
-          />
-        )}
-        <MigrationBanner />
-      </React.Fragment>
-    );
-  }, []);
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
@@ -69,7 +53,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
           <Analytics />
 
           <NextNprogress
-            color="#1aab9b"
+            color="#504DFF"
             startPosition={0.3}
             stopDelayMs={200}
             height={3}
@@ -102,10 +86,12 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     variant: 'layout.root',
 
                     paddingTop: 5,
+                    position: 'relative',
                     overflowX: 'hidden'
                   }}
                 >
-                  {banners && <Box sx={{ pb: 3 }}>{banners}</Box>}
+                  <ThemeImage />
+                  <AppBanner />
                   <Box sx={{ px: [3, 4] }}>
                     <Component {...pageProps} />
                   </Box>

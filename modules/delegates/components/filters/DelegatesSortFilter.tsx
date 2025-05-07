@@ -58,16 +58,16 @@ export function DelegatesSortFilter(): JSX.Element {
             Creation date: newest first
           </ListboxOption>
           <ListboxOption
-            label="Sort by MKR delegated (ASC)"
+            label="Sort by SKY delegated (ASC)"
             value={DelegateOrderByEnum.MKR + ',' + OrderDirectionEnum.ASC}
           >
-            MKR delegated: lowest first
+            SKY delegated: lowest first
           </ListboxOption>
           <ListboxOption
-            label="Sort by MKR delegated (DESC)"
+            label="Sort by SKY delegated (DESC)"
             value={DelegateOrderByEnum.MKR + ',' + OrderDirectionEnum.DESC}
           >
-            MKR delegated: highest first
+            SKY delegated: highest first
           </ListboxOption>
           <ListboxOption
             label="Sort by delegators count (ASC)"

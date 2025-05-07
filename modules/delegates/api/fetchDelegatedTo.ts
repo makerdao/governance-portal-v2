@@ -6,34 +6,31 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { add } from 'date-fns';
 import { formatEther, parseEther } from 'viem';
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
-import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
-import { getLatestOwnerFromOld } from 'modules/migration/delegateAddressLinks';
-import { AllDelegatesRecord, Query } from 'modules/gql/generated/graphql';
+import { DelegationHistory, MKRDelegatedToResponse } from '../types';
 
 export async function fetchDelegatedTo(
   address: string,
   network: SupportedNetworks
-): Promise<DelegationHistoryWithExpirationDate[]> {
+): Promise<DelegationHistory[]> {
   try {
-    // We fetch the delegates information from the DB to extract the expiry date of each delegate
     // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
     const chainId = networkNameToChainId(network);
-    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = delegatesData.allDelegates.nodes;
+    const delegatesData = await gqlRequest({
+      chainId,
+      query: allDelegates
+    });
+    const delegates = delegatesData.delegates;
 
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      useSubgraph: true,
       query: delegatorHistory,
       variables: { address: address.toLowerCase() }
     });
@@ -52,7 +49,7 @@ export async function fetchDelegatedTo(
     const delegatedTo = res.reduce(
       (acc, { delegateContractAddress, lockAmount, blockTimestamp, hash, isLockstake }) => {
         const existing = acc.find(({ address }) => address === delegateContractAddress) as
-          | DelegationHistoryWithExpirationDate
+          | DelegationHistory
           | undefined;
 
         // We sum the total of lockAmounts in different events to calculate the current delegated amount
@@ -66,47 +63,23 @@ export async function fetchDelegatedTo(
           });
         } else {
           const delegatingTo = delegates.find(
-            i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
-          ) as (AllDelegatesRecord & { delegateVersion: number }) | undefined;
+            i => i?.id?.toLowerCase() === delegateContractAddress.toLowerCase()
+          );
 
           if (!delegatingTo) {
             return acc;
           }
 
-          const delegatingToWalletAddress = delegatingTo?.delegate?.toLowerCase();
-          // Get the expiration date of the delegate
-
-          const expirationDate =
-            delegatingTo.delegateVersion === 2
-              ? undefined
-              : add(new Date(delegatingTo?.blockTimestamp), { years: 1 });
-
-          //only v1 delegate contracts expire
-          const isAboutToExpire = delegatingTo.delegateVersion !== 2 && isAboutToExpireCheck(expirationDate);
-          const isExpired = delegatingTo.delegateVersion !== 2 && isExpiredCheck(expirationDate);
-
-          // If it has a new owner address, check if it has renewed the contract
-          const latestOwnerAddress = getLatestOwnerFromOld(delegatingToWalletAddress as string, network);
-
-          const newRenewedContract = latestOwnerAddress
-            ? delegates.find(d => d?.delegate?.toLowerCase() === latestOwnerAddress.toLowerCase())
-            : null;
-
           acc.push({
             address: delegateContractAddress,
-            expirationDate,
-            isExpired,
-            isAboutToExpire: !isExpired && isAboutToExpire,
             lockAmount: formatEther(parseEther(lockAmount)),
-            // @ts-ignore: Property 'delegateVersion' might not exist on type 'AllDelegatesRecord'
-            isRenewedToV2: !!newRenewedContract && newRenewedContract.delegateVersion === 2,
             events: [{ lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isLockstake }]
-          } as DelegationHistoryWithExpirationDate);
+          } as DelegationHistory);
         }
 
         return acc;
       },
-      [] as DelegationHistoryWithExpirationDate[]
+      [] as DelegationHistory[]
     );
 
     // Sort by lockAmount, lockAmount is the total amount delegated currently
@@ -114,7 +87,7 @@ export async function fetchDelegatedTo(
       parseEther(prev.lockAmount) > parseEther(next.lockAmount) ? -1 : 1
     );
   } catch (e) {
-    logger.error('fetchDelegatedTo: Error fetching MKR delegated to address', e.message);
+    logger.error('fetchDelegatedTo: Error fetching SKY delegated to address', e.message);
     return [];
   }
 }

@@ -101,7 +101,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
                 fontWeight: 'semiBold'
               }}
             >
-              {formatValue(parseEther(vote.mkrSupport.toString()), undefined, undefined, true, true)} MKR
+              {formatValue(parseEther(vote.mkrSupport.toString()), undefined, undefined, true, true)} SKY
             </Text>
           </Box>
         </Box>
@@ -110,7 +110,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
         <Flex sx={{ alignItems: 'center' }}>
           <Box sx={{ mr: 2 }}>
             <ErrorBoundary componentName="Countdown Timer">
-              <CountdownTimer endText="Poll ended" endDate={vote.poll.endDate} />
+              <CountdownTimer endText="Poll ended" endDate={new Date(vote.poll.endDate)} />
             </ErrorBoundary>
           </Box>
           <PollVoteTypeIndicator poll={vote.poll} />

@@ -45,7 +45,7 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import usePollsStore from 'modules/polling/stores/polls';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { PollOrderByEnum } from 'modules/polling/polling.constants';
+import { PollOrderByEnum, SKY_PORTAL_START_DATE_MAINNET } from 'modules/polling/polling.constants';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { formatEther } from 'viem';
 
@@ -293,7 +293,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                             ).toLocaleString(undefined, {
                               maximumFractionDigits: 3
                             })}{' '}
-                            MKR
+                            SKY
                           </Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
@@ -381,11 +381,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
           <ErrorBoundary componentName="System Info">
             <SystemStatsSidebar
               fields={[
-                'polling contract v2',
-                'polling contract v1',
+                'mainnet polling contract',
                 'arbitrum polling contract',
                 'savings rate',
-                'total dai',
+                'total usds',
                 'debt ceiling',
                 'system surplus'
               ]}
@@ -474,7 +473,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     tags: null,
     status: null,
     type: null,
-    startDate: null,
+    startDate: SKY_PORTAL_START_DATE_MAINNET,
     endDate: null
   });
 

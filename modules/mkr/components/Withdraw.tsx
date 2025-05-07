@@ -7,59 +7,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState } from 'react';
-import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
+import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useFree } from '../hooks/useFree';
-import { Tokens } from 'modules/web3/constants/tokens';
-import { useChainId } from 'wagmi';
-import { chiefAddress } from 'modules/contracts/generated';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
 const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
-  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
-  const chainId = useChainId();
+  const { account } = useAccount();
 
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
+  const [skyToWithdraw, setSkyToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
 
-  const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    Tokens.IOU,
-    100000000n,
-    account,
-    voteProxyContractAddress ? undefined : chiefAddress[chainId]
-  );
-
-  const approve = useApproveUnlimitedToken({
-    name: Tokens.IOU,
-    addressToApprove: chiefAddress[chainId],
-    onStart: () => {
-      setTxStatus(TxStatus.LOADING);
-    },
-    onSuccess: () => {
-      // Once the approval is successful, return to tx idle so we can free
-      setTxStatus(TxStatus.IDLE);
-      mutateTokenAllowance();
-    },
-    onError: () => {
-      setTxStatus(TxStatus.ERROR);
-    }
-  });
-
-  const allowanceOk = voteProxyContractAddress ? true : allowance; // no need for IOU approval when using vote proxy
-
-  const { data: lockedMkr } = useLockedMkr(voteProxyContractAddress || account);
+  const { data: lockedSky } = useLockedSky(account);
 
   const free = useFree({
-    mkrToWithdraw,
+    skyToWithdraw,
     onStart: () => {
       setTxStatus(TxStatus.LOADING);
     },
@@ -70,7 +39,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     },
-    enabled: !!allowanceOk
+    enabled: !!skyToWithdraw
   });
 
   return (
@@ -98,6 +67,12 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
               )}
             </Flex>
 
+            {txStatus === TxStatus.SUCCESS && (
+              <Button variant="outline" onClick={close} sx={{ mt: 3 }}>
+                Close
+              </Button>
+            )}
+
             {txStatus === TxStatus.INITIALIZED && (
               <Box>
                 <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
@@ -114,71 +89,42 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
             )}
           </Stack>
         )}
-        {txStatus === TxStatus.IDLE && allowanceOk && (
+        {txStatus === TxStatus.IDLE && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" mb={2}>
                 Withdraw from voting contract
               </Text>
               <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
-                Input the amount of MKR to withdraw from the voting contract.
+                Input the amount of SKY to withdraw from the voting contract.
               </Text>
             </Box>
 
             <Box>
               <MKRInput
-                onChange={setMkrToWithdraw}
-                balance={lockedMkr}
-                value={mkrToWithdraw}
-                balanceText="MKR in contract:"
+                onChange={setSkyToWithdraw}
+                balance={lockedSky}
+                value={skyToWithdraw}
+                balanceText="SKY in contract:"
               />
             </Box>
 
-            {voteProxyContractAddress && account === voteProxyHotAddress && (
-              <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
-                You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
-              </Alert>
-            )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
               disabled={
-                mkrToWithdraw === 0n ||
-                !lockedMkr ||
-                mkrToWithdraw > lockedMkr ||
+                skyToWithdraw === 0n ||
+                !lockedSky ||
+                skyToWithdraw > lockedSky ||
                 free.isLoading ||
                 !free.prepared
               }
-              data-testid="button-withdraw-mkr"
+              data-testid="button-withdraw-sky"
               onClick={() => {
                 setTxStatus(TxStatus.INITIALIZED);
                 free.execute();
               }}
             >
-              Withdraw MKR
-            </Button>
-          </Stack>
-        )}
-        {txStatus === TxStatus.IDLE && !allowanceOk && (
-          <Stack gap={3} {...props}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Text as="p" variant="microHeading" mb={2}>
-                Approve voting contract
-              </Text>
-              <Text as="p" sx={{ color: 'secondaryEmphasis', fontSize: 3 }}>
-                Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
-              </Text>
-            </Box>
-
-            <Button
-              sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={approve.isLoading || !approve.prepared}
-              onClick={() => {
-                setTxStatus(TxStatus.INITIALIZED);
-                approve.execute();
-              }}
-              data-testid="withdraw-approve-button"
-            >
-              Approve
+              Withdraw SKY
             </Button>
           </Stack>
         )}

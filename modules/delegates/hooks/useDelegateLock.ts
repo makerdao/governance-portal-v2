@@ -13,7 +13,7 @@ import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
 
 export const useDelegateLock = ({
   voteDelegateAddress,
-  mkrToDeposit,
+  skyToDeposit,
   gas,
   enabled: paramEnabled = true,
   onSuccess,
@@ -21,7 +21,7 @@ export const useDelegateLock = ({
   onStart
 }: WriteHookParams & {
   voteDelegateAddress: string;
-  mkrToDeposit: bigint;
+  skyToDeposit: bigint;
 }): WriteHook => {
   const chainId = useChainId();
 
@@ -29,7 +29,7 @@ export const useDelegateLock = ({
     address: voteDelegateAddress as `0x${string}`,
     abi: voteDelegateAbi,
     functionName: 'lock',
-    args: [mkrToDeposit],
+    args: [skyToDeposit],
     chainId,
     enabled: paramEnabled,
     gas,

@@ -6,9 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React, { useState } from 'react';
-import { Alert, Box, Text, Flex, Divider } from 'theme-ui';
-import Icon from 'modules/app/components/Icon';
+import React from 'react';
+import { Box, Text, Flex, Divider } from 'theme-ui';
 import Tabs from 'modules/app/components/Tabs';
 import {
   DelegatePicture,
@@ -25,15 +24,12 @@ import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
-import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { Address } from 'modules/address/components/Address';
 import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
-import { CoreUnitModal } from './modals/CoreUnitModal';
-import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { parseEther } from 'viem';
@@ -46,15 +42,8 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
   const network = useNetwork();
   const { cache } = useSWRConfig();
-  const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
 
-  const handleInfoClick = () => {
-    setShowCoreUnitModal(!showCoreUnitModal);
-  };
-
-  const dataKeyDelegateStats = `/api/address/stats?address=${
-    delegate.voteDelegateAddress
-  }&network=${network}${delegate.previous ? `&address=${delegate.previous.voteDelegateAddress}` : ''}`;
+  const dataKeyDelegateStats = `/api/address/stats?address=${delegate.voteDelegateAddress}&network=${network}`;
   const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -62,7 +51,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     revalidateOnReconnect: false
   });
 
-  const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+  const { data: totalStaked } = useLockedSky(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
   const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
 
@@ -112,21 +101,6 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4], pb: 2 }}>
-        {delegate?.next?.voteDelegateAddress && (
-          <InternalLink href={`/address/${delegate?.next?.voteDelegateAddress}`} title="View migration page">
-            <Flex sx={{ mb: 4 }}>
-              <Alert
-                variant="warning"
-                sx={{
-                  fontWeight: 'normal'
-                }}
-              >
-                You are viewing an older contract. View delegate&apos;s renewed contract
-                <Icon name="chevron_right" size={2} sx={{ ml: 2 }} />
-              </Alert>
-            </Flex>
-          </InternalLink>
-        )}
         <Flex
           sx={{
             justifyContent: 'space-between',
@@ -179,13 +153,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             </Flex>
           </Box>
           <Flex sx={{ mt: [2, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
-            {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
             <LastVoted
-              expired={delegate.expired}
               date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
               styles={{ my: 1 }}
             />
-            <DelegateContractInfo delegate={delegate} />
           </Flex>
         </Flex>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -194,9 +165,6 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       </Box>
 
       <Tabs tabListStyles={{ pl: [3, 4] }} tabTitles={tabTitles} tabPanels={tabPanels}></Tabs>
-      {showCoreUnitModal && (
-        <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
-      )}
     </Box>
   );
 }

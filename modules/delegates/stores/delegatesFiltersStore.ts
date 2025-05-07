@@ -14,7 +14,6 @@ type StoreDelegates = {
     creationDate: null | Date;
     showShadow: boolean;
     showAligned: boolean;
-    showExpired: boolean;
     name: string | null;
   };
   sort: DelegateOrderByEnum;
@@ -22,7 +21,6 @@ type StoreDelegates = {
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
   setShowAlignedFilter: (showAligned: boolean) => void;
-  setShowExpiredFilter: (showExpired: boolean) => void;
   setSort: (sort: DelegateOrderByEnum) => void;
   setSortDirection: (sortDirection: OrderDirectionEnum) => void;
   setName: (text: string) => void;
@@ -38,8 +36,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     creationDate: null,
     showShadow: true,
     showAligned: true,
-    showExpired: false,
-    name: null,
+    name: null
   },
   sort: DelegateOrderByEnum.RANDOM,
   sortDirection: OrderDirectionEnum.DESC,
@@ -80,15 +77,6 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
-  setShowExpiredFilter: showExpired => {
-    set({
-      filters: {
-        ...get().filters,
-        showExpired
-      }
-    });
-  },
-
   setShowAlignedFilter: showAligned => {
     set({
       filters: {
@@ -104,8 +92,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
         name: '',
         creationDate: null,
         showShadow: true,
-        showAligned: true,
-        showExpired: false,
+        showAligned: true
       },
       sort: DelegateOrderByEnum.RANDOM,
       sortDirection: OrderDirectionEnum.DESC

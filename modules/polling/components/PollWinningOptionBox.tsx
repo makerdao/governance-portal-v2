@@ -53,7 +53,7 @@ export default function PollWinningOptionBox({
   const comparisonText =
     hasComparison.length > 0 &&
     hasComparison[0].comparator === '>=' &&
-    ` Requires ${formatValue(parseEther(hasComparison[0].value.toString()))} MKR participation. `;
+    ` Requires ${formatValue(parseEther(hasComparison[0].value.toString()))} SKY participation. `;
 
   if (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) {
     textWin = `No winner condition met.${comparisonText ? comparisonText : ' '}Defaulting to`;
@@ -94,7 +94,7 @@ export default function PollWinningOptionBox({
                           ? parseEther(leadingOptionSupport)
                           : BigInt(leadingOptionSupport)
                       ) +
-                      ' MKR supporting.'}
+                      ' SKY supporting.'}
                   {!isDefault &&
                     isInputFormatRankFree(poll.parameters) &&
                     ' with ' +
@@ -103,7 +103,7 @@ export default function PollWinningOptionBox({
                           ? parseEther(leadingOptionSupport)
                           : BigInt(leadingOptionSupport)
                       ) +
-                      ' MKR supporting as first choice.'}
+                      ' SKY supporting as first choice.'}
                   {isDefault && '.'}
                 </>
               </StatusText>

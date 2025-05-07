@@ -79,7 +79,6 @@ describe('Polling votes by address', () => {
           chainId: 1,
           hash: '0x021',
           blockTimestamp: 1,
-          optionIdRaw: '012',
           pollId: 1
         }
       ]

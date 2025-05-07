@@ -23,15 +23,14 @@ export async function fetchExecutiveVoteTallyWithSubgraph(network: SupportedNetw
         const response = await gqlRequest({
             chainId: networkNameToChainId(network),
             query: allSpellVotes,
-            useSubgraph: true,
             variables: { argSkip: skip, argFirst: pageSize }
         });
         
-        const currentPageData = response.executiveVotes || [];
+        const currentPageData = response.executiveVoteV2S || [];
         allData = [...allData, ...currentPageData];
         
         if (currentPageData.length < pageSize) {
-            hasMoreData = false;
+            hasMoreData = false; 
         } else {
             skip += pageSize;
         }
@@ -67,7 +66,7 @@ export async function fetchExecutiveVoteTallyWithSubgraph(network: SupportedNetw
     for (const vote of mostRecentVotes) {
         const spellId = vote.spell?.id;
         const voterId = vote.voter?.id;
-        const newBalance = vote.voter?.votingPowerChanges?.[0]?.newBalance || '0';
+        const newBalance = vote.voter?.v2VotingPowerChanges?.[0]?.newBalance || '0';
         
         const formattedDeposit = formatEther(BigInt(newBalance));
         

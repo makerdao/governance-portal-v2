@@ -63,6 +63,7 @@ const PollOverviewCard = memo(
     const canVote = !!account && isActivePoll(poll);
     const showQuickVote = canVote && showVoting;
     const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
+    const pollEndDate = new Date(poll.endDate);
 
     return (
       <Card
@@ -103,7 +104,7 @@ const PollOverviewCard = memo(
                   <Box>
                     {bpi === 0 && (
                       <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                        <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                        <CountdownTimer endText="Poll ended" endDate={pollEndDate} />
                       </Box>
                     )}
                     <Box>
@@ -137,7 +138,7 @@ const PollOverviewCard = memo(
                     <Flex mt={3} sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
                       <Box>
                         <ErrorBoundary componentName="Countdown Timer">
-                          <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                          <CountdownTimer endText="Poll ended" endDate={pollEndDate} />
                         </ErrorBoundary>
                       </Box>
                     </Flex>

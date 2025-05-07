@@ -18,13 +18,9 @@ import { CurrentlySupportingExecutive } from 'modules/executive/components/Curre
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { CoreUnitModal } from './modals/CoreUnitModal';
-import { CoreUnitButton } from './modals/CoreUnitButton';
 import Icon from 'modules/app/components/Icon';
-import DelegateContractInfo from 'modules/migration/components/DelegateContractInfo';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { formatEther, parseEther } from 'viem';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -60,7 +56,7 @@ const DelegateVotingStatsModal = () => {
                   - Communication: The percentage of votes for which the delegate has publicly communicated
                   their reasoning in addition to voting. It combines stats for polls and executives.
                 </Text>
-                <Text as="p">Both stats are updated weekly by the GovAlpha Core Unit.</Text>
+                <Text as="p">Both stats are updated weekly by the Governance Facilitators.</Text>
               </Flex>
             </BoxWithClose>
           </DialogContent>
@@ -80,13 +76,8 @@ export const DelegateOverviewCard = memo(
 
     const [showDelegateModal, setShowDelegateModal] = useState(false);
     const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-    const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
 
-    const handleInfoClick = () => {
-      setShowCoreUnitModal(!showCoreUnitModal);
-    };
-
-    const { data: mkrDelegatedData, mutate: mutateMKRDelegated } = useMkrDelegatedByUser(
+    const { data: mkrDelegatedData, mutate: mutateSkyDelegated } = useMkrDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );
@@ -99,7 +90,7 @@ export const DelegateOverviewCard = memo(
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              mkrDelegated: formatEther(parseEther(d.mkrDelegated) + amount)
+              mkrDelegated: (BigInt(d.mkrDelegated) + amount).toString()
             };
           }
           return d;
@@ -134,18 +125,9 @@ export const DelegateOverviewCard = memo(
               }}
             >
               <LastVoted
-                expired={delegate.expired}
                 date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
                 left
               />
-            </Flex>
-            <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], mt: [1, 0] }}>
-              <DelegateContractInfo delegate={delegate} />
-              {delegate.cuMember && (
-                <Flex sx={{ mt: 1 }}>
-                  <CoreUnitButton handleInfoClick={handleInfoClick} />
-                </Flex>
-              )}
             </Flex>
           </Flex>
 
@@ -190,7 +172,7 @@ export const DelegateOverviewCard = memo(
                 <Button
                   variant="primaryLarge"
                   data-testid="button-delegate"
-                  disabled={!account || !!delegate.next || delegate.expired}
+                  disabled={!account}
                   onClick={() => {
                     setShowDelegateModal(true);
                   }}
@@ -201,7 +183,7 @@ export const DelegateOverviewCard = memo(
                     ml: hasMkrDelegated ? 3 : 0
                   }}
                 >
-                  Delegate MKR
+                  Delegate SKY
                 </Button>
               </Flex>
             </Flex>
@@ -284,7 +266,7 @@ export const DelegateOverviewCard = memo(
                         color="onSecondary"
                         sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
                       >
-                        MKR delegated by you
+                        SKY delegated by you
                       </Text>
                     </Box>
                   )}
@@ -295,7 +277,7 @@ export const DelegateOverviewCard = memo(
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                       data-testid="total-mkr-delegated"
                     >
-                      {formatValue(parseEther(delegate.mkrDelegated), 'wad')}
+                      {formatValue(BigInt(delegate.mkrDelegated), 'wad')}
                     </Text>
                     <Text
                       as="p"
@@ -303,7 +285,7 @@ export const DelegateOverviewCard = memo(
                       color="onSecondary"
                       sx={{ textAlign: 'right', fontSize: [1, 2, 3] }}
                     >
-                      Total MKR delegated
+                      Total SKY delegated
                     </Text>
                   </Box>
                 </Flex>
@@ -322,7 +304,7 @@ export const DelegateOverviewCard = memo(
             isOpen={showDelegateModal}
             onDismiss={() => setShowDelegateModal(false)}
             mutateTotalStaked={mutateDelegateTotalMkr}
-            mutateMKRDelegated={mutateMKRDelegated}
+            mutateSkyDelegated={mutateSkyDelegated}
             refetchOnDelegation={false}
           />
         )}
@@ -332,13 +314,9 @@ export const DelegateOverviewCard = memo(
             isOpen={showUndelegateModal}
             onDismiss={() => setShowUndelegateModal(false)}
             mutateTotalStaked={mutateDelegateTotalMkr}
-            mutateMKRDelegated={mutateMKRDelegated}
+            mutateSkyDelegated={mutateSkyDelegated}
             refetchOnDelegation={false}
           />
-        )}
-
-        {showCoreUnitModal && (
-          <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
         )}
       </Card>
     );
