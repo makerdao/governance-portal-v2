@@ -85,7 +85,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     flexDirection: 'column',
                     variant: 'layout.root',
 
-                    paddingTop: 5,
+                    paddingTop: '62px',
                     position: 'relative',
                     overflowX: 'hidden'
                   }}
