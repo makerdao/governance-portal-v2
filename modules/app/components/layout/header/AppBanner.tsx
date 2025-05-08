@@ -12,7 +12,7 @@ import React from 'react';
 import { SkyUpgradeBanner } from '../../SkyUpgradeBanner';
 
 const scroll = keyframes({
-  from: { transform: 'translate(60vw, 0)' },
+  from: { transform: 'translate(100vw, 0)' },
   to: { transform: 'translate(-100%, 0)' }
 });
 
