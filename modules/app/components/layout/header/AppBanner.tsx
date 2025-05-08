@@ -6,43 +6,51 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useReadContract } from 'wagmi';
-import { Box } from 'theme-ui';
-import Banner from './Banner';
-import bannerContent from 'modules/home/data/bannerContent.json';
-import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { chiefAddress, newChiefAbi } from 'modules/contracts/generated';
+import { Text, Alert, Box } from 'theme-ui';
+import { keyframes } from '@emotion/react';
+import React from 'react';
+import { SkyUpgradeBanner } from '../../customBanners/SkyUpgradeBanner';
 
-export const AppBanner = () => {
-  const network = useNetwork();
-  const chainId = networkNameToChainId(network);
+const scroll = keyframes({
+  from: { transform: 'translate(60vw, 0)' },
+  to: { transform: 'translate(-100%, 0)' }
+});
 
-  // TODO this check for live chief can be removed once the migration is complete
-  const { data: live } = useReadContract({
-    address: chiefAddress[chainId],
-    abi: newChiefAbi,
-    chainId,
-    functionName: 'live',
-    scopeKey: `chief-live-${chainId}`
-  });
-  const isChiefLive = live === 1n;
+export const AppBanner = (): React.ReactElement | null => {
+  // Logic to determine active banner can be added here in the future.
+  // For now, it always shows SkyUpgradeBanner if it's considered active.
+  const isSkyUpgradeBannerActive = true;
 
-  const activeBannerContent = bannerContent.find(
-    ({ active, id }) => active === true && (id === 'delegate-migration' ? !isChiefLive : true)
-  );
-
-  if (!activeBannerContent) {
+  if (!isSkyUpgradeBannerActive) {
     return null;
   }
 
   return (
     <Box sx={{ pb: 3 }}>
-      <Banner
-        content={activeBannerContent.content}
-        href={activeBannerContent.href}
-        variant={activeBannerContent.variant}
-      />
+      <Alert
+        variant="alerts.primary"
+        sx={{
+          fontSize: 2,
+          borderRadius: 0,
+          fontWeight: 'normal',
+          textAlign: 'center',
+          px: 3,
+          py: 2,
+          overflow: 'hidden' // Important to hide content that scrolls out of view
+        }}
+      >
+        <Text
+          as="p"
+          sx={{
+            color: 'white',
+            display: 'inline-block', // Necessary for transform to work correctly with text
+            whiteSpace: 'nowrap', // Keep the banner content on a single line
+            animation: `${scroll} 30s linear infinite`
+          }}
+        >
+          <SkyUpgradeBanner />
+        </Text>
+      </Alert>
     </Box>
   );
 };
