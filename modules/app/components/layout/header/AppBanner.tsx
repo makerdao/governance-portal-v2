@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Text, Alert, Box } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import React from 'react';
-import { SkyUpgradeBanner } from '../../customBanners/SkyUpgradeBanner';
+import { SkyUpgradeBanner } from '../../SkyUpgradeBanner';
 
 const scroll = keyframes({
   from: { transform: 'translate(60vw, 0)' },

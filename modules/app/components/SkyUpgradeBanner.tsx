@@ -1,4 +1,4 @@
-import { ExternalLink } from '../ExternalLink';
+import { ExternalLink } from './ExternalLink';
 
 export const SkyUpgradeBanner = (): JSX.Element => {
   return (
