@@ -21,17 +21,18 @@ import Header from 'modules/app/components/layout/Header';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { AccountProvider } from 'modules/app/context/AccountContext';
 import NextNprogress from 'nextjs-progressbar';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { WagmiProvider } from 'wagmi';
 import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
 import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeImage } from 'modules/app/components/ThemeImage';
+import { SkyUpgradeToastContent } from 'modules/app/components/SkyUpgradeToastContent';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -43,6 +44,27 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
   const wagmiConfig = useMockWallet ? mockWagmiConfig : isProduction ? wagmiConfigProd : wagmiConfigDev;
   const queryClient = new QueryClient();
+
+  useEffect(() => {
+    toast(<SkyUpgradeToastContent />, {
+      autoClose: 15000, // Auto close after 15 seconds
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      toastId: 'sky-upgrade-banner-toast',
+      progressClassName: 'progress-bar',
+      style: {
+        background: '#C1C6FE', // colors.primaryMuted
+        color: '#231536', // colors.text
+        width: '40%'
+      }
+      // style: {
+      //   background: '#447AFB', // colors.accentBlue
+      //   color: '#FFF', // colors.onPrimary
+      //   width: '40%'
+      // }
+    });
+  }, []);
 
   return (
     <WagmiProvider config={wagmiConfig}>
@@ -75,6 +97,9 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     '*': {
                       WebkitFontSmoothing: 'antialiased',
                       MozOsxFontSmoothing: 'grayscale'
+                    },
+                    '.progress-bar': {
+                      background: 'white'
                     }
                   }}
                 />

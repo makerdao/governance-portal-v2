@@ -19,7 +19,7 @@ const scroll = keyframes({
 export const AppBanner = (): React.ReactElement | null => {
   // Logic to determine active banner can be added here in the future.
   // For now, it always shows SkyUpgradeBanner if it's considered active.
-  const isSkyUpgradeBannerActive = true;
+  const isSkyUpgradeBannerActive = false;
 
   if (!isSkyUpgradeBannerActive) {
     return null;
