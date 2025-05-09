@@ -29,65 +29,77 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
  *        - name: network
  *          in: query
  *          description: The network to query the polls for. Defaults to mainnet.
+ *          required: false
  *          schema:
  *            type: string
- *            enum: [tenderly, mainnet]
- *          default: "mainnet"
+ *            enum: [mainnet, tenderly]
+ *            default: mainnet
  *        - name: pageSize
  *          in: query
- *          description: The number of polls to return per page. Defaults to 20.
+ *          description: The number of polls to return per page.
+ *          required: false
  *          schema:
  *            type: integer
  *            minimum: 1
  *            maximum: 30
- *          default: 20
+ *            default: 20
  *        - name: page
  *          in: query
- *          description: The page number to return. Defaults to 1
+ *          description: The page number to return.
+ *          required: false
  *          schema:
  *            type: integer
  *            minimum: 1
- *          default: 1
+ *            default: 1
  *        - name: title
  *          in: query
  *          description: The title or portion of the title to filters the polls for.
+ *          required: false
  *          schema:
  *            type: string
  *        - name: orderBy
  *          in: query
- *          description: The sorting criteria used to order the polls returned. Defaults to NEAREST_END
+ *          description: The sorting criteria used to order the polls returned.
+ *          required: false
  *          schema:
  *            type: string
  *            enum: [NEAREST_END, FURTHEST_END, NEAREST_START, FURTHEST_START]
- *          default: "NEAREST_END"
- *        - name: tags
+ *            default: NEAREST_END
+ *        - name: tags # Array of tag IDs/shortnames
  *          in: query
- *          description: The tags to filter the polls by.
+ *          description: The tags to filter the polls by (e.g., core-unit-budget, ratification-poll).
+ *          required: false
  *          schema:
  *            type: array
  *            items:
  *              type: string
  *        - name: status
  *          in: query
- *          description: The status the poll is in. Whether active or ended.
+ *          description: The status the poll is in.
+ *          required: false
  *          schema:
  *            type: string
  *            enum: [ACTIVE, ENDED]
- *        - name: type
+ *        - name: type # Array of PollInputFormat values
  *          in: query
- *          description: The input format type of the poll.
+ *          description: The input format type(s) of the poll.
+ *          required: false
  *          schema:
- *            type: string
- *            enum: [single-choice, rank-free, choose-free]
+ *            type: array
+ *            items:
+ *              type: string
+ *              enum: [singleChoice, rankFree, chooseFree, majority]
  *        - name: startDate
  *          in: query
- *          description: Minimum start date of the polls returned.
+ *          description: Minimum start date of the polls returned (ISO8601 format).
+ *          required: false
  *          schema:
  *            type: string
  *            format: date-time
  *        - name: endDate
  *          in: query
- *          description: Maximum end date of the polls returned
+ *          description: Maximum end date of the polls returned (ISO8601 format).
+ *          required: false
  *          schema:
  *            type: string
  *            format: date-time
@@ -100,67 +112,135 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
  *                $ref: '#/components/schemas/PollsPaginatedResponse'
  * components:
  *  schemas:
- *    Tag:
+ *    Tag: # Simplified based on modules/app/types/tag.d.ts
  *      type: object
  *      properties:
  *        id:
  *          type: string
+ *          description: Unique identifier for the tag (e.g., "core-unit-budget").
  *        shortname:
  *          type: string
+ *          description: A short, display-friendly name for the tag.
  *        longname:
  *          type: string
+ *          description: A longer, more descriptive name for the tag.
  *        description:
  *          type: string
- *        recommend_ui:
- *          type: boolean
- *        related_link:
- *          type: string
- *        precedence:
- *          type: integer
- *        required:
- *          - id
- *          - shortname
- *          - longname
+ *          nullable: true # Description can be optional
+ *          description: A brief description of what the tag represents.
  *    TagCount:
  *      allOf:
- *        - #ref: '#/components/schemas/Tag'
+ *        - $ref: '#/components/schemas/Tag'
  *        - type: object
  *          properties:
  *            count:
  *              type: integer
  *          required:
- *            -count
+ *            - count # Corrected from -count
+ *    PollParametersInputFormat: # Based on [poll-id-or-slug].ts
+ *      type: object
+ *      properties:
+ *        type:
+ *          type: string
+ *          description: The input format type (e.g., singleChoice, rankFree).
+ *          enum: [singleChoice, rankFree, chooseFree, majority]
+ *        abstain:
+ *          type: array
+ *          items:
+ *            type: integer
+ *          description: Array of option indices that represent an abstention.
+ *        options:
+ *          type: array
+ *          items:
+ *            type: integer
+ *          description: Array of all available option indices (used in some formats).
+ *    PollParametersVictoryCondition: # Based on [poll-id-or-slug].ts
+ *      type: object # This can be one of several structures, simplified here
+ *      properties:
+ *        type:
+ *          type: string
+ *          description: Type of victory condition (e.g., plurality, majority, instantRunoff).
+ *        percent:
+ *          type: number
+ *          format: float
+ *          nullable: true
+ *          description: Percentage required for majority (if type is majority).
+ *    PollParameters: # Based on [poll-id-or-slug].ts
+ *      type: object
+ *      properties:
+ *        inputFormat:
+ *          $ref: '#/components/schemas/PollParametersInputFormat'
+ *        victoryConditions:
+ *          type: array
+ *          items:
+ *            $ref: '#/components/schemas/PollParametersVictoryCondition'
+ *          description: Conditions that determine the outcome of the poll.
+ *        resultDisplay:
+ *          type: string
+ *          description: How the poll results should be displayed.
  *    PollListItem:
  *      type: object
  *      properties:
  *        pollId:
  *          type: number
+ *        multiHash:
+ *          type: string
+ *          description: IPFS multihash of the poll markdown content.
+ *        slug:
+ *          type: string
+ *          description: URL-friendly slug, often derived from multiHash.
+ *        title:
+ *          type: string
+ *        summary:
+ *          type: string
+ *          nullable: true
+ *        discussionLink:
+ *          type: string
+ *          format: url
+ *          nullable: true
+ *        parameters:
+ *          $ref: '#/components/schemas/PollParameters'
+ *        options:
+ *          type: object
+ *          description: Key-value pairs of option index (string) to option text (string).
+ *          additionalProperties:
+ *            type: string
+ *          example:
+ *            "0": "Abstain"
+ *            "1": "Yes"
  *        startDate:
  *          type: string
  *          format: date-time
  *        endDate:
  *          type: string
  *          format: date-time
- *        slug:
+ *        url:
  *          type: string
- *        title:
+ *          format: url
+ *          description: URL to the raw poll content (e.g., GitHub markdown file).
+ *        type: # Corresponds to PollInputFormat, which is part of PollListItem
  *          type: string
- *        summary:
- *          type: string
- *        options:
+ *          enum: [singleChoice, rankFree, chooseFree, majority]
+ *          description: The input format type for the poll.
+ *        tags: # Array of tag IDs/shortnames
  *          type: array
  *          items:
  *            type: string
- *        type:
- *          type: string
- *          enum:
- *            - single-choice
- *            - rank-free
- *            - choose-free
- *        tags:
- *          type: array
- *          items:
- *            type: string
+ *    PollsStatsTypeBreakdown: # For PollsPaginatedResponse.stats.type
+ *      type: object
+ *      properties:
+ *        singleChoice:
+ *          type: integer
+ *          nullable: true
+ *        rankFree:
+ *          type: integer
+ *          nullable: true
+ *        majority:
+ *          type: integer
+ *          nullable: true
+ *        chooseFree:
+ *          type: integer
+ *          nullable: true
  *    PollsPaginatedResponse:
  *      type: object
  *      properties:
@@ -184,12 +264,17 @@ import { PollsPaginatedResponse } from 'modules/polling/types/pollsResponse';
  *              type: number
  *            total:
  *              type: number
+ *            type:
+ *              $ref: '#/components/schemas/PollsStatsTypeBreakdown'
+ *              nullable: true
  *        polls:
- *          $ref: '#/components/schemas/PollListItem'
+ *          type: array
+ *          items:
+ *            $ref: '#/components/schemas/PollListItem'
  *        tags:
  *          type: array
  *          items:
- *            #ref: '#/components/schemas/TagCount'
+ *            $ref: '#/components/schemas/TagCount'
  */
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<PollsPaginatedResponse>) => {

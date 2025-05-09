@@ -16,59 +16,143 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 /**
  * @swagger
  * definitions:
- *   ArrayOfExecutives:
- *     type: array
- *     items:
- *       $ref: '#/definitions/Executive'
+ *   SpellData: # Copied from [proposal-id].ts for completeness
+ *     type: object
+ *     properties:
+ *       hasBeenCast:
+ *         type: boolean
+ *         nullable: true
+ *       hasBeenScheduled:
+ *         type: boolean
+ *       eta:
+ *         type: string
+ *         format: date-time
+ *         nullable: true
+ *         description: Estimated time of arrival for execution (if scheduled).
+ *       expiration:
+ *         type: string
+ *         format: date-time
+ *         nullable: true
+ *         description: Time when the spell expires if not executed.
+ *       nextCastTime:
+ *         type: string
+ *         format: date-time
+ *         nullable: true
+ *         description: Next possible time the spell can be cast.
+ *       datePassed:
+ *         type: string
+ *         format: date-time
+ *         nullable: true
+ *         description: Date when the proposal achieved enough support.
+ *       dateExecuted:
+ *         type: string
+ *         format: date-time
+ *         nullable: true
+ *         description: Date when the spell was executed.
+ *       mkrSupport:
+ *         type: string
+ *         description: Amount of MKR supporting this spell.
+ *       executiveHash:
+ *         type: string
+ *         nullable: true
+ *         description: The hash of the executive spell.
+ *       officeHours:
+ *         type: boolean
+ *         nullable: true
+ *         description: Whether the spell is subject to office hours restrictions.
+ *   ExecutiveProposal: # Copied from [proposal-id].ts for completeness
+ *     type: object
+ *     properties:
+ *       active:
+ *         type: boolean
+ *       address:
+ *         type: string
+ *         format: address
+ *       key:
+ *         type: string
+ *         description: Unique key for the proposal (slugified title).
+ *       proposalBlurb:
+ *         type: string
+ *         description: A short summary or blurb for the proposal.
+ *       title:
+ *         type: string
+ *       date:
+ *         type: string
+ *         description: Publication date of the proposal.
+ *       proposalLink:
+ *         type: string
+ *         format: url
+ *         description: Link to the raw proposal content (e.g., GitHub markdown file).
+ *       content:
+ *         type: string
+ *         nullable: true
+ *         description: HTML content of the proposal.
+ *       spellData:
+ *         $ref: '#/definitions/SpellData'
+ *
  * /api/executive:
  *   get:
  *     tags:
  *     - "executive"
- *     summary: Returns all executive proposals
- *     description: Returns all executive proposals
+ *     summary: Returns a list of executive proposals.
+ *     description: Retrieves a paginated and sortable list of executive proposals, potentially filtered by date range.
  *     produces:
  *     - "application/json"
  *     parameters:
  *     - name: "network"
  *       in: "query"
- *       description: "Network"
+ *       description: "The Ethereum network to query."
  *       required: false
- *       type: "array"
- *       items:
+ *       schema:
  *         type: "string"
- *         enum:
- *         - "mainnet"
- *         default: ""
+ *         enum: ["mainnet", "tenderly"]
+ *         default: "mainnet"
  *     - name: "start"
  *       in: "query"
- *       description: "start index"
+ *       description: "Start index for pagination."
  *       required: false
- *       type: "number"
- *       default: 0
+ *       schema:
+ *         type: "integer"
+ *         default: 0
  *     - name: "limit"
  *       in: "query"
- *       description: "limit index"
+ *       description: "Number of proposals to return."
  *       required: false
- *       type: "number"
- *       default: 10
- *     - name: "active"
+ *       schema:
+ *         type: "integer"
+ *         default: 5
+ *         maximum: 30
+ *     - name: "sortBy"
  *       in: "query"
- *       description: "Filter by active"
+ *       description: "Field to sort proposals by."
  *       required: false
- *       type: "boolean"
- *       collectionFormat: "multi"
+ *       schema:
+ *         type: "string"
+ *         enum: ["date", "mkr", "active"]
+ *         default: "active"
+ *     - name: "startDate"
+ *       in: "query"
+ *       description: "Filter proposals to include those on or after this Unix timestamp."
+ *       required: false
+ *       schema:
+ *         type: "integer"
+ *         default: 0
+ *     - name: "endDate"
+ *       in: "query"
+ *       description: "Filter proposals to include those on or before this Unix timestamp."
+ *       required: false
+ *       schema:
+ *         type: "integer"
+ *         default: 0
  *     responses:
  *       '200':
- *         description: "List of executives"
+ *         description: "A list of executive proposals."
  *         content:
  *           application/json:
- *             type: object
- *             properties:
- *               total:
- *                 type: "number"
- *               proposals:
- *                 schema:
- *                   $ref: '#/definitions/ArrayOfExecutives'
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/definitions/ExecutiveProposal'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<Proposal[]>) => {
   const network = validateQueryParam(req.query.network, 'string', {

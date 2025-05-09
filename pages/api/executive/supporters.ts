@@ -10,19 +10,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  * @swagger
  * /api/executive/supporters:
  *   get:
- *     summary: Get the supporters of all executive spells
- *     description: Returns the list of supporters for each executive spell. Supports mainnet and tenderly networks.
+ *     summary: Get the supporters of all executive spells.
+ *     description: Returns an object where keys are executive spell addresses and values are lists of supporters for each spell. Supports mainnet and tenderly networks.
  *     tags:
  *       - executive
  *     parameters:
  *       - name: network
  *         in: query
  *         description: The Ethereum network to use.
+ *         required: false
  *         schema:
  *           type: string
- *         enum:
- *           - tenderly
- *           - mainnet
+ *           enum: [mainnet, tenderly]
+ *           default: mainnet
  *     responses:
  *       '200':
  *         description: OK
@@ -30,26 +30,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *           application/json:
  *             schema:
  *               type: object
- *               properties:
- *                 {EXECUTIVE_SPELL}:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                       address:
- *                         type: string
- *                       support:
- *                         type: string
- *                       votes:
- *                         type: string
- *                       percent:
- *                         type: string
+ *               description: A map where keys are executive spell contract addresses.
+ *               additionalProperties:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/definitions/SupporterDetail'
  *       '400':
- *         description: Bad request
+ *         description: Bad request (e.g., invalid network parameter).
  *       '500':
- *         description: Internal server error
+ *         description: Internal server error.
+ * definitions:
+ *   SupporterDetail:
+ *     type: object
+ *     properties:
+ *       address:
+ *         type: string
+ *         format: address
+ *         description: Address of the supporter.
+ *       deposits:
+ *         type: string
+ *         description: Amount of MKR the supporter has staked/voted with for this spell.
+ *       percent:
+ *         type: string
+ *         description: Percentage of total support this supporter represents for the spell (e.g., "55.5", can be "0" if calculation resulted in NaN).
  */
 
 import { NextApiRequest, NextApiResponse } from 'next';

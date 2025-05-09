@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
  * @swagger
- * /api/home/locks:
+ * /api/executive/all-locks:
  *   get:
- *     summary: Returns the summary of all locks in the given time range for the specified network
- *     description: Returns an array of objects containing summary of all locks in the given time range for the specified network.
+ *     summary: Returns the summary of all locks in the given time range for the specified network.
+ *     description: Returns an array of objects containing summary of all lock events (deposits into Chief) in the given time range for the specified network.
  *     tags:
  *      - executive
  *     parameters:
@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *         schema:
  *           type: string
  *           enum: [tenderly, mainnet]
+ *           default: mainnet
  *       - name: unixtimeStart
  *         in: query
  *         required: true
@@ -46,28 +47,40 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *                 properties:
  *                   fromAddress:
  *                     type: string
+ *                     description: The address from which the lock originated (often the same as immediateCaller).
  *                   immediateCaller:
  *                     type: string
+ *                     description: The address that directly interacted with the contract for the lock.
  *                   lockAmount:
  *                     type: string
+ *                     description: The amount of MKR locked in this specific event.
  *                   blockNumber:
  *                     type: string
+ *                     description: The block number in which this lock event occurred.
  *                   blockTimestamp:
  *                     type: string
+ *                     description: The timestamp of the block for this lock event (ISO8601 format from GraphQL).
  *                   lockTotal:
  *                     type: string
+ *                     description: The total amount locked by the immediateCaller after this event.
+ *                   hash:
+ *                     type: string
+ *                     description: Transaction hash of the lock event.
  *                   unixDate:
  *                     type: number
+ *                     description: Derived Unix timestamp (seconds) of the blockTimestamp.
  *                   total:
  *                     type: string
+ *                     description: Derived; lockTotal divided by 1000, formatted to zero decimal places.
  *                   month:
  *                     type: string
+ *                     description: Derived; The month number (1-12) from blockTimestamp.
  *       '400':
- *         description: Bad request
+ *         description: Bad request (e.g., missing unixtimeStart).
  *       '404':
- *         description: Not found
+ *         description: Not found (if data fetch returns nothing, though current code returns []).
  *       '500':
- *         description: Internal server error
+ *         description: Internal server error.
  */
 
 import { ApiError } from 'modules/app/api/ApiError';

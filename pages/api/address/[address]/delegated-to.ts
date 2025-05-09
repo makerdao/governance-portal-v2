@@ -37,7 +37,7 @@ import { formatEther } from 'viem';
  *         required: false
  *         schema:
  *           type: string
- *           enum: [mainnet]
+ *           enum: [mainnet, tenderly]
  *           default: mainnet
  *     responses:
  *       200:
@@ -52,17 +52,34 @@ import { formatEther } from 'viem';
  *                   items:
  *                     type: object
  *                     properties:
+ *                       address:
+ *                         type: string
+ *                         description: The address of the delegate
+ *                         format: address
  *                       lockAmount:
  *                         type: number
+ *                         description: The total amount of MKR delegated to this delegate by the queried address
  *                         format: float
- *                       owner:
- *                         type: string
- *                         format: address
- *                       delegate:
- *                         type: string
- *                         format: address
- *                       isRenewed:
- *                         type: boolean
+ *                       events:
+ *                         type: array
+ *                         description: History of delegation events for this delegate from the queried address
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             lockAmount:
+ *                               type: string
+ *                               description: The amount of MKR locked in this event
+ *                             blockTimestamp:
+ *                               type: string
+ *                               description: Timestamp of the block in which the event occurred
+ *                               format: date-time # Assuming it's an ISO string from new Date().toISOString()
+ *                             hash:
+ *                               type: string
+ *                               description: Transaction hash of the delegation event
+ *                             isLockstake:
+ *                               type: boolean
+ *                               description: Whether this event was a lockstake event
+ *                               nullable: true
  *                 totalDelegated:
  *                   type: number
  *                   format: float
