@@ -15,7 +15,7 @@ import { DelegateModal } from './modals/DelegateModal';
 import { useState } from 'react';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { calculatePercentage } from 'lib/utils';
-import { formatEther } from 'viem';
+import { formatValue } from 'lib/string';
 
 export default function TopDelegates({
   topDelegates,
@@ -129,9 +129,7 @@ export default function TopDelegates({
                       display: ['none', 'flex']
                     }}
                   >
-                    <Text as="p">
-                      {mkrDelegated ? parseFloat(formatEther(BigInt(mkrDelegated))).toFixed(2) : '0.00'} SKY
-                    </Text>
+                    <Text as="p">{mkrDelegated ? formatValue(BigInt(mkrDelegated)) : '0.00'} SKY</Text>
                     <Button
                       variant="outline"
                       data-testid="button-delegate"
