@@ -19,7 +19,7 @@ type DelegatedByUserResponse = {
   data:
     | {
         directDelegationAmount: bigint | undefined;
-        sealDelegationAmount: bigint | undefined;
+        stakingEngineDelegationAmount: bigint | undefined;
         totalDelegationAmount: bigint | undefined;
       }
     | undefined;
@@ -58,7 +58,7 @@ export const useMkrDelegatedByUser = (
 
     return {
       directDelegationAmount: directDelegated,
-      sealDelegationAmount: undefined,
+      stakingEngineDelegationAmount: undefined,
       totalDelegationAmount: directDelegated
     };
   };
@@ -72,14 +72,14 @@ export const useMkrDelegatedByUser = (
       try {
         const data = await fetchDelegationEventsByAddresses([voteDelegateAddress], network);
         const delegations = data.filter(x => x.immediateCaller.toLowerCase() === userAddress?.toLowerCase());
-        let sealDelegated = 0n;
+        let stakingEngineDelegated = 0n;
         let directDelegated = 0n; // Calculate this as needed
         for (let i = 0; i < delegations.length; i++) {
           try {
             const curr = delegations[i];
             const lockAmount = parseEther(curr.lockAmount.toString());
-            if (curr.isLockstake) {
-              sealDelegated = sealDelegated + lockAmount;
+            if (curr.isStakingEngine) {
+              stakingEngineDelegated = stakingEngineDelegated + lockAmount;
             } else {
               directDelegated = directDelegated + lockAmount;
             }
@@ -89,8 +89,8 @@ export const useMkrDelegatedByUser = (
         }
         return {
           directDelegationAmount: directDelegated,
-          sealDelegationAmount: sealDelegated,
-          totalDelegationAmount: sealDelegated + directDelegated
+          stakingEngineDelegationAmount: stakingEngineDelegated,
+          totalDelegationAmount: stakingEngineDelegated + directDelegated
         };
       } catch (outerError) {
         console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);

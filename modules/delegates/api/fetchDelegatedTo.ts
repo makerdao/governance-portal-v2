@@ -42,12 +42,12 @@ export async function fetchDelegatedTo(
         hash: x.txnHash,
         blockNumber: x.blockNumber,
         immediateCaller: address,
-        isLockstake: x.isLockstake
+        isStakingEngine: x.isStakingEngine
       };
     });
 
     const delegatedTo = res.reduce(
-      (acc, { delegateContractAddress, lockAmount, blockTimestamp, hash, isLockstake }) => {
+      (acc, { delegateContractAddress, lockAmount, blockTimestamp, hash, isStakingEngine }) => {
         const existing = acc.find(({ address }) => address === delegateContractAddress) as
           | DelegationHistory
           | undefined;
@@ -59,7 +59,7 @@ export async function fetchDelegatedTo(
             lockAmount: formatEther(parseEther(lockAmount)),
             blockTimestamp,
             hash,
-            isLockstake
+            isStakingEngine
           });
         } else {
           const delegatingTo = delegates.find(
@@ -73,7 +73,7 @@ export async function fetchDelegatedTo(
           acc.push({
             address: delegateContractAddress,
             lockAmount: formatEther(parseEther(lockAmount)),
-            events: [{ lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isLockstake }]
+            events: [{ lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isStakingEngine }]
           } as DelegationHistory);
         }
 

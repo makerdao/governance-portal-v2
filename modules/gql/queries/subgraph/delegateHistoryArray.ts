@@ -21,7 +21,7 @@ export const delegateHistoryArray = gql`
         delegate {
           id
         }
-        isLockstake
+        isStakingEngine
       }
     }
   }
