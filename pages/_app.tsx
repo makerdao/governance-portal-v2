@@ -21,18 +21,18 @@ import Header from 'modules/app/components/layout/Header';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { AccountProvider } from 'modules/app/context/AccountContext';
 import NextNprogress from 'nextjs-progressbar';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { WagmiProvider } from 'wagmi';
 import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
 import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeImage } from 'modules/app/components/ThemeImage';
-import { SkyUpgradeToastContent } from 'modules/app/components/SkyUpgradeToastContent';
+import { useMigrationToast } from 'modules/app/hooks/useMigrationToast';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -45,26 +45,8 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const wagmiConfig = useMockWallet ? mockWagmiConfig : isProduction ? wagmiConfigProd : wagmiConfigDev;
   const queryClient = new QueryClient();
 
-  useEffect(() => {
-    toast(<SkyUpgradeToastContent />, {
-      autoClose: 15000,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      toastId: 'sky-upgrade-banner-toast',
-      progressClassName: 'progress-bar',
-      style: {
-        // background: 'rgba(193, 198, 254, 0.4)',
-        background: 'rgba(255, 255, 255, 0.4)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        color: '#231536', // text
-        width: '40%',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
-      }
-    });
-  }, []);
+  // Show governance migration toast
+  useMigrationToast();
 
   return (
     <WagmiProvider config={wagmiConfig}>
