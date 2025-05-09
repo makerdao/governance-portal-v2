@@ -47,22 +47,22 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
   useEffect(() => {
     toast(<SkyUpgradeToastContent />, {
-      autoClose: 15000, // Auto close after 15 seconds
+      autoClose: 15000,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       toastId: 'sky-upgrade-banner-toast',
       progressClassName: 'progress-bar',
       style: {
-        background: '#C1C6FE', // colors.primaryMuted
-        color: '#231536', // colors.text
-        width: '40%'
+        // background: 'rgba(193, 198, 254, 0.4)',
+        background: 'rgba(255, 255, 255, 0.4)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        color: '#231536', // text
+        width: '40%',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
       }
-      // style: {
-      //   background: '#447AFB', // colors.accentBlue
-      //   color: '#FFF', // colors.onPrimary
-      //   width: '40%'
-      // }
     });
   }, []);
 
@@ -99,7 +99,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                       MozOsxFontSmoothing: 'grayscale'
                     },
                     '.progress-bar': {
-                      background: 'white'
+                      background: '#504DFF'
                     }
                   }}
                 />
@@ -124,7 +124,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
               </SWRConfig>
             </BallotProvider>
           </AccountProvider>
-          <ToastContainer position="top-right" theme="light" aria-label="Toast notifications" />
+          <ToastContainer position="bottom-right" theme="light" aria-label="Toast notifications" />
         </ThemeUIProvider>
       </QueryClientProvider>
     </WagmiProvider>
