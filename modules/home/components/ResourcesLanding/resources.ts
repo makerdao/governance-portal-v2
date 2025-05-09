@@ -86,14 +86,13 @@ export const resources: LandingResource[] = [
     summary: 'A unified dashboard for understanding & interacting with auctions of the Maker Protocol.'
   },
   {
-    title: 'MakerBurn',
-    url: 'https://makerburn.com/#/',
+    title: 'info.sky.money',
+    url: 'https://info.sky.money/',
     category: ResourceCategory.PRODUCTS_AND_TOOLS,
     bg: ResourceBackground.PRODUCTS_AND_TOOLS,
     color: ResourceColor.PRODUCTS_AND_TOOLS,
     logo: '/assets/resource_icon_6.svg',
-    summary:
-      'A data dashboard for the Maker Protocol and MakerDAO, displaying burn rate, revenues, expenses and more.'
+    summary: 'A data dashboard for the Sky Ecosystem, displaying burn rate, revenues, expenses and more.'
   },
   {
     title: 'Technical Docs',
@@ -116,8 +115,8 @@ export const resources: LandingResource[] = [
       'GitHub organization with many repositories relevant to MakerDAO and goverance, including the community repo and the codebase for this site.'
   },
   {
-    title: 'API Docs',
-    url: 'https://vote.makerdao.com/api-docs',
+    title: 'Governance API Docs',
+    url: 'https://vote.sky.money/api-docs',
     category: ResourceCategory.DEVELOPERS,
     bg: ResourceBackground.DEVELOPERS,
     color: ResourceColor.DEVELOPERS,
