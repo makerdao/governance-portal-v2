@@ -22,7 +22,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { AccountProvider } from 'modules/app/context/AccountContext';
 import NextNprogress from 'nextjs-progressbar';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
@@ -100,7 +99,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
               </SWRConfig>
             </BallotProvider>
           </AccountProvider>
-          <ToastContainer position="top-right" theme="light" />
+          <ToastContainer position="top-right" theme="light" aria-label="Toast notifications" />
         </ThemeUIProvider>
       </QueryClientProvider>
     </WagmiProvider>
