@@ -49,7 +49,7 @@ export default function TopDelegates({
       </Container>
       <Card
         sx={{
-          p: [2, 4],
+          p: [3, 4],
           maxWidth: '926px',
           margin: '0 auto'
         }}

@@ -281,7 +281,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
   }, []);
 
   return (
-    <Container variant="modal">
+    <Container variant="modal" sx={{ width: '100vw', height: '100vh' }}>
       <Flex
         sx={{
           alignItems: 'center',
