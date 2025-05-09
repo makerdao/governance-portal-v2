@@ -232,7 +232,7 @@ const Delegates = ({
           <Flex sx={{ alignItems: 'center' }}>
             <Button
               variant="textual"
-              sx={{ display: ['block', 'none'], color: 'onSecondary' }}
+              sx={{ display: ['block', 'none'], color: 'text' }}
               onClick={() => setShowFilters(!showFilters)}
             >
               <Text sx={{ mr: 1 }}>{showFilters ? 'Hide delegate filters' : 'Show delegate filters'}</Text>
