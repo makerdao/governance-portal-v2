@@ -22,7 +22,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { AccountProvider } from 'modules/app/context/AccountContext';
 import NextNprogress from 'nextjs-progressbar';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
@@ -33,6 +32,7 @@ import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.def
 import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeImage } from 'modules/app/components/ThemeImage';
+import { useMigrationToast } from 'modules/app/hooks/useMigrationToast';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -44,6 +44,9 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
   const wagmiConfig = useMockWallet ? mockWagmiConfig : isProduction ? wagmiConfigProd : wagmiConfigDev;
   const queryClient = new QueryClient();
+
+  // Show governance migration toast
+  useMigrationToast();
 
   return (
     <WagmiProvider config={wagmiConfig}>
@@ -76,6 +79,9 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     '*': {
                       WebkitFontSmoothing: 'antialiased',
                       MozOsxFontSmoothing: 'grayscale'
+                    },
+                    '.progress-bar': {
+                      background: '#504DFF'
                     }
                   }}
                 />
@@ -85,7 +91,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     flexDirection: 'column',
                     variant: 'layout.root',
 
-                    paddingTop: 5,
+                    paddingTop: '62px',
                     position: 'relative',
                     overflowX: 'hidden'
                   }}
@@ -100,7 +106,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
               </SWRConfig>
             </BallotProvider>
           </AccountProvider>
-          <ToastContainer position="top-right" theme="light" />
+          <ToastContainer position="bottom-right" theme="light" aria-label="Toast notifications" />
         </ThemeUIProvider>
       </QueryClientProvider>
     </WagmiProvider>
