@@ -47,10 +47,13 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *        type: string
  *      picture:
  *        type: string
+ *        nullable: true
  *      address:
  *        type: string
+ *        description: The delegate's contract address
  *      voteDelegateAddress:
  *        type: string
+ *        description: The address the delegate uses for voting
  *      status:
  *        type: string
  *        enum:
@@ -58,25 +61,25 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *          - shadow
  *      pollParticipation:
  *        type: string
+ *        nullable: true
  *      executiveParticipation:
  *        type: string
+ *        nullable: true
  *      combinedParticipation:
  *        type: string
+ *        nullable: true
  *      communication:
  *        type: string
+ *        nullable: true
  *      blockTimestamp:
  *        type: string
  *        format: date-time
- *      previous:
- *        type: object
- *        properties:
- *          address:
- *            type: string
- *      next:
- *        type: object
- *        properties:
- *          address:
- *            type: string
+ *        description: The timestamp when the delegate was last updated or created
+ *      tags:
+ *        type: array
+ *        items:
+ *          type: string
+ *        nullable: true
  *    required:
  *      - name
  *      - address

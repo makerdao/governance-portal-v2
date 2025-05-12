@@ -33,18 +33,19 @@ import { ApiError } from 'modules/app/api/ApiError';
  *            enum: [tenderly, mainnet]
  *          default: mainnet
  *        - name: address
- *          in: url
+ *          in: path
  *          description: The contract address of the delegate to fetch results for
  *          required: true
  *          schema:
  *            type: string
  *      responses:
  *        200:
- *          description: A delegate entry with their name and metrics for the given network
+ *          description: A delegate entry with their name and metrics for the given network, or null if not found.
  *          content:
  *            application/json:
  *              schema:
  *                $ref: '#/definitions/DelegateInfo'
+ *                nullable: true
  * definitions:
  *  DelegateInfo:
  *    type: object
@@ -53,10 +54,13 @@ import { ApiError } from 'modules/app/api/ApiError';
  *        type: string
  *      picture:
  *        type: string
+ *        nullable: true
  *      address:
  *        type: string
+ *        description: The delegate's contract address
  *      voteDelegateAddress:
  *        type: string
+ *        description: The address the delegate uses for voting
  *      status:
  *        type: string
  *        enum:
@@ -64,25 +68,25 @@ import { ApiError } from 'modules/app/api/ApiError';
  *          - shadow
  *      pollParticipation:
  *        type: string
+ *        nullable: true
  *      executiveParticipation:
  *        type: string
+ *        nullable: true
  *      combinedParticipation:
  *        type: string
+ *        nullable: true
  *      communication:
  *        type: string
+ *        nullable: true
  *      blockTimestamp:
  *        type: string
  *        format: date-time
- *      previous:
- *        type: object
- *        properties:
- *          address:
- *            type: string
- *      next:
- *        type: object
- *        properties:
- *          address:
- *            type: string
+ *        description: The timestamp when the delegate was last updated or created
+ *      tags:
+ *        type: array
+ *        items:
+ *          type: string
+ *        nullable: true
  *    required:
  *      - name
  *      - address
