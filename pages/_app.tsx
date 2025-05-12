@@ -24,7 +24,6 @@ import NextNprogress from 'nextjs-progressbar';
 import { ToastContainer } from 'react-toastify';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
-import { AppBanner } from 'modules/app/components/layout/header/AppBanner';
 import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { WagmiProvider } from 'wagmi';
@@ -97,7 +96,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 >
                   <ThemeImage />
-                  <AppBanner />
                   <Box sx={{ px: [3, 4] }}>
                     <Component {...pageProps} />
                   </Box>

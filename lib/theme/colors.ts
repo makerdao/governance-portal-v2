@@ -78,7 +78,6 @@ export const colors = {
   semiTransparentBackground: 'rgba(255, 255, 255, 0.5)',
   bull: '#0ABBA4',
   bear: '#FF6D6D',
-  banner: '#231635',
   shadowFloater: '#dbe3ed66',
   darkPrimary: '#027265',
   modes: {
@@ -144,7 +143,6 @@ export const colors = {
       semiTransparentBackground: 'rgba(0, 0, 0, 0.5)',
       bull: '#1DD9BA',
       bear: '#FF6D6D',
-      banner: '#231635',
       shadowFloater: '#dbe3ed1a',
       darkPrimary: '#098C7D'
     }
