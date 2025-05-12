@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *       hash:
  *         type: string
  *         description: The transaction hash of the event.
- *       isLockstake:
+ *       isStakingEngine:
  *         type: boolean
  *         nullable: true
  *         description: Indicates if the event was related to a lockstake operation.
