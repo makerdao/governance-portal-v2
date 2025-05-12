@@ -132,7 +132,7 @@ export async function fetchVotesByAddressForPoll(
   const mkrWeightsResponse = await gqlRequest<MkrWeightsResponse>({
     chainId: networkNameToChainId(network),
     query: voteAddressMkrWeightsAtTime,
-    variables: { argVoters: allVoterAddresses, argUnix: endUnix }
+    variables: { argVoters: allVoterAddresses, argUnix: endUnix || Date.now() }
   });
 
   const votersWithWeights = mkrWeightsResponse.voters || [];
