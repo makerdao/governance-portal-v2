@@ -54,36 +54,39 @@ import { formatEther, parseEther } from 'viem';
  *        type: string
  *      picture:
  *        type: string
+ *        nullable: true
  *      address:
  *        type: string
+ *        description: The address the delegate uses for voting
  *      voteDelegateAddress:
  *        type: string
+ *        description: The delegate's contract address
  *      status:
  *        type: string
  *        enum:
- *          - recognized
+ *          - aligned
  *          - shadow
  *      pollParticipation:
  *        type: string
+ *        nullable: true
  *      executiveParticipation:
  *        type: string
+ *        nullable: true
  *      combinedParticipation:
  *        type: string
+ *        nullable: true
  *      communication:
  *        type: string
+ *        nullable: true
  *      blockTimestamp:
  *        type: string
  *        format: date-time
- *      previous:
- *        type: object
- *        properties:
- *          address:
- *            type: string
- *      next:
- *        type: object
- *        properties:
- *          address:
- *            type: string
+ *        description: The timestamp when the delegate was last updated or created
+ *      tags:
+ *        type: array
+ *        items:
+ *          type: string
+ *        nullable: true
  *    required:
  *      - name
  *      - address
@@ -95,18 +98,27 @@ import { formatEther, parseEther } from 'viem';
  *    properties:
  *      lockAmount:
  *        type: string
+ *        description: The amount of MKR locked or unlocked in this event
  *      blockTimestamp:
  *        type: string
  *        format: date-time
+ *        description: Timestamp of the block in which the event occurred
  *      hash:
  *        type: string
+ *        description: Transaction hash of the delegation event
+ *      isLockstake:
+ *        type: boolean
+ *        description: Whether this event was a lockstake event
+ *        nullable: true
  *  DelegationHistory:
  *    type: object
  *    properties:
  *      address:
  *        type: string
+ *        description: The address of the delegate
  *      lockAmount:
  *        type: string
+ *        description: The total amount of MKR currently delegated to this delegate by the queried address (as a string formatted Ether value)
  *      events:
  *        type: array
  *        items:
