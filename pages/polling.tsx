@@ -280,7 +280,7 @@ const PollingOverview = ({
           <Flex sx={{ alignItems: 'center' }}>
             <Button
               variant="textual"
-              sx={{ display: ['block', 'none'], color: 'onSecondary' }}
+              sx={{ display: ['block', 'none'], color: 'text' }}
               onClick={() => setShowFilters(!showFilters)}
             >
               <Text sx={{ mr: 1 }}>{showFilters ? 'Hide poll filters' : 'Show poll filters'}</Text>
