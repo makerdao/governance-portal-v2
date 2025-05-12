@@ -10,7 +10,7 @@
     "variant": "alerts.primary"
   },
   {
-    "active": true,
+    "active": false,
     "content": "Maker Governance is voting to decide the future of the Chief contract and the use of SKY for future governance. Click to learn more about the potential migration and how to participate.",
     "href": "https://vote.sky.money",
     "variant": "alerts.primary"
