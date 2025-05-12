@@ -48,8 +48,7 @@ export const resources: LandingResource[] = [
   },
   {
     title: 'MKR to SKY Migration Portal',
-    // TODO: add url
-    url: '',
+    url: 'https://upgrademkrtosky.sky.money/',
     category: ResourceCategory.GOVERNANCE,
     bg: ResourceBackground.GOVERNANCE,
     color: ResourceColor.GOVERNANCE,
