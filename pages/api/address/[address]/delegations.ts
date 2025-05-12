@@ -57,10 +57,10 @@ import { formatEther, parseEther } from 'viem';
  *        nullable: true
  *      address:
  *        type: string
- *        description: The delegate's contract address
+ *        description: The address the delegate uses for voting
  *      voteDelegateAddress:
  *        type: string
- *        description: The address the delegate uses for voting
+ *        description: The delegate's contract address
  *      status:
  *        type: string
  *        enum:
