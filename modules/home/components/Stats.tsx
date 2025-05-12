@@ -58,7 +58,15 @@ export const Stats = ({ title, infoUnits, viewMoreUrl }: Props): JSX.Element => 
       </Box>
 
       {/* Mobile */}
-      <Box sx={{ display: ['block', 'none'], backgroundColor: 'surface', backdropFilter: 'blur(50px)' }}>
+      <Box
+        sx={{
+          display: ['block', 'none'],
+          backgroundColor: 'surface',
+          backdropFilter: 'blur(50px)',
+          p: 3,
+          borderRadius: 'round'
+        }}
+      >
         <Grid sx={{ p: 0 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Heading>{title}</Heading>
