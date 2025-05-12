@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
