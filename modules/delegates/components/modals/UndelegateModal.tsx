@@ -44,7 +44,6 @@ export const UndelegateModal = ({
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, voteDelegateAddress);
-  const sealDelegated = mkrDelegatedData?.sealDelegationAmount;
   const stakingEngineDelegated = mkrDelegatedData?.stakingEngineDelegationAmount;
   const directDelegated = mkrDelegatedData?.directDelegationAmount;
 
