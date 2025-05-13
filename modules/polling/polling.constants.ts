@@ -72,7 +72,7 @@ export const AGGREGATED_POLLS_FILE_URL = {
     'https://raw.githubusercontent.com/jetstreamgg/polls/refs/heads/testnet/index.json'
 };
 
-export const SKY_PORTAL_START_DATE_MAINNET = new Date('2025-05-16'); //TODO: edit date once we pick a cutoff date
+export const SKY_PORTAL_START_DATE_MAINNET = new Date('2025-05-19');
 export const SKY_PORTAL_START_DATE_TENDERLY = new Date('2025-03-17');
 
 export function getSkyPortalStartDate(network?: SupportedNetworks): Date {
