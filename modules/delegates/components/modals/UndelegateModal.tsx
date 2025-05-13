@@ -44,7 +44,7 @@ export const UndelegateModal = ({
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, voteDelegateAddress);
-  const sealDelegated = mkrDelegatedData?.sealDelegationAmount;
+  const stakingEngineDelegated = mkrDelegatedData?.stakingEngineDelegationAmount;
   const directDelegated = mkrDelegatedData?.directDelegationAmount;
 
   const free = useDelegateFree({
@@ -110,11 +110,11 @@ export const UndelegateModal = ({
                     showAlert={false}
                     prepareError={free.prepareError}
                     disclaimer={
-                      sealDelegated && sealDelegated > 0n ? (
+                      stakingEngineDelegated && stakingEngineDelegated > 0n ? (
                         <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
-                          Your {formatValue(sealDelegated)} SKY delegated through the Seal module must be
+                          Your {formatValue(stakingEngineDelegated)} SKY delegated through the Staking Engine must be
                           undelegated from the{' '}
-                          <ExternalLink title="Sky app" href="https://app.sky.money/?widget=seal">
+                          <ExternalLink title="Sky app" href="https://app.sky.money/?widget=staking-engine">
                             <span>Sky app</span>
                           </ExternalLink>
                           .

@@ -106,7 +106,7 @@ import { formatEther, parseEther } from 'viem';
  *      hash:
  *        type: string
  *        description: Transaction hash of the delegation event
- *      isLockstake:
+ *      isStakingEngine:
  *        type: boolean
  *        description: Whether this event was a lockstake event
  *        nullable: true
