@@ -44,7 +44,7 @@ const memoryCache = {};
 function getFilePath(name: string, network: string, expiryMs?: number): string {
   const date = new Date().toISOString().substring(0, 10);
 
-  return `${os.tmpdir()}/gov-portal-version-${packageJSON.version}-${network}-${name}${
+  return `${os.tmpdir()}/sky-gov-portal-version-${packageJSON.version}-${network}-${name}${
     expiryMs && expiryMs > ONE_DAY_IN_MS ? '' : '-' + date
   }`;
 }
