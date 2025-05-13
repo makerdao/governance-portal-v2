@@ -74,8 +74,9 @@ export const AGGREGATED_POLLS_FILE_URL = {
     'https://raw.githubusercontent.com/jetstreamgg/polls/refs/heads/testnet/index.json'
 };
 
-export const SKY_PORTAL_START_DATE_MAINNET = new Date('2025-05-19');
+
 export const SKY_PORTAL_START_DATE_TENDERLY = new Date('2025-03-17');
+export const SKY_PORTAL_START_DATE_MAINNET = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? SKY_PORTAL_START_DATE_TENDERLY : new Date('2025-05-19');
 
 export function getSkyPortalStartDate(network?: SupportedNetworks): Date {
   if (network === SupportedNetworks.TENDERLY) {
