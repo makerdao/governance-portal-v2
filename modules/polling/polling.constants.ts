@@ -67,7 +67,9 @@ export enum PollStatusEnum {
 }
 
 export const AGGREGATED_POLLS_FILE_URL = {
-  [SupportedNetworks.MAINNET]: 'https://raw.githubusercontent.com/makerdao/polls/refs/heads/main/index.json',
+  [SupportedNetworks.MAINNET]: process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? 
+  'https://raw.githubusercontent.com/jetstreamgg/polls/refs/heads/main/index.json'
+  : 'https://raw.githubusercontent.com/makerdao/polls/refs/heads/main/index.json',
   [SupportedNetworks.TENDERLY]:
     'https://raw.githubusercontent.com/jetstreamgg/polls/refs/heads/testnet/index.json'
 };

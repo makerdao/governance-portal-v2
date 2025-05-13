@@ -16,7 +16,7 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'makerdao',
+    owner: process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? 'jetstreamgg' : 'makerdao',
     repo: 'delegates',
     branch: 'main'
   };
