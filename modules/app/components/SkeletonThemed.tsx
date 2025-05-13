@@ -7,14 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import Skeleton, { SkeletonTheme, SkeletonProps, SkeletonThemeProps } from 'react-loading-skeleton';
-import { useThemeUI } from 'theme-ui';
 
 const SkeletonThemed = (props: SkeletonProps): React.ReactElement => {
-  const { theme } = useThemeUI();
-
   const colorProps: SkeletonThemeProps = {
-    color: theme?.colors?.skeletonColor as string,
-    highlightColor: theme?.colors?.skeletonHighlightColor as string
+    color: 'rgba(255, 255, 255, 0.35)',
+    highlightColor: 'rgba(255, 255, 255, 0.45)' // 0.35 alpha = semi-transparent
   };
 
   return (
