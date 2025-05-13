@@ -9,7 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { getActivePollIds, getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
-import { PollInputFormat, PollOrderByEnum, PollStatusEnum } from '../polling.constants';
+import {
+  PollInputFormat,
+  PollOrderByEnum,
+  PollStatusEnum,
+  SKY_PORTAL_START_DATE_MAINNET
+} from '../polling.constants';
 import { PollsPaginatedResponse } from '../types/pollsResponse';
 import { PollingPageProps } from 'pages/polling';
 import { PollListItem } from '../types';
@@ -87,7 +92,7 @@ export async function fetchPollingReviewPageData(
     title: null,
     tags: null,
     type: null,
-    startDate: null,
+    startDate: SKY_PORTAL_START_DATE_MAINNET,
     endDate: null
   };
 

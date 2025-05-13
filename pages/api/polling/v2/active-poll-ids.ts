@@ -27,18 +27,20 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *        - name: network
  *          in: query
  *          description: The network to query the polls for. Defaults to mainnet.
+ *          required: false
  *          schema:
  *            type: string
- *            enum: [tenderly, mainnet]
- *          default: "mainnet"
+ *            enum: [mainnet, tenderly]
+ *            default: mainnet
  *      responses:
  *        200:
  *          description: A list with the poll ids for all of the active polls for the given network.
  *          content:
  *            application/json:
- *              type: array
- *              items:
- *                type: number
+ *              schema:
+ *                type: array
+ *                items:
+ *                  type: number
  */
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<number[]>) => {

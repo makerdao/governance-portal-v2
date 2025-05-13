@@ -67,7 +67,7 @@ export default function CustomSpell(): JSX.Element {
       }
       setLoading(false);
     } catch (err) {
-      toast.error('Erorr fetching spell data');
+      toast.error('Error fetching spell data');
       logger.error('fetchSpellData', err);
       setLoading(false);
     }

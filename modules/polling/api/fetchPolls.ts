@@ -88,9 +88,10 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
       const { id, url, multiHash } = poll;
 
       const foundPollMetadata = pollsMetadata.find(entry => {
-        const encodedUrl = encodeURIComponent(url);
-        const encodedPath = encodeURIComponent(entry.path);
-        return encodedUrl.includes(encodedPath);
+        // Decode both paths before comparing
+        const decodedUrlPath = decodeURIComponent(url);
+        const decodedMetadataPath = decodeURIComponent(entry.path);
+        return decodedUrlPath.includes(decodedMetadataPath);
       });
 
       if (!foundPollMetadata) {
