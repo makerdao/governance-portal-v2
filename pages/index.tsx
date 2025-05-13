@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
@@ -21,7 +21,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-import Skeleton from 'react-loading-skeleton';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import useSWR, { useSWRConfig } from 'swr';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
@@ -33,7 +33,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import Participation from 'modules/home/components/Participation';
-import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
@@ -75,54 +74,6 @@ const LandingPage = ({
   useEffect(() => {
     mutateVotedProposals();
   }, [votingAccount]);
-
-  // Use intersection observers to change the hash on scroll
-  const [activeTab, setActiveTab] = useState('#vote');
-
-  const { ref: voteRef, inView: voteInview } = useInView({
-    /* Optional options */
-    threshold: 0.5
-  });
-
-  const { ref: learnRef, inView: learnInview } = useInView({
-    /* Optional options */
-    threshold: 0.5
-  });
-
-  const { ref: engageRef, inView: engageInview } = useInView({
-    /* Optional options */
-    threshold: 0.5
-  });
-
-  const { ref: delegateRef, inView: delegateInview } = useInView({
-    /* Optional options */
-    threshold: 0.5
-  });
-
-  useEffect(() => {
-    if (learnInview) {
-      setActiveTab('#learn');
-    } else if (voteInview) {
-      setActiveTab('#vote');
-    } else if (engageInview) {
-      setActiveTab('#engage');
-    } else if (delegateInview) {
-      setActiveTab('#delegate');
-    }
-  }, [learnInview, voteInview, engageInview, delegateInview]);
-
-  const hashChangeHandler = useCallback(() => {
-    setActiveTab(window.location.hash);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('hashchange', hashChangeHandler);
-      return () => {
-        window.removeEventListener('hashchange', hashChangeHandler);
-      };
-    }
-  }, []);
 
   return (
     <div>
@@ -175,7 +126,7 @@ const LandingPage = ({
                         <Text>No proposals found</Text>
                       )
                     ) : (
-                      <Skeleton />
+                      <SkeletonThemed count={1} width="100%" />
                     )}
                   </ErrorBoundary>
                 </Flex>
@@ -195,7 +146,6 @@ const LandingPage = ({
           </section>
 
           <section id="vote">
-            <Box ref={voteRef} />
             <Box sx={{ mt: 3 }}>
               <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
             </Box>
@@ -203,7 +153,6 @@ const LandingPage = ({
           </section>
 
           <section id="delegate">
-            <Box ref={delegateRef} />
             <TopDelegates
               topDelegates={delegates}
               totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
@@ -224,13 +173,11 @@ const LandingPage = ({
                 height: '1720px'
               }}
             />
-            <Box ref={learnRef} />
             <InformationParticipateMakerGovernance />
             <ResourcesLanding />
           </Box>
 
           <section id="engage">
-            <Box ref={engageRef} />
             <Participation activeDelegates={activeDelegates} bpi={bpi} />
           </section>
           <Flex

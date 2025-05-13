@@ -34,22 +34,5 @@ export const alerts = {
     borderColor: 'warning',
     bg: 'warning',
     color: 'onPrimary'
-  },
-  banner: {
-    variant: 'alerts.primary',
-    bg: 'banner',
-    borderColor: 'banner'
-  },
-  bannerNotice: {
-    variant: 'alerts.primary',
-    borderColor: 'orangeAttention',
-    bg: 'orangeAttention',
-    color: 'onPrimary'
-  },
-  bannerWarning: {
-    variant: 'alerts.primary',
-    borderColor: 'warning',
-    bg: 'warning',
-    color: 'onPrimary'
   }
 };

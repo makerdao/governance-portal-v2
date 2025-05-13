@@ -18,15 +18,8 @@ test('delegate MKR', async ({ page, delegatePage }) => {
     await delegatePage.delegate('2');
     await delegatePage.verifyDelegatedAmount('2');
   });
-
+  
   await test.step('undelegate MKR', async () => {
-    await delegatePage.undelegate();
+    await delegatePage.undelegateAll();
   });
-
-  // TODO: The remove funds from delegate test is not working well because the modal keeps showing the button
-  // To approve the contract, even it's approved. We have to approve it like 3 times to work
-  // Check what is the problem and uncomment the following code
-  /*
-  await delegatePage.undelegateAll();
-  */
 });

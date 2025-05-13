@@ -107,15 +107,12 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-intersection-observer:
-        specifier: ^9.1.0
-        version: 9.10.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-loading-skeleton:
         specifier: ^2.0.1
         version: 2.2.0(react@18.3.1)
       react-toastify:
-        specifier: ^8.1.1
-        version: 8.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^11.0.5
+        version: 11.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       recharts:
         specifier: 2.9.0
         version: 2.9.0(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2757,6 +2754,10 @@ packages:
     resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
     engines: {node: '>=6'}
 
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
+    engines: {node: '>=6'}
+
   cluster-key-slot@1.1.2:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
@@ -5247,15 +5248,6 @@ packages:
     peerDependencies:
       react: ^16.8.4 || ^17.0.0 || ^18.0.0
 
-  react-intersection-observer@9.10.1:
-    resolution: {integrity: sha512-ZseerLEOaZ2FFMtkjNd0RGzxKTiiIBGaXcR5buh3GSgtoInNCztHvCzgu5Gg2I2vUhF/EX1XJn95inZkp/K6xQ==}
-    peerDependencies:
-      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -5337,11 +5329,11 @@ packages:
     peerDependencies:
       react: '>= 0.14.0'
 
-  react-toastify@8.2.0:
-    resolution: {integrity: sha512-Pg2Ju7NngAamarFvLwqrFomJ57u/Ay6i6zfLurt/qPynWkAkOthu6vxfqYpJCyNhHRhR4hu7+bySSeWWJu6PAg==}
+  react-toastify@11.0.5:
+    resolution: {integrity: sha512-EpqHBGvnSTtHYhCPLxML05NLY2ZX0JURbAdNYa6BUkk+amz4wbKBQvoKQAB0ardvSarUBuY4Q4s1sluAzZwkmA==}
     peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
+      react: ^18 || ^19
+      react-dom: ^18 || ^19
 
   react-transition-group@2.9.0:
     resolution: {integrity: sha512-+HzNTCHpeQyl4MJ/bdE0u6XRMe9+XG/+aL4mCxVN4DnPBQ0/5bfHWPDuOZUzYdMj94daZaZdCCc1Dzt9R/xSSg==}
@@ -10049,6 +10041,8 @@ snapshots:
 
   clsx@1.2.1: {}
 
+  clsx@2.1.1: {}
+
   cluster-key-slot@1.1.2: {}
 
   color-convert@2.0.1:
@@ -13004,12 +12998,6 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  react-intersection-observer@9.10.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-    optionalDependencies:
-      react-dom: 18.3.1(react@18.3.1)
-
   react-is@16.13.1: {}
 
   react-is@17.0.2: {}
@@ -13088,9 +13076,9 @@ snapshots:
       react: 18.3.1
       refractor: 3.6.0
 
-  react-toastify@8.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-toastify@11.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      clsx: 1.2.1
+      clsx: 2.1.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
