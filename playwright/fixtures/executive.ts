@@ -24,7 +24,7 @@ export class ExecutivePage {
   }
 
   private initializeLocators() {
-    this.votingContractText = this.page.locator('text=/In voting contract/');
+    this.votingContractText = this.page.locator('text=/voting weight/');
     this.depositButton = this.page.locator('[data-testid="deposit-button"]');
     this.depositApproveButton = this.page.locator('[data-testid="deposit-approve-button"]');
     this.confirmTransactionText = this.page.locator('text=/Confirm Transaction/');
@@ -32,7 +32,7 @@ export class ExecutivePage {
     this.mkrInput = this.page.locator('[data-testid="mkr-input"]');
     this.depositMkrButton = this.page.locator('[data-testid="button-deposit-sky"]');
     this.transactionSuccessfulText = this.page.locator('text=/Transaction Successful/');
-    this.lockedMkr = this.page.locator('[data-testid="locked-mkr"]');
+    this.lockedMkr = this.page.locator('[data-testid="locked-sky"]');
     this.voteButton = this.page.locator('[data-testid="vote-button-exec-overview-card"]');
     this.voteModalButton = this.page.locator('[data-testid="vote-modal-vote-btn"]');
     this.transactionSentText = this.page.locator('text=/Transaction Sent/');
