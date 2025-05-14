@@ -24,7 +24,7 @@ export default function VotingWeight(): JSX.Element {
       </Flex>
       <Flex>
         <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
-          {votingWeight ? `${formatValue(votingWeight)} SKY` : '--'}
+          {(votingWeight || votingWeight === 0n) ? `${formatValue(votingWeight)} SKY` : '--'}
         </Text>
       </Flex>
       <Flex sx={{ py: 1 }}>

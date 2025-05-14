@@ -33,7 +33,7 @@ export default function VotingWeight(): JSX.Element {
             Voting weight
           </Text>
         </Flex>
-        <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight)} SKY` : '--'}</Text>
+        <Text sx={{ color: 'text' }}>{(votingWeight || votingWeight === 0n) ? `${formatValue(votingWeight)} SKY` : '--'}</Text>
       </Flex>
       {!voteDelegateContractAddress && (
         <Flex sx={{ mt: [3, 2], gap: 2, alignItems: 'center', justifyContent: 'center', width: '100%' }}>
