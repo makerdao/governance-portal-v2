@@ -10,14 +10,14 @@ export function useMigrationToast(): void {
     if (!toastShown) {
       toast(<SkyUpgradeToastContent />, {
         ariaLabel: 'Sky Governance Migration Notice',
-        autoClose: 15000,
+        autoClose: 30000,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         toastId: 'sky-upgrade-banner-toast',
         progressClassName: 'progress-bar',
         style: {
-          background: 'rgba(255, 255, 255, 0.4)',
+          background: 'rgba(255, 255, 255, 0.6)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           color: '#231536', // text
