@@ -296,6 +296,7 @@ export const DelegateOverviewCard = memo(
         <CurrentlySupportingExecutive
           proposalsSupported={delegate.proposalsSupported}
           execSupported={delegate.execSupported}
+          delegateAddress={delegate.voteDelegateAddress}
         />
 
         {showDelegateModal && (
