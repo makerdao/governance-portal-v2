@@ -13,8 +13,8 @@ import React from 'react';
 import Icon from '../../Icon';
 
 const scroll = keyframes({
-  from: { transform: 'translate(60vw, 0)' },
-  to: { transform: 'translate(-60vw, 0)' }
+  from: { transform: 'translate(90vw, 0)' },
+  to: { transform: 'translate(-90vw, 0)' }
 });
 
 const Banner = ({
@@ -31,8 +31,12 @@ const Banner = ({
     <Text
       as="p"
       sx={{
+        display: 'inline-block',
         animation: `${scroll} 30s linear infinite`,
-        color: 'white'
+        color: 'white',
+        whiteSpace: 'nowrap',
+        m: 0,
+        p: 0
       }}
     >
       {content} {arrow}
@@ -48,7 +52,10 @@ const Banner = ({
         fontWeight: 'normal',
         textAlign: 'center',
         px: 3,
-        py: 2
+        py: 2,
+        width: '100vw',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
       }}
     >
       {typeof content === 'string' ? (
