@@ -96,7 +96,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                   }}
                 >
                   <ThemeImage />
-                  <Box sx={{ px: [3, 4] }}>
+                  <Box sx={{ px: [3, 4], pt: 3 }}>
                     <Component {...pageProps} />
                   </Box>
                   <Header />
