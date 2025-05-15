@@ -113,7 +113,7 @@ export type DelegationHistoryEvent = {
   lockAmount: string;
   blockTimestamp: string;
   hash: string;
-  isLockstake?: boolean;
+  isStakingEngine?: boolean;
 };
 
 export type MKRLockedDelegateAPIResponse = {
@@ -125,7 +125,7 @@ export type MKRLockedDelegateAPIResponse = {
   lockTotal: string;
   callerLockTotal: string;
   hash: string;
-  isLockstake?: boolean;
+  isStakingEngine?: boolean;
 };
 
 export type MKRDelegatedToResponse = MKRLockedDelegateAPIResponse & {
