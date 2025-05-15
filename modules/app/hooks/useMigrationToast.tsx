@@ -9,14 +9,14 @@ export function useMigrationToast(): void {
 
     if (!toastShown) {
       toast(<MkrUpgradeToastContent />, {
-        autoClose: 20000,
+        autoClose: 35000,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         toastId: 'mkr-upgrade-banner-toast',
         progressClassName: 'progress-bar',
         style: {
-          background: 'rgba(255, 255, 255, 0.4)',
+          background: 'rgba(255, 255, 255, 0.6)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           color: '#231536', // text
