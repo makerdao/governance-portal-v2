@@ -11,13 +11,13 @@ export const MkrUpgradeToastContent = (): JSX.Element => {
     >
       <Flex sx={{ alignItems: 'center', mb: 2 }}>
         <Icon name="info" size={24} sx={{ mr: 2, mt: '2px', flexShrink: 0, color: 'primary' }} />
-        <Text as="h3" sx={{ fontSize: 2, fontWeight: 'bold', color: 'text' }}>
+        <Text as="h3" sx={{ fontSize: 2, fontWeight: 'bold', color: '#231536' }}>
           Governance Migration Notice
         </Text>
       </Flex>
 
       <Flex sx={{ alignItems: 'flex-start' }}>
-        <Text sx={{ fontSize: 2, color: 'text' }}>
+        <Text sx={{ fontSize: 2, color: '#231536' }}>
           SKY is now the sole governance token of the Sky Protocol. MKR holders are encouraged to withdraw
           their MKR from the Chief contract, un-delegate voting power (if applicable), and then{' '}
           <ExternalLink
