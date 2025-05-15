@@ -2,7 +2,7 @@ import { test } from './fixtures/base';
 import { connectWallet } from './shared';
 import './forkVnet';
 
-test('delegate MKR', async ({ page, delegatePage }) => {
+test('delegate SKY', async ({ page, delegatePage }) => {
   await test.step('navigate to delegate page', async () => {
     await delegatePage.goto();
   });
@@ -18,8 +18,8 @@ test('delegate MKR', async ({ page, delegatePage }) => {
     await delegatePage.delegate('2');
     await delegatePage.verifyDelegatedAmount('2');
   });
-  
-  await test.step('undelegate MKR', async () => {
+
+  await test.step('undelegate SKY', async () => {
     await delegatePage.undelegateAll();
   });
 });

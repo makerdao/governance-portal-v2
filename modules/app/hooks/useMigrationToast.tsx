@@ -9,6 +9,7 @@ export function useMigrationToast(): void {
 
     if (!toastShown) {
       toast(<SkyUpgradeToastContent />, {
+        ariaLabel: 'Sky Governance Migration Notice',
         autoClose: 30000,
         closeOnClick: true,
         pauseOnHover: true,

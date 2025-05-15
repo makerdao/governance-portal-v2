@@ -22,9 +22,25 @@ test.beforeEach(async ({ page }) => {
 
 test('Adds polls to review and navigates to review page and votes with the legacy system', async ({
   page,
-  pollingPage
+  pollingPage,
+  executivePage
 }) => {
-  const selectedPollId = 1502;
+  const selectedPollId = 1507;
+
+  // first we need to deposit SKY to chief since wallet balance no longer counts for poll voting
+  await test.step('navigate to executives page', async () => {
+    await executivePage.goto();
+  });
+  await test.step('connect wallet', async () => {
+    await connectWallet(page);
+  });
+
+  await test.step('verify and deposit into chief contract', async () => {
+    await executivePage.verifyVotingContract();
+    await executivePage.depositIntoChief();
+    await executivePage.depositMkr('0.01');
+    await executivePage.verifyLockedMkr('0.01');
+  });
 
   await test.step('navigate to polling page', async () => {
     await pollingPage.goto();
