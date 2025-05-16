@@ -23,12 +23,13 @@ export const TEST_ACCOUNTS: TestAccounts = {
 
 export async function connectWallet(page: Page) {
   await page.getByRole('button', { name: 'Connect wallet' }).click();
-  try {
-    await page.waitForSelector('text="Connected with Mock"', { timeout: 2000 });
-    await closeModal(page);
-  } catch (error) {
-    await page.getByTestId('select-wallet-mock').click();
-  }
+  await page.getByTestId('select-wallet-mock').click();
+  // try {
+  //   await page.waitForSelector('text="Connected with Mock"', { timeout: 2000 });
+  //   await closeModal(page);
+  // } catch (error) {
+  //   await page.getByTestId('select-wallet-mock').click();
+  // }
 }
 
 export async function closeModal(page: Page) {

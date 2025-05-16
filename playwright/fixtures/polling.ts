@@ -56,7 +56,8 @@ export class PollingPage {
   }
 
   private getPollId(pollId: number) {
-    return this.page.locator(`text=Poll ID ${pollId}`);
+    // return this.page.locator(`h5:has-text("POLL ID ${pollId}")`);
+    return this.page.getByText(`Posted May 14 2025 16:00 UTC | Poll ID ${pollId}`);
   }
 
   async goto() {
