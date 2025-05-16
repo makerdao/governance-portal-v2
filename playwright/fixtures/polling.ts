@@ -56,7 +56,7 @@ export class PollingPage {
   }
 
   private getPollId(pollId: number) {
-    return this.page.locator(`text=Poll ID ${pollId}`);
+    return this.page.locator(`h5:has-text("POLL ID ${pollId}")`);
   }
 
   async goto() {
