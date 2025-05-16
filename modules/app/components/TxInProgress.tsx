@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Flex, Text, Box } from '@theme-ui/components';
+import { Flex, Text, Box } from 'theme-ui';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
 import { useNetwork } from '../hooks/useNetwork';

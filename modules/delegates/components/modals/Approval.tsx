@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Button, Flex, Text } from '@theme-ui/components';
+import { Button, Flex, Text } from 'theme-ui';
 
 export const ApprovalContent = ({ title, description, buttonLabel, onClick, disabled }) => (
   <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>

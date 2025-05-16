@@ -10,7 +10,7 @@
     "variant": "alerts.primary"
   },
   {
-    "active": true,
+    "active": false,
     "content": "A proposal has been submitted to Sky Ecosystem Governance to finalize the upgrade from MKR to SKY and enable SKY staking to access USDS rewards. Should the proposal pass, SKY will become the sole governance token of the Sky Protocol, inheriting the privileges previously held by MKR.",
     "href": "https://forum.sky.money/t/atlas-edit-weekly-cycle-proposal-week-of-may-5-2025/26319",
     "variant": "alerts.primary"

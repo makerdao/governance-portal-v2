@@ -43,7 +43,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'Governance discussion on Discord',
-        url: 'https://discord.gg/BBP6swTkBk'
+        url: 'https://discord.gg/tQ5wnN6Ms4'
       }
     ]
   },

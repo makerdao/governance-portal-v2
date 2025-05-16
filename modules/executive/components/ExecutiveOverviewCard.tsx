@@ -22,6 +22,7 @@ import { CardSummary } from 'modules/app/components/Card/CardSummary';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { StatusText } from 'modules/app/components/StatusText';
+import { config } from 'lib/config';
 import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 type Props = {
@@ -145,6 +146,7 @@ export default function ExecutiveOverviewCard({
                   variant="primaryOutline"
                   sx={{ width: 122 }}
                   disabled={
+                    config.READ_ONLY ||
                     (hasVotedFor && votedProposals && votedProposals.length === 1) ||
                     isDelegateContractExpired
                   }

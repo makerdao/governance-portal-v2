@@ -10,6 +10,7 @@ import { WriteHook, WriteHookParams } from 'modules/web3/types/hooks';
 import { useChainId } from 'wagmi';
 import { useWriteContractFlow } from 'modules/web3/hooks/useWriteContractFlow';
 import { esmAbi, esmAddress } from 'modules/contracts/generated';
+import { config } from 'lib/config';
 
 export const useEsmBurn = ({
   burnAmount,
@@ -29,7 +30,7 @@ export const useEsmBurn = ({
     functionName: 'join',
     args: [burnAmount],
     chainId,
-    enabled: paramEnabled,
+    enabled: paramEnabled && !config.READ_ONLY,
     gas,
     onSuccess,
     onError,

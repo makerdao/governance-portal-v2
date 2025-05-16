@@ -4867,5 +4867,97 @@
     "medium-impact",
     "surplus",
     "risk-parameter"
+  ],
+  "1209": [
+    "high-impact",
+    "spark"
+  ],
+  "1210": [
+    "high-impact",
+    "spark"
+  ],
+  "1211": [
+    "high-impact",
+    "spark"
+  ],
+  "1212": [
+    "high-impact",
+    "spark"
+  ],
+  "1213": [
+    "high-impact",
+    "spark"
+  ],
+  "1214": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1215": [
+    "high-impact",
+    "endgame"
+  ],
+  "1216": [
+    "medium-impact",
+    "surplus",
+    "risk-parameter"
+  ],
+  "1217": [
+    "medium-impact",
+    "risk-parameter",
+    "d3m",
+    "spark"
+  ],
+  "1218": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1219": [
+    "high-impact",
+    "risk-parameter",
+    "psm",
+    "spark"
+  ],
+  "1220": [
+    "high-impact",
+    "risk-parameter",
+    "spark"
+  ],
+  "1221": [
+    "high-impact",
+    "endgame"
+  ],
+  "1222": [
+    "high-impact",
+    "spark"
+  ],
+  "1223": [
+    "high-impact",
+    "spark"
+  ],
+  "1224": [
+    "high-impact",
+    "spark"
+  ],
+  "1225": [
+    "high-impact",
+    "spark"
+  ],
+  "1226": [
+    "high-impact",
+    "spark"
+  ],
+  "1227": [
+    "high-impact",
+    "spark"
+  ],
+  "1228": [
+    "medium-impact",
+    "spark"
+  ],
+  "1229": [
+    "high-impact",
+    "spark"
   ]
 }

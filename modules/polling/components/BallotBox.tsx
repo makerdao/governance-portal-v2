@@ -14,6 +14,7 @@ import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
+import { config } from 'lib/config';
 
 type Props = {
   activePollCount: number;
@@ -56,7 +57,7 @@ export default function BallotBox({ activePollCount, network, activePollIds }: P
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               variant="primaryLarge"
-              disabled={!ballotCount}
+              disabled={!ballotCount || config.READ_ONLY}
               sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}
               data-testid="review-ballot-button"
             >

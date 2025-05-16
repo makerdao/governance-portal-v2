@@ -99,7 +99,9 @@ export default function VotingWeight(): JSX.Element {
           </Box>
         </Tooltip>
       </Flex>
-      <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight.total)} MKR` : '--'}</Text>
+      <Text sx={{ color: 'text' }} data-testid="voting-weight">
+        {votingWeight ? `${formatValue(votingWeight.total)} MKR` : '--'}
+      </Text>
     </Flex>
   );
 }

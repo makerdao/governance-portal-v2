@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { Button, Box, Flex, Text } from '@theme-ui/components';
-import { Alert } from 'theme-ui';
+import { Alert, Button, Box, Flex, Text } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
 import { useState } from 'react';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';

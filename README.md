@@ -26,15 +26,15 @@ git clone https://github.com/makerdao/governance-portal-v2.git
 cd governance-portal-v2
 ```
 
-Next, install the project's dependencies using [yarn](https://yarnpkg.com/getting-started):
+Next, install the project's dependencies using [pnpm](https://pnpm.io/installation):
 
 ```bash
 
 # installs dependencies
-yarn
+pnpm i
 
 # runs the application on localhost:3000
-yarn dev
+pnpm dev
 
 ```
 
@@ -113,14 +113,14 @@ The Governance portal includes two test suites: Vitest and E2E
 To run e2e, `TENDERLY_API_KEY` and `NEXT_PUBLIC_TENDERLY_RPC_KEY` must be correcly configured.
 
 Install playwright
-`yarn playwright install`
+`pnpm playwright install`
 
 To run headless mode:
-`yarn e2e`
+`pnpm e2e`
 
 To run in UI mode:
-`yarn dev:mock` to run the app with mock wallet
-`yarn e2e:ui` to open playwright UI
+`pnpm dev:mock` to run the app with mock wallet
+`pnpm e2e:ui` to open playwright UI
 
 Vitest tests under the folder `__tests__` currently execute unit tests of the platform.
 

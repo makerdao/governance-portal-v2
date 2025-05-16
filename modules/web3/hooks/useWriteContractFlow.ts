@@ -3,13 +3,14 @@ import {
   useAccount,
   useSimulateContract,
   useWaitForTransactionReceipt,
-  useWriteContract
+  useWriteContract,
+  Config,
+  ResolvedRegister
 } from 'wagmi';
 import { isRevertedError } from '../helpers/errors';
 import { useEffect, useMemo } from 'react';
 import type { WriteHook } from '../types/hooks';
 import { type Abi, type ContractFunctionArgs, type ContractFunctionName } from 'viem';
-import { Config, ResolvedRegister } from '@wagmi/core';
 import { SAFE_CONNECTOR_ID } from '../constants/wallets';
 import { useWaitForSafeTxHash } from './useWaitForSafeTxHash';
 
