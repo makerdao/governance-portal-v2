@@ -27,7 +27,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   }
 
   const githubRepo = {
-    owner: network === SupportedNetworks.MAINNET ? 'makerdao' : 'jetstreamgg',
+    owner: network === SupportedNetworks.MAINNET && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development' ? 'makerdao' : 'jetstreamgg',
     repo: 'executive-votes',
     branch: network === SupportedNetworks.MAINNET ? 'main' : 'testnet'
   };
