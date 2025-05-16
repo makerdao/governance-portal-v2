@@ -18,19 +18,28 @@ export const MkrUpgradeToastContent = (): JSX.Element => {
 
       <Flex sx={{ alignItems: 'flex-start' }}>
         <Text sx={{ fontSize: 2, color: '#231536' }}>
-          SKY is now the sole governance token of the Sky Protocol. MKR holders are encouraged to withdraw
-          their MKR from the Chief contract, un-delegate voting power (if applicable), and then{' '}
+          <ExternalLink
+            href="https://vote.makerdao.com/polling/QmTVd4iq"
+            title="SKY is now the sole governance token of the Sky Protocol. MKR holders are encouraged to withdraw"
+            styles={{ textDecoration: 'underline', margin: '0 3px', color: '#504DFF' }}
+          >
+            <>SKY is now the sole governance token of the Sky Protocol.</>
+          </ExternalLink>
+          MKR holders are encouraged to withdraw their MKR from the Chief contract, un-delegate voting power
+          (if applicable), and then
           <ExternalLink
             href="https://app.sky.money/?network=ethereum&widget=upgrade&source_token=mkr"
             title="Upgrade to SKY"
             styles={{ textDecoration: 'underline', margin: '0 3px', color: '#504DFF' }}
           >
             <>upgrade to SKY</>
-          </ExternalLink>{' '}
-          promptly to maintain the ability to participate in governance and avoid the Delayed Upgrade Penalty.{' '}
+          </ExternalLink>
+          promptly to maintain the ability to participate in governance, maintain access to Staking Rewards
+          and avoid the Delayed Upgrade Penalty.
           <br />
           <br />
-          Only withdrawal actions are supported here. You can vote with SKY at the new{' '}
+          Only withdrawal actions are supported here. You can vote with SKY at the new Sky Governance Voting
+          Portal:{' '}
           <ExternalLink
             href="https://vote.sky.money"
             title="Sky Governance Voting Portal"
@@ -44,9 +53,8 @@ export const MkrUpgradeToastContent = (): JSX.Element => {
             title="MKR to SKY Upgrade Hub"
             styles={{ textDecoration: 'underline', margin: '0 3px', color: '#504DFF' }}
           >
-            <>MKR to SKY Upgrade Hub</>
+            <>MKR to SKY Upgrade Hub.</>
           </ExternalLink>
-          .
         </Text>
       </Flex>
     </Box>
