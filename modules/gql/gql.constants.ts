@@ -29,3 +29,6 @@ export enum QueryFilterNames {
   Range = 'range',
   MultiHash = 'multiHash'
 }
+
+export const sealEngineAddressTestnet = '0x9581c795dbcaf408e477f6f1908a41be43093122';
+export const sealEngineAddressMainnet = '0x2b16c07d5fd5cc701a0a871eae2aad6da5fc8f12';
