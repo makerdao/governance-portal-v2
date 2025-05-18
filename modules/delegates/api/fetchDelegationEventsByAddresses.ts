@@ -13,17 +13,20 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
 import { formatEther } from 'viem';
+import { stakingEngineAddressMainnet, stakingEngineAddressTestnet } from 'modules/gql/gql.constants';
 
 export async function fetchDelegationEventsByAddresses(
   addresses: string[],
   network: SupportedNetworks
 ): Promise<MKRLockedDelegateAPIResponse[]> {
+  const engine = network === SupportedNetworks.TENDERLY ? stakingEngineAddressTestnet : stakingEngineAddressMainnet;
   try {
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
       query: delegateHistoryArray,
       variables: {
-        delegates: addresses
+        delegates: addresses,
+        engines: [engine.toLowerCase()]
       }
     });
     const flattenedData = data.delegates.flatMap(delegate => delegate.delegationHistory);

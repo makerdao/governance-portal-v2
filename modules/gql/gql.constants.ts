@@ -20,3 +20,6 @@ export const ARBITRUM_STAGING_SUBGRAPH_URL =
   'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-arbitrum';
 export const ARBITRUM_PROD_SUBGRAPH_URL =
   'https://query-subgraph.sky.money/subgraphs/name/jetstreamgg/subgraph-arbitrum';
+
+export const stakingEngineAddressMainnet = '0xce01c90de7fd1bcfa39e237fe6d8d9f569e8a6a3';
+export const stakingEngineAddressTestnet = '0x9581c795dbcaf408e477f6f1908a41be43093122';
