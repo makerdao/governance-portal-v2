@@ -7,7 +7,7 @@ import { gql } from 'graphql-request';
 
 export const allDelegations = gql`
   {
-    delegations(first: 1000, where: { delegate_: { version: "3" } }) {
+    delegations(first: 1000, where: { delegate_: { version: "3" }, delegator_not_in: ["0xce01c90de7fd1bcfa39e237fe6d8d9f569e8a6a3", "0xb1fc11f03b084fff8dae95fa08e8d69ad2547ec1"] }) {
       delegator
       delegate {
         id
