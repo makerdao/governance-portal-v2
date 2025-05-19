@@ -25,12 +25,12 @@ export async function fetchChainDelegates(
   return data.delegates.map(d => {
     // Ensure blockTimestamp is a valid number
     const blockTimestamp = d.blockTimestamp ? Number(d.blockTimestamp) : 0;
-
+    const totalDelegated = d.delegations.reduce((acc, curr) => acc + Number(curr.amount), 0);
     return {
       blockTimestamp,
       address: d.ownerAddress,
       voteDelegateAddress: d.id,
-      mkrDelegated: formatValue(BigInt(d.totalDelegated), 'wad', 18, false),
+      mkrDelegated: formatValue(BigInt(totalDelegated), 'wad', 18, false),
       lastVoteDate: d.voter?.lastVotedTimestamp ? Number(d.voter.lastVotedTimestamp) : null
     };
   });
