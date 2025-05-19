@@ -122,40 +122,63 @@ SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR LIMITATIO
 You may not use the Voting Portal to engage in the following categories of activity (**"Prohibited Uses"**). The specific types of use listed below are representative, but not exhaustive. 
 
 By using the Voting Protocol provided here, you confirm that you will not use it to proceed with any of the following: 
-Unlawful Activity: Activity which would violate, or assist in violation of, any law, statute, ordinance, or regulation, sanctions programs administered in any relevant country, or which would involve proceeds of any unlawful activity; publish, distribute or disseminate any unlawful material or information 
-Abuse Other Users: Interfere with another individual's or entity's access to or use of the Voting Portal or the Open-Source Protocol; defame, abuse, extort, harass, stalk, threaten or otherwise violate or infringe the legal rights (such as, but not limited to, rights of privacy, publicity and intellectual property) of others; incite, threaten, facilitate, promote, or encourage hate, racial intolerance, or violent acts against others; harvest or otherwise collect information from the Voting Portal about others, including without limitation email addresses, without proper consent
-Fraud: Activity which operates to defraud any other person; provide any false, inaccurate, or misleading information. 
-Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of the Association’s intellectual property, name, or logo, including use of its trade or service marks, without express consent from the Association or in a manner that otherwise harms the Association; any action that implies an untrue endorsement by or affiliation with the Association.
- Indemnity
+- Unlawful Activity: Activity which would violate, or assist in violation of, any law, statute, ordinance, or regulation, sanctions programs administered in any relevant country, or which would involve proceeds of any unlawful activity; publish, distribute or disseminate any unlawful material or information 
+- Abuse Other Users: Interfere with another individual's or entity's access to or use of the Voting Portal or the Open-Source Protocol; defame, abuse, extort, harass, stalk, threaten or otherwise violate or infringe the legal rights (such as, but not limited to, rights of privacy, publicity and intellectual property) of others; incite, threaten, facilitate, promote, or encourage hate, racial intolerance, or violent acts against others; harvest or otherwise collect information from the Voting Portal about others, including without limitation email addresses, without proper consent
+- Fraud: Activity which operates to defraud any other person; provide any false, inaccurate, or misleading information. 
+- Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of the Association’s intellectual property, name, or logo, including use of its trade or service marks, without express consent from the Association or in a manner that otherwise harms the Association; any action that implies an untrue endorsement by or affiliation with the Association.
+
+**6. Indemnity**
+
 You agree to release and to indemnify, defend and hold harmless the Association and any related entities, as well as the officers, directors, employees, shareholders and representatives of any of the foregoing entities, from and against any and all losses, liabilities, expenses, damages, costs (including attorneys’ fees, fees or penalties imposed by any regulatory authority and court costs) claims or actions of any kind whatsoever arising or resulting from your use of the Voting Portal, your violation of these Terms, your violation of any law, rule, or regulation, or the rights of any third party, and any of your acts or omissions that implicate publicity rights, defamation or invasion of privacy. 
 
 The Association reserves the right, at its own expense, to assume exclusive defense and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with the Association in the defense of such matter.
-Proprietary Rights
-You acknowledge and agree that all title, ownership and intellectual property rights in and to the Voting Portal are owned by the Association, and/or third parties, their related entities or their licensors., and that the Voting Portal is made available to you under the AGPL-3.0 open-source license (“License”). Other than expressly stated herein, no rights are granted to you regarding the Voting Portal. 
+
+**7. Proprietary Rights**
+
+You acknowledge and agree that all title, ownership and intellectual property rights in and to the Voting Portal are owned by the Association, and/or third parties, their related entities or their licensors., and that the Voting Portal is made available to you under the AGPL-3.0 open-source license (**“License”**). Other than expressly stated herein, no rights are granted to you regarding the Voting Portal. 
 
 Except as expressly authorized by the License or a relevant entity, you agree not to copy, modify, rent, lease, loan, sell, distribute, perform, display or create derivative works based on the Voting Portal, in whole or in part.
-Termination and Suspension
+
+**8. Termination and Suspension**
+
 The Association may terminate or suspend all or part of your access to the Voting Portal, without prior notice or liability, if you breach any of the terms or conditions of the Terms. 
 
-Discontinuation
+**9. Discontinuation**
+
 The Association reserves the right to remove features from the Voting Portal or to discontinue the operation of the Voting Portal in its entirety at any time without prior notice or liability, at its own discretion. 
-Governing Law and Jurisdiction
+
+**10. Governing Law and Jurisdiction**
 These Terms shall be construed and interpreted in accordance with the substantive laws of Switzerland, excluding the Swiss conflict of law rules. The United Nations Convention for the International Sales of Goods is excluded. Any dispute arising out of or in conjunction with these Terms shall be submitted to the exclusive jurisdiction of the ordinary courts of the city of Zug, Switzerland.
 To the fullest extent permitted by any applicable law, the User waives any right to participate in a class action lawsuit or a class-wide arbitration against the Association or any individual or entity involved in the operation of the Voting Portal.
-Contact
+
+**11. Contact**
+
 Any questions related to these Terms can be sent to [...]
-Miscellaneous
-Entire Agreement and Severability
+
+**12. Miscellaneous**
+
+**12.1 Entire Agreement and Severability**
+
 These Terms contain the entire agreement between the Association and you regarding the subject matter hereof and supersedes all understandings and agreements whether written or oral. If any provision of these Terms is invalid, illegal, or unenforceable in any jurisdiction, such invalidity, illegality, or unenforceability shall not affect any other provision of these Terms or invalidate or render unenforceable such provision in any other jurisdiction. Upon such determination that any provision is invalid, illegal, or unenforceable, these Terms shall be modified to effectuate the original intent of the Parties as closely as possible. 
-Waiver and Severability of Terms
+
+**12.2 Waiver and Severability of Terms**
+
 The failure of the Association to exercise or enforce any right or provision of the Terms shall not constitute a waiver of such right or provision. If any provision of these Terms is invalid, illegal, or unenforceable in any jurisdiction, such invalidity, illegality, or unenforceability shall not affect any other provision of these Terms or invalidate or render unenforceable such provision in any other jurisdiction. Upon such determination that any provision is invalid, illegal, or unenforceable, these Terms shall be modified to effectuate the original intent of the Parties as closely as possible. 
-Assignment
+
+**12.3 Assignment**
+
 You shall have no right to assign or transfer its rights and obligations under these Terms, either as a whole or in part, to any third party without the prior written and express consent of the Association. You agree that any assignment or transfer in violation of these Terms shall be null and void.
-Statute of Limitations
+
+**12.4 Statute of Limitations**
+
 You agree that regardless of any statute or law to the contrary, any claim or cause of action arising out of or related to the use of the Voting Portal must be filed within one (1) year after such claim or cause of action arose or be forever barred.
-Section Titles
+
+**12.5 Section Titles**
+
 The section titles in the Terms are for convenience only and have no legal or contractual effect.
-Privacy Policy
+
+**12.6 Privacy Policy**
+
 All information collected on the Site is subject to the Privacy Policy. By using the Service, you consent to all actions taken with respect to your information in compliance with the Privacy Policy.
 
 `;
