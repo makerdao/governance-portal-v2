@@ -6,6 +6,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "prepare": "husky install",
     "dev": "next",
     "dev:mock": "NEXT_PUBLIC_USE_MOCK_WALLET=true next",
@@ -25,6 +26,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@octokit/core": "^4.0.5",
+    "@octokit/graphql": "^5.0.6",
     "@reach/dialog": "^0.16.2",
     "@reach/listbox": "^0.18.0",
     "@reach/menu-button": "^0.16.2",
@@ -41,7 +43,9 @@
     "d3-selection": "^3.0.0",
     "date-fns": "^2.24.0",
     "date-fns-tz": "^1.1.6",
+    "debug": "^4.4.0",
     "defender-relay-client": "^1.23.0",
+    "eth-rpc-errors": "^4.0.3",
     "graphql-request": "^4.0.0",
     "gray-matter": "^4.0.2",
     "ioredis": "^5.0.6",
@@ -57,7 +61,7 @@
     "react-intersection-observer": "^9.1.0",
     "react-loading-skeleton": "^2.0.1",
     "react-sticky": "^6.0.3",
-    "react-toastify": "^8.1.1",
+    "react-toastify": "^11.0.5",
     "recharts": "2.9.0",
     "rehype-sanitize": "^5.0.1",
     "rehype-stringify": "^9.0.3",
@@ -83,7 +87,7 @@
     "@graphql-codegen/typescript-operations": "^2.3.2",
     "@graphql-codegen/typescript-react-apollo": "^3.2.8",
     "@graphql-codegen/urql-introspection": "^2.1.1",
-    "@playwright/test": "^1.43.1",
+    "@playwright/test": "^1.50.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^16.2.0",

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import { ThemeUIProvider, Flex, Box } from 'theme-ui';
-import { Global } from '@emotion/core';
+import { Global } from '@emotion/react';
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
@@ -34,6 +34,7 @@ import { WagmiProvider } from 'wagmi';
 import { wagmiConfigDev, wagmiConfigProd } from 'modules/wagmi/config/config.default';
 import { mockWagmiConfig } from 'modules/wagmi/config/config.e2e';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useMigrationToast } from 'modules/app/hooks/useMigrationToast';
 
 const vitalslog = debug('govpo:vitals');
 export const reportWebVitals = vitalslog;
@@ -45,6 +46,9 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development';
   const wagmiConfig = useMockWallet ? mockWagmiConfig : isProduction ? wagmiConfigProd : wagmiConfigDev;
   const queryClient = new QueryClient();
+
+  // Show governance migration toast
+  useMigrationToast();
 
   const activeBannerContent = bannerContent.find(({ active }) => active === true);
   const banners = useMemo(() => {
@@ -92,6 +96,9 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     '*': {
                       WebkitFontSmoothing: 'antialiased',
                       MozOsxFontSmoothing: 'grayscale'
+                    },
+                    '.progress-bar': {
+                      background: '#1AAB9B'
                     }
                   }}
                 />
@@ -101,7 +108,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
                     flexDirection: 'column',
                     variant: 'layout.root',
 
-                    paddingTop: 5,
+                    paddingTop: '62px',
                     overflowX: 'hidden'
                   }}
                 >
@@ -114,7 +121,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
               </SWRConfig>
             </BallotProvider>
           </AccountProvider>
-          <ToastContainer position="top-right" theme="light" />
+          <ToastContainer position="bottom-right" theme="light" aria-label="Toast notifications" />
         </ThemeUIProvider>
       </QueryClientProvider>
     </WagmiProvider>

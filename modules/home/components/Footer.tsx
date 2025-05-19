@@ -93,6 +93,15 @@ export default function Footer(): React.ReactElement {
           title: 'Developer Documentation'
         }
       ]
+    },
+    {
+      header: 'Terms',
+      list: [
+        {
+          url: '/terms',
+          title: 'Terms of Use'
+        }
+      ]
     }
   ];
 
