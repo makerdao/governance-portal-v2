@@ -10,10 +10,9 @@ export function useMigrationToast(): void {
     if (!toastShown) {
       toast(<SkyUpgradeToastContent />, {
         ariaLabel: 'Sky Governance Migration Notice',
-        autoClose: 30000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
         toastId: 'sky-upgrade-banner-toast',
         progressClassName: 'progress-bar',
         style: {
