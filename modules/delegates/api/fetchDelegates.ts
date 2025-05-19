@@ -346,6 +346,8 @@ export async function fetchDelegatesPaginated({
 
       const lastVoteTimestamp = Math.max(lastVoteMainnet, lastVoteArbitrum);
 
+      const totalDelegated = delegate.delegations.reduce((acc, curr) => acc + Number(curr.amount), 0);
+
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.id,
@@ -357,7 +359,7 @@ export async function fetchDelegatesPaginated({
         combinedParticipation: githubDelegate?.combinedParticipation,
         pollParticipation: githubDelegate?.pollParticipation,
         executiveParticipation: githubDelegate?.executiveParticipation,
-        mkrDelegated: delegate.totalDelegated,
+        mkrDelegated: totalDelegated,
         delegatorCount: delegate.delegators,
         lastVoteDate: lastVoteTimestamp > 0 ? new Date(lastVoteTimestamp * 1000) : null,
         proposalsSupported: votedProposals?.length || 0,
