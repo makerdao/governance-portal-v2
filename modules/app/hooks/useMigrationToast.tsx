@@ -9,10 +9,9 @@ export function useMigrationToast(): void {
 
     if (!toastShown) {
       toast(<MkrUpgradeToastContent />, {
-        autoClose: 35000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
         toastId: 'mkr-upgrade-banner-toast',
         progressClassName: 'progress-bar',
         style: {
