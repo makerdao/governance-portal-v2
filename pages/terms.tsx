@@ -6,103 +6,158 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React from 'react';
 import { Flex, Text, Card, Heading } from 'theme-ui';
 import { markdownToHtml } from 'lib/markdown';
 import { GetStaticProps } from 'next';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const terms = `
-#### 1. Acceptance of Terms
-Please read these Terms of Use (the “Terms” or “Terms of Use”) carefully before using the Service. By using or otherwise accessing the Service, or clicking to accept or agree to these Terms where that option is made available, you (1) agree that you have read and understand these Terms (2) accept and agree to these Terms and (3) any additional terms, rules and conditions of participation issued from time-to-time. If you do not agree to the Terms, then you may not access or use the Content or Service.
+**Preamble**
 
+These terms of use (**“Terms”**) are entered into between Jetstream Association, a non-profit entity established under the laws of Switzerland and domiciled in Zug, Switzerland (**“Association”**) and the users of the Maker Governance Voting Portal (**“User”**, **“you”**).
+The following Terms together with any documents incorporated by reference herein, govern your access to and use of the Maker Governance Voting Portal (**“Voting Portal”**). 
 
-MKR is a cryptographic governance token used in the Dai System and Software, which is an autonomous system of smart contracts on the Ethereum Blockchain (the “Open Source Software”), that permits, among other things, the generation of Dai. Dai is a cryptocurrency intended to maintain low-volatility against other assets. MKR token holders may use their MKR to collectively govern certain rules of use of the Open Source Software, including participation in voting over some key aspects of the Open Source Software or the MakerDAO project (the “Voting”). Any MKR token holder may participate in any Voting by independently interacting with the relevant smart contracts within the Open Source Software (the “Voting Contracts”). Some members and developers of the MakerDAO community and its Open Source Software (collectively the “MakerDAO Volunteers”) have provided you with a user interface, including the one available at https://vote.makerdao.com and via other tools (the “Site”) — which includes text, images, audio, code and other materials (collectively, the “Content”) and all of the features, and services provided. The Site, the Voting Contracts, and any other features, tools, materials, the Open Source Software, or other services offered from time to time are referred to here as the “Service”.  
+Please read these Terms carefully before using the Voting Portal. By using or otherwise accessing the Voting Portal or clicking to accept or agree to these Terms where that option is made available, you 
 
+(1) agree that you have read and understand these Terms;
+(2) accept and agree to these Terms; and 
+(3) any additional terms, rules and conditions of participation issued from time-to-time. 
 
-This agreement (the “Agreement”) between you and the MakerDAO Volunteers (“we”, “us”, “our”) sets out your rights to access and use of and any of the Services provided by us.
-Note however, that while the Voting Contracts and the Site are intended to serve as a convenient way to participate in Voting, both are experimental prototypes and the use of either of them involves a high degree of risk. There are numerous ways the Voting Contracts, the Open Source Software and Service could fail in an unexpected way, resulting in the total and absolute loss of all of your funds, including MKR and other cryptocurrency, tokens or digital assets.
+If you do not agree to these Terms, then you must refrain from accessing or using the Voting Portal.
 
+These Terms may be modified or replaced at the Association’s discretion at any time. All modifications take effect immediately upon posting. The most current version will be posted with the “Last Revised” date updated accordingly. You waive any right to receive specific notice of changes made. Your continued use of the Voting Portal after any such changes constitutes your acceptance of the modified Terms.
 
-#### 2. Modification of Terms of Use
-These Terms may be discretionarily modified or replaced at any time, unless stated otherwise herein. The most current version of these Terms will be posted on the Site with the “Last Revised” date at the top of the Terms changed. Any changes or modifications will be effective immediately upon posting the revisions to the Site. You shall be responsible for reviewing and becoming familiar with any such modifications. You waive any right you may have to receive specific notice of such changes or modifications. Use of the Service by you after any modification to the Terms constitutes your acceptance of the Terms as modified. If you do not agree to the Terms in effect when you access or use the Service, you must stop using the Service.
-#### 3. Eligibility
-You hereby represent and warrant that you are fully able and competent to enter into the terms, conditions, obligations, affirmations, representations and warranties set forth in these Terms and to abide by and comply with these Terms.
-The Dai System and Software and Voting Contracts are global and by accessing the Content or Service, you are representing and warranting that you are of the legal age of majority in your jurisdiction as is required to access such Service and Content and enter into arrangements as provided by the Service. You further represent that you are otherwise legally permitted to use the service in your jurisdiction including owning cryptographic tokens of value and interacting with the Service or Content in any way. You further represent you are responsible for ensuring compliance with the laws of your jurisdiction and acknowledge that MakerDAO or any of the MakerDAO Volunteers (as defined below) is not liable for your compliance with such laws. Finally, you represent and warrant that you will not use the Service for any illegal activity.
-#### 4. Representations, Warranties, and Risks
-#### 4.1. No Representation or Warranty.
-You expressly understand and agree that your use of the Service is at your sole risk.
-(A) ALL PERSONS, ENTITIES, AGENTS, AND VOLUNTEERS INVOLVED WITH THE CREATION OF THE OPEN SOURCE OPEN SOURCE  SOFTWARE, INCLUDING, WITHOUT LIMITATION, THE VOTING CONTRACTS DISPLAYED THROUGH THE SERVICE MAKE AND EXPRESSLY DISCLAIM ALL REPRESENTATIONS AND WARRANTIES, EXPRESS, IMPLIED OR STATUTORY; AND (B) WITH RESPECT TO OPEN SOURCE SOFTWARE, THE DAI SYSTEM AND SOFTWARE, VOTING CONTRACTS, DAI TOKENS AND MKR TOKENS, THE MAKERDAO VOLUNTEERS AND ALL RELATED ENTITIES AND AGENTS SPECIFICALLY DO NOT REPRESENT, WARRANT AND EXPRESSLY DISCLAIM ANY REPRESENTATION OR WARRANTY, EXPRESS, IMPLIED OR STATUTORY, INCLUDING WITHOUT LIMITATION, ANY REPRESENTATIONS OR WARRANTIES OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY, USAGE, SECURITY, SUITABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE, OR AS TO THE WORKMANSHIP OR TECHNICAL CODING THEREOF, OR THE ABSENCE OF ANY DEFECTS THEREIN, WHETHER LATENT OR PATENT. THE MAKERDAO VOLUNTEERS OR ANY RELATED ENTITIES OR AGENTS DO NOT REPRESENT OR WARRANT THAT THE SERVICE AND ANY RELATED INFORMATION ARE ACCURATE, COMPLETE, RELIABLE, CURRENT OR ERROR-FREE.
-#### 4.2. Disclaimer of Fiduciary Duties
-TO THE FULLEST EXTENT PERMITTED BY LAW AND NOTWITHSTANDING ANY OTHER PROVISION OF THIS AGREEMENT OR ANY OTHER AGREEMENT CONTEMPLATED HEREIN OR APPLICABLE PROVISIONS OF LAW OR EQUITY OR OTHERWISE, THE PARTIES HERETO HEREBY AGREE TO ELIMINATE ANY AND ALL FIDUCIARY DUTIES THE MAKERDAO VOLUNTEERS OR ANY RELATED ENTITIES AND AGENTS MAY HAVE TO YOU, OR YOUR AGENTS, AND AFFILIATES, OR THE END USERS OF THE SERVICE, THE SITE OR ITS CONTENT, PROVIDED THAT SUCH EXCLUSION OR LIMITATION OF LIABILITY SHALL NOT EXTEND TO MISAPPROPRIATION OF YOUR ASSETS OR FUNDS, SITE OR CONTENT PROVIDED BY THE MAKERDAO VOLUNTEERS OR ANY RELATED ENTITIES AND AGENTS OR OTHER ACTS OR OMISSIONS THAT CONSTITUTE A BAD FAITH VIOLATION OF THE IMPLIED CONTRACTUAL COVENANT OF GOOD FAITH AND FAIR DEALING.
-#### 4.3 Sophistication and Risk of Cryptographic Systems
-By utilizing the Service or interacting with the Content in any way, you represent that you understand the inherent risks associated with cryptographic systems; and warrant that you have an understanding of the usage, intricacies, and difficulties of using native cryptographic tokens, such as Ether (ETH), Bitcoin (BTC), Maker (MKR), smart contract based-tokens such as those that follow the Ethereum Token Standard (https://github.com/ethereum/EIPs/issues/20), and blockchain-based software systems.
-In general, the underlying software for blockchain networks is open source such that anyone can use, copy, modify, and distribute it. By using the Service, you acknowledge and agree (i) that MakerDAO Volunteers or any related entities are not responsible for operation of the underlying software and networks that there exists no guarantee of functionality, security, or availability of such software and networks; and (ii) that the underlying protocols are subject to sudden changes in operating rules (known as “Forks”), and that such Forks may materially affect the Dai System and Software and the Voting Contracts. It might be discretionarily decided not to support (or cease supporting) the Forked network entirely. You acknowledge and agree that MakerDAO volunteers assume absolutely no responsibility whatsoever in respect of any underlying software protocols, whether Forked or not.
-#### 4.4 Risk of Regulatory Actions in One or More Jurisdictions
-The Dai System and Software, the Voting Contracts, MakerDAO and ETH could be impacted by one or more regulatory inquiries or regulatory action, which could impede or limit the ability of MakerDAO Volunteers to continue to develop, or which could impede or limit your ability to access or use the Service or Ethereum blockchain, including access to your funds, including your MKR tokens.
-#### 4.5 Risk of Weaknesses or Exploits in the Field of Cryptography
-You acknowledge and understand that Cryptography is a progressing field. Advances in code cracking or technical advances such as the development of quantum computers may present risks to cryptocurrencies and Service or Content, which could result in the theft or loss of your cryptographic tokens (including MKR tokens) or property. To the extent possible, it is intended to update the protocol underlying the Service to account for any advances in cryptography and to incorporate additional security measures, but does not guarantee or otherwise represent full security of the system. By using the Service or accessing Content, you acknowledge these inherent risks.
-#### 4.6 Volatility of Cryptocurrency
-You understand that Ethereum and other blockchain technologies and associated currencies or tokens, including MKR tokens, are highly volatile due to many factors including but not limited to adoption, speculation, technology and security risks. You also acknowledge that the cost of transacting on such technologies is variable and may increase at any time causing impact to any activities taking place on the Ethereum blockchain. You acknowledge these risks and represent that MakerDAO Volunteers or any related entity or person cannot be held liable for such fluctuations or increased costs.
-#### 4.7 Application Security
-You acknowledge that the Dai System and Software as well as Voting Contracts are subject to flaws and acknowledge that you are solely responsible for evaluating any code provided by the Services or Content. This warning and others later provided by MakerDAO Volunteers in no way evidence or represent an ongoing duty to alert you to all of the potential risks of utilizing the Service or Content.
-#### 4.8 Website Accuracy
-Although it is intended to provide accurate and timely information on the Site and other tools making up the Dai System and Software, the Site (including, without limitation, the Content) or relevant tools may not always be entirely accurate, complete or current and may also include technical inaccuracies or typographical errors. In an effort to continue to provide you with as complete and accurate information as possible, information may be changed or updated from time to time without notice, including without limitation information regarding our policies. Accordingly, you should verify all information before relying on it, and all decisions based on information contained on the Site or relevant tools are your sole responsibility and MakerDAO volunteers shall have no liability for such decisions. Links to third-party materials (including without limitation websites) may be provided as a convenience but are not controlled by any entity. You acknowledge and agree that we are not responsible for any aspect of the information, content, or services contained in any third-party materials or on any third party sites accessible or linked to the Site or available via other relevant tools.
-#### 4.9 Technical Knowledge
-Any use or interaction with the Dai System and Software as well as Voting Contracts requires a comprehensive understanding of applied cryptography and computer science in order to appreciate inherent risks, including those listed above. You represent and warrant that you possess relevant knowledge and skills.
-#### 4.10 Voting in Cryptographic Systems
-You acknowledge and understand that voting based on smart contracts, blockchains and cryptographic systems in general, including the so-called on-chain voting, is a new and progressing field. Any of the risks mentioned above may result in the theft or loss of your cryptographic tokens (including MKR tokens) or property and also in various inaccuracies regarding votes you aimed to cast, including your vote not being casted at all or casted in an unintended way. For more information about some of the dangers and pitfalls associated with blockchain based voting systems please refer to the following http://hackingdistributed.com/2018/07/02/on-chain-vote-buying/
-#### 5. Indemnity
-You agree to release and to indemnify, defend and hold harmless MakerDAO Volunteers and any related  entities, as well as the officers, directors, employees, shareholders and representatives of any of the foregoing entities, from and against any and all losses, liabilities, expenses, damages, costs (including attorneys’ fees, fees or penalties imposed by any regulatory authority and court costs) claims or actions of any kind whatsoever arising or resulting from your use of the Service, your violation of these Terms of Use, your violation of any law, rule, or regulation, or the rights of any third party, and any of your acts or omissions that implicate publicity rights, defamation or invasion of privacy. Each of the MakerDAO Volunteers reserve the right, at its own expense, to assume exclusive defense and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with MakerDAO Volunteers in the defense of such matter.
-#### 6. Limitation on liability
-YOU ACKNOWLEDGE AND AGREE THAT YOU ASSUME FULL RESPONSIBILITY FOR YOUR USE OF THE SITE AND SERVICE. YOU ACKNOWLEDGE AND AGREE THAT ANY INFORMATION YOU SEND OR RECEIVE DURING YOUR USE OF THE SITE AND SERVICE MAY NOT BE SECURE AND MAY BE INTERCEPTED OR LATER ACQUIRED BY UNAUTHORIZED PARTIES. YOU ACKNOWLEDGE AND AGREE THAT YOUR USE OF THE SITE AND SERVICE IS AT YOUR OWN RISK. RECOGNIZING SUCH, YOU UNDERSTAND AND AGREE THAT, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, NEITHER MAKERDAO VOLUNTEERS NOR ANY RELATED ENTITIES, SUPPLIERS OR LICENSORS WILL BE LIABLE TO YOU FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY OR OTHER DAMAGES OF ANY KIND, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA OR OTHER TANGIBLE OR INTANGIBLE LOSSES OR ANY OTHER DAMAGES BASED ON CONTRACT, TORT, STRICT LIABILITY OR ANY OTHER THEORY (EVEN IF ANY OF THE MAKERDAO VOLUNTEERS OR RELATED ENTITIES HAD BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), RESULTING FROM THE SITE OR SERVICE; THE USE OR THE INABILITY TO USE THE SITE OR SERVICE; UNAUTHORIZED ACCESS TO OR ALTERATION OF YOUR TRANSMISSIONS OR DATA; STATEMENTS OR CONDUCT OF ANY THIRD PARTY ON THE SITE OR SERVICE; ANY ACTIONS WE TAKE OR FAIL TO TAKE AS A RESULT OF COMMUNICATIONS YOU SEND TO US; HUMAN ERRORS; TECHNICAL MALFUNCTIONS; FAILURES, INCLUDING PUBLIC UTILITY OR TELEPHONE OUTAGES; OMISSIONS, INTERRUPTIONS, LATENCY, DELETIONS OR DEFECTS OF ANY DEVICE OR NETWORK, PROVIDERS, OR SOFTWARE (INCLUDING, BUT NOT LIMITED TO, THOSE THAT DO NOT PERMIT PARTICIPATION IN THE SERVICE); ANY INJURY OR DAMAGE TO COMPUTER EQUIPMENT; INABILITY TO FULLY ACCESS THE SITE OR SERVICE OR ANY OTHER WEBSITE; THEFT, TAMPERING, DESTRUCTION, OR UNAUTHORIZED ACCESS TO, IMAGES OR OTHER CONTENT OF ANY KIND; DATA THAT IS PROCESSED LATE OR INCORRECTLY OR IS INCOMPLETE OR LOST; TYPOGRAPHICAL, PRINTING OR OTHER ERRORS, OR ANY COMBINATION THEREOF; OR ANY OTHER MATTER RELATING TO THE SITE OR SERVICE.
-SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OR CONSEQUENTIAL DAMAGES. ACCORDINGLY, SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
-#### 7. Our Proprietary Rights
-All title, ownership and intellectual property rights in and to the Service are owned by MakerDAO Volunteers, related entities or their licensors. You acknowledge and agree that the Service contains proprietary and confidential information that is protected by applicable intellectual property and other laws. Except as expressly authorized by a relevant entity, you agree not to copy, modify, rent, lease, loan, sell, distribute, perform, display or create derivative works based on the Service, in whole or in part.
-#### 8. Links
-The Service provides, or third parties may provide, links to other World Wide Web or accessible sites, applications or resources. Because none of the MakerDAO Volunteers have control over such sites, applications and resources, you acknowledge and agree that MakerDAO Volunteers or any related entity is not responsible for the availability of such external sites, applications or resources, and does not endorse and is not responsible or liable for any content, advertising, products or other materials on or available from such sites or resources. You further acknowledge and agree that MakerDAO Volunteers or any related entity shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such site or resource.
-#### 9. Termination and Suspension
-MakerDAO may terminate or suspend all or part of the Service and your Dai System and Software as well as the Site access immediately, without prior notice or liability, if you breach any of the terms or conditions of the Terms. Upon termination of your access, your right to use the Service will immediately cease.
-The following provisions of the Terms survive any termination of these Terms: INDEMNITY; WARRANTY DISCLAIMERS; LIMITATION ON LIABILITY; OUR PROPRIETARY RIGHTS; LINKS; TERMINATION; NO THIRD-PARTY BENEFICIARIES; BINDING ARBITRATION AND CLASS ACTION WAIVER; GENERAL INFORMATION.
-#### 10. No Third-Party Beneficiaries
-You agree that, except as otherwise expressly provided in these Terms, there shall be no third party beneficiaries to the Terms.
-#### 11. Notice and Procedure For Making Claims of Copyright Infringement
-If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide a written Notice (hello@dux.makerdao.network) containing the following information:
-an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright or other intellectual property interest;
-a description of the copyrighted work or other intellectual property that you claim has been infringed;
-a description of where the material that you claim is infringing is located on the Service;
-your address, telephone number, and email address;
-a statement by you that you have a good faith belief that the disputed use is not authorized by the copyright owner, its agent, or the law;
-a statement by you, made under penalty of perjury, that the above information in your Notice is accurate and that you are the copyright or intellectual property owner or authorized to act on the copyright or intellectual property owner's behalf.
-#### 12. Arbitration and Class Action Waiver
-#### 12.1 Initial Dispute Resolution
-The parties agree shall use their best efforts to engage directly to settle any dispute, claim, question, or disagreement and engage in good faith negotiations which shall be a condition to either party initiating an arbitration.
-#### 12.2 Binding Arbitration
-If we cannot resolve the dispute through good-faith negotiations, you and we agree that any dispute arising under this Agreement shall be finally settled in binding arbitration, on an individual basis, in accordance with the American Arbitration Association's rules for arbitration of consumer-related disputes (accessible at https://www.adr.org/sites/default/files/Consumer%20Rules.pdf) and you and we hereby expressly waive trial by jury and right to participate in a class action lawsuit or class-wide arbitration. The arbitration will be conducted by a single, neutral arbitrator and shall take place in the county or parish in which you reside, or another mutually agreeable location, in the English language. The arbitrator may award any relief that a court of competent jurisdiction could award, including attorneys' fees when authorized by law, and the arbitral decision may be enforced in any court. At your request, hearings may be conducted in person or by telephone and the arbitrator may provide for submitting and determining motions on briefs, without oral hearings. The prevailing party in any action or proceeding to enforce this agreement shall be entitled to costs and attorneys' fees.
-If the arbitrator(s) or arbitration administrator would impose filing fees or other administrative costs on you, we will reimburse you, upon request, to the extent such fees or costs would exceed those that you would otherwise have to pay if you were proceeding instead in a court. We will also pay additional fees or costs if required to do so by the arbitration administrator's rules or applicable law. Apart from the foregoing, each Party will be responsible for any other fees or costs, such as attorney fees that the Party may incur. If a court decides that any provision of this section 12.2 is invalid or unenforceable, that provision shall be severed and the other parts of this section 12.2 shall still apply. In any case, the remainder of this Agreement will continue to apply.
+**1. The Voting Portal**
 
-#### 12.3 Governing law
-For any dispute not subject to arbitration you and MakerDAO agree to submit to the personal and exclusive jurisdiction of and venue in the federal and state courts located in New York, New York. You further agree to accept service of process by mail, and hereby waive any and all jurisdictional and venue defenses otherwise available.
-The Terms and the relationship between you and MakerDAO shall be governed by the laws of the State of New York without regard to conflict of law provisions.
-#### 13. General Information
-#### 13.1 Entire Agreement
-These Terms together with  the Privacy Policy (and any additional terms, rules and conditions of participation that may be posted on the Service) constitute the entire agreement with respect to the Service and supersedes any prior agreements, oral or written. In the event of a conflict between these Terms and the additional terms, rules and conditions of participation, the latter will prevail over the Terms to the extent of the conflict.
-#### 13.2 Waiver and Severability of Terms
-The failure of any entity to exercise or enforce any right or provision of the Terms shall not constitute a waiver of such right or provision. If any provision of the Terms is found by an arbitrator or court of competent jurisdiction to be invalid, the parties nevertheless agree that the arbitrator or court should endeavor to give effect to the parties' intentions as reflected in the provision, and the other provisions of the Terms remain in full force and effect.
-#### 13.3 Statute of Limitations
-You agree that regardless of any statute or law to the contrary, any claim or cause of action arising out of or related to the use of the Service or the Terms must be filed within one (1) year after such claim or cause of action arose or be forever barred.
-#### 13.4 Section Titles
+The Voting Portal is an independent user interface available at https://vote.makerdao.com allowing Users to interact with the governance mechanisms of the Maker Protocol, an autonomous system of smart contracts on the Ethereum Blockchain (**“Open-Source Protocol”**), and relying on the MKR Token (**“Token”**), a cryptographic token required for participation in the governance of the Open-Source Protocol (**“Governance”**). 
+
+The Voting Portal serves as a graphical user interface that provides an easy way to access and interact with the Open-Source Protocol. 
+As the Governance is permissionless and autonomous, you can participate at any time via other user interfaces or by using smart contract frameworks such as Hardhat, Brownie or Truffle. This means that the accessibility does not depend on the Association and/or the availability of the Voting Portal. 
+
+**1.1 Interaction with the Open-Source Protocol**
+
+The Association exclusively offers the Voting Portal and has no control over the Open-Source Protocol, including its Governance and the effective participation mechanism of such Governance. 
+
+Third-Party Infrastructure Disclaimer: By using the Voting Portal, you expressly acknowledge and agree that the Voting Portal interacts with third-party infrastructures such as the Open-Source Protocol and Ethereum network, each of which involves its own risks. It is your sole responsibility to conduct appropriate due diligence before engaging with such infrastructures through the Voting Portal.
+
+**1.1.1 Wallet Connection**
+
+Interactions with the Open-Source Protocol through the Voting Portal require you to connect your wallet. 
+
+The Voting Portal relies on wagmi, a third party open-source middleware between the Voting Portal and your wallet to facilitate governance actions such as casting votes or delegating voting power. All such actions must be explicitly approved and signed by you through your wallet. 
+
+The Association cannot access your wallet or submit votes or delegations on your behalf.
+
+Security Disclaimer: If the Voting Portal were ever compromised, malicious actors could present misleading vote or delegation transactions, disguising harmful or unintended actions as legitimate signals. Even though your wallet will still request your signature, a deceptive interface interference can integrate UX dark patterns to obscure the true function of a transaction submitted for your signing — for example, delegating your votes to an attacker or executing a function other than what’s described in the UI.
+
+You must therefore always verify the following in your wallet prompt:
+
+- The contract address receiving the transaction;
+- The function being called (e.g., castVote, delegate, sign);
+- Any attached data or parameters.
+
+By using this Voting Portal, you acknowledge and accept full responsibility for verifying the accuracy and intent of any transaction you authorize. If anything seems unclear or unexpected, reject the transaction immediately and contact […].
+
+**1.1.2 Governance Information Display**
+
+The Voting Portal communicates with the Open-Source Protocol via third-party providers such as Alchemy, Tenderly, etc., offering third-party infrastructure providing remote procedure calls (RPC) to fetch Governance data, simulate and broadcast signed governance actions to the blockchain. These calls are made through standardized JSON-RPC protocols. Any signed transaction sent through the Voting Portal is ultimately transmitted over APIs of aforementioned third-party providers. 
+
+Security Disclaimer: In the event of an RPC compromise, signed transactions may still be broadcasted with unintended effects (malicious rerouting, corrupted transaction details, etc.).
+
+You are solely responsible for independently verifying any on-chain information relevant to your use of the Voting Portal. This includes, but is not limited to, transaction status, contract interactions, and token balances, by using third-party block explorers (such as Etherscan) to confirm the accuracy and finality of such information.
+
+The Association does not assume any responsibility for the accuracy, completeness or actuality of the information displayed on the Voting Portal, as further stated in Section 4, and therefore, the Association shall not be liable for any claims or damages related to errors, inaccuracies, or delays in the display of the information or any decisions, transaction, acts or omissions that you make in reliance thereon.
+
+**1.1.3 Gas Fees**
+
+All interactions with the Ethereum blockchain and applications deployed thereon, such as the Open-Source Protocol, regardless of whether they are initiated through the Voting Portal, require the payment of a transaction fee (**“Gas Fee”**). The Gas Fee required to execute a transaction depends on the activity on the Ethereum blockchain and is entirely outside of the control of the Association. By participating in the Governance, you acknowledge and agree that Gas Fees are non-refundable under any circumstances.
+
+**1.2 Interactions with the Token**
+
+Governance of the Open-Source Protocol requires holding Tokens. The Voting Portal does not interact with your Tokens, which are used exclusively within the Open-Source Protocol itself. 
+
+As the Voting Portal merely provides access to Governance as defined by the Open-Source Protocol, without altering or influencing its underlying rules, the Association does not guarantee access to Governance through the Voting Portal for individuals who are not eligible under the Governance own criteria, such as users who do not hold Tokens.
+
+The Association does not issue nor offer Tokens to users of the Voting Portal. 
+
+**1.3 Integration of the Poll Tool**
+
+The Voting Portal includes an open-source governance polling tool deployed by the Association on the Arbitrum network (“Poll Tool”) to facilitate lightweight, low-cost community signaling (e.g., opinion polls, informal sentiment checks). This tool allows you to submit responses without paying transaction fees, provided the required gas costs are subsidized.
+
+The Poll Tool is an open-source tool that operates autonomously and is not actively controlled or governed by the Association once deployed.
+
+The Association makes no assurances of uninterrupted functionality of the Poll Tool or continued support from the Voting Portal.
+
+Subsidization Notice: While the Association may choose to subsidize gas costs, it does not guarantee that such subsidies will continue. Participants may not rely on the tool being permanently available as gasless.
+
+**2. Eligibility**
+
+You hereby represent and warrant that you are fully able and competent to enter into the terms, conditions, obligations, affirmations, representations and warranties set forth in these Terms and to abide by and comply with these Terms. 
+
+You are representing and warranting that you are of the legal age of majority in your jurisdiction as is required to access and use the Open-Source Protocol through the Voting Portal.
+ 
+You further represent that you are otherwise legally permitted to use the Voting Portal in your jurisdiction including owning cryptographic tokens and using such. You further represent you comply with the laws of your jurisdiction and acknowledge that the Association is not liable for your compliance with such laws. Finally, you represent and warrant that you will not use the Voting Portal for any illegal activity nor to circumvent the Governance rules.
+
+**3. Third Party Links**
+
+The Voting Portal may contain links to websites and content that is controlled or operated by third parties (**"Third-Party Links”**). The Association provides these Third-Party Links for convenience only, and the inclusion of any Third-Party Links in the Voting Portal does not imply any endorsement by the Association of the Third Party Links and/or their operators. The Association is neither responsible nor liable for any content associated with the Third-Party Links.
+If you believe that any Third-Party Links contain or promote illegal, harmful, fraudulent, infringing, obscene, defamatory, threatening, intimidating, harassing, hateful, racially, ethnically or otherwise objectionable content, please contact us via [...] so that we can remove any such Third-Party Links from the Airdrop Program and/or the User Interface.
+
+** 4. No Warranties and Limitation of Liability**
+
+The Voting Portal is provided on an “as is” and “as available” basis, and you understand and agree that the Association expressly disclaims all warranties or conditions of any kind, whether express, implied, statutory or otherwise. **The access to and use of the Voting Portal is made at your own risk.**
+
+Notably, the Association does not guarantee that the Voting Portal is free from defects, errors, bugs, and security vulnerabilities, that it will be available at any time, or that displayed information is correct, as stated under Section 1.1.2. The Association gives no assurance that any functionalities of the Voting Portal will satisfy your requirements, provide the intended results, meet any performance or reliability standards.
+
+The Association waives all liability for losses or damages resulting from third-party infrastructure failures, such as malicious or misrouted RPC activity, or transaction submission bugs or misinterpretations, Open-Source Protocol or Ethereum network failures. **You are solely responsible for any transaction you approve and sign.**
+
+By utilizing the Voting Portal, you represent that you understand the inherent risks associated with cryptographic systems; and warrant that you understand the usage, intricacies, and difficulties of using smart contracts and native cryptographic tokens, as well as the risk relating to interaction therewith through interfaces such as the Voting Portal, as depicted in these Terms.  
+
+YOU ACKNOWLEDGE AND AGREE THAT YOU ASSUME FULL RESPONSIBILITY FOR YOUR USE OF THE VOTING PORTAL. YOU ACKNOWLEDGE AND AGREE THAT ANY INFORMATION YOU SEND OR RECEIVE DURING YOUR USE OF THE VOTING PORTAL MAY NOT BE SECURE AND MAY BE INTERCEPTED OR LATER ACQUIRED BY UNAUTHORIZED PARTIES. YOU ACKNOWLEDGE AND AGREE THAT YOUR USE OF THE VOTING PORTAL IS AT YOUR OWN RISK. RECOGNIZING SUCH, YOU UNDERSTAND AND AGREE THAT, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE ASSOCIATION WILL NOT BE LIABLE TO YOU FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY OR OTHER DAMAGES OF ANY KIND, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA OR OTHER TANGIBLE OR INTANGIBLE LOSSES OR ANY OTHER DAMAGES BASED ON CONTRACT, TORT, STRICT LIABILITY OR ANY OTHER THEORY (EVEN IF THE ASSOCIATION HAD BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), RESULTING FROM YOUR USE OF THE VOTING PORTAL. 
+
+SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR LIMITATION OR EXCLUSION OF LIABILITY. ACCORDINGLY, SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
+
+**5. Prohibited Use**
+
+You may not use the Voting Portal to engage in the following categories of activity (**"Prohibited Uses"**). The specific types of use listed below are representative, but not exhaustive. 
+
+By using the Voting Protocol provided here, you confirm that you will not use it to proceed with any of the following: 
+Unlawful Activity: Activity which would violate, or assist in violation of, any law, statute, ordinance, or regulation, sanctions programs administered in any relevant country, or which would involve proceeds of any unlawful activity; publish, distribute or disseminate any unlawful material or information 
+Abuse Other Users: Interfere with another individual's or entity's access to or use of the Voting Portal or the Open-Source Protocol; defame, abuse, extort, harass, stalk, threaten or otherwise violate or infringe the legal rights (such as, but not limited to, rights of privacy, publicity and intellectual property) of others; incite, threaten, facilitate, promote, or encourage hate, racial intolerance, or violent acts against others; harvest or otherwise collect information from the Voting Portal about others, including without limitation email addresses, without proper consent
+Fraud: Activity which operates to defraud any other person; provide any false, inaccurate, or misleading information. 
+Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of the Association’s intellectual property, name, or logo, including use of its trade or service marks, without express consent from the Association or in a manner that otherwise harms the Association; any action that implies an untrue endorsement by or affiliation with the Association.
+ Indemnity
+You agree to release and to indemnify, defend and hold harmless the Association and any related entities, as well as the officers, directors, employees, shareholders and representatives of any of the foregoing entities, from and against any and all losses, liabilities, expenses, damages, costs (including attorneys’ fees, fees or penalties imposed by any regulatory authority and court costs) claims or actions of any kind whatsoever arising or resulting from your use of the Voting Portal, your violation of these Terms, your violation of any law, rule, or regulation, or the rights of any third party, and any of your acts or omissions that implicate publicity rights, defamation or invasion of privacy. 
+
+The Association reserves the right, at its own expense, to assume exclusive defense and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with the Association in the defense of such matter.
+Proprietary Rights
+You acknowledge and agree that all title, ownership and intellectual property rights in and to the Voting Portal are owned by the Association, and/or third parties, their related entities or their licensors., and that the Voting Portal is made available to you under the AGPL-3.0 open-source license (“License”). Other than expressly stated herein, no rights are granted to you regarding the Voting Portal. 
+
+Except as expressly authorized by the License or a relevant entity, you agree not to copy, modify, rent, lease, loan, sell, distribute, perform, display or create derivative works based on the Voting Portal, in whole or in part.
+Termination and Suspension
+The Association may terminate or suspend all or part of your access to the Voting Portal, without prior notice or liability, if you breach any of the terms or conditions of the Terms. 
+
+Discontinuation
+The Association reserves the right to remove features from the Voting Portal or to discontinue the operation of the Voting Portal in its entirety at any time without prior notice or liability, at its own discretion. 
+Governing Law and Jurisdiction
+These Terms shall be construed and interpreted in accordance with the substantive laws of Switzerland, excluding the Swiss conflict of law rules. The United Nations Convention for the International Sales of Goods is excluded. Any dispute arising out of or in conjunction with these Terms shall be submitted to the exclusive jurisdiction of the ordinary courts of the city of Zug, Switzerland.
+To the fullest extent permitted by any applicable law, the User waives any right to participate in a class action lawsuit or a class-wide arbitration against the Association or any individual or entity involved in the operation of the Voting Portal.
+Contact
+Any questions related to these Terms can be sent to [...]
+Miscellaneous
+Entire Agreement and Severability
+These Terms contain the entire agreement between the Association and you regarding the subject matter hereof and supersedes all understandings and agreements whether written or oral. If any provision of these Terms is invalid, illegal, or unenforceable in any jurisdiction, such invalidity, illegality, or unenforceability shall not affect any other provision of these Terms or invalidate or render unenforceable such provision in any other jurisdiction. Upon such determination that any provision is invalid, illegal, or unenforceable, these Terms shall be modified to effectuate the original intent of the Parties as closely as possible. 
+Waiver and Severability of Terms
+The failure of the Association to exercise or enforce any right or provision of the Terms shall not constitute a waiver of such right or provision. If any provision of these Terms is invalid, illegal, or unenforceable in any jurisdiction, such invalidity, illegality, or unenforceability shall not affect any other provision of these Terms or invalidate or render unenforceable such provision in any other jurisdiction. Upon such determination that any provision is invalid, illegal, or unenforceable, these Terms shall be modified to effectuate the original intent of the Parties as closely as possible. 
+Assignment
+You shall have no right to assign or transfer its rights and obligations under these Terms, either as a whole or in part, to any third party without the prior written and express consent of the Association. You agree that any assignment or transfer in violation of these Terms shall be null and void.
+Statute of Limitations
+You agree that regardless of any statute or law to the contrary, any claim or cause of action arising out of or related to the use of the Voting Portal must be filed within one (1) year after such claim or cause of action arose or be forever barred.
+Section Titles
 The section titles in the Terms are for convenience only and have no legal or contractual effect.
-#### 13.5 Communications
-Users with questions, complaints or claims with respect to the Service may contact us using the relevant contact information set forth above and at hello@dux.makerdao.network.
-#### 14. Privacy Policy
+Privacy Policy
 All information collected on the Site is subject to the Privacy Policy. By using the Service, you consent to all actions taken with respect to your information in compliance with the Privacy Policy.
-#### 15. Prohibited Use
-You may not use the Service to engage in the following categories of activity ("Prohibited Uses"). The specific types of use listed below are representative, but not exhaustive. If you are uncertain as to whether or not your use of the Services involves a Prohibited Use, or have questions about how these requirements apply to you, please contact us at hello@dux.makerdao.network By opening using the Service provided here, you confirm that you will not use this Service to do any of the following:
-Unlawful Activity: Activity which would violate, or assist in violation of, any law, statute, ordinance, or regulation, sanctions programs administered in any relevant country, including but not limited to the U.S. Department of Treasury's Office of Foreign Assets Control ("OFAC"), or which would involve proceeds of any unlawful activity; publish, distribute or disseminate any unlawful material or information
-Abuse Other Users: Interfere with another individual's or entity's access to or use of any Services; defame, abuse, extort, harass, stalk, threaten or otherwise violate or infringe the legal rights (such as, but not limited to, rights of privacy, publicity and intellectual property) of others; incite, threaten, facilitate, promote, or encourage hate, racial intolerance, or violent acts against others; harvest or otherwise collect information from the Site about others, including without limitation email addresses, without proper consent
-Fraud: Activity which operates to defraud MakerDAO, Dai System and Software users, or any other person; provide any false, inaccurate, or misleading information.
-Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of MakerDAO intellectual property, name, or logo, including use of MakerDAO trade or service marks, without express consent from MakerDAO or in a manner that otherwise harms MakerDAO; any action that implies an untrue endorsement by or affiliation with MakerDAO.
+
 `;
 
 export default function Terms(props: { content: string }): JSX.Element {
@@ -114,7 +169,7 @@ export default function Terms(props: { content: string }): JSX.Element {
         Terms of Use
       </Heading>
       <Text sx={{ textAlign: 'center', fontStyle: 'italic', mt: 1, mb: 3 }}>
-        Last Revised: October 14th, 2021
+        Last Revised: May 19th, 2025
       </Text>
       <Card sx={{ overflowY: 'auto' }}>
         <div dangerouslySetInnerHTML={{ __html: props.content || '' }} />
