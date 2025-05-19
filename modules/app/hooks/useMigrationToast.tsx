@@ -5,7 +5,7 @@ import { SkyUpgradeToastContent } from '../components/SkyUpgradeToastContent';
 export function useMigrationToast(): void {
   useEffect(() => {
     // Check if the toast has already been shown in this session
-    const toastShown = sessionStorage.getItem('skyUpgradeToastShown');
+    const toastShown = localStorage.getItem('skyUpgradeToastShown');
 
     if (!toastShown) {
       toast(<SkyUpgradeToastContent />, {
@@ -28,7 +28,7 @@ export function useMigrationToast(): void {
       });
 
       // Mark the toast as shown for this session
-      sessionStorage.setItem('skyUpgradeToastShown', 'true');
+      localStorage.setItem('skyUpgradeToastShown', 'true');
     }
   }, []);
 }
