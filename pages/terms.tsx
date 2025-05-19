@@ -56,7 +56,7 @@ You must therefore always verify the following in your wallet prompt:
 - The function being called (e.g., castVote, delegate, sign);
 - Any attached data or parameters.
 
-By using this Voting Portal, you acknowledge and accept full responsibility for verifying the accuracy and intent of any transaction you authorize. If anything seems unclear or unexpected, reject the transaction immediately and contact […].
+By using this Voting Portal, you acknowledge and accept full responsibility for verifying the accuracy and intent of any transaction you authorize. If anything seems unclear or unexpected, reject the transaction immediately and contact hello@jetstream.gg.
 
 **1.1.2 Governance Information Display**
 
@@ -101,7 +101,7 @@ You further represent that you are otherwise legally permitted to use the Voting
 **3. Third Party Links**
 
 The Voting Portal may contain links to websites and content that is controlled or operated by third parties (**"Third-Party Links”**). The Association provides these Third-Party Links for convenience only, and the inclusion of any Third-Party Links in the Voting Portal does not imply any endorsement by the Association of the Third Party Links and/or their operators. The Association is neither responsible nor liable for any content associated with the Third-Party Links.
-If you believe that any Third-Party Links contain or promote illegal, harmful, fraudulent, infringing, obscene, defamatory, threatening, intimidating, harassing, hateful, racially, ethnically or otherwise objectionable content, please contact us via [...] so that we can remove any such Third-Party Links from the Airdrop Program and/or the User Interface.
+If you believe that any Third-Party Links contain or promote illegal, harmful, fraudulent, infringing, obscene, defamatory, threatening, intimidating, harassing, hateful, racially, ethnically or otherwise objectionable content, please contact us via hello@jetstream.gg so that we can remove any such Third-Party Links from the Airdrop Program and/or the User Interface.
 
 ** 4. No Warranties and Limitation of Liability**
 
@@ -153,7 +153,7 @@ To the fullest extent permitted by any applicable law, the User waives any right
 
 **11. Contact**
 
-Any questions related to these Terms can be sent to [...]
+Any questions related to these Terms can be sent to hello@jetstream.gg
 
 **12. Miscellaneous**
 
