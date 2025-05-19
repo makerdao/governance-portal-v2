@@ -114,7 +114,7 @@ export default function Terms(props: { content: string }): JSX.Element {
         Terms of Use
       </Heading>
       <Text sx={{ textAlign: 'center', fontStyle: 'italic', mt: 1, mb: 3 }}>
-        Last Revised: October 14th, 2021
+        Last Revised: May 19th, 2025
       </Text>
       <Card sx={{ overflowY: 'auto' }}>
         <div dangerouslySetInnerHTML={{ __html: props.content || '' }} />
