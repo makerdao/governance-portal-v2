@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 /* Subgraph URLs */
 
 export const TENDERLY_SUBGRAPH_URL =
-  'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-testnet';
+  'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/sky-subgraph-testnet';
 export const MAINNET_STAGING_SUBGRAPH_URL =
   'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-mainnet';
 export const MAINNET_PROD_SUBGRAPH_URL =
