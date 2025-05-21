@@ -110,7 +110,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: number
  *         aligned:
  *           type: number
- *         totalMKRDelegated:
+ *         totalSkyDelegated:
  *           type: string
  *         totalDelegators:
  *           type: number

@@ -61,10 +61,10 @@ function mergeDelegateInfo({
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
-    mkrDelegated: onChainDelegate.mkrDelegated,
+    skyDelegated: onChainDelegate.skyDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
     execSupported: undefined,
-    mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
+    skyLockedDelegate: onChainDelegate.skyLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp
   };
 }
@@ -90,7 +90,7 @@ export async function fetchDelegate(
     network || SupportedNetworks.MAINNET
   );
 
-  onChainDelegate.mkrLockedDelegate = delegationEvents;
+  onChainDelegate.skyLockedDelegate = delegationEvents;
 
   // fetch github info for delegate
   const { data: githubDelegate } = await fetchGithubDelegate(
@@ -209,9 +209,11 @@ export async function fetchDelegatesPaginated({
     getDelegatesCounts(filteredDelegateEntries);
 
   // If there are no aligned delegates, the id_not_in filter will filter out everything if we give it an empty array
-  const alignedDelegatesAddressesForNotInQuery = alignedDelegatesAddresses.length > 0 ? alignedDelegatesAddresses : ['0x0000000000000000000000000000000000000000'];
+  const alignedDelegatesAddressesForNotInQuery =
+    alignedDelegatesAddresses.length > 0
+      ? alignedDelegatesAddresses
+      : ['0x0000000000000000000000000000000000000000'];
 
-  
   const baseDelegatesQueryFilter: any = { and: [{ version: '3' }] };
   if (searchTerm) {
     baseDelegatesQueryFilter.and.push({ id_in: filteredDelegateAddresses });
@@ -302,7 +304,7 @@ export async function fetchDelegatesPaginated({
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
       aligned: alignedDelegatesCount,
-      totalMKRDelegated: delegationMetrics.totalMkrDelegated || 0,
+      totalSkyDelegated: delegationMetrics.totalSkyDelegated || 0,
       totalDelegators: delegationMetrics.delegatorCount || 0
     },
     delegates: combinedDelegates.map(delegate => {
@@ -359,7 +361,7 @@ export async function fetchDelegatesPaginated({
         combinedParticipation: githubDelegate?.combinedParticipation,
         pollParticipation: githubDelegate?.pollParticipation,
         executiveParticipation: githubDelegate?.executiveParticipation,
-        mkrDelegated: totalDelegated,
+        skyDelegated: totalDelegated,
         delegatorCount: delegate.delegators,
         lastVoteDate: lastVoteTimestamp > 0 ? new Date(lastVoteTimestamp * 1000) : null,
         proposalsSupported: votedProposals?.length || 0,

@@ -13,7 +13,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { formatEther } from 'viem';
 
 interface DelegationMetrics {
-  totalMkrDelegated: number;
+  totalSkyDelegated: number;
   delegatorCount: number;
 }
 
@@ -23,13 +23,13 @@ export async function fetchDelegationMetrics(network: SupportedNetworks): Promis
     query: allDelegations
   });
   const delegations = res.delegations;
-  const totalMkrDelegated = Number(
+  const totalSkyDelegated = Number(
     formatEther(delegations.reduce((acc, cur) => acc + BigInt(cur.amount), 0n))
   );
   const delegatorCount = delegations.filter(d => Number(d.amount) > 0).length;
 
   return {
-    totalMkrDelegated,
+    totalSkyDelegated,
     delegatorCount
   };
 }

@@ -19,10 +19,10 @@ import { formatValue } from 'lib/string';
 
 export default function TopDelegates({
   topDelegates,
-  totalMKRDelegated
+  totalSkyDelegated
 }: {
   topDelegates: DelegatePaginated[];
-  totalMKRDelegated: bigint;
+  totalSkyDelegated: bigint;
 }): React.ReactElement {
   const { account } = useAccount();
   const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
@@ -115,7 +115,7 @@ export default function TopDelegates({
                   >
                     <Text>
                       {mkrDelegated
-                        ? calculatePercentage(BigInt(mkrDelegated), totalMKRDelegated, 2).toString()
+                        ? calculatePercentage(BigInt(mkrDelegated), totalSkyDelegated, 2).toString()
                         : '0.00'}
                       %
                     </Text>

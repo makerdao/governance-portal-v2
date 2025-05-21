@@ -121,7 +121,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: string
  *         count:
  *           type: number
- *         mkrDelegated:
+ *         skyDelegated:
  *           type: number
  *     DelegateStatus:
  *       type: string

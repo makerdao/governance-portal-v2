@@ -91,7 +91,7 @@ export type DelegatePaginated = Omit<
   | 'lastVoteDate'
   | 'externalUrl'
   | 'execSupported'
-  | 'mkrLockedDelegate'
+  | 'skyLockedDelegate'
 > & {
   picture?: string;
   creationDate: Date;
