@@ -90,7 +90,7 @@ export const DelegateOverviewCard = memo(
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              mkrDelegated: (BigInt(d.mkrDelegated) + amount).toString()
+              skyDelegated: (BigInt(d.skyDelegated) + amount).toString()
             };
           }
           return d;
@@ -277,7 +277,7 @@ export const DelegateOverviewCard = memo(
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                       data-testid="total-mkr-delegated"
                     >
-                      {formatValue(BigInt(delegate.mkrDelegated), 'wad')}
+                      {formatValue(BigInt(delegate.skyDelegated), 'wad')}
                     </Text>
                     <Text
                       as="p"
