@@ -21,7 +21,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 /**
  * @swagger
  * paths:
- *   /api/delegates/v2:
+ *   /api/delegates:
  *     get:
  *       tags:
  *         - "delegates"
@@ -85,13 +85,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           in: query
  *           schema:
  *             type: string
- *         - name: avcs
- *           description: Array of AVC names to filter for.
- *           in: query
- *           schema:
- *             type: array
- *             items:
- *               type: string
  *       responses:
  *         200:
  *           description: A paginated list of delegates matching the specified filters and sorting.
@@ -114,15 +107,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: string
  *         totalDelegators:
  *           type: number
- *     Avc:
- *       type: object
- *       properties:
- *         avc_name:
- *           type: string
- *         count:
- *           type: number
- *         mkrDelegated:
- *           type: number
  *     DelegateStatus:
  *       type: string
  *       enum:
@@ -132,8 +116,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *       type: object
  *       properties:
  *         name:
- *           type: string
- *         avc_name:
  *           type: string
  *         voteDelegateAddress:
  *           type: string
@@ -154,7 +136,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: string
  *         executiveParticipation:
  *           type: string
- *         mkrDelegated:
+ *         skyDelegated:
  *           type: string
  *         delegatorCount:
  *           type: number
@@ -190,7 +172,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *         - address
  *         - status
  *         - creationDate
- *         - mkrDelegated
+ *         - skyDelegated
  *         - delegatorCount
  *         - proposalsSupported
  *     DelegatesPaginatedAPIResponse:
@@ -213,10 +195,6 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/DelegatePaginated'
- *         avcs:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Avc'
  */
 
 export default withApiHandler(
