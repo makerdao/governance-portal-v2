@@ -14,7 +14,7 @@ export type DelegatesApiStats = {
   total: number;
   shadow: number;
   aligned: number;
-  totalSkyDelegated: number;
+  totalSkyDelegated: string;
   totalDelegators: number;
 };
 

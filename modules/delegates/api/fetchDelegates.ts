@@ -39,6 +39,7 @@ import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
+import { formatEther } from 'viem';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -304,8 +305,8 @@ export async function fetchDelegatesPaginated({
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
       aligned: alignedDelegatesCount,
-      totalSkyDelegated: delegationMetrics.totalSkyDelegated || 0,
-      totalDelegators: delegationMetrics.delegatorCount || 0
+      totalSkyDelegated: delegationMetrics.totalSkyDelegated,
+      totalDelegators: delegationMetrics.delegatorCount
     },
     delegates: combinedDelegates.map(delegate => {
       const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(del => del.voteDelegate === delegate.id);
@@ -348,7 +349,10 @@ export async function fetchDelegatesPaginated({
 
       const lastVoteTimestamp = Math.max(lastVoteMainnet, lastVoteArbitrum);
 
-      const totalDelegated = delegate.delegations.reduce((acc, curr) => acc + Number(curr.amount), 0);
+      const totalDelegated: bigint = delegate.delegations.reduce(
+        (acc, curr) => acc + BigInt(curr?.amount || 0n),
+        0n
+      );
 
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
@@ -361,7 +365,7 @@ export async function fetchDelegatesPaginated({
         combinedParticipation: githubDelegate?.combinedParticipation,
         pollParticipation: githubDelegate?.pollParticipation,
         executiveParticipation: githubDelegate?.executiveParticipation,
-        skyDelegated: totalDelegated,
+        skyDelegated: formatEther(totalDelegated),
         delegatorCount: delegate.delegators,
         lastVoteDate: lastVoteTimestamp > 0 ? new Date(lastVoteTimestamp * 1000) : null,
         proposalsSupported: votedProposals?.length || 0,
