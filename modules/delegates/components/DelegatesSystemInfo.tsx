@@ -45,7 +45,7 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesApiStats }): Re
     {
       title: 'Total SKY delegated',
       id: 'total-mkr-system-info',
-      value: Math.round(stats.totalSkyDelegated).toLocaleString()
+      value: Math.round(parseFloat(stats.totalSkyDelegated)).toLocaleString()
     },
     {
       title: 'Percent of SKY delegated',
