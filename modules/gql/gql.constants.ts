@@ -15,7 +15,7 @@ export const MAINNET_STAGING_SUBGRAPH_URL =
 export const MAINNET_PROD_SUBGRAPH_URL =
   'https://query-subgraph.sky.money/subgraphs/name/jetstreamgg/subgraph-mainnet';
 export const ARBITRUM_TENDERLY_SUBGRAPH_URL =
-  'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-arbitrum-testnet';
+  'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/sky-subgraph-arbitrum-testnet';
 export const ARBITRUM_STAGING_SUBGRAPH_URL =
   'https://query-subgraph-staging.sky.money/subgraphs/name/jetstreamgg/subgraph-arbitrum';
 export const ARBITRUM_PROD_SUBGRAPH_URL =
