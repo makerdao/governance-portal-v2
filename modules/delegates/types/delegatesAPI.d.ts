@@ -10,11 +10,11 @@ import { DelegatePaginated } from './delegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegateTypeEnum } from '../delegates.constants';
 
-export type DelegatesAPIStats = {
+export type DelegatesApiStats = {
   total: number;
   shadow: number;
   aligned: number;
-  totalMKRDelegated: number;
+  totalSkyDelegated: number;
   totalDelegators: number;
 };
 
@@ -36,6 +36,6 @@ export type DelegatesPaginatedAPIResponse = {
     numPages: number;
     hasNextPage: boolean;
   };
-  stats: DelegatesAPIStats;
+  stats: DelegatesApiStats;
   delegates: DelegatePaginated[];
 };

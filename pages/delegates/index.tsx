@@ -47,7 +47,7 @@ const emptyStats = {
   total: 0,
   shadow: 0,
   aligned: 0,
-  totalMKRDelegated: 0,
+  totalSkyDelegated: 0,
   totalDelegators: 0
 };
 
@@ -452,7 +452,7 @@ export default function DelegatesPage({
           total: 0,
           shadow: 0,
           aligned: 0,
-          totalMKRDelegated: 0,
+          totalSkyDelegated: 0,
           totalDelegators: 0
         },
     paginationInfo: isDefaultNetwork(network)

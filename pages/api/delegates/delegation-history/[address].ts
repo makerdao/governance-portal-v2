@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *               items:
  *                 $ref: '#/definitions/DelegationEventDetail'
  * definitions:
- *   DelegationEventDetail: # Corresponds to the transformed MKRLockedDelegateAPIResponse
+ *   DelegationEventDetail: # Corresponds to the transformed SkyLockedDelegateApiResponse
  *     type: object
  *     properties:
  *       immediateCaller:
