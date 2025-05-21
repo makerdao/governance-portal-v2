@@ -124,7 +124,7 @@ export default function AddressPage(): JSX.Element {
     revalidateOnReconnect: false
   });
 
-  const dataKeyDelegationInfo = `/api/delegates/v2?network=${network}`;
+  const dataKeyDelegationInfo = `/api/delegates?network=${network}`;
   const { data: delegationData } = useSWR<DelegatesPaginatedAPIResponse>(
     data?.isDelegate ? dataKeyDelegationInfo : null,
     fetchJson,
