@@ -91,110 +91,127 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/DelegatesPaginatedAPIResponse'
- * components:
- *   schemas:
- *     DelegatesApiStats:
- *       type: object
- *       properties:
- *         total:
- *           type: number
- *         shadow:
- *           type: number
- *         aligned:
- *           type: number
- *         totalSkyDelegated:
- *           type: string
- *         totalDelegators:
- *           type: number
- *     DelegateStatus:
- *       type: string
- *       enum:
- *         - aligned
- *         - shadow
- *     DelegatePaginated:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *         voteDelegateAddress:
- *           type: string
- *         address:
- *           type: string
- *         status:
- *           $ref: '#/components/schemas/DelegateStatus'
- *         creationDate:
- *           type: string
- *           format: date-time
- *         picture:
- *           type: string
- *         communication:
- *           type: string
- *         combinedParticipation:
- *           type: string
- *         pollParticipation:
- *           type: string
- *         executiveParticipation:
- *           type: string
- *         skyDelegated:
- *           type: string
- *         delegatorCount:
- *           type: number
- *         lastVoteDate:
- *           type: string
- *           format: date-time
- *         proposalsSupported:
- *           type: number
- *         execSupported:
- *           type: object
- *           properties:
- *             title:
- *               type: string
- *             address:
- *               type: string
- *         previous:
- *           type: object
- *           properties:
- *             address:
- *               type: string
- *             voteDelegateAddress:
- *               type: string
- *         next:
- *           type: object
- *           properties:
- *             address:
- *               type: string
- *             voteDelegateAddress:
- *               type: string
- *       required:
- *         - name
- *         - voteDelegateAddress
- *         - address
- *         - status
- *         - creationDate
- *         - skyDelegated
- *         - delegatorCount
- *         - proposalsSupported
- *     DelegatesPaginatedAPIResponse:
- *       type: object
- *       properties:
- *         paginationInfo:
- *           type: object
- *           properties:
- *             totalCount:
- *               type: number
- *             page:
- *               type: number
- *             numPages:
- *               type: number
- *             hasNextPage:
- *               type: boolean
- *         stats:
- *           $ref: '#/components/schemas/DelegatesApiStats'
- *         delegates:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/DelegatePaginated'
+ *                 type: object
+ *                 properties:
+ *                   paginationInfo:
+ *                     type: object
+ *                     properties:
+ *                       totalCount:
+ *                         type: number
+ *                         description: Total number of delegates matching the filters
+ *                       page:
+ *                         type: number
+ *                         description: Current page number
+ *                       numPages:
+ *                         type: number
+ *                         description: Total number of pages
+ *                       hasNextPage:
+ *                         type: boolean
+ *                         description: Whether there are more pages available
+ *                   stats:
+ *                     type: object
+ *                     properties:
+ *                       total:
+ *                         type: number
+ *                         description: Total number of delegates
+ *                       shadow:
+ *                         type: number
+ *                         description: Number of shadow delegates
+ *                       aligned:
+ *                         type: number
+ *                         description: Number of aligned delegates
+ *                       totalSkyDelegated:
+ *                         type: string
+ *                         description: Total amount of SKY delegated
+ *                       totalDelegators:
+ *                         type: number
+ *                         description: Total number of delegators
+ *                   delegates:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           description: Name of the delegate
+ *                         voteDelegateAddress:
+ *                           type: string
+ *                           description: Contract address of the delegate
+ *                         address:
+ *                           type: string
+ *                           description: Owner address of the delegate
+ *                         status:
+ *                           type: string
+ *                           enum: [aligned, shadow]
+ *                           description: Status of the delegate
+ *                         creationDate:
+ *                           type: string
+ *                           format: date-time
+ *                           description: Date when the delegate was created
+ *                         picture:
+ *                           type: string
+ *                           description: URL to delegate's picture
+ *                         communication:
+ *                           type: string
+ *                           description: Communication channel of the delegate
+ *                         combinedParticipation:
+ *                           type: string
+ *                           description: Combined participation rate
+ *                         pollParticipation:
+ *                           type: string
+ *                           description: Poll participation rate
+ *                         executiveParticipation:
+ *                           type: string
+ *                           description: Executive participation rate
+ *                         skyDelegated:
+ *                           type: string
+ *                           description: Amount of SKY delegated to this delegate
+ *                         delegatorCount:
+ *                           type: number
+ *                           description: Number of delegators
+ *                         lastVoteDate:
+ *                           type: string
+ *                           format: date-time
+ *                           description: Date of last vote
+ *                         proposalsSupported:
+ *                           type: number
+ *                           description: Number of proposals supported
+ *                         execSupported:
+ *                           type: object
+ *                           properties:
+ *                             title:
+ *                               type: string
+ *                               description: Title of the supported executive
+ *                             address:
+ *                               type: string
+ *                               description: Address of the supported executive
+ *                         previous:
+ *                           type: object
+ *                           properties:
+ *                             address:
+ *                               type: string
+ *                               description: Previous delegate's owner address
+ *                             voteDelegateAddress:
+ *                               type: string
+ *                               description: Previous delegate's contract address
+ *                         next:
+ *                           type: object
+ *                           properties:
+ *                             address:
+ *                               type: string
+ *                               description: Next delegate's owner address
+ *                             voteDelegateAddress:
+ *                               type: string
+ *                               description: Next delegate's contract address
+ *                       required:
+ *                         - name
+ *                         - voteDelegateAddress
+ *                         - address
+ *                         - status
+ *                         - creationDate
+ *                         - skyDelegated
+ *                         - delegatorCount
+ *                         - proposalsSupported
  */
 
 export default withApiHandler(

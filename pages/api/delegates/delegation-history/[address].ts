@@ -38,39 +38,39 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/definitions/DelegationEventDetail'
- * definitions:
- *   DelegationEventDetail: # Corresponds to the transformed SkyLockedDelegateApiResponse
- *     type: object
- *     properties:
- *       immediateCaller:
- *         type: string
- *         format: address
- *         description: The address of the account that performed the delegation/undelegation.
- *       delegateContractAddress:
- *         type: string
- *         format: address
- *         description: The contract address of the delegate.
- *       lockAmount:
- *         type: string
- *         description: The amount of MKR involved in this specific event (e.g., amount locked or unlocked). Formatted as an Ether string.
- *       blockNumber:
- *         type: number
- *         description: The block number in which this event occurred.
- *       blockTimestamp:
- *         type: string
- *         format: date-time
- *         description: The timestamp of the block for this event.
- *       callerLockTotal:
- *         type: string
- *         description: The total amount of MKR delegated by the immediateCaller to this delegateContractAddress after this event. Formatted as an Ether string.
- *       hash:
- *         type: string
- *         description: The transaction hash of the event.
- *       isStakingEngine:
- *         type: boolean
- *         nullable: true
- *         description: Indicates if the event was related to a lockstake operation.
+ *                 type: object
+ *                 properties:
+ *                   immediateCaller:
+ *                     type: string
+ *                     format: address
+ *                     description: The address of the account that performed the delegation/undelegation.
+ *                   delegateContractAddress:
+ *                     type: string
+ *                     format: address
+ *                     description: The contract address of the delegate.
+ *                   lockAmount:
+ *                     type: string
+ *                     description: The amount of SKY involved in this specific event (e.g., amount locked or unlocked). Formatted as an Ether string.
+ *                   blockNumber:
+ *                     type: number
+ *                     description: The block number in which this event occurred.
+ *                   blockTimestamp:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The timestamp of the block for this event.
+ *                   lockTotal:
+ *                     type: string
+ *                     description: The total amount of SKY delegated to this delegateContractAddress after this event. Formatted as an Ether string.
+ *                   callerLockTotal:
+ *                     type: string
+ *                     description: The total amount of SKY delegated by the immediateCaller to this delegateContractAddress after this event. Formatted as an Ether string.
+ *                   hash:
+ *                     type: string
+ *                     description: The transaction hash of the event.
+ *                   isStakingEngine:
+ *                     type: boolean
+ *                     nullable: true
+ *                     description: Indicates if the event was related to a lockstake operation.
  */
 import { NextApiRequest, NextApiResponse } from 'next';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
