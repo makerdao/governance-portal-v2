@@ -55,10 +55,10 @@ export const getStatusText = ({
   }
 
   // not expired, passed, or executed, check support level
-  if (!!spellData.mkrSupport && !!mkrOnHat) {
+  if (!!spellData.skySupport && !!mkrOnHat) {
     // If the new proposal has more MKR than the old proposal, but hasn't been lifted, display 0 MKR needed to pass.
     const mkrNeeded =
-      mkrOnHat - BigInt(spellData.mkrSupport) > 0n ? mkrOnHat - BigInt(spellData.mkrSupport) : 0n;
+      mkrOnHat - BigInt(spellData.skySupport) > 0n ? mkrOnHat - BigInt(spellData.skySupport) : 0n;
 
     return `${formatValue(mkrNeeded)} additional SKY support needed to pass. Expires at ${formatDateWithTime(
       spellData.expiration

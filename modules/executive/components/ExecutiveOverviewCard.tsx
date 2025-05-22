@@ -162,13 +162,13 @@ export default function ExecutiveOverviewCard({
               )}
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
-              {proposal.spellData?.mkrSupport === undefined ? (
+              {proposal.spellData?.skySupport === undefined ? (
                 <Box sx={{ width: 6, ml: 'auto', height: '100%' }}>
                   <Skeleton />
                 </Box>
               ) : (
                 <StatBox
-                  value={formatValue(BigInt(proposal.spellData?.mkrSupport))}
+                  value={formatValue(BigInt(proposal.spellData?.skySupport))}
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />
