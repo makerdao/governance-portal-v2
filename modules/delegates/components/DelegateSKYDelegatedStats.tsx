@@ -15,7 +15,7 @@ import { formatValue } from 'lib/string';
 import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
-export function DelegateMKRDelegatedStats({
+export function DelegateSKYDelegatedStats({
   delegate,
   delegatorCount
 }: {

@@ -325,7 +325,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 ]}
               />
             </ErrorBoundary>
-            <ErrorBoundary componentName="MKR Liquidity">
+            <ErrorBoundary componentName="SKY Liquidity">
               <MkrSkyLiquiditySidebar network={network} />
             </ErrorBoundary>
             <ResourceBox type={'executive'} />

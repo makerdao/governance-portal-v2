@@ -134,7 +134,7 @@ describe('Fetch tally approval', () => {
     expect(result).toEqual(expect.objectContaining(expectedResult));
   });
 
-  it('gives no option as winner if both have the same MKR voting weight', async () => {
+  it('gives no option as winner if both have the same SKY voting weight', async () => {
     (gqlRequest as Mock)
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce({

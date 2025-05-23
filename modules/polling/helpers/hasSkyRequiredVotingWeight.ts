@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/sky/helpers/getSKYVotingWeight';
+import { getSKYVotingWeight, SKYVotingWeightResponse } from 'modules/sky/helpers/getSKYVotingWeight';
 import logger from 'lib/logger';
 
 export async function hasMkrRequiredVotingWeight(
@@ -19,7 +19,7 @@ export async function hasMkrRequiredVotingWeight(
   //verify address has a poll weight > weight param
   let hasMkrRequired = false;
   try {
-    const pollWeight: MKRVotingWeightResponse = await getMKRVotingWeight(voter, network, false);
+    const pollWeight: SKYVotingWeightResponse = await getSKYVotingWeight(voter, network, false);
     hasMkrRequired = canBeEqual ? pollWeight >= weight : pollWeight > weight;
   } catch (err) {
     logger.error(err);

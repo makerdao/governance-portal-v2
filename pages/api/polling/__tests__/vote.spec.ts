@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
-import { getMKRVotingWeight } from 'modules/sky/helpers/getSKYVotingWeight';
+import { getSKYVotingWeight } from 'modules/sky/helpers/getSKYVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { parseEther } from 'viem';
@@ -201,9 +201,9 @@ describe('/api/polling/vote API Endpoint', () => {
     });
   });
 
-  it('return 400 if MKR amount is not valid', async () => {
+  it('return 400 if SKY amount is not valid', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as Mock).mockReturnValue(
+    (getSKYVotingWeight as Mock).mockReturnValue(
       Promise.resolve({
         total: 0n
       })
@@ -223,13 +223,13 @@ describe('/api/polling/vote API Endpoint', () => {
 
     expect(res.statusCode).toBe(400);
     expect(res._getJSONData()).toEqual({
-      error: { code: 'invalid_request', message: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED }
+      error: { code: 'invalid_request', message: API_VOTE_ERRORS.LESS_THAN_MINIMUM_SKY_REQUIRED }
     });
   });
 
   it('return 400 if any poll is expired', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
+    (getSKYVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([]));
     const { req, res } = mockRequestResponse('POST', {
       voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
@@ -252,7 +252,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if it used gasless voting recently', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
+    (getSKYVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
     (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(true));
 
@@ -280,7 +280,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
     (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(false));
 
-    (getMKRVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
+    (getSKYVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
 
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));

@@ -21,8 +21,8 @@ import { formatEther } from 'viem';
  *   get:
  *     tags:
  *       - "delegates"
- *     summary: Get information about the current delegate to MKR
- *     description: Get information about the current delegate to MKR
+ *     summary: Get information about the current delegate to SKY
+ *     description: Get information about the current delegate to SKY
  *     parameters:
  *       - name: address
  *         in: query
@@ -58,7 +58,7 @@ import { formatEther } from 'viem';
  *                         format: address
  *                       lockAmount:
  *                         type: number
- *                         description: The total amount of MKR delegated to this delegate by the queried address
+ *                         description: The total amount of SKY delegated to this delegate by the queried address
  *                         format: float
  *                       events:
  *                         type: array
@@ -68,7 +68,7 @@ import { formatEther } from 'viem';
  *                           properties:
  *                             lockAmount:
  *                               type: string
- *                               description: The amount of MKR locked in this event
+ *                               description: The amount of SKY locked in this event
  *                             blockTimestamp:
  *                               type: string
  *                               description: Timestamp of the block in which the event occurred
@@ -86,12 +86,12 @@ import { formatEther } from 'viem';
  *
  */
 
-export type MKRDelegatedToAPIResponse = {
+export type SKYDelegatedToAPIResponse = {
   delegatedTo: DelegationHistory[];
   totalDelegated: number;
 };
 export default withApiHandler(
-  async (req: NextApiRequest, res: NextApiResponse<MKRDelegatedToAPIResponse>) => {
+  async (req: NextApiRequest, res: NextApiResponse<SKYDelegatedToAPIResponse>) => {
     // validate network
     const network = validateQueryParam(
       (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,

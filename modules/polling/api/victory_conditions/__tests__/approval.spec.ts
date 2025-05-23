@@ -48,7 +48,7 @@ describe('Extract winner condition approval', () => {
 
     expect(winner).toEqual(2);
   });
-  it('finds no winner if two votes have the same MKR amount', async () => {
+  it('finds no winner if two votes have the same SKY amount', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 10,

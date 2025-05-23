@@ -7,11 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR, { useSWRConfig } from 'swr';
-import { getMKRVotingWeight, MKRVotingWeightResponse } from '../helpers/getSKYVotingWeight';
+import { getSKYVotingWeight, SKYVotingWeightResponse } from '../helpers/getSKYVotingWeight';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type VotingWeightResponse = {
-  data?: MKRVotingWeightResponse;
+  data?: SKYVotingWeightResponse;
   loading?: boolean;
   error?: Error;
   mutate: () => void;
@@ -22,7 +22,7 @@ export const useSkyVotingWeight = ({
   excludeDelegateOwnerBalance = false
 }: {
   address?: string;
-  // this needs to be "true" when displaying the MKR balance of a delegate contract
+  // this needs to be "true" when displaying the SKY balance of a delegate contract
   // they can have voting power through their delegate contract, but the balance is not theirs
   excludeDelegateOwnerBalance?: boolean;
 }): VotingWeightResponse => {
@@ -34,7 +34,7 @@ export const useSkyVotingWeight = ({
   // Only revalidate every 60 seconds, do not revalidate on mount if it's already fetched
   const { data, error, mutate } = useSWR(
     address ? dataKey : null,
-    () => getMKRVotingWeight(address as string, network, excludeDelegateOwnerBalance),
+    () => getSKYVotingWeight(address as string, network, excludeDelegateOwnerBalance),
     {
       revalidateOnFocus: false,
       revalidateOnMount: !cache.get(dataKey),

@@ -338,7 +338,7 @@ const AccountPage = (): React.ReactElement => {
         <Stack gap={3}>
           {addressInfo && addressInfo.delegateInfo && (
             <Box>
-              <ErrorBoundary componentName="Delegate MKR">
+              <ErrorBoundary componentName="Delegate SKY">
                 <ManageDelegation
                   delegate={addressInfo.delegateInfo}
                   textDelegate="Delegate SKY to myself"

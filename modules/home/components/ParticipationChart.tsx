@@ -56,11 +56,11 @@ const ParticipationChart = ({
   };
 
   const renderTooltip = item => {
-    const monthMKR = range ? range.find(i => i.unixDate === item.label) : null;
+    const monthSKY = range ? range.find(i => i.unixDate === item.label) : null;
     return (
       <Box>
-        {monthMKR && <Text as="p">{format(new Date(monthMKR.blockTimestamp), 'LLL yyyy')}</Text>}
-        {monthMKR && <Text as="p">{parseInt(monthMKR.lockTotal).toLocaleString()} SKY</Text>}
+        {monthSKY && <Text as="p">{format(new Date(monthSKY.blockTimestamp), 'LLL yyyy')}</Text>}
+        {monthSKY && <Text as="p">{parseInt(monthSKY.lockTotal).toLocaleString()} SKY</Text>}
       </Box>
     );
   };

@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *                     description: The address that directly interacted with the contract for the lock.
  *                   lockAmount:
  *                     type: string
- *                     description: The amount of MKR locked in this specific event.
+ *                     description: The amount of SKY locked in this specific event.
  *                   blockNumber:
  *                     type: string
  *                     description: The block number in which this lock event occurred.

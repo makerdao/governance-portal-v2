@@ -17,8 +17,8 @@ import {
 } from 'modules/delegates/components';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { DelegateMKRDelegatedStats } from './DelegateSKYDelegatedStats';
-import { DelegateMKRChart } from './DelegateSKYChart;
+import { DelegateSKYDelegatedStats } from './DelegateSKYDelegatedStats';
+import { DelegateSKYChart } from './DelegateSKYChart;
 import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
@@ -82,7 +82,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           <Divider />
 
           <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
-            <DelegateMKRChart delegate={delegate} />
+            <DelegateSKYChart delegate={delegate} />
           </Box>
           <Divider />
         </>
@@ -160,7 +160,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <DelegateMKRDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
+          <DelegateSKYDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
         </Box>
       </Box>
 

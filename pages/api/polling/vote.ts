@@ -43,7 +43,7 @@ export const API_VOTE_ERRORS = {
   EXPIRED_POLLS: 'Can only vote in active polls.',
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes.',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature.',
-  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_SKY_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
+  LESS_THAN_MINIMUM_SKY_REQUIRED: `Address must have a poll voting weight of at least ${MIN_SKY_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
   ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.',
   RELAYER_ERROR: 'Relayer transaction creation failed.'
 };
@@ -161,11 +161,11 @@ export default withApiHandler(
           ballotIncludesAlreadyVoted(voter, network, pollIds)
         ]);
 
-      //verify address has a poll weight > 0.1 MKR
+      //verify address has a poll weight > 0.1 SKY
       if (!hasMkrRequired) {
         // BigInt doesnt handle decimals
         await throwError({
-          error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED,
+          error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_SKY_REQUIRED,
           body: req.body,
           skipDiscord
         });

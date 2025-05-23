@@ -61,9 +61,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     switch (sortBy.type) {
       case 'mkr':
         sorted = votes?.sort((a, b) => {
-          const aMKR = parseEther(a.skySupport.toString());
-          const bMKR = parseEther(b.skySupport.toString());
-          return sortBy.order === 1 ? (aMKR > bMKR ? -1 : 1) : aMKR > bMKR ? 1 : -1;
+          const aSKY = parseEther(a.skySupport.toString());
+          const bSKY = parseEther(b.skySupport.toString());
+          return sortBy.order === 1 ? (aSKY > bSKY ? -1 : 1) : aSKY > bSKY ? 1 : -1;
         });
         break;
       case 'address':

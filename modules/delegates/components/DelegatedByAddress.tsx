@@ -197,9 +197,9 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
     switch (sortBy.type) {
       case 'mkr':
         return delegators?.sort((a, b) => {
-          const aMKR = parseEther(a.lockAmount);
-          const bMKR = parseEther(b.lockAmount);
-          return sortBy.order === 1 ? (aMKR > bMKR ? -1 : 1) : aMKR > bMKR ? 1 : -1;
+          const aSKY = parseEther(a.lockAmount);
+          const bSKY = parseEther(b.lockAmount);
+          return sortBy.order === 1 ? (aSKY > bSKY ? -1 : 1) : aSKY > bSKY ? 1 : -1;
         });
       case 'address':
         return delegators?.sort((a, b) =>

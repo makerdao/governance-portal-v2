@@ -57,7 +57,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
  *           in: query
  *           schema:
  *             type: string
- *             enum: [MKR, DELEGATORS, DATE, RANDOM]
+ *             enum: [SKY, DELEGATORS, DATE, RANDOM]
  *           default: DATE
  *         - name: orderDirection
  *           description: The order direction for the sorting. Defaults to DESC.
@@ -235,7 +235,7 @@ export default withApiHandler(
     const orderBy = validateQueryParam(req.query.orderBy, 'string', {
       defaultValue: DelegateOrderByEnum.DATE,
       validValues: [
-        DelegateOrderByEnum.MKR,
+        DelegateOrderByEnum.SKY,
         DelegateOrderByEnum.DELEGATORS,
         DelegateOrderByEnum.DATE,
         DelegateOrderByEnum.RANDOM
