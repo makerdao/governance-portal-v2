@@ -226,7 +226,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
         skySupport: formatEther(skySupport).toString(),
         optionName: poll.options[optionId],
         eliminated: instantRunoffOption?.eliminated,
-        transfer: instantRunoffOption?.transfer?.toString(),
+        transfer: formatEther(instantRunoffOption?.transfer || 0n).toString(),
         firstPct,
         transferPct
       };

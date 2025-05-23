@@ -122,8 +122,8 @@ describe('Fetch tally majority', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalSkyActiveParticipation: '270000000000000000000',
-      totalSkyParticipation: '270000000000000000000',
+      totalSkyActiveParticipation: '270',
+      totalSkyParticipation: '270',
       numVoters: 3,
       victoryConditionMatched: null,
       results: [
@@ -131,7 +131,7 @@ describe('Fetch tally majority', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 37.037,
-          skySupport: '100000000000000000000',
+          skySupport: '100',
           transferPct: 0,
           winner: false
         },
@@ -139,7 +139,7 @@ describe('Fetch tally majority', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 33.3333,
-          skySupport: '90000000000000000000',
+          skySupport: '90',
           transferPct: 0,
           winner: false
         },
@@ -147,7 +147,7 @@ describe('Fetch tally majority', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 29.6296,
-          skySupport: '80000000000000000000',
+          skySupport: '80',
           transferPct: 0,
           winner: false
         },
@@ -249,8 +249,8 @@ describe('Fetch tally majority', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalSkyActiveParticipation: '370000000000000000000',
-      totalSkyParticipation: '370000000000000000000',
+      totalSkyActiveParticipation: '370',
+      totalSkyParticipation: '370',
       numVoters: 3,
       victoryConditionMatched: 0,
       results: [
@@ -258,7 +258,7 @@ describe('Fetch tally majority', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 54.0541,
-          skySupport: '200000000000000000000',
+          skySupport: '200',
           transferPct: 0,
           winner: true
         },
@@ -266,7 +266,7 @@ describe('Fetch tally majority', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 24.3243,
-          skySupport: '90000000000000000000',
+          skySupport: '90',
           transferPct: 0,
           winner: false
         },
@@ -274,7 +274,7 @@ describe('Fetch tally majority', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 21.6216,
-          skySupport: '80000000000000000000',
+          skySupport: '80',
           transferPct: 0,
           winner: false
         },
