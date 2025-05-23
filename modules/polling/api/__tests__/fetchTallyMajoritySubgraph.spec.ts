@@ -132,32 +132,40 @@ describe('Fetch tally majority', () => {
           optionName: 'Approve Existing Budget',
           firstPct: 37.037,
           skySupport: '100',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 33.3333,
           skySupport: '90',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 29.6296,
           skySupport: '80',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 0,
           optionName: 'Abstain',
           skySupport: '0',
+          transfer: '0',
           firstPct: 0,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         }
       ]
     };
@@ -259,32 +267,40 @@ describe('Fetch tally majority', () => {
           optionName: 'Approve Existing Budget',
           firstPct: 54.0541,
           skySupport: '200',
+          transfer: '0',
           transferPct: 0,
-          winner: true
+          winner: true,
+          eliminated: undefined
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 24.3243,
           skySupport: '90',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 21.6216,
           skySupport: '80',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 0,
           optionName: 'Abstain',
           skySupport: '0',
+          transfer: '0',
           firstPct: 0,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         }
       ]
     };

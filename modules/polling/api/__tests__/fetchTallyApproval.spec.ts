@@ -83,40 +83,50 @@ describe('Fetch tally approval', () => {
           optionName: 'Approve Existing Budget',
           firstPct: 98.3751,
           skySupport: '847.57558',
+          transfer: '0',
           transferPct: 0,
-          winner: true
+          winner: true,
+          eliminated: undefined
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 97.2144,
           skySupport: '837.57558',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 4,
           optionName: 'None of the above',
           firstPct: 1.6249,
           skySupport: '14',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 0,
           optionName: 'Abstain',
           skySupport: '0',
+          transfer: '0',
           firstPct: 0,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 0,
           skySupport: '0',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         }
       ]
     };
@@ -165,40 +175,50 @@ describe('Fetch tally approval', () => {
           optionName: 'Approve Existing Budget',
           firstPct: 98.356,
           skySupport: '837.57558',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 98.356,
           skySupport: '837.57558',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 4,
           optionName: 'None of the above',
           firstPct: 1.644,
           skySupport: '14',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 0,
           optionName: 'Abstain',
           skySupport: '0',
+          transfer: '0',
           firstPct: 0,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 0,
           skySupport: '0',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         }
       ]
     };
@@ -236,33 +256,41 @@ describe('Fetch tally approval', () => {
           optionId: 0,
           optionName: 'Abstain',
           skySupport: '400',
+          transfer: '0',
           firstPct: 100,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           skySupport: '0',
+          transfer: '0',
           firstPct: 0,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 2,
           optionName: 'Approve Increase',
           skySupport: '0',
+          transfer: '0',
           firstPct: 0,
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
         {
           optionId: 4,
           optionName: 'None of the above',
           firstPct: 0,
           skySupport: '0',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         },
 
         {
@@ -270,8 +298,10 @@ describe('Fetch tally approval', () => {
           optionName: 'Reject',
           firstPct: 0,
           skySupport: '0',
+          transfer: '0',
           transferPct: 0,
-          winner: false
+          winner: false,
+          eliminated: undefined
         }
       ]
     };
