@@ -50,7 +50,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { data: lockedSky, mutate: mutateLockedSky } = useLockedSky(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-  const { data: mkrOnHat } = useSkyOnHat();
+  const { data: skyOnHat } = useSkyOnHat();
 
   const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
     state.executiveFilters.startDate,
@@ -217,7 +217,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                           account={account}
                           votedProposals={votedProposals}
-                          mkrOnHat={mkrOnHat}
+                          skyOnHat={skyOnHat}
                         />
                       </Box>
                     ))}
@@ -265,7 +265,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                             isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                             account={account}
                             votedProposals={votedProposals}
-                            mkrOnHat={mkrOnHat}
+                            skyOnHat={skyOnHat}
                           />
                         </Box>
                       ))}

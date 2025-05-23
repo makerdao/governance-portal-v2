@@ -61,7 +61,7 @@ export function InputDelegateSky({
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
           disabled={!value || !balance || value === 0n || value > balance || disabled}
-          data-testid="deposit-mkr-modal-button"
+          data-testid="deposit-sky-modal-button"
         >
           {buttonLabel}
         </Button>

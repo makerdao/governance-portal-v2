@@ -78,12 +78,12 @@ export const DelegateOverviewCard = memo(
     const [showDelegateModal, setShowDelegateModal] = useState(false);
     const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-    const { data: mkrDelegatedData, mutate: mutateSkyDelegated } = useSkyDelegatedByUser(
+    const { data: skyDelegatedData, mutate: mutateSkyDelegated } = useSkyDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );
-    const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-    const hasSkyDelegated = account && mkrDelegated && mkrDelegated > 0n;
+    const skyDelegated = skyDelegatedData?.totalDelegationAmount;
+    const hasSkyDelegated = account && skyDelegated && skyDelegated > 0n;
 
     const mutateDelegateTotalSky = (amount: bigint) => {
       setStateDelegates(prevDelegates => {
@@ -249,14 +249,14 @@ export const DelegateOverviewCard = memo(
                 <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
                   {account && (
                     <Box>
-                      {typeof mkrDelegated === 'bigint' ? (
+                      {typeof skyDelegated === 'bigint' ? (
                         <Text
                           as="p"
                           variant="microHeading"
                           sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                          data-testid="mkr-delegated-by-you"
+                          data-testid="sky-delegated-by-you"
                         >
-                          {formatValue(mkrDelegated)}
+                          {formatValue(skyDelegated)}
                         </Text>
                       ) : (
                         <SkeletonThemed />
@@ -276,7 +276,7 @@ export const DelegateOverviewCard = memo(
                       as="p"
                       variant="microHeading"
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                      data-testid="total-mkr-delegated"
+                      data-testid="total-sky-delegated"
                     >
                       {formatValue(parseEther(delegate.skyDelegated), 'wad')}
                     </Text>

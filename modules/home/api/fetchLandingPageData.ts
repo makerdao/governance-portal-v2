@@ -30,9 +30,9 @@ export type LandingPageData = {
   delegatesInfo: DelegateInfo[];
   delegatesError: Error | null;
   stats?: DelegatesApiStats;
-  mkrOnHat?: string;
+  skyOnHat?: string;
   hat?: string;
-  mkrInChief?: string;
+  skyInChief?: string;
 };
 
 export async function fetchLandingPageData(
@@ -71,7 +71,7 @@ export async function fetchLandingPageData(
       ]);
 
   // return null for any data we couldn't fetch
-  const [proposals, pollsData, mkrOnHatResponse, mkrInChief] = responses.map(promise =>
+  const [proposals, pollsData, skyOnHatResponse, skyInChief] = responses.map(promise =>
     promise.status === 'fulfilled' ? promise.value : null
   );
 
@@ -80,13 +80,13 @@ export async function fetchLandingPageData(
     polls: pollsData ? (pollsData as PollsPaginatedResponse).polls : [],
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
-    mkrOnHat: mkrOnHatResponse
-      ? formatValue((mkrOnHatResponse as SkyOnHatResponse).mkrOnHat, 'wad', 2, true, false, 1e9)
+    skyOnHat: skyOnHatResponse
+      ? formatValue((skyOnHatResponse as SkyOnHatResponse).skyOnHat, 'wad', 2, true, false, 1e9)
       : undefined,
-    hat: mkrOnHatResponse ? (mkrOnHatResponse as SkyOnHatResponse).hat : undefined,
-    mkrInChief:
-      mkrInChief === 0n || mkrInChief
-        ? formatValue(mkrInChief as bigint, 'wad', 2, true, false, 1e9)
+    hat: skyOnHatResponse ? (skyOnHatResponse as SkyOnHatResponse).hat : undefined,
+    skyInChief:
+      skyInChief === 0n || skyInChief
+        ? formatValue(skyInChief as bigint, 'wad', 2, true, false, 1e9)
         : undefined
   };
 }

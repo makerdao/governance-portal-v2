@@ -64,7 +64,7 @@ export const useSkyDelegatedByUser = (
   };
 
   const { data, error, mutate } = useSWR(
-    userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
+    userAddress && voteDelegateAddress ? ['/user/sky-delegated', voteDelegateAddress, userAddress] : null,
     async () => {
       if (config.USE_MOCK_WALLET) {
         return fetchFromChain(userAddress as string, voteDelegateAddress);

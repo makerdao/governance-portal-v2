@@ -48,7 +48,7 @@ describe('Find options that satisfy condition comparison', () => {
 
     expect(winner).toEqual([]);
   });
-  it('gives all options with > 1000 mkr', async () => {
+  it('gives all options with > 1000 sky', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 1230,
@@ -87,7 +87,7 @@ describe('Find options that satisfy condition comparison', () => {
     expect(winner).toEqual([1]);
   });
 
-  it('gives all options with >= 1000 mkr', async () => {
+  it('gives all options with >= 1000 sky', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 1230,
@@ -126,7 +126,7 @@ describe('Find options that satisfy condition comparison', () => {
     expect(winner).toEqual([1, 2]);
   });
 
-  it('gives all options with = 1000 mkr', async () => {
+  it('gives all options with = 1000 sky', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 1230,
@@ -165,7 +165,7 @@ describe('Find options that satisfy condition comparison', () => {
     expect(winner).toEqual([2]);
   });
 
-  it('gives all options with < 1000 mkr', async () => {
+  it('gives all options with < 1000 sky', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 1230,
@@ -204,7 +204,7 @@ describe('Find options that satisfy condition comparison', () => {
     expect(winner).toEqual([3]);
   });
 
-  it('gives all options with <= 1000 mkr', async () => {
+  it('gives all options with <= 1000 sky', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 1230,

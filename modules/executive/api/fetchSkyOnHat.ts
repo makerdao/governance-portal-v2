@@ -14,7 +14,7 @@ import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
 export type SkyOnHatResponse = {
   hat: string;
-  mkrOnHat: bigint;
+  skyOnHat: bigint;
 };
 
 export async function fetchSkyOnHat(network?: SupportedNetworks): Promise<SkyOnHatResponse> {
@@ -27,7 +27,7 @@ export async function fetchSkyOnHat(network?: SupportedNetworks): Promise<SkyOnH
     functionName: 'hat'
   });
 
-  const mkrOnHat = await getChiefApprovals(hat, network);
+  const skyOnHat = await getChiefApprovals(hat, network);
 
-  return { hat, mkrOnHat };
+  return { hat, skyOnHat };
 }

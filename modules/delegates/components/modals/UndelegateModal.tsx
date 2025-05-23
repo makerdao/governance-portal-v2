@@ -39,17 +39,17 @@ export const UndelegateModal = ({
 }: Props): JSX.Element => {
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToWithdraw, setSkyToWithdraw] = useState(0n);
+  const [skyToWithdraw, setSkyToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
-  const { data: mkrDelegatedData } = useSkyDelegatedByUser(account, voteDelegateAddress);
-  const stakingEngineDelegated = mkrDelegatedData?.stakingEngineDelegationAmount;
-  const directDelegated = mkrDelegatedData?.directDelegationAmount;
+  const { data: skyDelegatedData } = useSkyDelegatedByUser(account, voteDelegateAddress);
+  const stakingEngineDelegated = skyDelegatedData?.stakingEngineDelegationAmount;
+  const directDelegated = skyDelegatedData?.directDelegationAmount;
 
   const free = useDelegateFree({
     voteDelegateAddress,
-    mkrToWithdraw,
+    skyToWithdraw,
     onStart: (hash: `0x${string}`) => {
       setTxHash(hash);
       setTxStatus(TxStatus.LOADING);
@@ -57,13 +57,13 @@ export const UndelegateModal = ({
     onSuccess: (hash: `0x${string}`) => {
       setTxHash(hash);
       setTxStatus(TxStatus.SUCCESS);
-      refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(mkrToWithdraw * -1n);
+      refetchOnDelegation ? mutateTotalStaked() : mutateTotalStaked(skyToWithdraw * -1n);
       mutateSkyDelegated();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
     },
-    enabled: !!mkrToWithdraw
+    enabled: !!skyToWithdraw
   });
 
   const onClose = () => {
@@ -86,7 +86,7 @@ export const UndelegateModal = ({
                   setTxHash={setTxHash}
                   onDismiss={onClose}
                   title={'Undelegating SKY'}
-                  description={`You undelegated ${formatValue(mkrToWithdraw, 'wad', 6)} from ${
+                  description={`You undelegated ${formatValue(skyToWithdraw, 'wad', 6)} from ${
                     delegate.name
                   }`}
                 >

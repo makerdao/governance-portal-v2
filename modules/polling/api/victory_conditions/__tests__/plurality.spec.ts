@@ -10,7 +10,7 @@ import { PollTallyVote } from 'modules/polling/types';
 import { extractWinnerPlurality } from '../plurality';
 
 describe('Extract winner condition plurality', () => {
-  it('gets the one with most mkr', async () => {
+  it('gets the one with most sky', async () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: 10,

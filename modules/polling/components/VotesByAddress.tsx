@@ -32,7 +32,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { votesByAddress: votes, totalSkyParticipation } = tally;
   const [sortBy, setSortBy] = useState({
-    type: 'mkr',
+    type: 'sky',
     order: 1
   });
   const [showAllVotes, setShowAllVotes] = useState(false);
@@ -59,7 +59,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     let sorted: PollTallyVote[] | undefined;
 
     switch (sortBy.type) {
-      case 'mkr':
+      case 'sky':
         sorted = votes?.sort((a, b) => {
           const aSKY = parseEther(a.skySupport.toString());
           const bSKY = parseEther(b.skySupport.toString());
@@ -132,10 +132,10 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                 as="th"
                 sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '10%' }}
                 variant="caps"
-                onClick={() => changeSort('mkr')}
+                onClick={() => changeSort('sky')}
               >
                 Vote %
-                {sortBy.type === 'mkr' ? (
+                {sortBy.type === 'sky' ? (
                   sortBy.order === 1 ? (
                     <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                   ) : (
@@ -150,11 +150,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               as="th"
               sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '22%' }}
               variant="caps"
-              data-testid="mkr-header"
-              onClick={() => changeSort('mkr')}
+              data-testid="sky-header"
+              onClick={() => changeSort('sky')}
             >
               SKY
-              {sortBy.type === 'mkr' ? (
+              {sortBy.type === 'sky' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
@@ -217,7 +217,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   )}
                   <Text
                     as="td"
-                    data-testid={`vote-mkr-${v.voter}`}
+                    data-testid={`vote-sky-${v.voter}`}
                     sx={{ textAlign: ['right', 'right', 'left'], pb: 2, fontSize: [1, 3] }}
                   >
                     {`${formatValue(parseEther(v.skySupport.toString()), undefined, undefined, true, true)}${
@@ -227,7 +227,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   {bpi > 1 && (
                     <Text
                       as="td"
-                      data-testid={`vote-mkr-${v.hash}`}
+                      data-testid={`vote-sky-${v.hash}`}
                       sx={{ textAlign: 'right', pb: 2, fontSize: [1, 3] }}
                     >
                       <EtherscanLink

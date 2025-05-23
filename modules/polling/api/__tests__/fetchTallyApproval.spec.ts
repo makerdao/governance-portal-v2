@@ -40,7 +40,7 @@ describe('Fetch tally approval', () => {
     }
   } as any as Poll;
 
-  it('gives first option as winner if it has most mkr', async () => {
+  it('gives first option as winner if it has most sky', async () => {
     (gqlRequest as Mock)
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce({

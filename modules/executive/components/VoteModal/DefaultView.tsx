@@ -54,12 +54,12 @@ export default function DefaultVoteModalView({
     mutateSpellData();
   }, []);
 
-  const mkrSupporting = spellData ? BigInt(spellData.skySupport) : 0n;
+  const skySupporting = spellData ? BigInt(spellData.skySupport) : 0n;
   const hasVotingWeight = !!lockedSky && lockedSky > 0n;
 
   const afterVote =
     currentSlate && currentSlate.includes(spellAddress)
-      ? mkrSupporting
+      ? skySupporting
       : lockedSky && spellData
       ? lockedSky + BigInt(spellData.skySupport)
       : 0n;
@@ -149,7 +149,7 @@ export default function DefaultVoteModalView({
           </Text>
           {spellData !== undefined ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {formatValue(mkrSupporting)} SKY
+              {formatValue(skySupporting)} SKY
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>

@@ -175,7 +175,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
   const network = useNetwork();
 
   const [sortBy, setSortBy] = useState({
-    type: 'mkr',
+    type: 'sky',
     order: 1
   });
 
@@ -195,7 +195,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
 
   const sortedDelegators = useMemo(() => {
     switch (sortBy.type) {
-      case 'mkr':
+      case 'sky':
         return delegators?.sort((a, b) => {
           const aSKY = parseEther(a.lockAmount);
           const bSKY = parseEther(b.lockAmount);
@@ -257,10 +257,10 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               as="th"
               sx={{ cursor: 'pointer', textAlign: 'left', pb: 2, width: '30%' }}
               variant="caps"
-              onClick={() => changeSort('mkr')}
+              onClick={() => changeSort('sky')}
             >
               {bpi < 1 ? 'SKY' : 'SKY Delegated'}
-              {sortBy.type === 'mkr' ? (
+              {sortBy.type === 'sky' ? (
                 sortBy.order === 1 ? (
                   <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                 ) : (
@@ -275,10 +275,10 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
                 as="th"
                 sx={{ cursor: 'pointer', textAlign: 'left', pb: 2, width: '20%' }}
                 variant="caps"
-                onClick={() => changeSort('mkr')}
+                onClick={() => changeSort('sky')}
               >
                 {bpi < 1 ? '%' : 'Voting Weight'}
-                {sortBy.type === 'mkr' ? (
+                {sortBy.type === 'sky' ? (
                   sortBy.order === 1 ? (
                     <Icon name="chevron_down" size={2} sx={{ ml: 1 }} />
                   ) : (

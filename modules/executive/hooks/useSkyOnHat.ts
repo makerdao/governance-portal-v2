@@ -40,7 +40,7 @@ export const useSkyOnHat = (): SkyOnHatResponse => {
     data,
     error,
     mutate: mutateSkyOnHat
-  } = useSWR(`${chiefAddress[chainId]}/${hatAddress}/mkr-on-hat`, async () => {
+  } = useSWR(`${chiefAddress[chainId]}/${hatAddress}/sky-on-hat`, async () => {
     return hatAddress ? await getChiefApprovals(hatAddress, network) : undefined;
   });
 

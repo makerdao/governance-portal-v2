@@ -60,18 +60,18 @@ const editMarkdown = content => {
 const ProposalTimingBanner = ({
   proposal,
   spellData,
-  mkrOnHat
+  skyOnHat
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
-  mkrOnHat?: bigint;
+  skyOnHat?: bigint;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
         <Divider my={1} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          <StatusText>{getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}</StatusText>
+          <StatusText>{getStatusText({ proposalAddress: proposal.address, spellData, skyOnHat })}</StatusText>
         </Flex>
         <Divider sx={{ mt: 1 }} />
       </>
@@ -97,7 +97,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   });
 
   const { data: votedProposals } = useVotedProposals();
-  const { data: mkrOnHat } = useSkyOnHat();
+  const { data: skyOnHat } = useSkyOnHat();
   const { data: hat } = useHat();
   const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 
@@ -254,7 +254,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 ]}
                 banner={
                   <ErrorBoundary componentName="Executive Timing Banner">
-                    <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                    <ProposalTimingBanner proposal={proposal} spellData={spellData} skyOnHat={skyOnHat} />
                   </ErrorBoundary>
                 }
               ></Tabs>

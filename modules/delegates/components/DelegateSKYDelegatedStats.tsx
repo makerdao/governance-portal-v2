@@ -25,8 +25,8 @@ export function DelegateSKYDelegatedStats({
   const { account } = useAccount();
   // TODO: Fetch addresses suporting through API fetching
 
-  const { data: mkrDelegatedData } = useSkyDelegatedByUser(account, delegate.voteDelegateAddress);
-  const totalSkyDelegated = mkrDelegatedData?.totalDelegationAmount;
+  const { data: skyDelegatedData } = useSkyDelegatedByUser(account, delegate.voteDelegateAddress);
+  const totalSkyDelegated = skyDelegatedData?.totalDelegationAmount;
   const { data: votingWeight, loading: votingWeightLoading } = useSkyVotingWeight({
     address: delegate.voteDelegateAddress
   });

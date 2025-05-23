@@ -15,12 +15,12 @@ export async function fetchSkyInChief(network?: SupportedNetworks): Promise<bigi
   const chainId = network ? networkNameToChainId(network) : networkNameToChainId(SupportedNetworks.MAINNET);
   const publicClient = getPublicClient(chainId);
 
-  const mkrInChief = await publicClient.readContract({
+  const skyInChief = await publicClient.readContract({
     address: skyAddress[chainId],
     abi: skyAbi,
     functionName: 'balanceOf',
     args: [chiefAddress[chainId]]
   });
 
-  return mkrInChief;
+  return skyInChief;
 }
