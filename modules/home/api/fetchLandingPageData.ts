@@ -59,7 +59,7 @@ export async function fetchLandingPageData(
         fetchJson(
           `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
         ),
-        fetchJson(`/api/polling/v2/all-polls?network=${network}&pageSize=4`),
+        fetchJson(`/api/polling/all-polls?network=${network}&pageSize=4`),
         fetchMkrOnHat(network),
         fetchMkrInChief(network)
       ])
