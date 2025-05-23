@@ -16,7 +16,7 @@ import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
-import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
+import { useSkyOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
@@ -50,7 +50,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { data: lockedSky, mutate: mutateLockedSky } = useLockedSky(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-  const { data: mkrOnHat } = useMkrOnHat();
+  const { data: mkrOnHat } = useSkyOnHat();
 
   const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
     state.executiveFilters.startDate,

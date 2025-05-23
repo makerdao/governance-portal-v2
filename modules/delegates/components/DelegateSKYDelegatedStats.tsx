@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex } from 'theme-ui';
-import { useMkrDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
+import { useSkyDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -25,8 +25,8 @@ export function DelegateSKYDelegatedStats({
   const { account } = useAccount();
   // TODO: Fetch addresses suporting through API fetching
 
-  const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
-  const totalMkrDelegated = mkrDelegatedData?.totalDelegationAmount;
+  const { data: mkrDelegatedData } = useSkyDelegatedByUser(account, delegate.voteDelegateAddress);
+  const totalSkyDelegated = mkrDelegatedData?.totalDelegationAmount;
   const { data: votingWeight, loading: votingWeightLoading } = useSkyVotingWeight({
     address: delegate.voteDelegateAddress
   });
@@ -63,7 +63,7 @@ export function DelegateSKYDelegatedStats({
       />
       {account && (
         <StatBox
-          value={typeof totalMkrDelegated !== 'undefined' ? formatValue(totalMkrDelegated) : '0'}
+          value={typeof totalSkyDelegated !== 'undefined' ? formatValue(totalSkyDelegated) : '0'}
           label={'SKY delegated by you'}
         />
       )}

@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { fetchMkrOnHat } from 'modules/executive/api/fetchSkyOnHat';
-import { fetchMkrInChief } from 'modules/executive/api/fetchSkyInChief';
+import { fetchSkyOnHat } from 'modules/executive/api/fetchSkyOnHat';
+import { fetchSkyInChief } from 'modules/executive/api/fetchSkyInChief';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
 import { Proposal } from 'modules/executive/types';
 import { PollListItem } from 'modules/polling/types';
 import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pollsResponse';
-import { MkrOnHatResponse } from 'modules/executive/api/fetchSkyOnHat';
+import { SkyOnHatResponse } from 'modules/executive/api/fetchSkyOnHat';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum, SKY_PORTAL_START_DATE_MAINNET } from 'modules/polling/polling.constants';
 import { DelegateInfo, DelegatePaginated, DelegatesApiStats } from 'modules/delegates/types';
@@ -60,14 +60,14 @@ export async function fetchLandingPageData(
           `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
         ),
         fetchJson(`/api/polling/all-polls?network=${network}&pageSize=4`),
-        fetchMkrOnHat(network),
-        fetchMkrInChief(network)
+        fetchSkyOnHat(network),
+        fetchSkyInChief(network)
       ])
     : await Promise.allSettled([
         getExecutiveProposals({ start: 0, limit: EXEC_FETCH_SIZE, sortBy: EXEC_SORT_BY, network }),
         getPollsPaginated({ ...pollQueryVariables, pageSize: 4 }),
-        fetchMkrOnHat(network),
-        fetchMkrInChief(network)
+        fetchSkyOnHat(network),
+        fetchSkyInChief(network)
       ]);
 
   // return null for any data we couldn't fetch
@@ -81,9 +81,9 @@ export async function fetchLandingPageData(
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
     mkrOnHat: mkrOnHatResponse
-      ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat, 'wad', 2, true, false, 1e9)
+      ? formatValue((mkrOnHatResponse as SkyOnHatResponse).mkrOnHat, 'wad', 2, true, false, 1e9)
       : undefined,
-    hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
+    hat: mkrOnHatResponse ? (mkrOnHatResponse as SkyOnHatResponse).hat : undefined,
     mkrInChief:
       mkrInChief === 0n || mkrInChief
         ? formatValue(mkrInChief as bigint, 'wad', 2, true, false, 1e9)

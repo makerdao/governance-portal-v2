@@ -11,7 +11,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { chiefAddress, skyAbi, skyAddress } from 'modules/contracts/generated';
 
-export async function fetchMkrInChief(network?: SupportedNetworks): Promise<bigint> {
+export async function fetchSkyInChief(network?: SupportedNetworks): Promise<bigint> {
   const chainId = network ? networkNameToChainId(network) : networkNameToChainId(SupportedNetworks.MAINNET);
   const publicClient = getPublicClient(chainId);
 

@@ -19,7 +19,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useFree } from '../hooks/useFree';
 import { TxStatus } from 'modules/web3/constants/transaction';
 
-const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
+const ModalContent = ({ close, mutateLockedSky, ...props }) => {
   const { account } = useAccount();
 
   const [skyToWithdraw, setSkyToWithdraw] = useState(0n);
@@ -34,7 +34,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
     },
     onSuccess: () => {
       setTxStatus(TxStatus.SUCCESS);
-      mutateLockedMkr?.();
+      mutateLockedSky?.();
     },
     onError: () => {
       setTxStatus(TxStatus.ERROR);
@@ -142,7 +142,7 @@ const Withdraw = (props): JSX.Element => {
           <ModalContent
             sx={{ px: [3, null] }}
             close={() => setShowDialog(false)}
-            mutateLockedMkr={props.mutateLockedMkr}
+            mutateLockedSky={props.mutateLockedSky}
           />
         </DialogContent>
       </DialogOverlay>

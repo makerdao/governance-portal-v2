@@ -13,14 +13,14 @@ export class DelegatePage {
   private confirmTransactionText: any;
   private depositText: any;
   private mkrInput: any;
-  private depositMkrButton: any;
+  private depositSkyButton: any;
   private delegatingText: any;
   private congratsText: any;
   private delegatedByYouText: any;
   private undelegateButton: any;
   private withdrawText: any;
   private setMaxButton: any;
-  private undelegateMkrButton: any;
+  private undelegateSkyButton: any;
   private transactionPendingText: any;
   private transactionSentText: any;
   private undelegatingText: any;
@@ -38,14 +38,14 @@ export class DelegatePage {
     this.confirmTransactionText = this.page.locator('text=Confirm Transaction');
     this.depositText = this.page.locator('text=Deposit into delegate contract');
     this.mkrInput = this.page.locator('[data-testid="sky-input"]');
-    this.depositMkrButton = this.page.locator('[data-testid="deposit-mkr-modal-button"]');
+    this.depositSkyButton = this.page.locator('[data-testid="deposit-mkr-modal-button"]');
     this.delegatingText = this.page.locator('text=You are delegating');
     this.congratsText = this.page.locator('text=Congratulations, you delegated');
     this.delegatedByYouText = this.page.locator('[data-testid="mkr-delegated-by-you"]');
     this.undelegateButton = this.page.locator('[data-testid="button-undelegate"]');
     this.withdrawText = this.page.locator('text=Withdraw from delegate contract');
     this.setMaxButton = this.page.locator('button[data-testid="sky-input-set-max"]');
-    this.undelegateMkrButton = this.page.locator('button:has-text("Undelegate SKY")');
+    this.undelegateSkyButton = this.page.locator('button:has-text("Undelegate SKY")');
     this.transactionPendingText = this.page.locator('text=Transaction Pending');
     this.transactionSentText = this.page.locator('text=Transaction Sent');
     this.undelegatingText = this.page.locator('text=Undelegating SKY');
@@ -67,7 +67,7 @@ export class DelegatePage {
 
     await expect(this.depositText).toBeVisible();
     await this.mkrInput.fill(amount);
-    await this.depositMkrButton.click();
+    await this.depositSkyButton.click();
 
     await expect(this.delegatingText).toBeVisible();
     await this.confirmTransactionButton.click();
@@ -84,7 +84,7 @@ export class DelegatePage {
     await this.undelegateButton.first().click();
     await expect(this.withdrawText).toBeVisible();
     await this.setMaxButton.click();
-    await this.undelegateMkrButton.click();
+    await this.undelegateSkyButton.click();
     await expect(this.transactionPendingText).toBeVisible();
     await expect(this.undelegatingText).toBeVisible();
     closeModal(this.page);

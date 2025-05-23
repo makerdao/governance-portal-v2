@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/subgraph/voteAddressSkyWeightsAtTime';
+import { voteAddressSkyWeightsAtTime } from 'modules/gql/queries/subgraph/voteAddressSkyWeightsAtTime';
 import { allMainnetVoters } from 'modules/gql/queries/subgraph/allMainnetVoters';
 import { allArbitrumVoters } from 'modules/gql/queries/subgraph/allArbitrumVoters';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -131,7 +131,7 @@ export async function fetchVotesByAddressForPoll(
 
   const skyWeightsResponse = await gqlRequest<SkyWeightsResponse>({
     chainId: networkNameToChainId(network),
-    query: voteAddressMkrWeightsAtTime,
+    query: voteAddressSkyWeightsAtTime,
     variables: { argVoters: allVoterAddresses, argUnix: endUnix }
   });
 

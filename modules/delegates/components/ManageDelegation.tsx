@@ -12,7 +12,7 @@ import { Delegate } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
 import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
-import { useMkrDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
+import { useSkyDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function ManageDelegation({
@@ -29,7 +29,7 @@ export default function ManageDelegation({
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
   const { mutate: mutateTotalStaked } = useLockedSky(delegate.voteDelegateAddress);
-  const { mutate: mutateMkrStaked } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
+  const { mutate: mutateSkyStaked } = useSkyDelegatedByUser(account, delegate.voteDelegateAddress);
 
   return (
     <Box>
@@ -70,7 +70,7 @@ export default function ManageDelegation({
           isOpen={showDelegateModal}
           onDismiss={() => setShowDelegateModal(false)}
           mutateTotalStaked={mutateTotalStaked}
-          mutateSkyDelegated={mutateMkrStaked}
+          mutateSkyDelegated={mutateSkyStaked}
         />
       )}
       {showUndelegateModal && (
@@ -79,7 +79,7 @@ export default function ManageDelegation({
           isOpen={showUndelegateModal}
           onDismiss={() => setShowUndelegateModal(false)}
           mutateTotalStaked={mutateTotalStaked}
-          mutateSkyDelegated={mutateMkrStaked}
+          mutateSkyDelegated={mutateSkyStaked}
         />
       )}
     </Box>

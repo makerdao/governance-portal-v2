@@ -12,12 +12,12 @@ import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
-export type MkrOnHatResponse = {
+export type SkyOnHatResponse = {
   hat: string;
   mkrOnHat: bigint;
 };
 
-export async function fetchMkrOnHat(network?: SupportedNetworks): Promise<MkrOnHatResponse> {
+export async function fetchSkyOnHat(network?: SupportedNetworks): Promise<SkyOnHatResponse> {
   const chainId = network ? networkNameToChainId(network) : networkNameToChainId(SupportedNetworks.MAINNET);
   const publicClient = getPublicClient(chainId);
 

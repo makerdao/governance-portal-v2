@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Box, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
-import { useMkrDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
+import { useSkyDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateSky, TxDisplay } from 'modules/delegates/components';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
@@ -39,11 +39,11 @@ export const UndelegateModal = ({
 }: Props): JSX.Element => {
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(0n);
+  const [mkrToWithdraw, setSkyToWithdraw] = useState(0n);
   const [txStatus, setTxStatus] = useState<TxStatus>(TxStatus.IDLE);
   const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
-  const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, voteDelegateAddress);
+  const { data: mkrDelegatedData } = useSkyDelegatedByUser(account, voteDelegateAddress);
   const stakingEngineDelegated = mkrDelegatedData?.stakingEngineDelegationAmount;
   const directDelegated = mkrDelegatedData?.directDelegationAmount;
 
@@ -99,7 +99,7 @@ export const UndelegateModal = ({
                   <InputDelegateSky
                     title="Withdraw from delegate contract"
                     description="Input the amount of SKY to withdraw from the delegate contract."
-                    onChange={setMkrToWithdraw}
+                    onChange={setSkyToWithdraw}
                     balance={directDelegated}
                     buttonLabel="Undelegate SKY"
                     onClick={() => {

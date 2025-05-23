@@ -18,7 +18,7 @@ import { TxStatus } from 'modules/web3/constants/transaction';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
-import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
+import { useSkyOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { sortBytesArray } from 'lib/utils';
 import { encodeAbiParameters, keccak256 } from 'viem';
@@ -43,7 +43,7 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
   const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
 
   const { data: allSlates } = useAllSlates();
-  const { mutate: mutateMkrOnHat } = useMkrOnHat();
+  const { mutate: mutateSkyOnHat } = useSkyOnHat();
 
   const { data: hat } = useHat();
 
@@ -68,7 +68,7 @@ const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
     },
     onSuccess: (hash: `0x${string}`) => {
       mutateVotedProposals();
-      mutateMkrOnHat();
+      mutateSkyOnHat();
       setTxStatus(TxStatus.SUCCESS);
       setTxHash(hash);
     },

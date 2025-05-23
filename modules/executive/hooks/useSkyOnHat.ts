@@ -12,14 +12,14 @@ import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useChainId, useReadContract } from 'wagmi';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
-type MkrOnHatResponse = {
+type SkyOnHatResponse = {
   data?: bigint;
   loading: boolean;
   error?: Error | null;
   mutate: () => void;
 };
 
-export const useMkrOnHat = (): MkrOnHatResponse => {
+export const useSkyOnHat = (): SkyOnHatResponse => {
   const network = useNetwork();
 
   const chainId = useChainId();
@@ -39,7 +39,7 @@ export const useMkrOnHat = (): MkrOnHatResponse => {
   const {
     data,
     error,
-    mutate: mutateMkrOnHat
+    mutate: mutateSkyOnHat
   } = useSWR(`${chiefAddress[chainId]}/${hatAddress}/mkr-on-hat`, async () => {
     return hatAddress ? await getChiefApprovals(hatAddress, network) : undefined;
   });
@@ -50,7 +50,7 @@ export const useMkrOnHat = (): MkrOnHatResponse => {
     error: hatError || error,
     mutate: () => {
       mutateHatAddress();
-      mutateMkrOnHat();
+      mutateSkyOnHat();
     }
   };
 };

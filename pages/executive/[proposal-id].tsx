@@ -18,7 +18,7 @@ import { getExecutiveProposal, getGithubExecutives } from 'modules/executive/api
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
-import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
+import { useSkyOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
@@ -97,7 +97,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   });
 
   const { data: votedProposals } = useVotedProposals();
-  const { data: mkrOnHat } = useMkrOnHat();
+  const { data: mkrOnHat } = useSkyOnHat();
   const { data: hat } = useHat();
   const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 

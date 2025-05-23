@@ -197,9 +197,9 @@ export default function Index({
   polls: prefetchedPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
-  mkrOnHat: prefetchedMkrOnHat,
+  mkrOnHat: prefetchedSkyOnHat,
   hat: prefetchedHat,
-  mkrInChief: prefetchedMkrInChief
+  mkrInChief: prefetchedSkyInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
   const [delegatesData, delegatesInfo] = useLandingPageDelegates();
@@ -209,9 +209,9 @@ export default function Index({
         polls: prefetchedPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
-        mkrOnHat: prefetchedMkrOnHat,
+        mkrOnHat: prefetchedSkyOnHat,
         hat: prefetchedHat,
-        mkrInChief: prefetchedMkrInChief
+        mkrInChief: prefetchedSkyInChief
       }
     : null;
 
@@ -249,9 +249,9 @@ export default function Index({
     delegatesInfo: delegatesInfo.data ?? [],
     delegatesError: delegatesData.error || delegatesInfo.error,
     stats: delegatesData.data?.stats,
-    mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
+    mkrOnHat: isDefaultNetwork(network) ? prefetchedSkyOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
-    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
+    mkrInChief: isDefaultNetwork(network) ? prefetchedSkyInChief : data?.mkrInChief ?? undefined
   };
 
   return <LandingPage {...props} />;

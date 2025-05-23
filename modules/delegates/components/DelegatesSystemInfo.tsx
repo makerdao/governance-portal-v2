@@ -24,7 +24,7 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesApiStats }): Re
   const delegateFactoryAddress = voteDelegateFactoryAddressMapping[chainId];
   const network = useNetwork();
 
-  const { data: totalMkr } = useTotalSupply(Tokens.SKY);
+  const { data: totalSky } = useTotalSupply(Tokens.SKY);
 
   const statsItems = [
     {
@@ -50,8 +50,8 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesApiStats }): Re
     {
       title: 'Percent of SKY delegated',
       id: 'percent-sky-system-info',
-      value: totalMkr ? (
-        `${calculatePercentage(parseEther(stats.totalSkyDelegated.toString()), totalMkr, 2)}%`
+      value: totalSky ? (
+        `${calculatePercentage(parseEther(stats.totalSkyDelegated.toString()), totalSky, 2)}%`
       ) : (
         <SkeletonThemed width={'100px'} height={'15px'} />
       )

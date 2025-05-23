@@ -14,7 +14,7 @@ import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCe
 import { useUsdsDaiData } from 'modules/web3/hooks/useUsdsDaiData';
 import { useSkySavingsRate } from 'modules/web3/hooks/useSkySavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
+import { useSkyOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import { formatValue } from 'lib/string';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
@@ -131,7 +131,7 @@ export default function SystemStatsSidebar({
     },
 
     'sky needed to pass': key => {
-      const { data: mkrOnHat } = useMkrOnHat();
+      const { data: mkrOnHat } = useSkyOnHat();
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>

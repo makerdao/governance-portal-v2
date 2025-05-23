@@ -48,7 +48,7 @@ const ParticipationChart = ({
       };
     });
 
-  const formatYAxis = tickMkr => tickMkr.toFixed(0);
+  const formatYAxis = tickSky => tickSky.toFixed(0);
 
   const formatXAxis = tickDate => {
     const tickMonth = range.find(({ unixDate }) => unixDate === tickDate);

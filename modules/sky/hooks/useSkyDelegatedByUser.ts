@@ -29,7 +29,7 @@ type DelegatedByUserResponse = {
 };
 
 // Fetches the amount delegated from one user to one contract address
-export const useMkrDelegatedByUser = (
+export const useSkyDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): DelegatedByUserResponse => {
@@ -93,7 +93,7 @@ export const useMkrDelegatedByUser = (
           totalDelegationAmount: stakingEngineDelegated + directDelegated
         };
       } catch (outerError) {
-        console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);
+        console.error('Error in useSkyDelegatedByUser. Fetching from chain instead. Error:', outerError);
         return fetchFromChain(userAddress, voteDelegateAddress);
       }
     },

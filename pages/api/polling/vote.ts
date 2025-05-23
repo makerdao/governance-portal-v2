@@ -17,7 +17,7 @@ import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/get
 import logger from 'lib/logger';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
-import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasSkyRequiredVotingWeight';
+import { hasSkyRequiredVotingWeight } from 'modules/polling/helpers/hasSkyRequiredVotingWeight';
 import { MIN_SKY_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
@@ -153,16 +153,16 @@ export default withApiHandler(
 
     //run eligibility checks unless backdoor secret provided
     if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
-      const [hasMkrRequired, activePollIds, recentlyUsedGaslessVoting, ballotHasVotedPolls] =
+      const [hasSkyRequired, activePollIds, recentlyUsedGaslessVoting, ballotHasVotedPolls] =
         await Promise.all([
-          hasMkrRequiredVotingWeight(voter, network, MIN_SKY_REQUIRED_FOR_GASLESS_VOTING, true),
+          hasSkyRequiredVotingWeight(voter, network, MIN_SKY_REQUIRED_FOR_GASLESS_VOTING, true),
           getActivePollIds(network),
           recentlyUsedGaslessVotingCheck(voter, network),
           ballotIncludesAlreadyVoted(voter, network, pollIds)
         ]);
 
       //verify address has a poll weight > 0.1 SKY
-      if (!hasMkrRequired) {
+      if (!hasSkyRequired) {
         // BigInt doesnt handle decimals
         await throwError({
           error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_SKY_REQUIRED,
