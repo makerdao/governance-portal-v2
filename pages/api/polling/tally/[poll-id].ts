@@ -80,9 +80,9 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *         items:
  *           type: integer
  *         description: Array of chosen option indices by the voter.
- *       mkrSupport:
+ *       skySupport:
  *         type: string # Represents number | string, string is safer for large numbers
- *         description: MKR voting weight associated with this vote.
+ *         description: SKY voting weight associated with this vote.
  *       chainId:
  *         type: integer
  *         description: Chain ID where the vote was cast.
@@ -96,7 +96,7 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *       pollId: 123
  *       voter: "0xcfeed3fbefe9eb09b37539eaa0ddd58d1e1044ca"
  *       ballot: [1]
- *       mkrSupport: "23232.23132"
+ *       skySupport: "23232.23132"
  *       chainId: 1
  *       blockTimestamp: 1678886400
  *       hash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
@@ -109,9 +109,9 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *       optionName:
  *         type: string
  *         description: Textual name of the poll option.
- *       mkrSupport:
+ *       skySupport:
  *         type: string # Represents number | string
- *         description: Total MKR support for this option in the current state/round.
+ *         description: Total SKY support for this option in the current state/round.
  *       firstPct:
  *         type: string
  *         nullable: true
@@ -125,7 +125,7 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *         type: number # Should be string if it's a large number formatted
  *         format: float
  *         nullable: true
- *         description: Amount of MKR/votes transferred to this option in a round.
+ *         description: Amount of SKY/votes transferred to this option in a round.
  *       winner:
  *         type: boolean
  *         nullable: true
@@ -137,7 +137,7 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *     example:
  *       optionId: "1"
  *       optionName: "Yes"
- *       mkrSupport: "23232.23132"
+ *       skySupport: "23232.23132"
  *       firstPct: "12.22"
  *       transferPct: 0.02
  *       transfer: 500.5
@@ -160,12 +160,12 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *         items:
  *           $ref: '#/definitions/PollTallyOption'
  *         description: Array of tally results for each option.
- *       totalMkrParticipation:
+ *       totalSkyParticipation:
  *         type: string # Represents number | string
- *         description: Total MKR that participated in the poll.
- *       totalMkrActiveParticipation:
+ *         description: Total SKY that participated in the poll.
+ *       totalSkyActiveParticipation:
  *         type: string # Represents number | string
- *         description: Total active MKR participation (may differ based on poll mechanics).
+ *         description: Total active SKY participation (may differ based on poll mechanics).
  *       winningOptionName:
  *         type: string
  *         nullable: true # Can be empty if no winner yet or not applicable
@@ -190,14 +190,14 @@ import { ONE_WEEK_IN_MS, ONE_MINUTE_IN_MS } from 'modules/app/constants/time';
  *       numVoters: 8
  *       results: [
  *         {
- *           optionId: "1",
- *           optionName: "Yes",
- *           mkrSupport: "23232.23132",
+ *           optionId: "1"
+ *           optionName: "Yes"
+ *           skySupport: "23232.23132"
  *           winner: true
  *         }
  *       ]
- *       totalMkrParticipation: "123123.213213"
- *       totalMkrActiveParticipation: "120000.000000"
+ *       totalSkyParticipation: "123123.213213"
+ *       totalSkyActiveParticipation: "120000.000000"
  *       winningOptionName: "Yes"
  *       victoryConditionMatched: 1
  *       votesByAddress: []
@@ -284,8 +284,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
         parameters: poll.parameters,
         numVoters: 0,
         results: [],
-        totalMkrParticipation: 0,
-        totalMkrActiveParticipation: 0,
+        totalSkyParticipation: 0,
+        totalSkyActiveParticipation: 0,
         victoryConditionMatched: null,
         winner: null,
         winningOptionName: '',
