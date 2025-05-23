@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Alert, Button, Box, Flex, Text } from 'theme-ui';
-import { MKRInput } from 'modules/mkr/components/MKRInput';
+import { SkyTokenInput } from 'modules/mkr/components/SkyTokenInput';
 import { useState } from 'react';
 import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
 import Withdraw from 'modules/mkr/components/Withdraw';
@@ -56,7 +56,7 @@ export function InputDelegateSky({
       </Text>
       <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
       <Box sx={{ mt: 3, width: '20rem' }}>
-        <MKRInput value={value} onChange={handleChange} balance={balance} />
+        <SkyTokenInput value={value} onChange={handleChange} balance={balance} />
         <Button
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
