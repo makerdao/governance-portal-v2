@@ -170,7 +170,7 @@ export default function ReviewBox({
                 <Box>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 3 }}>
                     <LocalIcon name="sparkles" color="primary" size={3} />
-                    <Text sx={{ ml: 2 }}>The transaction fee is covered by Maker.</Text>
+                    <Text sx={{ ml: 2 }}>The transaction fee is covered by Sky.</Text>
                   </Flex>
                   <Box>
                     <ExternalLink

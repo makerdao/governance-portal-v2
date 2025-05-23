@@ -28,7 +28,7 @@ import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateSkyGovernance/InformationParticipateSkyGovernance';
+import InformationParticipateSkyGovernance from 'modules/home/components/InformationParticipateSkyGovernance/InformationParticipateSkyGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
@@ -173,7 +173,7 @@ const LandingPage = ({
                 height: '1720px'
               }}
             />
-            <InformationParticipateMakerGovernance />
+            <InformationParticipateSkyGovernance />
             <ResourcesLanding />
           </Box>
 

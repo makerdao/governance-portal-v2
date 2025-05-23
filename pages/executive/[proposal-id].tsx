@@ -126,7 +126,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent
         title={`Proposal ${proposal['title'] ? proposal['title'] : proposal.address}`}
-        description={`See the results of the MakerDAO executive proposal ${
+        description={`See the results of the Sky Ecosystem executive proposal ${
           proposal['title'] ? proposal['title'] : proposal.address
         }.`}
       />

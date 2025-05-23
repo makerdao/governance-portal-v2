@@ -205,7 +205,7 @@ export default function DefaultVoteModalView({
                 setHatChecked(event.target.checked);
               }}
             />
-            Keep my SKY on old proposal to secure the Maker protocol
+            Keep my SKY on old proposal to secure the Sky protocol
           </Label>
         ) : null}
       </Box>
