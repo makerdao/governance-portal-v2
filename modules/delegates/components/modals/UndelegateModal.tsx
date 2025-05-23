@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Box, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
-import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
+import { useMkrDelegatedByUser } from 'modules/sky/hooks/useMkrDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateSky, TxDisplay } from 'modules/delegates/components';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
@@ -112,8 +112,8 @@ export const UndelegateModal = ({
                     disclaimer={
                       stakingEngineDelegated && stakingEngineDelegated > 0n ? (
                         <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
-                          Your {formatValue(stakingEngineDelegated)} SKY delegated through the Staking Engine must be
-                          undelegated from the{' '}
+                          Your {formatValue(stakingEngineDelegated)} SKY delegated through the Staking Engine
+                          must be undelegated from the{' '}
                           <ExternalLink title="Sky app" href="https://app.sky.money/?widget=staking-engine">
                             <span>Sky app</span>
                           </ExternalLink>

@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
-import { getMKRVotingWeight } from 'modules/mkr/helpers/getMKRVotingWeight';
+import { getMKRVotingWeight } from 'modules/sky/helpers/getMKRVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { parseEther } from 'viem';
@@ -229,9 +229,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if any poll is expired', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as Mock).mockReturnValue(
-      Promise.resolve(parseEther('40'))
-    );
+    (getMKRVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([]));
     const { req, res } = mockRequestResponse('POST', {
       voter: '0x999999cf1046e68e36E1aA2E0E07105eDDD1f08E',
@@ -254,9 +252,7 @@ describe('/api/polling/vote API Endpoint', () => {
 
   it('return 400 if it used gasless voting recently', async () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
-    (getMKRVotingWeight as Mock).mockReturnValue(
-      Promise.resolve(parseEther('40'))
-    );
+    (getMKRVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
     (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(true));
 
@@ -284,9 +280,7 @@ describe('/api/polling/vote API Endpoint', () => {
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));
     (recentlyUsedGaslessVotingCheck as Mock).mockReturnValue(Promise.resolve(false));
 
-    (getMKRVotingWeight as Mock).mockReturnValue(
-      Promise.resolve(parseEther('40'))
-    );
+    (getMKRVotingWeight as Mock).mockReturnValue(Promise.resolve(parseEther('40')));
     (getActivePollIds as Mock).mockReturnValue(Promise.resolve([1]));
 
     (cacheGet as Mock).mockReturnValue(Promise.resolve(null));

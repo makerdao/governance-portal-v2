@@ -14,7 +14,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { SkyTokenInput } from './SkyTokenInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useFree } from '../hooks/useFree';
 import { TxStatus } from 'modules/web3/constants/transaction';

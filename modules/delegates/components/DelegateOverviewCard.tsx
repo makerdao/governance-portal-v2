@@ -13,7 +13,7 @@ import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatePaginated } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
-import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
+import { useMkrDelegatedByUser } from 'modules/sky/hooks/useMkrDelegatedByUser';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';

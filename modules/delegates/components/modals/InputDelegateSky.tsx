@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Alert, Button, Box, Flex, Text } from 'theme-ui';
-import { SkyTokenInput } from 'modules/mkr/components/SkyTokenInput';
+import { SkyTokenInput } from 'modules/sky/components/SkyTokenInput';
 import { useState } from 'react';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
-import Withdraw from 'modules/mkr/components/Withdraw';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
+import Withdraw from 'modules/sky/components/Withdraw';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { parseEther } from 'viem';

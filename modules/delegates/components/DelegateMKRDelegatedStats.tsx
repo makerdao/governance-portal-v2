@@ -7,12 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex } from 'theme-ui';
-import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
+import { useMkrDelegatedByUser } from 'modules/sky/hooks/useMkrDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
+import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
 export function DelegateMKRDelegatedStats({

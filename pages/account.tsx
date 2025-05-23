@@ -9,14 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Alert, Box, Button, Card, Checkbox, Flex, Heading, Label, Text } from 'theme-ui';
 import { formatValue } from 'lib/string';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { DelegateDetail, TxDisplay } from 'modules/delegates/components';
-import Withdraw from 'modules/mkr/components/Withdraw';
+import Withdraw from 'modules/sky/components/Withdraw';
 import Icon from 'modules/app/components/Icon';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -232,32 +232,38 @@ const AccountPage = (): React.ReactElement => {
                   <Box>
                     <Label>No vote delegate contract detected</Label>
                     {chiefBalance && chiefBalance > 0n && (
-                    <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 1 }}>
-                      <Text as="p">
-                        You have {' '}
-                        <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY</Text>
-                        {' '} deposited in the voting contract.
-                        <Text as="p" sx={{ my: 2 }}>
-                            If you become a delegate, you will only be able to vote as a delegate through the portal. It is recommended you either withdraw your SKY and delegate it to yourself or use a different account to create the delegate contract.
+                      <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 1 }}>
+                        <Text as="p">
+                          You have{' '}
+                          <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY</Text>{' '}
+                          deposited in the voting contract.
+                          <Text as="p" sx={{ my: 2 }}>
+                            If you become a delegate, you will only be able to vote as a delegate through the
+                            portal. It is recommended you either withdraw your SKY and delegate it to yourself
+                            or use a different account to create the delegate contract.
+                          </Text>
                         </Text>
-                      </Text>
-                      <Withdraw sx={{ mt: 3 }} />
-                      <Label
-                        sx={{ mt: 3, fontSize: 2, alignItems: 'center', fontWeight: 'normal' }}
-                        data-testid="checkbox-create-delegate"
-                      >
-                        <Checkbox
-                          checked={warningRead}
-                          onChange={() => {
-                            setWarningRead(!warningRead);
-                          }}
-                        />
-                        Proceed anyway without withdrawing SKY
-                      </Label>
-                    </Flex>
-                  )}
+                        <Withdraw sx={{ mt: 3 }} />
+                        <Label
+                          sx={{ mt: 3, fontSize: 2, alignItems: 'center', fontWeight: 'normal' }}
+                          data-testid="checkbox-create-delegate"
+                        >
+                          <Checkbox
+                            checked={warningRead}
+                            onChange={() => {
+                              setWarningRead(!warningRead);
+                            }}
+                          />
+                          Proceed anyway without withdrawing SKY
+                        </Label>
+                      </Flex>
+                    )}
                     <Button
-                      disabled={(!warningRead && chiefBalance && chiefBalance > 0n) || createDelegate.isLoading || !createDelegate.prepared}
+                      disabled={
+                        (!warningRead && chiefBalance && chiefBalance > 0n) ||
+                        createDelegate.isLoading ||
+                        !createDelegate.prepared
+                      }
                       onClick={() => {
                         setTxStatus(TxStatus.INITIALIZED);
                         setModalOpen(true);
@@ -275,9 +281,13 @@ const AccountPage = (): React.ReactElement => {
                     <Label>Support the Launch of SKY Governance</Label>
                     {!votedForAddressZero && (
                       <>
-                        <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                          Voting for address(0) now, even with 0 SKY delegated, ensures that any future delegation
-                          to your delegate contract will immediately count toward launching the new chief.
+                        <Alert
+                          variant="notice"
+                          sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}
+                        >
+                          Voting for address(0) now, even with 0 SKY delegated, ensures that any future
+                          delegation to your delegate contract will immediately count toward launching the new
+                          chief.
                         </Alert>
                         <Button
                           disabled={
@@ -306,17 +316,19 @@ const AccountPage = (): React.ReactElement => {
                       </Text>
                     )}
                     {chiefBalance !== undefined && chiefBalance > 0n && (
-                    <>
-                      <Text as="p" sx={{ mt: 4 }}>
-                        You have {' '}
-                        <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY</Text>
-                        {' '} deposited in the voting contract.
-                        <Text as="p" sx={{ my: 2 }}>
-                            As a delegate you can only vote with your delegate contract through the portal. Please withdraw your SKY and delegate it to yourself to vote with it.
+                      <>
+                        <Text as="p" sx={{ mt: 4 }}>
+                          You have{' '}
+                          <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} SKY</Text>{' '}
+                          deposited in the voting contract.
+                          <Text as="p" sx={{ my: 2 }}>
+                            As a delegate you can only vote with your delegate contract through the portal.
+                            Please withdraw your SKY and delegate it to yourself to vote with it.
+                          </Text>
                         </Text>
-                      </Text>
-                      <Withdraw sx={{ mt: 3 }} />
-                    </>)}
+                        <Withdraw sx={{ mt: 3 }} />
+                      </>
+                    )}
                   </Box>
                 )}
               </Card>
