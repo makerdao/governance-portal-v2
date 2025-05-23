@@ -67,9 +67,9 @@ export default function VoteBreakdown({
                         textAlign: 'right'
                       }}
                     >
-                      {`${formatValue(BigInt(skySupport.toString()))} SKY Voting`}
+                      {`${formatValue(parseEther(skySupport.toString()), 'wad', 0, true)} SKY Voting`}
                       {!isResultDisplayApprovalBreakdown(poll.parameters)
-                        ? ` (${formatValue(BigInt(tallyResult.firstPct.toString()))}%)`
+                        ? ` (${tallyResult.firstPct.toString()}%)`
                         : ''}
                     </Text>
                   </React.Fragment>
@@ -81,7 +81,9 @@ export default function VoteBreakdown({
               </Flex>
 
               {tally && tallyResult ? (
-                <Tooltip label={`First choice ${formatValue(BigInt(skySupport.toString()))}`}>
+                <Tooltip
+                  label={`First choice ${formatValue(parseEther(skySupport.toString()), 'wad', 0, true)}`}
+                >
                   <Box my={2}>
                     <Progress
                       sx={{
@@ -131,7 +133,7 @@ export default function VoteBreakdown({
                         textAlign: ['left', 'right']
                       }}
                     >
-                      {`${formatValue(BigInt((firstChoice + transfer).toString()))} SKY Voting (${formatValue(
+                      {`${formatValue(firstChoice + transfer, 'wad', 0, true)} SKY Voting (${formatValue(
                         parseEther(
                           (Number(tallyResult.firstPct) + Number(tallyResult?.transferPct || 0)).toString()
                         )
@@ -147,7 +149,12 @@ export default function VoteBreakdown({
                 {tally && tallyResult ? (
                   <Box sx={{ position: 'relative', mb: 4 }}>
                     <Tooltip
-                      label={`First choice ${formatValue(firstChoice)}; Transfer ${formatValue(transfer)}`}
+                      label={`First choice ${formatValue(
+                        firstChoice,
+                        'wad',
+                        0,
+                        true
+                      )}; Transfer ${formatValue(transfer, 'wad', 0, true)}`}
                     >
                       <Box my={2}>
                         <Box>
@@ -211,9 +218,12 @@ export default function VoteBreakdown({
                       textAlign: 'right'
                     }}
                   >
-                    {`${formatValue(BigInt(skySupport.toString()))} SKY Voting (${formatValue(
-                      parseEther(tallyResult.firstPct.toString())
-                    )}%)`}
+                    {`${formatValue(
+                      parseEther(skySupport.toString()),
+                      'wad',
+                      0,
+                      true
+                    )} SKY Voting (${formatValue(parseEther(tallyResult.firstPct.toString()))}%)`}
                   </Text>
                 ) : (
                   <Delay>
@@ -223,7 +233,9 @@ export default function VoteBreakdown({
               </Flex>
 
               {tally && tallyResult ? (
-                <Tooltip label={`First choice ${formatValue(BigInt(skySupport.toString()))}`}>
+                <Tooltip
+                  label={`First choice ${formatValue(parseEther(skySupport.toString()), 'wad', 0, true)}`}
+                >
                   <Box my={2}>
                     <Progress
                       sx={{

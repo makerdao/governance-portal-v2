@@ -112,7 +112,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '38%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '28%' }}
               variant="caps"
               onClick={() => changeSort('option')}
             >
@@ -148,7 +148,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             )}
             <Text
               as="th"
-              sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '15%' }}
+              sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '22%' }}
               variant="caps"
               data-testid="mkr-header"
               onClick={() => changeSort('mkr')}

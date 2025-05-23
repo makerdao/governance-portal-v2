@@ -19,7 +19,7 @@ import { extractSatisfiesComparison } from './victory_conditions/comparison';
 import { hasVictoryConditionInstantRunOff } from '../helpers/utils';
 import { fetchVotesByAddressForPoll } from './fetchVotesByAddress';
 import { calculatePercentage } from 'lib/utils';
-import { parseEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 import { fetchDelegateAddresses } from 'modules/delegates/api/fetchDelegateAddresses';
 
 type WinnerOption = { winner: number | null; results: InstantRunoffResults | null };
@@ -223,7 +223,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       return {
         optionId,
         winner: winnerOption.winner === optionId,
-        skySupport: skySupport.toString(),
+        skySupport: formatEther(skySupport).toString(),
         optionName: poll.options[optionId],
         eliminated: instantRunoffOption?.eliminated,
         transfer: instantRunoffOption?.transfer?.toString(),
@@ -243,8 +243,8 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
     winner: winnerOption.winner ? winnerOption.winner : null,
     victoryConditionMatched,
     numVoters: votesByAddress.length,
-    totalSkyParticipation: totalSkyParticipation.toString(),
-    totalSkyActiveParticipation: totalSkyActiveParticipation.toString(),
+    totalSkyParticipation: formatEther(totalSkyParticipation).toString(),
+    totalSkyActiveParticipation: formatEther(totalSkyActiveParticipation).toString(),
     winningOptionName: winnerOption.winner ? poll.options[winnerOption.winner] : 'None found',
     results,
     rounds: winnerOption.results?.rounds,

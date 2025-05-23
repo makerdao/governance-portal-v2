@@ -288,9 +288,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         <Text sx={{ color: 'textSecondary' }}>Total Voting Power</Text>
                         {tally ? (
                           <Text>
-                            {Number(
-                              formatEther(BigInt(tally.totalSkyParticipation.toString()))
-                            ).toLocaleString(undefined, {
+                            {Number(tally.totalSkyParticipation.toString()).toLocaleString(undefined, {
                               maximumFractionDigits: 3
                             })}{' '}
                             SKY
