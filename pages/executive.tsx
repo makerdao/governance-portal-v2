@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner, Card } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Spinner, Card } from 'theme-ui';
 import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';

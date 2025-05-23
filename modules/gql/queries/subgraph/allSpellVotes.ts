@@ -6,17 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { gql } from 'graphql-request';
 
 export const allSpellVotes = gql`
-    query allSpellVotes($argSkip: Int, $argFirst: Int) {executiveVoteV2S(first: $argFirst, skip: $argSkip, orderBy: id, orderDirection: desc) {
-    	blockTime
-        spell {
-    	  id
-    	}
-      voter{
+  query allSpellVotes($argSkip: Int, $argFirst: Int) {
+    executiveVoteV2S(first: $argFirst, skip: $argSkip, orderBy: id, orderDirection: desc) {
+      blockTime
+      spell {
+        id
+      }
+      voter {
         id
         v2VotingPowerChanges(first: 1, orderDirection: desc, orderBy: blockTimestamp) {
-      	newBalance
-      }
+          newBalance
+        }
       }
     }
-    }
+  }
 `;

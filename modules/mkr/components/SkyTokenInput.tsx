@@ -13,7 +13,7 @@ import { formatValue } from 'lib/string';
 import { parseEther } from 'viem';
 import logger from 'lib/logger';
 
-export type MKRInputProps = {
+export type SkyTokenInputProps = {
   placeholder?: string;
   onChange: (value: bigint) => void;
   min?: bigint;
@@ -24,7 +24,7 @@ export type MKRInputProps = {
   value: bigint;
 };
 
-export function MKRInput({
+export function SkyTokenInput({
   placeholder = '0.000000 SKY',
   errorMaxMessage = 'SKY balance too low',
   onChange,
@@ -33,7 +33,7 @@ export function MKRInput({
   balance,
   balanceText = 'SKY Balance:',
   value
-}: MKRInputProps): React.ReactElement {
+}: SkyTokenInputProps): React.ReactElement {
   const [currentValueStr, setCurrentValueStr] = useState('');
   const [errorInvalidFormat, setErrorInvalidFormat] = useState(false);
 
@@ -55,7 +55,7 @@ export function MKRInput({
 
       onChange(parseEther(newValueStr));
     } catch (e) {
-      logger.error(`MKRInput, invalid value: ${newValueStr}`, e);
+      logger.error(`SkyTokenInput, invalid value: ${newValueStr}`, e);
       setErrorInvalidFormat(true);
       return;
     }
@@ -74,11 +74,11 @@ export function MKRInput({
   const errorMin = value !== undefined && value < 0n;
 
   return (
-    <Box data-testid="mkr-input-wrapper">
+    <Box data-testid="sky-input-wrapper">
       <Flex sx={{ border: '1px solid #D8E0E3', justifyContent: 'space-between' }}>
         <Input
-          aria-label="mkr-input"
-          data-testid="mkr-input"
+          aria-label="sky-input"
+          data-testid="sky-input"
           type="number"
           onChange={updateValue}
           value={currentValueStr}
@@ -92,7 +92,7 @@ export function MKRInput({
         <Button
           disabled={disabledButton}
           variant="textual"
-          data-testid="mkr-input-set-max"
+          data-testid="sky-input-set-max"
           sx={{ width: '80px', fontWeight: 'bold', paddingLeft: 0 }}
           onClick={onClickSetMax}
           title="Set max"
@@ -108,7 +108,7 @@ export function MKRInput({
             fontSize: 1,
             fontWeight: 'bold'
           }}
-          data-testid="mkr-input-balance-text"
+          data-testid="sky-input-balance-text"
         >
           {balanceText}&nbsp;
         </Text>
@@ -117,7 +117,7 @@ export function MKRInput({
           <Text
             sx={{ cursor: 'pointer', fontSize: 2, mt: 2 }}
             onClick={onClickSetMax}
-            data-testid="mkr-input-balance"
+            data-testid="sky-input-balance"
           >
             {formatValue(balance, 'wad', 6)}
           </Text>
@@ -129,17 +129,17 @@ export function MKRInput({
       </Flex>
 
       {errorMax && (
-        <Text variant="error" data-testid="mkr-input-error">
+        <Text variant="error" data-testid="sky-input-error">
           {errorMaxMessage}
         </Text>
       )}
       {errorMin && (
-        <Text variant="error" data-testid="mkr-input-error">
+        <Text variant="error" data-testid="sky-input-error">
           Please enter a valid amount.
         </Text>
       )}
       {errorInvalidFormat && (
-        <Text variant="error" data-testid="mkr-input-error">
+        <Text variant="error" data-testid="sky-input-error">
           Please enter a valid number.
         </Text>
       )}

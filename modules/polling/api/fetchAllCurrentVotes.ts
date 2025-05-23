@@ -19,7 +19,6 @@ import { formatEther } from 'viem';
 import { getSkyPortalStartDate } from 'modules/polling/polling.constants';
 import { pollTimes } from 'modules/gql/queries/subgraph/pollTimes';
 
-
 interface PollVoteResponse {
   poll: {
     id: string;
@@ -58,7 +57,7 @@ interface PollTimesResponse {
   }[];
 }
 
-function getMkrWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, timestamp: number): string {
+function getSkyWeightAtTimestamp(weightHistory: VotingWeightHistoryResponse, timestamp: number): string {
   // Find the most recent weight entry that doesn't exceed the given timestamp
   const relevantEntry = weightHistory.executiveVotingPowerChangeV2S
     .filter(entry => Number(entry.blockTimestamp) <= timestamp)
@@ -78,7 +77,7 @@ function isValidVote(vote: PollVoteResponse, pollTimes: PollTimesResponse): bool
 async function fetchAllCurrentVotesWithSubgraph(
   address: string,
   network: SupportedNetworks,
-  startUnix: number,
+  startUnix: number
 ): Promise<PollTallyVote[]> {
   const addressInfo = await getAddressInfo(address, network);
   const delegateOwnerAddress = addressInfo?.delegateInfo?.address;
@@ -92,18 +91,27 @@ async function fetchAllCurrentVotesWithSubgraph(
     gqlRequest<ArbitrumVotesResponse>({
       chainId: arbitrumChainId,
       query: allArbitrumVotes,
-      variables: { argAddress: delegateOwnerAddress ? delegateOwnerAddress.toLowerCase() : address.toLowerCase(), startUnix }
+      variables: {
+        argAddress: delegateOwnerAddress ? delegateOwnerAddress.toLowerCase() : address.toLowerCase(),
+        startUnix
+      }
     }),
     gqlRequest<VotingWeightHistoryResponse>({
       chainId: networkNameToChainId(network),
       query: votingWeightHistory,
       variables: {
-        argAddress: address.toLowerCase(),
+        argAddress: address.toLowerCase()
       }
     })
   ]);
-  const mainnetVotesWithChainId = mainnetVotes.pollVotes.map(vote => ({...vote, chainId: networkNameToChainId(network)}));
-  const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({...vote, chainId: arbitrumChainId}));
+  const mainnetVotesWithChainId = mainnetVotes.pollVotes.map(vote => ({
+    ...vote,
+    chainId: networkNameToChainId(network)
+  }));
+  const arbitrumVotesWithChainId = arbitrumVotes.arbitrumPollVotes.map(vote => ({
+    ...vote,
+    chainId: arbitrumChainId
+  }));
   const combinedVotes = [...mainnetVotesWithChainId, ...arbitrumVotesWithChainId];
 
   const dedupedVotes = Object.values(
@@ -113,9 +121,9 @@ async function fetchAllCurrentVotesWithSubgraph(
         acc[pollId] = vote;
       }
       return acc;
-    }, {} as Record<string, typeof combinedVotes[0]>)
+    }, {} as Record<string, (typeof combinedVotes)[0]>)
   );
-  
+
   //get the poll times for all polls voted in
   //This is a separate request because we needed to know the arbitrum poll ids first to pass in to the query
   const allPollIds = dedupedVotes.map(p => p.poll.id);
@@ -130,22 +138,25 @@ async function fetchAllCurrentVotesWithSubgraph(
   const res: PollTallyVote[] = validVotes.map(o => {
     const ballot = parseRawOptionId(o.choice);
     const poll = pollTimesRes.arbitrumPolls.find(p => p.id === o.poll.id);
-    const mkrSupport = getMkrWeightAtTimestamp(weightHistory, Number(poll?.endDate || o.blockTime));
-    
+    const skySupport = getSkyWeightAtTimestamp(weightHistory, Number(poll?.endDate || o.blockTime));
+
     return {
       pollId: Number(o.poll.id),
       ballot,
       voter: address,
       hash: o.txnHash,
       blockTimestamp: Number(o.blockTime) * 1000,
-      mkrSupport: Number(formatEther(BigInt(mkrSupport))),
-      chainId: o.chainId,
+      skySupport: Number(formatEther(BigInt(skySupport))),
+      chainId: o.chainId
     };
   });
   return res;
 }
 
-export async function fetchAllCurrentVotes(address: string, network: SupportedNetworks): Promise<PollTallyVote[]> {
+export async function fetchAllCurrentVotes(
+  address: string,
+  network: SupportedNetworks
+): Promise<PollTallyVote[]> {
   const cutoffUnix = Math.floor(getSkyPortalStartDate(network).getTime() / 1000);
   const subgraphVotes = await fetchAllCurrentVotesWithSubgraph(address, network, cutoffUnix);
   return subgraphVotes;

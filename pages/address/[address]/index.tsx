@@ -26,7 +26,7 @@ import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import useSWR, { useSWRConfig } from 'swr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { DelegatesAPIStats, DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
+import { DelegatesApiStats, DelegatesPaginatedAPIResponse } from 'modules/delegates/types';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const AddressView = ({
@@ -34,7 +34,7 @@ const AddressView = ({
   delegationStats
 }: {
   addressInfo: AddressApiResponse;
-  delegationStats: DelegatesAPIStats | undefined;
+  delegationStats: DelegatesApiStats | undefined;
 }) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
@@ -124,7 +124,7 @@ export default function AddressPage(): JSX.Element {
     revalidateOnReconnect: false
   });
 
-  const dataKeyDelegationInfo = `/api/delegates/v2?network=${network}`;
+  const dataKeyDelegationInfo = `/api/delegates?network=${network}`;
   const { data: delegationData } = useSWR<DelegatesPaginatedAPIResponse>(
     data?.isDelegate ? dataKeyDelegationInfo : null,
     fetchJson,

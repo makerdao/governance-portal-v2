@@ -37,14 +37,14 @@ export class DelegatePage {
     this.confirmTransactionButton = this.page.locator('button:has-text("Confirm Transaction")');
     this.confirmTransactionText = this.page.locator('text=Confirm Transaction');
     this.depositText = this.page.locator('text=Deposit into delegate contract');
-    this.mkrInput = this.page.locator('[data-testid="mkr-input"]');
+    this.mkrInput = this.page.locator('[data-testid="sky-input"]');
     this.depositMkrButton = this.page.locator('[data-testid="deposit-mkr-modal-button"]');
     this.delegatingText = this.page.locator('text=You are delegating');
     this.congratsText = this.page.locator('text=Congratulations, you delegated');
     this.delegatedByYouText = this.page.locator('[data-testid="mkr-delegated-by-you"]');
     this.undelegateButton = this.page.locator('[data-testid="button-undelegate"]');
     this.withdrawText = this.page.locator('text=Withdraw from delegate contract');
-    this.setMaxButton = this.page.locator('button[data-testid="mkr-input-set-max"]');
+    this.setMaxButton = this.page.locator('button[data-testid="sky-input-set-max"]');
     this.undelegateMkrButton = this.page.locator('button:has-text("Undelegate SKY")');
     this.transactionPendingText = this.page.locator('text=Transaction Pending');
     this.transactionSentText = this.page.locator('text=Transaction Sent');

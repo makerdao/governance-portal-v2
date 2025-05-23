@@ -34,8 +34,8 @@ export default function PollWinningOptionBox({
 
   const numberOfLeadingOptions = tally.results.filter(
     result =>
-      parseEther(tally.results[0].mkrSupport as string) > 0n &&
-      result.mkrSupport === tally.results[0].mkrSupport
+      parseEther(tally.results[0].skySupport as string) > 0n &&
+      result.skySupport === tally.results[0].skySupport
   ).length;
 
   const winningVictoryCondition = tally.parameters.victoryConditions.find(
@@ -68,12 +68,12 @@ export default function PollWinningOptionBox({
   }${!isDefault && numberOfLeadingOptions > 1 ? ` & ${numberOfLeadingOptions - 1} more` : ''}`;
 
   const leadingOptionSupport =
-    tally.results.find(({ optionId }) => optionId === leadingOption)?.mkrSupport.toString() || '0';
+    tally.results.find(({ optionId }) => optionId === leadingOption)?.skySupport.toString() || '0';
 
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       <ErrorBoundary componentName="Winning option">
-        {parseEther(tally.totalMkrActiveParticipation as string) > 0n ||
+        {parseEther(tally.totalSkyActiveParticipation as string) > 0n ||
         (winningVictoryCondition && winningVictoryCondition.type === PollVictoryConditions.default) ? (
           <>
             {isFinishedWithNoWinner && <StatusText>No winning option</StatusText>}

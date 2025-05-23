@@ -54,14 +54,14 @@ export default function DefaultVoteModalView({
     mutateSpellData();
   }, []);
 
-  const mkrSupporting = spellData ? BigInt(spellData.mkrSupport) : 0n;
+  const mkrSupporting = spellData ? BigInt(spellData.skySupport) : 0n;
   const hasVotingWeight = !!lockedSky && lockedSky > 0n;
 
   const afterVote =
     currentSlate && currentSlate.includes(spellAddress)
       ? mkrSupporting
       : lockedSky && spellData
-      ? lockedSky + BigInt(spellData.mkrSupport)
+      ? lockedSky + BigInt(spellData.skySupport)
       : 0n;
 
   const GridBox = ({ bpi, children }) => (

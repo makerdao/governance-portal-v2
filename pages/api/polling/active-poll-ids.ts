@@ -15,7 +15,7 @@ import validateQueryParam from 'modules/app/api/validateQueryParam';
 /**
  * @swagger
  * paths:
- *  /api/polling/v2/active-poll-ids:
+ *  /api/polling/active-poll-ids:
  *    get:
  *      tags:
  *        - "polls"

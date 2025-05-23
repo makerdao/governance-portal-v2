@@ -49,7 +49,7 @@ export async function fetchPollingPageData(
 
   const { polls, tags, stats, paginationInfo }: PollsPaginatedResponse = useApi
     ? await fetchJson(
-        `/api/polling/v2/all-polls?network=${network}&pageSize=${pageSize}&page=${page}&orderBy=${orderBy}&status=${status}${
+        `/api/polling/all-polls?network=${network}&pageSize=${pageSize}&page=${page}&orderBy=${orderBy}&status=${status}${
           title ? '&title=' + title : ''
         }${queryTags?.length ? '&tags=' + queryTags.join(',') : ''}${type?.length ? '&type=' + type : ''}${
           startDate ? '&startDate=' + startDate : ''
@@ -107,7 +107,7 @@ export async function fetchPollingReviewPageData(
       tags: TagsRes
     }: PollsPaginatedResponse = useApi
       ? await fetchJson(
-          `/api/polling/v2/all-polls?network=${network}&pageSize=${queryParams.pageSize}&page=${queryParams.page}&status=${queryParams.status}`
+          `/api/polling/all-polls?network=${network}&pageSize=${queryParams.pageSize}&page=${queryParams.page}&status=${queryParams.status}`
         )
       : await getPollsPaginated(queryParams);
 

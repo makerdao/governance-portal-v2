@@ -16,13 +16,14 @@ import { useState } from 'react';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { calculatePercentage } from 'lib/utils';
 import { formatValue } from 'lib/string';
+import { parseEther } from 'viem';
 
 export default function TopDelegates({
   topDelegates,
-  totalMKRDelegated
+  totalSkyDelegated
 }: {
   topDelegates: DelegatePaginated[];
-  totalMKRDelegated: bigint;
+  totalSkyDelegated: bigint;
 }): React.ReactElement {
   const { account } = useAccount();
   const [showDelegateModal, setShowDelegateModal] = useState<DelegatePaginated | null>(null);
@@ -84,7 +85,7 @@ export default function TopDelegates({
           </Box>
         ) : (
           topDelegates?.map((delegate, index) => {
-            const { name, voteDelegateAddress, mkrDelegated } = delegate;
+            const { name, voteDelegateAddress, skyDelegated } = delegate;
             return (
               <Box key={`top-delegate-${index}`} data-testid="top-aligned-delegate">
                 <Flex
@@ -114,8 +115,8 @@ export default function TopDelegates({
                     }}
                   >
                     <Text>
-                      {mkrDelegated
-                        ? calculatePercentage(BigInt(mkrDelegated), totalMKRDelegated, 2).toString()
+                      {skyDelegated
+                        ? calculatePercentage(parseEther(skyDelegated), totalSkyDelegated, 2).toString()
                         : '0.00'}
                       %
                     </Text>
@@ -129,7 +130,7 @@ export default function TopDelegates({
                       display: ['none', 'flex']
                     }}
                   >
-                    <Text as="p">{mkrDelegated ? formatValue(BigInt(mkrDelegated)) : '0.00'} SKY</Text>
+                    <Text as="p">{skyDelegated ? formatValue(parseEther(skyDelegated)) : '0.00'} SKY</Text>
                     <Button
                       variant="outline"
                       data-testid="button-delegate"

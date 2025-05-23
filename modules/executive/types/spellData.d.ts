@@ -14,7 +14,7 @@ export type SpellData = {
   nextCastTime?: Date;
   datePassed?: Date;
   dateExecuted?: Date;
-  mkrSupport: string;
+  skySupport: string;
   executiveHash?: string;
   officeHours?: boolean;
 };

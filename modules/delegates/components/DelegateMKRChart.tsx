@@ -61,7 +61,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
 
-  const data = formatDelegationHistoryChart(delegate.mkrLockedDelegate, selectedTimeFrame.from);
+  const data = formatDelegationHistoryChart(delegate.skyLockedDelegate, selectedTimeFrame.from);
 
   function renderTooltip(item) {
     const monthMKR = data ? data.find(i => i.date === item.label) : null;

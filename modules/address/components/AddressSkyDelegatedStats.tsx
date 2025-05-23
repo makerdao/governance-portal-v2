@@ -13,10 +13,10 @@ import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
 import { formatValue } from 'lib/string';
 
 export function AddressSkyDelegatedStats({
-  totalMKRDelegated,
+  totalSkyDelegated,
   address
 }: {
-  totalMKRDelegated?: number;
+  totalSkyDelegated?: number;
   address: string;
 }): React.ReactElement {
   const { data: votingWeight } = useSkyVotingWeight({ address, excludeDelegateOwnerBalance: true });
@@ -40,7 +40,7 @@ export function AddressSkyDelegatedStats({
         styles={{
           textAlign: 'right'
         }}
-        value={totalMKRDelegated ? formatValue(parseEther(totalMKRDelegated.toString())) : '0'}
+        value={totalSkyDelegated ? formatValue(parseEther(totalSkyDelegated.toString())) : '0'}
         label={'Total SKY Delegated'}
       />
     </Flex>

@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { formatEther, parseEther } from 'viem';
-import { DelegationHistory, MKRLockedDelegateAPIResponse } from '../types/delegate';
+import { DelegationHistory, SkyLockedDelegateApiResponse } from '../types/delegate';
 
-export const formatDelegationHistory = (lockEvents: MKRLockedDelegateAPIResponse[]): DelegationHistory[] => {
+export const formatDelegationHistory = (lockEvents: SkyLockedDelegateApiResponse[]): DelegationHistory[] => {
   const delegators = lockEvents.reduce<DelegationHistory[]>(
     (acc, { immediateCaller, lockAmount, blockTimestamp, hash, isStakingEngine }) => {
       const existing = acc.find(({ address }) => address === immediateCaller);

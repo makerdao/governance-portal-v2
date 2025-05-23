@@ -36,7 +36,7 @@ export async function fetchDelegatesPageData(
 
   const { delegates, stats, paginationInfo } = useApi
     ? await fetchJson(
-        `/api/delegates/v2?network=${network}&pageSize=${pageSize}&page=${page}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
+        `/api/delegates?network=${network}&pageSize=${pageSize}&page=${page}&orderBy=${orderBy}&orderDirection=${orderDirection}&delegateType=${delegateType}${
           searchTerm ? '&searchTerm=' + searchTerm : ''
         }${seed ? '&seed=' + seed : ''}`
       )

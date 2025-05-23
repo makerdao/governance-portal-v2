@@ -11,7 +11,7 @@ import { Button, Flex, Text, Box, Link, ButtonProps } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { MKRInput } from './MKRInput';
+import { SkyTokenInput } from './SkyTokenInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
@@ -135,7 +135,7 @@ const ModalContent = ({
             </Box>
 
             <Box>
-              <MKRInput value={skyToDeposit} onChange={setSkyToDeposit} balance={skyBalance} />
+              <SkyTokenInput value={skyToDeposit} onChange={setSkyToDeposit} balance={skyBalance} />
             </Box>
 
             <Button

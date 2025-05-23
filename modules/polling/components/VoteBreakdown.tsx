@@ -49,7 +49,7 @@ export default function VoteBreakdown({
       {isResultDisplayApprovalBreakdown(poll.parameters) &&
         Object.keys(poll.options).map((_, i) => {
           const tallyResult = tally?.results.find(r => r.optionId === i);
-          const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
+          const skySupport = tally && tallyResult && tallyResult.skySupport ? tallyResult.skySupport : 0;
 
           return (
             <div key={i}>
@@ -67,9 +67,9 @@ export default function VoteBreakdown({
                         textAlign: 'right'
                       }}
                     >
-                      {`${formatValue(BigInt(mkrSupport.toString()))} SKY Voting`}
+                      {`${formatValue(parseEther(skySupport.toString()), 'wad', 0, true)} SKY Voting`}
                       {!isResultDisplayApprovalBreakdown(poll.parameters)
-                        ? ` (${formatValue(BigInt(tallyResult.firstPct.toString()))}%)`
+                        ? ` (${tallyResult.firstPct.toString()}%)`
                         : ''}
                     </Text>
                   </React.Fragment>
@@ -81,7 +81,9 @@ export default function VoteBreakdown({
               </Flex>
 
               {tally && tallyResult ? (
-                <Tooltip label={`First choice ${formatValue(BigInt(mkrSupport.toString()))}`}>
+                <Tooltip
+                  label={`First choice ${formatValue(parseEther(skySupport.toString()), 'wad', 0, true)}`}
+                >
                   <Box my={2}>
                     <Progress
                       sx={{
@@ -90,8 +92,8 @@ export default function VoteBreakdown({
                         height: 2,
                         color: 'primary'
                       }}
-                      max={tally.totalMkrParticipation}
-                      value={mkrSupport}
+                      max={tally.totalSkyParticipation}
+                      value={skySupport}
                     />
                   </Box>
                 </Tooltip>
@@ -108,7 +110,7 @@ export default function VoteBreakdown({
           .slice(0, shownOptions)
           .map((_, i) => {
             const tallyResult = tally?.results[i];
-            const firstChoice = BigInt(tallyResult?.mkrSupport || 0);
+            const firstChoice = BigInt(tallyResult?.skySupport || 0);
             const transfer = BigInt(tallyResult?.transfer || 0);
             return (
               <div key={i}>
@@ -131,7 +133,7 @@ export default function VoteBreakdown({
                         textAlign: ['left', 'right']
                       }}
                     >
-                      {`${formatValue(BigInt((firstChoice + transfer).toString()))} SKY Voting (${formatValue(
+                      {`${formatValue(firstChoice + transfer, 'wad', 0, true)} SKY Voting (${formatValue(
                         parseEther(
                           (Number(tallyResult.firstPct) + Number(tallyResult?.transferPct || 0)).toString()
                         )
@@ -147,7 +149,12 @@ export default function VoteBreakdown({
                 {tally && tallyResult ? (
                   <Box sx={{ position: 'relative', mb: 4 }}>
                     <Tooltip
-                      label={`First choice ${formatValue(firstChoice)}; Transfer ${formatValue(transfer)}`}
+                      label={`First choice ${formatValue(
+                        firstChoice,
+                        'wad',
+                        0,
+                        true
+                      )}; Transfer ${formatValue(transfer, 'wad', 0, true)}`}
                     >
                       <Box my={2}>
                         <Box>
@@ -158,7 +165,7 @@ export default function VoteBreakdown({
                               color: `${transfer < 0n ? '#f57350' : 'darkPrimary'}`,
                               position: 'absolute'
                             }}
-                            max={tally.totalMkrParticipation}
+                            max={tally.totalSkyParticipation}
                             value={transfer < 0n ? Number(firstChoice) : Number(firstChoice + transfer)}
                           />
                         </Box>
@@ -170,7 +177,7 @@ export default function VoteBreakdown({
                               color: 'primary',
                               position: 'absolute'
                             }}
-                            max={tally.totalMkrParticipation}
+                            max={tally.totalSkyParticipation}
                             value={transfer < 0n ? Number(firstChoice + transfer) : Number(firstChoice)}
                           />
                         </Box>
@@ -188,7 +195,7 @@ export default function VoteBreakdown({
       {isResultDisplaySingleVoteBreakdown(poll.parameters) &&
         Object.keys(poll.options).map((_, i) => {
           const tallyResult = tally?.results[i];
-          const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
+          const skySupport = tally && tallyResult && tallyResult.skySupport ? tallyResult.skySupport : 0;
 
           return (
             <div key={i}>
@@ -211,9 +218,12 @@ export default function VoteBreakdown({
                       textAlign: 'right'
                     }}
                   >
-                    {`${formatValue(BigInt(mkrSupport.toString()))} SKY Voting (${formatValue(
-                      parseEther(tallyResult.firstPct.toString())
-                    )}%)`}
+                    {`${formatValue(
+                      parseEther(skySupport.toString()),
+                      'wad',
+                      0,
+                      true
+                    )} SKY Voting (${formatValue(parseEther(tallyResult.firstPct.toString()))}%)`}
                   </Text>
                 ) : (
                   <Delay>
@@ -223,7 +233,9 @@ export default function VoteBreakdown({
               </Flex>
 
               {tally && tallyResult ? (
-                <Tooltip label={`First choice ${formatValue(BigInt(mkrSupport.toString()))}`}>
+                <Tooltip
+                  label={`First choice ${formatValue(parseEther(skySupport.toString()), 'wad', 0, true)}`}
+                >
                   <Box my={2}>
                     <Progress
                       sx={{
@@ -232,8 +244,8 @@ export default function VoteBreakdown({
                         height: 2,
                         color: getVoteColor(tallyResult.optionId, poll.parameters)
                       }}
-                      max={tally.totalMkrParticipation}
-                      value={mkrSupport}
+                      max={tally.totalSkyParticipation}
+                      value={skySupport}
                     />
                   </Box>
                 </Tooltip>

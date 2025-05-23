@@ -80,7 +80,7 @@ export const SpellDetailsOverview = ({ spellDetails }: Props): JSX.Element => {
           SKY support:
         </Text>
         <Text sx={{ ml: [0, 3], color: 'textSecondary' }}>
-          {formatValue(BigInt(spellDetails?.mkrSupport))} SKY
+          {formatValue(BigInt(spellDetails?.skySupport))} SKY
         </Text>
       </Flex>
       <Flex sx={{ mt: 3, flexDirection: ['column', 'row'] }}>

@@ -53,7 +53,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
 
   const { data: totalStaked } = useLockedSky(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
-  const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
+  const delegationHistory = formatDelegationHistory(delegate.skyLockedDelegate);
 
   const activeDelegators = delegationHistory.filter(({ lockAmount }) => parseEther(lockAmount) > 0n);
   const delegatorCount = activeDelegators.length;

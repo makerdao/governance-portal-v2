@@ -10,7 +10,7 @@ export class ExecutivePage {
   private depositApproveButton: any;
   private confirmTransactionText: any;
   private depositIntoContractText: any;
-  private mkrInput: any;
+  private skyInput: any;
   private depositMkrButton: any;
   private transactionSuccessfulText: any;
   private lockedMkr: any;
@@ -29,7 +29,7 @@ export class ExecutivePage {
     this.depositApproveButton = this.page.locator('[data-testid="deposit-approve-button"]');
     this.confirmTransactionText = this.page.locator('text=/Confirm Transaction/');
     this.depositIntoContractText = this.page.locator('text=/Deposit into voting contract/');
-    this.mkrInput = this.page.locator('[data-testid="mkr-input"]');
+    this.skyInput = this.page.locator('[data-testid="sky-input"]');
     this.depositMkrButton = this.page.locator('[data-testid="button-deposit-sky"]');
     this.transactionSuccessfulText = this.page.locator('text=/Transaction Successful/');
     this.lockedMkr = this.page.locator('[data-testid="locked-sky"]');
@@ -54,7 +54,7 @@ export class ExecutivePage {
 
   async depositMkr(amount: string) {
     await expect(this.depositIntoContractText).toBeVisible();
-    await this.mkrInput.fill(amount);
+    await this.skyInput.fill(amount);
     await this.depositMkrButton.click();
     await expect(this.confirmTransactionText).toBeVisible();
     await expect(this.transactionSuccessfulText).toBeVisible();
