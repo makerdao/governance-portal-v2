@@ -17,8 +17,8 @@ import {
 } from 'modules/delegates/components';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
-import { DelegateMKRChart } from './DelegateMKRChart';
+import { DelegateMKRDelegatedStats } from './DelegateSKYDelegatedStats';
+import { DelegateMKRChart } from './DelegateSKYChart;
 import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';

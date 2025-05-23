@@ -16,7 +16,7 @@ import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';

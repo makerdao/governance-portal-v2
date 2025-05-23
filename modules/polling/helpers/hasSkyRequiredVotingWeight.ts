@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/sky/helpers/getMKRVotingWeight';
+import { getMKRVotingWeight, MKRVotingWeightResponse } from 'modules/sky/helpers/getSKYVotingWeight';
 import logger from 'lib/logger';
 
 export async function hasMkrRequiredVotingWeight(

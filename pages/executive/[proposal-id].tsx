@@ -18,7 +18,7 @@ import { getExecutiveProposal, getGithubExecutives } from 'modules/executive/api
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';

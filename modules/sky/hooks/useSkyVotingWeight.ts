@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import useSWR, { useSWRConfig } from 'swr';
-import { getMKRVotingWeight, MKRVotingWeightResponse } from '../helpers/getMKRVotingWeight';
+import { getMKRVotingWeight, MKRVotingWeightResponse } from '../helpers/getSKYVotingWeight';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type VotingWeightResponse = {

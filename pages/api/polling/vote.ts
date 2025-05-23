@@ -17,7 +17,7 @@ import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/get
 import logger from 'lib/logger';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
-import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
+import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasSkyRequiredVotingWeight';
 import { MIN_SKY_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';

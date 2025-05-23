@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SkyLockedDelegateApiResponse } from '../types/delegate';
 import { formatIsoDateConversion } from 'lib/datetime';
-import { MKRWeightHisory } from '../types/mkrWeight';
+import { MKRWeightHisory } from '../types/skyWeight';
 import { differenceInCalendarYears, subDays } from 'date-fns';
 
 export const formatDelegationHistoryChart = (

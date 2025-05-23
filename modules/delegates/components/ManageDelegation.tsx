@@ -12,7 +12,7 @@ import { Delegate } from '../types';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
 import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
-import { useMkrDelegatedByUser } from 'modules/sky/hooks/useMkrDelegatedByUser';
+import { useMkrDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function ManageDelegation({

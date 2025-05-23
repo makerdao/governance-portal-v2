@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { fetchMkrOnHat } from 'modules/executive/api/fetchMkrOnHat';
-import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
+import { fetchMkrOnHat } from 'modules/executive/api/fetchSkyOnHat';
+import { fetchMkrInChief } from 'modules/executive/api/fetchSkyInChief';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
 import { Proposal } from 'modules/executive/types';
 import { PollListItem } from 'modules/polling/types';
 import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pollsResponse';
-import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
+import { MkrOnHatResponse } from 'modules/executive/api/fetchSkyOnHat';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum, SKY_PORTAL_START_DATE_MAINNET } from 'modules/polling/polling.constants';
 import { DelegateInfo, DelegatePaginated, DelegatesApiStats } from 'modules/delegates/types';

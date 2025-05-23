@@ -18,7 +18,7 @@ import { TxStatus } from 'modules/web3/constants/transaction';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { sortBytesArray } from 'lib/utils';
 import { encodeAbiParameters, keccak256 } from 'viem';

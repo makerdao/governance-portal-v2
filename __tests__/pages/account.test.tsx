@@ -18,7 +18,7 @@ vi.mock('lottie-web', () => ({
 }));
 
 vi.mock('modules/app/hooks/useAccount');
-vi.mock('modules/mkr/hooks/useLockedSky');
+vi.mock('modules/sky/hooks/useLockedSky');
 vi.mock('modules/app/hooks/useAddressInfo');
 vi.mock('modules/delegates/hooks/useDelegateCreate');
 vi.mock('wagmi');

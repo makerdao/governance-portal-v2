@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import voteAPIHandler, { API_VOTE_ERRORS } from '../vote';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/getArbitrumPollingContractRelayProvider';
-import { getMKRVotingWeight } from 'modules/sky/helpers/getMKRVotingWeight';
+import { getMKRVotingWeight } from 'modules/sky/helpers/getSKYVotingWeight';
 import { cacheGet, cacheSet } from 'modules/cache/cache';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { parseEther } from 'viem';
@@ -24,7 +24,7 @@ import { getGaslessPublicClient } from 'modules/web3/helpers/getPublicClient';
 
 vi.mock('modules/web3/helpers/getPublicClient');
 vi.mock('modules/polling/api/getArbitrumPollingContractRelayProvider');
-vi.mock('modules/mkr/helpers/getMKRVotingWeight');
+vi.mock('modules/mkr/helpers/getSKYVotingWeight');
 vi.mock('modules/cache/cache');
 vi.mock('modules/polling/api/fetchPolls');
 vi.mock('modules/web3/helpers/verifyTypedSignature');

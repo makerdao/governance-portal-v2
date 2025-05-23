@@ -14,7 +14,7 @@ import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCe
 import { useUsdsDaiData } from 'modules/web3/hooks/useUsdsDaiData';
 import { useSkySavingsRate } from 'modules/web3/hooks/useSkySavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import { formatValue } from 'lib/string';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';

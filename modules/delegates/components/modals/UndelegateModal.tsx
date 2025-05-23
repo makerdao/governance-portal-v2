@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useState } from 'react';
 import { Box, Text } from 'theme-ui';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
-import { useMkrDelegatedByUser } from 'modules/sky/hooks/useMkrDelegatedByUser';
+import { useMkrDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateSky, TxDisplay } from 'modules/delegates/components';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';

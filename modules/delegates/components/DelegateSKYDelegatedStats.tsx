@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex } from 'theme-ui';
-import { useMkrDelegatedByUser } from 'modules/sky/hooks/useMkrDelegatedByUser';
+import { useMkrDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
