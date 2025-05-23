@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
       contentType: 'application/json',
       body: JSON.stringify({
         recentlyUsedGaslessVoting: null,
-        hasMkrRequired: true,
+        hasSkyRequired: true,
         alreadyVoted: false,
         relayBalance: '0.99766447864494'
       })
@@ -38,8 +38,8 @@ test('Adds polls to review and navigates to review page and votes with the legac
   await test.step('verify and deposit into chief contract', async () => {
     await executivePage.verifyVotingContract();
     await executivePage.depositIntoChief();
-    await executivePage.depositMkr('0.01');
-    await executivePage.verifyLockedMkr('0.01');
+    await executivePage.depositSky('0.01');
+    await executivePage.verifyLockedSky('0.01');
   });
 
   await test.step('navigate to polling page', async () => {

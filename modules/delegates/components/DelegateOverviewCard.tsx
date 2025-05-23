@@ -13,7 +13,7 @@ import { formatValue } from 'lib/string';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatePaginated } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
-import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
+import { useSkyDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
@@ -78,14 +78,14 @@ export const DelegateOverviewCard = memo(
     const [showDelegateModal, setShowDelegateModal] = useState(false);
     const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
-    const { data: mkrDelegatedData, mutate: mutateSkyDelegated } = useMkrDelegatedByUser(
+    const { data: skyDelegatedData, mutate: mutateSkyDelegated } = useSkyDelegatedByUser(
       account,
       delegate.voteDelegateAddress
     );
-    const mkrDelegated = mkrDelegatedData?.totalDelegationAmount;
-    const hasMkrDelegated = account && mkrDelegated && mkrDelegated > 0n;
+    const skyDelegated = skyDelegatedData?.totalDelegationAmount;
+    const hasSkyDelegated = account && skyDelegated && skyDelegated > 0n;
 
-    const mutateDelegateTotalMkr = (amount: bigint) => {
+    const mutateDelegateTotalSky = (amount: bigint) => {
       setStateDelegates(prevDelegates => {
         const mutatedDelegateArray = prevDelegates.map(d => {
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
@@ -157,10 +157,10 @@ export const DelegateOverviewCard = memo(
                   justifyContent: 'right'
                 }}
               >
-                {hasMkrDelegated && (
+                {hasSkyDelegated && (
                   <Button
                     variant="primaryOutline"
-                    disabled={!hasMkrDelegated}
+                    disabled={!hasSkyDelegated}
                     onClick={() => {
                       setShowUndelegateModal(true);
                     }}
@@ -181,7 +181,7 @@ export const DelegateOverviewCard = memo(
                     width: '135px',
                     maxWidth: '135px',
                     height: '45px',
-                    ml: hasMkrDelegated ? 3 : 0
+                    ml: hasSkyDelegated ? 3 : 0
                   }}
                 >
                   Delegate SKY
@@ -249,14 +249,14 @@ export const DelegateOverviewCard = memo(
                 <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
                   {account && (
                     <Box>
-                      {typeof mkrDelegated === 'bigint' ? (
+                      {typeof skyDelegated === 'bigint' ? (
                         <Text
                           as="p"
                           variant="microHeading"
                           sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                          data-testid="mkr-delegated-by-you"
+                          data-testid="sky-delegated-by-you"
                         >
-                          {formatValue(mkrDelegated)}
+                          {formatValue(skyDelegated)}
                         </Text>
                       ) : (
                         <SkeletonThemed />
@@ -276,7 +276,7 @@ export const DelegateOverviewCard = memo(
                       as="p"
                       variant="microHeading"
                       sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
-                      data-testid="total-mkr-delegated"
+                      data-testid="total-sky-delegated"
                     >
                       {formatValue(parseEther(delegate.skyDelegated), 'wad')}
                     </Text>
@@ -305,7 +305,7 @@ export const DelegateOverviewCard = memo(
             delegate={delegate}
             isOpen={showDelegateModal}
             onDismiss={() => setShowDelegateModal(false)}
-            mutateTotalStaked={mutateDelegateTotalMkr}
+            mutateTotalStaked={mutateDelegateTotalSky}
             mutateSkyDelegated={mutateSkyDelegated}
             refetchOnDelegation={false}
           />
@@ -315,7 +315,7 @@ export const DelegateOverviewCard = memo(
             delegate={delegate}
             isOpen={showUndelegateModal}
             onDismiss={() => setShowUndelegateModal(false)}
-            mutateTotalStaked={mutateDelegateTotalMkr}
+            mutateTotalStaked={mutateDelegateTotalSky}
             mutateSkyDelegated={mutateSkyDelegated}
             refetchOnDelegation={false}
           />

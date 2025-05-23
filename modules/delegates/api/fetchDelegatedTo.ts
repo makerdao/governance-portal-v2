@@ -13,7 +13,7 @@ import { allDelegates } from 'modules/gql/queries/subgraph/allDelegates';
 import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { DelegationHistory, MKRDelegatedToResponse } from '../types';
+import { DelegationHistory, SKYDelegatedToResponse } from '../types';
 
 export async function fetchDelegatedTo(
   address: string,
@@ -34,7 +34,7 @@ export async function fetchDelegatedTo(
       query: delegatorHistory,
       variables: { address: address.toLowerCase() }
     });
-    const res: MKRDelegatedToResponse[] = data.delegationHistories.map(x => {
+    const res: SKYDelegatedToResponse[] = data.delegationHistories.map(x => {
       return {
         delegateContractAddress: x.delegate.id,
         lockAmount: x.amount,
@@ -73,7 +73,9 @@ export async function fetchDelegatedTo(
           acc.push({
             address: delegateContractAddress,
             lockAmount: formatEther(parseEther(lockAmount)),
-            events: [{ lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isStakingEngine }]
+            events: [
+              { lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isStakingEngine }
+            ]
           } as DelegationHistory);
         }
 

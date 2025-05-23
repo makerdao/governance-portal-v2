@@ -517,7 +517,7 @@ export const icons = {
     ),
     viewBox: '0 0 40 37'
   },
-  mkr_locked: {
+  sky_locked: {
     path: (
       <g>
         <path

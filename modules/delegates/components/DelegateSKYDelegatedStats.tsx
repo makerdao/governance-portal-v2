@@ -7,15 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex } from 'theme-ui';
-import { useMkrDelegatedByUser } from 'modules/mkr/hooks/useMkrDelegatedByUser';
+import { useSkyDelegatedByUser } from 'modules/sky/hooks/useSkyDelegatedByUser';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
+import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 import Skeleton from 'react-loading-skeleton';
 
-export function DelegateMKRDelegatedStats({
+export function DelegateSKYDelegatedStats({
   delegate,
   delegatorCount
 }: {
@@ -25,8 +25,8 @@ export function DelegateMKRDelegatedStats({
   const { account } = useAccount();
   // TODO: Fetch addresses suporting through API fetching
 
-  const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
-  const totalMkrDelegated = mkrDelegatedData?.totalDelegationAmount;
+  const { data: skyDelegatedData } = useSkyDelegatedByUser(account, delegate.voteDelegateAddress);
+  const totalSkyDelegated = skyDelegatedData?.totalDelegationAmount;
   const { data: votingWeight, loading: votingWeightLoading } = useSkyVotingWeight({
     address: delegate.voteDelegateAddress
   });
@@ -63,7 +63,7 @@ export function DelegateMKRDelegatedStats({
       />
       {account && (
         <StatBox
-          value={typeof totalMkrDelegated !== 'undefined' ? formatValue(totalMkrDelegated) : '0'}
+          value={typeof totalSkyDelegated !== 'undefined' ? formatValue(totalSkyDelegated) : '0'}
           label={'SKY delegated by you'}
         />
       )}

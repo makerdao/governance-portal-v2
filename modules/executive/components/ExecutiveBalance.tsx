@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Box, Text } from 'theme-ui';
-import Deposit from 'modules/mkr/components/Deposit';
-import Withdraw from 'modules/mkr/components/Withdraw';
+import Deposit from 'modules/sky/components/Deposit';
+import Withdraw from 'modules/sky/components/Withdraw';
 import { formatValue } from 'lib/string';
 
 type Props = {

@@ -9,14 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useChainId, useReadContract } from 'wagmi';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 
-type LockedMkrData = {
+type LockedSkyData = {
   data?: bigint;
   loading: boolean;
   error: Error | null;
   mutate: () => void;
 };
 
-export const useLockedSky = (address?: string): LockedMkrData => {
+export const useLockedSky = (address?: string): LockedSkyData => {
   const chainId = useChainId();
 
   const {

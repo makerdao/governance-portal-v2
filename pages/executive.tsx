@@ -12,15 +12,15 @@ import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'modules/app/components/ErrorPage';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useSkyOnHat } from 'modules/executive/hooks/useSkyOnHat';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
 import DateFilter from 'modules/executive/components/DateFilter';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import MkrSkyLiquiditySidebar from 'modules/mkr/components/MkrSkyLiquiditySidebar';
+import MkrSkyLiquiditySidebar from 'modules/sky/components/MkrSkyLiquiditySidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
@@ -50,7 +50,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { data: lockedSky, mutate: mutateLockedSky } = useLockedSky(votingAccount);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-  const { data: mkrOnHat } = useMkrOnHat();
+  const { data: skyOnHat } = useSkyOnHat();
 
   const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
     state.executiveFilters.startDate,
@@ -217,7 +217,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                           account={account}
                           votedProposals={votedProposals}
-                          mkrOnHat={mkrOnHat}
+                          skyOnHat={skyOnHat}
                         />
                       </Box>
                     ))}
@@ -265,7 +265,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                             isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                             account={account}
                             votedProposals={votedProposals}
-                            mkrOnHat={mkrOnHat}
+                            skyOnHat={skyOnHat}
                           />
                         </Box>
                       ))}
@@ -325,7 +325,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 ]}
               />
             </ErrorBoundary>
-            <ErrorBoundary componentName="MKR Liquidity">
+            <ErrorBoundary componentName="SKY Liquidity">
               <MkrSkyLiquiditySidebar network={network} />
             </ErrorBoundary>
             <ResourceBox type={'executive'} />

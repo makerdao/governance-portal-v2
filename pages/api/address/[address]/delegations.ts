@@ -45,7 +45,7 @@ import { formatEther, parseEther } from 'viem';
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/definitions/MKRAddressDelegationsAPIResponse'
+ *              $ref: '#/definitions/SKYAddressDelegationsAPIResponse'
  * definitions:
  *  DelegateInfo:
  *    type: object
@@ -98,7 +98,7 @@ import { formatEther, parseEther } from 'viem';
  *    properties:
  *      lockAmount:
  *        type: string
- *        description: The amount of MKR locked or unlocked in this event
+ *        description: The amount of SKY locked or unlocked in this event
  *      blockTimestamp:
  *        type: string
  *        format: date-time
@@ -118,12 +118,12 @@ import { formatEther, parseEther } from 'viem';
  *        description: The address of the delegate
  *      lockAmount:
  *        type: string
- *        description: The total amount of MKR currently delegated to this delegate by the queried address (as a string formatted Ether value)
+ *        description: The total amount of SKY currently delegated to this delegate by the queried address (as a string formatted Ether value)
  *      events:
  *        type: array
  *        items:
  *          $ref: '#/definitions/DelegationHistoryEvent'
- *  MKRAddressDelegationsAPIResponse:
+ *  SKYAddressDelegationsAPIResponse:
  *    type: object
  *    properties:
  *      totalDelegated:
@@ -138,14 +138,14 @@ import { formatEther, parseEther } from 'viem';
  *          $ref: '#/definitions/DelegateInfo'
  */
 
-export type MKRAddressDelegationsAPIResponse = {
+export type SKYAddressDelegationsAPIResponse = {
   totalDelegated: number;
   delegatedTo: DelegationHistory[];
   delegates: DelegateInfo[];
 };
 
 export default withApiHandler(
-  async (req: NextApiRequest, res: NextApiResponse<MKRAddressDelegationsAPIResponse>) => {
+  async (req: NextApiRequest, res: NextApiResponse<SKYAddressDelegationsAPIResponse>) => {
     // validate network
     const network = validateQueryParam(
       (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network,

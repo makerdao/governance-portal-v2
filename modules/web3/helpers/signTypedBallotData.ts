@@ -50,7 +50,7 @@ export function getTypedBallotData(message: BallotDataValues, network: Supported
     },
     primaryType: 'Vote' as const,
     domain: {
-      name: 'MakerDAO Polling',
+      name: 'Sky Ecosystem Polling',
       version: 'Arbitrum.1',
       chainId,
       verifyingContract: ArbitrumPollingAddressMap[network]

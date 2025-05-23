@@ -28,7 +28,7 @@ type Props = {
   isHat: boolean;
   account?: string;
   votedProposals: string[];
-  mkrOnHat?: bigint;
+  skyOnHat?: bigint;
 };
 
 export default function ExecutiveOverviewCard({
@@ -36,7 +36,7 @@ export default function ExecutiveOverviewCard({
   isHat,
   account,
   votedProposals,
-  mkrOnHat
+  skyOnHat
 }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
   const [postedDateString, setPostedDateString] = useState('');
@@ -184,7 +184,7 @@ export default function ExecutiveOverviewCard({
         <Divider my={0} />
         <Flex sx={{ py: 2, justifyContent: 'center' }}>
           <StatusText testId="proposal-status">
-            {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, mkrOnHat })}
+            {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, skyOnHat })}
           </StatusText>
         </Flex>
       </Flex>

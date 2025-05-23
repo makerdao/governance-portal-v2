@@ -2,7 +2,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, vi, beforeEach, expect } from 'vitest';
 import AccountPage from '../../pages/account';
 import * as useAccountModule from 'modules/app/hooks/useAccount';
-import * as useLockedSkyModule from 'modules/mkr/hooks/useLockedSky';
+import * as useLockedSkyModule from 'modules/sky/hooks/useLockedSky';
 import * as useAddressInfoModule from 'modules/app/hooks/useAddressInfo';
 import * as useDelegateCreateModule from 'modules/delegates/hooks/useDelegateCreate';
 import * as useReadContractModule from 'wagmi';
@@ -18,7 +18,7 @@ vi.mock('lottie-web', () => ({
 }));
 
 vi.mock('modules/app/hooks/useAccount');
-vi.mock('modules/mkr/hooks/useLockedSky');
+vi.mock('modules/sky/hooks/useLockedSky');
 vi.mock('modules/app/hooks/useAddressInfo');
 vi.mock('modules/delegates/hooks/useDelegateCreate');
 vi.mock('wagmi');

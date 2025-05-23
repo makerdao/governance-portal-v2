@@ -85,7 +85,7 @@ describe('Fetch tally majority', () => {
             ]
           }
         });
-      } else if (query.includes('voteAddressMkrWeightsAtTime')) {
+      } else if (query.includes('voteAddressSkyWeightsAtTime')) {
         return Promise.resolve({
           voters: [
             {
@@ -218,7 +218,7 @@ describe('Fetch tally majority', () => {
             ]
           }
         });
-      } else if (query.includes('voteAddressMkrWeightsAtTime')) {
+      } else if (query.includes('voteAddressSkyWeightsAtTime')) {
         return Promise.resolve({
           voters: [
             {

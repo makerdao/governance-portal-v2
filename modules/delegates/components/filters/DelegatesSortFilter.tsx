@@ -59,13 +59,13 @@ export function DelegatesSortFilter(): JSX.Element {
           </ListboxOption>
           <ListboxOption
             label="Sort by SKY delegated (ASC)"
-            value={DelegateOrderByEnum.MKR + ',' + OrderDirectionEnum.ASC}
+            value={DelegateOrderByEnum.SKY + ',' + OrderDirectionEnum.ASC}
           >
             SKY delegated: lowest first
           </ListboxOption>
           <ListboxOption
             label="Sort by SKY delegated (DESC)"
-            value={DelegateOrderByEnum.MKR + ',' + OrderDirectionEnum.DESC}
+            value={DelegateOrderByEnum.SKY + ',' + OrderDirectionEnum.DESC}
           >
             SKY delegated: highest first
           </ListboxOption>

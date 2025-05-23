@@ -128,7 +128,7 @@ export type SkyLockedDelegateApiResponse = {
   isStakingEngine?: boolean;
 };
 
-export type MKRDelegatedToResponse = SkyLockedDelegateApiResponse & {
+export type SKYDelegatedToResponse = SkyLockedDelegateApiResponse & {
   hash: string;
   immediateCaller: string;
 };

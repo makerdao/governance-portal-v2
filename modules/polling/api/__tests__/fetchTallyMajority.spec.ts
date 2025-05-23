@@ -43,7 +43,7 @@ describe('Fetch tally majority', () => {
   it('Does not find winner if it doesnt pass the majority percent', async () => {
     (gqlRequest as Mock)
       // .mockResolvedValueOnce({
-      //   voteAddressMkrWeightsAtTime: {
+      //   voteAddressSkyWeightsAtTime: {
       //     nodes: [
       //       {
       //         optionIdRaw: '1',

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-export type MKRWeightHisory = {
+export type SKYWeightHisory = {
   date: Date;
-  MKR: number;
+  SKY: number;
 };

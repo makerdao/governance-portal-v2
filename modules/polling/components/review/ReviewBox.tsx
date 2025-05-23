@@ -59,7 +59,7 @@ export default function ReviewBox({
     fetchJson
   );
 
-  const hasMkrRequired = precheckData?.hasMkrRequired;
+  const hasSkyRequired = precheckData?.hasSkyRequired;
   const recentlyUsedGaslessVoting = precheckData?.recentlyUsedGaslessVoting;
   const alreadyVoted = precheckData?.alreadyVoted;
   const cacheExpired =
@@ -70,7 +70,7 @@ export default function ReviewBox({
     !(precheckData?.gaslessDisabled?.toString().toLowerCase() === 'true');
 
   const validationPassed =
-    precheckData?.hasMkrRequired &&
+    precheckData?.hasSkyRequired &&
     (!precheckData?.recentlyUsedGaslessVoting || cacheExpired) &&
     !precheckData?.alreadyVoted &&
     relayFunded;
@@ -170,7 +170,7 @@ export default function ReviewBox({
                 <Box>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 3 }}>
                     <LocalIcon name="sparkles" color="primary" size={3} />
-                    <Text sx={{ ml: 2 }}>The transaction fee is covered by Maker.</Text>
+                    <Text sx={{ ml: 2 }}>The transaction fee is covered by Sky.</Text>
                   </Flex>
                   <Box>
                     <ExternalLink
@@ -289,7 +289,7 @@ export default function ReviewBox({
                     <Text>
                       {!precheckData ? (
                         <SkeletonThemed width="30px" height="18px" />
-                      ) : hasMkrRequired ? (
+                      ) : hasSkyRequired ? (
                         <Icon name="checkmark" color="bull" sx={{ size: '13px' }} />
                       ) : (
                         <Icon name="close" color="bear" sx={{ size: '13px' }} />

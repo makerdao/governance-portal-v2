@@ -73,14 +73,13 @@ export default function Participation({
   activeDelegates: DelegateInfo[] | DelegatePaginated[];
   bpi: number;
 }): React.ReactElement {
-
   return (
     <Flex sx={{ flexDirection: 'column', gap: 4, mb: 4 }}>
       <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
         <Stack gap={2}>
           <Heading as="h2">Follow the Conversation and Participate</Heading>
           <Text as="p" sx={{ px: 'inherit', fontSize: [2, 4] }}>
-            Engage with the Maker Community and make informed decisions.
+            Engage with the Sky Community and make informed decisions.
           </Text>
         </Stack>
       </Container>

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
-import { useSkyBalance } from 'modules/mkr/hooks/useSkyBalance';
+import { useSkyBalance } from 'modules/sky/hooks/useSkyBalance';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateSky } from './InputDelegateSky';
