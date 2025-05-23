@@ -46,23 +46,23 @@ describe('Fetch tally approval', () => {
         nodes: [
           {
             optionIdRaw: '258',
-            mkrSupport: '820.2125800'
+            skySupport: '820.2125800'
           },
           {
             optionIdRaw: '258',
-            mkrSupport: '17.3630'
+            skySupport: '17.3630'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '10'
+            skySupport: '10'
           },
           {
             optionIdRaw: '4',
-            mkrSupport: '14'
+            skySupport: '14'
           },
           {
             optionIdRaw: '4',
-            mkrSupport: '0'
+            skySupport: '0'
           }
         ]
       }
@@ -74,8 +74,8 @@ describe('Fetch tally approval', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrActiveParticipation: '861575580000000000000',
-      totalMkrParticipation: '861575580000000000000',
+      totalSkyActiveParticipation: '861575580000000000000',
+      totalSkyParticipation: '861575580000000000000',
       numVoters: 5,
       victoryConditionMatched: 0,
       results: [
@@ -83,7 +83,7 @@ describe('Fetch tally approval', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 98.3751,
-          mkrSupport: '847575580000000000000',
+          skySupport: '847575580000000000000',
           transferPct: 0,
           winner: true
         },
@@ -91,7 +91,7 @@ describe('Fetch tally approval', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 97.2144,
-          mkrSupport: '837575580000000000000',
+          skySupport: '837575580000000000000',
           transferPct: 0,
           winner: false
         },
@@ -99,14 +99,14 @@ describe('Fetch tally approval', () => {
           optionId: 4,
           optionName: 'None of the above',
           firstPct: 1.6249,
-          mkrSupport: '14000000000000000000',
+          skySupport: '14000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -115,7 +115,7 @@ describe('Fetch tally approval', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -131,19 +131,19 @@ describe('Fetch tally approval', () => {
         nodes: [
           {
             optionIdRaw: '258',
-            mkrSupport: '820.2125800'
+            skySupport: '820.2125800'
           },
           {
             optionIdRaw: '258',
-            mkrSupport: '17.3630'
+            skySupport: '17.3630'
           },
           {
             optionIdRaw: '4',
-            mkrSupport: '14'
+            skySupport: '14'
           },
           {
             optionIdRaw: '4',
-            mkrSupport: '0'
+            skySupport: '0'
           }
         ]
       }
@@ -155,8 +155,8 @@ describe('Fetch tally approval', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrActiveParticipation: '851575580000000000000',
-      totalMkrParticipation: '851575580000000000000',
+      totalSkyActiveParticipation: '851575580000000000000',
+      totalSkyParticipation: '851575580000000000000',
       numVoters: 4,
       victoryConditionMatched: null,
       results: [
@@ -164,7 +164,7 @@ describe('Fetch tally approval', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 98.356,
-          mkrSupport: '837575580000000000000',
+          skySupport: '837575580000000000000',
           transferPct: 0,
           winner: false
         },
@@ -172,7 +172,7 @@ describe('Fetch tally approval', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 98.356,
-          mkrSupport: '837575580000000000000',
+          skySupport: '837575580000000000000',
           transferPct: 0,
           winner: false
         },
@@ -180,14 +180,14 @@ describe('Fetch tally approval', () => {
           optionId: 4,
           optionName: 'None of the above',
           firstPct: 1.644,
-          mkrSupport: '14000000000000000000',
+          skySupport: '14000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -196,7 +196,7 @@ describe('Fetch tally approval', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -212,7 +212,7 @@ describe('Fetch tally approval', () => {
         nodes: [
           {
             optionIdRaw: '0',
-            mkrSupport: '400'
+            skySupport: '400'
           }
         ]
       }
@@ -224,15 +224,15 @@ describe('Fetch tally approval', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrParticipation: '400000000000000000000',
-      totalMkrActiveParticipation: '0',
+      totalSkyParticipation: '400000000000000000000',
+      totalSkyActiveParticipation: '0',
       numVoters: 1,
       victoryConditionMatched: null,
       results: [
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '400000000000000000000',
+          skySupport: '400000000000000000000',
           firstPct: 100,
           transferPct: 0,
           winner: false
@@ -240,7 +240,7 @@ describe('Fetch tally approval', () => {
         {
           optionId: 1,
           optionName: 'Approve Existing Budget',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -248,7 +248,7 @@ describe('Fetch tally approval', () => {
         {
           optionId: 2,
           optionName: 'Approve Increase',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -257,7 +257,7 @@ describe('Fetch tally approval', () => {
           optionId: 4,
           optionName: 'None of the above',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -266,7 +266,7 @@ describe('Fetch tally approval', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }

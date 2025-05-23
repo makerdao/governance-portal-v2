@@ -43,76 +43,87 @@ describe('Fetch tally majority', () => {
   it('Does not find winner if it doesnt pass the majority percent', async () => {
     // Set up the mock to return different responses based on the query
     (gqlRequest as Mock).mockImplementation(args => {
-        const query = args.query;
-        if (query.includes('delegates(')) {
-            return Promise.resolve({delegates: []});
-        }
-        if (query.includes('allMainnetVoters')) {
-            return Promise.resolve({
-            pollVotes: [{
-                voter: {
-                    id: '0x0000000000000000000000000000000000000000'
-                },
-                blockTime: '1742327200',
-                choice: '1',
-                txnHash: '0x123'
+      const query = args.query;
+      if (query.includes('delegates(')) {
+        return Promise.resolve({ delegates: [] });
+      }
+      if (query.includes('allMainnetVoters')) {
+        return Promise.resolve({
+          pollVotes: [
+            {
+              voter: {
+                id: '0x0000000000000000000000000000000000000000'
+              },
+              blockTime: '1742327200',
+              choice: '1',
+              txnHash: '0x123'
             },
             {
+              voter: {
+                id: '0x0000000000000000000000000000000000000002'
+              },
+              blockTime: '1742327200',
+              choice: '3',
+              txnHash: '0x456'
+            }
+          ]
+        });
+      } else if (query.includes('allArbitrumVoters')) {
+        return Promise.resolve({
+          arbitrumPoll: {
+            startDate: '1742227200',
+            endDate: '1742486400',
+            votes: [
+              {
                 voter: {
-                    id: '0x0000000000000000000000000000000000000002'
+                  id: '0x0000000000000000000000000000000000000001'
                 },
                 blockTime: '1742327200',
-                choice: '3',
-                txnHash: '0x456'
-            }]
-            });
-        } else if (query.includes('allArbitrumVoters')) {
-            return Promise.resolve({
-            arbitrumPoll: {
-                startDate: '1742227200',
-                endDate: '1742486400',
-                votes: [{
-                    voter: {
-                        id: '0x0000000000000000000000000000000000000001'
-                    },
-                    blockTime: '1742327200',
-                    choice: '2',
-                    txnHash: '0x789'
-                }]
-            }
-            });
-        } else if (query.includes('voteAddressMkrWeightsAtTime')) {
-            return Promise.resolve({
-                voters: [{
-                    id: '0x0000000000000000000000000000000000000000',
-                    v2VotingPowerChanges: [{
-                        newBalance: '100000000000000000000',
-                    }]
-                },
-                {
-                    id: '0x0000000000000000000000000000000000000001',
-                    v2VotingPowerChanges: [{
-                        newBalance: '90000000000000000000',
-                    }]
-                },
-                {
-                    id: '0x0000000000000000000000000000000000000002',
-                    v2VotingPowerChanges: [{
-                        newBalance: '80000000000000000000',
-                    }]
-                }
+                choice: '2',
+                txnHash: '0x789'
+              }
             ]
-            });
-        }
-        return Promise.resolve({});
+          }
         });
+      } else if (query.includes('voteAddressMkrWeightsAtTime')) {
+        return Promise.resolve({
+          voters: [
+            {
+              id: '0x0000000000000000000000000000000000000000',
+              v2VotingPowerChanges: [
+                {
+                  newBalance: '100000000000000000000'
+                }
+              ]
+            },
+            {
+              id: '0x0000000000000000000000000000000000000001',
+              v2VotingPowerChanges: [
+                {
+                  newBalance: '90000000000000000000'
+                }
+              ]
+            },
+            {
+              id: '0x0000000000000000000000000000000000000002',
+              v2VotingPowerChanges: [
+                {
+                  newBalance: '80000000000000000000'
+                }
+              ]
+            }
+          ]
+        });
+      }
+      return Promise.resolve({});
+    });
     const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
     const expectedResult = {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrActiveParticipation: '270000000000000000000',
-      totalMkrParticipation: '270000000000000000000',
+      totalSkyActiveParticipation: '270000000000000000000',
+      totalSkyParticipation: '270000000000000000000',
       numVoters: 3,
       victoryConditionMatched: null,
       results: [
@@ -120,7 +131,7 @@ describe('Fetch tally majority', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 37.037,
-          mkrSupport: '100000000000000000000',
+          skySupport: '100000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -128,7 +139,7 @@ describe('Fetch tally majority', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 33.3333,
-          mkrSupport: '90000000000000000000',
+          skySupport: '90000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -136,14 +147,14 @@ describe('Fetch tally majority', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 29.6296,
-          mkrSupport: '80000000000000000000',
+          skySupport: '80000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -159,61 +170,72 @@ describe('Fetch tally majority', () => {
     (gqlRequest as Mock).mockImplementation(args => {
       const query = args.query;
       if (query.includes('delegates(')) {
-        return Promise.resolve({delegates: []});
+        return Promise.resolve({ delegates: [] });
       }
       if (query.includes('allMainnetVoters')) {
         return Promise.resolve({
-          pollVotes: [{
-            voter: {
-              id: '0x0000000000000000000000000000000000000000'
+          pollVotes: [
+            {
+              voter: {
+                id: '0x0000000000000000000000000000000000000000'
+              },
+              blockTime: '1742327200',
+              choice: '1',
+              txnHash: '0x123'
             },
-            blockTime: '1742327200',
-            choice: '1',
-            txnHash: '0x123'
-          },
-          {
-            voter: {
-              id: '0x0000000000000000000000000000000000000002'
-            },
-            blockTime: '1742327200',
-            choice: '3',
-            txnHash: '0x456'
-          }]
+            {
+              voter: {
+                id: '0x0000000000000000000000000000000000000002'
+              },
+              blockTime: '1742327200',
+              choice: '3',
+              txnHash: '0x456'
+            }
+          ]
         });
       } else if (query.includes('allArbitrumVoters')) {
         return Promise.resolve({
           arbitrumPoll: {
             startDate: '1742227200',
             endDate: '1742486400',
-            votes: [{
-              voter: {
-                id: '0x0000000000000000000000000000000000000001'
-              },
-              blockTime: '1742327200',
-              choice: '2',
-              txnHash: '0x789'
-            }]
+            votes: [
+              {
+                voter: {
+                  id: '0x0000000000000000000000000000000000000001'
+                },
+                blockTime: '1742327200',
+                choice: '2',
+                txnHash: '0x789'
+              }
+            ]
           }
         });
       } else if (query.includes('voteAddressMkrWeightsAtTime')) {
         return Promise.resolve({
-            voters: [{
-                id: '0x0000000000000000000000000000000000000000',
-                v2VotingPowerChanges: [{
-                    newBalance: '200000000000000000000', // Changed from 100 to 200
-                }]
+          voters: [
+            {
+              id: '0x0000000000000000000000000000000000000000',
+              v2VotingPowerChanges: [
+                {
+                  newBalance: '200000000000000000000' // Changed from 100 to 200
+                }
+              ]
             },
             {
-                id: '0x0000000000000000000000000000000000000001',
-                v2VotingPowerChanges: [{
-                    newBalance: '90000000000000000000',
-                }]
+              id: '0x0000000000000000000000000000000000000001',
+              v2VotingPowerChanges: [
+                {
+                  newBalance: '90000000000000000000'
+                }
+              ]
             },
             {
-                id: '0x0000000000000000000000000000000000000002',
-                v2VotingPowerChanges: [{
-                    newBalance: '80000000000000000000',
-                }]
+              id: '0x0000000000000000000000000000000000000002',
+              v2VotingPowerChanges: [
+                {
+                  newBalance: '80000000000000000000'
+                }
+              ]
             }
           ]
         });
@@ -227,8 +249,8 @@ describe('Fetch tally majority', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrActiveParticipation: '370000000000000000000',
-      totalMkrParticipation: '370000000000000000000',
+      totalSkyActiveParticipation: '370000000000000000000',
+      totalSkyParticipation: '370000000000000000000',
       numVoters: 3,
       victoryConditionMatched: 0,
       results: [
@@ -236,7 +258,7 @@ describe('Fetch tally majority', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 54.0541,
-          mkrSupport: '200000000000000000000',
+          skySupport: '200000000000000000000',
           transferPct: 0,
           winner: true
         },
@@ -244,7 +266,7 @@ describe('Fetch tally majority', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 24.3243,
-          mkrSupport: '90000000000000000000',
+          skySupport: '90000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -252,14 +274,14 @@ describe('Fetch tally majority', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 21.6216,
-          mkrSupport: '80000000000000000000',
+          skySupport: '80000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false

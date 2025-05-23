@@ -46,15 +46,15 @@ describe('Fetch tally majority', () => {
         nodes: [
           {
             optionIdRaw: '1',
-            mkrSupport: '100'
+            skySupport: '100'
           },
           {
             optionIdRaw: '2',
-            mkrSupport: '90'
+            skySupport: '90'
           },
           {
             optionIdRaw: '3',
-            mkrSupport: '80'
+            skySupport: '80'
           }
         ]
       }
@@ -66,8 +66,8 @@ describe('Fetch tally majority', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrActiveParticipation: '270000000000000000000',
-      totalMkrParticipation: '270000000000000000000',
+      totalSkyActiveParticipation: '270000000000000000000',
+      totalSkyParticipation: '270000000000000000000',
       numVoters: 3,
       victoryConditionMatched: null,
       results: [
@@ -75,7 +75,7 @@ describe('Fetch tally majority', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 37.037,
-          mkrSupport: '100000000000000000000',
+          skySupport: '100000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -83,7 +83,7 @@ describe('Fetch tally majority', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 33.3333,
-          mkrSupport: '90000000000000000000',
+          skySupport: '90000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -91,14 +91,14 @@ describe('Fetch tally majority', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 29.6296,
-          mkrSupport: '80000000000000000000',
+          skySupport: '80000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -115,15 +115,15 @@ describe('Fetch tally majority', () => {
         nodes: [
           {
             optionIdRaw: '1',
-            mkrSupport: '200'
+            skySupport: '200'
           },
           {
             optionIdRaw: '2',
-            mkrSupport: '90'
+            skySupport: '90'
           },
           {
             optionIdRaw: '3',
-            mkrSupport: '80'
+            skySupport: '80'
           }
         ]
       }
@@ -135,8 +135,8 @@ describe('Fetch tally majority', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'Approve Existing Budget',
-      totalMkrActiveParticipation: '370000000000000000000',
-      totalMkrParticipation: '370000000000000000000',
+      totalSkyActiveParticipation: '370000000000000000000',
+      totalSkyParticipation: '370000000000000000000',
       numVoters: 3,
       victoryConditionMatched: 0,
       results: [
@@ -144,7 +144,7 @@ describe('Fetch tally majority', () => {
           optionId: 1,
           optionName: 'Approve Existing Budget',
           firstPct: 54.0541,
-          mkrSupport: '200000000000000000000',
+          skySupport: '200000000000000000000',
           transferPct: 0,
           winner: true
         },
@@ -152,7 +152,7 @@ describe('Fetch tally majority', () => {
           optionId: 2,
           optionName: 'Approve Increase',
           firstPct: 24.3243,
-          mkrSupport: '90000000000000000000',
+          skySupport: '90000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -160,14 +160,14 @@ describe('Fetch tally majority', () => {
           optionId: 3,
           optionName: 'Reject',
           firstPct: 21.6216,
-          mkrSupport: '80000000000000000000',
+          skySupport: '80000000000000000000',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false

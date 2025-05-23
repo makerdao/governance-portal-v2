@@ -71,15 +71,15 @@ describe('Fetch tally ranked', () => {
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
-            mkrSupport: '60.025000000000000000',
+            skySupport: '60.025000000000000000',
             optionIdRaw: fromBuffer([1, 3].reverse()) // [1st choice, 2nd choice, ...]
           },
           {
-            mkrSupport: '200.598801867883985831',
+            skySupport: '200.598801867883985831',
             optionIdRaw: fromBuffer([3, 1].reverse())
           },
           {
-            mkrSupport: '64.068823529411764706',
+            skySupport: '64.068823529411764706',
             optionIdRaw: fromBuffer([2, 3].reverse())
           }
         ]
@@ -93,14 +93,14 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       winningOptionName: 'Third',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '324692625397295750537',
-      totalMkrParticipation: '324692625397295750537',
+      totalSkyActiveParticipation: '324692625397295750537',
+      totalSkyParticipation: '324692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
           firstPct: 61.7811,
-          mkrSupport: '200598801867883985831',
+          skySupport: '200598801867883985831',
           transfer: '0',
           transferPct: 0,
           winner: true,
@@ -110,7 +110,7 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 19.7321,
-          mkrSupport: '64068823529411764706',
+          skySupport: '64068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -120,7 +120,7 @@ describe('Fetch tally ranked', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 18.4867,
-          mkrSupport: '60025000000000000000',
+          skySupport: '60025000000000000000',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -130,7 +130,7 @@ describe('Fetch tally ranked', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -138,7 +138,7 @@ describe('Fetch tally ranked', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -153,15 +153,15 @@ describe('Fetch tally ranked', () => {
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
-            mkrSupport: '60.025000000000000000',
+            skySupport: '60.025000000000000000',
             optionIdRaw: fromBuffer([1, 3].reverse()) // [1st choice, 2nd choice, ...]
           },
           {
-            mkrSupport: '102.598801867883985831',
+            skySupport: '102.598801867883985831',
             optionIdRaw: fromBuffer([3, 1].reverse())
           },
           {
-            mkrSupport: '64.068823529411764706',
+            skySupport: '64.068823529411764706',
             optionIdRaw: fromBuffer([2, 3].reverse())
           }
         ]
@@ -176,14 +176,14 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       winningOptionName: 'Third',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '226692625397295750537',
-      totalMkrParticipation: '226692625397295750537',
+      totalSkyActiveParticipation: '226692625397295750537',
+      totalSkyParticipation: '226692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
           firstPct: 45.259,
-          mkrSupport: '102598801867883985831',
+          skySupport: '102598801867883985831',
           transfer: '60025000000000000000',
           transferPct: 26.4786,
           winner: true,
@@ -193,7 +193,7 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 28.2624,
-          mkrSupport: '64068823529411764706',
+          skySupport: '64068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -203,7 +203,7 @@ describe('Fetch tally ranked', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -211,7 +211,7 @@ describe('Fetch tally ranked', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 26.4786,
-          mkrSupport: '60025000000000000000',
+          skySupport: '60025000000000000000',
           transfer: '-60025000000000000000',
           transferPct: -26.4785,
           winner: false,
@@ -222,7 +222,7 @@ describe('Fetch tally ranked', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -238,19 +238,19 @@ describe('Fetch tally ranked', () => {
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
-            mkrSupport: '60.025000000000000000',
+            skySupport: '60.025000000000000000',
             optionIdRaw: fromBuffer([1, 3].reverse()) // [1st choice, 2nd choice, ...]
           },
           {
-            mkrSupport: '102.598801867883985831',
+            skySupport: '102.598801867883985831',
             optionIdRaw: fromBuffer([3, 1].reverse())
           },
           {
-            mkrSupport: '64.068823529411764706',
+            skySupport: '64.068823529411764706',
             optionIdRaw: fromBuffer([2, 3].reverse())
           },
           {
-            mkrSupport: '4',
+            skySupport: '4',
             optionIdRaw: fromBuffer([4, 1].reverse())
           }
         ]
@@ -265,14 +265,14 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       winningOptionName: 'Third',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '230692625397295750537',
-      totalMkrParticipation: '230692625397295750537',
+      totalSkyActiveParticipation: '230692625397295750537',
+      totalSkyParticipation: '230692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
           firstPct: 44.4742,
-          mkrSupport: '102598801867883985831',
+          skySupport: '102598801867883985831',
           transfer: '60025000000000000000',
           transferPct: 26.0195,
           winner: true,
@@ -282,7 +282,7 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 27.7724,
-          mkrSupport: '64068823529411764706',
+          skySupport: '64068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -292,7 +292,7 @@ describe('Fetch tally ranked', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 26.0195,
-          mkrSupport: '60025000000000000000',
+          skySupport: '60025000000000000000',
           transfer: '-56025000000000000000',
           transferPct: -24.2855,
           winner: false,
@@ -302,7 +302,7 @@ describe('Fetch tally ranked', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -310,7 +310,7 @@ describe('Fetch tally ranked', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 1.7339,
-          mkrSupport: '4000000000000000000',
+          skySupport: '4000000000000000000',
           transfer: '-4000000000000000000',
           transferPct: -1.7338,
           winner: false,
@@ -328,20 +328,20 @@ describe('Fetch tally ranked', () => {
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
-            mkrSupport: '60.025000000000000000',
+            skySupport: '60.025000000000000000',
             optionIdRaw: fromBuffer([1, 3].reverse())
           },
           {
-            mkrSupport: '102.598801867883985831',
+            skySupport: '102.598801867883985831',
             optionIdRaw: fromBuffer([3, 1].reverse())
           },
           {
-            mkrSupport: '54.068823529411764706',
+            skySupport: '54.068823529411764706',
             // option 4 should never get these votes since it's eliminated in the first round
             optionIdRaw: fromBuffer([2, 4].reverse())
           },
           {
-            mkrSupport: '4',
+            skySupport: '4',
             optionIdRaw: fromBuffer([4, 1].reverse())
           }
         ]
@@ -356,14 +356,14 @@ describe('Fetch tally ranked', () => {
       winner: 3,
       victoryConditionMatched: 0,
       winningOptionName: 'Third',
-      totalMkrActiveParticipation: '220692625397295750537',
-      totalMkrParticipation: '220692625397295750537',
+      totalSkyActiveParticipation: '220692625397295750537',
+      totalSkyParticipation: '220692625397295750537',
       results: [
         {
           optionId: 3,
           optionName: 'Third',
           firstPct: 46.4895,
-          mkrSupport: '102598801867883985831',
+          skySupport: '102598801867883985831',
           transfer: '60025000000000000000',
           transferPct: 27.1985,
           winner: true,
@@ -373,7 +373,7 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 24.4996,
-          mkrSupport: '54068823529411764706',
+          skySupport: '54068823529411764706',
           transfer: '0',
           transferPct: 0,
           winner: false,
@@ -383,7 +383,7 @@ describe('Fetch tally ranked', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 27.1985,
-          mkrSupport: '60025000000000000000',
+          skySupport: '60025000000000000000',
           transfer: '-56025000000000000000',
           transferPct: -25.3859,
           winner: false,
@@ -394,7 +394,7 @@ describe('Fetch tally ranked', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -402,7 +402,7 @@ describe('Fetch tally ranked', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 1.8125,
-          mkrSupport: '4000000000000000000',
+          skySupport: '4000000000000000000',
           transfer: '-4000000000000000000',
           transferPct: -1.8124,
           winner: false,
@@ -429,19 +429,19 @@ describe('Fetch tally ranked', () => {
       voteAddressMkrWeightsAtTime: {
         nodes: [
           {
-            mkrSupport: '101',
+            skySupport: '101',
             optionIdRaw: fromBuffer([1])
           },
           {
-            mkrSupport: '100',
+            skySupport: '100',
             optionIdRaw: fromBuffer([2, 1].reverse())
           },
           {
-            mkrSupport: '50',
+            skySupport: '50',
             optionIdRaw: fromBuffer([3])
           },
           {
-            mkrSupport: '49',
+            skySupport: '49',
             optionIdRaw: fromBuffer([4, 3].reverse())
           }
         ]
@@ -456,14 +456,14 @@ describe('Fetch tally ranked', () => {
       winner: 1,
       victoryConditionMatched: 0,
       winningOptionName: 'First',
-      totalMkrParticipation: '300000000000000000000',
-      totalMkrActiveParticipation: '300000000000000000000',
+      totalSkyParticipation: '300000000000000000000',
+      totalSkyActiveParticipation: '300000000000000000000',
       results: [
         {
           optionId: 1,
           optionName: 'First',
           firstPct: 33.6667,
-          mkrSupport: '101000000000000000000',
+          skySupport: '101000000000000000000',
           transfer: '100000000000000000000',
           transferPct: 33.3333,
           winner: true,
@@ -473,7 +473,7 @@ describe('Fetch tally ranked', () => {
         {
           optionId: 3,
           optionName: 'Third',
-          mkrSupport: '50000000000000000000',
+          skySupport: '50000000000000000000',
           firstPct: 16.6667,
           transfer: '49000000000000000000',
           transferPct: 16.3333,
@@ -484,7 +484,7 @@ describe('Fetch tally ranked', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -493,7 +493,7 @@ describe('Fetch tally ranked', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 16.3333,
-          mkrSupport: '49000000000000000000',
+          skySupport: '49000000000000000000',
           transfer: '-49000000000000000000',
           transferPct: -16.3332,
           winner: false,
@@ -503,7 +503,7 @@ describe('Fetch tally ranked', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 33.3333,
-          mkrSupport: '100000000000000000000',
+          skySupport: '100000000000000000000',
           transfer: '-100000000000000000000',
           transferPct: -33.3332,
           winner: false,

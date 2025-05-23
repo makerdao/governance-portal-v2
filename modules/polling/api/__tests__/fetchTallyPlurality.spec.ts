@@ -46,23 +46,23 @@ describe('Fetch tally plurality', () => {
         nodes: [
           {
             optionIdRaw: '1',
-            mkrSupport: '40'
+            skySupport: '40'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '60'
+            skySupport: '60'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '77'
+            skySupport: '77'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '32'
+            skySupport: '32'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '600'
+            skySupport: '600'
           }
         ]
       }
@@ -74,8 +74,8 @@ describe('Fetch tally plurality', () => {
       parameters: mockPoll.parameters,
       winner: 1,
       winningOptionName: 'First',
-      totalMkrActiveParticipation: '700000000000000000000',
-      totalMkrParticipation: '809000000000000000000',
+      totalSkyActiveParticipation: '700000000000000000000',
+      totalSkyParticipation: '809000000000000000000',
       victoryConditionMatched: 0,
       numVoters: 5,
       results: [
@@ -83,7 +83,7 @@ describe('Fetch tally plurality', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 86.5266,
-          mkrSupport: '700000000000000000000',
+          skySupport: '700000000000000000000',
           transferPct: 0,
           winner: true
         },
@@ -91,7 +91,7 @@ describe('Fetch tally plurality', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 13.4734,
-          mkrSupport: '109000000000000000000',
+          skySupport: '109000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -99,14 +99,14 @@ describe('Fetch tally plurality', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -115,7 +115,7 @@ describe('Fetch tally plurality', () => {
           optionId: 3,
           optionName: 'Third',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -131,31 +131,31 @@ describe('Fetch tally plurality', () => {
         nodes: [
           {
             optionIdRaw: '1',
-            mkrSupport: '40'
+            skySupport: '40'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '60'
+            skySupport: '60'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '77'
+            skySupport: '77'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '32'
+            skySupport: '32'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '600'
+            skySupport: '600'
           },
           {
             optionIdRaw: '2',
-            mkrSupport: '32'
+            skySupport: '32'
           },
           {
             optionIdRaw: '2',
-            mkrSupport: '1200'
+            skySupport: '1200'
           }
         ]
       }
@@ -167,8 +167,8 @@ describe('Fetch tally plurality', () => {
       parameters: mockPoll.parameters,
       winner: 2,
       winningOptionName: 'Second',
-      totalMkrActiveParticipation: '1932000000000000000000',
-      totalMkrParticipation: '2041000000000000000000',
+      totalSkyActiveParticipation: '1932000000000000000000',
+      totalSkyParticipation: '2041000000000000000000',
       victoryConditionMatched: 0,
       numVoters: 7,
       results: [
@@ -176,7 +176,7 @@ describe('Fetch tally plurality', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 60.3626,
-          mkrSupport: '1232000000000000000000',
+          skySupport: '1232000000000000000000',
           transferPct: 0,
           winner: true
         },
@@ -184,7 +184,7 @@ describe('Fetch tally plurality', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 34.2969,
-          mkrSupport: '700000000000000000000',
+          skySupport: '700000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -192,7 +192,7 @@ describe('Fetch tally plurality', () => {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 5.3405,
-          mkrSupport: '109000000000000000000',
+          skySupport: '109000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -200,7 +200,7 @@ describe('Fetch tally plurality', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -208,7 +208,7 @@ describe('Fetch tally plurality', () => {
           optionId: 3,
           optionName: 'Third',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -231,15 +231,15 @@ describe('Fetch tally plurality', () => {
       parameters: mockPoll.parameters,
       winner: null,
       winningOptionName: 'None found',
-      totalMkrParticipation: '0',
+      totalSkyParticipation: '0',
       victoryConditionMatched: null,
-      totalMkrActiveParticipation: '0',
+      totalSkyActiveParticipation: '0',
       numVoters: 0,
       results: [
         {
           optionId: 0,
           optionName: 'Abstain',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -247,7 +247,7 @@ describe('Fetch tally plurality', () => {
         {
           optionId: 1,
           optionName: 'First',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -256,14 +256,14 @@ describe('Fetch tally plurality', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
         {
           optionId: 2,
           optionName: 'Second',
-          mkrSupport: '0',
+          skySupport: '0',
           firstPct: 0,
           transferPct: 0,
           winner: false
@@ -273,7 +273,7 @@ describe('Fetch tally plurality', () => {
           optionId: 3,
           optionName: 'Third',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
@@ -289,31 +289,31 @@ describe('Fetch tally plurality', () => {
         nodes: [
           {
             optionIdRaw: '1',
-            mkrSupport: '40'
+            skySupport: '40'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '60'
+            skySupport: '60'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '77'
+            skySupport: '77'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '32'
+            skySupport: '32'
           },
           {
             optionIdRaw: '1',
-            mkrSupport: '600'
+            skySupport: '600'
           },
           {
             optionIdRaw: '2',
-            mkrSupport: '32'
+            skySupport: '32'
           },
           {
             optionIdRaw: '0',
-            mkrSupport: '1200'
+            skySupport: '1200'
           }
         ]
       }
@@ -326,15 +326,15 @@ describe('Fetch tally plurality', () => {
       winner: 1,
       winningOptionName: 'First',
       victoryConditionMatched: 0,
-      totalMkrActiveParticipation: '732000000000000000000',
-      totalMkrParticipation: '2041000000000000000000',
+      totalSkyActiveParticipation: '732000000000000000000',
+      totalSkyParticipation: '2041000000000000000000',
       numVoters: 7,
       results: [
         {
           optionId: 0,
           optionName: 'Abstain',
           firstPct: 64.1352,
-          mkrSupport: '1309000000000000000000',
+          skySupport: '1309000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -342,7 +342,7 @@ describe('Fetch tally plurality', () => {
           optionId: 1,
           optionName: 'First',
           firstPct: 34.2969,
-          mkrSupport: '700000000000000000000',
+          skySupport: '700000000000000000000',
           transferPct: 0,
           winner: true
         },
@@ -350,7 +350,7 @@ describe('Fetch tally plurality', () => {
           optionId: 2,
           optionName: 'Second',
           firstPct: 1.5679,
-          mkrSupport: '32000000000000000000',
+          skySupport: '32000000000000000000',
           transferPct: 0,
           winner: false
         },
@@ -358,7 +358,7 @@ describe('Fetch tally plurality', () => {
           optionId: 4,
           optionName: 'Fourth',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         },
@@ -366,7 +366,7 @@ describe('Fetch tally plurality', () => {
           optionId: 3,
           optionName: 'Third',
           firstPct: 0,
-          mkrSupport: '0',
+          skySupport: '0',
           transferPct: 0,
           winner: false
         }
