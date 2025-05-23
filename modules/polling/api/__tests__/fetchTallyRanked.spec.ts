@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
+import { fetchPollTally } from '../spock/fetchPollTally';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modules/polling/polling.constants';
@@ -86,7 +86,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
     const expectedResult = {
       parameters: mockPoll.parameters,
       rounds: 1,
@@ -168,7 +168,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -257,7 +257,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -348,7 +348,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -448,7 +448,7 @@ describe('Fetch tally ranked', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,

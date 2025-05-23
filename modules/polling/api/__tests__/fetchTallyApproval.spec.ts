@@ -10,7 +10,7 @@ import { PollInputFormat, PollResultDisplay, PollVictoryConditions } from 'modul
 import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { gqlRequest } from '../../../../modules/gql/gqlRequest';
-import { fetchPollTallyWithSpock } from '../spock/fetchPollTallyWithSpock';
+import { fetchPollTally } from '../fetchPollTally';
 import { Mock, vi } from 'vitest';
 
 vi.mock('modules/gql/gqlRequest');
@@ -68,7 +68,7 @@ describe('Fetch tally approval', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -149,7 +149,7 @@ describe('Fetch tally approval', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
@@ -218,7 +218,7 @@ describe('Fetch tally approval', () => {
       }
     });
 
-    const result = await fetchPollTallyWithSpock(mockPoll, SupportedNetworks.MAINNET);
+    const result = await fetchPollTally(mockPoll, SupportedNetworks.MAINNET);
 
     const expectedResult = {
       parameters: mockPoll.parameters,
