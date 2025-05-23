@@ -208,7 +208,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                           ? // Multiple by 1000n and then divide the number by 10 to get the equivalent of 1 decimal place in the percentage
                             calculatePercentage(
                               parseEther(v.skySupport.toString()),
-                              BigInt(totalSkyParticipation.toString()),
+                              parseEther(totalSkyParticipation.toString()),
                               1
                             )
                           : 0
