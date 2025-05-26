@@ -17,14 +17,14 @@ import {
 } from 'modules/delegates/components';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
-import { DelegateMKRChart } from './DelegateMKRChart';
+import { DelegateSKYDelegatedStats } from './DelegateSKYDelegatedStats';
+import { DelegateSKYChart } from './DelegateSKYChart';
 import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { Address } from 'modules/address/components/Address';
@@ -53,7 +53,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
 
   const { data: totalStaked } = useLockedSky(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
-  const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
+  const delegationHistory = formatDelegationHistory(delegate.skyLockedDelegate);
 
   const activeDelegators = delegationHistory.filter(({ lockAmount }) => parseEther(lockAmount) > 0n);
   const delegatorCount = activeDelegators.length;
@@ -82,7 +82,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           <Divider />
 
           <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
-            <DelegateMKRChart delegate={delegate} />
+            <DelegateSKYChart delegate={delegate} />
           </Box>
           <Divider />
         </>
@@ -160,7 +160,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <DelegateMKRDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
+          <DelegateSKYDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
         </Box>
       </Box>
 

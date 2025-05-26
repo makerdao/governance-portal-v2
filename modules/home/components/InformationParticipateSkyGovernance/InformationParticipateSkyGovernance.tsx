@@ -75,7 +75,7 @@ function Card({
     </Box>
   );
 }
-export default function InformationParticipateMakerGovernance(): React.ReactElement {
+export default function InformationParticipateSkyGovernance(): React.ReactElement {
   const [active, setActive] = useState(infoPoints[0]);
   const bpi = useBreakpointIndex();
 

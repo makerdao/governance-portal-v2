@@ -28,7 +28,7 @@ type Props = {
   isHat: boolean;
   account?: string;
   votedProposals: string[];
-  mkrOnHat?: bigint;
+  skyOnHat?: bigint;
 };
 
 export default function ExecutiveOverviewCard({
@@ -36,7 +36,7 @@ export default function ExecutiveOverviewCard({
   isHat,
   account,
   votedProposals,
-  mkrOnHat
+  skyOnHat
 }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
   const [postedDateString, setPostedDateString] = useState('');
@@ -162,13 +162,13 @@ export default function ExecutiveOverviewCard({
               )}
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
-              {proposal.spellData?.mkrSupport === undefined ? (
+              {proposal.spellData?.skySupport === undefined ? (
                 <Box sx={{ width: 6, ml: 'auto', height: '100%' }}>
                   <Skeleton />
                 </Box>
               ) : (
                 <StatBox
-                  value={formatValue(BigInt(proposal.spellData?.mkrSupport))}
+                  value={formatValue(BigInt(proposal.spellData?.skySupport))}
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />
@@ -184,7 +184,7 @@ export default function ExecutiveOverviewCard({
         <Divider my={0} />
         <Flex sx={{ py: 2, justifyContent: 'center' }}>
           <StatusText testId="proposal-status">
-            {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, mkrOnHat })}
+            {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, skyOnHat })}
           </StatusText>
         </Flex>
       </Flex>

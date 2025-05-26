@@ -10,10 +10,10 @@ import { PollTallyVote } from 'modules/polling/types';
 import { extractWinnerPlurality } from '../plurality';
 
 describe('Extract winner condition plurality', () => {
-  it('gets the one with most mkr', async () => {
+  it('gets the one with most sky', async () => {
     const votes: PollTallyVote[] = [
       {
-        mkrSupport: 10,
+        skySupport: 10,
         optionIdRaw: 1,
         ballot: [1],
         blockTimestamp: 1,
@@ -22,7 +22,7 @@ describe('Extract winner condition plurality', () => {
         voter: ''
       },
       {
-        mkrSupport: 20,
+        skySupport: 20,
         optionIdRaw: 2,
         ballot: [2],
         blockTimestamp: 1,
@@ -31,7 +31,7 @@ describe('Extract winner condition plurality', () => {
         voter: ''
       },
       {
-        mkrSupport: 30,
+        skySupport: 30,
         optionIdRaw: 3,
         ballot: [3],
         blockTimestamp: 1,
@@ -45,10 +45,10 @@ describe('Extract winner condition plurality', () => {
 
     expect(winner).toEqual(3);
   });
-  it('doesnt find winner if two votes have the same MKR amount', async () => {
+  it('doesnt find winner if two votes have the same SKY amount', async () => {
     const votes: PollTallyVote[] = [
       {
-        mkrSupport: 10,
+        skySupport: 10,
         optionIdRaw: 1,
         ballot: [1],
         blockTimestamp: 1,
@@ -57,7 +57,7 @@ describe('Extract winner condition plurality', () => {
         voter: ''
       },
       {
-        mkrSupport: 10,
+        skySupport: 10,
         optionIdRaw: 2,
         ballot: [2],
         blockTimestamp: 1,

@@ -17,7 +17,7 @@ import { getArbitrumPollingContractRelayProvider } from 'modules/polling/api/get
 import logger from 'lib/logger';
 import { getActivePollIds } from 'modules/polling/api/fetchPolls';
 import { recentlyUsedGaslessVotingCheck } from 'modules/polling/helpers/recentlyUsedGaslessVotingCheck';
-import { hasMkrRequiredVotingWeight } from 'modules/polling/helpers/hasMkrRequiredVotingWeight';
+import { hasSkyRequiredVotingWeight } from 'modules/polling/helpers/hasSkyRequiredVotingWeight';
 import { MIN_SKY_REQUIRED_FOR_GASLESS_VOTING } from 'modules/polling/polling.constants';
 import { postRequestToDiscord } from 'modules/app/api/postRequestToDiscord';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
@@ -43,7 +43,7 @@ export const API_VOTE_ERRORS = {
   EXPIRED_POLLS: 'Can only vote in active polls.',
   RATE_LIMITED: 'Address cannot use gasless service more than once per 10 minutes.',
   VOTER_AND_SIGNER_DIFFER: 'Voter address could not be recovered from signature.',
-  LESS_THAN_MINIMUM_MKR_REQUIRED: `Address must have a poll voting weight of at least ${MIN_SKY_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
+  LESS_THAN_MINIMUM_SKY_REQUIRED: `Address must have a poll voting weight of at least ${MIN_SKY_REQUIRED_FOR_GASLESS_VOTING.toString()}.`,
   ALREADY_VOTED_IN_POLL: 'Address has already voted in this poll.',
   RELAYER_ERROR: 'Relayer transaction creation failed.'
 };
@@ -153,19 +153,19 @@ export default withApiHandler(
 
     //run eligibility checks unless backdoor secret provided
     if (!secret || secret !== config.GASLESS_BACKDOOR_SECRET) {
-      const [hasMkrRequired, activePollIds, recentlyUsedGaslessVoting, ballotHasVotedPolls] =
+      const [hasSkyRequired, activePollIds, recentlyUsedGaslessVoting, ballotHasVotedPolls] =
         await Promise.all([
-          hasMkrRequiredVotingWeight(voter, network, MIN_SKY_REQUIRED_FOR_GASLESS_VOTING, true),
+          hasSkyRequiredVotingWeight(voter, network, MIN_SKY_REQUIRED_FOR_GASLESS_VOTING, true),
           getActivePollIds(network),
           recentlyUsedGaslessVotingCheck(voter, network),
           ballotIncludesAlreadyVoted(voter, network, pollIds)
         ]);
 
-      //verify address has a poll weight > 0.1 MKR
-      if (!hasMkrRequired) {
+      //verify address has a poll weight > 0.1 SKY
+      if (!hasSkyRequired) {
         // BigInt doesnt handle decimals
         await throwError({
-          error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_MKR_REQUIRED,
+          error: API_VOTE_ERRORS.LESS_THAN_MINIMUM_SKY_REQUIRED,
           body: req.body,
           skipDiscord
         });

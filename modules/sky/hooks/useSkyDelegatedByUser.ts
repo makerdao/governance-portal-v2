@@ -29,7 +29,7 @@ type DelegatedByUserResponse = {
 };
 
 // Fetches the amount delegated from one user to one contract address
-export const useMkrDelegatedByUser = (
+export const useSkyDelegatedByUser = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): DelegatedByUserResponse => {
@@ -64,7 +64,7 @@ export const useMkrDelegatedByUser = (
   };
 
   const { data, error, mutate } = useSWR(
-    userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
+    userAddress && voteDelegateAddress ? ['/user/sky-delegated', voteDelegateAddress, userAddress] : null,
     async () => {
       if (config.USE_MOCK_WALLET) {
         return fetchFromChain(userAddress as string, voteDelegateAddress);
@@ -93,7 +93,7 @@ export const useMkrDelegatedByUser = (
           totalDelegationAmount: stakingEngineDelegated + directDelegated
         };
       } catch (outerError) {
-        console.error('Error in useMkrDelegatedByUser. Fetching from chain instead. Error:', outerError);
+        console.error('Error in useSkyDelegatedByUser. Fetching from chain instead. Error:', outerError);
         return fetchFromChain(userAddress, voteDelegateAddress);
       }
     },

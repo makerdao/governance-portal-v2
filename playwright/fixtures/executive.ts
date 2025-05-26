@@ -10,10 +10,10 @@ export class ExecutivePage {
   private depositApproveButton: any;
   private confirmTransactionText: any;
   private depositIntoContractText: any;
-  private mkrInput: any;
-  private depositMkrButton: any;
+  private skyInput: any;
+  private depositSkyButton: any;
   private transactionSuccessfulText: any;
-  private lockedMkr: any;
+  private lockedSky: any;
   private voteButton: any;
   private voteModalButton: any;
   private transactionSentText: any;
@@ -29,10 +29,10 @@ export class ExecutivePage {
     this.depositApproveButton = this.page.locator('[data-testid="deposit-approve-button"]');
     this.confirmTransactionText = this.page.locator('text=/Confirm Transaction/');
     this.depositIntoContractText = this.page.locator('text=/Deposit into voting contract/');
-    this.mkrInput = this.page.locator('[data-testid="mkr-input"]');
-    this.depositMkrButton = this.page.locator('[data-testid="button-deposit-sky"]');
+    this.skyInput = this.page.locator('[data-testid="sky-input"]');
+    this.depositSkyButton = this.page.locator('[data-testid="button-deposit-sky"]');
     this.transactionSuccessfulText = this.page.locator('text=/Transaction Successful/');
-    this.lockedMkr = this.page.locator('[data-testid="locked-sky"]');
+    this.lockedSky = this.page.locator('[data-testid="locked-sky"]');
     this.voteButton = this.page.locator('[data-testid="vote-button-exec-overview-card"]');
     this.voteModalButton = this.page.locator('[data-testid="vote-modal-vote-btn"]');
     this.transactionSentText = this.page.locator('text=/Transaction Sent/');
@@ -52,17 +52,17 @@ export class ExecutivePage {
     await expect(this.confirmTransactionText).toBeVisible();
   }
 
-  async depositMkr(amount: string) {
+  async depositSky(amount: string) {
     await expect(this.depositIntoContractText).toBeVisible();
-    await this.mkrInput.fill(amount);
-    await this.depositMkrButton.click();
+    await this.skyInput.fill(amount);
+    await this.depositSkyButton.click();
     await expect(this.confirmTransactionText).toBeVisible();
     await expect(this.transactionSuccessfulText).toBeVisible();
     closeModal(this.page);
   }
 
-  async verifyLockedMkr(amount: string) {
-    await expect(this.lockedMkr).toHaveText(`${amount} SKY`);
+  async verifyLockedSky(amount: string) {
+    await expect(this.lockedSky).toHaveText(`${amount} SKY`);
   }
 
   async vote() {

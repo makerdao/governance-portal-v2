@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
  *         description: Address of the supporter.
  *       deposits:
  *         type: string
- *         description: Amount of MKR the supporter has staked/voted with for this spell.
+ *         description: Amount of SKY the supporter has staked/voted with for this spell.
  *       percent:
  *         type: string
  *         description: Percentage of total support this supporter represents for the spell (e.g., "55.5", can be "0" if calculation resulted in NaN).

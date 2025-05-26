@@ -94,9 +94,9 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *         items:
  *           type: integer
  *         description: Array of chosen option indices by the voter.
- *       mkrSupport:
+ *       skySupport:
  *         type: string # Represents number | string, string is safer for large numbers
- *         description: MKR voting weight associated with this vote.
+ *         description: SKY voting weight associated with this vote.
  *       chainId:
  *         type: integer
  *         description: Chain ID where the vote was cast.
@@ -118,7 +118,7 @@ import { validateAddress } from 'modules/web3/api/validateAddress';
  *       pollId: 1
  *       voter: "0x123abc456def7890123abc456def7890123abc45"
  *       ballot: [1]
- *       mkrSupport: "100.50"
+ *       skySupport: "100.50"
  *       chainId: 1
  *       blockTimestamp: "2021-11-20T19:25:47Z"
  *       hash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"

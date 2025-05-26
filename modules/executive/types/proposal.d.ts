@@ -27,7 +27,7 @@ export type CMSProposal = {
   date: string;
   proposalLink: string;
   spellData?: {
-    mkrSupport: string;
+    skySupport: string;
   };
 };
 

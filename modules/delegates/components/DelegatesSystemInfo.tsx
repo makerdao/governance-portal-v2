@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { Box, Card, Flex, Heading, Text } from 'theme-ui';
-import { DelegatesAPIStats } from '../types';
+import { DelegatesApiStats } from '../types';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { Tokens } from 'modules/web3/constants/tokens';
 import EtherscanLink from 'modules/web3/components/EtherscanLink';
@@ -19,12 +19,12 @@ import { useChainId } from 'wagmi';
 import { calculatePercentage } from 'lib/utils';
 import { parseEther } from 'viem';
 
-export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): React.ReactElement {
+export function DelegatesSystemInfo({ stats }: { stats: DelegatesApiStats }): React.ReactElement {
   const chainId = useChainId();
   const delegateFactoryAddress = voteDelegateFactoryAddressMapping[chainId];
   const network = useNetwork();
 
-  const { data: totalMkr } = useTotalSupply(Tokens.SKY);
+  const { data: totalSky } = useTotalSupply(Tokens.SKY);
 
   const statsItems = [
     {
@@ -44,14 +44,14 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
     },
     {
       title: 'Total SKY delegated',
-      id: 'total-mkr-system-info',
-      value: Math.round(stats.totalMKRDelegated).toLocaleString()
+      id: 'total-sky-system-info',
+      value: Math.round(parseFloat(stats.totalSkyDelegated)).toLocaleString()
     },
     {
       title: 'Percent of SKY delegated',
-      id: 'percent-mkr-system-info',
-      value: totalMkr ? (
-        `${calculatePercentage(parseEther(stats.totalMKRDelegated.toString()), totalMkr, 2)}%`
+      id: 'percent-sky-system-info',
+      value: totalSky ? (
+        `${calculatePercentage(parseEther(stats.totalSkyDelegated.toString()), totalSky, 2)}%`
       ) : (
         <SkeletonThemed width={'100px'} height={'15px'} />
       )

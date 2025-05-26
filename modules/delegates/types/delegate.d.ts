@@ -55,9 +55,9 @@ export type DelegateContractInformation = {
   address: string;
   voteDelegateAddress: string;
   blockTimestamp: string;
-  mkrDelegated: string;
+  skyDelegated: string;
   proposalsSupported: number;
-  mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
+  skyLockedDelegate: SkyLockedDelegateApiResponse[];
   lastVoteDate: number | null;
 };
 
@@ -75,10 +75,10 @@ export type Delegate = {
   pollParticipation?: string;
   executiveParticipation?: string;
   communication?: string;
-  mkrDelegated: string;
+  skyDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
-  mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
+  skyLockedDelegate: SkyLockedDelegateApiResponse[];
   blockTimestamp: string;
 };
 
@@ -91,7 +91,7 @@ export type DelegatePaginated = Omit<
   | 'lastVoteDate'
   | 'externalUrl'
   | 'execSupported'
-  | 'mkrLockedDelegate'
+  | 'skyLockedDelegate'
 > & {
   picture?: string;
   creationDate: Date;
@@ -116,7 +116,7 @@ export type DelegationHistoryEvent = {
   isStakingEngine?: boolean;
 };
 
-export type MKRLockedDelegateAPIResponse = {
+export type SkyLockedDelegateApiResponse = {
   immediateCaller: string;
   delegateContractAddress: string;
   lockAmount: string;
@@ -128,7 +128,7 @@ export type MKRLockedDelegateAPIResponse = {
   isStakingEngine?: boolean;
 };
 
-export type MKRDelegatedToResponse = MKRLockedDelegateAPIResponse & {
+export type SKYDelegatedToResponse = SkyLockedDelegateApiResponse & {
   hash: string;
   immediateCaller: string;
 };

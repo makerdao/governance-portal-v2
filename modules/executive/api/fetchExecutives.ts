@@ -12,7 +12,7 @@ import { CMSProposal, Proposal, GithubProposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/markdown';
-import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
+import { analyzeSpell, getExecutiveSkySupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import logger from 'lib/logger';
 import { getExecutiveProposalsCacheKey, githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
@@ -104,22 +104,22 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   return sortedProposals;
 }
 
-async function getGithubExecutivesWithMKR(network: SupportedNetworks): Promise<CMSProposal[]> {
+async function getGithubExecutivesWithSky(network: SupportedNetworks): Promise<CMSProposal[]> {
   const proposals = await getGithubExecutives(network);
 
-  const mkrSupports = await Promise.all(
+  const skySupports = await Promise.all(
     proposals.map(async proposal => {
-      const mkrSupport = await getExecutiveMKRSupport(proposal.address, network);
+      const skySupport = await getExecutiveSkySupport(proposal.address, network);
       return {
         ...proposal,
         spellData: {
-          mkrSupport
+          skySupport
         }
       };
     })
   );
 
-  return mkrSupports;
+  return skySupports;
 }
 
 export async function getExecutiveProposals({
@@ -132,7 +132,7 @@ export async function getExecutiveProposals({
 }: {
   start?: number;
   limit?: number;
-  sortBy?: 'date' | 'mkr' | 'active';
+  sortBy?: 'date' | 'sky' | 'active';
   startDate?: number;
   endDate?: number;
   network?: SupportedNetworks;
@@ -148,14 +148,13 @@ export async function getExecutiveProposals({
     return JSON.parse(cachedProposals);
   }
   const proposals =
-    sortBy === 'mkr'
-      ? await getGithubExecutivesWithMKR(currentNetwork)
+    sortBy === 'sky'
+      ? await getGithubExecutivesWithSky(currentNetwork)
       : await getGithubExecutives(currentNetwork);
-
   const sorted = proposals.sort((a, b) => {
-    if (sortBy === 'mkr') {
-      const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
-      const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
+    if (sortBy === 'sky') {
+      const bSupport = b.spellData ? b.spellData?.skySupport || 0 : 0;
+      const aSupport = a.spellData ? a.spellData?.skySupport || 0 : 0;
       return BigInt(bSupport) > BigInt(aSupport) ? 1 : -1;
     } else if (sortBy === 'date') {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
