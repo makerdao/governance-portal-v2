@@ -18,7 +18,6 @@ import logger from 'lib/logger';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { chiefAbi, chiefAddress, dssSpellAbi } from 'modules/contracts/generated';
-import { formatValue } from 'lib/string';
 
 export const getExecutiveSkySupport = async (
   address: string,
