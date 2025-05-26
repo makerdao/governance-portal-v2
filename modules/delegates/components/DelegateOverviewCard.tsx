@@ -91,7 +91,7 @@ export const DelegateOverviewCard = memo(
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              skyDelegated: (parseEther(d.skyDelegated) + amount).toString()
+              skyDelegated: formatValue(parseEther(d.skyDelegated) + amount, 'wad', 2, false)
             };
           }
           return d;
