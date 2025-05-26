@@ -22,6 +22,7 @@ import { CardSummary } from 'modules/app/components/Card/CardSummary';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { StatusText } from 'modules/app/components/StatusText';
+import { parseEther } from 'viem';
 
 type Props = {
   proposal: Proposal;
@@ -168,7 +169,7 @@ export default function ExecutiveOverviewCard({
                 </Box>
               ) : (
                 <StatBox
-                  value={formatValue(BigInt(Math.ceil(Number(proposal.spellData?.skySupport))))}
+                  value={formatValue(parseEther(proposal.spellData?.skySupport.toString()))}
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />
