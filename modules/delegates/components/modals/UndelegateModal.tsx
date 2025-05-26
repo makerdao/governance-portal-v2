@@ -114,7 +114,7 @@ export const UndelegateModal = ({
                         <Text variant="smallText" sx={{ color: 'secondaryEmphasis', mt: 3 }}>
                           Your {formatValue(stakingEngineDelegated)} SKY delegated through the Staking Engine
                           must be undelegated from the{' '}
-                          <ExternalLink title="Sky app" href="https://app.sky.money/?widget=staking-engine">
+                          <ExternalLink title="Sky app" href="https://app.sky.money/?widget=stake">
                             <span>Sky app</span>
                           </ExternalLink>
                           .
