@@ -41,6 +41,8 @@ import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import Icon from 'modules/app/components/Icon';
+import { formatValue } from 'lib/string';
+
 export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, votingAccount } = useAccount();
   const network = useNetwork();
@@ -389,7 +391,14 @@ export default function ExecutiveOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals } = await fetchExecutivePageData(SupportedNetworks.MAINNET);
+  const res = await fetchExecutivePageData(SupportedNetworks.MAINNET);
+  const proposals = res.proposals.map(proposal => ({
+    ...proposal,
+    spellData: {
+      ...proposal.spellData,
+      skySupport: formatValue(BigInt(proposal.spellData.skySupport || 0), 'wad', 2, false)
+    }
+  }));
 
   return {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds

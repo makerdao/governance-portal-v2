@@ -48,7 +48,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
       nextCastTime: undefined,
       datePassed: undefined,
       dateExecuted: undefined,
-      skySupport: formatValue(approvals, 'wad', 2, false),
+      skySupport: approvals.toString(),
       executiveHash: undefined,
       officeHours: undefined
     };
@@ -109,7 +109,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     : undefined;
   const eta = Number(responseEta) ? new Date(Number(responseEta) * 1000) : undefined;
   const expiration = Number(responseExpiration) ? new Date(Number(responseExpiration) * 1000) : undefined;
-  const skySupport = responseSkySupport ? formatValue(responseSkySupport, 'wad', 2, false) : '0';
+  const skySupport = responseSkySupport ? responseSkySupport.toString() : '0';
   const executiveHash = responseExecutiveHash?.substr(
     responseExecutiveHash.indexOf('0x'),
     responseExecutiveHash.length
