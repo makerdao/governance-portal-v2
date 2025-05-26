@@ -88,13 +88,7 @@ export default function PollWinningOptionBox({
                   {!isDefault &&
                     (isInputFormatSingleChoice(poll.parameters) ||
                       isInputFormatChooseFree(poll.parameters)) &&
-                    ' with ' +
-                      formatValue(
-                        leadingOptionSupport.indexOf('.') !== -1
-                          ? parseEther(leadingOptionSupport)
-                          : BigInt(leadingOptionSupport)
-                      ) +
-                      ' SKY supporting.'}
+                    ' with ' + formatValue(parseEther(leadingOptionSupport)) + ' SKY supporting.'}
                   {!isDefault &&
                     isInputFormatRankFree(poll.parameters) &&
                     ' with ' +
