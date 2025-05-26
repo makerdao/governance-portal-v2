@@ -45,7 +45,7 @@ export async function refetchPolls(network: SupportedNetworks): Promise<{
           : arbitrumPollsQuery,
       variables:
         network === SupportedNetworks.MAINNET && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development'
-          ? { argsSkip: skip, creatorWhitelist: POLL_CREATOR_WHITELIST }
+          ? { argsSkip: skip, creatorWhitelist: POLL_CREATOR_WHITELIST.map(w => w.toLowerCase()) }
           : { argsSkip: skip }
     });
 
