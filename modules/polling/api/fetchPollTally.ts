@@ -206,7 +206,7 @@ export async function fetchPollTally(poll: Poll, network: SupportedNetworks): Pr
       // it will count the firstChoice SKY support based on the algorithm. Except for abstain
       // for other algorithms we just use the accumulated SKY
 
-      const isAbstainOption = poll.parameters.inputFormat.abstain.indexOf(parseInt(key)) !== -1;
+      const isAbstainOption = (poll?.parameters?.inputFormat?.abstain || [0]).indexOf(parseInt(key)) !== -1;
 
       const skySupport =
         winnerOption.results && !isAbstainOption

@@ -19,7 +19,7 @@ export const getVoteColor = (optionId: number, pollParameters: PollParameters, h
   const yesOptionHex = '#00A66A';
   const yesOption = 'bull';
 
-  if (pollParameters.inputFormat.abstain.indexOf(optionId) !== -1) {
+  if ((pollParameters?.inputFormat?.abstain || [0]).indexOf(optionId) !== -1) {
     return hex ? abstainOptionHex : abstainOption;
   }
 
@@ -32,7 +32,7 @@ export const getVoteColor = (optionId: number, pollParameters: PollParameters, h
   }
 
   if (isInputFormatChooseFree(pollParameters)) {
-    return pollParameters.inputFormat.options.indexOf(optionId) !== -1 ? yesOption : noOption;
+    return (pollParameters?.inputFormat?.options || [0]).indexOf(optionId) !== -1 ? yesOption : noOption;
   }
 
   const colors = {
