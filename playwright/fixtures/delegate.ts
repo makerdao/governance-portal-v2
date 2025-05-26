@@ -40,7 +40,7 @@ export class DelegatePage {
     this.skyInput = this.page.locator('[data-testid="sky-input"]');
     this.depositSkyButton = this.page.locator('[data-testid="deposit-sky-modal-button"]');
     this.delegatingText = this.page.locator('text=You are delegating');
-    this.congratsText = this.page.locator('text=Congratulations, you delegated');
+    this.congratsText = this.page.locator('text=You delegated');
     this.delegatedByYouText = this.page.locator('[data-testid="sky-delegated-by-you"]');
     this.undelegateButton = this.page.locator('[data-testid="button-undelegate"]');
     this.withdrawText = this.page.locator('text=Withdraw from delegate contract');
