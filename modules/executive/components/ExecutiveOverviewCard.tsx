@@ -168,7 +168,7 @@ export default function ExecutiveOverviewCard({
                 </Box>
               ) : (
                 <StatBox
-                  value={formatValue(BigInt(proposal.spellData?.skySupport))}
+                  value={formatValue(BigInt(Math.ceil(Number(proposal.spellData?.skySupport))))}
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />
