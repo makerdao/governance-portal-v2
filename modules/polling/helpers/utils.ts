@@ -120,9 +120,12 @@ export function isInputFormatChooseFree(parameters: PollParameters): boolean {
 }
 
 export function isInputFormatSingleChoice(parameters: PollParameters): boolean {
-  return parameters.inputFormat.type === PollInputFormat.singleChoice;
+  return (
+    parameters.inputFormat.type === PollInputFormat.singleChoice ||
+    //@ts-ignore-next-line
+    parameters.inputFormat === PollInputFormat.singleChoice
+  );
 }
-
 export function extractCurrentPollVote(
   poll: PollListItem | Poll,
   allUserVotes: PollTallyVote[] | undefined
