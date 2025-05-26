@@ -24,105 +24,118 @@ import { ApiError } from 'modules/app/api/ApiError';
  *       hasBeenCast:
  *         type: boolean
  *         nullable: true
+ *         description: Whether the spell has been cast
  *       hasBeenScheduled:
  *         type: boolean
+ *         description: Whether the spell has been scheduled for execution
  *       eta:
  *         type: string
  *         format: date-time
  *         nullable: true
- *         description: Estimated time of arrival for execution (if scheduled).
+ *         description: Estimated time of arrival for execution (if scheduled)
  *       expiration:
  *         type: string
  *         format: date-time
  *         nullable: true
- *         description: Time when the spell expires if not executed.
+ *         description: Time when the spell expires if not executed
  *       nextCastTime:
  *         type: string
  *         format: date-time
  *         nullable: true
- *         description: Next possible time the spell can be cast.
+ *         description: Next possible time the spell can be cast
  *       datePassed:
  *         type: string
  *         format: date-time
  *         nullable: true
- *         description: Date when the proposal achieved enough support.
+ *         description: Date when the proposal achieved enough support
  *       dateExecuted:
  *         type: string
  *         format: date-time
  *         nullable: true
- *         description: Date when the spell was executed.
- *       mkrSupport:
+ *         description: Date when the spell was executed
+ *       skySupport:
  *         type: string
- *         description: Amount of MKR supporting this spell.
+ *         description: Amount of SKY supporting this spell
  *       executiveHash:
  *         type: string
  *         nullable: true
- *         description: The hash of the executive spell.
+ *         description: The hash of the executive spell
  *       officeHours:
  *         type: boolean
  *         nullable: true
- *         description: Whether the spell is subject to office hours restrictions.
+ *         description: Whether the spell is subject to office hours restrictions
  *   ExecutiveProposal:
  *     type: object
  *     properties:
  *       active:
  *         type: boolean
+ *         description: Whether the proposal is currently active
  *       address:
  *         type: string
  *         format: address
+ *         description: The address of the executive proposal
  *       key:
  *         type: string
- *         description: Unique key for the proposal (slugified title).
+ *         description: Unique key for the proposal (slugified title)
  *       proposalBlurb:
  *         type: string
- *         description: A short summary or blurb for the proposal.
+ *         description: A short summary or blurb for the proposal
  *       title:
  *         type: string
+ *         description: The title of the proposal
  *       date:
  *         type: string
- *         description: Publication date of the proposal.
+ *         description: Publication date of the proposal
  *       proposalLink:
  *         type: string
  *         format: url
- *         description: Link to the raw proposal content (e.g., GitHub markdown file).
+ *         description: Link to the raw proposal content (e.g., GitHub markdown file)
  *       content:
  *         type: string
  *         nullable: true
- *         description: HTML content of the proposal.
+ *         description: HTML content of the proposal
  *       spellData:
  *         $ref: '#/definitions/SpellData'
+ *     required:
+ *       - active
+ *       - address
+ *       - key
+ *       - title
+ *       - date
+ *       - proposalLink
+ *       - spellData
  *     example:
  *       active: true
  *       address: "0x123abc456def7890123abc456def7890123abc45"
  *       key: "mip100-super-cool-feature"
- *       proposalBlurb: "This proposal introduces a super cool feature."
+ *       proposalBlurb: "This proposal introduces a super cool feature"
  *       title: "MIP100: Super Cool Feature Implementation"
- *       date: "2023-10-26T10:00:00Z" # Example ISO string
+ *       date: "2023-10-26T10:00:00Z"
  *       proposalLink: "https://raw.githubusercontent.com/makerdao/executive-votes/main/SOMETHING.md"
  *       content: "<h1>Hello World</h1><p>This is the content.</p>"
  *       spellData:
  *         hasBeenScheduled: true
- *         mkrSupport: "150000.75"
+ *         skySupport: "150000.75"
  *         eta: "2023-10-28T12:00:00Z"
  *
  * /api/executive/{proposal-id}:
  *   get:
  *     tags:
- *     - "executive"
- *     summary: Returns an executive proposal detail by its ID (key or address).
- *     description: Fetches the details of a specific executive proposal, including its content and spell data.
+ *       - "executive"
+ *     summary: Returns an executive proposal detail by its ID
+ *     description: Fetches the details of a specific executive proposal, including its content and spell data. The proposal can be identified by its key/slug or contract address.
  *     produces:
- *     - "application/json"
+ *       - "application/json"
  *     parameters:
  *       - name: proposal-id
  *         in: path
- *         description: The unique identifier of the executive proposal (can be its key/slug or contract address).
+ *         description: The unique identifier of the executive proposal (can be its key/slug or contract address)
  *         required: true
  *         schema:
  *           type: string
  *       - name: network
  *         in: query
- *         description: The Ethereum network to query.
+ *         description: The Ethereum network to query
  *         required: false
  *         schema:
  *           type: string
@@ -130,25 +143,27 @@ import { ApiError } from 'modules/app/api/ApiError';
  *           default: mainnet
  *     responses:
  *       '200':
- *         description: "Detailed information about the executive proposal."
+ *         description: Detailed information about the executive proposal
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/definitions/ExecutiveProposal'
  *       '404':
- *         description: "Proposal not found."
+ *         description: Proposal not found
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/NotFoundResponse' # Assuming NotFoundResponse is defined elsewhere or a generic error
+ *               $ref: '#/definitions/NotFoundResponse'
  * definitions:
- *   NotFoundResponse: # Placeholder definition
+ *   NotFoundResponse:
  *     type: object
  *     properties:
  *       message:
  *         type: string
+ *         description: Error message explaining why the proposal was not found
  *       code:
  *         type: integer
+ *         description: HTTP status code (404)
  */
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<ExecutiveProposalType | NotFoundResponse>) => {

@@ -288,9 +288,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                         <Text sx={{ color: 'textSecondary' }}>Total Voting Power</Text>
                         {tally ? (
                           <Text>
-                            {Number(
-                              formatEther(BigInt(tally.totalMkrParticipation.toString()))
-                            ).toLocaleString(undefined, {
+                            {Number(tally.totalSkyParticipation.toString()).toLocaleString(undefined, {
                               maximumFractionDigits: 3
                             })}{' '}
                             SKY
@@ -361,7 +359,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 </div>
               ]}
               banner={
-                tally && (tally.totalMkrParticipation as number) > 0 && tally.winningOptionName ? (
+                tally && (tally.totalSkyParticipation as number) > 0 && tally.winningOptionName ? (
                   <Box>
                     <Divider my={0} />
                     <PollWinningOptionBox tally={tally} poll={poll} />

@@ -155,7 +155,7 @@ const LandingPage = ({
           <section id="delegate">
             <TopDelegates
               topDelegates={delegates}
-              totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
+              totalSkyDelegated={parseEther((stats?.totalSkyDelegated || 0).toString())}
             />
           </section>
 

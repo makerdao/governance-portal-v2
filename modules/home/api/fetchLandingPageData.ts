@@ -18,7 +18,7 @@ import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pol
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum, SKY_PORTAL_START_DATE_MAINNET } from 'modules/polling/polling.constants';
-import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
+import { DelegateInfo, DelegatePaginated, DelegatesApiStats } from 'modules/delegates/types';
 import { TagCount } from 'modules/app/types/tag';
 
 export type LandingPageData = {
@@ -29,7 +29,7 @@ export type LandingPageData = {
   delegates: DelegatePaginated[];
   delegatesInfo: DelegateInfo[];
   delegatesError: Error | null;
-  stats?: DelegatesAPIStats;
+  stats?: DelegatesApiStats;
   mkrOnHat?: string;
   hat?: string;
   mkrInChief?: string;
@@ -59,7 +59,7 @@ export async function fetchLandingPageData(
         fetchJson(
           `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
         ),
-        fetchJson(`/api/polling/v2/all-polls?network=${network}&pageSize=4`),
+        fetchJson(`/api/polling/all-polls?network=${network}&pageSize=4`),
         fetchMkrOnHat(network),
         fetchMkrInChief(network)
       ])

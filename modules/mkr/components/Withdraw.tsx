@@ -11,7 +11,7 @@ import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { MKRInput } from './MKRInput';
+import { SkyTokenInput } from './SkyTokenInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
@@ -101,7 +101,7 @@ const ModalContent = ({ close, mutateLockedMkr, ...props }) => {
             </Box>
 
             <Box>
-              <MKRInput
+              <SkyTokenInput
                 onChange={setSkyToWithdraw}
                 balance={lockedSky}
                 value={skyToWithdraw}

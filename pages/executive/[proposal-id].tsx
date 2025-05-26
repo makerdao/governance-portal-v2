@@ -225,7 +225,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 renderAsDiv
               />
               <StatBox
-                value={spellData && spellData.mkrSupport && formatValue(BigInt(spellData.mkrSupport))}
+                value={spellData && spellData.skySupport && formatValue(BigInt(spellData.skySupport))}
                 label="SKY Support"
               />
               <StatBox

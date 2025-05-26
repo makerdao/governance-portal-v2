@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
-import { DelegatesAPIStats } from 'modules/delegates/types';
+import { DelegatesApiStats } from 'modules/delegates/types';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { formatValue } from 'lib/string';
 
 type Props = {
   pollStats: PollsResponse['stats'];
-  stats?: DelegatesAPIStats;
+  stats?: DelegatesApiStats;
   mkrOnHat?: string;
   mkrInChief?: string;
 };
@@ -40,7 +40,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     {
       title: 'SKY Delegated',
       value: stats ? (
-        `${formatValue(BigInt(Math.floor(stats.totalMKRDelegated)), 0, 2, true, false, 1e9)} SKY`
+        `${formatValue(BigInt(Math.floor(parseFloat(stats.totalSkyDelegated))), 0, 2, true, false, 1e9)} SKY`
       ) : (
         <Skeleton />
       )
@@ -51,11 +51,5 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     }
   ];
 
-  return (
-    <Stats
-      title="Governance Stats"
-      infoUnits={infoUnits}
-      viewMoreUrl=""
-    />
-  );
+  return <Stats title="Governance Stats" infoUnits={infoUnits} viewMoreUrl="" />;
 }

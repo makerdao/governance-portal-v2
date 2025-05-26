@@ -30,7 +30,7 @@ export async function fetchChainDelegates(
       blockTimestamp,
       address: d.ownerAddress,
       voteDelegateAddress: d.id,
-      mkrDelegated: formatValue(BigInt(totalDelegated), 'wad', 18, false),
+      skyDelegated: formatValue(BigInt(totalDelegated), 'wad', 18, false),
       lastVoteDate: d.voter?.lastVotedTimestamp ? Number(d.voter.lastVotedTimestamp) : null
     };
   });

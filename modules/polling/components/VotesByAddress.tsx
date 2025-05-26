@@ -30,7 +30,7 @@ const INITIAL_VOTES_COUNT = 10;
 
 const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { votesByAddress: votes, totalMkrParticipation } = tally;
+  const { votesByAddress: votes, totalSkyParticipation } = tally;
   const [sortBy, setSortBy] = useState({
     type: 'mkr',
     order: 1
@@ -61,8 +61,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     switch (sortBy.type) {
       case 'mkr':
         sorted = votes?.sort((a, b) => {
-          const aMKR = parseEther(a.mkrSupport.toString());
-          const bMKR = parseEther(b.mkrSupport.toString());
+          const aMKR = parseEther(a.skySupport.toString());
+          const bMKR = parseEther(b.skySupport.toString());
           return sortBy.order === 1 ? (aMKR > bMKR ? -1 : 1) : aMKR > bMKR ? 1 : -1;
         });
         break;
@@ -112,7 +112,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             </Text>
             <Text
               as="th"
-              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '38%' }}
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '28%' }}
               variant="caps"
               onClick={() => changeSort('option')}
             >
@@ -148,7 +148,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
             )}
             <Text
               as="th"
-              sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '15%' }}
+              sx={{ textAlign: ['right', 'right', 'left'], cursor: 'pointer', pb: 2, width: '22%' }}
               variant="caps"
               data-testid="mkr-header"
               onClick={() => changeSort('mkr')}
@@ -204,11 +204,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   {bpi > 3 && (
                     <Text as="td" sx={{ textAlign: 'left', pb: 2, fontSize: [1, 3] }}>
                       {`${
-                        parseEther(v.mkrSupport.toString()) > 0n
+                        parseEther(v.skySupport.toString()) > 0n
                           ? // Multiple by 1000n and then divide the number by 10 to get the equivalent of 1 decimal place in the percentage
                             calculatePercentage(
-                              parseEther(v.mkrSupport.toString()),
-                              BigInt(totalMkrParticipation.toString()),
+                              parseEther(v.skySupport.toString()),
+                              parseEther(totalSkyParticipation.toString()),
                               1
                             )
                           : 0
@@ -220,7 +220,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     data-testid={`vote-mkr-${v.voter}`}
                     sx={{ textAlign: ['right', 'right', 'left'], pb: 2, fontSize: [1, 3] }}
                   >
-                    {`${formatValue(parseEther(v.mkrSupport.toString()), undefined, undefined, true, true)}${
+                    {`${formatValue(parseEther(v.skySupport.toString()), undefined, undefined, true, true)}${
                       bpi > 3 ? ' SKY' : ''
                     }`}
                   </Text>

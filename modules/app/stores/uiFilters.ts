@@ -32,8 +32,8 @@ type Store = {
   setShowPollEnded: (ended: boolean) => void;
   resetPollFilters: () => void;
   resetExecutiveFilters: () => void;
-  executiveSortBy: 'active' | 'date' | 'mkr';
-  setExecutiveSortBy: (method: 'active' | 'date' | 'mkr') => void;
+  executiveSortBy: 'active' | 'date' | 'sky';
+  setExecutiveSortBy: (method: 'active' | 'date' | 'sky') => void;
   pollsSortBy: PollOrderByEnum;
   setPollsSortBy: (sort: PollOrderByEnum) => void;
   fetchOnLoad: boolean;

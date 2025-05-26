@@ -28,7 +28,7 @@ export const getAddressDetailCacheKey = (address: string): string => `address-${
 export const getExecutiveProposalsCacheKey = (
   start = 0,
   limit = 5,
-  sortBy: 'date' | 'mkr' | 'active' = 'active',
+  sortBy: 'date' | 'sky' | 'active' = 'active',
   startDate = 0,
   endDate = 0
 ): string => `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
