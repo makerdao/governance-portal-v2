@@ -23,11 +23,11 @@ import {
 } from 'recharts';
 import FilterButton from 'modules/app/components/FilterButton';
 import { useState } from 'react';
-import { MKRWeightTimeRanges } from '../delegates.constants';
+import { SKYWeightTimeRanges } from '../delegates.constants';
 import { format } from 'date-fns';
 import { formatDelegationHistoryChart } from '../helpers/formatDelegationHistoryChart';
 
-export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
+export function DelegateSKYChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
 
   // Time ranges
@@ -42,19 +42,19 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     {
       label: 'Last year',
       from: Date.now() - oneYear,
-      range: MKRWeightTimeRanges.month,
+      range: SKYWeightTimeRanges.month,
       interval: 30
     },
     {
       label: 'Last month',
       from: Date.now() - oneMonth,
-      range: MKRWeightTimeRanges.day,
+      range: SKYWeightTimeRanges.day,
       interval: 7
     },
     {
       label: 'Last week',
       from: Date.now() - oneWeek,
-      range: MKRWeightTimeRanges.day,
+      range: SKYWeightTimeRanges.day,
       interval: 1
     }
   ];
@@ -64,7 +64,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   const data = formatDelegationHistoryChart(delegate.skyLockedDelegate, selectedTimeFrame.from);
 
   function renderTooltip(item) {
-    const monthMKR = data ? data.find(i => i.date === item.label) : null;
+    const monthSKY = data ? data.find(i => i.date === item.label) : null;
 
     if (!data) {
       return null;
@@ -72,9 +72,9 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
     return (
       <Box>
-        {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
+        {monthSKY && <Text as="p">{formatXAxis(monthSKY.date)}</Text>}
         <Text as="p">
-          SKY Weight: {formatValue(BigInt(Math.floor(monthMKR?.MKR || 0)), 0, 2, true, false, 1e6)}
+          SKY Weight: {formatValue(BigInt(Math.floor(monthSKY?.SKY || 0)), 0, 2, true, false, 1e6)}
         </Text>
       </Box>
     );
@@ -153,7 +153,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             tickFormatter={formatXAxis}
           />
           <YAxis
-            dataKey="MKR"
+            dataKey="SKY"
             interval="preserveStartEnd"
             axisLine={false}
             stroke="#ADADAD"
@@ -171,7 +171,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           <CartesianGrid stroke="#D5D9E0" strokeDasharray="5 5" />
           <Tooltip content={renderTooltip} />
 
-          <Area dataKey="MKR" stroke={'#504DFF'} type="monotone" fill="url(#gradientFront)" />
+          <Area dataKey="SKY" stroke={'#504DFF'} type="monotone" fill="url(#gradientFront)" />
 
           <ReferenceLine stroke={'#D4D9E1'} x={0} y={0} />
         </AreaChart>

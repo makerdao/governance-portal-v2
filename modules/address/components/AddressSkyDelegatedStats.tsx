@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex } from 'theme-ui';
 import { parseEther } from 'viem';
 import { StatBox } from 'modules/app/components/StatBox';
-import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
+import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 import { formatValue } from 'lib/string';
 
 export function AddressSkyDelegatedStats({

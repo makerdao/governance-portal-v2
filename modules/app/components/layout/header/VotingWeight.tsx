@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Flex, Text } from 'theme-ui';
-import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
+import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 
@@ -24,7 +24,7 @@ export default function VotingWeight(): JSX.Element {
       </Flex>
       <Flex>
         <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
-          {(votingWeight || votingWeight === 0n) ? `${formatValue(votingWeight)} SKY` : '--'}
+          {votingWeight || votingWeight === 0n ? `${formatValue(votingWeight)} SKY` : '--'}
         </Text>
       </Flex>
       <Flex sx={{ py: 1 }}>

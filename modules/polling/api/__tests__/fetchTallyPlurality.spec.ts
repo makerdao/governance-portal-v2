@@ -42,32 +42,6 @@ describe('Fetch tally plurality', () => {
 
   it('gives expected results', async () => {
     (gqlRequest as Mock)
-      // .mockResolvedValueOnce({
-      //   voteAddressMkrWeightsAtTime: {
-      //     nodes: [
-      //       {
-      //         optionIdRaw: '1',
-      //         skySupport: '40'
-      //       },
-      //       {
-      //         optionIdRaw: '1',
-      //         skySupport: '60'
-      //       },
-      //       {
-      //         optionIdRaw: '0',
-      //         skySupport: '77'
-      //       },
-      //       {
-      //         optionIdRaw: '0',
-      //         skySupport: '32'
-      //       },
-      //       {
-      //         optionIdRaw: '1',
-      //         skySupport: '600'
-      //       }
-      //     ]
-      //   }
-      // });
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce({
         pollVotes: []

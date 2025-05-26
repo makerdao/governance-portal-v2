@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Flex, Text } from 'theme-ui';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
+import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 import { formatValue } from 'lib/string';
-import Deposit from 'modules/mkr/components/Deposit';
-import Withdraw from 'modules/mkr/components/Withdraw';
+import Deposit from 'modules/sky/components/Deposit';
+import Withdraw from 'modules/sky/components/Withdraw';
 
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
@@ -33,7 +33,9 @@ export default function VotingWeight(): JSX.Element {
             Voting weight
           </Text>
         </Flex>
-        <Text sx={{ color: 'text' }}>{(votingWeight || votingWeight === 0n) ? `${formatValue(votingWeight)} SKY` : '--'}</Text>
+        <Text sx={{ color: 'text' }}>
+          {votingWeight || votingWeight === 0n ? `${formatValue(votingWeight)} SKY` : '--'}
+        </Text>
       </Flex>
       {!voteDelegateContractAddress && (
         <Flex sx={{ mt: [3, 2], gap: 2, alignItems: 'center', justifyContent: 'center', width: '100%' }}>

@@ -393,7 +393,7 @@ describe('Instant runoff calculation', () => {
     expect(JSON.parse(JSON.stringify(winner, bigIntSerializer))).toEqual(expectedResult);
   });
 
-  it('Does not break with only 1 vote without mkr', () => {
+  it('Does not break with only 1 vote without sky', () => {
     const votes: PollTallyVote[] = [
       {
         skySupport: '0',

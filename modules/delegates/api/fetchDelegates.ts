@@ -237,7 +237,7 @@ export async function fetchDelegatesPaginated({
     and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddressesForNotInQuery }]
   };
 
-  const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.MKR : orderBy;
+  const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.SKY : orderBy;
 
   const delegatesQueryFirstPageVariables = {
     first: pageSize,

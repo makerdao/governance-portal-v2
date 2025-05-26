@@ -12,7 +12,7 @@ import { parseEther } from 'viem';
 import { SkyTokenInput, SkyTokenInputProps } from '../SkyTokenInput';
 import { vi } from 'vitest';
 
-function renderMKRInput(props: Partial<SkyTokenInputProps> = {}) {
+function renderSKYInput(props: Partial<SkyTokenInputProps> = {}) {
   const defaultProps: SkyTokenInputProps = {
     onChange: vi.fn(),
     value: parseEther('0')
@@ -29,19 +29,19 @@ describe('SkyTokenInput', () => {
       balanceText: 'Hey'
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
 
     const component = screen.getByTestId('sky-input-balance-text');
 
     expect(component).toHaveTextContent('Hey');
   });
 
-  test('Should reflect the balance of MKR', async () => {
+  test('Should reflect the balance of SKY', async () => {
     const props: Partial<SkyTokenInputProps> = {
       balance: parseEther('24.5')
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
 
     const component = screen.getByTestId('sky-input-balance');
 
@@ -56,7 +56,7 @@ describe('SkyTokenInput', () => {
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
     const setMaxButton = screen.getByTestId('sky-input-set-max');
     const input = screen.getByTestId('sky-input');
 
@@ -74,7 +74,7 @@ describe('SkyTokenInput', () => {
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
     const input = screen.getByTestId('sky-input');
     userEvent.type(input, '3');
     const expectedValue = parseEther('3');
@@ -89,7 +89,7 @@ describe('SkyTokenInput', () => {
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
     const error = screen.getByTestId('sky-input-error');
 
     expect(error).toBeVisible();
@@ -103,7 +103,7 @@ describe('SkyTokenInput', () => {
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
     const error = screen.getByTestId('sky-input-error');
 
     expect(error).toBeVisible();

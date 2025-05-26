@@ -27,7 +27,7 @@ export const getExecutiveSkySupport = async (
     const approvals = await getChiefApprovals(address, network);
     return approvals.toString();
   } catch (e) {
-    logger.error(`getExecutiveMKRSupport: Error fetching approvals for ${address} on ${network}`, e);
+    logger.error(`getExecutiveSKYSupport: Error fetching approvals for ${address} on ${network}`, e);
     return new Promise<string>(res => res('0'));
   }
 };

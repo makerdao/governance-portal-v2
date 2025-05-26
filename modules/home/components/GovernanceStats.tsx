@@ -15,15 +15,15 @@ import { formatValue } from 'lib/string';
 type Props = {
   pollStats: PollsResponse['stats'];
   stats?: DelegatesApiStats;
-  mkrOnHat?: string;
-  mkrInChief?: string;
+  skyOnHat?: string;
+  skyInChief?: string;
 };
 
-export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
+export function GovernanceStats({ pollStats, stats, skyOnHat, skyInChief }: Props): JSX.Element {
   const infoUnits = [
     {
       title: 'SKY on Hat',
-      value: mkrOnHat ? `${mkrOnHat} SKY` : <Skeleton />
+      value: skyOnHat ? `${skyOnHat} SKY` : <Skeleton />
     },
     {
       title: 'Active Polls',
@@ -47,7 +47,7 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     },
     {
       title: 'SKY in Chief',
-      value: mkrInChief ? `${mkrInChief} SKY` : <Skeleton />
+      value: skyInChief ? `${skyInChief} SKY` : <Skeleton />
     }
   ];
 
