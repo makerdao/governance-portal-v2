@@ -86,7 +86,7 @@ export const UndelegateModal = ({
                   setTxHash={setTxHash}
                   onDismiss={onClose}
                   title={'Undelegating SKY'}
-                  description={`You undelegated ${formatValue(skyToWithdraw, 'wad', 6)} from ${
+                  description={`You undelegated ${formatValue(skyToWithdraw, 'wad', 6)} SKY from ${
                     delegate.name
                   }`}
                 >
