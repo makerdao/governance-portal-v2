@@ -18,6 +18,7 @@ import logger from 'lib/logger';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { chiefAbi, chiefAddress, dssSpellAbi } from 'modules/contracts/generated';
+import { formatValue } from 'lib/string';
 
 export const getExecutiveSkySupport = async (
   address: string,
@@ -39,7 +40,6 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
   // don't fetch spell data if not on mainnet
   if (network !== SupportedNetworks.MAINNET) {
     const approvals = await getChiefApprovals(address, network);
-
     return {
       hasBeenCast: undefined,
       hasBeenScheduled: false,
@@ -48,7 +48,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
       nextCastTime: undefined,
       datePassed: undefined,
       dateExecuted: undefined,
-      skySupport: approvals.toString(),
+      skySupport: formatValue(approvals, 'wad', 2, false),
       executiveHash: undefined,
       officeHours: undefined
     };
@@ -109,7 +109,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     : undefined;
   const eta = Number(responseEta) ? new Date(Number(responseEta) * 1000) : undefined;
   const expiration = Number(responseExpiration) ? new Date(Number(responseExpiration) * 1000) : undefined;
-  const skySupport = responseSkySupport ? responseSkySupport.toString() : '0';
+  const skySupport = responseSkySupport ? formatValue(responseSkySupport, 'wad', 2, false) : '0';
   const executiveHash = responseExecutiveHash?.substr(
     responseExecutiveHash.indexOf('0x'),
     responseExecutiveHash.length
