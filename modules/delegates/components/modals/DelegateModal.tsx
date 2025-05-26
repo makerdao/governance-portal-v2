@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
-import { useSkyBalance } from 'modules/mkr/hooks/useSkyBalance';
+import { useSkyBalance } from 'modules/sky/hooks/useSkyBalance';
 import { Delegate, DelegateInfo, DelegatePaginated } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateSky } from './InputDelegateSky';
@@ -125,11 +125,9 @@ export const DelegateModal = ({
                   setTxHash={setTxHash}
                   onDismiss={onClose}
                   title={`Delegating to ${delegate.name}`}
-                  description={`Congratulations, you delegated ${formatValue(
-                    skyToDeposit,
-                    'wad',
-                    6
-                  )} SKY to ${delegate.name}.`}
+                  description={`You delegated ${formatValue(skyToDeposit, 'wad', 6)} SKY to ${
+                    delegate.name
+                  }.`}
                 >
                   <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
                     <DelegateAvatarName delegate={delegate} />

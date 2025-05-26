@@ -39,6 +39,7 @@ import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
+import { formatEther } from 'viem';
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -61,10 +62,10 @@ function mergeDelegateInfo({
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
-    mkrDelegated: onChainDelegate.mkrDelegated,
+    skyDelegated: onChainDelegate.skyDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
     execSupported: undefined,
-    mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
+    skyLockedDelegate: onChainDelegate.skyLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp
   };
 }
@@ -90,7 +91,7 @@ export async function fetchDelegate(
     network || SupportedNetworks.MAINNET
   );
 
-  onChainDelegate.mkrLockedDelegate = delegationEvents;
+  onChainDelegate.skyLockedDelegate = delegationEvents;
 
   // fetch github info for delegate
   const { data: githubDelegate } = await fetchGithubDelegate(
@@ -209,9 +210,11 @@ export async function fetchDelegatesPaginated({
     getDelegatesCounts(filteredDelegateEntries);
 
   // If there are no aligned delegates, the id_not_in filter will filter out everything if we give it an empty array
-  const alignedDelegatesAddressesForNotInQuery = alignedDelegatesAddresses.length > 0 ? alignedDelegatesAddresses : ['0x0000000000000000000000000000000000000000'];
+  const alignedDelegatesAddressesForNotInQuery =
+    alignedDelegatesAddresses.length > 0
+      ? alignedDelegatesAddresses
+      : ['0x0000000000000000000000000000000000000000'];
 
-  
   const baseDelegatesQueryFilter: any = { and: [{ version: '3' }] };
   if (searchTerm) {
     baseDelegatesQueryFilter.and.push({ id_in: filteredDelegateAddresses });
@@ -234,7 +237,7 @@ export async function fetchDelegatesPaginated({
     and: [...(baseDelegatesQueryFilter.and || []), { id_not_in: alignedDelegatesAddressesForNotInQuery }]
   };
 
-  const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.MKR : orderBy;
+  const queryOrderBy = orderBy === DelegateOrderByEnum.RANDOM ? DelegateOrderByEnum.SKY : orderBy;
 
   const delegatesQueryFirstPageVariables = {
     first: pageSize,
@@ -302,8 +305,8 @@ export async function fetchDelegatesPaginated({
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
       aligned: alignedDelegatesCount,
-      totalMKRDelegated: delegationMetrics.totalMkrDelegated || 0,
-      totalDelegators: delegationMetrics.delegatorCount || 0
+      totalSkyDelegated: delegationMetrics.totalSkyDelegated,
+      totalDelegators: delegationMetrics.delegatorCount
     },
     delegates: combinedDelegates.map(delegate => {
       const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(del => del.voteDelegate === delegate.id);
@@ -346,7 +349,10 @@ export async function fetchDelegatesPaginated({
 
       const lastVoteTimestamp = Math.max(lastVoteMainnet, lastVoteArbitrum);
 
-      const totalDelegated = delegate.delegations.reduce((acc, curr) => acc + Number(curr.amount), 0);
+      const totalDelegated: bigint = delegate.delegations.reduce(
+        (acc, curr) => acc + BigInt(curr?.amount || 0n),
+        0n
+      );
 
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
@@ -359,7 +365,7 @@ export async function fetchDelegatesPaginated({
         combinedParticipation: githubDelegate?.combinedParticipation,
         pollParticipation: githubDelegate?.pollParticipation,
         executiveParticipation: githubDelegate?.executiveParticipation,
-        mkrDelegated: totalDelegated,
+        skyDelegated: formatEther(totalDelegated),
         delegatorCount: delegate.delegators,
         lastVoteDate: lastVoteTimestamp > 0 ? new Date(lastVoteTimestamp * 1000) : null,
         proposalsSupported: votedProposals?.length || 0,

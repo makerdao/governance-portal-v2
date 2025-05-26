@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/subgraph/voteAddressMkrWeightsAtTime';
+import { voteAddressSkyWeightsAtTime } from 'modules/gql/queries/subgraph/voteAddressSkyWeightsAtTime';
 import { allMainnetVoters } from 'modules/gql/queries/subgraph/allMainnetVoters';
 import { allArbitrumVoters } from 'modules/gql/queries/subgraph/allArbitrumVoters';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -58,7 +58,7 @@ interface VoterWithWeight {
   v2VotingPowerChanges: VotingPowerChange[];
 }
 
-interface MkrWeightsResponse {
+interface SkyWeightsResponse {
   voters: VoterWithWeight[];
 }
 
@@ -129,22 +129,22 @@ export async function fetchVotesByAddressForPoll(
     }, {} as Record<string, (typeof allVotes)[0]>)
   );
 
-  const mkrWeightsResponse = await gqlRequest<MkrWeightsResponse>({
+  const skyWeightsResponse = await gqlRequest<SkyWeightsResponse>({
     chainId: networkNameToChainId(network),
-    query: voteAddressMkrWeightsAtTime,
+    query: voteAddressSkyWeightsAtTime,
     variables: { argVoters: allVoterAddresses, argUnix: endUnix }
   });
 
-  const votersWithWeights = mkrWeightsResponse.voters || [];
+  const votersWithWeights = skyWeightsResponse.voters || [];
 
   const votesWithWeights = dedupedVotes.map((vote: (typeof allVotes)[0]) => {
     const voterData = votersWithWeights.find(voter => voter.id === vote.voter.id);
     const votingPowerChanges = voterData?.v2VotingPowerChanges || [];
-    const mkrSupport = votingPowerChanges.length > 0 ? votingPowerChanges[0].newBalance : '0';
+    const skySupport = votingPowerChanges.length > 0 ? votingPowerChanges[0].newBalance : '0';
 
     const ballot = parseRawOptionId(vote.choice.toString());
     return {
-      mkrSupport,
+      skySupport,
       ballot,
       pollId,
       voter: vote.voter.id,
@@ -154,9 +154,9 @@ export async function fetchVotesByAddressForPoll(
     };
   });
   return votesWithWeights
-    .sort((a, b) => (BigInt(a.mkrSupport) < BigInt(b.mkrSupport) ? 1 : -1))
+    .sort((a, b) => (BigInt(a.skySupport) < BigInt(b.skySupport) ? 1 : -1))
     .map(vote => ({
       ...vote,
-      mkrSupport: formatEther(BigInt(vote.mkrSupport))
+      skySupport: formatEther(BigInt(vote.skySupport))
     }));
 }

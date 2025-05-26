@@ -8,22 +8,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
-import { DelegatesAPIStats } from 'modules/delegates/types';
+import { DelegatesApiStats } from 'modules/delegates/types';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { formatValue } from 'lib/string';
 
 type Props = {
   pollStats: PollsResponse['stats'];
-  stats?: DelegatesAPIStats;
-  mkrOnHat?: string;
-  mkrInChief?: string;
+  stats?: DelegatesApiStats;
+  skyOnHat?: string;
+  skyInChief?: string;
 };
 
-export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
+export function GovernanceStats({ pollStats, stats, skyOnHat, skyInChief }: Props): JSX.Element {
   const infoUnits = [
     {
       title: 'SKY on Hat',
-      value: mkrOnHat ? `${mkrOnHat} SKY` : <Skeleton />
+      value: skyOnHat ? `${skyOnHat} SKY` : <Skeleton />
     },
     {
       title: 'Active Polls',
@@ -40,22 +40,16 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     {
       title: 'SKY Delegated',
       value: stats ? (
-        `${formatValue(BigInt(Math.floor(stats.totalMKRDelegated)), 0, 2, true, false, 1e9)} SKY`
+        `${formatValue(BigInt(Math.floor(parseFloat(stats.totalSkyDelegated))), 0, 2, true, false, 1e9)} SKY`
       ) : (
         <Skeleton />
       )
     },
     {
       title: 'SKY in Chief',
-      value: mkrInChief ? `${mkrInChief} SKY` : <Skeleton />
+      value: skyInChief ? `${skyInChief} SKY` : <Skeleton />
     }
   ];
 
-  return (
-    <Stats
-      title="Governance Stats"
-      infoUnits={infoUnits}
-      viewMoreUrl=""
-    />
-  );
+  return <Stats title="Governance Stats" infoUnits={infoUnits} viewMoreUrl="" />;
 }

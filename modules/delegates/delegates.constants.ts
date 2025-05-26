@@ -11,7 +11,7 @@ export enum DelegateStatusEnum {
   shadow = 'shadow'
 }
 
-export enum MKRWeightTimeRanges {
+export enum SKYWeightTimeRanges {
   day = 'day',
   week = 'week',
   month = 'month'
@@ -25,7 +25,7 @@ export enum DelegateTypeEnum {
 
 export enum DelegateOrderByEnum {
   DATE = 'blockTimestamp',
-  MKR = 'totalDelegated',
+  SKY = 'totalDelegated',
   DELEGATORS = 'delegators',
   RANDOM = 'random'
 }

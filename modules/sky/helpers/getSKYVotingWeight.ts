@@ -12,14 +12,14 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 
-export type MKRVotingWeightResponse = bigint;
+export type SKYVotingWeightResponse = bigint;
 
 // returns the voting weight for an address
-export async function getMKRVotingWeight(
+export async function getSKYVotingWeight(
   address: string,
   network: SupportedNetworks,
   excludeDelegateOwnerBalance: boolean
-): Promise<MKRVotingWeightResponse> {
+): Promise<SKYVotingWeightResponse> {
   const chainId = networkNameToChainId(network);
   const publicClient = getPublicClient(chainId);
 

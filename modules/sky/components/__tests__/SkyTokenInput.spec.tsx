@@ -9,56 +9,56 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { render, cleanup, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parseEther } from 'viem';
-import { MKRInput, MKRInputProps } from '../MKRInput';
+import { SkyTokenInput, SkyTokenInputProps } from '../SkyTokenInput';
 import { vi } from 'vitest';
 
-function renderMKRInput(props: Partial<MKRInputProps> = {}) {
-  const defaultProps: MKRInputProps = {
+function renderSKYInput(props: Partial<SkyTokenInputProps> = {}) {
+  const defaultProps: SkyTokenInputProps = {
     onChange: vi.fn(),
     value: parseEther('0')
   };
 
-  return render(<MKRInput {...defaultProps} {...props} />);
+  return render(<SkyTokenInput {...defaultProps} {...props} />);
 }
 
-describe('MKRInput', () => {
+describe('SkyTokenInput', () => {
   afterEach(cleanup);
 
   test('Should reflect the text passed as balanceText', async () => {
-    const props: Partial<MKRInputProps> = {
+    const props: Partial<SkyTokenInputProps> = {
       balanceText: 'Hey'
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
 
-    const component = screen.getByTestId('mkr-input-balance-text');
+    const component = screen.getByTestId('sky-input-balance-text');
 
     expect(component).toHaveTextContent('Hey');
   });
 
-  test('Should reflect the balance of MKR', async () => {
-    const props: Partial<MKRInputProps> = {
+  test('Should reflect the balance of SKY', async () => {
+    const props: Partial<SkyTokenInputProps> = {
       balance: parseEther('24.5')
     };
 
-    renderMKRInput(props);
+    renderSKYInput(props);
 
-    const component = screen.getByTestId('mkr-input-balance');
+    const component = screen.getByTestId('sky-input-balance');
 
     expect(component).toHaveTextContent('24.5');
     expect(component).not.toHaveTextContent('0.0000');
   });
 
   test('Should set balance to max when clicking setMax', async () => {
-    const props: Partial<MKRInputProps> = {
+    const props: Partial<SkyTokenInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('0.1'),
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
-    const setMaxButton = screen.getByTestId('mkr-input-set-max');
-    const input = screen.getByTestId('mkr-input');
+    renderSKYInput(props);
+    const setMaxButton = screen.getByTestId('sky-input-set-max');
+    const input = screen.getByTestId('sky-input');
 
     userEvent.click(setMaxButton);
 
@@ -68,14 +68,14 @@ describe('MKRInput', () => {
   });
 
   test('Should trigger on change if the user inputs amount', async () => {
-    const props: Partial<MKRInputProps> = {
+    const props: Partial<SkyTokenInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('0'),
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
-    const input = screen.getByTestId('mkr-input');
+    renderSKYInput(props);
+    const input = screen.getByTestId('sky-input');
     userEvent.type(input, '3');
     const expectedValue = parseEther('3');
     expect(props.onChange).toHaveBeenCalledWith(expectedValue);
@@ -83,28 +83,28 @@ describe('MKRInput', () => {
   });
 
   test('Should show error if default value is negative amount', async () => {
-    const props: Partial<MKRInputProps> = {
+    const props: Partial<SkyTokenInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('-0.1'),
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
-    const error = screen.getByTestId('mkr-input-error');
+    renderSKYInput(props);
+    const error = screen.getByTestId('sky-input-error');
 
     expect(error).toBeVisible();
     expect(error).toHaveTextContent('Please enter a valid amount');
   });
 
   test('Should show error if value is greater than balance', async () => {
-    const props: Partial<MKRInputProps> = {
+    const props: Partial<SkyTokenInputProps> = {
       balance: parseEther('24.5'),
       value: parseEther('34'),
       onChange: vi.fn()
     };
 
-    renderMKRInput(props);
-    const error = screen.getByTestId('mkr-input-error');
+    renderSKYInput(props);
+    const error = screen.getByTestId('sky-input-error');
 
     expect(error).toBeVisible();
     expect(error).toHaveTextContent('SKY balance too low');

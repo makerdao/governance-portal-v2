@@ -25,7 +25,7 @@ import VotingStatus from '../PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BallotContext } from '../../context/BallotContext';
 import ChooseFreeSelect from './ChooseFreeSelect';
-import { useSkyVotingWeight } from 'modules/mkr/hooks/useSkyVotingWeight';
+import { useSkyVotingWeight } from 'modules/sky/hooks/useSkyVotingWeight';
 
 type Props = {
   poll: PollListItem | Poll;

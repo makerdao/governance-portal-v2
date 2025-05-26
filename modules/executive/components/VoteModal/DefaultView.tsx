@@ -10,7 +10,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { Proposal } from 'modules/executive/types';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -54,14 +54,14 @@ export default function DefaultVoteModalView({
     mutateSpellData();
   }, []);
 
-  const mkrSupporting = spellData ? BigInt(spellData.mkrSupport) : 0n;
+  const skySupporting = spellData ? BigInt(spellData.skySupport) : 0n;
   const hasVotingWeight = !!lockedSky && lockedSky > 0n;
 
   const afterVote =
     currentSlate && currentSlate.includes(spellAddress)
-      ? mkrSupporting
+      ? skySupporting
       : lockedSky && spellData
-      ? lockedSky + BigInt(spellData.mkrSupport)
+      ? lockedSky + BigInt(spellData.skySupport)
       : 0n;
 
   const GridBox = ({ bpi, children }) => (
@@ -149,7 +149,7 @@ export default function DefaultVoteModalView({
           </Text>
           {spellData !== undefined ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {formatValue(mkrSupporting)} SKY
+              {formatValue(skySupporting)} SKY
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
@@ -205,7 +205,7 @@ export default function DefaultVoteModalView({
                 setHatChecked(event.target.checked);
               }}
             />
-            Keep my SKY on old proposal to secure the Maker protocol
+            Keep my SKY on old proposal to secure the Sky protocol
           </Label>
         ) : null}
       </Box>

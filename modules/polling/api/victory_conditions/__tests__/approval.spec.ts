@@ -10,10 +10,10 @@ import { PollTallyVote } from 'modules/polling/types/pollTally';
 import { extractWinnerApproval } from '../approval';
 
 describe('Extract winner condition approval', () => {
-  it('gets the one with most mkr', async () => {
+  it('gets the one with most sky', async () => {
     const votes: PollTallyVote[] = [
       {
-        mkrSupport: 15,
+        skySupport: 15,
         optionIdRaw: 1,
         ballot: [1, 2],
         blockTimestamp: 1,
@@ -23,7 +23,7 @@ describe('Extract winner condition approval', () => {
         pollId: 1
       },
       {
-        mkrSupport: 20,
+        skySupport: 20,
         optionIdRaw: 2,
         ballot: [2],
         blockTimestamp: 1,
@@ -33,7 +33,7 @@ describe('Extract winner condition approval', () => {
         pollId: 1
       },
       {
-        mkrSupport: 30,
+        skySupport: 30,
         optionIdRaw: 3,
         ballot: [3],
         blockTimestamp: 1,
@@ -48,10 +48,10 @@ describe('Extract winner condition approval', () => {
 
     expect(winner).toEqual(2);
   });
-  it('finds no winner if two votes have the same MKR amount', async () => {
+  it('finds no winner if two votes have the same SKY amount', async () => {
     const votes: PollTallyVote[] = [
       {
-        mkrSupport: 10,
+        skySupport: 10,
         optionIdRaw: 1,
         ballot: [1],
         blockTimestamp: 1,
@@ -61,7 +61,7 @@ describe('Extract winner condition approval', () => {
         pollId: 1
       },
       {
-        mkrSupport: 10,
+        skySupport: 10,
         optionIdRaw: 2,
         ballot: [2],
         blockTimestamp: 1,

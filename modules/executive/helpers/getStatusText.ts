@@ -19,11 +19,11 @@ const SPELL_SCHEDULED_DATE_OVERRIDES = {
 export const getStatusText = ({
   proposalAddress,
   spellData,
-  mkrOnHat
+  skyOnHat
 }: {
   proposalAddress: string;
   spellData?: SpellData;
-  mkrOnHat?: bigint;
+  skyOnHat?: bigint;
 }): string => {
   if (!spellData) return 'Fetching status...';
 
@@ -55,14 +55,16 @@ export const getStatusText = ({
   }
 
   // not expired, passed, or executed, check support level
-  if (!!spellData.mkrSupport && !!mkrOnHat) {
-    // If the new proposal has more MKR than the old proposal, but hasn't been lifted, display 0 MKR needed to pass.
-    const mkrNeeded =
-      mkrOnHat - BigInt(spellData.mkrSupport) > 0n ? mkrOnHat - BigInt(spellData.mkrSupport) : 0n;
+  if (!!spellData.skySupport && !!skyOnHat) {
+    // If the new proposal has more SKY than the old proposal, but hasn't been lifted, display 0 SKY needed to pass.
+    const skyNeeded =
+      Number(skyOnHat) - Number(spellData.skySupport) > 0
+        ? Number(skyOnHat) - Number(spellData.skySupport)
+        : 0;
 
-    return `${formatValue(mkrNeeded)} additional SKY support needed to pass. Expires at ${formatDateWithTime(
-      spellData.expiration
-    )}.`;
+    return `${formatValue(
+      BigInt(Math.ceil(skyNeeded))
+    )} additional SKY support needed to pass. Expires at ${formatDateWithTime(spellData.expiration)}.`;
   }
 
   // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet

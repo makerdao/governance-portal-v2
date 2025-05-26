@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { Alert, Button, Box, Flex, Text } from 'theme-ui';
-import { MKRInput } from 'modules/mkr/components/MKRInput';
+import { SkyTokenInput } from 'modules/sky/components/SkyTokenInput';
 import { useState } from 'react';
-import { useLockedSky } from 'modules/mkr/hooks/useLockedSky';
-import Withdraw from 'modules/mkr/components/Withdraw';
+import { useLockedSky } from 'modules/sky/hooks/useLockedSky';
+import Withdraw from 'modules/sky/components/Withdraw';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { parseEther } from 'viem';
@@ -56,12 +56,12 @@ export function InputDelegateSky({
       </Text>
       <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
       <Box sx={{ mt: 3, width: '20rem' }}>
-        <MKRInput value={value} onChange={handleChange} balance={balance} />
+        <SkyTokenInput value={value} onChange={handleChange} balance={balance} />
         <Button
           onClick={onClick}
           sx={{ width: '100%', my: 3 }}
           disabled={!value || !balance || value === 0n || value > balance || disabled}
-          data-testid="deposit-mkr-modal-button"
+          data-testid="deposit-sky-modal-button"
         >
           {buttonLabel}
         </Button>

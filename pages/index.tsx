@@ -28,7 +28,7 @@ import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
+import InformationParticipateSkyGovernance from 'modules/home/components/InformationParticipateSkyGovernance/InformationParticipateSkyGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
@@ -49,9 +49,9 @@ const LandingPage = ({
   delegatesInfo,
   delegatesError,
   stats,
-  mkrOnHat,
+  skyOnHat,
   hat,
-  mkrInChief
+  skyInChief
 }: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
@@ -139,8 +139,8 @@ const LandingPage = ({
               <GovernanceStats
                 pollStats={pollStats}
                 stats={stats}
-                mkrOnHat={mkrOnHat}
-                mkrInChief={mkrInChief}
+                skyOnHat={skyOnHat}
+                skyInChief={skyInChief}
               />
             </ErrorBoundary>
           </section>
@@ -155,7 +155,7 @@ const LandingPage = ({
           <section id="delegate">
             <TopDelegates
               topDelegates={delegates}
-              totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
+              totalSkyDelegated={parseEther((stats?.totalSkyDelegated || 0).toString())}
             />
           </section>
 
@@ -173,7 +173,7 @@ const LandingPage = ({
                 height: '1720px'
               }}
             />
-            <InformationParticipateMakerGovernance />
+            <InformationParticipateSkyGovernance />
             <ResourcesLanding />
           </Box>
 
@@ -197,9 +197,9 @@ export default function Index({
   polls: prefetchedPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
-  mkrOnHat: prefetchedMkrOnHat,
+  skyOnHat: prefetchedSkyOnHat,
   hat: prefetchedHat,
-  mkrInChief: prefetchedMkrInChief
+  skyInChief: prefetchedSkyInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
   const [delegatesData, delegatesInfo] = useLandingPageDelegates();
@@ -209,9 +209,9 @@ export default function Index({
         polls: prefetchedPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
-        mkrOnHat: prefetchedMkrOnHat,
+        skyOnHat: prefetchedSkyOnHat,
         hat: prefetchedHat,
-        mkrInChief: prefetchedMkrInChief
+        skyInChief: prefetchedSkyInChief
       }
     : null;
 
@@ -249,16 +249,16 @@ export default function Index({
     delegatesInfo: delegatesInfo.data ?? [],
     delegatesError: delegatesData.error || delegatesInfo.error,
     stats: delegatesData.data?.stats,
-    mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
+    skyOnHat: isDefaultNetwork(network) ? prefetchedSkyOnHat : data?.skyOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
-    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
+    skyInChief: isDefaultNetwork(network) ? prefetchedSkyInChief : data?.skyInChief ?? undefined
   };
 
   return <LandingPage {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, pollStats, pollTags, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
+  const { proposals, polls, pollStats, pollTags, skyOnHat, hat, skyInChief } = await fetchLandingPageData(
     SupportedNetworks.MAINNET
   );
 
@@ -269,9 +269,9 @@ export const getStaticProps: GetStaticProps = async () => {
       polls,
       pollStats,
       pollTags,
-      mkrOnHat,
+      skyOnHat,
       hat,
-      mkrInChief
+      skyInChief
     }
   };
 };

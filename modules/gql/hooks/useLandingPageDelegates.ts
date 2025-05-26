@@ -22,7 +22,7 @@ export const useLandingPageDelegates = (): [
 ] => {
   const network = useNetwork();
   const { cache } = useSWRConfig();
-  const delegatesDataKey = `/api/delegates/v2?network=${network}&delegateType=${DelegateTypeEnum.ALIGNED}&orderBy=${DelegateOrderByEnum.MKR}&orderDirection=${OrderDirectionEnum.DESC}&pageSize=0`;
+  const delegatesDataKey = `/api/delegates?network=${network}&delegateType=${DelegateTypeEnum.ALIGNED}&orderBy=${DelegateOrderByEnum.SKY}&orderDirection=${OrderDirectionEnum.DESC}&pageSize=0`;
   const delegatesInfoDataKey = `/api/delegates/info?network=${network}`;
 
   const swrConfigObject = {
