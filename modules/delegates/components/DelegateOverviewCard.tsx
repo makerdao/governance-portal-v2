@@ -21,7 +21,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import Icon from 'modules/app/components/Icon';
 import { DialogOverlay, DialogContent } from 'modules/app/components/Dialog';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
-import { parseEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 
 type PropTypes = {
   delegate: DelegatePaginated;
@@ -91,7 +91,7 @@ export const DelegateOverviewCard = memo(
           if (d.voteDelegateAddress === delegate.voteDelegateAddress) {
             return {
               ...d,
-              skyDelegated: (parseEther(d.skyDelegated) + amount).toString()
+              skyDelegated: formatEther(parseEther(d.skyDelegated) + amount)
             };
           }
           return d;
