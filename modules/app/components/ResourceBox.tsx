@@ -23,15 +23,11 @@ type Resource = {
 
 const resources: Record<ResourceType, Resource> = {
   general: {
-    boxTitle: 'General Maker Resources',
+    boxTitle: 'General Sky Resources',
     links: [
       {
-        linkTitle: 'Learn about Maker and Dai',
-        url: 'https://makerdao.com/en/'
-      },
-      {
-        linkTitle: 'Learn about Maker Endgame',
-        url: 'https://forum.sky.money/t/the-5-phases-of-endgame/20830/'
+        linkTitle: 'Learn about Sky and USDS',
+        url: 'https://sky.money/'
       },
       {
         linkTitle: 'Governance Forum',
@@ -43,7 +39,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'Governance discussion on Discord',
-        url: 'https://discord.gg/tQ5wnN6Ms4'
+        url: 'https://discord.gg/ZBjf7mv6Zc'
       }
     ]
   },
