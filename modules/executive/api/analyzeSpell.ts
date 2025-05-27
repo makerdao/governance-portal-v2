@@ -39,7 +39,6 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
   // don't fetch spell data if not on mainnet
   if (network !== SupportedNetworks.MAINNET) {
     const approvals = await getChiefApprovals(address, network);
-
     return {
       hasBeenCast: undefined,
       hasBeenScheduled: false,
