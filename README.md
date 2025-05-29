@@ -74,6 +74,7 @@ The following configuration values can be added to the `.env` file:
 #### Recommended for improved performance:
 
 - Set `NEXT_PUBLIC_RPC_MAINNET` to a valid Ethereum mainnet RPC URL (e.g. from Alchemy, Infura, Tenderly, etc)
+- Set `NEXT_PUBLIC_RPC_MAINNET_FALLBACK` to a valid secondary Ethereum mainnet RPC URL (e.g. from Alchemy, Infura, Tenderly, etc) to be used if the primary RPC fails.
 - Set `NEXT_PUBLIC_RPC_ARBITRUM` to a valid Arbitrum mainnet RPC URL
 - Set `NEXT_PUBLIC_RPC_ARBITRUM_TESTNET` to a valid Arbitrum testnet RPC URL
 
