@@ -18,9 +18,7 @@ jobs:
           - test: wallet.spec
     runs-on: ubuntu-latest
     env:
-      INFURA_KEY: ${{ secrets.INFURA_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       USE_CACHE: true
       TENDERLY_API_KEY: ${{ secrets.TENDERLY_API_KEY }}

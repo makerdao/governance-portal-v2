@@ -61,7 +61,7 @@ The portal seeks to rely on on-chain data as much as possible and to minimize re
 
 #### Network providers
 
-The portal uses the [Wagmi](https://wagmi.sh/react/getting-started) library in order to communicate with the Ethereum network through its React hooks, and [Viem](https://viem.sh/docs/getting-started) in order to do so through its public client as well as provide Web3 utilities. Both Wagmi and Viem work by connecting to JSON-RPC APIs via HTTP in order to provide on-chain data to web applications. By default, they provide default RPC URLs that can be used to get started. However, these RPCs keys can quickly become rate-limited when too many requests are made. In order to prevent this, it is recommended that you sign up and add your own API keys to the configuration for [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart) and [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id).
+The portal uses the [Wagmi](https://wagmi.sh/react/getting-started) library in order to communicate with the Ethereum network through its React hooks, and [Viem](https://viem.sh/docs/getting-started) in order to do so through its public client as well as provide Web3 utilities. Both Wagmi and Viem work by connecting to JSON-RPC APIs via HTTP in order to provide on-chain data to web applications. By default, they provide default RPC URLs that can be used to get started. However, these RPCs keys can quickly become rate-limited when too many requests are made. In order to prevent this, it is recommended that you sign up and add your own API keys to the configuration.
 
 Due to the large volume of data that is constantly being fetched and displayed in the portal, we use caching in order to cache various network responses for a limited amount of time. This helps to reduce the load of networking calls to various APIs. This feature can be configured to be on or off.
 
@@ -73,9 +73,9 @@ The following configuration values can be added to the `.env` file:
 
 #### Recommended for improved performance:
 
-- Set `INFURA_KEY` to a valid [Infura](https://docs.infura.io/infura/networks/ethereum/how-to/secure-a-project/project-id) API key for Wagmi and Viem to use
-
-- Set `ALCHEMY_KEY` to a valid [Alchemy](https://docs.alchemy.com/reference/ethereum-api-quickstart) API key for Wagmi and Viem to use
+- Set `NEXT_PUBLIC_RPC_MAINNET` to a valid Ethereum mainnet RPC URL (e.g. from Alchemy, Infura, Tenderly, etc)
+- Set `NEXT_PUBLIC_RPC_ARBITRUM` to a valid Arbitrum mainnet RPC URL
+- Set `NEXT_PUBLIC_RPC_ARBITRUM_TESTNET` to a valid Arbitrum testnet RPC URL
 
 - Set `ETHERSCAN_V2_API_KEY` to a valid [Etherscan V2](https://docs.etherscan.io/etherscan-v2#why-v2) API key for Wagmi to be able to generate the contract ABIs
 
@@ -95,8 +95,6 @@ The following configuration values can be added to the `.env` file:
 
 **Optional** Set `DEFENDER_API_KEY_MAINNET` and/or `DEFENDER_API_KEY_TESTNET` to a valid OpenZeppelin Defender Relay key (used for gasless poll voting)
 **Optional** Set `DEFENDER_API_SECRET_MAINNET` and/or`DEFENDER_API_SECRET_TESTNET` to a valid OpenZeppelin Defender Relay secret
-**Optional** Set `ALCHEMY_ARBITRUM_KEY` to a valid Alchemy API key for the arbitrum network
-**Optional** Set `ALCHEMY_ARBITRUM_TESTNET_KEY` to a valid Alchemy API key for the arbitrum test network
 **Optional** Set `GASLESS_BACKDOOR_SECRET` to allow for bypassing the gasless voting eligibility checks by anyone with the password
 
 - Set `DASHBOARD_PASSWORD` for adding protection to the `/dashboard` route
