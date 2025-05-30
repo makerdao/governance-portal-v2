@@ -4,7 +4,10 @@ import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { coinbaseWallet, metaMask, safe, walletConnect, injected } from 'wagmi/connectors';
 import { createPublicClient } from 'viem';
 
-const tenderlyRpcUrl = `https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`;
+const RPC_TENDERLY = `https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`;
+const RPC_MAINNET = process.env.NEXT_PUBLIC_RPC_MAINNET || '';
+const RPC_ARBITRUM = process.env.NEXT_PUBLIC_RPC_ARBITRUM || '';
+const RPC_ARBITRUM_TESTNET = process.env.NEXT_PUBLIC_RPC_ARBITRUM_TESTNET || '';
 
 export const tenderly = {
   id: SupportedChainId.TENDERLY as const,
@@ -17,8 +20,8 @@ export const tenderly = {
     symbol: 'ETH'
   },
   rpcUrls: {
-    public: { http: [tenderlyRpcUrl] },
-    default: { http: [tenderlyRpcUrl] }
+    public: { http: [RPC_TENDERLY] },
+    default: { http: [RPC_TENDERLY] }
   },
   blockExplorers: {
     default: { name: '', url: '' }
@@ -32,14 +35,10 @@ const httpBatchTransport = (url: string) =>
   });
 
 const transports = {
-  [mainnet.id]: httpBatchTransport(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`),
-  [tenderly.id]: httpBatchTransport(tenderlyRpcUrl),
-  [arbitrum.id]: httpBatchTransport(
-    `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_KEY}`
-  ),
-  [arbitrumSepolia.id]: httpBatchTransport(
-    `https://arb-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARBITRUM_TESTNET_KEY}`
-  )
+  [mainnet.id]: httpBatchTransport(RPC_MAINNET),
+  [tenderly.id]: httpBatchTransport(RPC_TENDERLY),
+  [arbitrum.id]: httpBatchTransport(RPC_ARBITRUM),
+  [arbitrumSepolia.id]: httpBatchTransport(RPC_ARBITRUM_TESTNET)
 };
 
 const connectors = [
