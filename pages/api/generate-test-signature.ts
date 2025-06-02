@@ -38,10 +38,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     chain,
     transport: isTestnet
       ? http(`https://virtual.mainnet.rpc.tenderly.co/${process.env.NEXT_PUBLIC_TENDERLY_RPC_KEY}`)
-      : fallback([
-          http(`https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`),
-          http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`)
-        ])
+      : fallback([http(process.env.NEXT_PUBLIC_RPC_MAINNET || '')])
   });
 
   const voter = account.address;
