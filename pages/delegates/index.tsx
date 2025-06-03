@@ -400,27 +400,24 @@ const Delegates = ({
           </Box>
 
           <Stack gap={3}>
-            <Box>
-              <Heading mt={3} mb={2} as="h3" variant="microHeading">
-                Delegate Contracts
-              </Heading>
-              <Card variant="compact">
-                <Text as="p" sx={{ mb: 3, color: 'textSecondary' }}>
-                  {voteDelegateContractAddress
-                    ? 'Looking for delegate contract information?'
-                    : 'Interested in creating a delegate contract?'}
-                </Text>
-                <Box>
-                  <InternalLink
-                    href={'/account'}
-                    title="My account"
-                    // TODO: onClick={() => trackButtonClick('viewAccount')}
-                  >
-                    <Text color="accentBlue">View Account Page</Text>
-                  </InternalLink>
-                </Box>
-              </Card>
-            </Box>
+            {/* only show this if the user has a vote delegate contract address */}
+            {voteDelegateContractAddress && (
+              <Box>
+                <Heading mt={3} mb={2} as="h3" variant="microHeading">
+                  Delegate Contracts
+                </Heading>
+                <Card variant="compact">
+                  <Text as="p" sx={{ mb: 3, color: 'textSecondary' }}>
+                    Looking for delegate contract information?
+                  </Text>
+                  <Box>
+                    <InternalLink href={'/account'} title="My account">
+                      <Text color="accentBlue">View Account Page</Text>
+                    </InternalLink>
+                  </Box>
+                </Card>
+              </Box>
+            )}
             <ResourceBox type={'delegates'} />
             {stats && (
               <ErrorBoundary componentName="Delegates System Info">

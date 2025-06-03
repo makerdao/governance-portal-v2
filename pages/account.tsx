@@ -111,127 +111,71 @@ const AccountPage = (): React.ReactElement => {
               </ClientRenderOnly>
             </Box>
           ) : (
-            <Box sx={{ mt: 4 }}>
-              <Box sx={{ my: 3 }}>
-                <Heading as="h3" variant="microHeading">
-                  Vote Delegation
-                </Heading>
-              </Box>
-              <Card>
-                {voteDelegateContractAddress && !modalOpen && (
-                  <Box sx={{ mb: 2 }}>
-                    <Label>Your delegate contract address:</Label>
+            voteDelegateContractAddress && (
+              <Box sx={{ mt: 4 }}>
+                <Box sx={{ my: 3 }}>
+                  <Heading as="h3" variant="microHeading">
+                    Vote Delegation
+                  </Heading>
+                </Box>
+                <Card>
+                  {voteDelegateContractAddress && !modalOpen && (
+                    <Box sx={{ mb: 2 }}>
+                      <Label>Your delegate contract address:</Label>
 
-                    <EtherscanLink
-                      type="address"
-                      showAddress
-                      hash={voteDelegateContractAddress}
-                      network={network}
-                    />
-                  </Box>
-                )}
-                {latestOwnerConnected && originalOwnerContractAddress && (
-                  <Box sx={{ mb: 2 }}>
-                    <Label>Original delegate contract address:</Label>
-
-                    <EtherscanLink
-                      type="address"
-                      showAddress
-                      hash={originalOwnerContractAddress}
-                      network={network}
-                    />
-                  </Box>
-                )}
-                {voteDelegateContractAddress && !modalOpen && (
-                  <Box sx={{ mb: 2 }}>
-                    <Label>FAQ</Label>
-                    <ExternalLink
-                      title="How can I verify my delegate contract?"
-                      href={
-                        'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'
-                      }
-                    >
-                      <Text as="p" sx={{ display: 'flex', alignItems: 'center' }}>
-                        How can I verify my delegate contract?{' '}
-                        <Icon name="arrowTopRight" sx={{ size: 2, ml: 2 }} />
-                      </Text>
-                    </ExternalLink>
-                  </Box>
-                )}
-                {!voteDelegateContractAddress && (
-                  <Box>
-                    <Label>
-                      {latestOwnerConnected && !latestOwnerHasDelegateContract
-                        ? 'Create a new delegate contract'
-                        : 'No vote delegate contract detected'}
-                    </Label>
-                    {txStatus !== TxStatus.IDLE && (
-                      <DialogOverlay
-                        isOpen={modalOpen}
-                        onDismiss={() => {
-                          setModalOpen(false);
-                        }}
-                      >
-                        <DialogContent ariaLabel="Delegate modal" widthDesktop="580px">
-                          <TxDisplay
-                            txStatus={txStatus}
-                            setTxStatus={setTxStatus}
-                            txHash={txHash}
-                            setTxHash={setTxHash}
-                            onDismiss={() => {
-                              setModalOpen(false);
-                            }}
-                          />
-                        </DialogContent>
-                      </DialogOverlay>
-                    )}
-                    <Alert variant="notice" sx={{ mt: 2, flexDirection: 'column', alignItems: 'flex-start' }}>
-                      Warning: You will be unable to vote with a vote proxy contract or your existing chief
-                      balance through the UI after creating a delegate contract. This functionality is only
-                      affected in the user interface and not at the contract level.
-                    </Alert>
-                    <Label
-                      sx={{ mt: 3, fontSize: 2, alignItems: 'center' }}
-                      data-testid="checkbox-create-delegate"
-                    >
-                      <Checkbox
-                        checked={warningRead}
-                        onChange={() => {
-                          setWarningRead(!warningRead);
-                        }}
+                      <EtherscanLink
+                        type="address"
+                        showAddress
+                        hash={voteDelegateContractAddress}
+                        network={network}
                       />
-                      I understand
-                    </Label>
-                    <Button
-                      disabled={!warningRead || createDelegate.isLoading || !createDelegate.prepared}
-                      onClick={() => {
-                        setTxStatus(TxStatus.INITIALIZED);
-                        setModalOpen(true);
-                        createDelegate.execute();
-                      }}
-                      sx={{ mt: 3, mb: 1 }}
-                      data-testid="create-button"
-                    >
-                      Create delegate contract
-                    </Button>
-                  </Box>
-                )}
-                {chiefBalance && chiefBalance > 0n && (
-                  <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 5 }}>
-                    <Text as="p">
-                      You have a DSChief balance of{' '}
-                      <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} MKR.</Text>
-                      <Text as="p" sx={{ my: 2 }}>
-                        {voteDelegateContractAddress
-                          ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
-                          : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your MKR and delegate it to yourself or create the delegate contract from a different account.'}
+                    </Box>
+                  )}
+                  {latestOwnerConnected && originalOwnerContractAddress && (
+                    <Box sx={{ mb: 2 }}>
+                      <Label>Original delegate contract address:</Label>
+
+                      <EtherscanLink
+                        type="address"
+                        showAddress
+                        hash={originalOwnerContractAddress}
+                        network={network}
+                      />
+                    </Box>
+                  )}
+                  {voteDelegateContractAddress && !modalOpen && (
+                    <Box sx={{ mb: 2 }}>
+                      <Label>FAQ</Label>
+                      <ExternalLink
+                        title="How can I verify my delegate contract?"
+                        href={
+                          'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'
+                        }
+                      >
+                        <Text as="p" sx={{ display: 'flex', alignItems: 'center' }}>
+                          How can I verify my delegate contract?{' '}
+                          <Icon name="arrowTopRight" sx={{ size: 2, ml: 2 }} />
+                        </Text>
+                      </ExternalLink>
+                    </Box>
+                  )}
+                  {chiefBalance && chiefBalance > 0n && (
+                    <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 5 }}>
+                      <Text as="p">
+                        You have a DSChief balance of{' '}
+                        <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} MKR.</Text>
+                        <Text as="p" sx={{ my: 2 }}>
+                          {voteDelegateContractAddress
+                            ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
+                            : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your MKR and delegate it to yourself or create the delegate contract from a different account.'}
+                        </Text>
                       </Text>
-                    </Text>
-                    <Withdraw sx={{ mt: 3 }} />
-                  </Flex>
-                )}
-              </Card>
-            </Box>
+                      <Withdraw sx={{ mt: 3 }} />
+                    </Flex>
+                  )}
+                </Card>
+              </Box>
+            )
           )}
         </Box>
         <Stack gap={3}>
