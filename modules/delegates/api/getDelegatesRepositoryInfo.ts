@@ -16,13 +16,13 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'makerdao',
+    owner: 'skyecosystem',
     repo: 'community',
     page: 'governance/delegates'
   };
 
   const repoTest = {
-    owner: 'makerdao-dux',
+    owner: 'skyecosystem',
     repo: 'voting-delegates',
     page: 'delegates'
   };
