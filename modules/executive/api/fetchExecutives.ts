@@ -29,7 +29,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   const githubRepo = {
     owner:
       network === SupportedNetworks.MAINNET && process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development'
-        ? 'skyecosystem'
+        ? 'sky-ecosystem'
         : 'jetstreamgg',
     repo: 'executive-votes',
     branch: network === SupportedNetworks.MAINNET ? 'main' : 'testnet'

@@ -16,7 +16,7 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? 'jetstreamgg' : 'skyecosystem',
+    owner: process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ? 'jetstreamgg' : 'sky-ecosystem',
     repo: 'delegates',
     branch: 'main'
   };

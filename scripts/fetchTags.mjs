@@ -17,7 +17,7 @@ async function main() {
 
     // poll-tags mapping
     const urlPollTags =
-      'https://raw.githubusercontent.com/skyecosystem/polls/refs/heads/main/meta/poll-tags.json';
+      'https://raw.githubusercontent.com/sky-ecosystem/polls/refs/heads/main/meta/poll-tags.json';
     const pollTags = await fetch(urlPollTags);
     const dataPollTags = await pollTags.json();
     fs.writeFileSync(
@@ -28,7 +28,7 @@ async function main() {
     console.log('Downloaded poll-tags mapping.');
 
     //poll tags
-    const urlTags = 'https://raw.githubusercontent.com/skyecosystem/polls/refs/heads/main/meta/tags.json';
+    const urlTags = 'https://raw.githubusercontent.com/sky-ecosystem/polls/refs/heads/main/meta/tags.json';
     const tags = await fetch(urlTags);
     const dataTags = await tags.json();
     fs.writeFileSync(
