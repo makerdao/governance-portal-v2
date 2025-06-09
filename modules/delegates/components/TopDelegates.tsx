@@ -107,7 +107,7 @@ export default function TopDelegates({
                   }}
                 >
                   <Text>
-                    {mkrDelegated
+                    {mkrDelegated && totalMKRDelegated > 0
                       ? calculatePercentage(parseEther(mkrDelegated), totalMKRDelegated, 2).toString()
                       : '0.00'}
                     %

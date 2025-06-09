@@ -41,7 +41,7 @@ import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { parseEther } from 'viem';
+import { parseUnits } from 'viem';
 
 const LandingPage = ({
   proposals,
@@ -59,7 +59,6 @@ const LandingPage = ({
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
-
   // change background on color mode switch
   useEffect(() => {
     setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
@@ -245,7 +244,7 @@ const LandingPage = ({
               <Box ref={delegateRef} />
               <TopDelegates
                 topDelegates={delegates}
-                totalMKRDelegated={parseEther((stats?.totalMKRDelegated || 0).toString())}
+                totalMKRDelegated={parseUnits((stats?.totalMKRDelegated || 0).toString(), 18)}
               />
             </section>
 

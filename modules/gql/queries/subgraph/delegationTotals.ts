@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { gql } from 'graphql-request';
 
-export const delegationMetricsQuery = gql`
-  query delegationMetrics {
-    delegationMetrics {
-      delegatorCount
-      totalMkrDelegated
+export const delegationTotalsQuery = gql`
+  query delegationTotals($skip: Int!) {
+    delegates(first: 1000, skip: $skip) {
+      version
+      totalDelegated
     }
   }
 `;
