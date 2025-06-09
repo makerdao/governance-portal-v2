@@ -1,6 +1,6 @@
 # Poll Parameters
 
-The governance portal reads and parses the poll parameters defined on each poll on the [MakerDAO community repo](https://github.com/skyecosystem/community/tree/master/governance/polls).
+The governance portal reads and parses the poll parameters defined on each poll on the [MakerDAO community repo](https://github.com/sky-ecosystem/community/tree/master/governance/polls).
 
 Each poll file includes some markdown on the header, currently (July 2022) there are 2 kinds of poll parameters, the legacy ones and the new ones that describe the voting options in more detail.
 The legacy poll parameters only determine if a poll is ranked-choice (IRV) or plurality. The new poll parameters have more options.

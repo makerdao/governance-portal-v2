@@ -20,7 +20,7 @@ To get started, clone the repository to the desired directory and then navigate 
 
 ```bash
 # clones repo
-git clone https://github.com/skyecosystem/governance-portal-v2.git
+git clone https://github.com/sky-ecosystem/governance-portal-v2.git
 
 # changes directory to cloned project folder
 cd governance-portal-v2
@@ -57,7 +57,7 @@ The tag and versioning should be done on develop, and then merged to master thro
 
 The portal seeks to rely on on-chain data as much as possible and to minimize reliance on data stored on centralized servers. However, due to the large volume of data that is relevant to Maker governance, fetching this data from on-chain is both time and resource-intensive. In order to improve the user's experience, some reliance on third-party services has been added, and we recommend a few configuration steps for optimal use. These services include:
 
-- [GitHub](https://github.com/skyecosystem/community/tree/master/governance) for storing markdown related to [polls](https://github.com/skyecosystem/community/tree/master/governance/polls), [executives](https://github.com/skyecosystem/community/tree/master/governance/votes), and [aligned delegates](https://github.com/skyecosystem/community/tree/master/governance/delegates)
+- [GitHub](https://github.com/sky-ecosystem/community/tree/master/governance) for storing markdown related to [polls](https://github.com/sky-ecosystem/community/tree/master/governance/polls), [executives](https://github.com/sky-ecosystem/community/tree/master/governance/votes), and [aligned delegates](https://github.com/sky-ecosystem/community/tree/master/governance/delegates)
 
 #### Network providers
 

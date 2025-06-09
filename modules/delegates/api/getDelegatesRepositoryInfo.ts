@@ -16,13 +16,13 @@ export type RepositoryInfo = {
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
   const repoMainnet = {
-    owner: 'skyecosystem',
+    owner: 'sky-ecosystem',
     repo: 'community',
     page: 'governance/delegates'
   };
 
   const repoTest = {
-    owner: 'skyecosystem',
+    owner: 'sky-ecosystem',
     repo: 'voting-delegates',
     page: 'delegates'
   };

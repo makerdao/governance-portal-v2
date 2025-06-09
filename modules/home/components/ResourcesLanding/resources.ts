@@ -95,7 +95,7 @@ export const resources: LandingResource[] = [
   },
   {
     title: 'MakerDAO GitHub',
-    url: 'https://github.com/skyecosystem/',
+    url: 'https://github.com/sky-ecosystem/',
     category: ResourceCategory.DEVELOPERS,
     bg: ResourceBackground.DEVELOPERS,
     color: ResourceColor.DEVELOPERS,
