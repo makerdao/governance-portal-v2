@@ -34,8 +34,9 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
+import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelegates';
 
-const LandingPage = ({ proposals, polls, pollStats, pollTags, hat, mkrInChief }: LandingPageData) => {
+const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief }: LandingPageData) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
@@ -114,7 +115,7 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, hat, mkrInChief }:
                         <ExecutiveOverviewCard
                           votedProposals={votedProposals}
                           account={account}
-                          isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
+                          isHat={false}
                           proposal={proposals[0]}
                         />
                       ) : (
@@ -131,7 +132,7 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, hat, mkrInChief }:
 
           <section>
             <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats pollStats={pollStats} mkrInChief={mkrInChief} />
+              <GovernanceStats pollStats={pollStats} stats={stats} mkrInChief={mkrInChief} />
             </ErrorBoundary>
           </section>
 
@@ -179,6 +180,7 @@ export default function Index({
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
+  const [delegatesData] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,
@@ -219,6 +221,7 @@ export default function Index({
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
     pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
+    stats: delegatesData.data?.stats,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
   };
 

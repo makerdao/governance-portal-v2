@@ -17,13 +17,14 @@ import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pol
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { TagCount } from 'modules/app/types/tag';
+import { DelegatesAPIStats } from 'modules/delegates/types';
 
 export type LandingPageData = {
   proposals: Proposal[];
   polls: PollListItem[];
   pollStats: PollsResponse['stats'];
   pollTags: TagCount[];
-  hat?: string;
+  stats?: DelegatesAPIStats;
   mkrInChief?: string;
 };
 
