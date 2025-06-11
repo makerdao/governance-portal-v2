@@ -18,7 +18,6 @@ import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pol
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
-import { DelegateInfo, DelegatePaginated, DelegatesAPIStats } from 'modules/delegates/types';
 import { TagCount } from 'modules/app/types/tag';
 
 export type LandingPageData = {
@@ -26,9 +25,6 @@ export type LandingPageData = {
   polls: PollListItem[];
   pollStats: PollsResponse['stats'];
   pollTags: TagCount[];
-  delegates: DelegatePaginated[];
-  delegatesInfo: DelegateInfo[];
-  stats?: DelegatesAPIStats;
   mkrOnHat?: string;
   hat?: string;
   mkrInChief?: string;

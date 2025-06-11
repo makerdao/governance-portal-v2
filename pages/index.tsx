@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box, Alert } from 'theme-ui';
 import ErrorPage from 'modules/app/components/ErrorPage';
@@ -30,11 +30,9 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
-import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
-import { useLandingPageDelegates } from 'modules/gql/hooks/useLandingPageDelegates';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 const LandingPage = ({
@@ -42,9 +40,6 @@ const LandingPage = ({
   polls,
   pollStats,
   pollTags,
-  delegates,
-  delegatesInfo,
-  stats,
   mkrOnHat,
   hat,
   mkrInChief
@@ -70,7 +65,7 @@ const LandingPage = ({
 
   return (
     <div>
-      {delegates.length === 0 && delegatesInfo.length === 0 && polls.length === 0 && (
+      {polls.length === 0 && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -144,12 +139,7 @@ const LandingPage = ({
 
           <section>
             <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats
-                pollStats={pollStats}
-                stats={stats}
-                mkrOnHat={mkrOnHat}
-                mkrInChief={mkrInChief}
-              />
+              <GovernanceStats pollStats={pollStats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
             </ErrorBoundary>
           </section>
 
@@ -199,7 +189,6 @@ export default function Index({
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
-  const [delegatesData, delegatesInfo] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,
@@ -242,9 +231,6 @@ export default function Index({
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
     pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
-    delegates: delegatesData.data?.delegates ?? [],
-    delegatesInfo: delegatesInfo.data ?? [],
-    stats: delegatesData.data?.stats,
     mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
     hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined

@@ -29,14 +29,6 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
       value: pollStats ? pollStats.active.toString() : <Skeleton />
     },
     {
-      title: 'Aligned Delegates',
-      value: stats ? stats.aligned.toString() : <Skeleton />
-    },
-    {
-      title: 'Shadow Delegates',
-      value: stats ? stats.shadow.toString() : <Skeleton />
-    },
-    {
       title: 'MKR Delegated',
       value: stats ? (
         `${Number(stats.totalMKRDelegated).toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
@@ -50,11 +42,5 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     }
   ];
 
-  return (
-    <Stats
-      title="Governance Stats"
-      infoUnits={infoUnits}
-      viewMoreUrl=""
-    />
-  );
+  return <Stats title="Governance Stats" infoUnits={infoUnits} viewMoreUrl="" />;
 }
