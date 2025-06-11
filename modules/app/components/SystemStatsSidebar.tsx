@@ -16,7 +16,6 @@ import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
 import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { ArbitrumPollingAddressMap } from 'modules/web3/constants/addresses';
@@ -38,7 +37,6 @@ type StatField =
   | 'polling contract v2'
   | 'arbitrum polling contract'
   | 'mkr in chief'
-  | 'mkr needed to pass'
   | 'savings rate'
   | 'total dai'
   | 'debt ceiling'
@@ -181,25 +179,6 @@ export default function SystemStatsSidebar({
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {pollingAddress ? (
               <EtherscanLink showAddress type="address" network={arbitrumNetwork} hash={pollingAddress} />
-            ) : (
-              <Box sx={{ width: 6 }}>
-                <Skeleton />
-              </Box>
-            )}
-          </Text>
-        </Flex>
-      );
-    },
-
-    'mkr needed to pass': key => {
-      const { data: mkrOnHat } = useMkrOnHat();
-
-      return (
-        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR on Governing Proposal</Text>
-          <Text variant="h2" sx={{ fontSize: 3 }}>
-            {mkrOnHat ? (
-              `${formatValue(mkrOnHat)} MKR`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />

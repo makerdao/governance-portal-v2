@@ -35,15 +35,7 @@ import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 
-const LandingPage = ({
-  proposals,
-  polls,
-  pollStats,
-  pollTags,
-  mkrOnHat,
-  hat,
-  mkrInChief
-}: LandingPageData) => {
+const LandingPage = ({ proposals, polls, pollStats, pollTags, hat, mkrInChief }: LandingPageData) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
@@ -139,7 +131,7 @@ const LandingPage = ({
 
           <section>
             <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats pollStats={pollStats} mkrOnHat={mkrOnHat} mkrInChief={mkrInChief} />
+              <GovernanceStats pollStats={pollStats} mkrInChief={mkrInChief} />
             </ErrorBoundary>
           </section>
 
@@ -184,8 +176,6 @@ export default function Index({
   polls: prefetchedPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
-  mkrOnHat: prefetchedMkrOnHat,
-  hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
@@ -195,8 +185,6 @@ export default function Index({
         polls: prefetchedPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
-        mkrOnHat: prefetchedMkrOnHat,
-        hat: prefetchedHat,
         mkrInChief: prefetchedMkrInChief
       }
     : null;
@@ -231,8 +219,6 @@ export default function Index({
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
     pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
-    mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
-    hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
   };
 
@@ -240,7 +226,7 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, pollStats, pollTags, mkrOnHat, hat, mkrInChief } = await fetchLandingPageData(
+  const { proposals, polls, pollStats, pollTags, mkrInChief } = await fetchLandingPageData(
     SupportedNetworks.MAINNET
   );
 
@@ -251,8 +237,6 @@ export const getStaticProps: GetStaticProps = async () => {
       polls,
       pollStats,
       pollTags,
-      mkrOnHat,
-      hat,
       mkrInChief
     }
   };
