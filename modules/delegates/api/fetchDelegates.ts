@@ -48,7 +48,7 @@ import { formatEther, parseEther } from 'viem';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 
 async function fetchAllDelegatesTotals(chainId: SupportedChainId) {
-  const allDelegates: { version: string; totalDelegated: string }[] = [];
+  const allDelegates: { delegations: { amount: string }[] }[] = [];
   let skip = 0;
   const batchSize = 1000;
   let keepFetching = true;
@@ -69,9 +69,9 @@ async function fetchAllDelegatesTotals(chainId: SupportedChainId) {
     keepFetching = batch.length === batchSize;
   }
 
-  const v1AndV2Delegates = allDelegates.filter(d => d.version === '1' || d.version === '2');
-  const total = v1AndV2Delegates.reduce((sum, d) => sum + BigInt(d.totalDelegated), 0n);
-  return { totalMkrDelegated: total, totalDelegators: v1AndV2Delegates.length };
+  const allDelegations = allDelegates.flatMap(d => d.delegations);
+  const total = allDelegations.reduce((sum, d) => sum + BigInt(d.amount), 0n);
+  return { totalMkrDelegated: total, totalDelegators: allDelegates.length };
 }
 
 function mergeDelegateInfo({
