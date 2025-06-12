@@ -14,27 +14,14 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 type Props = {
   pollStats: PollsResponse['stats'];
   stats?: DelegatesAPIStats;
-  mkrOnHat?: string;
   mkrInChief?: string;
 };
 
-export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Props): JSX.Element {
+export function GovernanceStats({ pollStats, stats, mkrInChief }: Props): JSX.Element {
   const infoUnits = [
-    {
-      title: 'MKR on Hat',
-      value: mkrOnHat ? `${mkrOnHat} MKR` : <Skeleton />
-    },
     {
       title: 'Active Polls',
       value: pollStats ? pollStats.active.toString() : <Skeleton />
-    },
-    {
-      title: 'Aligned Delegates',
-      value: stats ? stats.aligned.toString() : <Skeleton />
-    },
-    {
-      title: 'Shadow Delegates',
-      value: stats ? stats.shadow.toString() : <Skeleton />
     },
     {
       title: 'MKR Delegated',
@@ -50,11 +37,5 @@ export function GovernanceStats({ pollStats, stats, mkrOnHat, mkrInChief }: Prop
     }
   ];
 
-  return (
-    <Stats
-      title="Governance Stats"
-      infoUnits={infoUnits}
-      viewMoreUrl=""
-    />
-  );
+  return <Stats title="Governance Stats" infoUnits={infoUnits} viewMoreUrl="" />;
 }

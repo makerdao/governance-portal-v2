@@ -41,10 +41,38 @@ import { fetchDelegatesExecSupport } from './fetchDelegatesExecSupport';
 import { fetchDelegateAddresses } from './fetchDelegateAddresses';
 import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
-import { delegationMetricsQuery } from 'modules/gql/queries/delegationMetrics';
+import { delegationTotalsQuery } from 'modules/gql/queries/subgraph/delegationTotals';
 import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { formatEther, parseEther } from 'viem';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
+
+async function fetchAllDelegatesTotals(chainId: SupportedChainId) {
+  const allDelegates: { delegations: { amount: string }[] }[] = [];
+  let skip = 0;
+  const batchSize = 1000;
+  let keepFetching = true;
+
+  while (keepFetching) {
+    const res = await gqlRequest<any>({
+      chainId,
+      useSubgraph: true,
+      query: delegationTotalsQuery,
+      variables: {
+        skip
+      }
+    });
+    const batch = res.delegates;
+
+    allDelegates.push(...batch);
+    skip += batchSize;
+    keepFetching = batch.length === batchSize;
+  }
+
+  const allDelegations = allDelegates.flatMap(d => d.delegations);
+  const total = allDelegations.reduce((sum, d) => sum + BigInt(d.amount), 0n);
+  return { totalMkrDelegated: total, totalDelegators: allDelegates.length };
+}
 
 function mergeDelegateInfo({
   onChainDelegate,
@@ -509,21 +537,16 @@ export async function fetchDelegatesPaginated({
     delegatesQueryVariables['seed'] = seed;
   }
 
-  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationMetricsRes] = await Promise.all(
-    [
-      getGithubExecutives(network),
-      fetchDelegatesExecSupport(network),
-      gqlRequest<any>({
-        chainId,
-        query: delegatesQuery,
-        variables: delegatesQueryVariables
-      }),
-      gqlRequest<any>({
-        chainId,
-        query: delegationMetricsQuery
-      })
-    ]
-  );
+  const [githubExecutives, delegatesExecSupport, delegatesQueryRes, delegationTotalsRes] = await Promise.all([
+    getGithubExecutives(network),
+    fetchDelegatesExecSupport(network),
+    gqlRequest<any>({
+      chainId,
+      query: delegatesQuery,
+      variables: delegatesQueryVariables
+    }),
+    fetchAllDelegatesTotals(chainId)
+  ]);
 
   const delegatesData = {
     paginationInfo: {
@@ -536,8 +559,8 @@ export async function fetchDelegatesPaginated({
       total: totalDelegatesCount,
       shadow: shadowDelegatesCount,
       aligned: alignedDelegatesCount,
-      totalMKRDelegated: delegationMetricsRes.delegationMetrics.totalMkrDelegated || 0,
-      totalDelegators: +delegationMetricsRes.delegationMetrics.delegatorCount || 0
+      totalMKRDelegated: formatEther(delegationTotalsRes.totalMkrDelegated || 0n),
+      totalDelegators: delegationTotalsRes.totalDelegators || 0
     },
     delegates: delegatesQueryRes.delegates.nodes.map(delegate => {
       const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(

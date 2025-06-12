@@ -430,14 +430,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
             </Box>
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
-                fields={[
-                  'chief contract',
-                  'mkr in chief',
-                  'mkr needed to pass',
-                  'savings rate',
-                  'total dai',
-                  'debt ceiling'
-                ]}
+                fields={['chief contract', 'mkr in chief', 'savings rate', 'total dai', 'debt ceiling']}
               />
             </ErrorBoundary>
             <ErrorBoundary componentName="MKR Liquidity">

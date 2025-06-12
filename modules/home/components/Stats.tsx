@@ -53,9 +53,11 @@ export const Stats = ({ title, infoUnits, viewMoreUrl }: Props): JSX.Element => 
         <Grid sx={{ p: 0 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Heading>{title}</Heading>
-            <ExternalLink href={viewMoreUrl} target="_blank">
-              <ViewMore />
-            </ExternalLink>
+            {viewMoreUrl && (
+              <ExternalLink href={viewMoreUrl} target="_blank">
+                <ViewMore />
+              </ExternalLink>
+            )}
           </Flex>
 
           {infoUnits.map(unit => (
