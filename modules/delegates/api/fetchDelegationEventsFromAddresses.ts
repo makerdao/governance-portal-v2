@@ -21,7 +21,7 @@ export async function fetchDelegationEventsFromAddresses(
       useSubgraph: true,
       query: delegationsFromAddressHistory,
       variables: {
-        delegator: address
+        delegator: address.toLowerCase()
       }
     });
 

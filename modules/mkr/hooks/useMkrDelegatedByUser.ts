@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { useChainId } from 'wagmi';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { config } from 'lib/config';
 import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
 import { voteDelegateAbi } from 'modules/contracts/ethers/abis';
