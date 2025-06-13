@@ -68,7 +68,7 @@ function mergeDelegateInfo({
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp,
     expired: false, //TODO
-    isAboutToExpire: false, //TODO
+    isAboutToExpire: false //TODO
   };
 }
 
@@ -124,7 +124,7 @@ export async function fetchAndMergeDelegates(
       name: ghDelegate?.name,
       picture: ghDelegate?.picture,
       expired: false, //TODO
-      isAboutToExpire: false, //TODO
+      isAboutToExpire: false //TODO
     };
   });
 
@@ -159,7 +159,7 @@ export async function fetchSingleDelegateInfo(
     communication: foundGithubDelegate?.communication,
     blockTimestamp: foundDelegate.blockTimestamp,
     expired: false, //TODO
-    isAboutToExpire: false, //TODO
+    isAboutToExpire: false //TODO
   };
 }
 
@@ -187,7 +187,7 @@ export async function fetchDelegatesInfo(
         communication: githubDelegate?.communication,
         blockTimestamp: delegate.blockTimestamp,
         expired: false, //TODO
-        isAboutToExpire: false, //TODO
+        isAboutToExpire: false //TODO
       };
     });
 
