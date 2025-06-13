@@ -77,6 +77,21 @@ export const delegatesQueryFirstPage = gql`
       delegations(first: 1000, where: { delegator_not_in: ["0x2b16c07d5fd5cc701a0a871eae2aad6da5fc8f12"] }) {
         amount
       }
+      delegationHistory(
+        first: 1000
+        where: { delegator_not_in: ["0x2b16c07d5fd5cc701a0a871eae2aad6da5fc8f12"] }
+      ) {
+        amount
+        accumulatedAmount
+        delegator
+        blockNumber
+        timestamp
+        txnHash
+        delegate {
+          id
+        }
+        isLockstake
+      }
       id
       delegators
       voter {
@@ -90,6 +105,21 @@ export const delegatesQueryFirstPage = gql`
       version
       delegations(first: 1000, where: { delegator_not_in: ["0x2b16c07d5fd5cc701a0a871eae2aad6da5fc8f12"] }) {
         amount
+      }
+      delegationHistory(
+        first: 1000
+        where: { delegator_not_in: ["0x2b16c07d5fd5cc701a0a871eae2aad6da5fc8f12"] }
+      ) {
+        amount
+        accumulatedAmount
+        delegator
+        blockNumber
+        timestamp
+        txnHash
+        delegate {
+          id
+        }
+        isLockstake
       }
       id
       delegators

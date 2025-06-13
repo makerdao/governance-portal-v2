@@ -122,12 +122,21 @@ export async function fetchDelegate(
     ? new Date(delegateInfo.creationDate)
     : new Date(Number(onChainDelegate.blockTimestamp) * 1000);
 
-  const delegationEvents = await fetchDelegationEventsByAddresses(
-    [onChainDelegate.voteDelegateAddress],
-    network || SupportedNetworks.MAINNET
-  );
-
-  onChainDelegate.mkrLockedDelegate = delegationEvents;
+  onChainDelegate.mkrLockedDelegate =
+    onChainDelegate.delegationHistory?.map(x => {
+      return {
+        fromAddress: x.delegator,
+        delegateContractAddress: x.delegate.id,
+        immediateCaller: x.delegator,
+        lockAmount: formatEther(BigInt(x.amount)),
+        blockNumber: x.blockNumber,
+        blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
+        hash: x.txnHash,
+        lockTotal: formatEther(BigInt(x.accumulatedAmount)),
+        callerLockTotal: formatEther(BigInt(x.accumulatedAmount)),
+        isLockstake: x.isLockstake
+      };
+    }) || [];
 
   // fetch github info for delegate
   const { data: githubDelegate } = await fetchGithubDelegate(

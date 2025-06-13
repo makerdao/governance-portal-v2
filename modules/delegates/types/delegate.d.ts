@@ -22,6 +22,19 @@ export type DelegateRepoInformation = {
   tags?: string[];
 };
 
+export type GQLDelegationHistory = {
+  amount: string;
+  accumulatedAmount: string;
+  delegator: string;
+  blockNumber: number;
+  timestamp: string;
+  txnHash: string;
+  delegate: {
+    id: string;
+  };
+  isLockstake: boolean;
+};
+
 export type DelegateContractInformation = {
   address: string;
   voteDelegateAddress: string;
@@ -29,6 +42,7 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
+  delegationHistory?: GQLDelegationHistory[];
   delegateVersion?: number | null;
   lastVoteDate: number | null;
 };
