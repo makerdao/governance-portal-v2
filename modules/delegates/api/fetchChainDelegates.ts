@@ -6,48 +6,68 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { formatValue } from 'lib/string';
-import { DelegateContractInformation } from '../types';
-import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { DelegateContractInformation, MKRLockedDelegateAPIResponse } from 'modules/delegates/types';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { Query } from 'modules/gql/generated/graphql';
-import { getPublicClient } from 'modules/web3/helpers/getPublicClient';
-import { chiefAbi, chiefAddress } from 'modules/contracts/generated';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { delegatesQuerySubsequentPages } from 'modules/gql/queries/subgraph/delegates';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { formatEther } from 'viem';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
   const chainId = networkNameToChainId(network);
-  const data = await gqlRequest<Query>({ chainId, query: allDelegates });
+  const delegates: any[] = [];
+  let skip = 0;
+  const batchSize = 1000;
+  let keepFetching = true;
 
-  const delegates = data.allDelegates.nodes.filter(delegate => !!delegate);
+  while (keepFetching) {
+    const data = await gqlRequest<any>({
+      chainId,
+      useSubgraph: true,
+      query: delegatesQuerySubsequentPages,
+      variables: {
+        skip,
+        first: batchSize,
+        filter: { version_in: ['1', '2'] }
+      }
+    });
 
-  const publicClient = getPublicClient(chainId);
+    const batch = data.delegates;
+    delegates.push(...batch);
+    skip += batchSize;
+    keepFetching = batch.length === batchSize;
+  }
 
-  const delegatesWithMkrStaked: DelegateContractInformation[] = (
-    await publicClient.multicall({
-      contracts: delegates.map(delegate => ({
-        address: chiefAddress[chainId],
-        abi: chiefAbi,
-        functionName: 'deposits',
-        args: [delegate.voteDelegate as `0x${string}`]
-      }))
-    })
-  ).map((mkrRes, i) => {
-    const delegate = delegates[i];
-    if (delegate.voteDelegate && delegate.delegate && typeof mkrRes.result === 'bigint') {
-      const chainDelegate: DelegateContractInformation = {
-        ...(delegate as DelegateContractInformation),
-        address: delegate.delegate,
-        voteDelegateAddress: delegate.voteDelegate,
-        mkrDelegated: formatValue(mkrRes.result, 'wad', 18, false)
-      };
-      return chainDelegate;
-    }
-    return delegate as DelegateContractInformation;
+  return delegates.map(delegate => {
+    const totalDelegated = delegate.delegations.reduce(
+      (acc: bigint, curr: { amount: string }) => acc + BigInt(curr.amount),
+      0n
+    );
+
+    const mkrLockedDelegate: MKRLockedDelegateAPIResponse[] = delegate.delegationHistory.map((x: any) => ({
+      delegateContractAddress: x.delegate.id,
+      fromAddress: x.delegator,
+      immediateCaller: x.delegator,
+      lockAmount: formatEther(x.amount),
+      blockNumber: x.blockNumber,
+      blockTimestamp: new Date(parseInt(x.timestamp, 10) * 1000).toISOString(),
+      hash: x.txnHash,
+      callerLockTotal: formatEther(x.accumulatedAmount),
+      lockTotal: formatEther(x.accumulatedAmount),
+      isLockstake: x.isLockstake
+    }));
+
+    return {
+      address: delegate.ownerAddress,
+      voteDelegateAddress: delegate.id,
+      mkrDelegated: formatEther(totalDelegated),
+      blockTimestamp: delegate.blockTimestamp,
+      delegateVersion: parseInt(delegate.version, 10),
+      proposalsSupported: 0,
+      mkrLockedDelegate,
+      lastVoteDate: null
+    };
   });
-
-  return delegatesWithMkrStaked;
 }
