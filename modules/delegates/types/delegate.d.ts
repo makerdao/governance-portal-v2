@@ -149,6 +149,7 @@ export type AllDelegatesEntry = {
   delegate: string;
   voteDelegate: string;
   delegateVersion?: number | null;
+  creationDate?: string;
 };
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {

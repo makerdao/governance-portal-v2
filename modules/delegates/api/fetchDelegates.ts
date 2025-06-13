@@ -40,14 +40,35 @@ import getDelegatesCounts from '../helpers/getDelegatesCounts';
 import { filterDelegates } from '../helpers/filterDelegates';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
 import { formatEther } from 'viem';
+import { isExpiredCheck, isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
+
+function getExpirationStatus(version: number, creationDate: Date) {
+  if (version === 2) {
+    return { expired: false, isAboutToExpire: false };
+  }
+
+  const expirationDate = new Date(creationDate);
+  expirationDate.setFullYear(expirationDate.getFullYear() + 1);
+
+  const expired = isExpiredCheck(expirationDate);
+  const isAboutToExpire = !expired && isAboutToExpireCheck(expirationDate);
+
+  return { expired, isAboutToExpire };
+}
 
 function mergeDelegateInfo({
   onChainDelegate,
-  githubDelegate
+  githubDelegate,
+  version,
+  creationDate
 }: {
   onChainDelegate: DelegateContractInformation;
   githubDelegate?: DelegateRepoInformation;
+  version: number;
+  creationDate: Date;
 }): Delegate {
+  const { expired, isAboutToExpire } = getExpirationStatus(version, creationDate);
+  console.log(expired, isAboutToExpire);
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
@@ -67,8 +88,8 @@ function mergeDelegateInfo({
     execSupported: undefined,
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp,
-    expired: false, //TODO
-    isAboutToExpire: false //TODO
+    expired,
+    isAboutToExpire
   };
 }
 
@@ -78,7 +99,11 @@ export async function fetchDelegate(
   network?: SupportedNetworks
 ): Promise<Delegate | undefined> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
-  const onChainDelegates = await fetchChainDelegates(currentNetwork);
+
+  const [onChainDelegates, delegateAddresses] = await Promise.all([
+    fetchChainDelegates(currentNetwork),
+    fetchDelegateAddresses(currentNetwork)
+  ]);
 
   const onChainDelegate = onChainDelegates.find(
     i => i.voteDelegateAddress.toLowerCase() === voteDelegateAddress.toLowerCase()
@@ -87,6 +112,15 @@ export async function fetchDelegate(
   if (!onChainDelegate) {
     return Promise.resolve(undefined);
   }
+
+  const delegateInfo = delegateAddresses.find(
+    d => d.voteDelegate.toLowerCase() === voteDelegateAddress.toLowerCase()
+  );
+
+  const version = delegateInfo?.delegateVersion || 1;
+  const creationDate = delegateInfo?.creationDate
+    ? new Date(delegateInfo.creationDate)
+    : new Date(Number(onChainDelegate.blockTimestamp) * 1000);
 
   const delegationEvents = await fetchDelegationEventsByAddresses(
     [onChainDelegate.voteDelegateAddress],
@@ -101,7 +135,7 @@ export async function fetchDelegate(
     currentNetwork
   );
 
-  return mergeDelegateInfo({ onChainDelegate, githubDelegate });
+  return mergeDelegateInfo({ onChainDelegate, githubDelegate, version, creationDate });
 }
 
 export async function fetchAndMergeDelegates(
@@ -116,6 +150,11 @@ export async function fetchAndMergeDelegates(
     const ghDelegate = githubDelegates?.find(
       del => delegate.voteDelegate.toLowerCase() === del.voteDelegateAddress.toLowerCase()
     );
+    const version = delegate.delegateVersion || 1; // Default to v1 if not specified
+    const creationDate = delegate.creationDate
+      ? new Date(delegate.creationDate)
+      : new Date(Number(delegate.blockTimestamp) * 1000);
+    const { expired, isAboutToExpire } = getExpirationStatus(version, creationDate);
 
     return {
       ...delegate,
@@ -123,8 +162,8 @@ export async function fetchAndMergeDelegates(
       blockTimestamp: delegate.blockTimestamp,
       name: ghDelegate?.name,
       picture: ghDelegate?.picture,
-      expired: false, //TODO
-      isAboutToExpire: false //TODO
+      expired,
+      isAboutToExpire
     };
   });
 
@@ -158,8 +197,8 @@ export async function fetchSingleDelegateInfo(
     combinedParticipation: foundGithubDelegate?.combinedParticipation,
     communication: foundGithubDelegate?.communication,
     blockTimestamp: foundDelegate.blockTimestamp,
-    expired: false, //TODO
-    isAboutToExpire: false //TODO
+    expired: foundDelegate.expired,
+    isAboutToExpire: foundDelegate.isAboutToExpire
   };
 }
 
@@ -186,8 +225,8 @@ export async function fetchDelegatesInfo(
         combinedParticipation: githubDelegate?.combinedParticipation,
         communication: githubDelegate?.communication,
         blockTimestamp: delegate.blockTimestamp,
-        expired: false, //TODO
-        isAboutToExpire: false //TODO
+        expired: delegate.expired,
+        isAboutToExpire: delegate.isAboutToExpire
       };
     });
 
@@ -365,6 +404,8 @@ export async function fetchDelegatesPaginated({
         0n
       );
 
+      const { expired, isAboutToExpire } = getExpirationStatus(version, finalCreationDate);
+
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
         voteDelegateAddress: delegate.id,
@@ -381,7 +422,9 @@ export async function fetchDelegatesPaginated({
         lastVoteDate: lastVoteTimestamp > 0 ? new Date(lastVoteTimestamp * 1000) : null,
         proposalsSupported: votedProposals?.length || 0,
         execSupported: execSupported && { title: execSupported.title, address: execSupported.address },
-        version
+        version,
+        expired,
+        isAboutToExpire
       };
     }) as DelegatePaginated[]
   };
