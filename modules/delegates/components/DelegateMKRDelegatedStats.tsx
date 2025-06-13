@@ -26,8 +26,6 @@ export function DelegateMKRDelegatedStats({
   delegatorCount?: number;
 }): React.ReactElement {
   const { account } = useAccount();
-  // TODO: Fetch addresses suporting through API fetching
-
   const { data: mkrDelegatedData } = useMkrDelegatedByUser(account, delegate.voteDelegateAddress);
   const totalMkrDelegated = mkrDelegatedData?.totalDelegationAmount;
   const { data: votingWeight } = useMKRVotingWeight({ address: delegate.voteDelegateAddress });
