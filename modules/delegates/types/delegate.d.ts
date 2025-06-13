@@ -67,6 +67,18 @@ export type Delegate = {
   };
 };
 
+export type DelegateListItem = {
+  voteDelegateAddress: string;
+  picture?: string;
+  name: string;
+  externalUrl: string;
+  combinedParticipation?: string;
+  pollParticipation?: string;
+  executiveParticipation?: string;
+  communication?: string;
+  tags?: string[];
+};
+
 export type DelegatePaginated = Omit<
   Delegate,
   | 'id'
@@ -86,6 +98,7 @@ export type DelegatePaginated = Omit<
     title: string;
     address: string;
   };
+  version: number;
 };
 
 export type DelegationHistory = {

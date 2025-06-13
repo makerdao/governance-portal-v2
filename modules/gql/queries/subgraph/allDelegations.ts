@@ -7,12 +7,14 @@ import { gql } from 'graphql-request';
 
 export const allDelegations = gql`
   {
-    delegations(first: 1000) {
-      delegator
-      delegate {
-        id
+    delegates(where: {version_in: ["1", "2"]}, first: 1000) {
+      delegations(first: 1000) {
+        delegator
+        delegate {
+          id
+        }
+        amount
       }
-      amount
     }
   }
 `;
