@@ -144,7 +144,6 @@ export async function fetchAndMergeDelegates(
     fetchGithubDelegates(network),
     fetchDelegateAddresses(network)
   ]);
-
   const allDelegatesWithNamesAndLinks = allDelegateAddresses.map(delegate => {
     const ghDelegate = githubDelegates?.find(
       del => delegate.voteDelegate.toLowerCase() === del.voteDelegateAddress.toLowerCase()
@@ -269,11 +268,11 @@ export async function fetchDelegatesPaginated({
       {
         or: [
           // Include all v2 delegates
-          { version: "2" },
+          { version: '2' },
           // For v1 delegates, conditionally check expiration
           {
             and: [
-              { version: "1" },
+              { version: '1' },
               // Only apply timestamp check if includeExpired is false
               ...(includeExpired ? [] : [{ blockTimestamp_gt: Math.floor(Date.now() / 1000) - (24 * 60 * 60 * 365) }])
             ]
