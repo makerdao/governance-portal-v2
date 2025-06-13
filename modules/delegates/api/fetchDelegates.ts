@@ -13,7 +13,6 @@ import {
   DelegateTypeEnum
 } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
-import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import {
   Delegate,
