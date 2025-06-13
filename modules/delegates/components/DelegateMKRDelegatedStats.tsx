@@ -44,7 +44,7 @@ export function DelegateMKRDelegatedStats({
         value={
           !votingWeight ? (
             <Skeleton width="100%" height="15px" />
-          ) : votingWeight?.chiefBalanceHot ? (
+          ) : votingWeight?.chiefBalanceHot !== undefined ? (
             formatValue(votingWeight?.chiefBalanceHot)
           ) : (
             'Untracked'
