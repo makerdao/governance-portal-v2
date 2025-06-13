@@ -7,8 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
+import { fetchDelegatesPaginated } from 'modules/delegates/api/fetchDelegates';
 import { DelegatesAPIResponse } from 'modules/delegates/types';
+import { DelegateOrderByEnum, DelegateTypeEnum } from 'modules/delegates/delegates.constants';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import validateQueryParam from 'modules/app/api/validateQueryParam';
@@ -198,8 +199,30 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<D
     validValues: ['random', 'mkr', 'delegators', 'date']
   });
 
-  const delegates = await fetchDelegates(network, sortBy as any);
+  const sortByMap: { [key: string]: string } = {
+    random: DelegateOrderByEnum.RANDOM,
+    mkr: DelegateOrderByEnum.MKR,
+    delegators: DelegateOrderByEnum.DELEGATORS,
+    date: DelegateOrderByEnum.DATE
+  };
+
+  const result = await fetchDelegatesPaginated({
+    network,
+    page: 1,
+    pageSize: 10000,
+    orderBy: sortByMap[sortBy as string],
+    orderDirection: 'desc',
+    delegateType: DelegateTypeEnum.ALL,
+    searchTerm: null,
+    includeExpired: false,
+    seed: null
+  });
+
+  const response: DelegatesAPIResponse = {
+    delegates: result.delegates as any,
+    stats: result.stats
+  };
 
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
-  res.status(200).json(delegates);
+  res.status(200).json(response);
 });

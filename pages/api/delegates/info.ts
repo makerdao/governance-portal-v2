@@ -104,7 +104,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<D
     validValues: [SupportedNetworks.TENDERLY, SupportedNetworks.MAINNET]
   }) as SupportedNetworks;
 
-  const delegates = await fetchDelegatesInfo(network, true, false);
+  const delegates = await fetchDelegatesInfo(network, false);
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(delegates);
 });

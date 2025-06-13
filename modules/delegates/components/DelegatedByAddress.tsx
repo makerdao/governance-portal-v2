@@ -80,8 +80,9 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: [1, 3] }}>
-          {/*TODO why does the lock amount have decimal places? They all end in .0 */}
-          {`${formatValue(parseEther(lockAmount), 'wad')}${bpi > 0 ? ' MKR' : ''}`}
+          {parseEther(lockAmount) > 0 && parseEther(lockAmount) < 1
+            ? `${formatValue(parseEther(lockAmount), 'wad')}${bpi > 0 ? ' MKR' : ''}`
+            : `${formatValue(parseEther(lockAmount), 'wad', 3)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
