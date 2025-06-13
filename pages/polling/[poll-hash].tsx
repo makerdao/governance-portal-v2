@@ -196,13 +196,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
                                 >
                                   <Heading sx={{ mb: 3 }}>Impact estimation tags</Heading>
                                   <Text sx={{ textAlign: 'center' }}>
-                                    GovAlpha applies impact estimations to active governance items (MIPs and
-                                    Signal Requests).
+                                    The Governance Facilitators apply impact estimations to active governance
+                                    items.
                                     <br />
                                     To know more about impact tags please visit the{' '}
                                     <ExternalLink
                                       title="Maker Operational Manual"
-                                      href="https://manual.makerdao.com/governance/off-chain/impact-estimations"
+                                      href="https://manual.makerdao.com/governance-processes/off-chain/impact-estimations"
                                     >
                                       <Text>Maker Operational Manual</Text>
                                     </ExternalLink>
