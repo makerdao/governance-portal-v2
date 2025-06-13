@@ -64,7 +64,7 @@ export async function fetchChainDelegates(
       voteDelegateAddress: delegate.id,
       mkrDelegated: formatEther(totalDelegated),
       blockTimestamp: delegate.blockTimestamp,
-      delegateVersion: parseInt(delegate.version, 10),
+      delegateVersion: delegate.version,
       proposalsSupported: 0,
       mkrLockedDelegate,
       lastVoteDate: null
