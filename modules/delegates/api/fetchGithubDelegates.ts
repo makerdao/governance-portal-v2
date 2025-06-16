@@ -15,7 +15,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation, RepositoryInfo } from './getDelegatesRepositoryInfo';
 import { isAddress } from 'viem';
-import { allGithubDelegates } from 'modules/gql/queries/allGithubDelegates';
+import { allGithubDelegates } from 'modules/gql/queries/github/allGithubDelegates';
 import logger from 'lib/logger';
 import { delegatesGithubCacheKey, getDelegateGithubCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';

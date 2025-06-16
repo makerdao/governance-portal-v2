@@ -14,7 +14,7 @@ import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsPaginatedResponse, PollsResponse } from '../types/pollsResponse';
 import { PollsValidatedQueryParams } from 'modules/polling/types';
-import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
+import { allWhitelistedPolls } from 'modules/gql/queries/spock/allWhitelistedPolls';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { PollSpock } from '../types/pollSpock';
