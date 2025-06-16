@@ -46,18 +46,19 @@ export async function fetchChainDelegates(
       0n
     );
 
-    const mkrLockedDelegate: MKRLockedDelegateAPIResponse[] = delegate.delegationHistory.map((x: any) => ({
-      delegateContractAddress: x.delegate.id,
-      fromAddress: x.delegator,
-      immediateCaller: x.delegator,
-      lockAmount: formatEther(x.amount),
-      blockNumber: x.blockNumber,
-      blockTimestamp: new Date(parseInt(x.timestamp, 10) * 1000).toISOString(),
-      hash: x.txnHash,
-      callerLockTotal: formatEther(x.accumulatedAmount),
-      lockTotal: formatEther(x.accumulatedAmount),
-      isLockstake: x.isLockstake
-    }));
+    const mkrLockedDelegate: MKRLockedDelegateAPIResponse[] =
+      delegate.delegationHistory?.map((x: any) => ({
+        delegateContractAddress: x.delegate.id,
+        fromAddress: x.delegator,
+        immediateCaller: x.delegator,
+        lockAmount: formatEther(x.amount),
+        blockNumber: x.blockNumber,
+        blockTimestamp: new Date(parseInt(x.timestamp, 10) * 1000).toISOString(),
+        hash: x.txnHash,
+        callerLockTotal: formatEther(x.accumulatedAmount),
+        lockTotal: formatEther(x.accumulatedAmount),
+        isLockstake: x.isLockstake
+      })) || [];
 
     return {
       address: delegate.ownerAddress,

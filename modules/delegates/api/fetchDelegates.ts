@@ -142,22 +142,6 @@ export async function fetchDelegate(
     ? onChainDelegates.find(i => i.address.toLowerCase() === latestOwnerAddress.toLowerCase())
     : undefined;
 
-  onChainDelegate.mkrLockedDelegate =
-    onChainDelegate.delegationHistory?.map(x => {
-      return {
-        fromAddress: x.delegator,
-        delegateContractAddress: x.delegate.id,
-        immediateCaller: x.delegator,
-        lockAmount: formatEther(BigInt(x.amount)),
-        blockNumber: x.blockNumber,
-        blockTimestamp: new Date(parseInt(x.timestamp) * 1000).toISOString(),
-        hash: x.txnHash,
-        lockTotal: formatEther(BigInt(x.accumulatedAmount)),
-        callerLockTotal: formatEther(BigInt(x.accumulatedAmount)),
-        isLockstake: x.isLockstake
-      };
-    }) || [];
-
   // fetch github info for delegate (if they have a link to prev contract, prev contract is the info directory key)
   const { data: githubDelegate } = await fetchGithubDelegate(
     originalOnChainDelegate
