@@ -30,7 +30,7 @@ export async function fetchDelegationMetrics(network: SupportedNetworks): Promis
       const query = gql`
         query delegatesWithDelegations($skip: Int!, $first: Int!) {
           delegates(where: { version_in: ["1", "2"] }, first: $first, skip: $skip) {
-            delegations(first: 1000) {
+            delegations(first: 1000, where: {delegator_not_in: ["0x2b16c07d5fd5cc701a0a871eae2aad6da5fc8f12"]}) {
               delegator
               delegate {
                 id
