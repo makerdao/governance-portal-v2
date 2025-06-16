@@ -16,29 +16,30 @@ import { formatEther } from 'viem';
 export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
-  const chainId = networkNameToChainId(network);
-  const delegates: any[] = [];
-  let skip = 0;
-  const batchSize = 1000;
-  let keepFetching = true;
+  try {
+    const chainId = networkNameToChainId(network);
+    const delegates: any[] = [];
+    let skip = 0;
+    const batchSize = 1000;
+    let keepFetching = true;
 
-  while (keepFetching) {
-    const data = await gqlRequest<any>({
-      chainId,
-      useSubgraph: true,
-      query: delegatesQuerySubsequentPages,
-      variables: {
-        skip,
-        first: batchSize,
-        filter: { version_in: ['1', '2'] }
-      }
-    });
+    while (keepFetching) {
+      const data = await gqlRequest<any>({
+        chainId,
+        useSubgraph: true,
+        query: delegatesQuerySubsequentPages,
+        variables: {
+          skip,
+          first: batchSize,
+          filter: { version_in: ['1', '2'] }
+        }
+      });
 
-    const batch = data.delegates;
-    delegates.push(...batch);
-    skip += batchSize;
-    keepFetching = batch.length === batchSize;
-  }
+      const batch = data.delegates;
+      delegates.push(...batch);
+      skip += batchSize;
+      keepFetching = batch.length === batchSize;
+    }
 
   return delegates.map(delegate => {
     const totalDelegated = delegate.delegations.reduce(
@@ -71,4 +72,9 @@ export async function fetchChainDelegates(
       lastVoteDate: null
     };
   });
+  } catch (error) {
+    console.error('Error fetching chain delegates:', error);
+    // Return empty array when subgraph is unavailable
+    return [];
+  }
 }

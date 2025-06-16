@@ -42,6 +42,7 @@ export async function fetchDelegatesExecSupport(network: SupportedNetworks): Pro
     while (hasMore) {
       const data = await gqlRequest<{ delegates: SubgraphDelegate[] }>({
         chainId,
+        useSubgraph: true,
         query: allDelegateAddresses,
         variables: {
           first: 1000,

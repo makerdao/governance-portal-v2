@@ -275,7 +275,8 @@ export async function fetchDelegatesPaginated({
   searchTerm,
   includeExpired
 }: DelegatesValidatedQueryParams): Promise<DelegatesPaginatedAPIResponse> {
-  const chainId = networkNameToChainId(network);
+  try {
+    const chainId = networkNameToChainId(network);
 
   const [githubDelegates, allDelegatesWithNamesAndLinks] = await fetchAndMergeDelegates(network);
 
@@ -486,4 +487,24 @@ export async function fetchDelegatesPaginated({
   };
 
   return delegatesData;
+  } catch (error) {
+    console.error('Error fetching delegates paginated:', error);
+    // Return a default response structure when there's an error
+    return {
+      paginationInfo: {
+        totalCount: 0,
+        page: page,
+        numPages: 0,
+        hasNextPage: false
+      },
+      stats: {
+        total: 0,
+        shadow: 0,
+        aligned: 0,
+        totalMKRDelegated: '0',
+        totalDelegators: 0
+      },
+      delegates: []
+    };
+  }
 }
