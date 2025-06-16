@@ -127,7 +127,7 @@ export async function fetchDelegate(
     return Promise.resolve(undefined);
   }
 
-  const delegateVersion = onChainDelegate?.delegateVersion || 1;
+  const delegateVersion = Number(onChainDelegate?.delegateVersion) || 1;
   const creationDate = new Date(Number(onChainDelegate.blockTimestamp) * 1000);
 
   const originalOwnerAddress = getOriginalOwnerFromNew(onChainDelegate.address, currentNetwork);
@@ -180,10 +180,10 @@ export async function fetchAndMergeDelegates(
         del.voteDelegateAddress.toLowerCase()
       )
     );
-    const delegateVersion = delegate.delegateVersion || 1;
+    const delegateVersion = Number(delegate.delegateVersion) || 1;
     const creationDate = delegate.creationDate
       ? new Date(delegate.creationDate)
-      : new Date(Number(delegate.blockTimestamp) * 1000);
+      : delegate.blockTimestamp;
     const { expired, isAboutToExpire, expirationDate } = getExpirationStatus(delegateVersion, creationDate);
 
     return {
@@ -415,7 +415,7 @@ export async function fetchDelegatesPaginated({
       const allDelegatesEntry = allDelegatesWithNamesAndLinks.find(del => del.voteDelegate === delegate.id);
       const githubDelegate = githubDelegates?.find(ghDelegate => ghDelegate.name === allDelegatesEntry?.name);
 
-      const delegateVersion = allDelegatesEntry?.delegateVersion || 1;
+      const delegateVersion = Number(allDelegatesEntry?.delegateVersion) || 1;
 
       const votedProposals = delegatesExecSupport.data?.find(
         del => del.voteDelegate === delegate.id
