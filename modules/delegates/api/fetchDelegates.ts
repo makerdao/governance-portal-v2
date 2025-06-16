@@ -71,8 +71,7 @@ function mergeDelegateInfo({
   originalOnChainDelegate?: DelegateContractInformation;
   newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
-  const { expired, isAboutToExpire } = getExpirationStatus(delegateVersion, creationDate);
-  console.log(expired, isAboutToExpire);
+  const { expired, isAboutToExpire, expirationDate } = getExpirationStatus(delegateVersion, creationDate);
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
@@ -105,7 +104,8 @@ function mergeDelegateInfo({
       }
     }),
     expired,
-    isAboutToExpire
+    isAboutToExpire,
+    expirationDate
   };
 }
 
