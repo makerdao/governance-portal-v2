@@ -184,8 +184,16 @@ export async function fetchAndMergeDelegates(
     fetchDelegateAddresses(network)
   ]);
   const allDelegatesWithNamesAndLinks = allDelegateAddresses.map(delegate => {
-    const ghDelegate = githubDelegates?.find(
-      del => delegate.voteDelegate.toLowerCase() === del.voteDelegateAddress.toLowerCase()
+    const originalOwner = getOriginalOwnerFromNew(delegate.delegate, network);
+    const latestOwner = getLatestOwnerFromOld(delegate.delegate, network);
+
+    const oldContractAddress = allDelegateAddresses.find(del => del.delegate === originalOwner)?.voteDelegate;
+    const newContractAddress = allDelegateAddresses.find(del => del.delegate === latestOwner)?.voteDelegate;
+
+    const ghDelegate = githubDelegates?.find(del =>
+      [delegate.voteDelegate, oldContractAddress, newContractAddress].includes(
+        del.voteDelegateAddress.toLowerCase()
+      )
     );
     const delegateVersion = delegate.delegateVersion || 1;
     const creationDate = delegate.creationDate
