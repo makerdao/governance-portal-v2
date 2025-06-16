@@ -105,7 +105,8 @@ function mergeDelegateInfo({
     }),
     expired,
     isAboutToExpire,
-    expirationDate
+    expirationDate,
+    delegateVersion: Number(delegateVersion)
   };
 }
 
