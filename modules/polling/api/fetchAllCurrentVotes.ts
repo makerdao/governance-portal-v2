@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allCurrentVotes } from 'modules/gql/queries/allCurrentVotes';
+import { allCurrentVotes } from 'modules/gql/queries/spock/allCurrentVotes';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptionId } from '../helpers/parseRawOptionId';

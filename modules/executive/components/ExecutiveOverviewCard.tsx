@@ -23,7 +23,6 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { StatusText } from 'modules/app/components/StatusText';
 import { config } from 'lib/config';
-import { useMigrationStatus } from 'modules/migration/hooks/useMigrationStatus';
 
 type Props = {
   proposal: Proposal;
@@ -64,8 +63,6 @@ export default function ExecutiveOverviewCard({
   }
 
   const canVote = !!account;
-
-  const { isDelegateContractExpired } = useMigrationStatus();
 
   return (
     <Card
@@ -146,9 +143,7 @@ export default function ExecutiveOverviewCard({
                   variant="primaryOutline"
                   sx={{ width: 122 }}
                   disabled={
-                    config.READ_ONLY ||
-                    (hasVotedFor && votedProposals && votedProposals.length === 1) ||
-                    isDelegateContractExpired
+                    config.READ_ONLY || (hasVotedFor && votedProposals && votedProposals.length === 1)
                   }
                   onClick={ev => {
                     setVoting(true);

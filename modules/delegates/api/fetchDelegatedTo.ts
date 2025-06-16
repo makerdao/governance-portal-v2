@@ -10,25 +10,52 @@ import { add } from 'date-fns';
 import { formatEther, parseEther } from 'viem';
 import logger from 'lib/logger';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { allDelegateAddresses } from 'modules/gql/queries/subgraph/allDelegateAddresses';
 import { delegatorHistory } from 'modules/gql/queries/subgraph/delegatorHistory';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { isAboutToExpireCheck, isExpiredCheck } from 'modules/migration/helpers/expirationChecks';
 import { DelegationHistoryWithExpirationDate, MKRDelegatedToResponse } from '../types';
 import { getLatestOwnerFromOld } from 'modules/migration/delegateAddressLinks';
-import { AllDelegatesRecord, Query } from 'modules/gql/generated/graphql';
 
 export async function fetchDelegatedTo(
   address: string,
   network: SupportedNetworks
 ): Promise<DelegationHistoryWithExpirationDate[]> {
   try {
-    // We fetch the delegates information from the DB to extract the expiry date of each delegate
-    // TODO: This information could be aggregated in the "mkrDelegatedTo" query in gov-polling-db, and returned there, as an improvement.
+    // We fetch the delegates information from the subgraph to extract the expiry date of each delegate
     const chainId = networkNameToChainId(network);
-    const delegatesData = await gqlRequest<Query>({ chainId, query: allDelegates });
-    const delegates = delegatesData.allDelegates.nodes;
+    
+    // Fetch all delegates using pagination
+    const delegates: any[] = [];
+    let skip = 0;
+    const first = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+      const data = await gqlRequest<any>({
+        chainId,
+        query: allDelegateAddresses,
+        useSubgraph: true,
+        variables: { first, skip }
+      });
+
+      if (data.delegates && data.delegates.length > 0) {
+        // Map subgraph fields to expected format
+        const batch = data.delegates.map((delegate: any) => ({
+          voteDelegate: delegate.id,
+          delegate: delegate.ownerAddress,
+          blockTimestamp: new Date(Number(delegate.blockTimestamp) * 1000),
+          delegateVersion: Number(delegate.version) || 1
+        }));
+        
+        delegates.push(...batch);
+        skip += first;
+        hasMore = data.delegates.length === first;
+      } else {
+        hasMore = false;
+      }
+    }
 
     // Returns the records with the aggregated delegated data
     const data = await gqlRequest({
@@ -67,7 +94,7 @@ export async function fetchDelegatedTo(
         } else {
           const delegatingTo = delegates.find(
             i => i?.voteDelegate?.toLowerCase() === delegateContractAddress.toLowerCase()
-          ) as (AllDelegatesRecord & { delegateVersion: number }) | undefined;
+          );
 
           if (!delegatingTo) {
             return acc;
@@ -98,7 +125,6 @@ export async function fetchDelegatedTo(
             isExpired,
             isAboutToExpire: !isExpired && isAboutToExpire,
             lockAmount: formatEther(parseEther(lockAmount)),
-            // @ts-ignore: Property 'delegateVersion' might not exist on type 'AllDelegatesRecord'
             isRenewedToV2: !!newRenewedContract && newRenewedContract.delegateVersion === 2,
             events: [{ lockAmount: formatEther(parseEther(lockAmount)), blockTimestamp, hash, isLockstake }]
           } as DelegationHistoryWithExpirationDate);
