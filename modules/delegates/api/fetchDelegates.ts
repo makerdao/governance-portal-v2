@@ -40,6 +40,7 @@ import { filterDelegates } from '../helpers/filterDelegates';
 import { fetchDelegationMetrics } from './fetchDelegationMetrics';
 import { formatEther } from 'viem';
 import { isExpiredCheck, isAboutToExpireCheck } from 'modules/migration/helpers/expirationChecks';
+import { getLatestOwnerFromOld, getOriginalOwnerFromNew } from 'modules/migration/delegateAddressLinks';
 
 function getExpirationStatus(delegateVersion: number, creationDate: Date) {
   if (delegateVersion === 2) {
@@ -59,12 +60,16 @@ function mergeDelegateInfo({
   onChainDelegate,
   githubDelegate,
   delegateVersion,
-  creationDate
+  creationDate,
+  originalOnChainDelegate,
+  newOnChainDelegate
 }: {
   onChainDelegate: DelegateContractInformation;
   githubDelegate?: DelegateRepoInformation;
   delegateVersion: number;
   creationDate: Date;
+  originalOnChainDelegate?: DelegateContractInformation;
+  newOnChainDelegate?: DelegateContractInformation;
 }): Delegate {
   const { expired, isAboutToExpire } = getExpirationStatus(delegateVersion, creationDate);
   console.log(expired, isAboutToExpire);
@@ -87,6 +92,18 @@ function mergeDelegateInfo({
     execSupported: undefined,
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
     blockTimestamp: onChainDelegate.blockTimestamp,
+    ...(originalOnChainDelegate && {
+      previous: {
+        address: originalOnChainDelegate.address,
+        voteDelegateAddress: originalOnChainDelegate.voteDelegateAddress
+      }
+    }),
+    ...(newOnChainDelegate && {
+      next: {
+        address: newOnChainDelegate.address,
+        voteDelegateAddress: newOnChainDelegate.voteDelegateAddress
+      }
+    }),
     expired,
     isAboutToExpire
   };
@@ -112,6 +129,19 @@ export async function fetchDelegate(
   const delegateVersion = onChainDelegate?.delegateVersion || 1;
   const creationDate = new Date(Number(onChainDelegate.blockTimestamp) * 1000);
 
+  const originalOwnerAddress = getOriginalOwnerFromNew(onChainDelegate.address, currentNetwork);
+  const originalOnChainDelegate = originalOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === originalOwnerAddress.toLowerCase())
+    : undefined;
+
+  // check if delegate owner has a link to a newer contract
+  const latestOwnerAddress = getLatestOwnerFromOld(onChainDelegate.address, currentNetwork);
+
+  // fetch the newer contract if so
+  const newOnChainDelegate = latestOwnerAddress
+    ? onChainDelegates.find(i => i.address.toLowerCase() === latestOwnerAddress.toLowerCase())
+    : undefined;
+
   onChainDelegate.mkrLockedDelegate =
     onChainDelegate.delegationHistory?.map(x => {
       return {
@@ -128,13 +158,22 @@ export async function fetchDelegate(
       };
     }) || [];
 
-  // fetch github info for delegate
+  // fetch github info for delegate (if they have a link to prev contract, prev contract is the info directory key)
   const { data: githubDelegate } = await fetchGithubDelegate(
-    onChainDelegate.voteDelegateAddress,
+    originalOnChainDelegate
+      ? originalOnChainDelegate.voteDelegateAddress
+      : onChainDelegate.voteDelegateAddress,
     currentNetwork
   );
 
-  return mergeDelegateInfo({ onChainDelegate, githubDelegate, delegateVersion, creationDate });
+  return mergeDelegateInfo({
+    onChainDelegate,
+    githubDelegate,
+    delegateVersion,
+    creationDate,
+    originalOnChainDelegate,
+    newOnChainDelegate
+  });
 }
 
 export async function fetchAndMergeDelegates(
@@ -274,7 +313,9 @@ export async function fetchDelegatesPaginated({
             and: [
               { version: '1' },
               // Only apply timestamp check if includeExpired is false
-              ...(includeExpired ? [] : [{ blockTimestamp_gt: Math.floor(Date.now() / 1000) - (24 * 60 * 60 * 365) }])
+              ...(includeExpired
+                ? []
+                : [{ blockTimestamp_gt: Math.floor(Date.now() / 1000) - 24 * 60 * 60 * 365 }])
             ]
           }
         ]
@@ -423,7 +464,10 @@ export async function fetchDelegatesPaginated({
         0n
       );
 
-      const { expired, isAboutToExpire, expirationDate } = getExpirationStatus(delegateVersion, finalCreationDate);
+      const { expired, isAboutToExpire, expirationDate } = getExpirationStatus(
+        delegateVersion,
+        finalCreationDate
+      );
 
       return {
         name: githubDelegate?.name || 'Shadow Delegate',
