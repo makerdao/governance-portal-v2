@@ -19,7 +19,6 @@ import {
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
-import { DelegateMKRChart } from './DelegateMKRChart';
 import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
@@ -89,11 +88,6 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
             <DelegatedByAddress delegators={delegationHistory} totalDelegated={totalStaked} />
-          </Box>
-          <Divider />
-
-          <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
-            <DelegateMKRChart delegate={delegate} />
           </Box>
           <Divider />
         </>

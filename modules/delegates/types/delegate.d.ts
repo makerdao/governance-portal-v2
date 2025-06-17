@@ -22,6 +22,19 @@ export type DelegateRepoInformation = {
   tags?: string[];
 };
 
+export type GQLDelegationHistory = {
+  amount: string;
+  accumulatedAmount: string;
+  delegator: string;
+  blockNumber: number;
+  timestamp: string;
+  txnHash: string;
+  delegate: {
+    id: string;
+  };
+  isLockstake: boolean;
+};
+
 export type DelegateContractInformation = {
   address: string;
   voteDelegateAddress: string;
@@ -29,6 +42,7 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
+  delegationHistory?: GQLDelegationHistory[];
   delegateVersion?: number | null;
   lastVoteDate: number | null;
 };
@@ -67,6 +81,18 @@ export type Delegate = {
   };
 };
 
+export type DelegateListItem = {
+  voteDelegateAddress: string;
+  picture?: string;
+  name: string;
+  externalUrl: string;
+  combinedParticipation?: string;
+  pollParticipation?: string;
+  executiveParticipation?: string;
+  communication?: string;
+  tags?: string[];
+};
+
 export type DelegatePaginated = Omit<
   Delegate,
   | 'id'
@@ -86,6 +112,7 @@ export type DelegatePaginated = Omit<
     title: string;
     address: string;
   };
+  version: number;
 };
 
 export type DelegationHistory = {
@@ -136,6 +163,7 @@ export type AllDelegatesEntry = {
   delegate: string;
   voteDelegate: string;
   delegateVersion?: number | null;
+  creationDate?: string;
 };
 
 export type AllDelegatesEntryWithName = AllDelegatesEntry & {
