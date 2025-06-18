@@ -3,7 +3,8 @@ import { connectWallet } from './shared';
 import './forkVnet';
 import { delegateMkr } from './helpers/delegateMkr';
 
-test('delegate MKR', async ({ page, delegatePage }) => {
+// the undelegate button won't show on e2e because the delegation needs to be indexed in the subgraph first
+test.skip('delegate MKR', async ({ page, delegatePage }) => {
   await test.step('navigate to delegate page', async () => {
     await delegatePage.goto();
   });

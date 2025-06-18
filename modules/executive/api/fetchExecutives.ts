@@ -19,7 +19,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import logger from 'lib/logger';
 import { getExecutiveProposalsCacheKey, githubExecutivesCacheKey } from 'modules/cache/constants/cache-keys';
 import { ONE_HOUR_IN_MS } from 'modules/app/constants/time';
-import { allGithubExecutives } from 'modules/gql/queries/allGithubExecutives';
+import { allGithubExecutives } from 'modules/gql/queries/github/allGithubExecutives';
 import { trimProposalKey } from '../helpers/trimProposalKey';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
