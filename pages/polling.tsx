@@ -87,9 +87,7 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
       <SidebarLayout>
         <Box>
           <Stack gap={4}>
-            <Heading as="h1">Polls</Heading>
-
-            <Alert variant="notice" sx={{ mb: 4 }}>
+            <Alert variant="notice" sx={{ mb: 2 }}>
               <Flex
                 sx={{
                   justifyContent: 'space-between',
@@ -121,7 +119,7 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
             ) : (
               <Box>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                  <Heading as="h3">Recent Polls from Sky Governance</Heading>
+                  <Heading as="h3">Polls from Sky Governance</Heading>
                   <ExternalLink href="https://vote.sky.money/polling" title="Vote on Sky Governance">
                     <Button variant="primary">View on Sky Portal</Button>
                   </ExternalLink>
@@ -164,15 +162,6 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
                 )}
               </Box>
             )}
-
-            <Card variant="compact" sx={{ p: 4 }}>
-              <Heading as="h2" sx={{ mb: 3 }}>
-                Legacy MakerDAO Polls
-              </Heading>
-              <Text sx={{ mb: 3, color: 'textSecondary' }}>
-                View historical polls from the MakerDAO governance system (pre-Sky migration).
-              </Text>
-            </Card>
           </Stack>
         </Box>
 

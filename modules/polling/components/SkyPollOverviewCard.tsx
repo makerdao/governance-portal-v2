@@ -91,35 +91,15 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
       aria-label="Sky poll overview"
       sx={{
         p: [0, 0],
-        border: '1px solid',
-        borderColor: 'muted',
         position: 'relative'
       }}
     >
       <ErrorBoundary componentName="Sky Poll Card">
-        {/* Sky badge indicator */}
-        <Badge
-          variant="primary"
-          sx={{
-            position: 'absolute',
-            top: 2,
-            right: 2,
-            fontSize: 0,
-            px: 2,
-            py: 1,
-            bg: 'primary',
-            color: 'onPrimary'
-          }}
-        >
-          Sky Governance
-        </Badge>
-
         <Flex sx={{ flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
           <Box
             sx={{
               px: [3, 4],
               py: 3,
-              pt: 5, // Extra padding for badge
               display: 'flex',
               flexDirection: 'column',
               height: '100%',
@@ -150,15 +130,30 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                   )}
                   <Box>
                     <Box>
-                      <CardHeader
-                        text={`Posted ${formatDateWithTime(new Date(poll.startDate))} | Poll ID ${poll.pollId}`}
-                        styles={{ mb: 2 }}
-                      />
-                      <ExternalLink href={getSkyPortalPollUrl(poll)} title="View poll details on Sky Portal">
-                        <CardTitle
-                          title={poll.title}
-                          dataTestId="sky-poll-overview-card-poll-title"
+                      <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <CardHeader
+                          text={`Posted ${formatDateWithTime(new Date(poll.startDate))} | Poll ID ${
+                            poll.pollId
+                          }`}
+                          styles={{ mb: 0 }}
                         />
+                        <Badge
+                          variant="outline"
+                          sx={{
+                            fontSize: 0,
+                            px: 2,
+                            py: 1,
+                            bg: 'background',
+                            color: 'textSecondary',
+                            border: '1px solid',
+                            borderColor: 'muted'
+                          }}
+                        >
+                          Sky Governance
+                        </Badge>
+                      </Flex>
+                      <ExternalLink href={getSkyPortalPollUrl(poll)} title="View poll details on Sky Portal">
+                        <CardTitle title={poll.title} dataTestId="sky-poll-overview-card-poll-title" />
                       </ExternalLink>
                     </Box>
                     <ExternalLink href={getSkyPortalPollUrl(poll)} title="View poll details on Sky Portal">
@@ -205,16 +200,12 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                   }}
                 >
                   <ExternalLink href={getSkyPortalPollUrl(poll)} title="View poll details on Sky Portal">
-                    <Button variant="outline">
-                      View Details
-                    </Button>
+                    <Button variant="outline">View Details</Button>
                   </ExternalLink>
 
                   {isActive && (
                     <ExternalLink href={getSkyPortalPollUrl(poll)} title="Vote on Sky Portal">
-                      <Button variant="primary">
-                        Vote on Sky Portal
-                      </Button>
+                      <Button variant="primary">Vote on Sky Portal</Button>
                     </ExternalLink>
                   )}
 
@@ -224,18 +215,16 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                 {!hideTally && poll.tally && (
                   <Box sx={{ width: bpi > 0 ? '265px' : '100%', mt: [3, 0] }}>
                     <ErrorBoundary componentName="Poll Results">
-                      <Box sx={{ 
-                        p: 2, 
-                        bg: 'surface', 
-                        borderRadius: 'small',
-                        fontSize: 1
-                      }}>
-                        <Box sx={{ mb: 1, fontWeight: 'bold' }}>
-                          Poll Results
-                        </Box>
-                        <Box sx={{ color: 'textSecondary' }}>
-                          Participants: {poll.tally.numVoters}
-                        </Box>
+                      <Box
+                        sx={{
+                          p: 2,
+                          bg: 'surface',
+                          borderRadius: 'small',
+                          fontSize: 1
+                        }}
+                      >
+                        <Box sx={{ mb: 1, fontWeight: 'bold' }}>Poll Results</Box>
+                        <Box sx={{ color: 'textSecondary' }}>Participants: {poll.tally.numVoters}</Box>
                         <Box sx={{ color: 'textSecondary' }}>
                           Total MKR: {poll.tally.totalMkrParticipation}
                         </Box>
@@ -247,14 +236,17 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
             </Box>
           </Box>
 
-          {poll.tally && poll.tally.results && poll.tally.results.length > 0 && poll.tally.results[0].mkrSupport && (
-            <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
-              <Divider my={0} />
-              <ErrorBoundary componentName="Poll Winning Option">
-                <PollWinningOptionBox tally={poll.tally as any} poll={poll as any} />
-              </ErrorBoundary>
-            </Flex>
-          )}
+          {poll.tally &&
+            poll.tally.results &&
+            poll.tally.results.length > 0 &&
+            poll.tally.results[0].mkrSupport && (
+              <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
+                <Divider my={0} />
+                <ErrorBoundary componentName="Poll Winning Option">
+                  <PollWinningOptionBox tally={poll.tally as any} poll={poll as any} />
+                </ErrorBoundary>
+              </Flex>
+            )}
         </Flex>
       </ErrorBoundary>
     </Card>
