@@ -12,7 +12,7 @@ import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { PollCategoryTag } from './PollCategoryTag';
-import PollWinningOptionBox from './PollWinningOptionBox';
+import SkyPollWinningOptionBox from './SkyPollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { CardTitle } from 'modules/app/components/Card/CardTitle';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
@@ -20,8 +20,11 @@ import { CardSummary } from 'modules/app/components/Card/CardSummary';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 import { TagCount } from 'modules/app/types/tag';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { formatValue } from 'lib/string';
+import { parseEther } from 'viem';
 
-// Sky poll types based on the API response structure
+// Sky poll types based on API response structure
 export type SkyPoll = {
   pollId: number;
   startDate: string;
@@ -42,23 +45,44 @@ export type SkyPoll = {
   };
   title: string;
   summary: string;
-  options: any[];
+  options: {
+    [key: string]: string;
+  };
   tags: string[];
   tally?: {
     parameters: {
+      inputFormat: {
+        type: string;
+        abstain: number[];
+        options: any[];
+      };
+      resultDisplay: string;
       victoryConditions: any[];
     };
     results: Array<{
       optionId: number;
-      mkrSupport: string;
+      winner: boolean;
+      skySupport: string;
+      optionName: string;
+      transfer: string;
       firstPct: number;
+      transferPct: number;
     }>;
-    totalMkrParticipation: string;
+    totalSkyParticipation: string;
+    totalSkyActiveParticipation: string;
     winner: number | null;
-    winningOption: string | null;
+    winningOptionName: string | null;
     numVoters: number;
-    voteBreakdown: any[];
     victoryConditionMatched?: number;
+    votesByAddress: Array<{
+      skySupport: string;
+      ballot: number[];
+      pollId: number;
+      voter: string;
+      chainId: number;
+      blockTimestamp: string;
+      hash: string;
+    }>;
   };
 };
 
@@ -212,41 +236,60 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                   {bpi === 0 && <PollVoteTypeIndicator poll={poll as any} />}
                 </Flex>
 
-                {!hideTally && poll.tally && (
+                {!hideTally && (
                   <Box sx={{ width: bpi > 0 ? '265px' : '100%', mt: [3, 0] }}>
-                    <ErrorBoundary componentName="Poll Results">
-                      <Box
-                        sx={{
-                          p: 2,
-                          bg: 'surface',
-                          borderRadius: 'small',
-                          fontSize: 1
-                        }}
+                    {bpi > 0 && (
+                      <Flex sx={{ justifyContent: 'flex-end' }}>
+                        <PollVoteTypeIndicator poll={poll as any} />
+                      </Flex>
+                    )}
+                    {poll.tally && +poll.tally.totalSkyActiveParticipation > 0 && (
+                      <ExternalLink
+                        href={getSkyPortalPollUrl(poll)}
+                        title="View poll vote breakdown on Sky Portal"
                       >
-                        <Box sx={{ mb: 1, fontWeight: 'bold' }}>Poll Results</Box>
-                        <Box sx={{ color: 'textSecondary' }}>Participants: {poll.tally.numVoters}</Box>
-                        <Box sx={{ color: 'textSecondary' }}>
-                          Total MKR: {poll.tally.totalMkrParticipation}
+                        <Box sx={{ mt: 2 }}>
+                          <ErrorBoundary componentName="Poll Results">
+                            <Box
+                              sx={{
+                                p: 2,
+                                bg: 'surface',
+                                borderRadius: 'small',
+                                fontSize: 1
+                              }}
+                            >
+                              <Box sx={{ mb: 2, fontWeight: 'bold' }}>Vote Breakdown</Box>
+                              {poll.tally.results
+                                .filter(result => +result.skySupport > 0)
+                                .slice(0, 3)
+                                .map((result, index) => (
+                                  <Flex key={result.optionId} sx={{ justifyContent: 'space-between', mb: 1 }}>
+                                    <Box sx={{ color: 'textSecondary' }}>{result.optionName}:</Box>
+                                    <Box sx={{ fontWeight: 'bold' }}>
+                                      {result.firstPct}% ({formatValue(parseEther(result.skySupport))} SKY)
+                                    </Box>
+                                  </Flex>
+                                ))}
+                            </Box>
+                          </ErrorBoundary>
                         </Box>
-                      </Box>
-                    </ErrorBoundary>
+                      </ExternalLink>
+                    )}
+                    {!poll.tally && <SkeletonThemed width={'265px'} height={'30px'} />}
                   </Box>
                 )}
               </Flex>
             </Box>
           </Box>
 
-          {poll.tally &&
-            poll.tally.results &&
-            poll.tally.results.length > 0 &&
-            poll.tally.results[0].mkrSupport && (
-              <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
-                <Divider my={0} />
-                <ErrorBoundary componentName="Poll Winning Option">
-                  <PollWinningOptionBox tally={poll.tally as any} poll={poll as any} />
-                </ErrorBoundary>
-              </Flex>
-            )}
+          {poll.tally && poll.tally.results && poll.tally.results.length > 0 && (
+            <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
+              <Divider my={0} />
+              <ErrorBoundary componentName="Sky Poll Winning Option">
+                <SkyPollWinningOptionBox tally={poll.tally} poll={poll} />
+              </ErrorBoundary>
+            </Flex>
+          )}
         </Flex>
       </ErrorBoundary>
     </Card>
