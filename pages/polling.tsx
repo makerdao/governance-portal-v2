@@ -30,7 +30,9 @@ type PollingPageProps = {
 
 export default function PollingPage({ initialData, error: initialError }: PollingPageProps): JSX.Element {
   const [skyPolls, setSkyPolls] = useState<SkyPoll[]>(initialData?.polls || []);
-  const [tags, setTags] = useState<TagCount[]>(initialData?.tags?.map(tag => ({ ...tag, count: tag.count || 0 })) || []);
+  const [tags, setTags] = useState<TagCount[]>(
+    initialData?.tags?.map(tag => ({ ...tag, count: tag.count || 0 })) || []
+  );
   const [stats, setStats] = useState(initialData?.stats || { active: 0, finished: 0, total: 0, type: {} });
   const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(initialError || null);
@@ -41,15 +43,15 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/sky/polls?pageSize=5&page=${pageNum}`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch polls: ${response.status}`);
       }
-      
+
       const data: SkyPollsResponse = await response.json();
-      
+
       if (append) {
         setSkyPolls(prev => [...prev, ...data.polls]);
       } else {
@@ -57,7 +59,7 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
         setTags(data.tags.map(tag => ({ ...tag, count: tag.count || 0 })));
         setStats(data.stats);
       }
-      
+
       setHasMore(data.paginationInfo.hasNextPage);
     } catch (err) {
       console.error('Error fetching Sky polls:', err);
@@ -87,45 +89,44 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
           <Stack gap={4}>
             <Heading as="h1">Polls</Heading>
 
-            <Alert variant="banner" sx={{ mb: 4 }}>
-              <Text>
-                Active governance has moved to Sky Ecosystem. This page now displays governance polls from
-                both the legacy MakerDAO system and the current Sky governance system.
-              </Text>
+            <Alert variant="notice" sx={{ mb: 4 }}>
+              <Flex
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexDirection: ['column', 'column', 'row'],
+                  my: 2
+                }}
+              >
+                <Text>
+                  Active governance has moved to Sky Ecosystem. This page now displays governance polls from
+                  the current Sky governance system. Legacy polls can be viewed on the legacy Polling page.
+                </Text>
+                <Box sx={{ minWidth: '164px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
+                  <InternalLink href="/legacy-polling" title="View Legacy Polls">
+                    <Button variant="outline">View Legacy Polls</Button>
+                  </InternalLink>
+                </Box>
+              </Flex>
             </Alert>
-
-            <Card variant="compact" sx={{ p: 4 }}>
-              <Heading as="h2" sx={{ mb: 3 }}>
-                Current Sky Governance Polls
-              </Heading>
-              <Text sx={{ mb: 3, color: 'textSecondary' }}>
-                {stats.active > 0 
-                  ? `${stats.active} active polls • ${stats.total} total polls`
-                  : 'No active polls currently'}
-              </Text>
-              <ExternalLink href="https://vote.sky.money/polling" title="Vote on Sky Governance">
-                <Button variant="primary">View All on Sky Portal</Button>
-              </ExternalLink>
-            </Card>
 
             {/* Sky Polls Section */}
             {error ? (
               <Alert variant="error" sx={{ mb: 4 }}>
                 <Text>Error loading Sky polls: {error}</Text>
-                <Button 
-                  variant="outline" 
-                  sx={{ mt: 2 }} 
-                  onClick={() => fetchSkyPolls(1)}
-                >
+                <Button variant="outline" sx={{ mt: 2 }} onClick={() => fetchSkyPolls(1)}>
                   Retry
                 </Button>
               </Alert>
             ) : (
               <Box>
-                <Heading as="h3" sx={{ mb: 3 }}>
-                  Recent Polls from Sky Governance
-                </Heading>
-                
+                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Heading as="h3">Recent Polls from Sky Governance</Heading>
+                  <ExternalLink href="https://vote.sky.money/polling" title="Vote on Sky Governance">
+                    <Button variant="primary">View on Sky Portal</Button>
+                  </ExternalLink>
+                </Flex>
+
                 {loading && skyPolls.length === 0 ? (
                   <Stack gap={4}>
                     {[...Array(4)].map((_, i) => (
@@ -135,20 +136,17 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
                 ) : skyPolls.length > 0 ? (
                   <Box>
                     <Stack gap={4} sx={{ mb: 4 }}>
-                      {skyPolls.map((poll) => (
+                      {skyPolls.map(poll => (
                         <Box key={poll.pollId}>
-                          <SkyPollOverviewCard
-                            poll={poll}
-                            allTags={tags}
-                          />
+                          <SkyPollOverviewCard poll={poll} allTags={tags} />
                         </Box>
                       ))}
                     </Stack>
-                    
+
                     {hasMore && (
                       <Flex sx={{ justifyContent: 'center', mt: 4 }}>
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           onClick={loadMore}
                           disabled={loading}
                           sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
@@ -174,9 +172,6 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
               <Text sx={{ mb: 3, color: 'textSecondary' }}>
                 View historical polls from the MakerDAO governance system (pre-Sky migration).
               </Text>
-              <InternalLink href="/legacy-polling" title="View Legacy Polls">
-                <Button variant="outline">View Legacy Polls</Button>
-              </InternalLink>
             </Card>
           </Stack>
         </Box>
@@ -206,10 +201,10 @@ export const getServerSideProps: GetServerSideProps<PollingPageProps> = async ()
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       // Add timeout for the request
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
 
     if (response.ok) {
