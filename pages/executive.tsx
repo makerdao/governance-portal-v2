@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { GetStaticProps } from 'next';
-import { Heading, Box, Button, Text, Card, Alert, Flex } from 'theme-ui';
+import { Heading, Box, Button, Text, Card, Alert, Flex, Spinner } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -19,6 +19,7 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useEffect, useState } from 'react';
 import { SkyExecutivesResponse } from './api/sky/executives';
+import SkyExecutiveOverviewCard from 'modules/executive/components/SkyExecutiveOverviewCard';
 
 export default function ExecutivePage(): JSX.Element {
   const [skyExecutives, setSkyExecutives] = useState<SkyExecutivesResponse>([]);
@@ -32,7 +33,8 @@ export default function ExecutivePage(): JSX.Element {
       setLoading(true);
       setError(null);
 
-      const pageSize = 5;
+      //TODO: change to a larger number
+      const pageSize = 1;
 
       const response = await fetch(`/api/sky/executives?pageSize=${pageSize}&page=${pageNum}`);
 
@@ -83,25 +85,70 @@ export default function ExecutivePage(): JSX.Element {
             </Alert>
 
             <Card variant="compact" sx={{ p: 4 }}>
-            <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-              <Heading as="h2" sx={{ mb: 3 }}>
-                Current Governance
-              </Heading>
-              <ExternalLink href="https://vote.sky.money/executive" title="Vote on Sky Governance">
+              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                <Heading as="h2" sx={{ mb: 3 }}>
+                  Current Governance
+                </Heading>
+                <ExternalLink href="https://vote.sky.money/executive" title="Vote on Sky Governance">
                   <Button variant="primary">View on Sky Portal</Button>
-              </ExternalLink>
-            </Flex>
-            {skyExecutives.map((executive) => (
-              <div key={executive.key} sx={{ mb: 3, p: 3, border: '1px solid', borderColor: 'border' }}>
-                <Text>{executive.title}</Text>
-                <Text>{executive.proposalBlurb}</Text>
-                <Text>{executive.date}</Text>
-                <Text>{executive.active ? 'Active' : 'Inactive'}</Text>
-                <Text>{executive.proposalLink}</Text>
-                <Text>{executive.spellData.hasBeenCast ? 'Cast' : 'Not Cast'}</Text>
-                <Text>{executive.spellData.hasBeenScheduled ? 'Scheduled' : 'Not Scheduled'}</Text>
-              </div>
-            ))}
+                </ExternalLink>
+              </Flex>
+              
+              {error ? (
+                <Alert variant="error" sx={{ mb: 4 }}>
+                  <Text>Error loading Sky executives: {error}</Text>
+                  <Button variant="outline" sx={{ mt: 2 }} onClick={() => fetchSkyExecutives(1)}>
+                    Retry
+                  </Button>
+                </Alert>
+              ) : (
+                <Box>
+                  {loading && skyExecutives.length === 0 ? (
+                    <Text>Loading executives...</Text>
+                  ) : skyExecutives.length > 0 ? (
+                    <Box>
+                      <Stack gap={4} sx={{ mb: 4 }}>
+                        {skyExecutives.map((executive) => (
+                          <div key={executive.key}>
+                            <SkyExecutiveOverviewCard 
+                              proposal={{
+                                ...executive,
+                                spellData: {
+                                  ...executive.spellData,
+                                  nextCastTime: executive.spellData.nextCastTime ? new Date(executive.spellData.nextCastTime) : undefined,
+                                  datePassed: executive.spellData.datePassed ? new Date(executive.spellData.datePassed) : undefined,
+                                  dateExecuted: executive.spellData.dateExecuted ? new Date(executive.spellData.dateExecuted) : undefined,
+                                  officeHours: executive.spellData.officeHours === 'true'
+                                }
+                              }}
+                              isHat={false}
+                              votedProposals={[]}
+                            />
+                          </div>
+                        ))}
+                      </Stack>
+
+                      {hasMore && (
+                        <Flex sx={{ justifyContent: 'center', mt: 4 }}>
+                          <Button
+                            variant="outline"
+                            onClick={loadMore}
+                            disabled={loading}
+                            sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                          >
+                            {loading && <Spinner size={16} />}
+                            Load More Executives
+                          </Button>
+                        </Flex>
+                      )}
+                    </Box>
+                  ) : (
+                    <Text sx={{ fontStyle: 'italic', color: 'textSecondary' }}>
+                      No executives available from Sky governance.
+                    </Text>
+                  )}
+                </Box>
+              )}
             </Card>
 
             <Card variant="compact" sx={{ p: 4 }}>
@@ -132,6 +179,7 @@ export default function ExecutivePage(): JSX.Element {
   );
 }
 
+//TODO: add static props
 export const getStaticProps: GetStaticProps = async () => {
   return {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds
