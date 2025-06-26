@@ -27,6 +27,16 @@ export default function ExecutivePage(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [hatAddress, setHatAddress] = useState<any>(null);
+  const [skyOnHat, setSkyOnHat] = useState<any>(null);
+
+  const fetchSkyHatInfo = async () => {
+    //TOD: change url to production endpoint
+    const response = await fetch('/api/sky/hat');
+    const data = await response.json();
+    setHatAddress(data.hatAddress);
+    setSkyOnHat(data.skyOnHat);
+  };
 
   const fetchSkyExecutives = async (pageNum = 1) => {
     try {
@@ -65,7 +75,10 @@ export default function ExecutivePage(): JSX.Element {
     setSkyExecutives([]);
     setPage(1);
     fetchSkyExecutives(1);
+    fetchSkyHatInfo();
   }, []);
+  console.log('hatAddress', hatAddress);
+  console.log('skyOnHat', skyOnHat);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -123,7 +136,7 @@ export default function ExecutivePage(): JSX.Element {
                     <Stack gap={4} sx={{ mb: 4 }}>
                       {skyExecutives.map((executive) => (
                         <Box key={executive.key}>
-                          <SkyExecutiveOverviewCard 
+                          <SkyExecutiveOverviewCard
                             proposal={{
                               ...executive,
                               spellData: {
@@ -134,8 +147,8 @@ export default function ExecutivePage(): JSX.Element {
                                 officeHours: executive.spellData.officeHours === 'true'
                               }
                             }}
-                            isHat={false}
-                            votedProposals={[]}
+                            isHat={executive.address === hatAddress}
+                            skyOnHat={skyOnHat}
                           />
                         </Box>
                       ))}
