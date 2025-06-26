@@ -181,7 +181,7 @@ export default function SkyExecutiveOverviewCard({
                 </Box>
               ) : (
                 <StatBox
-                  value={proposal.spellData?.skySupport}
+                  value={proposal.spellData?.skySupport ? Math.floor(parseFloat(proposal.spellData.skySupport)).toLocaleString() : undefined}
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />

@@ -7,19 +7,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { GetStaticProps } from 'next';
-import { Heading, Box, Button, Text, Card, Alert, Flex, Spinner } from 'theme-ui';
+import { Heading, Box, Button, Text, Alert, Flex, Spinner } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useEffect, useState } from 'react';
 import { SkyExecutivesResponse } from './api/sky/executives';
 import SkyExecutiveOverviewCard from 'modules/executive/components/SkyExecutiveOverviewCard';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export default function ExecutivePage(): JSX.Element {
   const [skyExecutives, setSkyExecutives] = useState<SkyExecutivesResponse>([]);
@@ -33,8 +33,7 @@ export default function ExecutivePage(): JSX.Element {
       setLoading(true);
       setError(null);
 
-      //TODO: change to a larger number
-      const pageSize = 1;
+      const pageSize = 5;
 
       const response = await fetch(`/api/sky/executives?pageSize=${pageSize}&page=${pageNum}`);
 
@@ -75,93 +74,94 @@ export default function ExecutivePage(): JSX.Element {
       <SidebarLayout>
         <Box>
           <Stack gap={4}>
-            <Heading as="h1">Executive Proposals</Heading>
-
-            <Alert variant="banner" sx={{ mb: 4 }}>
-              <Text>
-                Active governance has moved to Sky Ecosystem. This page now displays executive proposals from
-                both the legacy MakerDAO system and the current Sky governance system.
-              </Text>
+            <Alert variant="notice" sx={{ mb: 2 }}>
+              <Flex
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexDirection: ['column', 'column', 'row'],
+                  my: 2
+                }}
+              >
+                <Text>
+                  Active governance has moved to Sky Ecosystem. This page now displays executive proposals from
+                  the current Sky governance system. Legacy proposals can be viewed on the legacy Executive page.
+                </Text>
+                <Box sx={{ minWidth: '164px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
+                  <ExternalLink href="https://legacy.vote.makerdao.com/executive" title="View Legacy Executive Proposals" target="_blank">
+                    <Button variant="outline">View Legacy Executives</Button>
+                  </ExternalLink>
+                </Box>
+              </Flex>
             </Alert>
 
-            <Card variant="compact" sx={{ p: 4 }}>
-              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <Heading as="h2" sx={{ mb: 3 }}>
-                  Current Governance
-                </Heading>
-                <ExternalLink href="https://vote.sky.money/executive" title="Vote on Sky Governance">
-                  <Button variant="primary">View on Sky Portal</Button>
-                </ExternalLink>
-              </Flex>
-              
-              {error ? (
-                <Alert variant="error" sx={{ mb: 4 }}>
-                  <Text>Error loading Sky executives: {error}</Text>
-                  <Button variant="outline" sx={{ mt: 2 }} onClick={() => fetchSkyExecutives(1)}>
-                    Retry
-                  </Button>
-                </Alert>
-              ) : (
-                <Box>
-                  {loading && skyExecutives.length === 0 ? (
-                    <Text>Loading executives...</Text>
-                  ) : skyExecutives.length > 0 ? (
-                    <Box>
-                      <Stack gap={4} sx={{ mb: 4 }}>
-                        {skyExecutives.map((executive) => (
-                          <div key={executive.key}>
-                            <SkyExecutiveOverviewCard 
-                              proposal={{
-                                ...executive,
-                                spellData: {
-                                  ...executive.spellData,
-                                  nextCastTime: executive.spellData.nextCastTime ? new Date(executive.spellData.nextCastTime) : undefined,
-                                  datePassed: executive.spellData.datePassed ? new Date(executive.spellData.datePassed) : undefined,
-                                  dateExecuted: executive.spellData.dateExecuted ? new Date(executive.spellData.dateExecuted) : undefined,
-                                  officeHours: executive.spellData.officeHours === 'true'
-                                }
-                              }}
-                              isHat={false}
-                              votedProposals={[]}
-                            />
-                          </div>
-                        ))}
-                      </Stack>
+            {/* Sky Executives Section */}
+            {error ? (
+              <Alert variant="error" sx={{ mb: 4 }}>
+                <Text>Error loading Sky executives: {error}</Text>
+                <Button variant="outline" sx={{ mt: 2 }} onClick={() => fetchSkyExecutives(1)}>
+                  Retry
+                </Button>
+              </Alert>
+            ) : (
+              <Box>
+                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Heading as="h3">Executive Proposals from Sky Governance</Heading>
+                  <ExternalLink href="https://vote.sky.money/executive" title="Vote on Sky Governance">
+                    <Button variant="primary">View on Sky Portal</Button>
+                  </ExternalLink>
+                </Flex>
 
-                      {hasMore && (
-                        <Flex sx={{ justifyContent: 'center', mt: 4 }}>
-                          <Button
-                            variant="outline"
-                            onClick={loadMore}
-                            disabled={loading}
-                            sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
-                          >
-                            {loading && <Spinner size={16} />}
-                            Load More Executives
-                          </Button>
-                        </Flex>
-                      )}
-                    </Box>
-                  ) : (
-                    <Text sx={{ fontStyle: 'italic', color: 'textSecondary' }}>
-                      No executives available from Sky governance.
-                    </Text>
-                  )}
-                </Box>
-              )}
-            </Card>
+                {loading && skyExecutives.length === 0 ? (
+                  <Stack gap={4}>
+                    {[...Array(4)].map((_, i) => (
+                      <SkeletonThemed key={i} height="300px" />
+                    ))}
+                  </Stack>
+                ) : skyExecutives.length > 0 ? (
+                  <Box>
+                    <Stack gap={4} sx={{ mb: 4 }}>
+                      {skyExecutives.map((executive) => (
+                        <Box key={executive.key}>
+                          <SkyExecutiveOverviewCard 
+                            proposal={{
+                              ...executive,
+                              spellData: {
+                                ...executive.spellData,
+                                nextCastTime: executive.spellData.nextCastTime ? new Date(executive.spellData.nextCastTime) : undefined,
+                                datePassed: executive.spellData.datePassed ? new Date(executive.spellData.datePassed) : undefined,
+                                dateExecuted: executive.spellData.dateExecuted ? new Date(executive.spellData.dateExecuted) : undefined,
+                                officeHours: executive.spellData.officeHours === 'true'
+                              }
+                            }}
+                            isHat={false}
+                            votedProposals={[]}
+                          />
+                        </Box>
+                      ))}
+                    </Stack>
 
-            <Card variant="compact" sx={{ p: 4 }}>
-              <Heading as="h2" sx={{ mb: 3 }}>
-                Legacy MakerDAO Proposals
-              </Heading>
-              <Text sx={{ mb: 3, color: 'textSecondary' }}>
-                View historical executive proposals from the MakerDAO governance system (pre-Sky migration).
-              </Text>
-              <InternalLink href="/legacy-executive" title="View Legacy Executive Proposals">
-                <Button variant="outline">View Legacy Proposals</Button>
-              </InternalLink>
-            </Card>
+                    {hasMore && (
+                      <Flex sx={{ justifyContent: 'center', mt: 4 }}>
+                        <Button
+                          variant="outline"
+                          onClick={loadMore}
+                          disabled={loading}
+                          sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                        >
+                          {loading && <Spinner size={16} />}
+                          Load More Executives
+                        </Button>
+                      </Flex>
+                    )}
+                  </Box>
+                ) : (
+                  <Text sx={{ fontStyle: 'italic', color: 'textSecondary' }}>
+                    No executives available from Sky governance.
+                  </Text>
+                )}
+              </Box>
+            )}
           </Stack>
         </Box>
 
