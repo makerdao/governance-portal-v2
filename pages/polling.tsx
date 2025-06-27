@@ -97,8 +97,16 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
                 }}
               >
                 <Text>
-                  Active governance has moved to Sky Ecosystem. This page now displays governance polls from
-                  the current Sky governance system. Legacy polls can be viewed on the legacy Polling page.
+                  The community has voted for governance to be migrated to a fully SKY-native system. This
+                  page now displays governance polls from the Sky governance system. Legacy polls can be
+                  viewed on the Legacy Polls page linked on the right.{' '}
+                  <ExternalLink
+                    href="https://upgrademkrtosky.sky.money/"
+                    title="Learn more about governance migration"
+                  >
+                    <span style={{ color: 'accentBlue' }}>Click here</span>
+                  </ExternalLink>{' '}
+                  to learn more about the governance migration.
                 </Text>
                 <Box sx={{ minWidth: '164px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
                   <InternalLink href="/legacy-polling" title="View Legacy Polls">
