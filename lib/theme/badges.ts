@@ -65,5 +65,15 @@ export const badges = {
     borderColor: '#C1C6FE',
     color: '#3B29C5',
     bg: '#F8F9FF'
+  },
+  sky: {
+    variant: 'text.caps',
+    fontSize: 0,
+    px: 2,
+    py: 1,
+    borderRadius: 'small',
+    border: 'none',
+    color: '#504DFF',
+    bg: 'background'
   }
 };

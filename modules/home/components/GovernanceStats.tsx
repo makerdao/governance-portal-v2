@@ -95,5 +95,5 @@ export function GovernanceStats({ stats, mkrInChief }: Props): JSX.Element {
     }
   ];
 
-  return <Stats title="MKR in legacy governance system" infoUnits={infoUnits} viewMoreUrl="" />;
+  return <Stats title="MKR in Legacy Governance" infoUnits={infoUnits} viewMoreUrl="" />;
 }

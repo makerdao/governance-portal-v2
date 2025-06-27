@@ -26,7 +26,6 @@ import useSWR, { useSWRConfig } from 'swr';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { SkyPollsOverviewLanding } from 'modules/home/components/SkyPollsOverviewLanding';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
@@ -158,12 +157,11 @@ const LandingPage = ({
                 zIndex: -1,
                 ml: '-100vw',
                 position: 'absolute',
-                top: 0,
+                top: 80,
                 left: 0,
                 height: '1720px'
               }}
             />
-            <InformationParticipateMakerGovernance />
             <ResourcesLanding />
           </Box>
 
