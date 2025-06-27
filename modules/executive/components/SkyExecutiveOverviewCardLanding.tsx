@@ -12,6 +12,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { getSkyStatusText } from 'modules/executive/helpers/getStatusText';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { SkyProposal } from 'modules/executive/types';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
 import { CardTitle } from 'modules/app/components/Card/CardTitle';
@@ -100,7 +101,10 @@ export default function SkyExecutiveOverviewCardLanding({
                 gap: [0, 3]
               }}
             >
-              <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
+              <ExternalLink 
+                href={`https://vote.sky.money/executive/${proposal.key}`} 
+                title="View executive details on Sky portal"
+              >
                 <Button
                   variant="outline"
                   sx={{
@@ -110,7 +114,7 @@ export default function SkyExecutiveOverviewCardLanding({
                 >
                   View Details
                 </Button>
-              </InternalLink>
+              </ExternalLink>
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
               {proposal.spellData?.skySupport === undefined ? (
