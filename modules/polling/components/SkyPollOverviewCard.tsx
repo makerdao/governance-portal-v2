@@ -161,18 +161,7 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                           }`}
                           styles={{ mb: 0 }}
                         />
-                        <Badge
-                          variant="outline"
-                          sx={{
-                            fontSize: 0,
-                            px: 2,
-                            py: 1,
-                            bg: 'background',
-                            color: 'textSecondary',
-                            border: '1px solid',
-                            borderColor: 'muted'
-                          }}
-                        >
+                        <Badge variant="sky">
                           Sky Governance
                         </Badge>
                       </Flex>
