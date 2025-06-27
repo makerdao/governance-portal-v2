@@ -13,7 +13,6 @@ import ErrorPage from 'modules/app/components/ErrorPage';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from 'modules/home/components/ViewMore';
-import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import SkyExecutiveOverviewCardLanding from 'modules/executive/components/SkyExecutiveOverviewCardLanding';
 import { PlayButton } from 'modules/home/components/PlayButton';
@@ -150,7 +149,6 @@ const LandingPage = ({
             <Box sx={{ mt: 3 }}>
               <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
             </Box>
-            <PollCategoriesLanding pollCategories={pollTags} />
           </section>
 
           <Box as={'section'} sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
