@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { SkyExecutivesResponse } from './api/sky/executives';
 import SkyExecutiveOverviewCard from 'modules/executive/components/SkyExecutiveOverviewCard';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 export default function ExecutivePage(): JSX.Element {
   const [skyExecutives, setSkyExecutives] = useState<SkyExecutivesResponse>([]);
@@ -97,13 +98,21 @@ export default function ExecutivePage(): JSX.Element {
                 }}
               >
                 <Text>
-                  Active governance has moved to Sky Ecosystem. This page now displays executive proposals from
-                  the current Sky governance system. Legacy proposals can be viewed on the legacy Executive page.
+                  The community has voted for governance to be migrated to a fully SKY-native system. This
+                  page now displays executive proposals from the Sky governance system. Legacy executive
+                  proposals can be viewed on the Legacy Executives page linked on the right.{' '}
+                  <ExternalLink
+                    href="https://upgrademkrtosky.sky.money/"
+                    title="Learn more about governance migration"
+                  >
+                    <span style={{ color: 'accentBlue' }}>Click here</span>
+                  </ExternalLink>{' '}
+                  to learn more about the governance migration.
                 </Text>
-                <Box sx={{ minWidth: '164px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
-                  <ExternalLink href="https://legacy.vote.makerdao.com/executive" title="View Legacy Executive Proposals" target="_blank">
+                <Box sx={{ minWidth: '150px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
+                  <InternalLink href="/legacy-executive" title="View Legacy Executive Proposals">
                     <Button variant="outline">View Legacy Executives</Button>
-                  </ExternalLink>
+                  </InternalLink>
                 </Box>
               </Flex>
             </Alert>
@@ -134,16 +143,22 @@ export default function ExecutivePage(): JSX.Element {
                 ) : skyExecutives.length > 0 ? (
                   <Box>
                     <Stack gap={4} sx={{ mb: 4 }}>
-                      {skyExecutives.map((executive) => (
+                      {skyExecutives.map(executive => (
                         <Box key={executive.key}>
                           <SkyExecutiveOverviewCard
                             proposal={{
                               ...executive,
                               spellData: {
                                 ...executive.spellData,
-                                nextCastTime: executive.spellData.nextCastTime ? new Date(executive.spellData.nextCastTime) : undefined,
-                                datePassed: executive.spellData.datePassed ? new Date(executive.spellData.datePassed) : undefined,
-                                dateExecuted: executive.spellData.dateExecuted ? new Date(executive.spellData.dateExecuted) : undefined,
+                                nextCastTime: executive.spellData.nextCastTime
+                                  ? new Date(executive.spellData.nextCastTime)
+                                  : undefined,
+                                datePassed: executive.spellData.datePassed
+                                  ? new Date(executive.spellData.datePassed)
+                                  : undefined,
+                                dateExecuted: executive.spellData.dateExecuted
+                                  ? new Date(executive.spellData.dateExecuted)
+                                  : undefined,
                                 officeHours: executive.spellData.officeHours === 'true'
                               }
                             }}
