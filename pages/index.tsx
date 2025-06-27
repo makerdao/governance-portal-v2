@@ -15,7 +15,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
-import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
+import SkyExecutiveOverviewCardLanding from 'modules/executive/components/SkyExecutiveOverviewCardLanding';
 import { PlayButton } from 'modules/home/components/PlayButton';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import VideoModal from 'modules/app/components/VideoModal';
@@ -30,13 +30,21 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelegates';
 
-const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief }: LandingPageData) => {
+const LandingPage = ({
+  proposals,
+  skyExecutive,
+  skyHatInfo,
+  polls,
+  pollStats,
+  pollTags,
+  stats,
+  mkrInChief
+}: LandingPageData) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
@@ -47,14 +55,6 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
 
   // account
   const { account, votingAccount } = useAccount();
-
-  // executives
-  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-
-  // revalidate votedProposals if connected address changes
-  useEffect(() => {
-    mutateVotedProposals();
-  }, [votingAccount]);
 
   return (
     <div>
@@ -103,26 +103,36 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
               </Flex>
               <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Heading>Latest Executive</Heading>
+                  <Heading>Latest Sky Executive</Heading>
                   <InternalLink href={'/executive'} title="Latest Executive">
                     <ViewMore />
                   </InternalLink>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <ErrorBoundary componentName="Latest Executive">
-                    {proposals ? (
-                      proposals.length > 0 ? (
-                        <ExecutiveOverviewCard
-                          votedProposals={votedProposals}
-                          account={account}
-                          isHat={false}
-                          proposal={proposals[0]}
-                        />
-                      ) : (
-                        <Text>No proposals found</Text>
-                      )
+                    {skyExecutive ? (
+                      <SkyExecutiveOverviewCardLanding
+                        proposal={{
+                          ...skyExecutive,
+                          spellData: {
+                            ...skyExecutive.spellData,
+                            nextCastTime: skyExecutive.spellData.nextCastTime
+                              ? new Date(skyExecutive.spellData.nextCastTime)
+                              : undefined,
+                            datePassed: skyExecutive.spellData.datePassed
+                              ? new Date(skyExecutive.spellData.datePassed)
+                              : undefined,
+                            dateExecuted: skyExecutive.spellData.dateExecuted
+                              ? new Date(skyExecutive.spellData.dateExecuted)
+                              : undefined,
+                            officeHours: skyExecutive.spellData.officeHours === 'true'
+                          }
+                        }}
+                        isHat={skyExecutive.address === skyHatInfo?.hatAddress}
+                        skyOnHat={skyHatInfo?.skyOnHat ? BigInt(skyHatInfo.skyOnHat) : undefined}
+                      />
                     ) : (
-                      <Skeleton />
+                      <Skeleton height={300} />
                     )}
                   </ErrorBoundary>
                 </Flex>
@@ -174,6 +184,8 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
 
 export default function Index({
   proposals: prefetchedProposals,
+  skyExecutive: prefetchedSkyExecutive,
+  skyHatInfo: prefetchedSkyHatInfo,
   polls: prefetchedPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
@@ -184,6 +196,8 @@ export default function Index({
   const fallbackData = isDefaultNetwork(network)
     ? {
         proposals: prefetchedProposals,
+        skyExecutive: prefetchedSkyExecutive,
+        skyHatInfo: prefetchedSkyHatInfo,
         polls: prefetchedPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
@@ -216,6 +230,8 @@ export default function Index({
 
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
+    skyExecutive: isDefaultNetwork(network) ? prefetchedSkyExecutive : data?.skyExecutive,
+    skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     pollStats: isDefaultNetwork(network)
       ? prefetchedPollStats
@@ -229,14 +245,15 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, pollStats, pollTags, mkrInChief } = await fetchLandingPageData(
-    SupportedNetworks.MAINNET
-  );
+  const { proposals, skyExecutive, skyHatInfo, polls, pollStats, pollTags, mkrInChief } =
+    await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 5 * 60, // allow revalidation every 30 minutes
+    revalidate: 5 * 60, // allow revalidation every 5 minutes
     props: {
       proposals,
+      skyExecutive: skyExecutive || null,
+      skyHatInfo: skyHatInfo || null,
       polls,
       pollStats,
       pollTags,
