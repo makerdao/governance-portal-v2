@@ -18,12 +18,14 @@ import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { TagCount } from 'modules/app/types/tag';
 import { DelegatesAPIStats } from 'modules/delegates/types';
+import type { SkyPoll } from 'modules/polling/components/SkyPollOverviewCard';
+import type { SkyPollsResponse } from 'pages/api/sky/polls';
 
 export type LandingPageData = {
-  proposals: Proposal[];
   skyExecutive?: SkyProposal;
   skyHatInfo?: { hatAddress: string; skyOnHat: string };
   polls: PollListItem[];
+  skyPolls?: SkyPoll[];
   pollStats: PollsResponse['stats'];
   pollTags: TagCount[];
   stats?: DelegatesAPIStats;
@@ -35,15 +37,15 @@ async function fetchSkyExecutivesDirectly() {
     const response = await fetch('https://vote.sky.money/api/executive?start=0&limit=1', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
-    
+
     if (!response.ok) {
       console.error('Failed to fetch Sky executives:', response.status);
       return null;
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Error fetching Sky executives:', error);
@@ -56,15 +58,15 @@ async function fetchSkyHatDirectly() {
     const response = await fetch('https://vote.sky.money/api/chief/hat', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
-    
+
     if (!response.ok) {
       console.error('Failed to fetch Sky hat:', response.status);
       return null;
     }
-    
+
     const data = await response.json();
     return {
       hatAddress: data.hatAddress,
@@ -72,6 +74,31 @@ async function fetchSkyHatDirectly() {
     };
   } catch (error) {
     console.error('Error fetching Sky hat:', error);
+    return null;
+  }
+}
+
+async function fetchSkyPollsDirectly() {
+  try {
+    const response = await fetch(
+      'https://vote.sky.money/api/polling/all-polls-with-tally?pageSize=2&page=1',
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error('Failed to fetch Sky polls:', response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching Sky polls:', error);
     return null;
   }
 }
@@ -109,6 +136,10 @@ export async function fetchLandingPageData(
         fetchJson(`/api/sky/hat`).catch(err => {
           console.error('Failed to fetch Sky hat info:', err);
           return null;
+        }),
+        fetchJson(`/api/sky/polls?pageSize=2&page=1`).catch(err => {
+          console.error('Failed to fetch Sky polls:', err);
+          return null;
         })
       ])
     : await Promise.allSettled([
@@ -116,21 +147,28 @@ export async function fetchLandingPageData(
         getPollsPaginated({ ...pollQueryVariables, pageSize: 4 }),
         fetchMkrInChief(network),
         fetchSkyExecutivesDirectly(),
-        fetchSkyHatDirectly()
+        fetchSkyHatDirectly(),
+        fetchSkyPollsDirectly()
       ]);
 
   // return null for any data we couldn't fetch
-  const [proposals, pollsData, mkrInChief, skyExecutives, skyHatInfo] = responses.map(promise =>
+  const [proposals, pollsData, mkrInChief, skyExecutives, skyHatInfo, skyPollsData] = responses.map(promise =>
     promise.status === 'fulfilled' ? promise.value : null
   );
 
-  const skyExecutive = skyExecutives && Array.isArray(skyExecutives) && skyExecutives.length > 0 ? skyExecutives[0] : undefined;
+  const skyExecutive =
+    skyExecutives && Array.isArray(skyExecutives) && skyExecutives.length > 0 ? skyExecutives[0] : undefined;
+  const skyPolls =
+    skyPollsData && (skyPollsData as SkyPollsResponse)?.polls
+      ? (skyPollsData as SkyPollsResponse).polls
+      : undefined;
 
   return {
     proposals: proposals ? (proposals as Proposal[]).filter(i => i.active) : [],
     skyExecutive,
     skyHatInfo: skyHatInfo as { hatAddress: string; skyOnHat: string } | undefined,
     polls: pollsData ? (pollsData as PollsPaginatedResponse).polls : [],
+    skyPolls: skyPolls as SkyPoll[] | undefined,
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
     mkrInChief: mkrInChief ? formatValue(mkrInChief as bigint) : undefined

@@ -24,7 +24,7 @@ import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import useSWR, { useSWRConfig } from 'swr';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
-import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
+import { SkyPollsOverviewLanding } from 'modules/home/components/SkyPollsOverviewLanding';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -35,11 +35,10 @@ import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelegates';
 
 const LandingPage = ({
-  proposals,
   skyExecutive,
   skyHatInfo,
   polls,
-  pollStats,
+  skyPolls,
   pollTags,
   stats,
   mkrInChief
@@ -139,16 +138,16 @@ const LandingPage = ({
             </Flex>
           </section>
 
-          <section>
-            <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats pollStats={pollStats} stats={stats} mkrInChief={mkrInChief} />
-            </ErrorBoundary>
-          </section>
-
           <section id="vote">
             <Box sx={{ mt: 3 }}>
-              <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
+              <SkyPollsOverviewLanding skyPolls={skyPolls} allTags={pollTags} />
             </Box>
+          </section>
+
+          <section>
+            <ErrorBoundary componentName="Governance Stats">
+              <GovernanceStats stats={stats} mkrInChief={mkrInChief} />
+            </ErrorBoundary>
           </section>
 
           <Box as={'section'} sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
@@ -181,10 +180,10 @@ const LandingPage = ({
 };
 
 export default function Index({
-  proposals: prefetchedProposals,
   skyExecutive: prefetchedSkyExecutive,
   skyHatInfo: prefetchedSkyHatInfo,
   polls: prefetchedPolls,
+  skyPolls: prefetchedSkyPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
   mkrInChief: prefetchedMkrInChief
@@ -193,10 +192,10 @@ export default function Index({
   const [delegatesData] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {
-        proposals: prefetchedProposals,
         skyExecutive: prefetchedSkyExecutive,
         skyHatInfo: prefetchedSkyHatInfo,
         polls: prefetchedPolls,
+        skyPolls: prefetchedSkyPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
         mkrInChief: prefetchedMkrInChief
@@ -227,10 +226,10 @@ export default function Index({
   }
 
   const props = {
-    proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     skyExecutive: isDefaultNetwork(network) ? prefetchedSkyExecutive : data?.skyExecutive,
     skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    skyPolls: isDefaultNetwork(network) ? prefetchedSkyPolls : data?.skyPolls,
     pollStats: isDefaultNetwork(network)
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
@@ -243,16 +242,16 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, skyExecutive, skyHatInfo, polls, pollStats, pollTags, mkrInChief } =
+  const { skyExecutive, skyHatInfo, polls, skyPolls, pollStats, pollTags, mkrInChief } =
     await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 5 * 60, // allow revalidation every 5 minutes
     props: {
-      proposals,
       skyExecutive: skyExecutive || null,
       skyHatInfo: skyHatInfo || null,
       polls,
+      skyPolls: skyPolls || null,
       pollStats,
       pollTags,
       mkrInChief
