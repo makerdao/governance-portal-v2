@@ -6,14 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
 import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
 import { SkyProposal } from 'modules/executive/types';
-import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pollsResponse';
 import { fetchJson } from 'lib/fetchJson';
-import { PollOrderByEnum } from 'modules/polling/polling.constants';
 import { DelegatesAPIStats } from 'modules/delegates/types';
 import type { SkyPoll } from 'modules/polling/components/SkyPollOverviewCard';
 import type { SkyPollsResponse } from 'pages/api/sky/polls';
@@ -22,7 +19,6 @@ export type LandingPageData = {
   skyExecutive?: SkyProposal;
   skyHatInfo?: { hatAddress: string; skyOnHat: string };
   skyPolls?: SkyPoll[];
-  pollStats: PollsResponse['stats'];
   stats?: DelegatesAPIStats;
   mkrInChief?: string;
 };
@@ -102,27 +98,8 @@ export async function fetchLandingPageData(
   network: SupportedNetworks,
   useApi = false
 ): Promise<Partial<LandingPageData>> {
-  const EXEC_FETCH_SIZE = 5;
-  const EXEC_SORT_BY = 'active';
-
-  const pollQueryVariables = {
-    network,
-    page: 1,
-    title: null,
-    orderBy: PollOrderByEnum.nearestEnd,
-    status: null,
-    tags: null,
-    type: null,
-    startDate: null,
-    endDate: null
-  };
-
   const responses = useApi
     ? await Promise.allSettled([
-        fetchJson(
-          `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
-        ),
-        fetchJson(`/api/polling/v2/all-polls?network=${network}&pageSize=4`),
         fetchMkrInChief(network),
         fetchJson(`/api/sky/executives?pageSize=1&page=1`).catch(err => {
           console.error('Failed to fetch Sky executives:', err);
@@ -138,7 +115,6 @@ export async function fetchLandingPageData(
         })
       ])
     : await Promise.allSettled([
-        getPollsPaginated({ ...pollQueryVariables, pageSize: 4 }),
         fetchMkrInChief(network),
         fetchSkyExecutivesDirectly(),
         fetchSkyHatDirectly(),
@@ -146,7 +122,7 @@ export async function fetchLandingPageData(
       ]);
 
   // return null for any data we couldn't fetch
-  const [pollsData, mkrInChief, skyExecutives, skyHatInfo, skyPollsData] = responses.map(promise =>
+  const [mkrInChief, skyExecutives, skyHatInfo, skyPollsData] = responses.map(promise =>
     promise.status === 'fulfilled' ? promise.value : null
   );
 
@@ -161,7 +137,6 @@ export async function fetchLandingPageData(
     skyExecutive,
     skyHatInfo: skyHatInfo as { hatAddress: string; skyOnHat: string } | undefined,
     skyPolls: skyPolls as SkyPoll[] | undefined,
-    pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     mkrInChief: mkrInChief ? formatValue(mkrInChief as bigint) : undefined
   };
 }

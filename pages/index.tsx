@@ -191,7 +191,6 @@ export default function Index({
   skyExecutive: prefetchedSkyExecutive,
   skyHatInfo: prefetchedSkyHatInfo,
   skyPolls: prefetchedSkyPolls,
-  pollStats: prefetchedPollStats,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
@@ -201,7 +200,6 @@ export default function Index({
         skyExecutive: prefetchedSkyExecutive,
         skyHatInfo: prefetchedSkyHatInfo,
         skyPolls: prefetchedSkyPolls,
-        pollStats: prefetchedPollStats,
         mkrInChief: prefetchedMkrInChief
       }
     : null;
@@ -233,18 +231,15 @@ export default function Index({
     skyExecutive: isDefaultNetwork(network) ? prefetchedSkyExecutive : data?.skyExecutive,
     skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
     skyPolls: isDefaultNetwork(network) ? prefetchedSkyPolls : data?.skyPolls,
-    pollStats: isDefaultNetwork(network)
-      ? prefetchedPollStats
-      : data?.pollStats || { active: 0, finished: 0, total: 0 },
-    stats: delegatesData.data?.stats,
-    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
+    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined,
+    stats: delegatesData.data?.stats
   };
 
   return <LandingPage {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { skyExecutive, skyHatInfo, skyPolls, pollStats, mkrInChief } = await fetchLandingPageData(
+  const { skyExecutive, skyHatInfo, skyPolls, mkrInChief } = await fetchLandingPageData(
     SupportedNetworks.MAINNET
   );
 
@@ -254,7 +249,6 @@ export const getStaticProps: GetStaticProps = async () => {
       skyExecutive: skyExecutive || null,
       skyHatInfo: skyHatInfo || null,
       skyPolls: skyPolls || null,
-      pollStats,
       mkrInChief
     }
   };
