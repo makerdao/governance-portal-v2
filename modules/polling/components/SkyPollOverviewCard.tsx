@@ -6,7 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 */
 
-import React from 'react';
 import { Card, Flex, Box, Button, ThemeUIStyleObject, Badge, Divider } from 'theme-ui';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
@@ -21,8 +20,13 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { PollVoteTypeIndicator } from './PollOverviewCard/PollVoteTypeIndicator';
 import { TagCount } from 'modules/app/types/tag';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { formatValue } from 'lib/string';
-import { parseEther } from 'viem';
+import { PluralityVoteSummary } from './vote-summary/PluralityVoteSummary';
+import { ListVoteSummary } from './vote-summary/ListVoteSummary';
+import {
+  isResultDisplayApprovalBreakdown,
+  isResultDisplayInstantRunoffBreakdown,
+  isResultDisplaySingleVoteBreakdown
+} from 'modules/polling/helpers/utils';
 
 // Sky poll types based on API response structure
 export type SkyPoll = {
@@ -161,9 +165,7 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                           }`}
                           styles={{ mb: 0 }}
                         />
-                        <Badge variant="sky">
-                          Sky Governance
-                        </Badge>
+                        <Badge variant="sky">Sky Governance</Badge>
                       </Flex>
                       <ExternalLink href={getSkyPortalPollUrl(poll)} title="View poll details on Sky Portal">
                         <CardTitle title={poll.title} dataTestId="sky-poll-overview-card-poll-title" />
@@ -234,37 +236,43 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                     )}
                     {poll.tally && +poll.tally.totalSkyActiveParticipation > 0 && (
                       <ExternalLink
-                        href={getSkyPortalPollUrl(poll)}
+                        href={`${getSkyPortalPollUrl(poll)}#vote-breakdown`}
                         title="View poll vote breakdown on Sky Portal"
                       >
                         <Box sx={{ mt: 2 }}>
                           <ErrorBoundary componentName="Poll Results">
-                            <Box
-                              sx={{
-                                p: 2,
-                                bg: 'surface',
-                                borderRadius: 'small',
-                                fontSize: 1
-                              }}
-                            >
-                              <Box sx={{ mb: 2, fontWeight: 'bold' }}>Vote Breakdown</Box>
-                              {poll.tally.results
-                                .filter(result => +result.skySupport > 0)
-                                .slice(0, 3)
-                                .map((result, index) => (
-                                  <Flex key={result.optionId} sx={{ justifyContent: 'space-between', mb: 1 }}>
-                                    <Box sx={{ color: 'textSecondary' }}>{result.optionName}:</Box>
-                                    <Box sx={{ fontWeight: 'bold' }}>
-                                      {result.firstPct}% ({formatValue(parseEther(result.skySupport))} SKY)
-                                    </Box>
-                                  </Flex>
-                                ))}
-                            </Box>
+                            {isResultDisplaySingleVoteBreakdown(poll.parameters as any) ? (
+                              <PluralityVoteSummary tally={poll.tally as any} showTitles={false} />
+                            ) : !isResultDisplayApprovalBreakdown(poll.parameters as any) ? (
+                              <ListVoteSummary
+                                choices={poll.tally.results.map(i => i.optionId)}
+                                poll={poll as any}
+                                limit={3}
+                                showOrdinal={isResultDisplayInstantRunoffBreakdown(poll.parameters as any)}
+                              />
+                            ) : null}
                           </ErrorBoundary>
                         </Box>
                       </ExternalLink>
                     )}
                     {!poll.tally && <SkeletonThemed width={'265px'} height={'30px'} />}
+                    {poll.tally && +poll.tally.totalSkyActiveParticipation === 0 && (
+                      <Flex sx={{ justifyContent: ['center', 'flex-end'] }}>
+                        <Badge
+                          variant="warning"
+                          sx={{
+                            color: 'warning',
+                            borderColor: 'warning',
+                            textTransform: 'uppercase',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            m: 1
+                          }}
+                        >
+                          No votes yet
+                        </Badge>
+                      </Flex>
+                    )}
                   </Box>
                 )}
               </Flex>
