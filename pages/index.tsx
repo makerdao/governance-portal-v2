@@ -31,9 +31,8 @@ import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
-import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelegates';
 
-const LandingPage = ({ skyExecutive, skyHatInfo, skyPolls, stats, mkrInChief }: LandingPageData) => {
+const LandingPage = ({ skyExecutive, skyHatInfo, skyPolls, mkrInChief }: LandingPageData) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
@@ -155,7 +154,7 @@ const LandingPage = ({ skyExecutive, skyHatInfo, skyPolls, stats, mkrInChief }: 
 
           <section>
             <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats stats={stats} mkrInChief={mkrInChief} />
+              <GovernanceStats mkrInChief={mkrInChief} />
             </ErrorBoundary>
           </section>
 
@@ -194,7 +193,6 @@ export default function Index({
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
-  const [delegatesData] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {
         skyExecutive: prefetchedSkyExecutive,
@@ -232,7 +230,6 @@ export default function Index({
     skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
     skyPolls: isDefaultNetwork(network) ? prefetchedSkyPolls : data?.skyPolls,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined,
-    stats: delegatesData.data?.stats
   };
 
   return <LandingPage {...props} />;

@@ -11,7 +11,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
 import { SkyProposal } from 'modules/executive/types';
 import { fetchJson } from 'lib/fetchJson';
-import { DelegatesAPIStats } from 'modules/delegates/types';
 import type { SkyPoll } from 'modules/polling/components/SkyPollOverviewCard';
 import type { SkyPollsResponse } from 'pages/api/sky/polls';
 
@@ -19,7 +18,6 @@ export type LandingPageData = {
   skyExecutive?: SkyProposal;
   skyHatInfo?: { hatAddress: string; skyOnHat: string };
   skyPolls?: SkyPoll[];
-  stats?: DelegatesAPIStats;
   mkrInChief?: string;
 };
 

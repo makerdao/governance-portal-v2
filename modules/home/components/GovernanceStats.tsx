@@ -9,7 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 import { Flex, Grid, Box, Text, Link as ExternalLink, Heading } from 'theme-ui';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { DelegatesAPIStats } from 'modules/delegates/types';
+import { useEffect, useState } from 'react';
+import { fetchDelegationMetrics } from 'modules/delegates/api/fetchDelegationMetrics';
+import { useNetwork } from 'modules/app/hooks/useNetwork';
 
 type StatsProps = {
   title: string;
@@ -75,16 +77,36 @@ const Stats = ({ title, infoUnits, viewMoreUrl }: StatsProps): JSX.Element => {
 };
 
 type Props = {
-  stats?: DelegatesAPIStats;
   mkrInChief?: string;
 };
 
-export function GovernanceStats({ stats, mkrInChief }: Props): JSX.Element {
+export function GovernanceStats({ mkrInChief }: Props): JSX.Element {
+  const network = useNetwork();
+  const [totalMKRDelegated, setTotalMKRDelegated] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadDelegationMetrics() {
+      try {
+        const metrics = await fetchDelegationMetrics(network);
+        setTotalMKRDelegated(metrics.totalMkrDelegated);
+      } catch (error) {
+        console.error('Failed to fetch delegation metrics:', error);
+        setTotalMKRDelegated('0');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (network) {
+      loadDelegationMetrics();
+    }
+  }, [network]);
   const infoUnits = [
     {
       title: 'MKR Delegated',
-      value: stats ? (
-        `${Number(stats.totalMKRDelegated).toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
+      value: !loading && totalMKRDelegated ? (
+        `${Number(totalMKRDelegated).toLocaleString(undefined, { maximumFractionDigits: 0 })} MKR`
       ) : (
         <Skeleton />
       )
