@@ -7,16 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { getPollsPaginated } from 'modules/polling/api/fetchPolls';
-import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatValue } from 'lib/string';
-import { Proposal, SkyProposal } from 'modules/executive/types';
-import { PollListItem } from 'modules/polling/types';
+import { SkyProposal } from 'modules/executive/types';
 import { PollsPaginatedResponse, PollsResponse } from 'modules/polling/types/pollsResponse';
 import { fetchJson } from 'lib/fetchJson';
 import { PollOrderByEnum } from 'modules/polling/polling.constants';
-import { TagCount } from 'modules/app/types/tag';
 import { DelegatesAPIStats } from 'modules/delegates/types';
 import type { SkyPoll } from 'modules/polling/components/SkyPollOverviewCard';
 import type { SkyPollsResponse } from 'pages/api/sky/polls';
@@ -26,7 +23,6 @@ export type LandingPageData = {
   skyHatInfo?: { hatAddress: string; skyOnHat: string };
   skyPolls?: SkyPoll[];
   pollStats: PollsResponse['stats'];
-  pollTags: TagCount[];
   stats?: DelegatesAPIStats;
   mkrInChief?: string;
 };
@@ -166,7 +162,6 @@ export async function fetchLandingPageData(
     skyHatInfo: skyHatInfo as { hatAddress: string; skyOnHat: string } | undefined,
     skyPolls: skyPolls as SkyPoll[] | undefined,
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
-    pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
     mkrInChief: mkrInChief ? formatValue(mkrInChief as bigint) : undefined
   };
 }

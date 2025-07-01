@@ -33,14 +33,7 @@ import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelegates';
 
-const LandingPage = ({
-  skyExecutive,
-  skyHatInfo,
-  skyPolls,
-  pollTags,
-  stats,
-  mkrInChief
-}: LandingPageData) => {
+const LandingPage = ({ skyExecutive, skyHatInfo, skyPolls, stats, mkrInChief }: LandingPageData) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
@@ -150,7 +143,7 @@ const LandingPage = ({
                     <Stack gap={3}>
                       {skyPolls.slice(0, 2).map(poll => (
                         <Box key={poll.pollId} sx={{ width: '100%' }}>
-                          <SkyPollOverviewCard poll={poll} allTags={pollTags} />
+                          <SkyPollOverviewCard poll={poll} allTags={[]} />
                         </Box>
                       ))}
                     </Stack>
@@ -199,7 +192,6 @@ export default function Index({
   skyHatInfo: prefetchedSkyHatInfo,
   skyPolls: prefetchedSkyPolls,
   pollStats: prefetchedPollStats,
-  pollTags: prefetchedPollTags,
   mkrInChief: prefetchedMkrInChief
 }: LandingPageData): JSX.Element {
   const network = useNetwork();
@@ -210,7 +202,6 @@ export default function Index({
         skyHatInfo: prefetchedSkyHatInfo,
         skyPolls: prefetchedSkyPolls,
         pollStats: prefetchedPollStats,
-        pollTags: prefetchedPollTags,
         mkrInChief: prefetchedMkrInChief
       }
     : null;
@@ -245,7 +236,6 @@ export default function Index({
     pollStats: isDefaultNetwork(network)
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
-    pollTags: isDefaultNetwork(network) ? prefetchedPollTags : data?.pollTags || [],
     stats: delegatesData.data?.stats,
     mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
   };
@@ -254,7 +244,7 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { skyExecutive, skyHatInfo, skyPolls, pollStats, pollTags, mkrInChief } = await fetchLandingPageData(
+  const { skyExecutive, skyHatInfo, skyPolls, pollStats, mkrInChief } = await fetchLandingPageData(
     SupportedNetworks.MAINNET
   );
 
@@ -265,7 +255,6 @@ export const getStaticProps: GetStaticProps = async () => {
       skyHatInfo: skyHatInfo || null,
       skyPolls: skyPolls || null,
       pollStats,
-      pollTags,
       mkrInChief
     }
   };
