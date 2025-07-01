@@ -24,7 +24,7 @@ import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import useSWR, { useSWRConfig } from 'swr';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
-import { SkyPollsOverviewLanding } from 'modules/home/components/SkyPollsOverviewLanding';
+import SkyPollOverviewCard from 'modules/polling/components/SkyPollOverviewCard';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
@@ -51,7 +51,7 @@ const LandingPage = ({
   }, [mode]);
 
   // account
-  const { account, votingAccount } = useAccount();
+  useAccount();
 
   return (
     <div>
@@ -122,7 +122,7 @@ const LandingPage = ({
                             dateExecuted: skyExecutive.spellData.dateExecuted
                               ? new Date(skyExecutive.spellData.dateExecuted)
                               : undefined,
-                            officeHours: skyExecutive.spellData.officeHours === 'true'
+                            officeHours: skyExecutive.spellData.officeHours === true || skyExecutive.spellData.officeHours === 'true'
                           }
                         }}
                         isHat={skyExecutive.address === skyHatInfo?.hatAddress}
@@ -138,9 +138,30 @@ const LandingPage = ({
           </section>
 
           <section id="vote">
-            <Box sx={{ mt: 3 }}>
-              <SkyPollsOverviewLanding skyPolls={skyPolls} allTags={pollTags} />
-            </Box>
+            {skyPolls && skyPolls.length > 0 && (
+              <Box sx={{ mt: 3 }}>
+                <Flex sx={{ flexDirection: 'column' }}>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                    <Heading>Recent Sky Polls</Heading>
+                    <InternalLink href={'/polling'} title="View All Polls">
+                      <ViewMore label="View All" />
+                    </InternalLink>
+                  </Flex>
+                  <ErrorBoundary componentName="Sky Polls">
+                    <Stack gap={3}>
+                      {skyPolls.slice(0, 2).map(poll => (
+                        <Box key={poll.pollId} sx={{ width: '100%' }}>
+                          <SkyPollOverviewCard
+                            poll={poll}
+                            allTags={pollTags}
+                          />
+                        </Box>
+                      ))}
+                    </Stack>
+                  </ErrorBoundary>
+                </Flex>
+              </Box>
+            )}
           </section>
 
           <section>
