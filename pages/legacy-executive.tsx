@@ -192,7 +192,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <HeadComponent title="Executive Proposals" />
+      <HeadComponent title="Legacy Executive Proposals" />
 
       {lockedMkrOldChief && lockedMkrOldChief > 0 && (
         <>

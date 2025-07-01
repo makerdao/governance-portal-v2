@@ -13,9 +13,8 @@ import ErrorPage from 'modules/app/components/ErrorPage';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from 'modules/home/components/ViewMore';
-import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
-import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
+import SkyExecutiveOverviewCardLanding from 'modules/executive/components/SkyExecutiveOverviewCardLanding';
 import { PlayButton } from 'modules/home/components/PlayButton';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import VideoModal from 'modules/app/components/VideoModal';
@@ -25,18 +24,24 @@ import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import useSWR, { useSWRConfig } from 'swr';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
-import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
+import { SkyPollsOverviewLanding } from 'modules/home/components/SkyPollsOverviewLanding';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { useNetwork } from 'modules/app/hooks/useNetwork';
 import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelegates';
 
-const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief }: LandingPageData) => {
+const LandingPage = ({
+  skyExecutive,
+  skyHatInfo,
+  polls,
+  skyPolls,
+  pollTags,
+  stats,
+  mkrInChief
+}: LandingPageData) => {
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
@@ -47,14 +52,6 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
 
   // account
   const { account, votingAccount } = useAccount();
-
-  // executives
-  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-
-  // revalidate votedProposals if connected address changes
-  useEffect(() => {
-    mutateVotedProposals();
-  }, [votingAccount]);
 
   return (
     <div>
@@ -103,26 +100,36 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
               </Flex>
               <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Heading>Latest Executive</Heading>
+                  <Heading>Latest Sky Executive</Heading>
                   <InternalLink href={'/executive'} title="Latest Executive">
                     <ViewMore />
                   </InternalLink>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <ErrorBoundary componentName="Latest Executive">
-                    {proposals ? (
-                      proposals.length > 0 ? (
-                        <ExecutiveOverviewCard
-                          votedProposals={votedProposals}
-                          account={account}
-                          isHat={false}
-                          proposal={proposals[0]}
-                        />
-                      ) : (
-                        <Text>No proposals found</Text>
-                      )
+                    {skyExecutive ? (
+                      <SkyExecutiveOverviewCardLanding
+                        proposal={{
+                          ...skyExecutive,
+                          spellData: {
+                            ...skyExecutive.spellData,
+                            nextCastTime: skyExecutive.spellData.nextCastTime
+                              ? new Date(skyExecutive.spellData.nextCastTime)
+                              : undefined,
+                            datePassed: skyExecutive.spellData.datePassed
+                              ? new Date(skyExecutive.spellData.datePassed)
+                              : undefined,
+                            dateExecuted: skyExecutive.spellData.dateExecuted
+                              ? new Date(skyExecutive.spellData.dateExecuted)
+                              : undefined,
+                            officeHours: skyExecutive.spellData.officeHours === 'true'
+                          }
+                        }}
+                        isHat={skyExecutive.address === skyHatInfo?.hatAddress}
+                        skyOnHat={skyHatInfo?.skyOnHat ? BigInt(skyHatInfo.skyOnHat) : undefined}
+                      />
                     ) : (
-                      <Skeleton />
+                      <Skeleton height={300} />
                     )}
                   </ErrorBoundary>
                 </Flex>
@@ -130,17 +137,16 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
             </Flex>
           </section>
 
-          <section>
-            <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats pollStats={pollStats} stats={stats} mkrInChief={mkrInChief} />
-            </ErrorBoundary>
-          </section>
-
           <section id="vote">
             <Box sx={{ mt: 3 }}>
-              <PollsOverviewLanding polls={polls} activePollCount={pollStats.active} allTags={pollTags} />
+              <SkyPollsOverviewLanding skyPolls={skyPolls} allTags={pollTags} />
             </Box>
-            <PollCategoriesLanding pollCategories={pollTags} />
+          </section>
+
+          <section>
+            <ErrorBoundary componentName="Governance Stats">
+              <GovernanceStats stats={stats} mkrInChief={mkrInChief} />
+            </ErrorBoundary>
           </section>
 
           <Box as={'section'} sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
@@ -151,12 +157,11 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
                 zIndex: -1,
                 ml: '-100vw',
                 position: 'absolute',
-                top: 0,
+                top: 80,
                 left: 0,
                 height: '1720px'
               }}
             />
-            <InformationParticipateMakerGovernance />
             <ResourcesLanding />
           </Box>
 
@@ -173,8 +178,10 @@ const LandingPage = ({ proposals, polls, pollStats, pollTags, stats, mkrInChief 
 };
 
 export default function Index({
-  proposals: prefetchedProposals,
+  skyExecutive: prefetchedSkyExecutive,
+  skyHatInfo: prefetchedSkyHatInfo,
   polls: prefetchedPolls,
+  skyPolls: prefetchedSkyPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
   mkrInChief: prefetchedMkrInChief
@@ -183,8 +190,10 @@ export default function Index({
   const [delegatesData] = useLandingPageDelegates();
   const fallbackData = isDefaultNetwork(network)
     ? {
-        proposals: prefetchedProposals,
+        skyExecutive: prefetchedSkyExecutive,
+        skyHatInfo: prefetchedSkyHatInfo,
         polls: prefetchedPolls,
+        skyPolls: prefetchedSkyPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
         mkrInChief: prefetchedMkrInChief
@@ -215,8 +224,10 @@ export default function Index({
   }
 
   const props = {
-    proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
+    skyExecutive: isDefaultNetwork(network) ? prefetchedSkyExecutive : data?.skyExecutive,
+    skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    skyPolls: isDefaultNetwork(network) ? prefetchedSkyPolls : data?.skyPolls,
     pollStats: isDefaultNetwork(network)
       ? prefetchedPollStats
       : data?.pollStats || { active: 0, finished: 0, total: 0 },
@@ -229,15 +240,16 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { proposals, polls, pollStats, pollTags, mkrInChief } = await fetchLandingPageData(
-    SupportedNetworks.MAINNET
-  );
+  const { skyExecutive, skyHatInfo, polls, skyPolls, pollStats, pollTags, mkrInChief } =
+    await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 5 * 60, // allow revalidation every 30 minutes
+    revalidate: 5 * 60, // allow revalidation every 5 minutes
     props: {
-      proposals,
+      skyExecutive: skyExecutive || null,
+      skyHatInfo: skyHatInfo || null,
       polls,
+      skyPolls: skyPolls || null,
       pollStats,
       pollTags,
       mkrInChief
