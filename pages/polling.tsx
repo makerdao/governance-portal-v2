@@ -190,7 +190,7 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
 export const getServerSideProps: GetServerSideProps<PollingPageProps> = async () => {
   try {
     // Try to fetch initial data server-side
-    const apiUrl = process.env.SKY_POLLS_API_URL || 'http://localhost:3001/api/polling/all-polls-with-tally';
+    const apiUrl = 'https://vote.sky.money/api/polling/all-polls-with-tally';
     const url = new URL(apiUrl);
     url.searchParams.set('pageSize', '5');
     url.searchParams.set('page', '1');

@@ -61,13 +61,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<H
   }) as SupportedNetworks;
 
   try {
-    // TODO: update to production endpoint
-    const externalUrl = `http://localhost:3001/api/executive/hat?network=${network}`;
-    
+    const externalUrl = `https://vote.sky.money/api/executive/hat?network=${network}`;
+
     const response = await fetch(externalUrl, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       // Add timeout to prevent hanging requests
       signal: AbortSignal.timeout(10000) // 10 second timeout
@@ -90,7 +89,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<H
   } catch (error) {
     // Log the error for debugging
     console.error('Error fetching hat data from external API:', error);
-    
+
     // Return a more user-friendly error
     throw new Error(`Failed to fetch hat information from external API: ${error.message}`);
   }

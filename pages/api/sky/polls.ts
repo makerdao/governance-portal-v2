@@ -78,7 +78,7 @@ export type SkyPollsResponse = {
 async function fetchSkyPolls({
   pageSize = 5,
   page = 1,
-  apiUrl = 'http://localhost:3001/api/polling/all-polls-with-tally'
+  apiUrl = 'https://vote.sky.money/api/polling/all-polls-with-tally'
 }: {
   pageSize?: number;
   page?: number;
@@ -92,10 +92,10 @@ async function fetchSkyPolls({
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       // Add timeout for the request
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(10000)
     });
 
     if (!response.ok) {
@@ -106,7 +106,7 @@ async function fetchSkyPolls({
     return data;
   } catch (error) {
     console.error('Error fetching Sky polls:', error);
-    
+
     // Return fallback empty data structure
     return {
       paginationInfo: {
@@ -127,41 +127,39 @@ async function fetchSkyPolls({
   }
 }
 
-export default withApiHandler(
-  async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method !== 'GET') {
-      throw new ApiError('Method not allowed', 405, 'Method not allowed');
-    }
-
-    const {
-      pageSize = '5',
-      page = '1',
-      apiUrl = process.env.SKY_POLLS_API_URL || 'http://localhost:3001/api/polling/all-polls-with-tally'
-    } = req.query;
-
-    // Validate parameters
-    const parsedPageSize = parseInt(pageSize as string, 10);
-    const parsedPage = parseInt(page as string, 10);
-
-    if (isNaN(parsedPageSize) || parsedPageSize < 1 || parsedPageSize > 50) {
-      throw new ApiError('Invalid pageSize. Must be between 1 and 50.', 400, 'Invalid request');
-    }
-
-    if (isNaN(parsedPage) || parsedPage < 1) {
-      throw new ApiError('Invalid page. Must be greater than 0.', 400, 'Invalid request');
-    }
-
-    try {
-      const data = await fetchSkyPolls({
-        pageSize: parsedPageSize,
-        page: parsedPage,
-        apiUrl: apiUrl as string
-      });
-
-      res.status(200).json(data);
-    } catch (error) {
-      console.error('Sky polls API error:', error);
-      throw new ApiError('Failed to fetch Sky polls data', 500, 'Internal server error');
-    }
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== 'GET') {
+    throw new ApiError('Method not allowed', 405, 'Method not allowed');
   }
-);
+
+  const {
+    pageSize = '5',
+    page = '1',
+    apiUrl = 'https://vote.sky.money/api/polling/all-polls-with-tally'
+  } = req.query;
+
+  // Validate parameters
+  const parsedPageSize = parseInt(pageSize as string, 10);
+  const parsedPage = parseInt(page as string, 10);
+
+  if (isNaN(parsedPageSize) || parsedPageSize < 1 || parsedPageSize > 50) {
+    throw new ApiError('Invalid pageSize. Must be between 1 and 50.', 400, 'Invalid request');
+  }
+
+  if (isNaN(parsedPage) || parsedPage < 1) {
+    throw new ApiError('Invalid page. Must be greater than 0.', 400, 'Invalid request');
+  }
+
+  try {
+    const data = await fetchSkyPolls({
+      pageSize: parsedPageSize,
+      page: parsedPage,
+      apiUrl: apiUrl as string
+    });
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Sky polls API error:', error);
+    throw new ApiError('Failed to fetch Sky polls data', 500, 'Internal server error');
+  }
+});
