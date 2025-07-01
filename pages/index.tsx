@@ -36,7 +36,6 @@ import { useLandingPageDelegates } from 'modules/home/hooks/useLandingPageDelega
 const LandingPage = ({
   skyExecutive,
   skyHatInfo,
-  polls,
   skyPolls,
   pollTags,
   stats,
@@ -55,7 +54,7 @@ const LandingPage = ({
 
   return (
     <div>
-      {polls.length === 0 && (
+      {skyPolls && skyPolls.length === 0 && (
         <Alert variant="warning">
           <Text>There is a problem loading the governance data. Please, try again later.</Text>
         </Alert>
@@ -122,7 +121,7 @@ const LandingPage = ({
                             dateExecuted: skyExecutive.spellData.dateExecuted
                               ? new Date(skyExecutive.spellData.dateExecuted)
                               : undefined,
-                            officeHours: skyExecutive.spellData.officeHours === true || skyExecutive.spellData.officeHours === 'true'
+                            officeHours: skyExecutive.spellData.officeHours === true
                           }
                         }}
                         isHat={skyExecutive.address === skyHatInfo?.hatAddress}
@@ -151,10 +150,7 @@ const LandingPage = ({
                     <Stack gap={3}>
                       {skyPolls.slice(0, 2).map(poll => (
                         <Box key={poll.pollId} sx={{ width: '100%' }}>
-                          <SkyPollOverviewCard
-                            poll={poll}
-                            allTags={pollTags}
-                          />
+                          <SkyPollOverviewCard poll={poll} allTags={pollTags} />
                         </Box>
                       ))}
                     </Stack>
@@ -201,7 +197,6 @@ const LandingPage = ({
 export default function Index({
   skyExecutive: prefetchedSkyExecutive,
   skyHatInfo: prefetchedSkyHatInfo,
-  polls: prefetchedPolls,
   skyPolls: prefetchedSkyPolls,
   pollStats: prefetchedPollStats,
   pollTags: prefetchedPollTags,
@@ -213,7 +208,6 @@ export default function Index({
     ? {
         skyExecutive: prefetchedSkyExecutive,
         skyHatInfo: prefetchedSkyHatInfo,
-        polls: prefetchedPolls,
         skyPolls: prefetchedSkyPolls,
         pollStats: prefetchedPollStats,
         pollTags: prefetchedPollTags,
@@ -247,7 +241,6 @@ export default function Index({
   const props = {
     skyExecutive: isDefaultNetwork(network) ? prefetchedSkyExecutive : data?.skyExecutive,
     skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
-    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     skyPolls: isDefaultNetwork(network) ? prefetchedSkyPolls : data?.skyPolls,
     pollStats: isDefaultNetwork(network)
       ? prefetchedPollStats
@@ -261,15 +254,15 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { skyExecutive, skyHatInfo, polls, skyPolls, pollStats, pollTags, mkrInChief } =
-    await fetchLandingPageData(SupportedNetworks.MAINNET);
+  const { skyExecutive, skyHatInfo, skyPolls, pollStats, pollTags, mkrInChief } = await fetchLandingPageData(
+    SupportedNetworks.MAINNET
+  );
 
   return {
     revalidate: 5 * 60, // allow revalidation every 5 minutes
     props: {
       skyExecutive: skyExecutive || null,
       skyHatInfo: skyHatInfo || null,
-      polls,
       skyPolls: skyPolls || null,
       pollStats,
       pollTags,

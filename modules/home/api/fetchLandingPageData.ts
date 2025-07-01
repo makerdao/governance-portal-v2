@@ -24,7 +24,6 @@ import type { SkyPollsResponse } from 'pages/api/sky/polls';
 export type LandingPageData = {
   skyExecutive?: SkyProposal;
   skyHatInfo?: { hatAddress: string; skyOnHat: string };
-  polls: PollListItem[];
   skyPolls?: SkyPoll[];
   pollStats: PollsResponse['stats'];
   pollTags: TagCount[];
@@ -143,7 +142,6 @@ export async function fetchLandingPageData(
         })
       ])
     : await Promise.allSettled([
-        getExecutiveProposals({ start: 0, limit: EXEC_FETCH_SIZE, sortBy: EXEC_SORT_BY, network }),
         getPollsPaginated({ ...pollQueryVariables, pageSize: 4 }),
         fetchMkrInChief(network),
         fetchSkyExecutivesDirectly(),
@@ -152,7 +150,7 @@ export async function fetchLandingPageData(
       ]);
 
   // return null for any data we couldn't fetch
-  const [proposals, pollsData, mkrInChief, skyExecutives, skyHatInfo, skyPollsData] = responses.map(promise =>
+  const [pollsData, mkrInChief, skyExecutives, skyHatInfo, skyPollsData] = responses.map(promise =>
     promise.status === 'fulfilled' ? promise.value : null
   );
 
@@ -164,10 +162,8 @@ export async function fetchLandingPageData(
       : undefined;
 
   return {
-    proposals: proposals ? (proposals as Proposal[]).filter(i => i.active) : [],
     skyExecutive,
     skyHatInfo: skyHatInfo as { hatAddress: string; skyOnHat: string } | undefined,
-    polls: pollsData ? (pollsData as PollsPaginatedResponse).polls : [],
     skyPolls: skyPolls as SkyPoll[] | undefined,
     pollStats: pollsData ? (pollsData as PollsPaginatedResponse).stats : { active: 0, finished: 0, total: 0 },
     pollTags: pollsData ? (pollsData as PollsPaginatedResponse).tags : [],
