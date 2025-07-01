@@ -179,7 +179,7 @@ const SkyPollOverviewCard = function SkyPollOverviewCard({
                   <Flex sx={{ flexWrap: 'wrap' }}>
                     {poll.tags.map(tag => (
                       <Box key={tag} sx={{ marginRight: 2, marginBottom: 2 }}>
-                        <PollCategoryTag tag={tag} allTags={allTags} disableTagFilter={true} />
+                        <PollCategoryTag tag={tag} allTags={[]} disableTagFilter={true} />
                       </Box>
                     ))}
                   </Flex>
