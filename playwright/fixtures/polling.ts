@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test';
 
-export class PollingPage {
+export class LegacyPollingPage {
   readonly page: Page;
 
   // Locators
@@ -62,7 +62,7 @@ export class PollingPage {
   }
 
   async goto() {
-    await this.page.goto('/polling');
+    await this.page.goto('/polling'); // Legacy polling page
   }
 
   async waitForPolls() {

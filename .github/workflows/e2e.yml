@@ -12,10 +12,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - test: executives.spec
+          - test: legacy-executives.spec
           - test: delegates.spec
-          - test: polling.spec
+          - test: legacy-polling.spec
           - test: wallet.spec
+          # Sky governance tests (currently skipped)
+          # - test: sky-executives.spec
+          # - test: sky-polling.spec
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

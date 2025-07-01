@@ -20,8 +20,8 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test('Can see polls, but cannot vote on them', async ({ page, pollingPage }) => {
-  await test.step('navigate to polling page', async () => {
+test('Can see legacy polls, but cannot vote on them', async ({ page, pollingPage }) => {
+  await test.step('navigate to legacy polling page', async () => {
     await pollingPage.goto();
     await pollingPage.waitForPolls();
   });
