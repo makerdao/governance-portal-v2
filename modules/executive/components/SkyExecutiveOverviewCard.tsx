@@ -39,6 +39,7 @@ export default function SkyExecutiveOverviewCard({
 
   return (
     <Card
+      data-testid="sky-executive-overview-card"
       sx={{
         p: [0, 0],
         width: '100%'

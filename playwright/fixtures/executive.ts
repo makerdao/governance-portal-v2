@@ -47,7 +47,7 @@ export class LegacyExecutivePage {
   }
 
   async goto() {
-    await this.page.goto('/executive'); // Legacy executive page
+    await this.page.goto('/legacy-executive'); // Legacy executive page
   }
 
   async verifyVotingContract() {

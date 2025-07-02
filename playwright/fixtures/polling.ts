@@ -62,7 +62,7 @@ export class LegacyPollingPage {
   }
 
   async goto() {
-    await this.page.goto('/polling'); // Legacy polling page
+    await this.page.goto('/legacy-polling'); // Legacy polling page
   }
 
   async waitForPolls() {
