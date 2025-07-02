@@ -77,14 +77,13 @@ export type SkyPollsResponse = {
 
 async function fetchSkyPolls({
   pageSize = 5,
-  page = 1,
-  apiUrl = 'https://vote.sky.money/api/polling/all-polls-with-tally'
+  page = 1
 }: {
   pageSize?: number;
   page?: number;
-  apiUrl?: string;
 }): Promise<SkyPollsResponse> {
   try {
+    const apiUrl = 'https://vote.sky.money/api/polling/all-polls-with-tally';
     const url = new URL(apiUrl);
     url.searchParams.set('pageSize', pageSize.toString());
     url.searchParams.set('page', page.toString());
@@ -134,8 +133,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const {
     pageSize = '5',
-    page = '1',
-    apiUrl = 'https://vote.sky.money/api/polling/all-polls-with-tally'
+    page = '1'
   } = req.query;
 
   // Validate parameters
@@ -153,8 +151,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   try {
     const data = await fetchSkyPolls({
       pageSize: parsedPageSize,
-      page: parsedPage,
-      apiUrl: apiUrl as string
+      page: parsedPage
     });
 
     res.status(200).json(data);

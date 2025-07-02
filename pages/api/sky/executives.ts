@@ -34,14 +34,13 @@ export type SkyExecutivesResponse =
 
 async function fetchSkyExecutives({
   pageSize = 5,
-  page = 1,
-  apiUrl = 'https://vote.sky.money/api/executive'
+  page = 1
 }: {
   pageSize?: number;
   page?: number;
-  apiUrl?: string;
 }): Promise<SkyExecutivesResponse> {
   try {
+    const apiUrl = 'https://vote.sky.money/api/executive';
     const url = new URL(apiUrl);
     const start = (page - 1) * pageSize;
     url.searchParams.set('start', start.toString());
@@ -78,8 +77,7 @@ export default withApiHandler(
 
     const {
       pageSize = '5',
-      page = '1',
-      apiUrl = process.env.SKY_EXECUTIVES_API_URL || 'https://vote.sky.money/api/executive'
+      page = '1'
     } = req.query;
 
     // Validate parameters
@@ -97,8 +95,7 @@ export default withApiHandler(
     try {
       const data = await fetchSkyExecutives({
         pageSize: parsedPageSize,
-        page: parsedPage,
-        apiUrl: apiUrl as string
+        page: parsedPage
       });
 
       res.status(200).json(data);
