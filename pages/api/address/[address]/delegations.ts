@@ -208,7 +208,7 @@ export default withApiHandler(
       })
       .map(({ address, lockAmount, events }) => ({ address, lockAmount, events }));
 
-    const delegatesInfo = await fetchDelegatesInfo(network, false, true);
+    const delegatesInfo = await fetchDelegatesInfo(network, false);
     const delegatesDelegatedTo = delegatesInfo.filter(({ voteDelegateAddress }) =>
       filtered.some(({ address }) => address.toLowerCase() === voteDelegateAddress.toLowerCase())
     );

@@ -32,6 +32,9 @@ export const gqlRequest = async <TQuery = any>({
     let url;
     if (useSubgraph) {
       url = CHAIN_INFO[id].subgraphUrl;
+      if (!url) {
+        url = CHAIN_INFO[SupportedChainId.MAINNET].subgraphUrl;
+      }
     } else {
       url = CHAIN_INFO[id].spockUrl;
     }
