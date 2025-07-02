@@ -11,7 +11,7 @@ import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { getSkyStatusText } from 'modules/executive/helpers/getStatusText';
-import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { SkyProposal } from 'modules/executive/types';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
 import { CardTitle } from 'modules/app/components/Card/CardTitle';
@@ -56,13 +56,13 @@ export default function SkyExecutiveOverviewCard({
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
             <Flex sx={{ flexDirection: 'column' }}>
-              <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
+              <ExternalLink href={`https://vote.sky.money/executive/${proposal.key}`} title="View executive details">
                 <>
                   <CardHeader text={postedDateString} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
                   <CardSummary text={proposal.proposalBlurb} styles={{ my: 2 }} />
                 </>
-              </InternalLink>
+              </ExternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                 {isHat && proposal.address !== ZERO_ADDRESS ? (
                   // TODO this should be made the primary badge component in our theme
@@ -101,7 +101,7 @@ export default function SkyExecutiveOverviewCard({
                 gap: [0, 3]
               }}
             >
-              <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
+              <ExternalLink href={`https://vote.sky.money/executive/${proposal.key}`} title="View executive details">
                 <Button
                   variant="outline"
                   sx={{
@@ -111,7 +111,7 @@ export default function SkyExecutiveOverviewCard({
                 >
                   View Details
                 </Button>
-              </InternalLink>
+              </ExternalLink>
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
               {proposal.spellData?.skySupport === undefined ? (
