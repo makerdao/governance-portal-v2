@@ -142,7 +142,7 @@ const LandingPage = ({ skyExecutive, skyHatInfo, skyPolls, mkrInChief }: Landing
                     <Stack gap={3}>
                       {skyPolls.slice(0, 2).map(poll => (
                         <Box key={poll.pollId} sx={{ width: '100%' }}>
-                          <SkyPollOverviewCard poll={poll} allTags={[]} />
+                          <SkyPollOverviewCard poll={poll} />
                         </Box>
                       ))}
                     </Stack>
@@ -229,7 +229,7 @@ export default function Index({
     skyExecutive: isDefaultNetwork(network) ? prefetchedSkyExecutive : data?.skyExecutive,
     skyHatInfo: isDefaultNetwork(network) ? prefetchedSkyHatInfo : data?.skyHatInfo,
     skyPolls: isDefaultNetwork(network) ? prefetchedSkyPolls : data?.skyPolls,
-    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined,
+    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
   };
 
   return <LandingPage {...props} />;
