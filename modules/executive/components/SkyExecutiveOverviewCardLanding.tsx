@@ -11,7 +11,6 @@ import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { getSkyStatusText } from 'modules/executive/helpers/getStatusText';
-import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { SkyProposal } from 'modules/executive/types';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
@@ -28,11 +27,7 @@ type Props = {
 };
 
 // Simplified version of SkyExecutiveOverviewCard for landing page
-export default function SkyExecutiveOverviewCardLanding({
-  proposal,
-  isHat,
-  skyOnHat
-}: Props): JSX.Element {
+export default function SkyExecutiveOverviewCardLanding({ proposal, isHat, skyOnHat }: Props): JSX.Element {
   const [postedDateString, setPostedDateString] = useState('');
 
   useEffect(() => {
@@ -57,18 +52,19 @@ export default function SkyExecutiveOverviewCardLanding({
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
             <Flex sx={{ flexDirection: 'column' }}>
-              <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
+              <ExternalLink
+                href={`https://vote.sky.money/executive/${proposal.key}`}
+                title="View executive details"
+              >
                 <>
                   <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <CardHeader text={postedDateString} styles={{ mb: 0 }} />
-                    <Badge variant="sky">
-                      Sky Governance
-                    </Badge>
+                    <Badge variant="sky">Sky Governance</Badge>
                   </Flex>
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
                   <CardSummary text={proposal.proposalBlurb} styles={{ my: 2 }} />
                 </>
-              </InternalLink>
+              </ExternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                 {isHat && proposal.address !== ZERO_ADDRESS ? (
                   <Box
@@ -106,8 +102,8 @@ export default function SkyExecutiveOverviewCardLanding({
                 gap: [0, 3]
               }}
             >
-              <ExternalLink 
-                href={`https://vote.sky.money/executive/${proposal.key}`} 
+              <ExternalLink
+                href={`https://vote.sky.money/executive/${proposal.key}`}
                 title="View executive details on Sky portal"
               >
                 <Button
@@ -128,7 +124,11 @@ export default function SkyExecutiveOverviewCardLanding({
                 </Box>
               ) : (
                 <StatBox
-                  value={proposal.spellData?.skySupport ? Math.floor(parseFloat(proposal.spellData.skySupport)).toLocaleString() : undefined}
+                  value={
+                    proposal.spellData?.skySupport
+                      ? Math.floor(parseFloat(proposal.spellData.skySupport)).toLocaleString()
+                      : undefined
+                  }
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />
