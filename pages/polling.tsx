@@ -32,7 +32,7 @@ type PollingPageProps = {
 const transformPoll = (poll: any): SkyPoll => {
   const transformed: any = {
     ...poll,
-    options: Array.isArray(poll.options) 
+    options: Array.isArray(poll.options)
       ? poll.options.reduce((acc: any, opt: any, idx: number) => ({ ...acc, [idx.toString()]: opt }), {})
       : poll.options || {}
   };
@@ -65,9 +65,7 @@ const transformPoll = (poll: any): SkyPoll => {
 };
 
 export default function PollingPage({ initialData, error: initialError }: PollingPageProps): JSX.Element {
-  const [skyPolls, setSkyPolls] = useState<SkyPoll[]>(
-    initialData?.polls?.map(transformPoll) || []
-  );
+  const [skyPolls, setSkyPolls] = useState<SkyPoll[]>(initialData?.polls?.map(transformPoll) || []);
   const [tags, setTags] = useState<TagCount[]>(
     initialData?.tags?.map(tag => ({ ...tag, count: tag.count || 0 })) || []
   );
@@ -182,7 +180,7 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
                     <Stack gap={4} sx={{ mb: 4 }}>
                       {skyPolls.map(poll => (
                         <Box key={poll.pollId}>
-                          <SkyPollOverviewCard poll={poll} allTags={tags} />
+                          <SkyPollOverviewCard poll={poll} />
                         </Box>
                       ))}
                     </Stack>
