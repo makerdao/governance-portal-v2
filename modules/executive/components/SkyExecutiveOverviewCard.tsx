@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 import { useState, useEffect } from 'react';
-import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
+import { Text, Flex, Box, Button, Divider, Card } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { getSkyStatusText } from 'modules/executive/helpers/getStatusText';
@@ -26,11 +26,7 @@ type Props = {
   skyOnHat?: bigint;
 };
 
-export default function SkyExecutiveOverviewCard({
-  proposal,
-  isHat,
-  skyOnHat
-}: Props): JSX.Element {
+export default function SkyExecutiveOverviewCard({ proposal, isHat, skyOnHat }: Props): JSX.Element {
   const [postedDateString, setPostedDateString] = useState('');
 
   useEffect(() => {
@@ -56,7 +52,10 @@ export default function SkyExecutiveOverviewCard({
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
             <Flex sx={{ flexDirection: 'column' }}>
-              <ExternalLink href={`https://vote.sky.money/executive/${proposal.key}`} title="View executive details">
+              <ExternalLink
+                href={`https://vote.sky.money/executive/${proposal.key}`}
+                title="View executive details"
+              >
                 <>
                   <CardHeader text={postedDateString} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
@@ -101,7 +100,10 @@ export default function SkyExecutiveOverviewCard({
                 gap: [0, 3]
               }}
             >
-              <ExternalLink href={`https://vote.sky.money/executive/${proposal.key}`} title="View executive details">
+              <ExternalLink
+                href={`https://vote.sky.money/executive/${proposal.key}`}
+                title="View executive details"
+              >
                 <Button
                   variant="outline"
                   sx={{
@@ -120,7 +122,11 @@ export default function SkyExecutiveOverviewCard({
                 </Box>
               ) : (
                 <StatBox
-                  value={proposal.spellData?.skySupport ? Math.floor(parseFloat(proposal.spellData.skySupport)).toLocaleString() : undefined}
+                  value={
+                    proposal.spellData?.skySupport
+                      ? Math.floor(parseFloat(proposal.spellData.skySupport)).toLocaleString()
+                      : undefined
+                  }
                   label="SKY Supporting"
                   styles={{ textAlign: 'right' }}
                 />

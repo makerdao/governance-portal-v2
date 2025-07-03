@@ -99,15 +99,15 @@ export async function fetchLandingPageData(
   const responses = useApi
     ? await Promise.allSettled([
         fetchMkrInChief(network),
-        fetchJson(`/api/sky/executives?pageSize=1&page=1`).catch(err => {
+        fetchJson('/api/sky/executives?pageSize=1&page=1').catch(err => {
           console.error('Failed to fetch Sky executives:', err);
           return null;
         }),
-        fetchJson(`/api/sky/hat`).catch(err => {
+        fetchJson('/api/sky/hat').catch(err => {
           console.error('Failed to fetch Sky hat info:', err);
           return null;
         }),
-        fetchJson(`/api/sky/polls?pageSize=2&page=1`).catch(err => {
+        fetchJson('/api/sky/polls?pageSize=2&page=1').catch(err => {
           console.error('Failed to fetch Sky polls:', err);
           return null;
         })

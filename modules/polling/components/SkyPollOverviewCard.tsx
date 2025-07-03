@@ -92,7 +92,6 @@ export type SkyPoll = {
 
 type Props = {
   poll: SkyPoll;
-  allTags: TagCount[];
   sx?: ThemeUIStyleObject;
   hideTally?: boolean;
 };
@@ -105,11 +104,7 @@ const getSkyPortalPollUrl = (poll: SkyPoll): string => {
   return `https://vote.sky.money/polling/${poll.slug}`;
 };
 
-const SkyPollOverviewCard = function SkyPollOverviewCard({
-  poll,
-  allTags,
-  hideTally = false
-}: Props): JSX.Element {
+const SkyPollOverviewCard = function SkyPollOverviewCard({ poll, hideTally = false }: Props): JSX.Element {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const isActive = isActivePoll(poll);
 
