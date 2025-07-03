@@ -15,6 +15,7 @@ jobs:
           - test: executive.spec
           - test: legacy-executives.spec
           - test: delegates.spec
+          - test: polling.spec
           - test: legacy-polling.spec
           - test: wallet.spec
           # Sky governance tests (currently skipped)
