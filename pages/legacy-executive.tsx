@@ -306,7 +306,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <Heading as="h1">Executive Proposals</Heading>
+              <Heading as="h1">Legacy Executive Proposals</Heading>
               {!isLoadingInitialData && (
                 <Stack gap={4} sx={{ mb: 4 }}>
                   {flattenedProposals

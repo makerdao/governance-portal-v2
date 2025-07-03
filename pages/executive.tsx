@@ -14,7 +14,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useEffect, useState } from 'react';
 import { SkyExecutivesResponse } from './api/sky/executives';
@@ -86,34 +85,12 @@ export default function ExecutivePage(): JSX.Element {
       <SidebarLayout>
         <Box>
           <Stack gap={4}>
-            <Alert variant="notice" sx={{ mb: 2 }}>
-              <Flex
-                sx={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexDirection: ['column', 'column', 'row'],
-                  my: 2
-                }}
-              >
-                <Text>
-                  The community has voted for governance to be migrated to a fully SKY-native system. This
-                  page now displays executive proposals from the Sky governance system. Legacy executive
-                  proposals can be viewed on the Legacy Executives page linked on the right.{' '}
-                  <ExternalLink
-                    href="https://upgrademkrtosky.sky.money/"
-                    title="Learn more about governance migration"
-                  >
-                    <span style={{ color: 'accentBlue' }}>Click here</span>
-                  </ExternalLink>{' '}
-                  to learn more about the governance migration.
-                </Text>
-                <Box sx={{ minWidth: '150px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
-                  <InternalLink href="/legacy-executive" title="View Legacy Executive Proposals">
-                    <Button variant="outline">View Legacy Executives</Button>
-                  </InternalLink>
-                </Box>
-              </Flex>
-            </Alert>
+            <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Heading as="h1">Executive Proposals</Heading>
+              <InternalLink href="/legacy-executive" title="View Legacy Executive Proposals">
+                <Button variant="outline">View Legacy Executives</Button>
+              </InternalLink>
+            </Flex>
 
             {/* Sky Executives Section */}
             {error ? (
@@ -125,12 +102,6 @@ export default function ExecutivePage(): JSX.Element {
               </Alert>
             ) : (
               <Box>
-                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                  <Heading as="h3">Executive Proposals from Sky Governance</Heading>
-                  <ExternalLink href="https://vote.sky.money/executive" title="Vote on Sky Governance">
-                    <Button variant="primary">View on Sky Portal</Button>
-                  </ExternalLink>
-                </Flex>
 
                 {loading && skyExecutives.length === 0 ? (
                   <Stack gap={4}>
