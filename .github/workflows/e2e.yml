@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - test: executive.spec
           - test: legacy-executives.spec
           - test: delegates.spec
           - test: legacy-polling.spec

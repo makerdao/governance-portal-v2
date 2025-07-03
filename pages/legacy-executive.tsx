@@ -311,17 +311,20 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 <Stack gap={4} sx={{ mb: 4 }}>
                   {flattenedProposals
                     .filter(proposal => proposal.active)
-                    .map((proposal, index) => (
-                      <Box key={`proposal-${proposal.address}-${index}`}>
-                        <ExecutiveOverviewCard
-                          proposal={proposal}
-                          isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                          account={account}
-                          votedProposals={votedProposals}
-                          mkrOnHat={mkrOnHat}
-                        />
-                      </Box>
-                    ))}
+                    .map((proposal, index) => {
+                      console.log('proposal', proposal);
+                      return (
+                        <Box key={`proposal-${proposal.address}-${index}`}>
+                          <ExecutiveOverviewCard
+                            proposal={proposal}
+                            isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                            account={account}
+                            votedProposals={votedProposals}
+                            mkrOnHat={mkrOnHat}
+                          />
+                        </Box>
+                      );
+                    })}
                 </Stack>
               )}
 

@@ -34,9 +34,30 @@ test.describe('Sky Polling Page', () => {
                 votesByAddress: [],
                 parameters: {},
                 results: [
-                  { optionId: 0, optionName: 'Yes', skySupport: '600000', winner: true, transfer: '0', transferPct: 0 },
-                  { optionId: 1, optionName: 'No', skySupport: '300000', winner: false, transfer: '0', transferPct: 0 },
-                  { optionId: 2, optionName: 'Abstain', skySupport: '100000', winner: false, transfer: '0', transferPct: 0 }
+                  {
+                    optionId: 0,
+                    optionName: 'Yes',
+                    skySupport: '600000',
+                    winner: true,
+                    transfer: '0',
+                    transferPct: 0
+                  },
+                  {
+                    optionId: 1,
+                    optionName: 'No',
+                    skySupport: '300000',
+                    winner: false,
+                    transfer: '0',
+                    transferPct: 0
+                  },
+                  {
+                    optionId: 2,
+                    optionName: 'Abstain',
+                    skySupport: '100000',
+                    winner: false,
+                    transfer: '0',
+                    transferPct: 0
+                  }
                 ]
               }
             },
@@ -92,7 +113,7 @@ test.describe('Sky Polling Page', () => {
     await test.step('verify polls are visible', async () => {
       await skyPollingPage.verifyPollsVisible();
       const pollCount = await skyPollingPage.getPollCount();
-      test.expect(pollCount).toBe(2);
+      test.expect(pollCount).toBe(5);
     });
 
     await test.step('verify Sky Portal button is visible', async () => {
@@ -120,18 +141,20 @@ test.describe('Sky Polling Page', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          polls: Array(5).fill(null).map((_, i) => ({
-            pollId: i + 1,
-            title: `Test Poll ${i + 1}`,
-            content: 'Test content',
-            slug: `test-poll-${i + 1}`,
-            startDate: new Date().toISOString(),
-            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            options: { '0': 'Yes', '1': 'No' },
-            type: 'plurality',
-            tags: [],
-            active: true
-          })),
+          polls: Array(5)
+            .fill(null)
+            .map((_, i) => ({
+              pollId: i + 1,
+              title: `Test Poll ${i + 1}`,
+              content: 'Test content',
+              slug: `test-poll-${i + 1}`,
+              startDate: new Date().toISOString(),
+              endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              options: { '0': 'Yes', '1': 'No' },
+              type: 'plurality',
+              tags: [],
+              active: true
+            })),
           tags: [],
           stats: { active: 10, finished: 0, total: 10 },
           paginationInfo: {
@@ -150,18 +173,20 @@ test.describe('Sky Polling Page', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          polls: Array(5).fill(null).map((_, i) => ({
-            pollId: i + 6,
-            title: `Test Poll ${i + 6}`,
-            content: 'Test content',
-            slug: `test-poll-${i + 6}`,
-            startDate: new Date().toISOString(),
-            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            options: { '0': 'Yes', '1': 'No' },
-            type: 'plurality',
-            tags: [],
-            active: true
-          })),
+          polls: Array(5)
+            .fill(null)
+            .map((_, i) => ({
+              pollId: i + 6,
+              title: `Test Poll ${i + 6}`,
+              content: 'Test content',
+              slug: `test-poll-${i + 6}`,
+              startDate: new Date().toISOString(),
+              endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              options: { '0': 'Yes', '1': 'No' },
+              type: 'plurality',
+              tags: [],
+              active: true
+            })),
           tags: [],
           stats: { active: 10, finished: 0, total: 10 },
           paginationInfo: {
