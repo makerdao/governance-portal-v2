@@ -15,7 +15,6 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import SkyPollOverviewCard, { SkyPoll } from 'modules/polling/components/SkyPollOverviewCard';
 import { TagCount } from 'modules/app/types/tag';
@@ -123,34 +122,14 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
       <SidebarLayout>
         <Box>
           <Stack gap={4}>
-            <Alert variant="notice" sx={{ mb: 2 }}>
-              <Flex
-                sx={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexDirection: ['column', 'column', 'row'],
-                  my: 2
-                }}
-              >
-                <Text>
-                  The community has voted for governance to be migrated to a fully SKY-native system. This
-                  page now displays governance polls from the Sky governance system. Legacy polls can be
-                  viewed on the Legacy Polls page linked on the right.{' '}
-                  <ExternalLink
-                    href="https://upgrademkrtosky.sky.money/"
-                    title="Learn more about governance migration"
-                  >
-                    <span style={{ color: 'accentBlue' }}>Click here</span>
-                  </ExternalLink>{' '}
-                  to learn more about the governance migration.
-                </Text>
-                <Box sx={{ minWidth: '164px', mt: [2, 2, 0], ml: [0, 0, 2] }}>
-                  <InternalLink href="/legacy-polling" title="View Legacy Polls">
-                    <Button variant="outline">View Legacy Polls</Button>
-                  </InternalLink>
-                </Box>
-              </Flex>
-            </Alert>
+            <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Heading as="h1" sx={{ m: 0 }}>
+                Polls
+              </Heading>
+              <InternalLink href="/legacy-polling" title="Legacy Polls">
+                <Button variant="outline">Legacy Polls</Button>
+              </InternalLink>
+            </Flex>
 
             {/* Sky Polls Section */}
             {error ? (
@@ -162,13 +141,6 @@ export default function PollingPage({ initialData, error: initialError }: Pollin
               </Alert>
             ) : (
               <Box>
-                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                  <Heading as="h3">Polls from Sky Governance</Heading>
-                  <ExternalLink href="https://vote.sky.money/polling" title="Vote on Sky Governance">
-                    <Button variant="primary">View on Sky Portal</Button>
-                  </ExternalLink>
-                </Flex>
-
                 {loading && skyPolls.length === 0 ? (
                   <Stack gap={4}>
                     {[...Array(4)].map((_, i) => (

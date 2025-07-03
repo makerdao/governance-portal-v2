@@ -87,8 +87,8 @@ export default function ExecutivePage(): JSX.Element {
           <Stack gap={4}>
             <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Heading as="h1">Executive Proposals</Heading>
-              <InternalLink href="/legacy-executive" title="View Legacy Executive Proposals">
-                <Button variant="outline">View Legacy Executives</Button>
+              <InternalLink href="/legacy-executive" title="Legacy Executive Proposals">
+                <Button variant="outline">Legacy Executives</Button>
               </InternalLink>
             </Flex>
 
@@ -102,7 +102,6 @@ export default function ExecutivePage(): JSX.Element {
               </Alert>
             ) : (
               <Box>
-
                 {loading && skyExecutives.length === 0 ? (
                   <Stack gap={4}>
                     {[...Array(4)].map((_, i) => (
