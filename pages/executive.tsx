@@ -78,8 +78,6 @@ export default function ExecutivePage(): JSX.Element {
     fetchSkyExecutives(1);
     fetchSkyHatInfo();
   }, []);
-  console.log('hatAddress', hatAddress);
-  console.log('skyOnHat', skyOnHat);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
