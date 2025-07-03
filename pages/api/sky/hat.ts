@@ -61,7 +61,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<H
   }) as SupportedNetworks;
 
   try {
-    const response = await fetch(`/api/sky/hat`, {
+    const response = await fetch('/api/sky/hat', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
