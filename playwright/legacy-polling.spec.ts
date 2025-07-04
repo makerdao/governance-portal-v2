@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test('Can see legacy polls, but cannot vote on them', async ({ page, pollingPage }) => {
+test('Can see legacy polls, but voting is no longer active', async ({ page, pollingPage }) => {
   await test.step('navigate to legacy polling page', async () => {
     await pollingPage.goto();
     await pollingPage.waitForPolls();
@@ -34,12 +34,7 @@ test('Can see legacy polls, but cannot vote on them', async ({ page, pollingPage
     await pollingPage.verifyVotingWeight('150,001 MKR');
   });
 
-  await test.step('select poll choice but cannot add to ballot', async () => {
-    await pollingPage.selectChoice('Yes');
-    await pollingPage.verifyAddToBallotDisabled();
-  });
-
-  await test.step('review ballot button is disabled', async () => {
-    await pollingPage.verifyReviewBallotDisabled();
+  await test.step('verify polls are visible but voting is disabled', async () => {
+    await pollingPage.verifyPollingIsReadOnly();
   });
 });

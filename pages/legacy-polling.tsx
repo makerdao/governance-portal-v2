@@ -435,16 +435,6 @@ const PollingOverview = ({
             )}
           </Box>
           <Stack gap={3}>
-            {account && bpi > 0 && (
-              <ErrorBoundary componentName="Ballot">
-                <BallotBox
-                  network={network}
-                  activePollCount={activePollIds.length}
-                  activePollIds={activePollIds}
-                />
-              </ErrorBoundary>
-            )}
-
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
                 fields={[
