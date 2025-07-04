@@ -15,6 +15,7 @@ import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
 import '@reach/tabs/styles.css';
 import '@reach/tooltip/styles.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
 import Header from 'modules/app/components/layout/Header';
