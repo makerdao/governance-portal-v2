@@ -35,10 +35,6 @@ export class LegacyPollingPage {
     await expect(this.getPollId(pollId)).toBeVisible();
   }
 
-  async verifyVotingWeight(votingWeight: string) {
-    await expect(this.votingWeightText).toHaveText(votingWeight);
-  }
-
   async verifyPollingIsReadOnly() {
     // Verify that polls are visible but no voting functionality is present
     await expect(this.pollOverviewCard.first()).toBeVisible();

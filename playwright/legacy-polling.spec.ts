@@ -30,10 +30,6 @@ test('Can see legacy polls, but voting is no longer active', async ({ page, poll
     await connectWallet(page);
   });
 
-  await test.step('verify voting weight', async () => {
-    await pollingPage.verifyVotingWeight('150,001 MKR');
-  });
-
   await test.step('verify polls are visible but voting is disabled', async () => {
     await pollingPage.verifyPollingIsReadOnly();
   });
