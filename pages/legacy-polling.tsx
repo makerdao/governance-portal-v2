@@ -27,7 +27,6 @@ import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilte
 import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
 import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
 import { DateFilter } from 'modules/polling/components/filters/DateFilter';
-import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
