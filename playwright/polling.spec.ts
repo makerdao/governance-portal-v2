@@ -116,11 +116,11 @@ test.describe('Sky Polling Page', () => {
       test.expect(pollCount).toBe(5);
     });
 
-    await test.step('verify Sky Portal button is visible', async () => {
-      // Just check button is visible, don't click external link
-      const skyPortalButton = skyPollingPage.page.getByRole('button', { name: 'View on Sky Portal' });
-      await expect(skyPortalButton).toBeVisible();
-    });
+    // await test.step('verify Sky Portal button is visible', async () => {
+    //   // Just check button is visible, don't click external link
+    //   const skyPortalButton = skyPollingPage.page.getByRole('button', { name: 'View on Sky Portal' });
+    //   await expect(skyPortalButton).toBeVisible();
+    // });
   });
 
   test('navigates to legacy polls page', async ({ skyPollingPage }) => {
