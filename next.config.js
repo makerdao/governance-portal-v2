@@ -1,26 +1,23 @@
 const path = require('path');
-const { buildContentSecurityPolicy } = require('./lib/csp');
+const { buildContentSecurityPolicy, buildConnectSrcTrialPolicy } = require('./lib/csp');
 
 require('dotenv').config({ path: './.env' });
-
-const cspOptions = {
-  dev: process.env.NODE_ENV === 'development',
-  preview: process.env.VERCEL_ENV === 'preview',
-  // Mirrors the chain selection in pages/_app.tsx
-  testChains: process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'development',
-  env: process.env
-};
 
 const pageHeaders = [
   {
     key: 'Content-Security-Policy',
-    value: buildContentSecurityPolicy({ ...cspOptions, restrictConnect: false })
+    value: buildContentSecurityPolicy({ dev: process.env.NODE_ENV === 'development' })
   },
   // Trial of an explicit connect-src allowlist: violations only show up in the browser console
-  // until it replaces the open https:/wss: policy above.
+  // until it replaces the open https:/wss: in the policy above.
   {
     key: 'Content-Security-Policy-Report-Only',
-    value: buildContentSecurityPolicy({ ...cspOptions, restrictConnect: true })
+    value: buildConnectSrcTrialPolicy({
+      // Mirrors the chain selection in pages/_app.tsx
+      testChains:
+        process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'development',
+      env: process.env
+    })
   }
 ];
 
