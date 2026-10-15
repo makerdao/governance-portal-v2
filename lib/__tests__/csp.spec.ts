@@ -65,6 +65,8 @@ describe('buildConnectSrcTrialPolicy', () => {
     expect(prod).not.toContain('https://virtual.mainnet.rpc.tenderly.co');
     expect(prod).not.toContain('https://arbitrum-testnet.example');
     expect(testnet).toContain('https://virtual.mainnet.rpc.tenderly.co');
+    expect(testnet).toContain('https://staging-gov-polling.sky.money');
+    expect(prod).not.toContain('https://staging-gov-polling.sky.money');
     expect(testnet).toContain('https://arbitrum-testnet.example');
     expect(testnetDefaultArbitrum).toContain('https://sepolia-rollup.arbitrum.io');
   });
