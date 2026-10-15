@@ -1,4 +1,5 @@
 const path = require('path');
+const { PHASE_PRODUCTION_BUILD } = require('next/constants');
 
 require('dotenv').config({ path: './.env' });
 
@@ -104,4 +105,17 @@ const moduleExports = {
   staticPageGenerationTimeout: 120
 };
 
-module.exports = moduleExports;
+module.exports = phase => {
+  // Production builds must name their proxy explicitly instead of falling back to the staging proxy
+  // (modules/app/constants/proxy.ts). Builds with NEXT_PUBLIC_VERCEL_ENV=development use staging data
+  // sources, so the fallback is still allowed there.
+  if (
+    phase === PHASE_PRODUCTION_BUILD &&
+    process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development' &&
+    !process.env.NEXT_PUBLIC_PROXY_ORIGIN
+  ) {
+    throw new Error('NEXT_PUBLIC_PROXY_ORIGIN must be set for production builds');
+  }
+
+  return moduleExports;
+};
