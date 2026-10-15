@@ -105,16 +105,32 @@ const moduleExports = {
   staticPageGenerationTimeout: 120
 };
 
+// Production must name its proxy explicitly instead of falling back to the staging proxy
+// (modules/app/constants/proxy.ts), and any proxy that is set must be a full http(s) URL.
+function checkProxyOrigin() {
+  const proxyOrigin = process.env.NEXT_PUBLIC_PROXY_ORIGIN;
+
+  if (!proxyOrigin) {
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+      throw new Error('NEXT_PUBLIC_PROXY_ORIGIN must be set for production builds');
+    }
+    return;
+  }
+
+  let protocol;
+  try {
+    ({ protocol } = new URL(proxyOrigin));
+  } catch {
+    protocol = undefined;
+  }
+  if (protocol !== 'https:' && protocol !== 'http:') {
+    throw new Error(`NEXT_PUBLIC_PROXY_ORIGIN must be an http(s) URL, got "${proxyOrigin}"`);
+  }
+}
+
 module.exports = phase => {
-  // Production builds must name their proxy explicitly instead of falling back to the staging proxy
-  // (modules/app/constants/proxy.ts). Builds with NEXT_PUBLIC_VERCEL_ENV=development use staging data
-  // sources, so the fallback is still allowed there.
-  if (
-    phase === PHASE_PRODUCTION_BUILD &&
-    process.env.NEXT_PUBLIC_VERCEL_ENV !== 'development' &&
-    !process.env.NEXT_PUBLIC_PROXY_ORIGIN
-  ) {
-    throw new Error('NEXT_PUBLIC_PROXY_ORIGIN must be set for production builds');
+  if (phase === PHASE_PRODUCTION_BUILD) {
+    checkProxyOrigin();
   }
 
   return moduleExports;
