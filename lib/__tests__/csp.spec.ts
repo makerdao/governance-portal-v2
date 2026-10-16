@@ -47,11 +47,18 @@ describe('buildContentSecurityPolicy', () => {
     expect(connectSrc).not.toContain('wss:');
   });
 
+  it('fails when the proxy origin is not a valid URL', () => {
+    expect(() =>
+      buildContentSecurityPolicy({ ...production, env: { NEXT_PUBLIC_PROXY_ORIGIN: 'proxy.sky.money' } })
+    ).toThrow(/NEXT_PUBLIC_PROXY_ORIGIN/);
+  });
+
   it('only allows plain http and localhost in dev', () => {
     expect(buildContentSecurityPolicy(production)).not.toMatch(/http:|ws:|localhost|127\.0\.0\.1/);
-    expect(directive(buildContentSecurityPolicy({ ...production, dev: true }), 'connect-src')).toContain(
-      'http://localhost:*'
-    );
+    const devConnectSrc = directive(buildContentSecurityPolicy({ ...production, dev: true }), 'connect-src');
+
+    expect(devConnectSrc).toContain('http://localhost:*');
+    expect(devConnectSrc).toContain('http://127.0.0.1:*');
   });
 
   it('only lists the testnet RPCs when the test chains are enabled', () => {
@@ -62,10 +69,10 @@ describe('buildContentSecurityPolicy', () => {
       'connect-src'
     );
 
-    expect(prod).not.toContain('https://virtual.mainnet.rpc.tenderly.co');
+    expect(prod).not.toContain('https://*.rpc.tenderly.co');
     expect(prod).not.toContain('https://staging-gov-polling.sky.money');
     expect(prod).not.toContain('https://arbitrum-testnet.example');
-    expect(testnet).toContain('https://virtual.mainnet.rpc.tenderly.co');
+    expect(testnet).toContain('https://*.rpc.tenderly.co');
     expect(testnet).toContain('https://staging-gov-polling.sky.money');
     expect(testnet).toContain('https://arbitrum-testnet.example');
     expect(testnetDefaultArbitrum).toContain('https://sepolia-rollup.arbitrum.io');
