@@ -1,4 +1,5 @@
 const path = require('path');
+const { PHASE_PRODUCTION_BUILD } = require('next/constants');
 
 require('dotenv').config({ path: './.env' });
 
@@ -104,4 +105,33 @@ const moduleExports = {
   staticPageGenerationTimeout: 120
 };
 
-module.exports = moduleExports;
+// Production must name its proxy explicitly instead of falling back to the staging proxy
+// (modules/app/constants/proxy.ts), and any proxy that is set must be a full http(s) URL.
+function checkProxyOrigin() {
+  const proxyOrigin = process.env.NEXT_PUBLIC_PROXY_ORIGIN;
+
+  if (!proxyOrigin) {
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
+      throw new Error('NEXT_PUBLIC_PROXY_ORIGIN must be set for production builds');
+    }
+    return;
+  }
+
+  let protocol;
+  try {
+    ({ protocol } = new URL(proxyOrigin));
+  } catch {
+    protocol = undefined;
+  }
+  if (protocol !== 'https:' && protocol !== 'http:') {
+    throw new Error(`NEXT_PUBLIC_PROXY_ORIGIN must be an http(s) URL, got "${proxyOrigin}"`);
+  }
+}
+
+module.exports = phase => {
+  if (phase === PHASE_PRODUCTION_BUILD) {
+    checkProxyOrigin();
+  }
+
+  return moduleExports;
+};
