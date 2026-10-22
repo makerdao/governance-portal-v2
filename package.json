@@ -48,7 +48,6 @@
     "graphql-request": "6.1.0",
     "gray-matter": "^4.0.2",
     "ioredis": "^5.0.6",
-    "ipfs-only-hash": "^4.0.0",
     "lodash": "^4.17.21",
     "lottie-web": "^5.7.1",
     "mersenne-twister": "^1.1.0",
